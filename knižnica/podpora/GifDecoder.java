@@ -457,7 +457,7 @@ public class GifDecoder
 		if (suffix == null) suffix = new byte[MaxStackSize];
 		if (pixelStack == null) pixelStack = new byte[MaxStackSize + 1];
 
-		//  Initialize GIF data stream decoder.
+		//  Initialise GIF data stream decoder.
 
 		data_size = read();
 		clear = 1 << data_size;
@@ -583,7 +583,7 @@ public class GifDecoder
 	}
 
 	/**
-	 * <p>Initializes or re-initializes reader.</p>
+	 * <p>Initialises or re-initialises reader.</p>
 	 */
 	protected void init()
 	{

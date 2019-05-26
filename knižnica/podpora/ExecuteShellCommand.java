@@ -166,11 +166,18 @@ abstract public class ExecuteShellCommand
 		new ExpressionProcessor();
 
 
-	// Date and time formats.
-	// (TODO Consider: Make non-static, non-final, and allow to change?)
-	private final static SimpleDateFormat dateFormat =
+	/**
+	 * <p>Default date format. Use its method applyPattern or
+	 * applyLocalizedPattern to adjust the format.</p>
+	 */
+	public final static SimpleDateFormat dateFormat =
 		new SimpleDateFormat("dd. MM. yyyy");
-	private final static SimpleDateFormat timeFormat =
+
+	/**
+	 * <p>Default time format. Use its method applyPattern or
+	 * applyLocalizedPattern to adjust the format.</p>
+	 */
+	public final static SimpleDateFormat timeFormat =
 		new SimpleDateFormat("hh:mm:ss");
 
 
@@ -590,7 +597,7 @@ abstract public class ExecuteShellCommand
 	 */
 	public static String quoteSpacedString(String string)
 	{
-		if (-1 == string.indexOf(' ') && 
+		if (-1 == string.indexOf(' ') &&
 			-1 == string.indexOf('"')) return string;
 
 		return "\"" + string.replace("\"", "\\\"") + "\"";
@@ -1087,7 +1094,7 @@ abstract public class ExecuteShellCommand
 
 	/**
 	 * <p>Gets the default prompt string. This is the prompt that should be
-	 * set at the startup for your custom console application. See also the
+	 * set at the start-up for your custom console application. See also the
 	 * “setPrompt” method.</p>
 	 * 
 	 * <p>It is recomended to store this string in the configuration
@@ -1341,23 +1348,23 @@ abstract public class ExecuteShellCommand
 	 * <li><code>$A</code> – & (ampersand),</li>
 	 * <li><code>$B</code> – | (pipe/bar),</li>
 	 * <li><code>$C</code> – ( (left parenthesis),</li>
-	 * <li><code>$D</code> – current date (in fact the content of the
+	 * <li><code>$D</code> – current date (in fact, the content of the
 	 *     (possibly virtual) variable %DATE%),</li>
 	 * <li><code>$E</code> – escape code (ASCII code 27),</li>
 	 * <li><code>$F</code> – ) (right parenthesis),</li>
 	 * <li><code>$G</code> – > (greater-than sign),</li>
 	 * <li><code>$L</code> – < (less-than sign),</li>
-	 * <li><code>$M</code> – current machine (in fact the content of the
+	 * <li><code>$M</code> – current machine (in fact, the content of the
 	 *     (possibly virtual) variable %MACHINE%),</li>
 	 * <li><code>$P</code> – current path (on Windows also with drive;
-	 *     in fact the content of the (possibly virtual) variable %CD%),</li>
+	 *     in fact, the content of the (possibly virtual) variable %CD%),</li>
 	 * <li><code>$Q</code> – = (equal sign),</li>
 	 * <li><code>$S</code> –   (space),</li>
-	 * <li><code>$T</code> – current time (in fact the content of the
+	 * <li><code>$T</code> – current time (in fact, the content of the
 	 *     (possibly virtual) variable %TIME%),</li>
-	 * <li><code>$U</code> – current user (in fact the content of the
+	 * <li><code>$U</code> – current user (in fact, the content of the
 	 *     (possibly virtual) variable %USER%),</li>
-	 * <li><code>$V</code> – current version (in fact the content of the
+	 * <li><code>$V</code> – current version (in fact, the content of the
 	 *     (possibly virtual) variable %VERSION%),</li>
 	 * <li><code>$_</code> – new line,</li>
 	 * <li><code>$$</code> – $ (dollar sign).</li>
@@ -1426,11 +1433,6 @@ abstract public class ExecuteShellCommand
 					zero or more plus sign (+) characters depending upon
 					the depth of the PUSHD directory stack, one character
 					for each level pushed.
-
-				$M
-					Displays the remote name associated with the current
-					drive letter or the empty string if current drive is
-					not a network drive.
 			*/
 
 			promptString = buildPrompt.toString();
@@ -1445,7 +1447,7 @@ abstract public class ExecuteShellCommand
 	 * <p>Gets the default title string. Default title string is not that
 	 * same as the null value title string. The “default” means that this
 	 * is the initial string for the title that should be set at the
-	 * startup for your custom console application.</p>
+	 * start-up for your custom console application.</p>
 	 * 
 	 * @return the default title string
 	 */
@@ -1856,7 +1858,7 @@ abstract public class ExecuteShellCommand
 
 	/**
 	 * <p>Gets the default encoding. Default encoding is the initial
-	 * encoding that should be set at the startup for your custom console
+	 * encoding that should be set at the start-up for your custom console
 	 * application.</p>
 	 * 
 	 * @return the default encoding
@@ -1891,7 +1893,7 @@ abstract public class ExecuteShellCommand
 	public void restoreDefaultEncoding() { currentEncoding = defaultEncoding; }
 
 	/**
-	 * <p>Gets the encoding currently in use for this instace.</p>
+	 * <p>Gets the encoding currently in use for this instance.</p>
 	 * 
 	 * @return current encoding
 	 */
@@ -2409,9 +2411,24 @@ abstract public class ExecuteShellCommand
 
 
 	/**
-	 * <p>Gets current path string. This path is used as the running path
-	 * of the new process (see the “execute” method). Current path can be
-	 * changed using “changePath” method.</p>
+	 * <p>Gets the default path string. This path is the path obtained on
+	 * start-up by expanding (in the meaning of getting a canonical path)
+	 * the “current path string” – ".", and it is (at least it should be)
+	 * the current JVM running path. Initially, this path becomes the
+	 * “active” (current) path for the shell commands. The “true” current
+	 * path (in the meaning of the active path for the shell commands) can
+	 * be changed using the “changePath” method. (Note: This path is final.
+	 * It means that it cannot be changed at the runtime.)</p>
+	 * 
+	 * @return default path string (initial path used as the running path
+	 *     for the shell commands and current JVM running path)
+	 */
+	public String getDefaultPath() { return defaultPath; }
+
+	/**
+	 * <p>Gets the current path string. This path is used as the running
+	 * path of the new process (see the “execute” method). Current path
+	 * can be changed using “changePath” method.</p>
 	 * 
 	 * @return current path string (path used as the running path of the
 	 *     new process)

@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -71,8 +71,18 @@ import javax.swing.event.ChangeEvent;
 // import javax.swing.event.ChangeListener;
 
 /**
- * <p>TODO</p>
+ * <p>Táto trieda uchováva hodnotu uhla použiteľnú na rôznych miestach
+ * programovacieho rámca. Trieda je odvoedená od triedy javy {@link Number
+ * Number}, implementuje rozhrania {@link Comparable Comparable} a {@link 
+ * Smer Smer}, čo všetko zvyšuje jej univerzálnosť a použiteľnosť. Statická
+ * metóda {@link #vyberSmer() vyberSmer} (a jej klony) otvorí dialóg na
+ * grafický výber uhla. Rovnaký grafický komponent je použitý
+ * v konfigurovateľnom {@linkplain #dialóg(String[], Object[], String)
+ * dialógu} na vstup (a úpravu) údajov dostupnom cez triedu {@link Svet
+ * Svet}.</p>
  * 
+ * <!-- TODO: test, či funguje autoboxing a unboxing a ak áno, uviesť to
+ * do dokumentácie-->
  */
 @SuppressWarnings("serial")
 public final class Uhol extends Number implements Comparable<Uhol>, Smer
@@ -83,42 +93,114 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	// public static final double NaN = 0.0d / 0.0;
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Konštanta vyjadrujúca teoretickú maximálnu hodnotu uhla:
+	 * (2 − 2<sup>−52</sup>) · 2<sup>1023</sup>. Táto hodnota je ekvivalentná
+	 * nasledujúcemu literálu zapísaného v šestnástkovej sústave:
+	 * <code>0x1.fffffffffffffP+1023</code>.</p>
+	 * 
+	 * <p><b>Zdroj:</b></p>
+	 * 
+	 * <ul><li><a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#MAX_VALUE"
+	 * target="_blank"><em>Double (Java Platform SE 8) –
+	 * <code>MAX_VALUE</code>.</em> Oracle.</a></li></ul>
 	 */
 	public static final double MAX_VALUE = 0x1.fffffffffffffP+1023; // 1.7976931348623157e+308
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Konštanta vyjadrujúca najmenšiu pozitívnu normálnu hodnotu tohto
+	 * údajového typu: 2<sup>−1022</sup>. Táto hodnota je ekvivalentná
+	 * nasledujúcemu literálu zapísaného v šestnástkovej sústave:
+	 * <code>0x1.0p-1022</code>.</p>
+	 * 
+	 * <p><b>Zdroj:</b></p>
+	 * 
+	 * <ul><li><a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#MIN_NORMAL"
+	 * target="_blank"><em>Double (Java Platform SE 8) –
+	 * <code>MIN_NORMAL</code>.</em> Oracle.</a></li></ul>
 	 */
 	public static final double MIN_NORMAL = 0x1.0p-1022; // 2.2250738585072014E-308
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Konštanta vyjadrujúca najmenšiu pozitívnu nenulovú hodnotu tohto
+	 * údajového typu: 2<sup>−1074</sup>. Táto hodnota je ekvivalentná
+	 * nasledujúcemu literálu zapísaného v šestnástkovej sústave:
+	 * <code>0x0.0000000000001P-1022</code>.</p>
+	 * 
+	 * <p><b>Zdroj:</b></p>
+	 * 
+	 * <ul><li><a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#MIN_VALUE"
+	 * target="_blank"><em>Double (Java Platform SE 8) –
+	 * <code>MIN_VALUE</code>.</em> Oracle.</a></li></ul>
 	 */
 	public static final double MIN_VALUE = 0x0.0000000000001P-1022; // 4.9e-324
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Najväčší technicky dovolený exponent konečného čísla premenných
+	 * tohto údajového typu: 1023.</p>
+	 * 
+	 * <p><b>Zdroj:</b></p>
+	 * 
+	 * <ul><li><a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#MAX_EXPONENT"
+	 * target="_blank"><em>Double (Java Platform SE 8) –
+	 * <code>MAX_EXPONENT</code>.</em> Oracle.</a></li></ul>
 	 */
 	public static final int MAX_EXPONENT = 1023;
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Najmenší technicky dovolený exponent normalizovaného čísla
+	 * premenných tohto údajového typu: -1022.</p>
+	 * 
+	 * <p><b>Zdroj:</b></p>
+	 * 
+	 * <ul><li><a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#MIN_EXPONENT"
+	 * target="_blank"><em>Double (Java Platform SE 8) –
+	 * <code>MIN_EXPONENT</code>.</em> Oracle.</a></li></ul>
 	 */
 	public static final int MIN_EXPONENT = -1022;
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Počet bitov použitých na reprezentáciu hodnoty uloženej
+	 * v inštanciách tohto údajového typu (tejto triedy): 64.</p>
+	 * 
+	 * <p><b>Zdroj:</b></p>
+	 * 
+	 * <ul><li><a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#SIZE"
+	 * target="_blank"><em>Double (Java Platform SE 8) –
+	 * <code>SIZE</code>.</em> Oracle.</a></li></ul>
 	 */
 	public static final int SIZE = 64;
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Počet bajtov použitých na reprezentáciu hodnoty uloženej
+	 * v inštanciách tohto údajového typu (tejto triedy). Hodnota je rovná
+	 * výsledku výpočtu: <code>SIZE / Byte.SIZE</code>.</p>
+	 * 
+	 * <p><b>Zdroj:</b></p>
+	 * 
+	 * <ul><li><a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#BYTES"
+	 * target="_blank"><em>Double (Java Platform SE 8) –
+	 * <code>BYTES</code>.</em> Oracle.</a></li></ul>
 	 */
 	public static final int BYTES = SIZE / Byte.SIZE;
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Inštancia triedy {@link java.lang.Class Class} reprezentujúca
+	 * primitívny údajový typ {@code typedouble}, ktorý je použitý na
+	 * uchovanie hodnoty uhlov (inštancií tejto triedy).</p>
+	 * 
+	 * <p><b>Zdroj:</b></p>
+	 * 
+	 * <ul><li><a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#TYPE"
+	 * target="_blank"><em>Double (Java Platform SE 8) –
+	 * <code>TYPE</code>.</em> Oracle.</a></li></ul>
 	 */
 	public static final Class<Double> TYPE = Double.TYPE;
 
@@ -127,9 +209,10 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	private final double hodnota;
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Konštruktor uhla prijímajúci reálnočíselnú hodnotu typu
+	 * {@code typedouble} (alebo kompatibilného).</p>
 	 * 
-	 * @param TODO TODO
+	 * @param hodnota hodnota tohto uhla
 	 */
 	public Uhol(double hodnota)
 	{
@@ -137,9 +220,16 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Konštruktor uhla prijímajúci hodnotu uhla v reťazcovej podobe.
+	 * Reťazec je prevedený na reálne číslo typu {@code typedouble}
+	 * s použitím metódy rámca {@link Svet#reťazecNaReálneČíslo(String)
+	 * reťazecNaReálneČíslo}, pričom je navyše povolené, aby bol reťazec
+	 * ukončený znakom stupňa (°), ktorý je pred prevodom vymazaný. Iné
+	 * znaky používané pri zápisoch uhlov (minúty ′, sekundy ″, prípadne
+	 * iné) nie sú v súčasnosti povolené.</p>
 	 * 
-	 * @param TODO TODO
+	 * @param s reťazec, ktorý bude prevedený na reálne číslo s nepovinným
+	 *     uvedením znaku stupňa (°) na konci
 	 * 
 	 * @throws NumberFormatException
 	 */
@@ -152,9 +242,22 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Táto metóda vráti {@code valtrue} v prípade, že vnútorná hodnota
+	 * uhla v tejto inštancii má hodnotu <a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#NaN"
+	 * target="_blank"><code>NaN</code></a> (Not-a-Number – „nie je číslo“)
+	 * a {@code valfalse} v opačnom prípade.</p>
 	 * 
-	 * @return TODO
+	 * <p><b>Zdroj:</b></p>
+	 * 
+	 * <ul><li><a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#isNaN--"
+	 * target="_blank"><em>Double (Java Platform SE 8) –
+	 * <code>isNaN</code>.</em> Oracle.</a></li></ul>
+	 * 
+	 * @return {@code valtrue} ak je hodnota reprezentovaná touto inštanciou <a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#NaN"
+	 * target="_blank"><code>NaN</code></a>, {@code valfalse} v opačnom prípade
 	 */
 	public boolean isNaN()
 	{
@@ -162,9 +265,19 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Vráti {@code valtrue} v prípade, že hodnota uhla uložená v tejto
+	 * inštancii má nekonečnú veľkosť a {@code valfalse} v opačnom
+	 * prípade.</p>
 	 * 
-	 * @return TODO
+	 * <p><b>Zdroj:</b></p>
+	 * 
+	 * <ul><li><a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#isInfinite--"
+	 * target="_blank"><em>Double (Java Platform SE 8) –
+	 * <code>isInfinite</code>.</em> Oracle.</a></li></ul>
+	 * 
+	 * @return {@code valtrue}, ak je hodnota uhla tejto inštancie kladné
+	 *     alebo záporné nekonečno; {@code valfalse} v opačnom prípade
 	 */
 	public boolean isInfinite()
 	{
@@ -172,9 +285,22 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Vráti {@code valtrue}, ak je hodnota uhla uložená v tejto inštancii
+	 * konečnou reálnočíselnou hodnotou (typu {@code typedouble}). To znamená,
+	 * že ak je hodnota v tejto inštancii rovná napríklad <a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#NaN"
+	 * target="_blank"><code>NaN</code></a> alebo niektoré nekonečno (kladné,
+	 * záporné), tak metóda vráti {@code valfalse}.</p>
 	 * 
-	 * @return TODO
+	 * <p><b>Zdroj:</b></p>
+	 * 
+	 * <ul><li><a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#isFinite--"
+	 * target="_blank"><em>Double (Java Platform SE 8) –
+	 * <code>isFinite(d)</code> (static version).</em> Oracle.</a></li></ul>
+	 * 
+	 * @return {@code valtrue}, ak je hodnota uhla tejto inštancie konečná;
+	 *     {@code valfalse} v opačnom prípade
 	 */
 	public boolean isFinite()
 	{
@@ -182,19 +308,28 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Prevedie hodnotu tejto inštancie na reťazec s použitím metódy
+	 * inštancie {@link Svet#formát Svet.formát}{@code .}{@link 
+	 * java.text.DecimalFormat.format(double) format} a pripojí na koniec
+	 * výsledného reťazca znak stupňa (°).</p>
 	 * 
-	 * @return TODO
+	 * @return hodnota uložená v tejto inštancii uhla prevedená na reťazec
 	 */
 	@Override public String toString()
 	{
 		return Svet.formát.format(hodnota) + "°";
 	}
 
+
 	/**
-	 * <p>TODO</p>
+	 * <p>Vykoná primitívnu typovú konverziu údajového typu {@code typedouble},
+	 * ktorý vnútorne uchováva hodnotu uhla tejto inštancie, na primitívny typ
+	 * {@code typebyte} a vráti výsledok. (Táto metóda prekrýva metódu
+	 * rodičovskej triedy {@link Number Number}.)</p>
 	 * 
-	 * @return TODO
+	 * @return vráti uhol konvertovaný na typ {@code typebyte} (pôvodná
+	 *     hodnota uhla nie je nijako prispôsobená; riziko straty údajov
+	 *     je vysoké)
 	 */
 	public byte byteValue()
 	{
@@ -202,9 +337,12 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Vykoná primitívnu typovú konverziu údajového typu {@code typedouble},
+	 * ktorý vnútorne uchováva hodnotu uhla tejto inštancie, na primitívny typ
+	 * {@code typeshort} a vráti výsledok. (Táto metóda prekrýva metódu
+	 * rodičovskej triedy {@link Number Number}.)</p>
 	 * 
-	 * @return TODO
+	 * @return vráti uhol konvertovaný na typ {@code typeshort}
 	 */
 	public short shortValue()
 	{
@@ -212,9 +350,12 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Vykoná primitívnu typovú konverziu údajového typu {@code typedouble},
+	 * ktorý vnútorne uchováva hodnotu uhla tejto inštancie, na primitívny typ
+	 * {@code typeint} a vráti výsledok. (Táto metóda je súčasťou
+	 * implementácie abstraktnej triedy {@link Number Number}.)</p>
 	 * 
-	 * @return TODO
+	 * @return vráti uhol konvertovaný na typ {@code typeint}
 	 */
 	public int intValue()
 	{
@@ -222,9 +363,12 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Vykoná primitívnu typovú konverziu údajového typu {@code typedouble},
+	 * ktorý vnútorne uchováva hodnotu uhla tejto inštancie, na primitívny typ
+	 * {@code typelong} a vráti výsledok. (Táto metóda je súčasťou
+	 * implementácie abstraktnej triedy {@link Number Number}.)</p>
 	 * 
-	 * @return TODO
+	 * @return vráti uhol konvertovaný na typ {@code typelong}
 	 */
 	public long longValue()
 	{
@@ -232,9 +376,12 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Vykoná primitívnu typovú konverziu údajového typu {@code typedouble},
+	 * ktorý vnútorne uchováva hodnotu uhla tejto inštancie, na primitívny typ
+	 * {@code typefloat} a vráti výsledok. (Táto metóda je súčasťou
+	 * implementácie abstraktnej triedy {@link Number Number}.)</p>
 	 * 
-	 * @return TODO
+	 * @return vráti uhol konvertovaný na typ {@code typefloat}
 	 */
 	public float floatValue()
 	{
@@ -242,9 +389,14 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Vráti hodnotu uhla tejto inštancie, ktorá má primitívny údajový typ
+	 * {@code typedouble}. (Táto metóda je zároveň súčasťou implementácie
+	 * abstraktnej triedy {@link Number Number}.)</p>
 	 * 
-	 * @return TODO
+	 * @return hodnota uhla tejto inštancie
+	 * 
+	 * @see #uhol()
+	 * @see #smer()
 	 */
 	public double doubleValue()
 	{
@@ -252,9 +404,10 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Vytvorí hešovací kód pre túto inštanciu. Metóda využíva svoju
+	 * statickú verziu {@link #hashCode(double) hashCode}.</p>
 	 * 
-	 * @return TODO
+	 * @return heš tejto inštancie uhla
 	 */
 	@Override public int hashCode()
 	{
@@ -262,10 +415,17 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Prijme ľubovoľnú inštanciu, overí, či ide o inštanciu triedy
+	 * {@link Uhol Uhol} a ak áno, tak vyhodnotí jej zhodu s hodnotou tejto
+	 * inštancie uhla. Ak sú hodnoty uhlov tejto a zadanej inštancie zhodné,
+	 * tak metóda vráti hodnotu {@code valtrue}, inak vráti hodnotu
+	 * {@code valfalse}</p>
 	 * 
-	 * @param TODO TODO
-	 * @return TODO
+	 * @param objekt objekt ľubovoľnej inštancie, s ktorým má byť
+	 *     vyhodnotená zhoda
+	 * @return ak je zadaná inštancia typu {@link Uhol Uhol} a hodnoty uhlov
+	 *     tejto aj zadanej inštancie sú zhodné, tak je vrátená hodnota
+	 *     {@code valtrue}, inak {@code valfalse}
 	 */
 	@Override public boolean equals(Object objekt)
 	{
@@ -275,10 +435,13 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Porovná hodnotu tejto inštancie s hodnotou zadanej inštancie.
+	 * Vrátený výsledok bude v súlade s algoritmom metódy {@link Double
+	 * Double}{@code .}{@link Double#compare(double, double) compare}.</p>
 	 * 
-	 * @param TODO TODO
-	 * @return TODO
+	 * @param inýUhol inštancia iného uhla na porovnanie
+	 * @return výsledok v súlade s algoritmom metódy {@link Double
+	 *     Double}{@code .}{@link Double#compare(double, double) compare}
 	 */
 	public int compareTo(Uhol inýUhol)
 	{
@@ -286,11 +449,14 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Porovná dve zadané reálnočíselné hodnoty (uhlov) v súlade
+	 * s algoritmom metódy {@link Double Double}{@code .}{@link 
+	 * Double#compare(double, double) compare}.</p>
 	 * 
-	 * @param TODO TODO
-	 * @param TODO TODO
-	 * @return TODO
+	 * @param u1 hodnota prvého uhla na porovnanie
+	 * @param u1 hodnota druhého uhla na porovnanie
+	 * @return výsledok v súlade s algoritmom metódy {@link Double
+	 *     Double}{@code .}{@link Double#compare(double, double) compare}
 	 */
 	public static int compare(double u1, double u2)
 	{
@@ -298,26 +464,34 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>Implementácia prototypu metódy na zistenie smeru/uhla objektu.</p>
+	 * <p>Implementácia prototypu metódy na zistenie uhla/smeru objektu.</p>
 	 * 
-	 * @return TODO
+	 * @return hodnota uhla (smeru) uložená v tejto inštancii
+	 * 
+	 * @see #doubleValue()
+	 * @see #smer()
 	 */
-	public double uhol() { return hodnota ;}
+	public double uhol() { return hodnota; }
 
 	/**
 	 * <p>Implementácia prototypu metódy na zistenie smeru/uhla objektu.</p>
 	 * 
-	 * @return TODO
+	 * @return hodnota smeru (uhla) uložená v tejto inštancii
+	 * 
+	 * @see #doubleValue()
+	 * @see #uhol()
 	 */
-	public double smer() { return hodnota ;}
-
+	public double smer() { return hodnota; }
 
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Prevedie zadanú reálnočíselnú hodnotu uhla na reťazec s použitím
+	 * metódy inštancie {@link Svet#formát Svet.formát}{@code .}{@link 
+	 * java.text.DecimalFormat.format(double) format}, pričom pripojí na
+	 * koniec výsledného reťazca znak stupňa (°).</p>
 	 * 
-	 * @param TODO TODO
-	 * @return TODO
+	 * @param d reálnočíselná hodnota uhla, ktorá má byť prevedená na reťazec
+	 * @return zadaná hodnota uhla prevedená na reťazec
 	 * 
 	 * @throws NumberFormatException
 	 */
@@ -330,10 +504,11 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	// { return Double.toHexString(d); }
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Vytvorí novú inštanciu uhla s použitím konštruktora
+	 * {@link #Uhol(String) Uhol(s)}.</p>
 	 * 
-	 * @param TODO TODO
-	 * @return TODO
+	 * @param s reťazec, z ktorého bude vytvorená nová inštancia uhla
+	 * @return nová inštancia uhla
 	 * 
 	 * @throws NumberFormatException
 	 */
@@ -343,10 +518,11 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Vytvorí novú inštanciu uhla s použitím konštruktora
+	 * {@link #Uhol(double) Uhol(d)}.</p>
 	 * 
-	 * @param TODO TODO
-	 * @return TODO
+	 * @param d hodnota novej inštancie uhla
+	 * @return nová inštancia uhla
 	 */
 	public static Uhol valueOf(double d)
 	{
@@ -354,10 +530,14 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	}
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Prevedie zadaný reťazec na číselnú hodnotu uhla s použitím rovnakých
+	 * pravidiel ako konštruktor {@link #Uhol(String) Uhol(s)}. Túto metódu
+	 * vnútorne používa aj panel smeru slúžiaci na grafickú voľbu uhla –
+	 * pozri napríklad metódu {@link #vyberSmer() vyberSmer}.</p>
 	 * 
-	 * @param TODO TODO
-	 * @return TODO
+	 * @param s reťazec reprezentujúci uhol, ktorý bude prevedený na
+	 *     reálnočíselnú hodnotu
+	 * @return prevedená číselná hodnota uhla
 	 * 
 	 * @throws NumberFormatException
 	 */
@@ -378,10 +558,11 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	// { return Math.abs(d) <= Double.MAX_VALUE; }
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Vytvorí hešovací kód pre zadanú reálnočíselnú hodnotu
+	 * (reprezentujúcu uhol).</p>
 	 * 
-	 * @param TODO TODO
-	 * @return TODO
+	 * @param hodnota hodnota (ktorá by mala reprezentovať uhol)
+	 * @return heš vytvorený zo zadanej hodnoty
 	 */
 	public static int hashCode(double hodnota)
 	{
@@ -721,8 +902,8 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 			}
 
 			// Aktualizuje tento panel do takého stavu, v akom by sa
-			// nachádzal po konštrukcii so zadanými parametrami. (Môžu
-			// nastať drobné odchýlky, ktoré sú neodsledovateľné, ale
+			// nachádzal po konštrukcii so zadanými hodnotami parametrov.
+			// (Môžu nastať drobné odchýlky, ktoré sú neodsledovateľné, ale
 			// zhruba by sa panel mal vizuálne aj vnútorne nachádzať
 			// v požadovanom stave.)
 			private void aktualizujPanel(String textReset,
@@ -874,8 +1055,10 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	// Predvolený smer dialógov.
 	private final static Uhol sever = new Uhol(90);
 
+
 	/**
-	 * <p>Otvorí dialóg na výber smeru. Predvoleným smerom v otvorenom
+	 * <p>Otvorí dialóg na výber smeru. Funguje rovnako ako metóda {@link 
+	 * #zvoľSmer() zvoľSmer}. Predvoleným smerom v otvorenom
 	 * dialógu bude hodnota 90°. Po zvolení želaného smeru používateľom,
 	 * vráti metóda zvolený smer v novom objekte typu {@link Uhol Uhol}.
 	 * Ak používateľ dialóg zruší, tak metóda vráti hodnotu
@@ -886,8 +1069,17 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	public static Uhol vyberSmer()
 	{ return PanelSmeru.dialóg(null, sever); }
 
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberSmer() vyberSmer}.</p> */
+	public static Uhol dialógVýberSmeru() { return vyberSmer(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberSmer() vyberSmer}.</p> */
+	public static Uhol dialogVyberSmeru() { return vyberSmer(); }
+
+
 	/**
-	 * <p>Otvorí dialóg na výber smeru. Otvorený dialóg bude mať predvolený
+	 * <p>Otvorí dialóg na výber smeru. Funguje rovnako ako metóda {@link 
+	 * #zvoľSmer(Smer) zvoľSmer}. Otvorený dialóg bude mať predvolený
 	 * zadaný smer (argument {@code počiatočnýSmer}). Po zvolení želaného
 	 * smeru používateľom, vráti metóda zvolený smer v novom objekte typu
 	 * {@link Uhol Uhol}. Ak používateľ dialóg zruší, tak metóda vráti
@@ -899,8 +1091,19 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	public static Uhol vyberSmer(Smer počiatočnýSmer)
 	{ return PanelSmeru.dialóg(null, počiatočnýSmer); }
 
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberSmer(Smer) vyberSmer}.</p> */
+	public static Uhol dialógVýberSmeru(Smer počiatočnýSmer)
+	{ return vyberSmer(počiatočnýSmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberSmer(Smer) vyberSmer}.</p> */
+	public static Uhol dialogVyberSmeru(Smer počiatočnýSmer)
+	{ return vyberSmer(počiatočnýSmer); }
+
+
 	/**
-	 * <p>Otvorí dialóg na výber smeru. Predvoleným smerom v otvorenom
+	 * <p>Otvorí dialóg na výber smeru. Funguje rovnako ako metóda {@link 
+	 * #zvoľSmer(String) zvoľSmer}. Predvoleným smerom v otvorenom
 	 * dialógu bude hodnota 90°. Po zvolení želaného smeru používateľom,
 	 * vráti metóda zvolený smer v novom objekte typu {@link Uhol Uhol}.
 	 * Ak používateľ dialóg zruší, tak metóda vráti hodnotu {@code valnull}.
@@ -916,8 +1119,19 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	public static Uhol vyberSmer(String titulok)
 	{ return PanelSmeru.dialóg(titulok, sever); }
 
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberSmer(String) vyberSmer}.</p> */
+	public static Uhol dialógVýberSmeru(String titulok)
+	{ return vyberSmer(titulok); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberSmer(String) vyberSmer}.</p> */
+	public static Uhol dialogVyberSmeru(String titulok)
+	{ return vyberSmer(titulok); }
+
+
 	/**
-	 * <p>Otvorí dialóg na výber smeru. Otvorený dialóg bude mať predvolený
+	 * <p>Otvorí dialóg na výber smeru. Funguje rovnako ako metóda {@link 
+	 * #zvoľSmer(String, Smer) zvoľSmer}. Otvorený dialóg bude mať predvolený
 	 * zadaný smer (argument {@code počiatočnýSmer}). Po zvolení želaného
 	 * smeru používateľom, vráti metóda zvolený smer v novom objekte typu
 	 * {@link Uhol Uhol}. Ak používateľ dialóg zruší, tak metóda vráti
@@ -934,4 +1148,126 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	 */
 	public static Uhol vyberSmer(String titulok, Smer počiatočnýSmer)
 	{ return PanelSmeru.dialóg(titulok, počiatočnýSmer); }
+
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberSmer(String, Smer) vyberSmer}.</p> */
+	public static Uhol dialógVýberSmeru(String titulok, Smer počiatočnýSmer) { return PanelSmeru.dialóg(titulok, počiatočnýSmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberSmer(String, Smer) vyberSmer}.</p> */
+	public static Uhol dialogVyberSmeru(String titulok, Smer počiatočnýSmer) { return PanelSmeru.dialóg(titulok, počiatočnýSmer); }
+
+
+	/**
+	 * <p>Otvorí dialóg na výber smeru. Funguje rovnako ako metóda {@link 
+	 * #vyberSmer() vyberSmer}. Predvoleným smerom v otvorenom
+	 * dialógu bude hodnota 90°. Po zvolení želaného smeru používateľom,
+	 * vráti metóda zvolený smer v novom objekte typu {@link Uhol Uhol}.
+	 * Ak používateľ dialóg zruší, tak metóda vráti hodnotu
+	 * {@code valnull}.</p>
+	 * 
+	 * @return zvolený smer alebo {@code valnull}
+	 */
+	public static Uhol zvoľSmer()
+	{ return PanelSmeru.dialóg(null, sever); }
+
+
+	/** <p><a class="alias"></a> Alias pre {@link #zvoľSmer() zvoľSmer}.</p> */
+	public static Uhol zvolSmer() { return zvoľSmer(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #zvoľSmer() zvoľSmer}.</p> */
+	public static Uhol dialógVoľbaSmeru() { return zvoľSmer(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #zvoľSmer() zvoľSmer}.</p> */
+	public static Uhol dialogVolbaSmeru() { return zvoľSmer(); }
+
+
+	/**
+	 * <p>Otvorí dialóg na výber smeru. Funguje rovnako ako metóda {@link 
+	 * #vyberSmer(Smer) vyberSmer}. Otvorený dialóg bude mať predvolený
+	 * zadaný smer (argument {@code počiatočnýSmer}). Po zvolení želaného
+	 * smeru používateľom, vráti metóda zvolený smer v novom objekte typu
+	 * {@link Uhol Uhol}. Ak používateľ dialóg zruší, tak metóda vráti
+	 * hodnotu {@code valnull}.</p>
+	 * 
+	 * @param počiatočnýSmer predvolený smer v novo otvorenom dialógu
+	 * @return zvolený smer alebo {@code valnull}
+	 */
+	public static Uhol zvoľSmer(Smer počiatočnýSmer)
+	{ return PanelSmeru.dialóg(null, počiatočnýSmer); }
+
+
+	/** <p><a class="alias"></a> Alias pre {@link #zvoľSmer(Smer) zvoľSmer}.</p> */
+	public static Uhol zvolSmer(Smer počiatočnýSmer)
+	{ return zvoľSmer(počiatočnýSmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #zvoľSmer(Smer) zvoľSmer}.</p> */
+	public static Uhol dialógVoľbaSmeru(Smer počiatočnýSmer)
+	{ return zvoľSmer(počiatočnýSmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #zvoľSmer(Smer) zvoľSmer}.</p> */
+	public static Uhol dialogVolbaSmeru(Smer počiatočnýSmer)
+	{ return zvoľSmer(počiatočnýSmer); }
+
+
+	/**
+	 * <p>Otvorí dialóg na výber smeru. Funguje rovnako ako metóda {@link 
+	 * #vyberSmer(String) vyberSmer}. Predvoleným smerom v otvorenom
+	 * dialógu bude hodnota 90°. Po zvolení želaného smeru používateľom,
+	 * vráti metóda zvolený smer v novom objekte typu {@link Uhol Uhol}.
+	 * Ak používateľ dialóg zruší, tak metóda vráti hodnotu {@code valnull}.
+	 * Programátor má možnosť zvoliť vlastný titulok dialógového okna.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Text tlačidla na reset je
+	 * upraviteľný volaním metódy {@link Svet#textTlačidla(String, String)
+	 * textTlačidla} triedy {@link Svet Svet}.</p>
+	 * 
+	 * @param titulok vlastný titulok dialógu
+	 * @return zvolený smer alebo {@code valnull}
+	 */
+	public static Uhol zvoľSmer(String titulok)
+	{ return PanelSmeru.dialóg(titulok, sever); }
+
+
+	/** <p><a class="alias"></a> Alias pre {@link #zvoľSmer(String) zvoľSmer}.</p> */
+	public static Uhol zvolSmer(String titulok)
+	{ return zvoľSmer(titulok); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #zvoľSmer(String) zvoľSmer}.</p> */
+	public static Uhol dialógVoľbaSmeru(String titulok)
+	{ return zvoľSmer(titulok); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #zvoľSmer(String) zvoľSmer}.</p> */
+	public static Uhol dialogVolbaSmeru(String titulok)
+	{ return zvoľSmer(titulok); }
+
+
+	/**
+	 * <p>Otvorí dialóg na výber smeru. Funguje rovnako ako metóda {@link 
+	 * #vyberSmer(String, Smer) vyberSmer}. Otvorený dialóg bude mať predvolený
+	 * zadaný smer (argument {@code počiatočnýSmer}). Po zvolení želaného
+	 * smeru používateľom, vráti metóda zvolený smer v novom objekte typu
+	 * {@link Uhol Uhol}. Ak používateľ dialóg zruší, tak metóda vráti
+	 * hodnotu {@code valnull}. Programátor má možnosť zvoliť vlastný titulok
+	 * dialógového okna.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Text tlačidla na reset je
+	 * upraviteľný volaním metódy {@link Svet#textTlačidla(String, String)
+	 * textTlačidla} triedy {@link Svet Svet}.</p>
+	 * 
+	 * @param titulok vlastný titulok dialógu
+	 * @param počiatočnýSmer predvolený smer v novo otvorenom dialógu
+	 * @return zvolený smer alebo {@code valnull}
+	 */
+	public static Uhol zvoľSmer(String titulok, Smer počiatočnýSmer)
+	{ return PanelSmeru.dialóg(titulok, počiatočnýSmer); }
+
+
+	/** <p><a class="alias"></a> Alias pre {@link #zvoľSmer(String, Smer) zvoľSmer}.</p> */
+	public static Uhol zvolSmer(String titulok, Smer počiatočnýSmer) { return PanelSmeru.dialóg(titulok, počiatočnýSmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #zvoľSmer(String, Smer) zvoľSmer}.</p> */
+	public static Uhol dialógVoľbaSmeru(String titulok, Smer počiatočnýSmer) { return PanelSmeru.dialóg(titulok, počiatočnýSmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #zvoľSmer(String, Smer) zvoľSmer}.</p> */
+	public static Uhol dialogVolbaSmeru(String titulok, Smer počiatočnýSmer) { return PanelSmeru.dialóg(titulok, počiatočnýSmer); }
 }

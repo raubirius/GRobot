@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -104,6 +104,9 @@ public class Kláves extends KeyEvent
 	/** <p>Kód klávesu Page Up ({@link KeyEvent#VK_PAGE_UP}).</p> */
 	public final static int STRANKA_HORE = KeyEvent.VK_PAGE_UP;
 
+	/** <p>Kód klávesu Page Up ({@link KeyEvent#VK_PAGE_UP}).</p> */
+	public final static int STRANA_HORE = KeyEvent.VK_PAGE_UP;
+
 	/** <p>Kód klávesu Page Down ({@link KeyEvent#VK_PAGE_DOWN}).</p> */
 	public final static int PAGE_DOWN = KeyEvent.VK_PAGE_DOWN;
 
@@ -112,6 +115,9 @@ public class Kláves extends KeyEvent
 
 	/** <p>Kód klávesu Page Down ({@link KeyEvent#VK_PAGE_DOWN}).</p> */
 	public final static int STRANKA_DOLE = KeyEvent.VK_PAGE_DOWN;
+
+	/** <p>Kód klávesu Page Down ({@link KeyEvent#VK_PAGE_DOWN}).</p> */
+	public final static int STRANA_DOLE = KeyEvent.VK_PAGE_DOWN;
 
 	/** <p>Kód klávesu Page Up ({@link KeyEvent#VK_HOME}).</p> */
 	public final static int HOME = KeyEvent.VK_HOME;

@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -453,7 +453,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 			{@code comm// špeciálny význam – vtedy sa metóda pokúsi čítať súbor}
 			{@code comm// s predvoleným názvom – pozri definíciu metódy čítaj nižšie).}
 			{@code comm// Keďže úspešné vykonanie tejto metódy mení (resetuje) hodnotu}
-			{@code comm// poradového čísla naposledny nastavovaného tvaru (čo je žiaduce}
+			{@code comm// poradového čísla naposledy nastavovaného tvaru (čo je žiaduce}
 			{@code comm// pri vykonaní z príkazového riadka), je pred týmto volaním hodnota}
 			{@code comm// tohto číselného atribútu zálohovaná a po ňom spätne obnovená:}
 			{@code typeint} zálohaHodnotyTvaru = poslednýNastavenýTvar;
@@ -2132,7 +2132,7 @@ public class SVGPodpora
 	{
 		if (null == text && null == texty) return null;
 
-		Vector<Transformácia> vektor = new Vector<Transformácia>();
+		Vector<Transformácia> vektor = new Vector<>();
 		if (null != text) pridajTransformácie(vektor, text);
 
 		if (null != texty) for (String t : texty)
@@ -2198,7 +2198,7 @@ public class SVGPodpora
 		ÚdajeTvaru čítaj = new ÚdajeTvaru(
 			text.substring(indexOf + 1).trim());
 
-		Vector<Double> hodnoty = new Vector<Double>();
+		Vector<Double> hodnoty = new Vector<>();
 
 		while (čítaj.nieJeKoniec())
 		{
@@ -2426,8 +2426,7 @@ public class SVGPodpora
 
 
 	// Mapa definícií HTML farieb
-	private final static TreeMap<String, Farba> mapaFarieb =
-		new TreeMap<String, Farba>();
+	private final static TreeMap<String, Farba> mapaFarieb = new TreeMap<>();
 
 	// Metóda slúžiaca na naplnenie mapy definícií HTML farieb
 	private static void naplňMapuFarieb()
@@ -2582,11 +2581,8 @@ public class SVGPodpora
 		mapaFarieb.put("yellowgreen", new Farba(154, 205, 50));
 	}
 
-	private final TreeMap<String, Double> mapaJednotiek =
-		new TreeMap<String, Double>();
-
-	private final TreeMap<String, Double> mapaPosunov =
-		new TreeMap<String, Double>();
+	private final TreeMap<String, Double> mapaJednotiek = new TreeMap<>();
+	private final TreeMap<String, Double> mapaPosunov = new TreeMap<>();
 
 	private void naplňMapuJednotiek()
 	{
@@ -3308,7 +3304,7 @@ public class SVGPodpora
 	}
 
 	// Zásobník série atribútov
-	private final Stack<Atribúty> zásobníkAtribútov = new Stack<Atribúty>();
+	private final Stack<Atribúty> zásobníkAtribútov = new Stack<>();
 
 	// Trieda reprezentujúca údajovú štruktúru tvaru s asociovanými
 	// atribútmi
@@ -3328,7 +3324,7 @@ public class SVGPodpora
 	}
 
 	// Vnútorný zoznam tvarov tejto inštancie
-	private final Vector<Tvar> tvary = new Vector<Tvar>();
+	private final Vector<Tvar> tvary = new Vector<>();
 
 	/**
 	 * <p>Vráti počet tvarov, ktoré sú momentálne uskladnené v tejto
@@ -6511,6 +6507,14 @@ public class SVGPodpora
 			to opraviť. Niekedy to vyzerá, ako keby x-ovú súradnicu
 			vypočítal dobre a y-ovú pokafral… Ale to je len jeden
 			z prípadov… Fuj, neprídem na to asi tak ľahko…
+
+			(S odstupom času som to skúšal opäť riešiť, ale už som ani
+			nedokázal nájsť na disku SVG súbory, ktoré by vykresľovalo
+			chybne. Viem, že sa také dávnejšie náhodne vyskytli pri hre
+			Asteroidy, ale to bola iná chyba a tú som opravil… Potom sa
+			zrazu vyskytlo niečo úplne iné, ale neuložil som si to a teraz
+			to neviem nájsť. Asi zostáva len čakať, kedy mi tento skrytý
+			problém opäť „vybuchne do tváre“.)
 			*/
 			if (relatívne)
 			{
@@ -7008,13 +7012,11 @@ public class SVGPodpora
 
 	// Do tohto zoznamu si metóda spracujLokálnyŠtýl uloží zoznam
 	// CSS definícií, ktoré premení na XML/SVG atribúty.
-	private static final TreeSet<String> prepíšZoŠtýlu =
-		new TreeSet<String>();
+	private static final TreeSet<String> prepíšZoŠtýlu = new TreeSet<>();
 
 	// Do tohto zoznamu si metóda spracujLokálnyŠtýl uloží zoznam
 	// CSS definícií, ktoré pripojí k jestvujúcim XML/SVG atribútom.
-	private static final TreeSet<String> pripojZoŠtýlu =
-		new TreeSet<String>();
+	private static final TreeSet<String> pripojZoŠtýlu = new TreeSet<>();
 
 	// Spracuje atribút ‚style‘ tak, že vybranými CSS definíciami prepíše
 	// jestvujúce XML atribúty a vybrané CSS definície pripojí

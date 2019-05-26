@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ import javax.swing.JScrollBar;
  * konštanty z tohto rozhrania, aby sa dal lepšie udržať prehľad v tom,
  * ktorá trieda používa konkrétne konštanty (napríklad trieda {@link 
  * Spojenie Spojenie} importuje konštanty {@link #PREVZATIE_ÚDAJOV
- * PREVZATIE_ÚDAJOV} a {@link  #ODOVZDANIE_ÚDAJOV ODOVZDANIE_ÚDAJOV}).</p>
+ * PREVZATIE_ÚDAJOV} a {@link #ODOVZDANIE_ÚDAJOV ODOVZDANIE_ÚDAJOV}).</p>
  * 
  * <p>Statický import je totiž iným (a z pohľadu filozofie jazyka Java
  * možno „správnejším“) spôsobom získania priameho prístupu ku konštantám
@@ -70,13 +70,13 @@ public interface Konštanty
 		/** <p>Konštanta minoritnej verzie tohto robota.</p> */
 		public final static int minorVersion = 00;
 		/** <p>Konštanta poznámky verzie tohto robota.</p> */
-		public final static String versionNote = " (2018-12-06)";
+		public final static String versionNote = " (2019-05-26)";
 		/** <p>Konštanta rozpätia rokov vývoja tejto verzie…
 			(v podstate na účel výpisu copyrightu…)</p> */
-		public final static String years = "2010 – 2018";
+		public final static String years = "2010 – 2019";
 		/** <p>Konštanta rozpätia rokov a mesiacov vývoja tejto verzie…
 			(na účely automatického spracovania dokumentácie…)</p> */
-		public final static String yearsMonths = "august 2010 – august 2018";
+		public final static String yearsMonths = "august 2010 – máj 2019";
 		/** <p>Konštanta s menom hlavného (zatiaľ jediného) vývojára tejto
 			verzie… (v podstate na účel výpisu copyrightu… kto vie, či časom
 			pribudnú aj nejakí ďalší…)</p> */
@@ -584,23 +584,37 @@ public interface Konštanty
 		 * 
 		 * @see ObsluhaUdalostí#ladenie(int, String, int)
 		 */
-		public final static int VYPÍSAŤ_PREMENNÉ  = 0;
+		public final static int VYPÍSAŤ_PREMENNÉ = 0;
 
 		/** <p><a class="alias"></a> Alias pre {@link #VYPÍSAŤ_PREMENNÉ VYPÍSAŤ_PREMENNÉ}.</p> */
-		public final static int VYPISAT_PREMENNE  = VYPÍSAŤ_PREMENNÉ;
+		public final static int VYPISAT_PREMENNE = VYPÍSAŤ_PREMENNÉ;
 
 		/**
 		 * <p>Konštanta {@linkplain Svet#režimLadenia(boolean) režimu ladenia} –
 		 * režim sa pokúša zistiť, či má na vnútornú konzolu pred začatím
-		 * vykonávania skriptu vypísať definíciu menovky, ktorú našiel pri
-		 * predbežnej analýze skriptu.</p>
+		 * vykonávania skriptu vypísať definície všetkých menoviek v skripte,
+		 * ktoré sa mu podarilo vyhľadať počas analýzy skriptu.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> V priebehu vývoja
+		 * programovacieho rámca sa automatický výpis menoviek stal
+		 * irelevantným, takže táto akcia sa teraz vykonáva len na
+		 * požiadanie. (Pôvodne sa mechanizmus ladenia pýtal na každú
+		 * menovku zvlášť, preto zostali definované aliasy aj v singulári
+		 * (t. j. {@link #VYPÍSAŤ_MENOVKU VYPÍSAŤ_MENOVKU} a jeho alias bez
+		 * diakritiky), ktoré teraz rámec aktívne nevyužíva.</p>
 		 * 
 		 * @see ObsluhaUdalostí#ladenie(int, String, int)
 		 */
-		public final static int VYPÍSAŤ_MENOVKU  = 1;
+		public final static int VYPÍSAŤ_MENOVKY = 1;
 
-		/** <p><a class="alias"></a> Alias pre {@link #VYPÍSAŤ_MENOVKU VYPÍSAŤ_MENOVKU}.</p> */
-		public final static int VYPISAT_MENOVKU  = VYPÍSAŤ_MENOVKU;
+		/** <p><a class="alias"></a> Alias pre {@link #VYPÍSAŤ_MENOVKY VYPÍSAŤ_MENOVKY}.</p> */
+		public final static int VYPISAT_MENOVKY = VYPÍSAŤ_MENOVKY;
+
+		/** <p><a class="alias"></a> Alias pre {@link #VYPÍSAŤ_MENOVKY VYPÍSAŤ_MENOVKY}.</p> */
+		public final static int VYPÍSAŤ_MENOVKU = VYPÍSAŤ_MENOVKY;
+
+		/** <p><a class="alias"></a> Alias pre {@link #VYPÍSAŤ_MENOVKY VYPÍSAŤ_MENOVKY}.</p> */
+		public final static int VYPISAT_MENOVKU = VYPÍSAŤ_MENOVKY;
 
 		/**
 		 * <p>Konštanta {@linkplain Svet#režimLadenia(boolean) režimu ladenia} –
@@ -609,10 +623,10 @@ public interface Konštanty
 		 * 
 		 * @see ObsluhaUdalostí#ladenie(int, String, int)
 		 */
-		public final static int VYPÍSAŤ_RIADOK  = 2;
+		public final static int VYPÍSAŤ_RIADOK = 2;
 
 		/** <p><a class="alias"></a> Alias pre {@link #VYPÍSAŤ_RIADOK VYPÍSAŤ_RIADOK}.</p> */
-		public final static int VYPISAT_RIADOK  = VYPÍSAŤ_RIADOK;
+		public final static int VYPISAT_RIADOK = VYPÍSAŤ_RIADOK;
 
 		/**
 		 * <p>Konštanta {@linkplain Svet#režimLadenia(boolean) režimu ladenia} –
@@ -622,10 +636,10 @@ public interface Konštanty
 		 * 
 		 * @see ObsluhaUdalostí#ladenie(int, String, int)
 		 */
-		public final static int ČAKAŤ    = 3;
+		public final static int ČAKAŤ = 3;
 
 		/** <p><a class="alias"></a> Alias pre {@link #ČAKAŤ ČAKAŤ}.</p> */
-		public final static int CAKAT    = ČAKAŤ;
+		public final static int CAKAT = ČAKAŤ;
 
 		/**
 		 * <p>Konštanta {@linkplain Svet#režimLadenia(boolean) režimu ladenia} –
@@ -646,7 +660,9 @@ public interface Konštanty
 		 * ladenia sa dá využiť aj na overenie toho, s akými hodnotami
 		 * parametrov bude v skutočnosti metóda zavolaná.
 		 * Ak je odpoveď {@code valtrue}, tak sa príkaz nevykoná a stroj
-		 * skriptu pokračuje tak, akoby metóda príkazu nebola nájdená.</p>
+		 * skriptu pokračuje tak, akoby metóda príkazu nebola nájdená (to
+		 * znamená, že stroj ešte môže nájsť inú alternatívu na vykonanie
+		 * podobného príkazu).</p>
 		 * 
 		 * @see ObsluhaUdalostí#ladenie(int, String, int)
 		 */
@@ -663,7 +679,7 @@ public interface Konštanty
 		 * 
 		 * @see ObsluhaUdalostí#ladenie(int, String, int)
 		 */
-		public final static int VYPÍSAŤ_PRÍKAZ  = 6;
+		public final static int VYPÍSAŤ_PRÍKAZ = 6;
 
 		/** <p><a class="alias"></a> Alias pre {@link #VYPÍSAŤ_PRÍKAZ VYPÍSAŤ_PRÍKAZ}.</p> */
 		public final static int VYPISAT_PRIKAZ = VYPÍSAŤ_PRÍKAZ;
@@ -711,16 +727,29 @@ public interface Konštanty
 		public final static int UKONCENIE_CHYBOU = UKONČENIE_CHYBOU;
 
 		/**
+		 * <p>Konštanta {@linkplain Svet#režimLadenia(boolean) režimu ladenia}
+		 * v {@linkplain Svet#interaktívnyRežim(boolean) interaktívnom
+		 * režime} – režim sa pokúša overiť, či smie vypísať úplné znenie
+		 * aktuálne vykonávaného skriptu na vnútornú konzolu.</p>
+		 * 
+		 * @see ObsluhaUdalostí#ladenie(int, String, int)
+		 */
+		public final static int VYPÍSAŤ_SKRIPT = 10;
+
+		/** <p><a class="alias"></a> Alias pre {@link #VYPÍSAŤ_SKRIPT VYPÍSAŤ_SKRIPT}.</p> */
+		public final static int VYPISAT_SKRIPT = VYPÍSAŤ_SKRIPT;
+
+		/**
 		 * <p>Konštanta {@linkplain Svet#režimLadenia(boolean) režimu ladenia} –
 		 * režim oznamuje, že hodnota číselnej premennej sa zmenila a pokúša
 		 * sa zistiť, či má novú hodnotu vypísať.</p>
 		 * 
 		 * @see ObsluhaUdalostí#ladenie(int, String, int)
 		 */
-		public final static int ČÍSELNÁ_PREMENNÁ   = -1;
+		public final static int ČÍSELNÁ_PREMENNÁ = -1;
 
 		/** <p><a class="alias"></a> Alias pre {@link #ČÍSELNÁ_PREMENNÁ ČÍSELNÁ_PREMENNÁ}.</p> */
-		public final static int CISELNA_PREMENNA   = ČÍSELNÁ_PREMENNÁ;
+		public final static int CISELNA_PREMENNA = ČÍSELNÁ_PREMENNÁ;
 
 		/**
 		 * <p>Konštanta {@linkplain Svet#režimLadenia(boolean) režimu ladenia} –
@@ -729,10 +758,10 @@ public interface Konštanty
 		 * 
 		 * @see ObsluhaUdalostí#ladenie(int, String, int)
 		 */
-		public final static int FAREBNÁ_PREMENNÁ   = -2;
+		public final static int FAREBNÁ_PREMENNÁ = -2;
 
 		/** <p><a class="alias"></a> Alias pre {@link #FAREBNÁ_PREMENNÁ FAREBNÁ_PREMENNÁ}.</p> */
-		public final static int FAREBNA_PREMENNA   = FAREBNÁ_PREMENNÁ;
+		public final static int FAREBNA_PREMENNA = FAREBNÁ_PREMENNÁ;
 
 		/**
 		 * <p>Konštanta {@linkplain Svet#režimLadenia(boolean) režimu ladenia} –
@@ -741,10 +770,10 @@ public interface Konštanty
 		 * 
 		 * @see ObsluhaUdalostí#ladenie(int, String, int)
 		 */
-		public final static int POLOHOVÁ_PREMENNÁ  = -3;
+		public final static int POLOHOVÁ_PREMENNÁ = -3;
 
 		/** <p><a class="alias"></a> Alias pre {@link #POLOHOVÁ_PREMENNÁ POLOHOVÁ_PREMENNÁ}.</p> */
-		public final static int POLOHOVA_PREMENNA  = POLOHOVÁ_PREMENNÁ;
+		public final static int POLOHOVA_PREMENNA = POLOHOVÁ_PREMENNÁ;
 
 		/**
 		 * <p>Konštanta {@linkplain Svet#režimLadenia(boolean) režimu ladenia} –
@@ -760,10 +789,37 @@ public interface Konštanty
 
 
 		/**
+		 * <p>Toto je kód chyby rezervovaný na signalizovanie situácie, keď
+		 * vykonávanie (volanie) vnorených skriptov zaznamenalo príliš mnoho
+		 * vnorení, čo z bezpečnostných dôvodov nie je povolené.</p>
+		 * 
+		 * <p>Táto chyba súvisí s metódou sveta {@link Svet#volajSkript(String)
+		 * volajSkript}, ktorá môže byť použitá ako príkaz skriptu, čím vzniká
+		 * možnosť uviaznutia v nekonečnom množstve vzájomných volaní skriptov
+		 * (túto situáciu môže nechtiac spôsobiť pisateľ skriptov).</p>
+		 * 
+		 * <!-- TODO tento bezpečnostný mechanizmus nie je zďaleka dokončený.
+		 * Pozri Svet.volajSkript… -->
+		 */
+		public final static int CHYBA_VOLANIA_SKRIPTU = -2;
+
+		/**
+		 * <p>Toto je kód chyby rezervovaný na signalizovanie situácie, keď
+		 * sa vykonávanie skriptu ani nemohlo začať pretože skript mal byť
+		 * prečítaný zo súboru (prípadne zdroja), pričom táto akcia
+		 * zlyhala.</p>
+		 */
+		public final static int CHYBA_ČÍTANIA_SKRIPTU = -1;
+
+		/** <p><a class="alias"></a> Alias pre {@link #CHYBA_ČÍTANIA_SKRIPTU CHYBA_ČÍTANIA_SKRIPTU}.</p> */
+		public final static int CHYBA_CITANIA_SKRIPTU = CHYBA_ČÍTANIA_SKRIPTU;
+
+		/**
 		 * <p>{@linkplain Svet#kódPoslednejChyby() Kód poslednej chyby}
 		 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}
 		 * alebo {@linkplain Svet#vykonajSkript(String[]) vykonávania skriptu},
-		 * ktorý signalizuje, že nenastala žiadna chyba.</p>
+		 * ktorý signalizuje, že<!-- koniec spoločnej časti opisu chyby -->
+		 * nenastala žiadna chyba.</p>
 		 */
 		public final static int ŽIADNA_CHYBA = 0;
 
@@ -774,7 +830,7 @@ public interface Konštanty
 		 * <p>{@linkplain Svet#kódPoslednejChyby() Kód poslednej chyby}
 		 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}
 		 * alebo {@linkplain Svet#vykonajSkript(String[]) vykonávania skriptu},
-		 * ktorý signalizuje, že
+		 * ktorý signalizuje, že<!-- koniec spoločnej časti opisu chyby -->
 		 * nastala chyba počas vykonávania príkazu. Mohlo ísť napríklad
 		 * o zadanie nesprávneho argumentu.</p>
 		 */
@@ -787,11 +843,15 @@ public interface Konštanty
 		 * <p>{@linkplain Svet#kódPoslednejChyby() Kód poslednej chyby}
 		 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}
 		 * alebo {@linkplain Svet#vykonajSkript(String[]) vykonávania skriptu},
-		 * ktorý signalizuje, že
-		 * v skripte sa vyskytla dvojnásobná definícia menovky. Skript by
-		 * pri vykonávaní riadiacich príkazov {@code ak} alebo
-		 * {@code dokedy} (s prípadnou alternatívou {@code inak}) nevedel
-		 * identifikovať, ktorým riadkom má vykonávanie pokračovať.</p>
+		 * ktorý signalizuje, že<!-- koniec spoločnej časti opisu chyby -->
+		 * v skripte sa vyskytla dvojnásobná definícia menovky.
+		 * Táto chyba nastáva pri konštrukcii skriptu, ktorá síce
+		 * pokračuje aj po jej vzniku, ale vykonávanie takéhoto skriptu nie
+		 * je bezpečné, pretože spript pri riadiacich príkazoch {@code na}
+		 * {@code ak}, {@code dokedy} (s prípadnou alternatívou {@code inak}
+		 * pri posledných dvoch) nemusí správne identifikovať (a pravdepodobne
+		 * ani neidentifikuje) tú menovku, ktorou mal autor skriptu v úmysle
+		 * pokračovať.</p>
 		 */
 		public final static int CHYBA_DVOJITÁ_MENOVKA = 2;
 
@@ -802,7 +862,7 @@ public interface Konštanty
 		 * <p>{@linkplain Svet#kódPoslednejChyby() Kód poslednej chyby}
 		 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}
 		 * alebo {@linkplain Svet#vykonajSkript(String[]) vykonávania skriptu},
-		 * ktorý signalizuje, že
+		 * ktorý signalizuje, že<!-- koniec spoločnej časti opisu chyby -->
 		 * za riadiacim príkazom {@code na}, {@code ak}, {@code dokedy} alebo
 		 * za alternatívou {@code inak}) chýba menovka.</p>
 		 */
@@ -815,10 +875,10 @@ public interface Konštanty
 		 * <p>{@linkplain Svet#kódPoslednejChyby() Kód poslednej chyby}
 		 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}
 		 * alebo {@linkplain Svet#vykonajSkript(String[]) vykonávania skriptu},
-		 * ktorý signalizuje, že
+		 * ktorý signalizuje, že<!-- koniec spoločnej časti opisu chyby -->
 		 * menovka za riadiacim príkazom {@code na}, {@code ak}, {@code dokedy}
 		 * alebo za alternatívou {@code inak} je neznáma (nie je definovaná
-		 v rámci celého skriptu).</p>
+		 * v rámci aktuálneho bloku skriptu).</p>
 		 */
 		public final static int CHYBA_NEZNÁMA_MENOVKA = 4;
 
@@ -829,11 +889,12 @@ public interface Konštanty
 		 * <p>{@linkplain Svet#kódPoslednejChyby() Kód poslednej chyby}
 		 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}
 		 * alebo {@linkplain Svet#vykonajSkript(String[]) vykonávania skriptu},
-		 * ktorý signalizuje, že
+		 * ktorý signalizuje, že<!-- koniec spoločnej časti opisu chyby -->
 		 * za menovkou riadiaceho príkazu {@code ak} alebo {@code dokedy}
-		 * sa vyskylo nezáme slovo. Za prvou menovkou môže nasledovať ďalšia
-		 * menovka buď bezprostredne, alebo za slovom určujúcim alternatívu –
-		 * {@code inak}. Ostané slová sú neznáme.</p>
+		 * sa vyskytlo neznáme slovo. Za prvou menovkou môže nasledovať ďalšia
+		 * menovka a to buď bezprostredne, alebo za slovom určujúcim
+		 * alternatívu – {@code inak}. Ostatné slová sú považované za
+		 * neznáme.</p>
 		 */
 		public final static int CHYBA_NEZNÁME_SLOVO = 5;
 
@@ -844,22 +905,26 @@ public interface Konštanty
 		 * <p>{@linkplain Svet#kódPoslednejChyby() Kód poslednej chyby}
 		 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}
 		 * alebo {@linkplain Svet#vykonajSkript(String[]) vykonávania skriptu},
-		 * ktorý signalizuje, že
-		 * pokus o korektné rozpoznanie riadiaceho príkazu {@code ak} alebo
-		 * {@code dokedy} zlyhal. (Buď nie je definovaná riadiaca premenná
-		 * príkazu {@code dokedy}, alebo ide o neznámu syntaktickú chybu.)</p>
+		 * ktorý signalizuje, že<!-- koniec spoločnej časti opisu chyby -->
+		 * pokus o korektné rozpoznanie riadiaceho príkazu {@code obzor},
+		 * {@code ak}, {@code opakuj} alebo {@code dokedy} zlyhal. Môže
+		 * ísť o prípad, výskytu riadiaceho príkazu {@code obzor} bez bloku,
+		 * o prípad, keď nie je definovaná riadiaca premenná príkazov
+		 * opakovania ({@code opakuj}, {@code dokedy}), o prípad, keď riadiaci
+		 * príkaz opakovania nenájde blok na opakovanie (a nemôže túto chybu
+		 * nijako opraviť) alebo môže ísť o neznámu syntaktickú chybu.)</p>
 		 */
-		public final static int CHYBA_NEZNÁMA_ŠTRUKTÚRA = 6;
+		public final static int CHYBA_CHYBNÁ_ŠTRUKTÚRA = 6;
 
-		/** <p><a class="alias"></a> Alias pre {@link #CHYBA_NEZNÁMA_ŠTRUKTÚRA CHYBA_NEZNÁMA_ŠTRUKTÚRA}.</p> */
-		public final static int CHYBA_NEZNAMA_STRUKTURA = CHYBA_NEZNÁMA_ŠTRUKTÚRA;
+		/** <p><a class="alias"></a> Alias pre {@link #CHYBA_CHYBNÁ_ŠTRUKTÚRA CHYBA_CHYBNÁ_ŠTRUKTÚRA}.</p> */
+		public final static int CHYBA_CHYBNA_STRUKTURA = CHYBA_CHYBNÁ_ŠTRUKTÚRA;
 
 		/**
 		 * <p>{@linkplain Svet#kódPoslednejChyby() Kód poslednej chyby}
 		 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}
 		 * alebo {@linkplain Svet#vykonajSkript(String[]) vykonávania skriptu},
-		 * ktorý signalizuje, že
-		 * naposledny {@linkplain Svet#interaktívnaInštancia(String) aktivovaná
+		 * ktorý signalizuje, že<!-- koniec spoločnej časti opisu chyby -->
+		 * naposledy {@linkplain Svet#interaktívnaInštancia(String) aktivovaná
 		 * inštancia} už alebo ešte nejestvuje. (Zadané meno inštancie je
 		 * neznáme.)</p>
 		 */
@@ -872,8 +937,11 @@ public interface Konštanty
 		 * <p>{@linkplain Svet#kódPoslednejChyby() Kód poslednej chyby}
 		 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}
 		 * alebo {@linkplain Svet#vykonajSkript(String[]) vykonávania skriptu},
-		 * ktorý signalizuje, že
-		 * zadaný príkaz nebol rozpoznaný…</p>
+		 * ktorý signalizuje, že<!-- koniec spoločnej časti opisu chyby -->
+		 * zadaný príkaz nebol rozpoznaný. Najčastejšími príčinami sú
+		 * syntaktické chyby alebo neaktivovanie správnej (prípadne žiadnej)
+		 * inštancie, to jest takej, ktorá skutočne obsahuje definíciu metódy
+		 * zodpovedajúcej príkazu skriptu.</p>
 		 */
 		public final static int CHYBA_NEZNÁMY_PRÍKAZ = 8;
 

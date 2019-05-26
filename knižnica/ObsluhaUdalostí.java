@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -70,6 +70,12 @@ import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zmenaVeľkostiOkna() zmenaVeľkostiOkna}() {}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#aktiváciaOkna() aktiváciaOkna}() {}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#deaktiváciaOkna() deaktiváciaOkna}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#maximalizovanie() maximalizovanie}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#minimalizovanie() minimalizovanie}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#obnovenie() obnovenie}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#otvorenie() otvorenie}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zavretie() zavretie}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zatvorenie() zatvorenie}() {}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#ukončenie() ukončenie}() {}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#potvrdenieÚdajov() potvrdenieÚdajov}() {}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zrušenieÚdajov() zrušenieÚdajov}() {}
@@ -298,6 +304,35 @@ import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
  */
 public class ObsluhaUdalostí
 {
+	// TODO:
+	/*
+		Definovať alternatívne obsluhy udalostí ku všetkým jestvujúcim
+		reakciám:
+
+			klik(Poloha poloha, int tlačidlo)
+			…
+
+			uvoľnenieKlávesu(int kláves)
+			zadanieZnaku(char znak)
+			…
+
+			voľbaPoložkyPonuky(PoložkaPonuky položka)
+			voľbaKontextovejPoložky(KontextováPoložka položka)
+			…
+
+			vymazanie(Plátno vymazané)
+			…
+
+			presunutieOkna(ComponentEvent udalosť)
+			zmenaVeľkostiOkna(ComponentEvent udalosť)
+			aktiváciaOkna(WindowEvent udalosť)
+			otvorenie(WindowEvent udalosť)
+			zavretie(WindowEvent udalosť)
+			…
+
+			potvrdenieÚdajov(String údaje)
+
+	*/
 
 	// Počúvadlo udalostí
 	/*packagePrivate*/ static ObsluhaUdalostí počúvadlo;
@@ -363,7 +398,7 @@ public class ObsluhaUdalostí
 	 * <p>Časovač pre všetkých robotov automaticky spúšta metódu {@link 
 	 * GRobot#pracuj() pracuj} a časovač môže byť niektorými metódami
 	 * spustený automaticky. Pozri napríklad: {@link GRobot#rýchlosť(double)
-	 * rýchlosť}, {@link  GRobot#uhlováRýchlosť(double) uhlováRýchlosť}…</p>
+	 * rýchlosť}, {@link GRobot#uhlováRýchlosť(double) uhlováRýchlosť}…</p>
 	 * 
 	 * @see GRobot#tik()
 	 */
@@ -388,7 +423,7 @@ public class ObsluhaUdalostí
 
 	/**
 	 * <p>Spustená pri zvolení položky ponuky. Na získanie naposledy zvolenej
-	 * položky ponuky použite metódu {@link  ÚdajeUdalostí#položkaPonuky()
+	 * položky ponuky použite metódu {@link ÚdajeUdalostí#položkaPonuky()
 	 * ÚdajeUdalostí.položkaPonuky()} alebo využite metódu {@link 
 	 * PoložkaPonuky#aktivovaná() aktivovaná} triedy {@link PoložkaPonuky
 	 * PoložkaPonuky} na overenie aktivácie konkrétnej položky ponuky.</p>
@@ -422,7 +457,7 @@ public class ObsluhaUdalostí
 	 * na získanie inštancie naposledy zvoleného tlačidla, prípadne
 	 * metódu {@link Tlačidlo Tlačidlo}{@code .}{@link 
 	 * Tlačidlo#aktivované() aktivované}{@code ()} na overenie toho, či
-	 * bolo toto tlačidlo naposledny aktivované. Praktický príklad
+	 * bolo toto tlačidlo naposledy aktivované. Praktický príklad
 	 * nájdete v opise triedy {@link Tlačidlo Tlačidlo}.</p>
 	 * 
 	 * @see Tlačidlo
@@ -633,6 +668,55 @@ public class ObsluhaUdalostí
 
 	/** <p><a class="alias"></a> Alias pre {@link #deaktiváciaOkna() deaktiváciaOkna}.</p> */
 	public void deaktivaciaOkna() {}
+
+	/**
+	 * <p>Spustená pri maximalizovaní okna sveta. Na získanie objektu
+	 * s podrobnejšími údajmi o tejto udalosti použite metódu
+	 * {@link ÚdajeUdalostí#aktivitaOkna() ÚdajeUdalostí.aktivitaOkna()}.</p>
+	 * 
+	 * @see GRobot#maximalizovanie()
+	 */
+	public void maximalizovanie() {}
+
+	/**
+	 * <p>Spustená pri minimalizovaní okna sveta. Na získanie objektu
+	 * s podrobnejšími údajmi o tejto udalosti použite metódu
+	 * {@link ÚdajeUdalostí#aktivitaOkna() ÚdajeUdalostí.aktivitaOkna()}.</p>
+	 * 
+	 * @see GRobot#minimalizovanie()
+	 */
+	public void minimalizovanie() {}
+
+	/**
+	 * <p>Spustená pri obnovení okna sveta. Na získanie objektu
+	 * s podrobnejšími údajmi o tejto udalosti použite metódu
+	 * {@link ÚdajeUdalostí#aktivitaOkna() ÚdajeUdalostí.aktivitaOkna()}.</p>
+	 * 
+	 * @see GRobot#obnovenie()
+	 */
+	public void obnovenie() {}
+
+	/**
+	 * <p>Spustená pri pri prvom zobrazení okna sveta. Na získanie objektu
+	 * s podrobnejšími údajmi o tejto udalosti použite metódu
+	 * {@link ÚdajeUdalostí#aktivitaOkna() ÚdajeUdalostí.aktivitaOkna()}.</p>
+	 * 
+	 * @see GRobot#otvorenie()
+	 */
+	public void otvorenie() {}
+
+	/**
+	 * <p>Spustená pri zatváraní okna sveta, pričom vrátením návratovej
+	 * hodnoty {@code valfalse} sa dá tejto aktivite zabrániť. Na získanie
+	 * objektu s podrobnejšími údajmi o tejto udalosti použite metódu
+	 * {@link ÚdajeUdalostí#aktivitaOkna() ÚdajeUdalostí.aktivitaOkna()}.</p>
+	 * 
+	 * @see GRobot#zavretie()
+	 */
+	public boolean zavretie() { return true; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #zavretie() zavretie}.</p> */
+	public boolean zatvorenie() { return true; }
 
 
 	/**
@@ -1274,9 +1358,9 @@ public class ObsluhaUdalostí
 	 * <tr><td>{@link #VYPÍSAŤ_PREMENNÉ VYPÍSAŤ_PREMENNÉ}</td><td
 	 * >–</td><td>Má režim ladenia vypísať obsah všetkých premenných
 	 * (pred začatím vykonávania skriptu)?</td></tr>
-	 * <tr><td>{@link #VYPÍSAŤ_MENOVKU VYPÍSAŤ_MENOVKU}</td><td
+	 * <tr><td>{@link #VYPÍSAŤ_MENOVKY VYPÍSAŤ_MENOVKY}</td><td
 	 * >–</td><td>Má režim ladenia vypísať (pred začatím vykonávania
-	 * skriptu) definíciu menovky, ktorú našiel pri predbežnej analýze
+	 * skriptu) definície všetkých menoviek, ktoré našiel počas analýzy
 	 * skriptu?</td></tr>
 	 * <tr><td>{@link #VYPÍSAŤ_RIADOK VYPÍSAŤ_RIADOK}</td><td>–</td><td>Má
 	 * režim ladenia vypísať aktuálny riadok skriptu?</td></tr>
@@ -1304,6 +1388,9 @@ public class ObsluhaUdalostí
 	 * ukončená chybou. V parametri {@code riadok} je číslo riadka, na
 	 * ktorom vznikla chyba a reťazec parametra {@code príkaz} obsahuje
 	 * v tomto prípade jednoduchý text chybového hlásenia.</td></tr>
+	 * <tr><td>{@link #VYPÍSAŤ_SKRIPT VYPÍSAŤ_SKRIPT}</td><td>–</td><td>Má
+	 * režim ladenia vypísať úplné znenie aktuálne vykonávaného
+	 * skriptu?</td></tr>
 	 * 
 	 * <tr><td>{@link #ČÍSELNÁ_PREMENNÁ ČÍSELNÁ_PREMENNÁ}<br />
 	 * {@link #FAREBNÁ_PREMENNÁ FAREBNÁ_PREMENNÁ}<br />

@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -152,16 +152,31 @@ public class ÚdajeUdalostí
 	/**
 	 * <p>Vráti objekt s informáciami o poslednej udalosti okna súvisiacej
 	 * s jeho {@linkplain ObsluhaUdalostí#aktiváciaOkna()
-	 * aktiváciou} alebo {@linkplain ObsluhaUdalostí#deaktiváciaOkna()
-	 * deaktiváciou}.
+	 * aktiváciou}, {@linkplain ObsluhaUdalostí#deaktiváciaOkna()
+	 * deaktiváciou}, {@linkplain ObsluhaUdalostí#maximalizovanie()
+	 * maximalizáciou}, {@linkplain ObsluhaUdalostí#minimalizovanie()
+	 * minimalizáciou}, {@linkplain ObsluhaUdalostí#obnovenie()
+	 * obnovením}, {@linkplain ObsluhaUdalostí#otvorenie()
+	 * otvorením} alebo {@linkplain ObsluhaUdalostí#zavretie()
+	 * zavretím}.
 	 * Využiteľné v metódach {@link ObsluhaUdalostí#aktiváciaOkna()
-	 * aktiváciaOkna} alebo {@link ObsluhaUdalostí#deaktiváciaOkna()
-	 * deaktiváciaOkna}.</p>
+	 * aktiváciaOkna}, {@link ObsluhaUdalostí#deaktiváciaOkna()
+	 * deaktiváciaOkna}, {@link ObsluhaUdalostí#maximalizovanie()
+	 * maximalizovanie}, {@link ObsluhaUdalostí#minimalizovanie()
+	 * minimalizovanie}, {@link ObsluhaUdalostí#obnovenie()
+	 * obnovenie}, {@link ObsluhaUdalostí#otvorenie()
+	 * otvorenie} alebo {@link ObsluhaUdalostí#zavretie()
+	 * zavretie}.</p>
 	 * 
 	 * @return objekt typu {@link WindowEvent WindowEvent} s informáciami
 	 *     o poslednej udalosti okna súvisiacej s jeho {@linkplain 
-	 *     ObsluhaUdalostí#aktiváciaOkna() aktiváciou} alebo {@linkplain 
-	 *     ObsluhaUdalostí#deaktiváciaOkna() deaktiváciou}
+	 *     ObsluhaUdalostí#aktiváciaOkna() aktiváciou}, {@linkplain 
+	 *     ObsluhaUdalostí#deaktiváciaOkna() deaktiváciou}, {@linkplain 
+	 *     ObsluhaUdalostí#maximalizovanie() maximalizáciou}, {@linkplain 
+	 *     ObsluhaUdalostí#minimalizovanie() minimalizáciou}, {@linkplain 
+	 *     ObsluhaUdalostí#obnovenie() obnovením}, {@linkplain 
+	 *     ObsluhaUdalostí#otvorenie() otvorením} alebo {@linkplain 
+	 *     ObsluhaUdalostí#zavretie() zavretím}
 	 */
 	public static WindowEvent aktivitaOkna()
 	{ return poslednáUdalosťAktivityOkna; }

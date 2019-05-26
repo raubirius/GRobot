@@ -119,7 +119,7 @@ public class ZipEntry extends java.util.zip.ZipEntry implements Cloneable {
 			setExtraFields(ExtraFieldUtils.parse(extra, true,
 					ExtraFieldUtils.UnparseableExtraField.READ));
 		} else {
-			// initializes extra data to an empty byte array
+			// initialises extra data to an empty byte array
 			setExtra();
 		}
 		setMethod(entry.getMethod());

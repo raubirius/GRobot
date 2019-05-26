@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -1058,8 +1058,8 @@ public class Bod extends Point2D implements Poloha
 			}
 
 			// Aktualizuje tento panel do takého stavu, v akom by sa
-			// nachádzal po konštrukcii so zadanými parametrami. (Môžu
-			// nastať drobné odchýlky, ktoré sú neodsledovateľné, ale
+			// nachádzal po konštrukcii so zadanými hodnotami parametrov.
+			// (Môžu nastať drobné odchýlky, ktoré sú neodsledovateľné, ale
 			// zhruba by sa panel mal vizuálne aj vnútorne nachádzať
 			// v požadovanom stave.)
 			private void aktualizujPanel(String textReset,
@@ -1293,4 +1293,90 @@ public class Bod extends Point2D implements Poloha
 	 */
 	public static Bod vyberPolohu(String titulok, Poloha počiatočnáPoloha)
 	{ return PanelPolohy.dialóg(titulok, počiatočnáPoloha); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu() vyberPolohu}.</p> */
+	public static Bod dialógVýberPolohy() { return vyberPolohu(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu() vyberPolohu}.</p> */
+	public static Bod dialogVyberPolohy() { return vyberPolohu(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(Poloha) vyberPolohu}.</p> */
+	public static Bod dialógVýberPolohy(Poloha počiatočnáPoloha)
+	{ return vyberPolohu(počiatočnáPoloha); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(Poloha) vyberPolohu}.</p> */
+	public static Bod dialogVyberPolohy(Poloha počiatočnáPoloha)
+	{ return vyberPolohu(počiatočnáPoloha); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(String) vyberPolohu}.</p> */
+	public static Bod dialógVýberPolohy(String titulok)
+	{ return vyberPolohu(titulok); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(String) vyberPolohu}.</p> */
+	public static Bod dialogVyberPolohy(String titulok)
+	{ return vyberPolohu(titulok); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(String, Poloha) vyberPolohu}.</p> */
+	public static Bod dialógVýberPolohy(String titulok, Poloha počiatočnáPoloha) { return PanelPolohy.dialóg(titulok, počiatočnáPoloha); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(String, Poloha) vyberPolohu}.</p> */
+	public static Bod dialogVyberPolohy(String titulok, Poloha počiatočnáPoloha) { return PanelPolohy.dialóg(titulok, počiatočnáPoloha); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu() vyberPolohu}.</p> */
+	public static Bod zvoľPolohu()
+	{ return PanelPolohy.dialóg(null, stred); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu() vyberPolohu}.</p> */
+	public static Bod zvolPolohu() { return zvoľPolohu(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu() vyberPolohu}.</p> */
+	public static Bod dialógVoľbaPolohy() { return zvoľPolohu(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu() vyberPolohu}.</p> */
+	public static Bod dialogVolbaPolohy() { return zvoľPolohu(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(Poloha) vyberPolohu}.</p> */
+	public static Bod zvoľPolohu(Poloha počiatočnáPoloha)
+	{ return PanelPolohy.dialóg(null, počiatočnáPoloha); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(Poloha) vyberPolohu}.</p> */
+	public static Bod zvolPolohu(Poloha počiatočnáPoloha)
+	{ return zvoľPolohu(počiatočnáPoloha); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(Poloha) vyberPolohu}.</p> */
+	public static Bod dialógVoľbaPolohy(Poloha počiatočnáPoloha)
+	{ return zvoľPolohu(počiatočnáPoloha); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(Poloha) vyberPolohu}.</p> */
+	public static Bod dialogVolbaPolohy(Poloha počiatočnáPoloha)
+	{ return zvoľPolohu(počiatočnáPoloha); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(String) vyberPolohu}.</p> */
+	public static Bod zvoľPolohu(String titulok)
+	{ return PanelPolohy.dialóg(titulok, stred); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(String) vyberPolohu}.</p> */
+	public static Bod zvolPolohu(String titulok)
+	{ return zvoľPolohu(titulok); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(String) vyberPolohu}.</p> */
+	public static Bod dialógVoľbaPolohy(String titulok)
+	{ return zvoľPolohu(titulok); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(String) vyberPolohu}.</p> */
+	public static Bod dialogVolbaPolohy(String titulok)
+	{ return zvoľPolohu(titulok); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(String, Poloha) vyberPolohu}.</p> */
+	public static Bod zvoľPolohu(String titulok, Poloha počiatočnáPoloha)
+	{ return PanelPolohy.dialóg(titulok, počiatočnáPoloha); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(String, Poloha) vyberPolohu}.</p> */
+	public static Bod zvolPolohu(String titulok, Poloha počiatočnáPoloha) { return PanelPolohy.dialóg(titulok, počiatočnáPoloha); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(String, Poloha) vyberPolohu}.</p> */
+	public static Bod dialógVoľbaPolohy(String titulok, Poloha počiatočnáPoloha) { return PanelPolohy.dialóg(titulok, počiatočnáPoloha); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(String, Poloha) vyberPolohu}.</p> */
+	public static Bod dialogVolbaPolohy(String titulok, Poloha počiatočnáPoloha) { return PanelPolohy.dialóg(titulok, počiatočnáPoloha); }
 }

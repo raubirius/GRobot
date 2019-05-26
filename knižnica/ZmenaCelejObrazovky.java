@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -100,7 +100,7 @@ public interface ZmenaCelejObrazovky
 		new ZmenaCelejObrazovky()
 		{
 			private final TreeMap<Integer, Window> oknáRežimov =
-				new TreeMap<Integer, Window>();
+				new TreeMap<>();
 
 			public boolean jePodpora(int indexZariadenia,
 				GraphicsDevice zariadenie)

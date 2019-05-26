@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -319,20 +319,19 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		/*packagePrivate*/ static String priečinokObrázkov = "";
 
 		/*packagePrivate*/ final static Vector<String> zoznamSúborovObrázkov =
-			new Vector<String>();
+			new Vector<>();
 		/*packagePrivate*/ final static Vector<Image> zoznamObrázkov =
-			new Vector<Image>();
+			new Vector<>();
 		/*packagePrivate*/ final static Vector<Icon> zoznamIkon =
-			new Vector<Icon>();
+			new Vector<>();
 
 	// Zoznam všetkých vytvorených obrázkov programovacieho rámca
 
 		/*packagePrivate*/ final static Vector<Obrázok> zoznamObrázkovKnižnice =
-			new Vector<Obrázok>();
+			new Vector<>();
 
 	// Zoznam všetkých práve animovaných obrázkov…
-	/*packagePrivate*/ final static Vector<Obrázok> animácie =
-		new Vector<Obrázok>();
+	/*packagePrivate*/ final static Vector<Obrázok> animácie = new Vector<>();
 
 
 	// Vnútorná trieda na rôzne operácie s objektami typu BufferedImage
@@ -1084,7 +1083,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 					obrázok.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 
 				grafika = prevedený.createGraphics();
-				grafika.addRenderingHints(Obrázok.hints);
+				grafika.addRenderingHints(hints);
 
 				údaje = ((DataBufferInt)prevedený.getRaster().
 					getDataBuffer()).getData();
@@ -1096,7 +1095,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		// pracovať len s obrázkami typu BufferedImage, ale zaručené
 		// to byť nemôže)
 		private final static HashMap<Image, PrevedenýObrázok>
-			prevedenéObrázky = new HashMap<Image, PrevedenýObrázok>();
+			prevedenéObrázky = new HashMap<>();
 
 	// Táto metóda v prvom rade zistí, či zadaný objekt nie je
 		// typu BufferedImage (alebo odvodeného), ak nie je overí, či
@@ -1137,7 +1136,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 			// prečítaných obrázkov
 			int indexOf;
 			if (-1 != (indexOf = zoznamSúborovObrázkov.indexOf(súbor)))
-				return Obrázok.preveďNaBufferedImage(
+				return preveďNaBufferedImage(
 					zoznamObrázkov.elementAt(indexOf));
 
 			// Ak nie je v zozname, prečítame ho zo súboru
@@ -1465,6 +1464,48 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 
 	// Statické metódy
+
+		/**
+		 * <p>Ak sú všetky obrázky uložené v spoločnom priečinku, môžeme pre
+		 * nich touto metódou nastaviť zdrojový priečinok čítania.
+		 * Priečinok by sa mal nachádzať v hlavnom priečinku projektu alebo by
+		 * k nemu mala viesť systémovo nezávislá relatívna cesta. Zadaním
+		 * prázdneho reťazca alebo hodnoty {@code valnull} používanie
+		 * priečinka zrušíme.</p>
+		 * 
+		 * @param priečinok názov priečinka, relatívna cesta, prípadne
+		 *     prázdny reťazec alebo {@code valnull}
+		 * 
+		 * @see Svet#priečinokObrázkov()
+		 */
+		public static void priečinokObrázkov(String priečinok)
+		{ priečinokObrázkov = Súbor.upravLomky(priečinok, true); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #priečinokObrázkov(String) priečinokObrázkov}.</p> */
+		public static void priecinokObrazkov(String priečinok)
+		{ priečinokObrázkov = Súbor.upravLomky(priečinok, true); }
+
+		/**
+		 * <p>Vráti reťazec s aktuálnym priečinkom, z ktorého sú obrázky
+		 * prečítané. Reťazec je obohatený o oddeľovací znak priečinkov {@link 
+		 * File#separatorChar java.io.File.separatorChar} ({@code /} alebo
+		 * {@code \} – záleží na type operačného systému), ktorý automaticky
+		 * pridáva metóda {@link #priečinokObrázkov(String)
+		 * priečinokObrázkov(priečinok)}. Rovnako všetky oddeľovacie znaky
+		 * priečinkov v relatívnej ceste sú nahradené podľa typu operačného
+		 * systému.</p>
+		 * 
+		 * @return aktuálny priečinok, z ktorého sú obrázky prečítané
+		 * 
+		 * @see Svet#priečinokObrázkov(String)
+		 */
+		public static String priečinokObrázkov()
+		{ return priečinokObrázkov; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #priečinokObrázkov() priečinokObrázkov}.</p> */
+		public static String priecinokObrazkov()
+		{ return priečinokObrázkov; }
+
 
 		/**
 		 * <p>Prečíta do vnútornej pamäte sveta zadaný obrázok zo súboru
@@ -2423,6 +2464,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		/** <p><a class="alias"></a> Alias pre {@link #najmenšieX() najmenšieX}.</p> */
 		public double najmensieX() { return -šírka / 2; }
 
+		/** <p><a class="alias"></a> Alias pre {@link #najmenšieX() najmenšieX}.</p> */
+		public double minimálneX() { return -šírka / 2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #najmenšieX() najmenšieX}.</p> */
+		public double minimalneX() { return -šírka / 2; }
+
 		/**
 		 * <p><a class="getter"></a> Zistí najmenšiu y-ovú súradnicu obrázka.</p>
 		 * 
@@ -2436,6 +2483,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 		/** <p><a class="alias"></a> Alias pre {@link #najmenšieY() najmenšieY}.</p> */
 		public double najmensieY() { return -(výška - 1) / 2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #najmenšieY() najmenšieY}.</p> */
+		public double minimálneY() { return -(výška - 1) / 2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #najmenšieY() najmenšieY}.</p> */
+		public double minimalneY() { return -(výška - 1) / 2; }
 
 		/**
 		 * <p><a class="getter"></a> Zistí najväčšiu x-ovú súradnicu obrázka.</p>
@@ -2451,6 +2504,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		/** <p><a class="alias"></a> Alias pre {@link #najväčšieX() najväčšieX}.</p> */
 		public double najvacsieX() { return (šírka - 1) / 2; }
 
+		/** <p><a class="alias"></a> Alias pre {@link #najväčšieX() najväčšieX}.</p> */
+		public double maximálneX() { return (šírka - 1) / 2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #najväčšieX() najväčšieX}.</p> */
+		public double maximalneX() { return (šírka - 1) / 2; }
+
 		/**
 		 * <p><a class="getter"></a> Zistí najväčšiu y-ovú súradnicu obrázka.</p>
 		 * 
@@ -2464,6 +2523,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 		/** <p><a class="alias"></a> Alias pre {@link #najväčšieY() najväčšieY}.</p> */
 		public double najvacsieY() { return výška / 2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #najväčšieY() najväčšieY}.</p> */
+		public double maximálneY() { return výška / 2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #najväčšieY() najväčšieY}.</p> */
+		public double maximalneY() { return výška / 2; }
 
 
 	// Vymazanie
@@ -3050,7 +3115,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * @param a úroveň (ne)priehľadnosti farby; celé číslo v rozsahu
 		 *     0 – 255 (0 – neviditeľná farba; 255 – nepriehľadná farba)
 		 * @return objekt typu {@link Farba Farba} vytvorený podľa zadaných
-		 *     parametrov
+		 *     hodnôt parametrov
 		 * 
 		 * @see #vyplň(Color)
 		 */
@@ -3157,7 +3222,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 */
 		public void vyplň(Shape tvar, Image výplň)
 		{
-			BufferedImage obrázok = Obrázok.preveďNaBufferedImage(výplň);
+			BufferedImage obrázok = preveďNaBufferedImage(výplň);
 			BufferedImage relevantný = dajRelevantnýRaster(obrázok);
 
 			float priehľadnosť = (obrázok instanceof Obrázok) ?
@@ -3426,7 +3491,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 */
 		public void vyplň(Image výplň)
 		{
-			BufferedImage obrázok = Obrázok.preveďNaBufferedImage(výplň);
+			BufferedImage obrázok = preveďNaBufferedImage(výplň);
 			BufferedImage relevantný = dajRelevantnýRaster(obrázok);
 
 			float priehľadnosť = (obrázok instanceof Obrázok) ?
@@ -3574,7 +3639,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * @param a úroveň (ne)priehľadnosti farby; celé číslo v rozsahu
 		 *     0 – 255 (0 – neviditeľná farba; 255 – nepriehľadná farba)
 		 * @return objekt typu {@link Farba Farba} vytvorený podľa zadaných
-		 *     parametrov
+		 *     hodnôt parametrov
 		 * 
 		 * @see #vylejFarbu(double, double, Color)
 		 */
@@ -3671,7 +3736,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * @param a úroveň (ne)priehľadnosti farby; celé číslo v rozsahu
 		 *     0 – 255 (0 – neviditeľná farba; 255 – nepriehľadná farba)
 		 * @return objekt typu {@link Farba Farba} vytvorený podľa zadaných
-		 *     parametrov
+		 *     hodnôt parametrov
 		 * 
 		 * @see #vylejFarbu(Poloha, Color)
 		 */
@@ -3971,7 +4036,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		public void čiernobiely(boolean vyvážiťZložky)
 		{
 			// Príkazy na vyrobenie prvého obrázka (vyššie):
-			// Obrázok predloha = Obrázok.čítaj("slnecnica.png").
+			// Obrázok predloha = čítaj("slnecnica.png").
 			// 	zmeňVeľkosť(0.5);
 			// 
 			// podlaha.obrázok(-400, 300, predloha);
@@ -4357,7 +4422,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * pôvodného bodu na obrázku, tak aj bodu prevzatého z masky.
 		 * Ak je súčin ich zložiek priehľadnosti rovný nule, tak bude
 		 * výsledný bod neviditeľný. Viditeľnosť bodov v ostatných
-		 * prípadoch záleží od výsledku výpočtov algoritmu. Napríklad
+		 * prípadoch záleží na výsledku výpočtov algoritmu. Napríklad
 		 * úplne čierne úplne nepriehľadné body masky neovplyvnia
 		 * priehľadnosť bodov na obrázku.</p>
 		 * 
@@ -4874,9 +4939,10 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		}
 
 		/**
-		 * <p>Upraví intenzitu farieb obrázka na základe hodnoty parametra gama
-		 * (γ). Gama vyjadruje vzťah medzi vstupnou a výstupnou hodnotou intenzity
-		 * farby, ktorý je najlepšie viditeľný na nasledujúcom grafe:</p>
+		 * <p>Upraví intenzitu farieb obrázka na základe hodnoty parametra
+		 * gama (γ). Gama vyjadruje vzťah medzi vstupnou a výstupnou hodnotou
+		 * intenzity farby, ktorý je najlepšie viditeľný na nasledujúcom
+		 * grafe:</p>
 		 * 
 		 * <p class="image"><img src="resources/gama-korekcie.svg"
 		 * alt="Graf zmeny vstupnej veličiny na výstupnú pri rôznych hodnotách γ."
@@ -5381,7 +5447,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 			if (null == údajeObrázka) údajeObrázka =
 				((DataBufferInt)getRaster().getDataBuffer()).getData();
 
-			TreeSet<Integer> počet = new TreeSet<Integer>();
+			TreeSet<Integer> počet = new TreeSet<>();
 
 			for (int i = 0; i < údajeObrázka.length; ++i)
 				počet.add(údajeObrázka[i] | 0xff000000);
@@ -5552,12 +5618,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 			if (null == údajeObrázka) údajeObrázka =
 				((DataBufferInt)getRaster().getDataBuffer()).getData();
 
-			TreeSet<Integer> všetkyFarby = new TreeSet<Integer>();
+			TreeSet<Integer> všetkyFarby = new TreeSet<>();
 
 			for (int i = 0; i < údajeObrázka.length; ++i)
 				všetkyFarby.add(údajeObrázka[i] | 0xff000000);
 
-			TreeSet<Integer> paleta = new TreeSet<Integer>();
+			TreeSet<Integer> paleta = new TreeSet<>();
 
 			// ✓ Určite zlepšiť algoritmus, keď bude na to najbližšie čas.
 			// (Možno implementovať počítadlo výskytov farieb, zoradiť ich
@@ -5722,7 +5788,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		/**
 		 * <p><a class="alias"></a> Prevráti obrázok podľa zvislej osi –
 		 * pravá časť obrázka sa ocitne vľavo a naopak. Metóda je zároveň
-		 * aliasom pre {@link  #prevráťZvislo() prevráťZvislo}.</p>
+		 * aliasom pre {@link #prevráťZvislo() prevráťZvislo}.</p>
 		 * 
 		 * @see #prevráťHorizontálne()
 		 */
@@ -7424,8 +7490,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		{
 			if (obrázok1 == obrázok2) return true;
 
-			BufferedImage porovnaj1 = Obrázok.preveďNaBufferedImage(obrázok1);
-			BufferedImage porovnaj2 = Obrázok.preveďNaBufferedImage(obrázok2);
+			BufferedImage porovnaj1 = preveďNaBufferedImage(obrázok1);
+			BufferedImage porovnaj2 = preveďNaBufferedImage(obrázok2);
 
 			if (porovnaj1.getWidth() != porovnaj2.getWidth() ||
 				porovnaj1.getHeight() != porovnaj2.getHeight()) return false;
@@ -7927,7 +7993,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 
 		// Zoznam snímok tohto obrázka:
-		private final Vector<Snímka> snímky = new Vector<Snímka>();
+		private final Vector<Snímka> snímky = new Vector<>();
 
 		// Index aktívnej snímky:
 		private int snímka = -1;
@@ -8110,7 +8176,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 
 		/**
-		 * <p>Pridá novú snímku na koniec animácie s aktuálnou (naposledny
+		 * <p>Pridá novú snímku na koniec animácie s aktuálnou (naposledy
 		 * použitou) hodnotou {@linkplain #trvanie() trvania} zobrazenia
 		 * a s aktuálnou grafikou obrázka.</p>
 		 * 
@@ -8127,7 +8193,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		public void pridajSnimku() { pridajSnímku(); }
 
 		/**
-		 * <p>Pridá novú snímku na koniec animácie s aktuálnou (naposledny
+		 * <p>Pridá novú snímku na koniec animácie s aktuálnou (naposledy
 		 * použitou) hodnotou {@linkplain #trvanie() trvania} zobrazenia
 		 * a so zadanou grafikou.</p>
 		 * 
@@ -8173,7 +8239,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 		/**
 		 * <p>Vloží novú snímku animácie na zadanú pozíciu s aktuálnou
-		 * (naposledny použitou) hodnotou {@linkplain #trvanie() trvania}
+		 * (naposledy použitou) hodnotou {@linkplain #trvanie() trvania}
 		 * zobrazenia a s aktuálnou grafikou obrázka.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Pozri aj informácie o snímkach
@@ -8202,7 +8268,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 		/**
 		 * <p>Vloží novú snímku animácie na zadanú pozíciu s aktuálnou
-		 * (naposledny použitou) hodnotou {@linkplain #trvanie() trvania}
+		 * (naposledy použitou) hodnotou {@linkplain #trvanie() trvania}
 		 * zobrazenia a so zadanou grafikou.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Pozri aj informácie o snímkach

@@ -1,15 +1,18 @@
 
 package knižnica.podpora;
 
-// Toto je jedna z externých podporných tried, ku ktorým nie je priamo
-// vyhotovená dokumentácia. Je to trieda, ktorú implementoval autor
-// programovacieho rámca mnoho rokov pred jeho vznikom. V tom čase v jazyku
-// C++. O mnoho rokov neskôr (po viacerých rokoch vývoja programovacieho
-// rámca) ju portoval do jazyka Java, no súčasťou podporného balíčka
-// programovacieho rámca sa stala až v roku 2018. Licencia a príklady
+// Toto je jedna z externých podporných tried, ku ktorej nie je priamo
+// vyhotovená  dokumentácia.  Je to trieda, ktorú  implementoval autor
+// programovacieho  rámca mnoho  rokov pred jeho vznikom – v tom  čase
+// v jazyku C++.  (Podľa pôvodných poznámok  sa jej vývoj začal v roku
+// 2003 a posledná revízia a oprava  chýb bola vykonaná  v roku 2010.)
+// O niekoľko rokov neskôr (po viacerých rokoch vývoja programovacieho
+// rámca) ju portoval do jazyka Java,  ale súčasťou podporného balíčka
+// programovacieho   rámca   sa  stala  až  v roku   2018.  (Pozri  aj
+// podrobnosti  v  anglickom  jazyku  nižšie.)   Licencia  a  príklady
 // použitia sú uvedené nižšie v anglickom jazyku.
 // 
-// (Above Slovak note tells the students the basics about this class and its
+// (Above Slovak note tells the students  the basics about this class  and its
 // licensing. — This source code is released under the same terms as the whole
 // package knižnica.)
 
@@ -22,32 +25,37 @@ import java.util.TreeMap;
 import static java.lang.Math.*;
 
 /**
- * <p>This  class with group  of static nested  classes is  based on C++  class
- * CExpression  programmed  by the  same author.  The author  has rewritten  it
- * in 2014.  The original  C++ class was created  in years 2003 – 2010.  It has
- * started on 19-May-2003.  (The C++ source code was transformed  to Unicode on
- * 4-Mar-2009.)  On 8-Aug-2010 came  some fixes and  on 19-Mar-2014  the author
- * started to create this Java version of the original source code. The process
- * of rewriting was finished (in rough form) on 27-Mar-2014. First tests showed
- * that this  library is  powerful enough to replace  ScriptEngine in  existing
- * projects (of the author). One bug was  fixed during the process of rewriting
- * and the list of supported functions was extended. There were also some minor
- * improvements.  On  1-Jul-2015  creation  of new version  of this  class  has
- * started. Lots of code was optimized by changing it to be more java-like than
- * c/C++-like. For example:  VariableScope’s Vector was substituted by TreeMap.
- * Enumerations  were  extended  by abstract  methods.  Some useless  stuff has
- * been removed. Etc. On the other hand, the possibility to delay processing of
- * variable  names  after  the   expression  parsing  (that  means  during  the
- * evaluation process) was added.</p>
+ * <p>This class with a group of static  nested classes is based on  C++ class
+ * CExpression  programmed by the same author.  The author rewrote it in 2014.
+ * The original C++ class was created in the years 2003 – 2010. It has started
+ * on  19-May-2003.  (The  C++ source  code  was  transformed  to  Unicode  on
+ * 4-Mar-2009.)  On 8-Aug-2010  came some fixes and on 19-Mar-2014  the author
+ * started  to create  this  Java version  of the original  source  code.  The
+ * process  of rewriting was  finished  (in rough form) on 27-Mar-2014.  First
+ * tests  showed that this library  is powerful enough to replace ScriptEngine
+ * in existing projects (of the author).  One bug was fixed during the process
+ * of rewriting, and the list of supported functions was extended.  There were
+ * also  some minor improvements.  On 1-Jul-2015 creation  of a new version of
+ * this  class has started.  Lots of code was optimized by changing  it to  be
+ * more  Java-like  than c/C++-like.  For example, VariableScope’s Vector  was
+ * substituted  by TreeMap.  Enumerations were  extended by abstract  methods.
+ * Some  useless  stuff  has  been  removed.  Etc.  On  the  other  hand,  the
+ * possibility to delay the processing  of variable names after the expression
+ * parsing (that means during the evaluation process) was added.</p>
  * 
  * <p>On August 2nd 2018 this class became the part of supporting package of
  * the GRobot framework. Several  unfinished features (including the claimed
  * customFunction) were  completed and  new were add.  The steps made should
- * make the class more compatibile with the framework.</p>
+ * make the class more compatible with the framework.</p>
  * 
- * <p>(Notice: The author did not fixed the bug(s)  in original C++ class
- * because he had no C++ compiler instaled and it would be time consuming
- * to get one, install it, setup it, and fix the bug(s).)</p>
+ * <p>On  April 26th 2019 another  feature was  implemented.  The ability
+ * to  join  the  identifiers  to  make  the  processor  compatible  with
+ * the GRobot’s scripting engine. (See the methods joinsTheIdentifiers(),
+ * joinTheIdentifiers(join), and joinIdentifiers(id1, id2).)</p>
+ * 
+ * <p>(Notice:  The author  did not fix  the bug(s)  in original C++ class
+ * because he had no C++ compiler installed and it would be time-consuming
+ * to get one, install it, set up it, and fix the bug(s).)</p>
  * 
  * <p><b>Example:</b></p>
  * 
@@ -113,11 +121,11 @@ import static java.lang.Math.*;
 	+(1.0, /(*(2.0, 12.0), 3.0)) : 9.0
 </pre>
  * 
- * <p>Full list of operators and functions is in the introduction of
+ * <p>Full list of operators and functions is in the introduction of an
  * appropriate enumeration class.</p>
  * 
  * @author Roman Horváth
- * @version 2. 8. 2018
+ * @version 26. 4. 2019
  * 
  * @exclude
  */
@@ -153,7 +161,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Value initializer constructor.
+		 * Value initialiser constructor.
 		 */
 		public Literal(Value source)
 		{
@@ -195,7 +203,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This is part of implementation the ValueProvider interface. It
-		 * creates new Value instance from numeric or string value stored in
+		 * creates a new Value instance from numeric or string value stored in
 		 * this instance.
 		 */
 		public Value getValue()
@@ -308,7 +316,7 @@ public class ExpressionProcessor implements ValueProvider
 			ODD_PARAMETER			("parse error – odd parameter"),
 			MISSING_OPERAND			("parse error – missing operand"),
 			MISSING_PARAMETER		("parse error – missing parameter"),
-			ILLEGAL_FUNCTION_CALL	("parse error – illegel function call"),
+			ILLEGAL_FUNCTION_CALL	("parse error – illegal function call"),
 			INVALID_OPERATOR		("parse error – invalid operator"),
 			INVALID_CUSTOM_FUNCTION	("parse error – invalid custom function"),
 
@@ -428,8 +436,8 @@ public class ExpressionProcessor implements ValueProvider
 		 * double value: (1) if it is valid value (valid real number) the
 		 * typeOrError state is set to Value.TypeOrError.NUMERIC_TYPE and
 		 * the instance will represent valid double value, (2) if the value
-		 * is Double.NaN or infinite then the error state is set to specified
-		 * error comming from specified location.
+		 * is Double.NaN or infinite, then the error state is set to specified
+		 * error coming from specified location.
 		 */
 		public Value(double value, TypeOrError typeOrError, long errorLocation)
 		{
@@ -500,7 +508,7 @@ public class ExpressionProcessor implements ValueProvider
 		// structure of list and preventing this showed to be complicated and
 		// it is possible that preventing it would decrease the effectivity of
 		// ExpressionProcessor’s algorithms more than necessary (the gain
-		// from prevention would be less than the loss of agorithms
+		// from prevention would be less than the loss of algorithm’s
 		// effectivity). But this method helps to detect such jams.
 		private boolean recursiveJam(Value instance)
 		{
@@ -539,7 +547,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * Sets the numeric value according to entered primitive double value.
-		 * If the entered value is Double.NaN or infinite then the typeOrError
+		 * If the entered value is Double.NaN or infinite, then the typeOrError
 		 * state of this instance is set to Value.TypeOrError.OVERFLOW.
 		 */
 		public void set(double value)
@@ -567,9 +575,9 @@ public class ExpressionProcessor implements ValueProvider
 		 * specified error state for this instance. It depends on entered
 		 * double value: (1) if it is valid value (valid real number) the
 		 * typeOrError state is set to Value.TypeOrError.NUMERIC_TYPE and
-		 * the instance will represend valid double value, (2) if the value
-		 * is Double.NaN or infinite then the error state is set to specified
-		 * error comming from specified location.
+		 * the instance will represent valid double value, (2) if the value
+		 * is Double.NaN or infinite, then the error state is set to specified
+		 * error coming from specified location.
 		 */
 		public void set(double value, TypeOrError typeOrError,
 			long errorLocation)
@@ -707,7 +715,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This is another possibility of how to set element of list.
-		 * Behavior is similar to behavior of method set(Literal, Value).
+		 * Behaviour is similar to behaviour of method set(Literal, Value).
 		 * (See its description.)
 		 */
 		public void set(Literal index, double value)
@@ -718,7 +726,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This is another possibility of how to set element of list.
-		 * Behavior is similar to behavior of method set(Literal, Value).
+		 * Behaviour is similar to behaviour of method set(Literal, Value).
 		 * (See its description.)
 		 */
 		public void set(Literal index, String value)
@@ -729,7 +737,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This is another possibility of how to set element of list.
-		 * Behavior is similar to behavior of method set(Literal, Value).
+		 * Behaviour is similar to behaviour of method set(Literal, Value).
 		 * (See its description.)
 		 */
 		public void set(Value index, Value value)
@@ -740,7 +748,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This is another possibility of how to set element of list.
-		 * Behavior is similar to behavior of method set(Literal, Value).
+		 * Behaviour is similar to behaviour of method set(Literal, Value).
 		 * (See its description.)
 		 */
 		public void set(Value index, double value)
@@ -751,7 +759,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This is another possibility of how to set element of list.
-		 * Behavior is similar to behavior of method set(Literal, Value).
+		 * Behaviour is similar to behaviour of method set(Literal, Value).
 		 * (See its description.)
 		 */
 		public void set(Value index, String value)
@@ -762,7 +770,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This is another possibility of how to set element of list.
-		 * Behavior is similar to behavior of method set(Literal, Value).
+		 * Behaviour is similar to behaviour of method set(Literal, Value).
 		 * (See its description.)
 		 */
 		public void set(double index, Value value)
@@ -773,7 +781,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This is another possibility of how to set element of list.
-		 * Behavior is similar to behavior of method set(Literal, Value).
+		 * Behaviour is similar to behaviour of method set(Literal, Value).
 		 * (See its description.)
 		 */
 		public void set(double index, double value)
@@ -784,7 +792,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This is another possibility of how to set element of list.
-		 * Behavior is similar to behavior of method set(Literal, Value).
+		 * Behaviour is similar to behaviour of method set(Literal, Value).
 		 * (See its description.)
 		 */
 		public void set(double index, String value)
@@ -795,7 +803,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This is another possibility of how to set element of list.
-		 * Behavior is similar to behavior of method set(Literal, Value).
+		 * Behaviour is similar to behaviour of method set(Literal, Value).
 		 * (See its description.)
 		 */
 		public void set(String index, Value value)
@@ -806,7 +814,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This is another possibility of how to set element of list.
-		 * Behavior is similar to behavior of method set(Literal, Value).
+		 * Behaviour is similar to behaviour of method set(Literal, Value).
 		 * (See its description.)
 		 */
 		public void set(String index, double value)
@@ -817,7 +825,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This is another possibility of how to set element of list.
-		 * Behavior is similar to behavior of method set(Literal, Value).
+		 * Behaviour is similar to behaviour of method set(Literal, Value).
 		 * (See its description.)
 		 */
 		public void set(String index, String value)
@@ -828,9 +836,9 @@ public class ExpressionProcessor implements ValueProvider
 
 
 		/**
-		 * This method tryies to get numeric value of list item. It either
-		 * returns valid real value of specified element (on associated index)
-		 * or Double.NaN, if there is no such element exists or element
+		 * This method tries to get numeric value of list item. It either
+		 * returns valid real value of the specified element (on associated
+		 * index) or Double.NaN, if there is no such element exists or element
 		 * represents an error state. (For detailed information about error
 		 * state use getValue(Value) with getError() or getErrorLocation
 		 * method.)
@@ -848,8 +856,8 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * This method tryies to get numeric value of list item. It either
-		 * returns valid real value of specified element or Double.NaN.
+		 * This method tries to get numeric value of list item. It either
+		 * returns valid real value of the specified element or Double.NaN.
 		 * (See description of method Value.get(Value) for more details.)
 		 */
 		public double get(double index)
@@ -858,8 +866,8 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * This method tryies to get numeric value of list item. It either
-		 * returns valid real value of specified element or Double.NaN.
+		 * This method tries to get numeric value of list item. It either
+		 * returns valid real value of the specified element or Double.NaN.
 		 * (See description of method Value.get(Value) for more details.)
 		 */
 		public double get(String index)
@@ -869,7 +877,7 @@ public class ExpressionProcessor implements ValueProvider
 
 
 		/**
-		 * This method check whether specified element exists.
+		 * This method checks whether specified element exists.
 		 */
 		public boolean elementExists(Literal index)
 		{
@@ -879,7 +887,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * This method check whether specified element exists.
+		 * This method checks whether specified element exists.
 		 */
 		public boolean elementExists(Value index)
 		{
@@ -887,7 +895,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * This method check whether specified element exists.
+		 * This method checks whether specified element exists.
 		 */
 		public boolean elementExists(double index)
 		{
@@ -895,7 +903,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * This method check whether specified element exists.
+		 * This method checks whether specified element exists.
 		 */
 		public boolean elementExists(String index)
 		{
@@ -926,9 +934,9 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * This method returns either value of specified element (the element
-		 * associated with specified index) or TypeOrError.NO_SUCH_ELEMENT, if
-		 * there is no such element exists.
+		 * This method returns either value of the specified element (the
+		 * element associated with the specified index) or
+		 * TypeOrError.NO_SUCH_ELEMENT, if there is no such element exists.
 		 */
 		public Value getValue(Literal index)
 		{
@@ -941,8 +949,8 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * This method returns either value of specified element (the element
-		 * associated with specified index) or TypeOrError.NO_SUCH_ELEMENT, if
+		 * This method returns either value of the specified element (the element
+		 * associated with the specified index) or TypeOrError.NO_SUCH_ELEMENT, if
 		 * there is no such element exists.
 		 */
 		public Value getValue(Value index)
@@ -951,8 +959,8 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * This method returns either value of specified element (the element
-		 * associated with specified index) or TypeOrError.NO_SUCH_ELEMENT, if
+		 * This method returns either value of the specified element (the element
+		 * associated with the specified index) or TypeOrError.NO_SUCH_ELEMENT, if
 		 * there is no such element exists.
 		 */
 		public Value getValue(double index)
@@ -961,8 +969,8 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * This method returns either value of specified element (the element
-		 * associated with specified index) or TypeOrError.NO_SUCH_ELEMENT, if
+		 * This method returns either value of the specified element (the element
+		 * associated with the specified index) or TypeOrError.NO_SUCH_ELEMENT, if
 		 * there is no such element exists.
 		 */
 		public Value getValue(String index)
@@ -1168,13 +1176,13 @@ public class ExpressionProcessor implements ValueProvider
 
 
 		/**
-		 * Creates recursively concatenated human readable dump of list type.
-		 * List items will be separated by entered separator. This list itself
+		 * Creates recursively concatenated human-readable dump of a list type.
+		 * An entered separator will separate list items. This list itself
 		 * and the nested sublists will start with prefix string and end with
 		 * postfix string. This method use methods Literal.toString() and
 		 * Value.toString() which automatically enclose the string values in
-		 * quotes ("). If index separator is not null, then the dump will also
-		 * contain indexes.
+		 * quotes (&quot;). If index separator is not null, then the dump will
+		 * also contain indexes.
 		 */
 		public String dumpList(String prefix, String separator,
 			String postfix, String indexSeparator)
@@ -1292,13 +1300,14 @@ public class ExpressionProcessor implements ValueProvider
 	//////////////////////////////////////////////////////////////////////
 
 	/**
-	 * This class stores identifiers of variables or namespaces that must be
-	 * found at runtime that mean in time of evaluating parsed expression.
+	 * This class stores identifiers of a variables or namespaces that must
+	 * be found at runtime that means in the time of evaluating the parsed
+	 * expression.
 	 */
 	public static class Identifier
 	{
 		/**
-		 * Identifier of variable. Must not be null.
+		 * Identifier of a variable. Must not be null.
 		 */
 		public final String identifier;
 
@@ -1309,7 +1318,7 @@ public class ExpressionProcessor implements ValueProvider
 		public final ExpressionProcessor processor;
 
 		/**
-		 * Constructor receiving only identifier.
+		 * Constructor receiving just identifier.
 		 */
 		public Identifier(ExpressionProcessor processor, String identifier)
 		{
@@ -1324,7 +1333,7 @@ public class ExpressionProcessor implements ValueProvider
 	//////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Objects of this class store named values known as variables.
+	 * Objects of this class store named values are known as variables.
 	 */
 	public static class Variable extends Value
 	{
@@ -1336,7 +1345,7 @@ public class ExpressionProcessor implements ValueProvider
 		// Constructors
 
 		/**
-		 * Creates variable with specified name and value.
+		 * Creates a variable with the specified name and value.
 		 */
 		public Variable(String variableName, Value initialValue)
 		{
@@ -1345,7 +1354,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Creates variable with specified name and value.
+		 * Creates a variable with the specified name and value.
 		 */
 		public Variable(String variableName, double initialValue)
 		{
@@ -1354,7 +1363,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Creates variable with specified name and value.
+		 * Creates variable with the specified name and value.
 		 */
 		public Variable(String variableName, String initialValue)
 		{
@@ -1363,7 +1372,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Creates variable with specified name initialized to 0.0 value.
+		 * Creates variable with the specified name initialised to 0.0 value.
 		 */
 		public Variable(String variableName)
 		{
@@ -1384,8 +1393,8 @@ public class ExpressionProcessor implements ValueProvider
 	//////////////////////////////////////////////////////////////////////
 
 	/**
-	 * This class provides space for group of variables accessible from
-	 * specific variable scope. Only one scope is predefined – it is the
+	 * This class provides space for a group of variables accessible from
+	 * the specific variable scope. Only one scope is predefined – it is the
 	 * global space for variables. The name of its instance is:
 	 * globalVariables.
 	 */
@@ -1393,15 +1402,15 @@ public class ExpressionProcessor implements ValueProvider
 	{
 		/**
 		 * This instance is returned after attempting to declare or define
-		 * already existing variable. It contains
+		 * the already existing variable. It contains
 		 * Value.TypeOrError.VARIABLE_EXISTS error state (at location 0).
 		 */
 		public final static Value VARIABLE_EXISTS =
 			new Value(Value.TypeOrError.VARIABLE_EXISTS, 0);
 
 		/**
-		 * This instance is returned after attempting to read value of
-		 * non-existing variable. It contains
+		 * This instance is returned after attempting to read the value of
+		 * a non-existing variable. It contains
 		 * Value.TypeOrError.UNKNOWN_VARIABLE error state (at location 0).
 		 */
 		public final static Value UNKNOWN_VARIABLE =
@@ -1459,15 +1468,15 @@ public class ExpressionProcessor implements ValueProvider
 		// Creating and searching namespaces
 
 		/**
-		 * This method creates nested namespaces. It checks if entered
-		 * namespace exist first and if not, it creates new one and returns
-		 * it as return value. Otherwise, null is returned.
+		 * This method creates a nested namespaces. It checks if entered
+		 * namespace exists first and if not, it creates a new one and returns
+		 * it as the return value. Otherwise, null is returned.
 		 * 
 		 * Notice that namespaces are in use only after calling
 		 * ExpressionProcessor.useNamespaces(true) method.
 		 * 
 		 * There is one (predefined) global list of namespaces. Each
-		 * namespace is in fact an independent variable scope and each
+		 * namespace is, in fact, an independent variable scope and each
 		 * variable scope may contain any number of nested namespaces.
 		 */
 		public VariableScope createNamespace(String namespace)
@@ -1480,7 +1489,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This method gets nested namespace. It checks if entered namespace
-		 * exist first and if so, it returns it. Otherwise, it returns null.
+		 * exists first and if so, it returns it. Otherwise, it returns null.
 		 * 
 		 * Notice that namespaces are in use only after calling
 		 * ExpressionProcessor.useNamespaces(true) method.
@@ -1492,7 +1501,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This method gets a list of nested namespaces in the form of
-		 * string array. If no nested namespace is defined, an empty array
+		 * a string array. If no nested namespace is defined, an empty array
 		 * is returned. (The method does not return null.)
 		 */
 		public String[] getNamespaces()
@@ -1504,9 +1513,9 @@ public class ExpressionProcessor implements ValueProvider
 		// Creating and searching variables
 
 		/**
-		 * Creates new variable with specified name and returns it as instance
+		 * Creates a new variable with the specified name and returns it as instance
 		 * only if it does not exist. If variable did exist before, the null
-		 * value is returned. New variable is initialized by 0.0.
+		 * value is returned. New variable is initialised by 0.0.
 		 */
 		public Variable create(String variableName)
 		{
@@ -1518,7 +1527,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Creates new variable with specified name and initial value and
+		 * Creates a new variable with the specified name and initial value and
 		 * returns it as instance only if it does not exist. If variable did
 		 * exist before, the null value is returned.
 		 */
@@ -1541,8 +1550,8 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Gets existing or creates new variable with specified name and
-		 * returns the relevant instance. (New variables are initialized by
+		 * Gets existing or creates a new variable with the specified name and
+		 * returns the relevant instance. (New variables are initialised by
 		 * 0.0.)
 		 */
 		public Variable getOrCreate(String variableName)
@@ -1558,7 +1567,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This method gets a list of all variables in this namespace
-		 * in the form of string array. If no variable is defined, an
+		 * in the form of a string array. If no variable is defined, an
 		 * empty array is returned. (The method does not return null.)
 		 */
 		public String[] getVariables()
@@ -1570,12 +1579,12 @@ public class ExpressionProcessor implements ValueProvider
 		// Declaring, defining, assigning and getting the values
 
 		/**
-		 * Declares new (and only new) variable with specified name and
+		 * Declares new (and only new) variable with the specified name and
 		 * returns the result as follows: If the variable does not exist then
-		 * the return value is equal to initial value of new variable (which
-		 * is 0.0). If the variable already exists, then the return value is
-		 * the VariableScope.VARIABLE_EXISTS instance (which contains the
-		 * typeOrError value: Value.TypeOrError.VARIABLE_EXISTS).
+		 * the return value is equal to the initial value of a new variable
+		 * (which is 0.0). If the variable already exists, then the return
+		 * value is the VariableScope.VARIABLE_EXISTS instance (which contains
+		 * the typeOrError value: Value.TypeOrError.VARIABLE_EXISTS).
 		 */
 		public Value declare(String variableName)
 		{
@@ -1586,10 +1595,10 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Defines new (and only new) variable with specified name,
-		 * initializes it with specified value and returns the result as
+		 * Defines new (and only new) variable with the specified name,
+		 * initialises it with the specified value and returns the result as
 		 * follows: If the variable does not exist then the return value is
-		 * equal to initial value of new variable. If the variable already
+		 * equal to the initial value of a new variable. If the variable already
 		 * exists, then the return value is the VariableScope.VARIABLE_EXISTS
 		 * instance.
 		 */
@@ -1602,7 +1611,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Assigns value to existing variable with specified name. If the
+		 * Assigns value to existing variable with the specified name. If the
 		 * variable exists then the assigned value is returned (e. g. to allow
 		 * chain assigning). If the variable does not exist, it is not created
 		 * automatically. Attempts to assigning value to non-existing variable
@@ -1618,7 +1627,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Assigns value to variable with specified name and returns the
+		 * Assigns value to a variable with the specified name and returns the
 		 * assigned value to allow chain assigning. If the variable does
 		 * not exist, it is created automatically. (However, this method is
 		 * not used directly by the expression parser. So any attempt to use
@@ -1633,7 +1642,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Registers existing variable created by user. The name of specified
+		 * Registers existing variable created by user. The name of the specified
 		 * variable must be unique. No variable with the same name may exist
 		 * within this variable scope. The result of this method is as
 		 * follows: if the variable name is unique, then the return value is
@@ -1652,7 +1661,7 @@ public class ExpressionProcessor implements ValueProvider
 
 
 		/**
-		 * Gets value of specified variable. If the variable does not exist,
+		 * Gets value of the specified variable. If the variable does not exist,
 		 * the VariableScope.UNKNOWN_VARIABLE static instance is returned.
 		 */
 		public Value getValue(String variableName)
@@ -1686,7 +1695,7 @@ public class ExpressionProcessor implements ValueProvider
 			//
 			//	NOT_CLASSIFIED      // undefined type
 			//	LITERAL             // numeric or string literal (value)
-			//	IDENTIFIER          // string indentifier of variable or
+			//	IDENTIFIER          // string indentifier of a variable or
 			//	                    // namespace
 			//	VARIABLE            // the variable
 			//	OPERATOR            // common operator
@@ -1744,7 +1753,7 @@ public class ExpressionProcessor implements ValueProvider
 				}
 			},
 
-			// String indentifier of variable or namespace
+			// String indentifier of a variable or namespace
 			IDENTIFIER
 			{
 				public void copy(Node nodeTarget, Node nodeSource)
@@ -1774,7 +1783,12 @@ public class ExpressionProcessor implements ValueProvider
 					if (null == findVariable)
 					{
 						if (processor.useCustoms)
-							return processor.customVariable(id, null);
+						{
+							Value value = processor.customVariable(id, null);
+							if (null == value) value = new
+								Value(Value.TypeOrError.UNKNOWN_VALUE);
+							return value;
+						}
 						return new Value(Value.TypeOrError.
 							UNKNOWN_VARIABLE_COMP, node.location);
 					}
@@ -1804,8 +1818,12 @@ public class ExpressionProcessor implements ValueProvider
 					if (null == findVariable)
 					{
 						if (processor.useCustoms)
-							return processor.customVariable(
-								id, null).getString();
+						{
+							Value value = processor.customVariable(id, null);
+							if (null == value) value = new
+								Value(Value.TypeOrError.UNKNOWN_VALUE);
+							return value.getString();
+						}
 						return new Value(Value.TypeOrError.
 							UNKNOWN_VARIABLE_COMP, node.location).getString();
 					}
@@ -1896,8 +1914,11 @@ public class ExpressionProcessor implements ValueProvider
 								Value value = node.right.getValue();
 								if (value.isError()) return value;
 
-								return processor.customFunction(
+								value = processor.customFunction(
 									node.identifier.identifier, value);
+								if (null == value) value = new
+									Value(Value.TypeOrError.UNKNOWN_VALUE);
+								return value;
 							}
 						}
 
@@ -1925,9 +1946,11 @@ public class ExpressionProcessor implements ValueProvider
 								Value value = node.right.getValue();
 								if (value.isError()) return value.getString();
 
-								return processor.customFunction(
-									node.identifier.identifier,
-									value).getString();
+								value = processor.customFunction(
+									node.identifier.identifier, value);
+								if (null == value) value = new
+									Value(Value.TypeOrError.UNKNOWN_VALUE);
+								return value.getString();
 							}
 						}
 
@@ -2091,7 +2114,7 @@ public class ExpressionProcessor implements ValueProvider
 			//
 			//	SEPARATOR   // list separator
 			//	SELECTOR    // list item selector (special operator)
-			//	ASSIGN      // assign value (to variable)
+			//	ASSIGN      // assign value (to a variable)
 			//
 			//	OR          // logical or
 			//	AND         // logical and
@@ -2145,7 +2168,7 @@ public class ExpressionProcessor implements ValueProvider
 				}
 			},
 
-			// Assign value (to variable)
+			// Assign value (to a variable)
 			ASSIGN((byte)1, "=")
 			{
 				public Value getValue(Node node)
@@ -3329,7 +3352,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Creates new unclassified with specified location set.
+		 * Creates a new unclassified with the specified location set.
 		 */
 		public Node(long location)
 		{
@@ -3442,7 +3465,7 @@ public class ExpressionProcessor implements ValueProvider
 		/**
 		 * This method copies the content from source node. It follows the
 		 * situation. For example it will copy the variable reference, but
-		 * creates new literal object. (The same way is also used by copy
+		 * creates a new literal object. (The same way is also used by copy
 		 * constructor.)
 		 */
 		public void copy(Node nodeSource)
@@ -3479,7 +3502,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Assigns new value to variable that is represented by this node. If
+		 * Assigns new value to a variable that is represented by this node. If
 		 * this node is not a variable the result is Value instance containing
 		 * Value.TypeOrError.INVALID_ASSIGNMENT error state.
 		 */
@@ -3503,8 +3526,13 @@ public class ExpressionProcessor implements ValueProvider
 				{
 					ExpressionProcessor processor = identifier.processor;
 					if (processor.useCustoms)
-						return processor.customVariable(
+					{
+						value = processor.customVariable(
 							identifier.identifier, newValue);
+						if (null == value) value = new
+							Value(Value.TypeOrError.UNKNOWN_VALUE);
+						return value;
+					}
 				}
 			}
 			else if (checkNodeClass(Node.Class.OPERATOR))
@@ -3522,7 +3550,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Assigns new value to variable that is represented by this node. If
+		 * Assigns new value to a variable that is represented by this node. If
 		 * this node is not a variable the result is Value instance containing
 		 * Value.TypeOrError.INVALID_ASSIGNMENT error state. The value to
 		 * assign is computed from specified node.
@@ -3567,7 +3595,7 @@ public class ExpressionProcessor implements ValueProvider
 		// Basic working with left and right subnode and with parent node
 
 		/**
-		 * This static method clears the parent of specified node and cleans
+		 * This static method clears the parent of the specified node and cleans
 		 * up the tree structure. This is also helping method for insertion
 		 * of nodes.
 		 */
@@ -3667,12 +3695,12 @@ public class ExpressionProcessor implements ValueProvider
 
 
 		////////////////////////////////
-		// Insert new nodes into tree
+		// Insert the new nodes into tree
 
 		/**
-		 * Inserts new node into tree replacing the position of old node.
+		 * Inserts the new node into tree replacing the position of old node.
 		 * The tree structure will be reconnected and the old node becomes
-		 * the right subnode of new node.
+		 * the right subnode of a new node.
 		 */
 		public static boolean insert(Node oldNode, Node newNode)
 		{
@@ -3716,7 +3744,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Puts new node as right subnode of old node if it is empty at the
+		 * Puts the new node as right subnode of old node if it is empty at the
 		 * time. If the right subnode of old node exists at the time, it will
 		 * be saved to left subnode (of old node) which must be empty at the
 		 * time.
@@ -3791,7 +3819,7 @@ public class ExpressionProcessor implements ValueProvider
 			{
 				nodeClass = Node.Class.TYPE_OR_ERROR;
 				if (null == typeOrError)
-					// Create new value
+					// Create a new value
 					typeOrError = new Value(value);
 				else
 					// Overwrite old value
@@ -3810,7 +3838,7 @@ public class ExpressionProcessor implements ValueProvider
 			// TODO: consider to create Node.Class.LIST
 			nodeClass = Node.Class.TYPE_OR_ERROR;
 
-			// Create new numeric value…
+			// Create a new numeric value…
 			if (null == this.typeOrError)
 				this.typeOrError = new Value(Double.NaN);
 
@@ -3941,7 +3969,7 @@ public class ExpressionProcessor implements ValueProvider
 			nodeClass = Node.Class.TYPE_OR_ERROR;
 
 			if (null == this.typeOrError)
-				// Create new error
+				// Create a new error
 				this.typeOrError = new Value(error, location);
 			else
 				// Overwrite old error
@@ -3957,7 +3985,7 @@ public class ExpressionProcessor implements ValueProvider
 			nodeClass = Node.Class.TYPE_OR_ERROR;
 
 			if (null == this.typeOrError)
-				// Create new error
+				// Create a new error
 				this.typeOrError = new Value(error, errorLocation);
 			else
 				// Overwrite old error
@@ -3974,7 +4002,7 @@ public class ExpressionProcessor implements ValueProvider
 			return nodeClass;
 		}
 
-		/** Check if the class of this node is of specified type. */
+		/** Check if the class of this node is of the specified type. */
 		public boolean checkNodeClass(Node.Class nodeClass)
 		{
 			if (Node.Class.OPERATOR == nodeClass)
@@ -4022,7 +4050,7 @@ public class ExpressionProcessor implements ValueProvider
 
 
 		/**
-		 * Finds and returns the root node of specified node (if it is
+		 * Finds and returns the root node of the specified node (if it is
 		 * possible). If specified node does not exist (is null) the return
 		 * value is (also) null.
 		 */
@@ -4176,7 +4204,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * Sets specified node as the root node. If the root/tree has
-		 * already existed it is cleared. New root node is selected as
+		 * already existed, it is cleared. New root node is selected as
 		 * the current node.
 		 */
 		public boolean setRoot(Node newRoot)
@@ -4321,7 +4349,11 @@ public class ExpressionProcessor implements ValueProvider
 		// function or variable is found.
 		private boolean useCustoms = false;
 
-		// True value means that this instace should handle some basic
+		// True value means that the parser calls the joinIdentifiers(id1,
+		// id2) method to join two consecutive identifiers.
+		private boolean joinIdentifiers = false;
+
+		// True value means that this instance should handle some basic
 		// object-based functionality.
 		private boolean useNamespaces = false;
 
@@ -4329,7 +4361,7 @@ public class ExpressionProcessor implements ValueProvider
 		/** ExpressionProcessor instance states. */
 		public static enum State
 		{
-			INITIALIZED,	// The tree is just initialized – still empty.
+			INITIALIZED,	// The tree is just initialised – still empty.
 			ATTACHED,		// The string to be parsed has been attached, but
 							// still not parsed.
 			PARSED,			// The string is parsed (in the tree).
@@ -4340,10 +4372,10 @@ public class ExpressionProcessor implements ValueProvider
 		/**
 		 * This list is used only when useNamespaces is set to true.
 		 * It is the list of superclass variables accessible for this
-		 * expression. This list may be (and defaultly is) empty. The
+		 * expression. This list may be (and by default is) empty. The
 		 * programmer who is using this library may put here a list containing
 		 * variables that are accessible from the superclass of currently
-		 * handled instace by this expression. This list will be then
+		 * handled instance by this expression. This list will be then
 		 * processed before the list of global variables.
 		 */
 		public VariableScope superclassVariables = null;
@@ -4352,7 +4384,7 @@ public class ExpressionProcessor implements ValueProvider
 		/**
 		 * This list is used only when useNamespaces is set to true.
 		 * It is the list of instance variables accessible for this
-		 * expression. This list may be (and defaultly is) empty. The
+		 * expression. This list may be (and by default is) empty. The
 		 * programmer who is using this library may put here a list containing
 		 * instance variables accessible for this expression during evaluation
 		 * process. This list will be then processed before the list of
@@ -4363,7 +4395,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This is the list of local variables. This list may be (and
-		 * defaultly is) empty. The programmer who is using this library
+		 * by default is) empty. The programmer who is using this library
 		 * may put here a list containing local variables accessible for
 		 * this expression. (Method parameters are also considered to be the
 		 * local variables.) This list will be then processed before the
@@ -4423,7 +4455,7 @@ public class ExpressionProcessor implements ValueProvider
 		/**
 		 * Parses attached string. This method does not evaluate parsed
 		 * string. It just recognizes the syntax and stores it into internal
-		 * binary tree structure. (Parsing is performed authomaticaly by the
+		 * binary tree structure. (Parsing is performed automatically by the
 		 * getValue method, but this method can be invoked to prepare the
 		 * instance for evaluating.)
 		 */
@@ -4453,7 +4485,7 @@ public class ExpressionProcessor implements ValueProvider
 					Node.Class.TYPE_OR_ERROR))
 			{
 				// note: this does not necessarily mean the error
-				// it might be also a list (but in fact list is not
+				// it might be also a list (but, in fact, list is not
 				// a standard numeric result)
 				closeParsing();
 				state = State.PARSE_ERROR;
@@ -4518,12 +4550,12 @@ public class ExpressionProcessor implements ValueProvider
 		// Flag indicating that the string reader is empty
 		private boolean readerHasCharacters = true;
 
-		// Last readed character.
+		// Last read character.
 		private char lastChar = (char)0;
 
 
 		// Helper method that is initializing the parsing process.
-		// Initialization creates new string reader that is used to get
+		// Initialization creates a new string reader that is used to get
 		// characters for parsing one by one.
 		private boolean initParsing()
 		{
@@ -4582,7 +4614,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		// Marking the stream of string reader is important in several
-		// situations during the parsing proces. Without this possibility
+		// situations during the parsing process. Without this possibility
 		// it would not be possible to point on right place in case of
 		// erroneous input or even the parsing of syntactically correct
 		// string could fail.
@@ -4997,7 +5029,8 @@ public class ExpressionProcessor implements ValueProvider
 			try
 			{
 				// Initialization
-				addDump("Starting new processing by reparseTree method.");
+				addDump("Starting the new processing by the " +
+					"reparseTree method.");
 				indentDump();
 				workNode = parseNextNode();
 
@@ -5049,7 +5082,7 @@ public class ExpressionProcessor implements ValueProvider
 						if (useCustoms && workNode.checkOperator(
 							Node.Operator.RIGPAR))
 						{
-							addDump("Dismissing new node. (Hopefully " +
+							addDump("Dismissing the new node. (Hopefully, " +
 								"this is the custom function – there " +
 								"is no way to check it.)");
 							addDump("Searching for and returning the root.");
@@ -5062,7 +5095,7 @@ public class ExpressionProcessor implements ValueProvider
 							Value.TypeOrError.MISSING_OPERAND);
 						*/
 
-						addDump("Creating empty list.");
+						addDump("Creating an empty list.");
 						workNode = new Node();
 						workNode.setList();
 						throw new ReparseBreak();
@@ -5141,7 +5174,16 @@ public class ExpressionProcessor implements ValueProvider
 						{
 							addDump(" *** New node: ",
 								newNode.dumpRecursive());
-							switch (newNode.getNodeClass())
+							if (joinIdentifiers && newNode.checkNodeClass(
+								Node.Class.IDENTIFIER) && workNode.
+								checkNodeClass(Node.Class.IDENTIFIER))
+							{
+								addDump("Joining two identifiers.");
+								workNode.setIdentifier(joinIdentifiers(
+									workNode.identifier, newNode.identifier));
+								newNode = null;
+							}
+							else switch (newNode.getNodeClass())
 							{
 							case LITERAL:			// new – A
 							case IDENTIFIER:
@@ -5162,11 +5204,12 @@ public class ExpressionProcessor implements ValueProvider
 								// Put variable, identifier or literal after
 								// function:
 								case FUNCTION:			// cur. – B
-									addDump("Putting new node into tree.");
+									addDump("Putting a new node into " +
+										"the tree.");
 									if (!Node.putNode(workNode, newNode))
 										throw new ReparseError(
 											Value.TypeOrError.ODD_PARAMETER);
-									addDump("Returning to next " +
+									addDump("Returning to the next " +
 										"non-function node.");
 									newNode = null;
 									while (workNode.checkNodeClass(
@@ -5187,8 +5230,7 @@ public class ExpressionProcessor implements ValueProvider
 										workNode.checkOperator(
 											Node.Operator.SUB))
 									{
-										addDump("Unary operator " +
-											"detected: -");
+										addDump("Unary operator detected: -");
 										workNode.setOperator(
 											Node.Operator.ADD);
 										newNode.setLiteral(
@@ -5199,7 +5241,8 @@ public class ExpressionProcessor implements ValueProvider
 									// Now it is on another place.
 
 									// Put node
-									addDump("Putting new node into tree.");
+									addDump("Putting a new node into " +
+										"the tree.");
 									if (!Node.putNode(workNode, newNode))
 										throw new ReparseError(
 											Value.TypeOrError.ODD_OPERAND);
@@ -5212,7 +5255,7 @@ public class ExpressionProcessor implements ValueProvider
 								switch (workNode.getNodeClass())
 								{
 								// Put function after literal, variable,
-								// paretheses or brackets:
+								// parentheses or brackets:
 								case LITERAL:			// cur. – A
 								case IDENTIFIER:
 								case VARIABLE:			// cur. – C
@@ -5225,12 +5268,13 @@ public class ExpressionProcessor implements ValueProvider
 								// Put function after function or operator:
 								case FUNCTION:			// cur. – B
 								case OPERATOR:			// cur. – F +(D, E)
-									addDump("Putting new node into tree.");
+									addDump("Putting a new node into " +
+										"the tree.");
 									if (!Node.putNode(workNode, newNode))
 										throw new ReparseError(
 											Value.TypeOrError.
 											ILLEGAL_FUNCTION_CALL);
-									addDump("Activating new node.");
+									addDump("Activating the new node.");
 									workNode = newNode;	// activate node
 									newNode = null;
 									break;
@@ -5267,9 +5311,9 @@ public class ExpressionProcessor implements ValueProvider
 										break;
 									}
 
-									// In this case dismissing of newNode is
+									// In this case dismissing of a newNode is
 									// possible, because it was not used:
-									addDump("Dismissing new node.");
+									addDump("Dismissing the new node.");
 									addDump("Searching for and returning " +
 										"the root.");
 									newNode = null;
@@ -5290,7 +5334,7 @@ public class ExpressionProcessor implements ValueProvider
 												Node.Class.IDENTIFIER))
 										{
 											addDump("Changing to " +
-												"custom function.");
+												"a custom function.");
 
 											// Change to custom function
 											workNode.changeToCustomFunction();
@@ -5300,10 +5344,10 @@ public class ExpressionProcessor implements ValueProvider
 											OPERATOR_EXPECTED);
 									}
 
-									// In this case dismissing of newNode is
+									// In this case dismissing of a newNode is
 									// possible, because it was not used:
-									addDump("Dismissing new node.");
-									addDump("Creating sub-tree…");
+									addDump("Dismissing the new node.");
+									addDump("Creating a sub-tree…");
 
 									newNode = null;
 									newNode = reparseTree();
@@ -5316,7 +5360,7 @@ public class ExpressionProcessor implements ValueProvider
 											workNode = workNode.getParent();
 										workNode.clear();
 										workNode = null;
-										addDump("Error arised – destroying " +
+										addDump("Error arose – destroying " +
 											"the current tree and returning " +
 											"just with the error node.");
 										workNode = newNode;
@@ -5329,8 +5373,8 @@ public class ExpressionProcessor implements ValueProvider
 									addDump("Current node: ",
 										workNode.dump());
 
-									addDump("Putting returned sub-tree " +
-										"into existing tree.");
+									addDump("Putting the returned sub-tree " +
+										"into the existing tree.");
 
 									if (!Node.putNode(workNode, newNode))
 									{
@@ -5339,9 +5383,9 @@ public class ExpressionProcessor implements ValueProvider
 											workNode.getRight().checkNodeClass(
 												Node.Class.IDENTIFIER))
 										{
-											addDump("Activating right " +
+											addDump("Activating the right " +
 												"subnode and changing to " +
-												"custom function.");
+												"a custom function.");
 
 											// Activate right subnode and
 											// change it to custom function
@@ -5390,9 +5434,9 @@ public class ExpressionProcessor implements ValueProvider
 										break;
 									}
 
-									// In this case dismissing of newNode is
+									// In this case dismissing of a newNode is
 									// possible, because it was not used:
-									addDump("Dismissing new node.");
+									addDump("Dismissing the new node.");
 									addDump("Searching for and returning " +
 										"the root.");
 									newNode = null;
@@ -5438,8 +5482,8 @@ public class ExpressionProcessor implements ValueProvider
 
 									// newNode will be converted to special
 									// operator:
-									addDump("Converting new node to " +
-										"bracket operator.");
+									addDump("Converting the new node to " +
+										"a bracket operator.");
 									addDump("Creating sub-tree…");
 
 									newNode = new Node(Node.Operator.SELECTOR,
@@ -5455,9 +5499,10 @@ public class ExpressionProcessor implements ValueProvider
 										Node.Operator.SELECTOR))
 									{
 										// Move to the identifier on right:
-										addDump("Moving to variable in right" +
-											"sub-node: " + workNode.dump() +
-											" – " + workNode.getRight().dump());
+										addDump("Moving to a variable in " +
+											"the right sub-node: " + workNode.
+											dump() + " – " + workNode.
+											getRight().dump());
 										workNode = workNode.getRight();
 									}
 
@@ -5476,7 +5521,7 @@ public class ExpressionProcessor implements ValueProvider
 											workNode = workNode.getParent();
 										workNode.clear();
 										workNode = null;
-										addDump("Error arised – destroying " +
+										addDump("Error arose – destroying " +
 											"the current tree and returning " +
 											"just with the error node.");
 										workNode = newNode;
@@ -5489,8 +5534,8 @@ public class ExpressionProcessor implements ValueProvider
 									addDump("Current node: ",
 										workNode.dump());
 
-									addDump("Putting returned sub-tree " +
-										"into existing tree.");
+									addDump("Putting the returned sub-tree " +
+										"into the existing tree.");
 
 									if (!Node.putNode(workNode, newNode))
 										throw new ReparseError(
@@ -5508,12 +5553,12 @@ public class ExpressionProcessor implements ValueProvider
 											throw new ReparseError(
 												Value.TypeOrError.
 												MISSING_PARAMETER);
-										addDump("Inserting new node into " +
-											"tree.");
+										addDump("Inserting the new node " +
+											"into the tree.");
 										if (!Node.insert(workNode, newNode))
 											throw new ReparseError(
 												Value.TypeOrError.PARSE_ERROR);
-										addDump("Activating new node.");
+										addDump("Activating the new node.");
 										workNode = newNode;	// activate node
 										newNode = null;
 										break;
@@ -5526,14 +5571,14 @@ public class ExpressionProcessor implements ValueProvider
 										// have parent. Then put workNode into
 										// newNode and activate newNode…
 										addDump("Putting in reverse – new " +
-											"node will contain current " +
+											"node now contains the current " +
 											"tree.");
 										if (workNode.hasParent() ||
 											!Node.putNode(newNode, workNode))
 											throw new ReparseError(
 												Value.TypeOrError.PARSE_ERROR);
 
-										addDump("Activating new node.");
+										addDump("Activating the new node.");
 										workNode = newNode;	// activate node
 										newNode = null;
 										break;
@@ -5604,8 +5649,8 @@ public class ExpressionProcessor implements ValueProvider
 										{
 											addDump("Failed (because we " +
 												"are in root)!");
-											addDump("Inserting new node " +
-												"instead of current node.");
+											addDump("Inserting the new node " +
+												"instead of the current node.");
 											if (!Node.insert(workNode, newNode))
 												throw new ReparseError(
 													Value.TypeOrError.
@@ -5613,8 +5658,8 @@ public class ExpressionProcessor implements ValueProvider
 										}
 										else
 										{
-											addDump("Inserting new node " +
-												"into right part of " +
+											addDump("Inserting the new node " +
+												"into the right part of the " +
 												"current node.");
 											if (!Node.insert(workNode.
 												getRight(), newNode))
@@ -5623,7 +5668,7 @@ public class ExpressionProcessor implements ValueProvider
 													PARSE_ERROR);
 										}
 
-										addDump("Activating new node.");
+										addDump("Activating the new node.");
 										workNode = newNode;
 										newNode = null;
 
@@ -5638,16 +5683,16 @@ public class ExpressionProcessor implements ValueProvider
 												MISSING_OPERAND);
 
 										addDump("Parenthesized operator " +
-											"was found!");
-										addDump("Inserting new node " +
-											"instead of current node " +
+											"found!");
+										addDump("Inserting the new node " +
+											"instead of the current node " +
 											"without any further checking.");
 										if (!Node.insert(workNode, newNode))
 											throw new ReparseError(
 												Value.TypeOrError.
 												PARSE_ERROR);
 
-										addDump("Activating new node.");
+										addDump("Activating the new node.");
 										workNode = newNode;
 										newNode = null;
 
@@ -5662,15 +5707,15 @@ public class ExpressionProcessor implements ValueProvider
 												MISSING_OPERAND);
 
 										addDump("Bracketed operator " +
-											"was found!");
-										addDump("Inserting new node " +
-											"instead of current node " +
+											"found!");
+										addDump("Inserting the new node " +
+											"instead of the current node " +
 											"without any further checking.");
 										if (!Node.insert(workNode, newNode))
 											throw new ReparseError(
 												Value.TypeOrError.PARSE_ERROR);
 
-										addDump("Activating new node.");
+										addDump("Activating the new node.");
 										workNode = newNode;
 										newNode = null;
 
@@ -5861,7 +5906,7 @@ public class ExpressionProcessor implements ValueProvider
 			new TreeMap<String, VariableScope>();
 
 		/**
-		 * True value means that this instace should handle some basic
+		 * True value means that this instance should handle some basic
 		 * object-based functionality. In this case the variable names
 		 * are resolved during evaluation not during processing. Also
 		 * the namespaces are allowed and the instance scope and superclass
@@ -5894,16 +5939,16 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * Notice that namespaces are in use only after calling
-		 * useNamespaces(true) method. Each namespace is in fact an
+		 * useNamespaces(true) method. Each namespace is, in fact, an
 		 * independent variable scope. (It might be an object (instance) or
 		 * anything else…) There is one global list of namespaces each of
 		 * which (each of variable scopes) may contain nested namespaces.
 		 * (See the VariableScope.createNamespace(String) method.) Six
 		 * identifiers are reserved and are not allowed to be used as global
 		 * namespace: this, self, super, parent, global and general.
-		 * This method checks if entered namespace exist and if not, it
-		 * creates new one and returns it as return value. Otherwise, null is
-		 * returned.
+		 * This method checks if entered namespace exists and if not, it
+		 * creates a new one and returns it as the return value. Otherwise, null
+		 * is returned.
 		 */
 		public static VariableScope createNamespace(String namespace)
 		{
@@ -5944,10 +5989,10 @@ public class ExpressionProcessor implements ValueProvider
 		/**
 		 * Notice that namespaces are in use only after calling
 		 * useNamespaces(true) method. This method checks if entered namespace
-		 * exist and returns it. Otherwise, it returns null. Notice thath six
+		 * exists and returns it. Otherwise, it returns null. Notice that six
 		 * identifiers are reserved and are not allowed to be used as global
 		 * namespace: this, self, super, parent, global and general. In these
-		 * cases this method returns always null.
+		 * cases, this method returns always null.
 		 */
 		public static VariableScope getNamespace(String namespace)
 		{
@@ -5958,6 +6003,37 @@ public class ExpressionProcessor implements ValueProvider
 			return namespaces.get(namespace);
 		}
 
+
+		/**
+		 * Checks whether the parsing machine joins two (or more)
+		 * consecutive identifiers using the joinIdentifiers(id1, id2)
+		 * method (that may be overloaded).
+		 */
+		public boolean joinsTheIdentifiers()
+		{
+			return joinIdentifiers;
+		}
+
+		/**
+		 * Enables or disables joining of the consecutive identifiers
+		 * by the parsing machine during the parsing process. When this
+		 * property is enabled the parser uses the joinIdentifiers(id1, id2)
+		 * method (that may be overloaded) to join the identifiers.
+		 */
+		public void joinTheIdentifiers(boolean join)
+		{
+			if (joinIdentifiers != join)
+			{
+				joinIdentifiers = join;
+
+				if (State.PARSED == state ||
+					State.PARSE_ERROR == state)
+				{
+					tree.clear();
+					state = State.ATTACHED;
+				}
+			}
+		}
 
 		/**
 		 * Checks whether the parsing of custom functions and variables
@@ -5995,10 +6071,34 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * This method is empty and is dedicated to be overridden in
-		 * superclass. This is one of the ways how superclasses may extend
-		 * this processor. It opens the possibility to implement custom
-		 * functions providing unique functionality.
+		 * This method has a default implementation but is open to be
+		 * overridden in the superclass. This is one of the ways how
+		 * superclasses may extend this processor. It opens the possibility
+		 * to modify how the consecutive identifiers will be joined. The
+		 * default implementation joins the identifiers using single space.
+		 * That means it allows the identifiers to contain spaces and it
+		 * basically works as a space trimmer.
+		 * 
+		 * NOTE: This method is invoked only in case the property
+		 *     “joinTheIdentifiers” is enabled‼
+		 */
+		public Identifier joinIdentifiers(Identifier id1, Identifier id2)
+		{
+			return new Identifier(this, id1.identifier +
+				" " + id2.identifier);
+		}
+
+		/**
+		 * This method has a default implementation but is open to be
+		 * overridden in the superclass. This is one of the ways how
+		 * superclasses may extend this processor. It opens the possibility
+		 * to implement custom functions providing unique functionality.
+		 * The default implementation creates “unknown value” error (remember
+		 * that this method is called only when the corresponding internal
+		 * function is not found).
+		 * 
+		 * NOTE: This method is invoked only in case the property
+		 *     “useCustomValueProviders” is enabled‼
 		 */
 		public Value customFunction(String funcID, Value params)
 		{
@@ -6006,10 +6106,19 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * This method is empty and is dedicated to be overridden in
-		 * superclass. This is one of the ways how superclasses may extend
-		 * this processor. It opens the possibility to read or write the
-		 * contents of custom variables.
+		 * This method has a default implementation but is open to be
+		 * overridden in the superclass. This is one of the ways how
+		 * superclasses may extend this processor. It opens the possibility
+		 * to read or write the contents of custom variables. The default
+		 * implementation creates “unknown value” (on the attempt to read)
+		 * or “invalid assignment” (on the attempt to write) error (remember
+		 * that this method is called only when the corresponding internal
+		 * variable has not been found). This mechanism also allows
+		 * implementing the declarative approach to the variables (that
+		 * means that no variable will be created automatically).
+		 * 
+		 * NOTE: This method is invoked only in case the property
+		 *     “useCustomValueProviders” is enabled‼
 		 */
 		public Value customVariable(String varID, Value write)
 		{
@@ -6097,7 +6206,7 @@ public class ExpressionProcessor implements ValueProvider
 
 /**
  * This interface is implemented by every class that should provide a value
- * and must override toString method.
+ * and must override the toString method.
  */
 interface ValueProvider
 {

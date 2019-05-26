@@ -30,7 +30,7 @@ import java.util.TreeMap;
  * is composed form several lights definition from which it will create
  * a light pattern – depending on the concrete implementation.</p>
  * 
- * <p><small>(Due its computational complexity this class (in fact its
+ * <p><small>(Due its computational complexity this class (in fact, its
  * descendants, because this class is abstract) is not intended to be
  * used in real-time renderings.)</small></p>
  * 

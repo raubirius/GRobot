@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -209,8 +209,8 @@ import java.util.Vector;
  * <tr><td><code>imageAlreadyExists</code></td><td>Obrázok
  * „<em>«súbor»</em>“ už jestvuje.</td><td>Vzniká pri pokuse o zápis
  * obrázka do súboru, ktorý už jestvuje (<em>«súbor»</em>), ale len
- * v prípade, že nebol explicitne zadaný parameter prepísania súboru.
- * Názov súboru je zistiteľný metódou {@link #getParameter()
+ * v prípade, že nebola explicitne zadaná hodnota parametra prepísania
+ * súboru. Názov súboru je zistiteľný metódou {@link #getParameter()
  * getParameter}.</td></tr>
  * 
  * <tr><td><code>imageBroken</code></td><td>Obrázok je
@@ -479,8 +479,8 @@ import java.util.Vector;
  * <tr><td><code>soundAlreadyExists</code></td><td>Zvuk
  * „<em>«súbor»</em>“ už jestvuje.</td><td>Vzniká pri pokuse o zápis zvuku
  * do súboru, ktorý už jestvuje (<em>«súbor»</em>), ale len v prípade, že
- * nebol explicitne zadaný parameter prepísania súboru. Názov súboru je
- * zistiteľný metódou {@link #getParameter() getParameter}.</td></tr>
+ * nebola explicitne zadaná hodnota parametra prepísania súboru. Názov súboru
+ * je zistiteľný metódou {@link #getParameter() getParameter}.</td></tr>
  * 
  * <tr><td><code>soundNotFound</code></td><td>Zvuk „<em>«súbor»</em>“ nebol
  * nájdený.</td><td>Znamená, že pokus o prečítanie súboru so zvukom

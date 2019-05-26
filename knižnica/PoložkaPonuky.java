@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -150,17 +150,20 @@ public class PoložkaPonuky extends JMenuItem
 					(PoložkaPonuky)e.getSource();
 
 				if (null != Svet.položkaVymazať &&
-					ÚdajeUdalostí.poslednáPoložkaPonuky == Svet.položkaVymazať)
+					ÚdajeUdalostí.poslednáPoložkaPonuky ==
+					Svet.položkaVymazať)
 				{
 					Svet.vymaž();
 					if (Svet.nekresli) Svet.prekresli();
 				}
 				else if (null != Svet.položkaPrekresliť &&
-					ÚdajeUdalostí.poslednáPoložkaPonuky == Svet.položkaPrekresliť)
+					ÚdajeUdalostí.poslednáPoložkaPonuky ==
+					Svet.položkaPrekresliť)
 				{
 					Svet.prekresli();
 				}
-				else if (ÚdajeUdalostí.poslednáPoložkaPonuky == Svet.položkaSkončiť)
+				else if (ÚdajeUdalostí.poslednáPoložkaPonuky ==
+					Svet.položkaSkončiť)
 				{
 					System.exit(0);
 				}
@@ -185,10 +188,12 @@ public class PoložkaPonuky extends JMenuItem
 					}
 				}
 
-				if (null != ÚdajeUdalostí.poslednáPoložkaPonuky.skript)
+				Skript skript;
+
+				if (null != (skript = ÚdajeUdalostí.
+					poslednáPoložkaPonuky.skript()))
 				{
-					int kódSkriptu = Svet.vykonajSkript(
-						ÚdajeUdalostí.poslednáPoložkaPonuky.skript);
+					int kódSkriptu = skript.vykonaj();
 					if (0 != kódSkriptu)
 						Svet.formulujChybuSkriptu(kódSkriptu,
 							"Položka ponuky…");
@@ -198,7 +203,8 @@ public class PoložkaPonuky extends JMenuItem
 	};
 
 	// Skript položky…
-	private String[] skript = null;
+	private Skript skript = null;
+	private String[] riadkySkriptu = null;
 
 	/**
 	 * <p>Konštruktor, ktorý vytvorí položku so zadaným textom a pridá
@@ -236,7 +242,16 @@ public class PoložkaPonuky extends JMenuItem
 	/**
 	 * <p>Konštruktor, ktorý vytvorí položku so zadaným textom,
 	 * mnemonickou a klávesovou skratkou a pridá ju do hlavnej
-	 * ponuky sveta.</p>
+	 * ponuky sveta. Klávesová skratka je definovaná s predvoleným
+	 * modifikátorom používaným pre klávesové skratky položiek
+	 * ponuky. Ten je závislý od operačného systému, napríklad vo Windows
+	 * je to kláves {@code Ctrl}, v macOS (predtým OS X a Mac OS) je to
+	 * kláves {@code ⌘} (<small>Command</small>).</p>
+	 * 
+	 * <p class="tip"><b>Tip:</b> Ak chcete definovať klávesovú skratku
+	 * bez modifikátora, použite metódu {@link #klávesováSkratka(int, int)
+	 * klávesováSkratka(kódKlávesu, modifikátor)} s hodnotou modifikátora
+	 * {@code num0}.</p>
 	 * 
 	 * @param text reťazec textu pridávanej položky ponuky
 	 * @param mnemonickáSkratka kód mnemonickej skratky (príklad:
@@ -292,7 +307,7 @@ public class PoložkaPonuky extends JMenuItem
 	 * aktivovaná} a {@link #označená() označená} – {@link #zvolená()
 	 * zvolená}!</b>
 	 * Metóda {@link #aktivovaná() aktivovaná} a jej alias {@link 
-	 * #zvolená() zvolená} zisťujú, či bola stanovená položka naposledny
+	 * #zvolená() zvolená} zisťujú, či bola stanovená položka naposledy
 	 * aktivovaná (zvolená). Metóda {@link #aktívna() aktívna} overuje,
 	 * či je stanovená položka použiteľná a metóda {@link #označená()
 	 * označená} zisťuje, či bola položka takzvane {@linkplain #označ()
@@ -326,7 +341,7 @@ public class PoložkaPonuky extends JMenuItem
 	 * aktivovaná} a {@link #označená() označená} – {@link #zvolená()
 	 * zvolená}!</b>
 	 * Metóda {@link #aktivovaná() aktivovaná} a jej alias {@link 
-	 * #zvolená() zvolená} zisťujú, či bola stanovená položka naposledny
+	 * #zvolená() zvolená} zisťujú, či bola stanovená položka naposledy
 	 * aktivovaná (zvolená). Metóda {@link #aktívna() aktívna} overuje,
 	 * či je stanovená položka použiteľná a metóda {@link #označená()
 	 * označená} zisťuje, či bola položka takzvane {@linkplain #označ()
@@ -382,7 +397,7 @@ public class PoložkaPonuky extends JMenuItem
 	 * aktivovaná} a {@link #označená() označená} – {@link #zvolená()
 	 * zvolená}!</b>
 	 * Metóda {@link #aktivovaná() aktivovaná} a jej alias {@link 
-	 * #zvolená() zvolená} zisťujú, či bola stanovená položka naposledny
+	 * #zvolená() zvolená} zisťujú, či bola stanovená položka naposledy
 	 * aktivovaná (zvolená). Metóda {@link #aktívna() aktívna} overuje,
 	 * či je stanovená položka použiteľná a metóda {@link #označená()
 	 * označená} zisťuje, či bola položka takzvane {@linkplain #označ()
@@ -1015,47 +1030,182 @@ public class PoložkaPonuky extends JMenuItem
 
 
 	/**
+	 * <p>Zmení mnemonickú skratku tejto položky ponuky.</p>
+	 * 
+	 * @param kódSkratky kód mnemonickej skratky (príklad:
+	 *     {@code Kláves.VK_A})
+	 */
+	public void mnemonickáSkratka(int kódSkratky) { setMnemonic(kódSkratky); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #mnemonickáSkratka(int) mnemonickáSkratka}.</p> */
+	public void mnemonickaSkratka(int kódSkratky) { setMnemonic(kódSkratky); }
+
+
+	/**
+	 * <p>Zmení klávesovú skratku tejto položky ponuky.</p>
+	 * 
+	 * <p>Klávesová skratka je definovaná s predvoleným modifikátorom
+	 * používaným pre klávesové skratky položiek ponuky. Ten je závislý
+	 * od operačného systému, napríklad vo Windows je to kláves
+	 * {@code Ctrl}, v macOS (predtým OS X a Mac OS) je to kláves
+	 * {@code ⌘} (<small>Command</small>). Ak chcete definovať klávesovú
+	 * skratku bez modifikátora, použite metódu
+	 * {@link #klávesováSkratka(int, int) klávesováSkratka(kódKlávesu,
+	 * modifikátor)} s hodnotou modifikátora {@code num0}.</p>
+	 * 
+	 * @param kódKlávesu kód klávesu, ktorý má byť použitý ako klávesová
+	 *     skratka (v kombinácii s modifikátorom pre ponuky); môže to byť
+	 *     ľubovoľný kód klávesu z triedy {@link Kláves Kláves}
+	 *     ({@link Kláves#HORE Kláves.HORE}, {@link KeyEvent#VK_X
+	 *     Kláves.VK_X}…)
+	 * 
+	 * @see #klávesováSkratka(int, int)
+	 */
+	public void klávesováSkratka(int kódKlávesu)
+	{
+		klávesováSkratka(kódKlávesu, Toolkit.
+			getDefaultToolkit().getMenuShortcutKeyMask());
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #klávesováSkratka(int) klávesováSkratka}.</p> */
+	public void klavesovaSkratka(int kódKlávesu)
+	{ klávesováSkratka(kódKlávesu); }
+
+	/**
+	 * <p>Zmení klávesovú skratku tejto položky ponuky.</p>
+	 * 
+	 * @param kódKlávesu kód klávesu, ktorý má byť použitý ako klávesová
+	 *     skratka; môže to byť ľubovoľný kód klávesu z triedy
+	 *     {@link Kláves Kláves} ({@link Kláves#HORE Kláves.HORE},
+	 *     {@link KeyEvent#VK_X Kláves.VK_X}…)
+	 * @param modifikátor klávesový modifikátor tejto skratky (napríklad
+	 *     kláves Ctrl – {@link java.awt.event.InputEvent#CTRL_MASK
+	 *     Kláves.CTRL_MASK},
+	 *     Shift – {@link java.awt.event.InputEvent#SHIFT_MASK
+	 *     Kláves.SHIFT_MASK},
+	 *     Alt – {@link java.awt.event.InputEvent#ALT_MASK
+	 *     Kláves.ALT_MASK}…); klávesový modifikátor ponúk, ktorý je
+	 *     závislý od operačného systému definuje rezervovaný
+	 *     identifikátor {@link Kláves#SKRATKA_PONUKY
+	 *     Kláves.SKRATKA_PONUKY}; klávesovú skratku bez modifikátora je
+	 *     možné definovať zadaním hodnoty {@code num0}
+	 * 
+	 * @see #klávesováSkratka(int)
+	 */
+	public void klávesováSkratka(int kódKlávesu, int modifikátor)
+	{
+		setAccelerator(KeyStroke.getKeyStroke(
+			kódKlávesu, Toolkit.getDefaultToolkit().
+			getMenuShortcutKeyMask()));
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #klávesováSkratka(int, int) klávesováSkratka}.</p> */
+	public void klavesovaSkratka(int kódKlávesu, int modifikátor)
+	{ klávesováSkratka(kódKlávesu, modifikátor); }
+
+
+	/**
 	 * <p>Vráti skript priradený k tejto položke alebo {@code valnull},
 	 * ak k položke nebol priradený žiadny skript.</p>
 	 * 
 	 * @return skript priradený k tejto položke alebo {@code valnull}
 	 * 
+	 * @see #riadkySkriptu()
 	 * @see #skript(String[])
 	 * @see #skript(String)
+	 * @see #skript(Skript)
 	 * @see Svet#vykonajSkript(String[])
+	 * @see Skript
 	 */
-	public String[] skript() { return skript; }
+	public Skript skript()
+	{
+		if (null == skript && null != riadkySkriptu)
+			skript = Skript.vyrob(riadkySkriptu);
+		return skript;
+	}
+
+	/**
+	 * <p>Vráti riadky skriptu, ak bol skript k tejto položke priradený
+	 * v textovej forme. V opačnom prípade vráti {@code valnull}, pričom
+	 * položka môže mať definovaný skript – pozri aj metódu {@link 
+	 * #skript() skript}.</p>
+	 * 
+	 * @return skript priradený k tejto položke alebo {@code valnull}
+	 * 
+	 * @see #skript()
+	 * @see #skript(String[])
+	 * @see #skript(String)
+	 * @see #skript(Skript)
+	 * @see Svet#vykonajSkript(String[])
+	 * @see Skript
+	 */
+	public String[] riadkySkriptu() { return riadkySkriptu; }
 
 	/**
 	 * <p>Priradí k tejto položke skript, ktorý bude automaticky vykonaný
-	 * po jej zvolení. (Pozri aj metódu {@link 
-	 * Svet#vykonajSkript(String[]) vykonajSkript}.) Ak chcete skript
+	 * po jej zvolení. (Pozri aj metódu {@link Svet#vykonajSkript(String[])
+	 * vykonajSkript} a triedu {@link Skript Skript}.) Ak chcete skript
 	 * položky vymazať, zadajte hodnotu {@code valnull}.</p>
 	 * 
 	 * @param riadky skript vo forme poľa reťazcov (riadkov skriptu)
 	 * 
 	 * @see #skript()
+	 * @see #riadkySkriptu()
 	 * @see #skript(String)
+	 * @see #skript(Skript)
 	 * @see Svet#vykonajSkript(String[])
+	 * @see Skript
 	 */
-	public void skript(String[] riadky) { this.skript = riadky; }
+	public void skript(String[] riadky)
+	{
+		this.riadkySkriptu = riadky;
+		this.skript = null;
+	}
 
 	/**
 	 * <p>Priradí k tejto položke skript, ktorý bude automaticky vykonaný
-	 * po jej zvolení. (Pozri aj metódu {@link 
-	 * Svet#vykonajSkript(String[]) vykonajSkript}.) Ak chcete skript
+	 * po jej zvolení. (Pozri aj metódu {@link Svet#vykonajSkript(String[])
+	 * vykonajSkript} a triedu {@link Skript Skript}.) Ak chcete skript
 	 * položky vymazať, zadajte hodnotu {@code valnull}.</p>
 	 * 
 	 * @param skript skript vo forme reťazca oddeľovaného znakmi
 	 *     nového riadka
 	 * 
 	 * @see #skript()
+	 * @see #riadkySkriptu()
 	 * @see #skript(String[])
+	 * @see #skript(Skript)
 	 * @see Svet#vykonajSkript(String[])
+	 * @see Skript
 	 */
 	public void skript(String skript)
 	{
-		String riadky[] = Svet.vykonajSkriptRiadkovač.split(skript);
-		this.skript = riadky;
+		if (null == skript) this.riadkySkriptu = null; else
+		{
+			String riadky[] = Skript.vykonajSkriptRiadkovač.split(skript);
+			this.riadkySkriptu = riadky;
+		}
+		this.skript = null;
+	}
+
+	/**
+	 * <p>Priradí k tejto položke skript, ktorý bude automaticky vykonaný
+	 * po jej zvolení. (Pozri aj metódu {@link Svet#vykonajSkript(String[])
+	 * vykonajSkript} a triedu {@link Skript Skript}.) Ak chcete skript
+	 * položky vymazať, zadajte hodnotu {@code valnull}.</p>
+	 * 
+	 * @param skript inštanicia triedy {@link Skript Skript}
+	 * 
+	 * @see #skript()
+	 * @see #riadkySkriptu()
+	 * @see #skript(String[])
+	 * @see #skript(String)
+	 * @see Svet#vykonajSkript(String[])
+	 * @see Skript
+	 */
+	public void skript(Skript skript)
+	{
+		this.riadkySkriptu = null;
+		this.skript = skript;
 	}
 }

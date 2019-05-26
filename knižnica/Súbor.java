@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -780,41 +780,33 @@ public class Súbor implements Closeable
 
 	// Zoznam reťazcov, ktoré sa smú nachádzať len na začiatku názvu
 	// vlastnosti
-	private final BiTreeMap<String, String> začiatkyNázvov =
-		new BiTreeMap<String, String>();
+	private final BiTreeMap<String, String> začiatkyNázvov = new BiTreeMap<>();
 
 	// Zoznam reťazcov, ktoré sa smú nachádzať len na konci názvu
 	// vlastnosti
-	private final BiTreeMap<String, String> konceNázvov =
-		new BiTreeMap<String, String>();
+	private final BiTreeMap<String, String> konceNázvov = new BiTreeMap<>();
 
 	// Zoznam reťazcov, ktoré sa smú nachádzať na ľubovoľnej pozícii
 	// v rámci názvu vlastnosti
-	private final BiTreeMap<String, String> stredyNázvov =
-		new BiTreeMap<String, String>();
+	private final BiTreeMap<String, String> stredyNázvov = new BiTreeMap<>();
 
 	// Zoznam reťazcov, ktoré sa musia presne zhodovať s názvom vlastnosti
-	private final BiTreeMap<String, String> presnéNázvy =
-		new BiTreeMap<String, String>();
+	private final BiTreeMap<String, String> presnéNázvy = new BiTreeMap<>();
 
 	// Zoznam reťazcov, ktoré sa smú nachádzať len na začiatku hodnoty
 	// vlastnosti
-	private final BiTreeMap<String, String> začiatkyHodnôt =
-		new BiTreeMap<String, String>();
+	private final BiTreeMap<String, String> začiatkyHodnôt = new BiTreeMap<>();
 
 	// Zoznam reťazcov, ktoré sa smú nachádzať len na konci hodnoty
 	// vlastnosti
-	private final BiTreeMap<String, String> konceHodnôt =
-		new BiTreeMap<String, String>();
+	private final BiTreeMap<String, String> konceHodnôt = new BiTreeMap<>();
 
 	// Zoznam reťazcov, ktoré sa smú nachádzať na ľubovoľnej pozícii
 	// v rámci hodnoty vlastnosti
-	private final BiTreeMap<String, String> stredyHodnôt =
-		new BiTreeMap<String, String>();
+	private final BiTreeMap<String, String> stredyHodnôt = new BiTreeMap<>();
 
 	// Zoznam reťazcov, ktoré sa musia presne zhodovať s hodnotou vlastnosti
-	private final BiTreeMap<String, String> presnéHodnoty =
-		new BiTreeMap<String, String>();
+	private final BiTreeMap<String, String> presnéHodnoty = new BiTreeMap<>();
 
 
 	/**
@@ -881,7 +873,7 @@ public class Súbor implements Closeable
 				Vlastnosť oth = (Vlastnosť)obj;
 				if (null == názov && null == oth.názov) return true;
 				if (null == názov || null == oth.názov) return false;
-				return názov.equals(oth.názov);
+				return názov.equals(oth.názov); // TODO: zvážiť použitie IgnoreCase (možno by to malo byť voliteľné)
 			}
 
 			if (obj instanceof CharSequence)
@@ -889,7 +881,7 @@ public class Súbor implements Closeable
 				CharSequence chs = (CharSequence)obj;
 				if (null == názov && null == chs) return true;
 				if (null == názov || null == chs) return false;
-				return názov.equals(chs.toString());
+				return názov.equals(chs.toString()); // TODO: zvážiť použitie IgnoreCase (možno by to malo byť voliteľné)
 			}
 
 			return false;
@@ -1047,8 +1039,7 @@ public class Súbor implements Closeable
 		protected final Vlastnosti vlastnosti = new Vlastnosti();
 		/*packagePrivate*/ String mennýPriestorVlastností = null;
 		protected int naposledyZapísanáVlastnosť = -1;
-		protected final Stack<String> zásobníkPriestorov =
-			new Stack<String>();
+		protected final Stack<String> zásobníkPriestorov = new Stack<>();
 
 		public Sekcia()
 		{
@@ -1977,14 +1968,15 @@ public class Súbor implements Closeable
 
 
 		/**
-		 * <p>Vráti názov aktívnej sekcie. Prázdny reťazec označuje prvú bezmennú
-		 * konfiguračnú pasáž.</p>
+		 * <p>Vráti názov aktívnej sekcie. Prázdny reťazec označuje prvú
+		 * bezmennú konfiguračnú pasáž.</p>
 		 * 
 		 * @return názov aktívnej sekcie alebo prázdny reťazec
 		 * 
 		 * @see #aktivujSekciu(String)
 		 * @see #vymažSekciu(String)
 		 * @see #premenujSekciu(String)
+		 * @see #zoznamSekcií()
 		 */
 		public String aktívnaSekcia()
 		{
@@ -2001,7 +1993,13 @@ public class Súbor implements Closeable
 
 		/**
 		 * <p>Pridá novú alebo aktivuje jestvujúcu sekciu konfiguračných
-		 * direktív.</p>
+		 * direktív. Prázdny reťazec označuje prvú bezmennú konfiguračnú
+		 * pasáž. (Tá je definovaná predvolene.)</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
+		 * je v tomto prípade nahradená hodnotou prázdneho reťazca
+		 * {@code srg""}, takže tiež označuje predvolený (bezmenný)
+		 * konfiguračný priestor.</p>
 		 * 
 		 * @param názov názov novej alebo jestvujúcej sekcie
 		 * 
@@ -2011,6 +2009,7 @@ public class Súbor implements Closeable
 		 * @see #aktívnaSekcia()
 		 * @see #vymažSekciu(String)
 		 * @see #premenujSekciu(String)
+		 * @see #zoznamSekcií()
 		 */
 		public void aktivujSekciu(String názov) throws IOException
 		{
@@ -2043,6 +2042,7 @@ public class Súbor implements Closeable
 		 * @see #aktívnaSekcia()
 		 * @see #aktivujSekciu(String)
 		 * @see #premenujSekciu(String)
+		 * @see #zoznamSekcií()
 		 */
 		public void vymažSekciu(String názov) throws IOException
 		{
@@ -2115,6 +2115,7 @@ public class Súbor implements Closeable
 		 * @see #aktívnaSekcia()
 		 * @see #aktivujSekciu(String)
 		 * @see #vymažSekciu(String)
+		 * @see #zoznamSekcií()
 		 */
 		public void premenujSekciu(String názov) throws IOException
 		{
@@ -2144,6 +2145,41 @@ public class Súbor implements Closeable
 			aktívnaSekcia.haš = názov.hashCode();
 			zaraďRezervovanéSekcie();
 		}
+
+
+		/**
+		 * <p>Vráti zoznam aktuálnych sekcií definovaných v tomto
+		 * konfiguračnom súbore. Zmeny vykonané vo vrátenom zozname
+		 * nemajú žiadny vplyv na skutočné sekcie konfigurácie.</p>
+		 * 
+		 * @return zoznam reťazcov označujúcich názvy aktuálne definovaných
+		 *     sekcií v tomto konfiguračnom súbore
+		 * 
+		 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
+		 *     operácii
+		 * @throws GRobotException ak súbor nie je otvorený na čítanie,
+		 *     prípadne obsahuje chybu
+		 * 
+		 * @see #aktívnaSekcia()
+		 * @see #aktivujSekciu(String)
+		 * @see #vymažSekciu(String)
+		 * @see #premenujSekciu(String)
+		 * @see #zoznamVlastností()
+		 */
+		public Zoznam<String> zoznamSekcií() throws IOException
+		{
+			čítajVlastnosti();
+			Zoznam<String> zoznam = new Zoznam<>();
+			for (Sekcia sekcia : sekcie)
+				zoznam.add(sekcia.názov);
+			if (0 == zoznam.dĺžka() && null != aktívnaSekcia)
+				zoznam.add(aktívnaSekcia.názov);
+			return zoznam;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #zoznamSekcií() zoznamSekcií}.</p> */
+		public Zoznam<String> zoznamSekcii() throws IOException
+		{ return zoznamSekcií(); }
 
 
 	// Zoznamy súborov a priečinkov
@@ -2183,7 +2219,7 @@ public class Súbor implements Closeable
 			}
 
 			File zoznamPoložiek[] = priečinok.listFiles();
-			Vector<String> zoznam = new Vector<String>();
+			Vector<String> zoznam = new Vector<>();
 
 			for (int i = 0; i < zoznamPoložiek.length; ++i)
 				if (zoznamPoložiek[i].isFile())
@@ -2237,7 +2273,7 @@ public class Súbor implements Closeable
 			}
 
 			File zoznamPoložiek[] = priečinok.listFiles();
-			Vector<String> zoznam = new Vector<String>();
+			Vector<String> zoznam = new Vector<>();
 
 			for (int i = 0; i < zoznamPoložiek.length; ++i)
 				if (zoznamPoložiek[i].isDirectory())
@@ -2293,7 +2329,7 @@ public class Súbor implements Closeable
 			}
 
 			File zoznamPoložiek[] = priečinok.listFiles();
-			Vector<String> zoznam = new Vector<String>();
+			Vector<String> zoznam = new Vector<>();
 
 			for (int i = 0; i < zoznamPoložiek.length; ++i)
 				if (zoznamPoložiek[i].isFile() ||
@@ -2354,7 +2390,7 @@ public class Súbor implements Closeable
 			}
 
 			File zoznamPoložiek[] = priečinok.listFiles();
-			Vector<String> zoznam = new Vector<String>();
+			Vector<String> zoznam = new Vector<>();
 
 			for (int i = 0; i < zoznamPoložiek.length; ++i)
 				zoznam.add(zoznamPoložiek[i].getName());
@@ -4463,7 +4499,7 @@ public class Súbor implements Closeable
 			boolean prvý = true;
 			for (String filter : filtre)
 			{
-				Vector<String> zoznamPrípon = new Vector<String>();
+				Vector<String> zoznamPrípon = new Vector<>();
 				Matcher match = príponaFiltraDialóguSúborov.matcher(filter);
 				while (match.find()) zoznamPrípon.add(match.group(1));
 
@@ -4622,7 +4658,7 @@ public class Súbor implements Closeable
 			boolean prvý = true;
 			for (String filter : filtre)
 			{
-				Vector<String> zoznamPrípon = new Vector<String>();
+				Vector<String> zoznamPrípon = new Vector<>();
 				Matcher match = príponaFiltraDialóguSúborov.matcher(filter);
 				while (match.find()) zoznamPrípon.add(match.group(1));
 
@@ -4816,6 +4852,10 @@ public class Súbor implements Closeable
 		 */
 		public void otvorNaZápis(String názovSúboru) throws IOException
 		{
+			// TODO: Poskytnúť možnosť uloženia „BOM mark-u“ do súboru
+			// (dôležité najmä ak ide o konfiguračný súbor – môže byť
+			// totiž čítaný iným softvérom).
+
 			if (null == názovSúboru)
 				throw new GRobotException(
 					"Názov súboru nesmie byť zamlčaný.",
@@ -5743,7 +5783,7 @@ public class Súbor implements Closeable
 			String hodnotaS = aktívnaSekcia.vlastnosti.get(indexOf).hodnota;
 			if (null == hodnotaS) return null;
 			StringBuffer reťazec = new StringBuffer(hodnotaS);
-			Vector<Long> vektor = new Vector<Long>();
+			Vector<Long> vektor = new Vector<>();
 			Long hodnota;
 
 			while (null != (hodnota = prevezmiCeléČíslo(reťazec)))
@@ -5822,7 +5862,7 @@ public class Súbor implements Closeable
 			String hodnotaS = aktívnaSekcia.vlastnosti.get(indexOf).hodnota;
 			if (null == hodnotaS) return null;
 			StringBuffer reťazec = new StringBuffer(hodnotaS);
-			Vector<Double> vektor = new Vector<Double>();
+			Vector<Double> vektor = new Vector<>();
 			Double hodnota;
 
 			while (null != (hodnota = prevezmiReálneČíslo(reťazec)))
@@ -5901,7 +5941,7 @@ public class Súbor implements Closeable
 			String hodnotaS = aktívnaSekcia.vlastnosti.get(indexOf).hodnota;
 			if (null == hodnotaS) return null;
 			StringBuffer reťazec = new StringBuffer(hodnotaS);
-			Vector<Long> vektor = new Vector<Long>();
+			Vector<Long> vektor = new Vector<>();
 			Long hodnota;
 
 			while (null != (hodnota = prevezmiCeléČíslo(reťazec)))
@@ -5980,7 +6020,7 @@ public class Súbor implements Closeable
 			String hodnotaS = aktívnaSekcia.vlastnosti.get(indexOf).hodnota;
 			if (null == hodnotaS) return null;
 			StringBuffer reťazec = new StringBuffer(hodnotaS);
-			Vector<Double> vektor = new Vector<Double>();
+			Vector<Double> vektor = new Vector<>();
 			Double hodnota;
 
 			while (null != (hodnota = prevezmiReálneČíslo(reťazec)))
@@ -6058,7 +6098,7 @@ public class Súbor implements Closeable
 			String hodnotaS = aktívnaSekcia.vlastnosti.get(indexOf).hodnota;
 			if (null == hodnotaS) return null;
 			StringBuffer reťazec = new StringBuffer(hodnotaS);
-			Vector<Boolean> vektor = new Vector<Boolean>();
+			Vector<Boolean> vektor = new Vector<>();
 			Boolean hodnota;
 
 			while (null != (hodnota = prevezmiBoolean(reťazec)))
@@ -6356,6 +6396,59 @@ public class Súbor implements Closeable
 		{ return čítajVlastnosť(názov, predvolenáHodnota); }
 
 
+		/**
+		 * <p>Vráti zoznam vlastností definovaných v aktuálnej sekcii
+		 * konfigurácie. (Pozri aj: {@link #aktívnaSekcia() aktívnaSekcia}.)
+		 * Všetky názvy sú vrátené v úplnom znení, to jest vrátane
+		 * prípadných menných priestorov, do ktorých patria. (Pozri aj:
+		 * {@link #mennýPriestorVlastností() mennýPriestorVlastností}.)
+		 * Zmeny vykonané vo vrátenom zozname nemajú žiadny vplyv na
+		 * skutočné vlastnosti v rámci konfigurácie. Detekciu prípadných
+		 * menných priestorov musí vykonať používateľ (rámca).</p>
+		 * 
+		 * <p>Metóda identifikuje a v zozname vracia aj dva špeciálne
+		 * prípady:</p>
+		 * 
+		 * <ul>
+		 * <li>komentáre: ako názov vlastnosti, ktorý sa začína znakom
+		 * {@code srg";"} (čo nie je povolené),</li>
+		 * <li>a prázdne riadky: ako prázdny názov vlastnosti
+		 * {@code srg""} (čo tiež nie je povolené).</li>
+		 * </ul>
+		 * 
+		 * <!-- p class="remark"><b>Poznámka:</b> Obsah komentárov nie je
+		 * možné získať.</p -->
+		 * 
+		 * @return zoznam reťazcov označujúcich názvy vlastností v aktuálnej
+		 *     sekcii tohto konfiguračného súboru
+		 * 
+		 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
+		 *     operácii
+		 * @throws GRobotException ak súbor nie je otvorený na čítanie,
+		 *     prípadne obsahuje chybu
+		 * 
+		 * @see #aktívnaSekcia()
+		 * @see #zoznamSekcií()
+		 * @see #mennýPriestorVlastností()
+		 */
+		public Zoznam<String> zoznamVlastností() throws IOException
+		{
+			čítajVlastnosti();
+			Zoznam<String> zoznam = new Zoznam<>();
+			for (Vlastnosť vlastnosť : aktívnaSekcia.vlastnosti)
+				if (null != vlastnosť.názov &&
+					vlastnosť.názov.startsWith(";"))
+					zoznam.add(vlastnosť.názov + vlastnosť.hodnota);
+				else
+					zoznam.add(vlastnosť.názov);
+			return zoznam;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #zoznamVlastností() zoznamVlastností}.</p> */
+		public Zoznam<String> zoznamVlastnosti() throws IOException
+		{ return zoznamVlastností(); }
+
+
 	// Zápis vlastností
 
 		/**
@@ -6550,7 +6643,8 @@ public class Súbor implements Closeable
 		 * <pre CLASS="example">
 			{@link Svet Svet}.{@link Svet#konfiguračnýSúbor() konfiguračnýSúbor}().{@code currprekladajVlastnosti}({@code kwdnew} {@link String String}[][]{
 				{{@code srg"okno."}, {@code srg"window."}, {@code srg"Z"}},
-				{{@code srg".šírka"}, {@code srg".width"}, {@code srg"K"}}, {{@code srg".výška"}, {@code srg".height"}, {@code srg"K"}}
+				{{@code srg".šírka"}, {@code srg".width"}, {@code srg"K"}}, {{@code srg".výška"}, {@code srg".height"}, {@code srg"K"}},
+				{{@code srg".maximalizované"}, {@code srg".maximized"}, {@code srg"K"}}, {{@code srg".minimalizované"}, {@code srg".minimized"}, {@code srg"K"}}
 			}, {@code kwdnew} {@link String String}[][]{
 				{{@code srg"žiadna"}, {@code srg"none"}, {@code srg"P"}}, {{@code srg"biela"}, {@code srg"white"}, {@code srg"P"}},
 				{{@code srg"svetlošedá"}, {@code srg"lightgray"}, {@code srg"P"}}, {{@code srg"šedá"}, {@code srg"gray"}, {@code srg"P"}},
@@ -6574,15 +6668,15 @@ public class Súbor implements Closeable
 				{{@code srg"oranžová"}, {@code srg"orange"}, {@code srg"P"}}, {{@code srg"tmavooranžová"}, {@code srg"darkorange"}, {@code srg"P"}},
 				{{@code srg"svetloružová"}, {@code srg"lightpink"}, {@code srg"P"}},
 				{{@code srg"ružová"}, {@code srg"pink"}, {@code srg"P"}}, {{@code srg"tmavoružová"}, {@code srg"darkpink"}, {@code srg"P"}},
-				{{@code srg"uhlíková"}, {@code srg"coal"}, {@code srg"P"}}, {{@code srg"antracitová"}, {@code srg"anthracite"}, {@code srg"P"}}, 
-				{{@code srg"papierová"}, {@code srg"paper"}, {@code srg"P"}}, {{@code srg"snehová"}, {@code srg"snow"}, {@code srg"P"}}, 
-				{{@code srg"tmavofialová"}, {@code srg"darkpurple"}, {@code srg"P"}}, {{@code srg"fialová"}, {@code srg"purple"}, {@code srg"P"}}, 
-				{{@code srg"svetlofialová"}, {@code srg"lightpurple"}, {@code srg"P"}}, 
-				{{@code srg"tmavoatramentová"}, {@code srg"darkink"}, {@code srg"P"}}, {{@code srg"atramentová"}, {@code srg"ink"}, {@code srg"P"}}, 
-				{{@code srg"svetloatramentová"}, {@code srg"lightink"}, {@code srg"P"}}, 
-				{{@code srg"tmavoakvamarínová"}, {@code srg"darkaqua"}, {@code srg"P"}}, {{@code srg"akvamarínová"}, {@code srg"aqua"}, {@code srg"P"}}, 
-				{{@code srg"svetloakvamarínová"}, {@code srg"lightaqua"}, {@code srg"P"}}, 
-				{{@code srg"tmaváNebeská"}, {@code srg"darkceleste"}, {@code srg"P"}}, {{@code srg"nebeská"}, {@code srg"celeste"}, {@code srg"P"}}, 
+				{{@code srg"uhlíková"}, {@code srg"coal"}, {@code srg"P"}}, {{@code srg"antracitová"}, {@code srg"anthracite"}, {@code srg"P"}},
+				{{@code srg"papierová"}, {@code srg"paper"}, {@code srg"P"}}, {{@code srg"snehová"}, {@code srg"snow"}, {@code srg"P"}},
+				{{@code srg"tmavofialová"}, {@code srg"darkpurple"}, {@code srg"P"}}, {{@code srg"fialová"}, {@code srg"purple"}, {@code srg"P"}},
+				{{@code srg"svetlofialová"}, {@code srg"lightpurple"}, {@code srg"P"}},
+				{{@code srg"tmavoatramentová"}, {@code srg"darkink"}, {@code srg"P"}}, {{@code srg"atramentová"}, {@code srg"ink"}, {@code srg"P"}},
+				{{@code srg"svetloatramentová"}, {@code srg"lightink"}, {@code srg"P"}},
+				{{@code srg"tmavoakvamarínová"}, {@code srg"darkaqua"}, {@code srg"P"}}, {{@code srg"akvamarínová"}, {@code srg"aqua"}, {@code srg"P"}},
+				{{@code srg"svetloakvamarínová"}, {@code srg"lightaqua"}, {@code srg"P"}},
+				{{@code srg"tmaváNebeská"}, {@code srg"darkceleste"}, {@code srg"P"}}, {{@code srg"nebeská"}, {@code srg"celeste"}, {@code srg"P"}},
 				{{@code srg"svetláNebeská"}, {@code srg"lightceleste"}, {@code srg"P"}}
 			});
 			</pre>
@@ -6662,7 +6756,7 @@ public class Súbor implements Closeable
 					}
 				}
 			}
-			catch (Exception e) 
+			catch (Exception e)
 			{
 				GRobotException.vypíšChybovéHlásenia(e/*, false*/);
 			}

@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -356,8 +356,7 @@ public class Plátno implements Priehľadnosť
 
 		/*packagePrivate*/ static class ZálohaKonzoly
 		{
-			public final Vector<RiadokKonzoly> záloha =
-				new Vector<RiadokKonzoly>();
+			public final Vector<RiadokKonzoly> záloha = new Vector<>();
 		}
 
 
@@ -470,10 +469,11 @@ public class Plátno implements Priehľadnosť
 		// Pridávanie medzier na účely výpisov vnútornej konzoly
 		// 
 		private final static char[] nepridajMedzeruZa =
-			{' ', ' ', '\t', '\n', '(', '[', '{', '„', '“', '«', '‹', '\'', '\"'};
+			{' ', ' ', '\t', '\n', '(', '[', '{', '„', '“', '«', '‹', '\'',
+			 '\"'};
 		private final static char[] nepridajMedzeruPred =
-			{' ', ' ', '\t', '\n', '.', ',', ';', ':', '!', '?', ')', ']', '}',
-			 '%', '“', '”', '»', '›', '\'', '\"'};
+			{' ', ' ', '\t', '\n', '.', ',', ';', ':', '!', '?', ')', ']',
+			 '}', '%', '“', '”', '»', '›', '\'', '\"'};
 		// 
 
 		private static void pridajMedzeru(StringBuffer obsah, Object časť)
@@ -514,8 +514,7 @@ public class Plátno implements Priehľadnosť
 			/*packagePrivate*/ Písmo aktuálnePísmo = predvolenéPísmoKonzoly;
 
 			// Obsah vnútornej konzoly
-			private final Vector<RiadokKonzoly> riadky =
-				new Vector<RiadokKonzoly>();
+			private final Vector<RiadokKonzoly> riadky = new Vector<>();
 
 			// Objekt slúžiaci na vytvorenie zálohy konzoly
 			private ZálohaKonzoly záloha;
@@ -569,8 +568,7 @@ public class Plátno implements Priehľadnosť
 				pravýOkraj = 0, dolnýOkraj = 0;
 
 			// Zoznam aktívnych slov
-			private final Vector<AktívneSlovo> aktívneSlová =
-				new Vector<AktívneSlovo>();
+			private final Vector<AktívneSlovo> aktívneSlová = new Vector<>();
 
 			// Premenná upravujúca farbu textu konzoly
 			// (aktivuje sa počas procesu písania textov)
@@ -2456,6 +2454,12 @@ public class Plátno implements Priehľadnosť
 		/** <p><a class="alias"></a> Alias pre {@link #najmenšieX() najmenšieX}.</p> */
 		public static double najmensieX() { return -šírkaPlátna / 2; }
 
+		/** <p><a class="alias"></a> Alias pre {@link #najmenšieX() najmenšieX}.</p> */
+		public static double minimálneX() { return -šírkaPlátna / 2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #najmenšieX() najmenšieX}.</p> */
+		public static double minimalneX() { return -šírkaPlátna / 2; }
+
 		/**
 		 * <p><a class="getter"></a> Zistí najmenšiu y-ovú súradnicu plátna.
 		 * Podlaha a strop majú určitú veľkosť, ktorá je o niečo väčšia ako
@@ -2471,6 +2475,12 @@ public class Plátno implements Priehľadnosť
 
 		/** <p><a class="alias"></a> Alias pre {@link #najmenšieY() najmenšieY}.</p> */
 		public static double najmensieY() { return -(výškaPlátna - 1) / 2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #najmenšieY() najmenšieY}.</p> */
+		public static double minimálneY() { return -(výškaPlátna - 1) / 2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #najmenšieY() najmenšieY}.</p> */
+		public static double minimalneY() { return -(výškaPlátna - 1) / 2; }
 
 		/**
 		 * <p><a class="getter"></a> Zistí najväčšiu x-ovú súradnicu plátna.
@@ -2488,6 +2498,12 @@ public class Plátno implements Priehľadnosť
 		/** <p><a class="alias"></a> Alias pre {@link #najväčšieX() najväčšieX}.</p> */
 		public static double najvacsieX() { return (šírkaPlátna - 1) / 2; }
 
+		/** <p><a class="alias"></a> Alias pre {@link #najväčšieX() najväčšieX}.</p> */
+		public static double maximálneX() { return (šírkaPlátna - 1) / 2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #najväčšieX() najväčšieX}.</p> */
+		public static double maximalneX() { return (šírkaPlátna - 1) / 2; }
+
 		/**
 		 * <p><a class="getter"></a> Zistí najväčšiu y-ovú súradnicu plátna.
 		 * Podlaha a strop majú určitú veľkosť, ktorá je o niečo väčšia ako
@@ -2503,6 +2519,12 @@ public class Plátno implements Priehľadnosť
 
 		/** <p><a class="alias"></a> Alias pre {@link #najväčšieY() najväčšieY}.</p> */
 		public static double najvacsieY() { return výškaPlátna / 2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #najväčšieY() najväčšieY}.</p> */
+		public static double maximálneY() { return výškaPlátna / 2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #najväčšieY() najväčšieY}.</p> */
+		public static double maximalneY() { return výškaPlátna / 2; }
 
 
 		/**
@@ -6474,9 +6496,9 @@ public class Plátno implements Priehľadnosť
 
 		/**
 		 * <p><a class="setter"></a> Nastaví vlastnosť zalamovania textov
-		 * vnútornej konzoly tohto plátna podľa zadaného parametra. Vlastnosť
-		 * ovplyvňuje správanie metód {@link #vypíš(Object[]) vypíš} a {@link 
-		 * #vypíšRiadok(Object[]) vypíšRiadok}. Predvolene je (aspoň
+		 * vnútornej konzoly tohto plátna podľa zadanej hodnoty parametra.
+		 * Vlastnosť ovplyvňuje správanie metód {@link #vypíš(Object[]) vypíš}
+		 * a {@link #vypíšRiadok(Object[]) vypíšRiadok}. Predvolene je (aspoň
 		 * v súvislosti s plátnom ako takým) táto vlastnosť vypnutá.</p>
 		 * 
 		 * @param zalamuj {@code valtrue} ak chceme, aby boli texty
@@ -7856,7 +7878,6 @@ public class Plátno implements Priehľadnosť
 		 * 
 		 * @see Svet#priečinokObrázkov(String)
 		 */
-		// TODO Svet#priečinok —⟩ Obrázkov alebo Zvukov —⟩ Obrázok# alebo Zvuk#
 		public void obrázok(Poloha objekt, String súbor)
 		{
 			if (null == súbor)
@@ -8434,7 +8455,7 @@ public class Plátno implements Priehľadnosť
 		 * @param a úroveň (ne)priehľadnosti farby; celé číslo v rozsahu
 		 *     0 – 255 (0 – neviditeľná farba; 255 – nepriehľadná farba)
 		 * @return objekt typu {@link Farba Farba} vytvorený podľa zadaných
-		 *     parametrov
+		 *     hodnôt parametrov
 		 * 
 		 * @see #vyplň(Color)
 		 */
@@ -8704,7 +8725,7 @@ public class Plátno implements Priehľadnosť
 		 * @param a úroveň (ne)priehľadnosti farby; celé číslo v rozsahu
 		 *     0 – 255 (0 – neviditeľná farba; 255 – nepriehľadná farba)
 		 * @return objekt typu {@link Farba Farba} vytvorený podľa zadaných
-		 *     parametrov
+		 *     hodnôt parametrov
 		 * 
 		 * @see #vylejFarbu(double, double, Color)
 		 */
@@ -8794,7 +8815,7 @@ public class Plátno implements Priehľadnosť
 		 * @param a úroveň (ne)priehľadnosti farby; celé číslo v rozsahu
 		 *     0 – 255 (0 – neviditeľná farba; 255 – nepriehľadná farba)
 		 * @return objekt typu {@link Farba Farba} vytvorený podľa zadaných
-		 *     parametrov
+		 *     hodnôt parametrov
 		 * 
 		 * @see #vylejFarbu(Poloha, Color)
 		 */
@@ -8861,7 +8882,7 @@ public class Plátno implements Priehľadnosť
 		 * bodov, teda bodu, ktorý bol pôvodne na plátne aj bodu na obrázku
 		 * masky. Ak je súčin zložiek priehľadnosti rovný nule, tak bude
 		 * výsledný bod neviditeľný. Viditeľnosť bodov v ostatných prípadoch
-		 * záleží od výsledku výpočtov algoritmu. Napríklad úplne čierne
+		 * záleží na výsledku výpočtov algoritmu. Napríklad úplne čierne
 		 * úplne nepriehľadné body masky neovplyvnia priehľadnosť bodov
 		 * na plátne.</p>
 		 * 
@@ -9776,8 +9797,8 @@ public class Plátno implements Priehľadnosť
 			Class<? extends Plátno> tátoTrieda = this.getClass();
 			// Táto metóda síce volá súkromnú metódu sveta, ale zadaný
 			// príkaz je vykonaný pre túto triedu a inštanciu:
-			if (Svet.vykonajPríkaz(príkaz, tátoTrieda, this)) return true;
-			return Svet.vykonajPríkaz(príkaz, tátoTrieda, null);
+			if (Skript.vykonajPríkaz(príkaz, tátoTrieda, this)) return true;
+			return Skript.vykonajPríkaz(príkaz, tátoTrieda, null);
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #vykonajPríkaz(String) vykonajPríkaz}.</p> */
@@ -10229,3 +10250,5 @@ public class Plátno implements Priehľadnosť
 		/** <p><a class="alias"></a> Alias pre {@link #odstráňVlnenie() odstráňVlnenie}.</p> */
 		public void odstranVlnenie() { odstráňVlnenie(); }
 }
+
+// :wrap=none:

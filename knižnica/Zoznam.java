@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -332,7 +332,7 @@ public class Zoznam<Typ> extends Vector<Typ>
 	{
 		if (this == inýZoznam)
 		{
-			Vector<Typ> kópia = new Vector<Typ>(inýZoznam);
+			Vector<Typ> kópia = new Vector<>(inýZoznam);
 			addAll(kópia);
 		}
 		else addAll(inýZoznam);
@@ -673,6 +673,15 @@ public class Zoznam<Typ> extends Vector<Typ>
 
 	/** <p><a class="alias"></a> Alias pre {@link #daj() daj}.</p> */
 	public Typ citaj() { return daj(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #daj() daj}.</p> */
+	public Typ aktuálny() { return daj(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #daj() daj}.</p> */
+	public Typ aktualny() { return daj(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #daj() daj}.</p> */
+	public Typ tento() { return daj(); }
 
 
 	/**

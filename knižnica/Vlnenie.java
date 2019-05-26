@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -616,7 +616,7 @@ import knižnica.Poloha;
 public class Vlnenie
 {
 	// Zoznam vlnení – na účely udržania ich aktivity
-	/*packagePrivate*/ final static Vector<Vlnenie> vlnenia = new Vector<Vlnenie>();
+	/*packagePrivate*/ final static Vector<Vlnenie> vlnenia = new Vector<>();
 
 
 	// Inštancia náhodného generátora
@@ -698,12 +698,12 @@ public class Vlnenie
 	 * Obrázok.pridajVlnenie()}).</p>
 	 * 
 	 * <p>Trieda {@code currVlnenie} je naprogramovaná tak, aby bola použiteľná
-	 * aj mimo programovacieho rámca GRobot. V takom prípade je potrebné vytvoriť
-	 * jej inštanciu s pomocou tohto konštruktora. Ten prijíma inštanciu obrázka
-	 * {@link BufferedImage BufferedImage}, ktorý musí byť typu
-	 * {@link BufferedImage#TYPE_INT_ARGB BufferedImage.TYPE_INT_ARGB}, inak
-	 * konštrukcia vlnenia zlyhá. Útlm určuje rýchlosť utlmenia vzruchov na
-	 * virtuálnej hladine vlnenia (pozri aj metódu {@link #útlm(int) útlm}).
+	 * aj mimo programovacieho rámca GRobot. V takom prípade je potrebné
+	 * vytvoriť jej inštanciu s pomocou tohto konštruktora. Ten prijíma
+	 * inštanciu obrázka {@link BufferedImage BufferedImage}, ktorý musí byť
+	 * typu {@link BufferedImage#TYPE_INT_ARGB BufferedImage.TYPE_INT_ARGB},
+	 * inak konštrukcia vlnenia zlyhá. Útlm určuje rýchlosť utlmenia vzruchov
+	 * na virtuálnej hladine vlnenia (pozri aj metódu {@link #útlm(int) útlm}).
 	 * Ak sú všetky podmienky splnené a vytvorenie vlnenia bolo úspešné,
 	 * programátor musí ešte zariadiť pravidelné spúšťanie metódy
 	 * {@link #vykonaj() vykonaj} (najlepšie v rekacii časovača), ktorá

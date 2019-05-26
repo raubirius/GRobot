@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -316,7 +316,7 @@ public class Roj
 		 * @see #reálneParametre
 		 */
 		public final TreeMap<Integer, Integer> celočíselnéParametre =
-			new TreeMap<Integer, Integer>();
+			new TreeMap<>();
 
 		/** <p><a class="alias"></a> Alias pre {@link #celočíselnéParametre celočíselnéParametre}.</p> */
 		public final TreeMap<Integer, Integer> celociselneParametre =
@@ -334,7 +334,7 @@ public class Roj
 		 * @see #celočíselnéParametre
 		 */
 		public final TreeMap<Integer, Double> reálneParametre =
-			new TreeMap<Integer, Double>();
+			new TreeMap<>();
 
 		/** <p><a class="alias"></a> Alias pre {@link #reálneParametre reálneParametre}.</p> */
 		public final TreeMap<Integer, Double> realneParametre =
@@ -1126,9 +1126,9 @@ public class Roj
 		// private double sz = 0.0;
 
 		// Zásobníky na zálohovanie polohy a smeru.
-		private final Stack<double[]> zásobník = new Stack<double[]>();
-		private final Stack<double[]> zásobníkPolôh = new Stack<double[]>();
-		private final Stack<double[]> zásobníkSmerov = new Stack<double[]>();
+		private final Stack<double[]> zásobník = new Stack<>();
+		private final Stack<double[]> zásobníkPolôh = new Stack<>();
+		private final Stack<double[]> zásobníkSmerov = new Stack<>();
 
 		/**
 		 * <p>Príznak toho, či nové vkladané body majú mať viditeľné
@@ -2169,9 +2169,8 @@ public class Roj
 	// zoznam je pravidelne zoraďovaný podľa vzdialenosti bodov od kamery,
 	// čo je dôležité pri kreslení telies umiestnených na súradniciach
 	// bodov roja.
-	private final Zoznam<Bod> body = new Zoznam<Bod>();
-	private final Zoznam<Bod> poradieKreslenia =
-		new Zoznam<Bod>(); // „Z-bufer“
+	private final Zoznam<Bod> body = new Zoznam<>();
+	private final Zoznam<Bod> poradieKreslenia = new Zoznam<>(); // „Z-bufer“
 		// (Poznámka: Pomenovanie z-bufer (angl. z-buffer) je prevzaté
 		//     („požičané“) z názvu zásobníka bodov (pixelov) v 3D grafike
 		//     slúžiaceho na rýchle rozpoznanie toho, ktorý z kreslených

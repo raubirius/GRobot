@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -111,7 +111,7 @@ public class Zvuk
 		/*packagePrivate*/ static class ZoznamZvukov extends Vector<Zvuk> {}
 
 		/*packagePrivate*/ final static TreeMap<String, ZoznamZvukov>
-			zoznamSúborovZvukov = new TreeMap<String, ZoznamZvukov>();
+			zoznamSúborovZvukov = new TreeMap<>();
 
 
 	// Zvuk prehrávaný na pozadí metódou zvukNaPozadí()
@@ -197,7 +197,7 @@ public class Zvuk
 				if (null == url) throw new GRobotException("Zvuk „" +
 					súbor + "“ nebol nájdený.", "soundNotFound", súbor);
 
-				Zvuk zvuk = Zvuk.čítaj(url);
+				Zvuk zvuk = čítaj(url);
 				if (null == zvuk) throw new GRobotException
 					("Zvuk „" + súbor + "“ nie je možné prečítať.",
 						"soundUnreadable", súbor);
@@ -326,6 +326,51 @@ public class Zvuk
 	}
 
 
+		/**
+		 * <p>Ak sú všetky zvuky uložené v spoločnom priečinku, môžeme pre
+		 * nich touto metódou nastaviť zdrojový priečinok čítania.
+		 * Priečinok by sa mal nachádzať v hlavnom priečinku projektu alebo by
+		 * k nemu mala viesť systémovo nezávislá relatívna cesta. Zadaním
+		 * prázdneho reťazca alebo hodnoty {@code valnull} používanie
+		 * priečinka zrušíme.</p>
+		 * 
+		 * @param priečinok názov priečinka, relatívna cesta, prípadne
+		 *     prázdny reťazec alebo {@code valnull}
+		 * 
+		 * @see Svet#priečinokZvukov()
+		 * @see Zvuk
+		 */
+		public static void priečinokZvukov(String priečinok)
+		{ priečinokZvukov = Súbor.upravLomky(priečinok, true); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #priečinokZvukov(String) priečinokZvukov}.</p> */
+		public static void priecinokZvukov(String priečinok)
+		{ priečinokZvukov = Súbor.upravLomky(priečinok, true); }
+
+		/**
+		 * <p>Vráti reťazec s aktuálnym priečinkom, z ktorého sú zvuky čítané.
+		 * Reťazec je obohatený o oddeľovací znak priečinkov {@link 
+		 * File#separatorChar java.io.File.separatorChar} ({@code /} alebo
+		 * {@code \} – záleží na type operačného systému), ktorý automaticky
+		 * pridáva metóda {@link #priečinokZvukov(String)
+		 * priečinokZvukov(priečinok)}. Rovnako všetky oddeľovacie znaky
+		 * priečinkov v relatívnej ceste sú nahradené podľa typu operačného
+		 * systému.</p>
+		 * 
+		 * @return aktuálny priečinok, z ktorého sú zvuky čítané
+		 * 
+		 * @see Svet#priečinokZvukov(String)
+		 * @see #čítaj(String)
+		 * @see #čítaj(String, boolean)
+		 */
+		public static String priečinokZvukov()
+		{ return priečinokZvukov; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #priečinokZvukov() priečinokZvukov}.</p> */
+		public static String priecinokZvukov()
+		{ return priečinokZvukov; }
+
+
 	/**
 	 * <p>Prečíta a uloží do vnútornej pamäte programovacieho rámca
 	 * (metaforicky sveta) zadaný zvuk zo súboru a vráti ho ako inštanciu
@@ -368,11 +413,11 @@ public class Zvuk
 
 	/** <p><a class="alias"></a> Alias pre {@link #čítaj(String) čítaj}.</p> */
 	public static Zvuk prečítaj(String súbor)
-	{ return Zvuk.súborNaZvuk(súbor); }
+	{ return súborNaZvuk(súbor); }
 
 	/** <p><a class="alias"></a> Alias pre {@link #čítaj(String) čítaj}.</p> */
 	public static Zvuk precitaj(String súbor)
-	{ return Zvuk.súborNaZvuk(súbor); }
+	{ return súborNaZvuk(súbor); }
 
 
 	/**
@@ -413,11 +458,11 @@ public class Zvuk
 
 	/** <p><a class="alias"></a> Alias pre {@link #čítaj(String, boolean) čítaj}.</p> */
 	public static Zvuk prečítaj(String súbor, boolean unikátny)
-	{ return Zvuk.súborNaZvuk(súbor, unikátny); }
+	{ return súborNaZvuk(súbor, unikátny); }
 
 	/** <p><a class="alias"></a> Alias pre {@link #čítaj(String, boolean) čítaj}.</p> */
 	public static Zvuk precitaj(String súbor, boolean unikátny)
-	{ return Zvuk.súborNaZvuk(súbor, unikátny); }
+	{ return súborNaZvuk(súbor, unikátny); }
 
 
 	/**

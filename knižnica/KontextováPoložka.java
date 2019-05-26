@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -92,11 +92,12 @@ public class KontextováPoložka extends JMenuItem
 				}
 			}
 
-			if (null != ÚdajeUdalostí.poslednáKontextováPoložka &&
-				null != ÚdajeUdalostí.poslednáKontextováPoložka.skript)
+			Skript skript;
+
+			if (null != ÚdajeUdalostí.poslednáKontextováPoložka && (null !=
+				(skript = ÚdajeUdalostí.poslednáKontextováPoložka.skript())))
 			{
-				int kódSkriptu = Svet.vykonajSkript(
-					ÚdajeUdalostí.poslednáKontextováPoložka.skript);
+				int kódSkriptu = skript.vykonaj();
 				if (0 != kódSkriptu)
 					Svet.formulujChybuSkriptu(kódSkriptu,
 						"Položka kontextovej ponuky…");
@@ -105,7 +106,8 @@ public class KontextováPoložka extends JMenuItem
 	};
 
 	// Skript položky…
-	private String[] skript = null;
+	private Skript skript = null;
+	private String[] riadkySkriptu = null;
 
 	/**
 	 * <p>Vytvorí novú kontextovú položku so zadaným textom. Použite metódu
@@ -130,7 +132,7 @@ public class KontextováPoložka extends JMenuItem
 	 * aktivovaná} a {@link #označená() označená} – {@link #zvolená()
 	 * zvolená}!</b>
 	 * Metóda {@link #aktivovaná() aktivovaná} a jej alias {@link 
-	 * #zvolená() zvolená} zisťujú, či bola stanovená položka naposledny
+	 * #zvolená() zvolená} zisťujú, či bola stanovená položka naposledy
 	 * aktivovaná (zvolená). Metóda {@link #aktívna() aktívna} overuje,
 	 * či je stanovená položka použiteľná a metóda {@link #označená()
 	 * označená} zisťuje, či bola položka takzvane {@linkplain #označ()
@@ -163,7 +165,7 @@ public class KontextováPoložka extends JMenuItem
 	 * aktivovaná} a {@link #označená() označená} – {@link #zvolená()
 	 * zvolená}!</b>
 	 * Metóda {@link #aktivovaná() aktivovaná} a jej alias {@link 
-	 * #zvolená() zvolená} zisťujú, či bola stanovená položka naposledny
+	 * #zvolená() zvolená} zisťujú, či bola stanovená položka naposledy
 	 * aktivovaná (zvolená). Metóda {@link #aktívna() aktívna} overuje,
 	 * či je stanovená položka použiteľná a metóda {@link #označená()
 	 * označená} zisťuje, či bola položka takzvane {@linkplain #označ()
@@ -220,7 +222,7 @@ public class KontextováPoložka extends JMenuItem
 	 * aktivovaná} a {@link #označená() označená} – {@link #zvolená()
 	 * zvolená}!</b>
 	 * Metóda {@link #aktivovaná() aktivovaná} a jej alias {@link 
-	 * #zvolená() zvolená} zisťujú, či bola stanovená položka naposledny
+	 * #zvolená() zvolená} zisťujú, či bola stanovená položka naposledy
 	 * aktivovaná (zvolená). Metóda {@link #aktívna() aktívna} overuje,
 	 * či je stanovená položka použiteľná a metóda {@link #označená()
 	 * označená} zisťuje, či bola položka takzvane {@linkplain #označ()
@@ -857,42 +859,102 @@ public class KontextováPoložka extends JMenuItem
 	 * 
 	 * @return skript priradený k tejto položke alebo {@code valnull}
 	 * 
+	 * @see #riadkySkriptu()
 	 * @see #skript(String[])
 	 * @see #skript(String)
+	 * @see #skript(Skript)
 	 * @see Svet#vykonajSkript(String[])
+	 * @see Skript
 	 */
-	public String[] skript() { return skript; }
+	public Skript skript()
+	{
+		if (null == skript && null != riadkySkriptu)
+			skript = Skript.vyrob(riadkySkriptu);
+		return skript;
+	}
+
+	/**
+	 * <p>Vráti riadky skriptu, ak bol skript k tejto položke priradený
+	 * v textovej forme. V opačnom prípade vráti {@code valnull}, pričom
+	 * položka môže mať definovaný skript – pozri aj metódu {@link 
+	 * #skript() skript}.</p>
+	 * 
+	 * @return skript priradený k tejto položke alebo {@code valnull}
+	 * 
+	 * @see #skript()
+	 * @see #skript(String[])
+	 * @see #skript(String)
+	 * @see #skript(Skript)
+	 * @see Svet#vykonajSkript(String[])
+	 * @see Skript
+	 */
+	public String[] riadkySkriptu() { return riadkySkriptu; }
 
 	/**
 	 * <p>Priradí k tejto položke skript, ktorý bude automaticky vykonaný
-	 * po jej zvolení. (Pozri aj metódu {@link 
-	 * Svet#vykonajSkript(String[]) vykonajSkript}.) Ak chcete skript
+	 * po jej zvolení. (Pozri aj metódu {@link Svet#vykonajSkript(String[])
+	 * vykonajSkript} a triedu {@link Skript Skript}.) Ak chcete skript
 	 * položky vymazať, zadajte hodnotu {@code valnull}.</p>
 	 * 
 	 * @param riadky skript vo forme poľa reťazcov (riadkov skriptu)
 	 * 
 	 * @see #skript()
+	 * @see #riadkySkriptu()
 	 * @see #skript(String)
+	 * @see #skript(Skript)
 	 * @see Svet#vykonajSkript(String[])
+	 * @see Skript
 	 */
-	public void skript(String[] riadky) { this.skript = riadky; }
+	public void skript(String[] riadky)
+	{
+		this.riadkySkriptu = riadky;
+		this.skript = null;
+	}
 
 	/**
 	 * <p>Priradí k tejto položke skript, ktorý bude automaticky vykonaný
-	 * po jej zvolení. (Pozri aj metódu {@link 
-	 * Svet#vykonajSkript(String[]) vykonajSkript}.) Ak chcete skript
+	 * po jej zvolení. (Pozri aj metódu {@link Svet#vykonajSkript(String[])
+	 * vykonajSkript} a triedu {@link Skript Skript}.) Ak chcete skript
 	 * položky vymazať, zadajte hodnotu {@code valnull}.</p>
 	 * 
 	 * @param skript skript vo forme reťazca oddeľovaného znakmi
 	 *     nového riadka
 	 * 
 	 * @see #skript()
+	 * @see #riadkySkriptu()
 	 * @see #skript(String[])
+	 * @see #skript(Skript)
 	 * @see Svet#vykonajSkript(String[])
+	 * @see Skript
 	 */
 	public void skript(String skript)
 	{
-		String riadky[] = Svet.vykonajSkriptRiadkovač.split(skript);
-		this.skript = riadky;
+		if (null == skript) this.riadkySkriptu = null; else
+		{
+			String riadky[] = Skript.vykonajSkriptRiadkovač.split(skript);
+			this.riadkySkriptu = riadky;
+		}
+		this.skript = null;
+	}
+
+	/**
+	 * <p>Priradí k tejto položke skript, ktorý bude automaticky vykonaný
+	 * po jej zvolení. (Pozri aj metódu {@link Svet#vykonajSkript(String[])
+	 * vykonajSkript} a triedu {@link Skript Skript}.) Ak chcete skript
+	 * položky vymazať, zadajte hodnotu {@code valnull}.</p>
+	 * 
+	 * @param skript inštanicia triedy {@link Skript Skript}
+	 * 
+	 * @see #skript()
+	 * @see #riadkySkriptu()
+	 * @see #skript(String[])
+	 * @see #skript(String)
+	 * @see Svet#vykonajSkript(String[])
+	 * @see Skript
+	 */
+	public void skript(Skript skript)
+	{
+		this.riadkySkriptu = null;
+		this.skript = skript;
 	}
 }

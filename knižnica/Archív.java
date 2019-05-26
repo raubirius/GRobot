@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -153,7 +153,7 @@ public class Archív implements Closeable
 
 	// Mapa položiek výstupu na ich dodatočné spracovanie.
 	/*packagePrivate*/ TreeMap<String, ZipEntry> položkyVýstupu =
-		new TreeMap<String, ZipEntry>();
+		new TreeMap<>();
 
 
 	/**
@@ -193,7 +193,7 @@ public class Archív implements Closeable
 	/**
 	 * <p>Konštruktor prijímajúci cestu na disku a názov archívu. Po tomto
 	 * type konštrukcie môže programátor otvoriť archív metódami {@link 
-	 * #otvorNaČítanie() otvorNaČítanie()} a {@link #otvorNaZápis() 
+	 * #otvorNaČítanie() otvorNaČítanie()} a {@link #otvorNaZápis()
 	 * otvorNaZápis()}, prípade prekryť cestu a/alebo názov súboru niektorou
 	 * zo súvisiacich metód: {@link #cestaNaDisku(String) cestaNaDisku(cesta)},
 	 * {@link #názov(String) názov}, {@link #otvorNaČítanie(String)
@@ -721,7 +721,7 @@ public class Archív implements Closeable
 		if (null != vstup)
 		{
 			Enumeration<? extends ZipEntry> položky = vstup.getEntries();
-			TreeSet<String> položkyVstupu = new TreeSet<String>();
+			TreeSet<String> položkyVstupu = new TreeSet<>();
 
 			while (položky.hasMoreElements())
 			{
@@ -1068,7 +1068,7 @@ public class Archív implements Closeable
 		if (null == formát || formát.isEmpty())
 			return kalendár.getTimeInMillis();
 
-		Vector<Character> znaky = new Vector<Character>();
+		Vector<Character> znaky = new Vector<>();
 
 		char posledný = formát.charAt(0), znak = 0;
 		for (int i = 1; i < formát.length(); ++i)

@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -1494,8 +1494,8 @@ public class Farba extends Color implements Comparable<Color>
 			}
 
 			// Aktualizuje tento panel do takého stavu, v akom by sa
-			// nachádzal po konštrukcii so zadanými parametrami. (Môžu
-			// nastať drobné odchýlky, ktoré sú neodsledovateľné, ale
+			// nachádzal po konštrukcii so zadanými hodnotami parametrov.
+			// (Môžu nastať drobné odchýlky, ktoré sú neodsledovateľné, ale
 			// zhruba by sa panel mal vizuálne aj vnútorne nachádzať
 			// v požadovanom stave.)
 			private void aktualizujPanel(String titulok,
@@ -2251,8 +2251,7 @@ public class Farba extends Color implements Comparable<Color>
 
 
 	// @SuppressWarnings("serial")
-	private static TreeMap<Farba, String> mapaFarieb =
-		new TreeMap<Farba, String>();
+	private static TreeMap<Farba, String> mapaFarieb = new TreeMap<>();
 	private static void naplňMapu()
 	// Inštancie farieb v čase definície ešte nie sú inicializované…
 	{

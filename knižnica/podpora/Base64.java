@@ -185,7 +185,7 @@ public abstract class Base64
 
 	/**
 	 * <p>Writes any data stored in the array of bytes into the specified
-	 * file. (In fact this method does the same thing as if you would call
+	 * file. (In fact, this method does the same thing as if you would call
 	 * the writeEncoded(filename, bytes) method, but is here for the
 	 * convenience – use of this method can make the code more readable.)</p>
 	 * 
@@ -209,7 +209,7 @@ public abstract class Base64
 	}
 
 	/**
-	 * <p>Writes your Base64 encoded string into the specified file. (In fact
+	 * <p>Writes your Base64 encoded string into the specified file. (In fact,
 	 * this method writes any specified string into the file, but it is
 	 * expected that you will pass a Base64 encoded data into the second
 	 * parameter.)</p>
@@ -224,7 +224,7 @@ public abstract class Base64
 	}
 
 	/**
-	 * <p>Writes your Base64 encoded string into the specified file. (In fact
+	 * <p>Writes your Base64 encoded string into the specified file. (In fact,
 	 * this method writes any specified string into the file, but it is
 	 * expected that you will pass a Base64 encoded data into the second
 	 * parameter.)</p>
@@ -247,7 +247,7 @@ public abstract class Base64
 
 	/**
 	 * <p>Writes your Base64 encoded data stored in the array of bytes into
-	 * the specified file. (In fact this method writes any data into the file,
+	 * the specified file. (In fact, this method writes any data into the file,
 	 * but it is expected that the array will contain a Base64 encoded
 	 * data.)</p>
 	 * 
@@ -262,7 +262,7 @@ public abstract class Base64
 
 	/**
 	 * <p>Writes your Base64 encoded data stored in the array of bytes into
-	 * the specified file. (In fact this method writes any data into the file,
+	 * the specified file. (In fact, this method writes any data into the file,
 	 * but it is expected that the array will contain a Base64 encoded
 	 * data.)</p>
 	 * 
@@ -295,7 +295,7 @@ public abstract class Base64
 
 	/**
 	 * <p>Puts your Base64 encoded data stored in the array of bytes into the
-	 * specified data stream. (In fact this method puts any data into the
+	 * specified data stream. (In fact, this method puts any data into the
 	 * stream, but it is expected that the array will contain a Base64 encoded
 	 * data.)
 	 * <!-- (This method has only one version.) -->
@@ -327,7 +327,7 @@ public abstract class Base64
 	// with zeroes.
 	private static void zeroPad(int length)
 	{
-		byte[] padded = new byte[length]; // initialized to zero by JVM
+		byte[] padded = new byte[length]; // initialised to zero by JVM
 		System.arraycopy(bytes, 0, padded, 0, bytes.length);
 		bytes = padded;
 	}

@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -1343,7 +1343,7 @@ public class Spojenie
 	{
 		if (null == údajePožiadavky) return null;
 
-		Vector<String> zoznam = new Vector<String>();
+		Vector<String> zoznam = new Vector<>();
 
 		for (Map.Entry<String, List<String>> údaj : údajePožiadavky.entrySet())
 		{
@@ -1474,7 +1474,7 @@ public class Spojenie
 	{
 		if (null == údajeOdpovede) return null;
 
-		Vector<String> zoznam = new Vector<String>();
+		Vector<String> zoznam = new Vector<>();
 
 		for (Map.Entry<String, List<String>> údaj : údajeOdpovede.entrySet())
 		{
@@ -1716,8 +1716,7 @@ public class Spojenie
 	}
 
 	// Mapa MIME typov.
-	private final static TreeMap<String, String> mimeMapa =
-		new TreeMap<String, String>();
+	private final static TreeMap<String, String> mimeMapa = new TreeMap<>();
 
 	// Metóda slúžiaca na naplnenie MIME mapy.
 	private static void naplňMIMEMapu()

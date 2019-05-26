@@ -356,7 +356,7 @@ public class AnimatedGifEncoder
 		indexedPixels = new byte[nPix];
 		NeuQuant nq = new NeuQuant(pixels, len, sample);
 
-		// initialize quantizer
+		// initialise quantizer
 		colorTab = nq.process(); // create reduced palette
 
 		// convert map from BGR to RGB

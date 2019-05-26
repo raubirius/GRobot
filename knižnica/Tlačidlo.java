@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -164,11 +164,12 @@ public class Tlačidlo extends JButton implements Poloha
 					}
 				}
 
-			if (null != ÚdajeUdalostí.poslednéTlačidlo &&
-				null != ÚdajeUdalostí.poslednéTlačidlo.skript)
+			Skript skript;
+
+			if (null != ÚdajeUdalostí.poslednéTlačidlo && (null !=
+				(skript = ÚdajeUdalostí.poslednéTlačidlo.skript())))
 			{
-				int kódSkriptu = Svet.vykonajSkript(
-					ÚdajeUdalostí.poslednéTlačidlo.skript);
+				int kódSkriptu = skript.vykonaj();
 				if (0 != kódSkriptu)
 					Svet.formulujChybuSkriptu(
 						kódSkriptu, "Tlačidlo…");
@@ -177,7 +178,12 @@ public class Tlačidlo extends JButton implements Poloha
 	};
 
 	// Skript položky…
-	private String[] skript = null;
+	private Skript skript = null;
+	private String[] riadkySkriptu = null;
+
+	// TODO: umožniť definovať vlastný „(bez)menný“ priestor premenných
+	//	s možnosťami prístupu k vlastnostiam tlačidla – podobne pre ostatné
+	//	ovládacie prvky podporujúce skriptovanie
 
 	// Určuje predvolené hodnoty vlastností tlačidla
 	private void vytvor()
@@ -323,7 +329,7 @@ public class Tlačidlo extends JButton implements Poloha
 	 * aktivované} a {@link #označené() označené} – {@link #zvolené()
 	 * zvolené}!</b>
 	 * Metóda {@link #aktivované() aktivované} a jej alias {@link 
-	 * #zvolené() zvolené} zisťujú, či bolo stanovené tlačidlo naposledny
+	 * #zvolené() zvolené} zisťujú, či bolo stanovené tlačidlo naposledy
 	 * aktivované (zvolené). Metóda {@link #aktívne() aktívne} overuje,
 	 * či je stanovené tlačidlo použiteľné (stlačiteľné) a metóda {@link 
 	 * #označené() označené} zisťuje, či bolo tlačidlo takzvane
@@ -727,7 +733,7 @@ public class Tlačidlo extends JButton implements Poloha
 	 * aktivované} a {@link #označené() označené} – {@link #zvolené()
 	 * zvolené}!</b>
 	 * Metóda {@link #aktivované() aktivované} a jej alias {@link 
-	 * #zvolené() zvolené} zisťujú, či bolo stanovené tlačidlo naposledny
+	 * #zvolené() zvolené} zisťujú, či bolo stanovené tlačidlo naposledy
 	 * aktivované (zvolené). Metóda {@link #aktívne() aktívne} overuje,
 	 * či je stanovené tlačidlo použiteľné (stlačiteľné) a metóda {@link 
 	 * #označené() označené} zisťuje, či bolo tlačidlo takzvane
@@ -780,7 +786,7 @@ public class Tlačidlo extends JButton implements Poloha
 	 * aktivované} a {@link #označené() označené} – {@link #zvolené()
 	 * zvolené}!</b>
 	 * Metóda {@link #aktivované() aktivované} a jej alias {@link 
-	 * #zvolené() zvolené} zisťujú, či bolo stanovené tlačidlo naposledny
+	 * #zvolené() zvolené} zisťujú, či bolo stanovené tlačidlo naposledy
 	 * aktivované (zvolené). Metóda {@link #aktívne() aktívne} overuje,
 	 * či je stanovené tlačidlo použiteľné (stlačiteľné) a metóda {@link 
 	 * #označené() označené} zisťuje, či bolo tlačidlo takzvane
@@ -1860,11 +1866,36 @@ public class Tlačidlo extends JButton implements Poloha
 	 * 
 	 * @return skript priradený k tomuto tlačidlu alebo {@code valnull}
 	 * 
+	 * @see #riadkySkriptu()
 	 * @see #skript(String[])
 	 * @see #skript(String)
+	 * @see #skript(Skript)
 	 * @see Svet#vykonajSkript(String[])
+	 * @see Skript
 	 */
-	public String[] skript() { return skript; }
+	public Skript skript()
+	{
+		if (null == skript && null != riadkySkriptu)
+			skript = Skript.vyrob(riadkySkriptu);
+		return skript;
+	}
+
+	/**
+	 * <p>Vráti riadky skriptu, ak bol skript k tomuto tlačidlu priradený
+	 * v textovej forme. V opačnom prípade vráti {@code valnull}, pričom
+	 * tlačidlo môže mať definovaný skript – pozri aj metódu {@link 
+	 * #skript() skript}.</p>
+	 * 
+	 * @return skript priradený k tomuto tlačidlu alebo {@code valnull}
+	 * 
+	 * @see #skript()
+	 * @see #skript(String[])
+	 * @see #skript(String)
+	 * @see #skript(Skript)
+	 * @see Svet#vykonajSkript(String[])
+	 * @see Skript
+	 */
+	public String[] riadkySkriptu() { return riadkySkriptu; }
 
 	/**
 	 * <p>Priradí k tomuto tlačidlu skript, ktorý bude automaticky vykonaný
@@ -1875,10 +1906,17 @@ public class Tlačidlo extends JButton implements Poloha
 	 * @param riadky skript vo forme poľa reťazcov (riadkov skriptu)
 	 * 
 	 * @see #skript()
+	 * @see #riadkySkriptu()
 	 * @see #skript(String)
+	 * @see #skript(Skript)
 	 * @see Svet#vykonajSkript(String[])
+	 * @see Skript
 	 */
-	public void skript(String[] riadky) { this.skript = riadky; }
+	public void skript(String[] riadky)
+	{
+		this.riadkySkriptu = riadky;
+		this.skript = null;
+	}
 
 	/**
 	 * <p>Priradí k tomuto tlačidlu skript, ktorý bude automaticky vykonaný
@@ -1890,12 +1928,40 @@ public class Tlačidlo extends JButton implements Poloha
 	 *     nového riadka
 	 * 
 	 * @see #skript()
+	 * @see #riadkySkriptu()
 	 * @see #skript(String[])
+	 * @see #skript(Skript)
 	 * @see Svet#vykonajSkript(String[])
+	 * @see Skript
 	 */
 	public void skript(String skript)
 	{
-		String riadky[] = Svet.vykonajSkriptRiadkovač.split(skript);
-		this.skript = riadky;
+		if (null == skript) this.riadkySkriptu = null; else
+		{
+			String riadky[] = Skript.vykonajSkriptRiadkovač.split(skript);
+			this.riadkySkriptu = riadky;
+		}
+		this.skript = null;
+	}
+
+	/**
+	 * <p>Priradí k tomuto tlačidlu skript, ktorý bude automaticky vykonaný
+	 * po jeho zvolení. (Pozri aj metódu {@link Svet#vykonajSkript(String[])
+	 * vykonajSkript} a triedu {@link Skript Skript}.) Ak chcete skript
+	 * tlačidla vymazať, zadajte hodnotu {@code valnull}.</p>
+	 * 
+	 * @param skript inštanicia triedy {@link Skript Skript}
+	 * 
+	 * @see #skript()
+	 * @see #riadkySkriptu()
+	 * @see #skript(String[])
+	 * @see #skript(String)
+	 * @see Svet#vykonajSkript(String[])
+	 * @see Skript
+	 */
+	public void skript(Skript skript)
+	{
+		this.riadkySkriptu = null;
+		this.skript = skript;
 	}
 }

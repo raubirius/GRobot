@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
@@ -80,6 +81,8 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
 
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -96,9 +99,6 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -106,12 +106,12 @@ import java.text.NumberFormat;
 import java.net.URI;
 import java.net.URLEncoder;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.Stack;
 import java.util.TooManyListenersException;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -150,29 +150,14 @@ import static knižnica.Konštanty.minorVersion;
 import static knižnica.Konštanty.versionString;
 import static knižnica.Konštanty.riadok;
 
-import static knižnica.Konštanty.ČAKAŤ;
-import static knižnica.Konštanty.ČÍSELNÁ_PREMENNÁ;
-import static knižnica.Konštanty.FAREBNÁ_PREMENNÁ;
-import static knižnica.Konštanty.CHYBA_DVOJITÁ_MENOVKA;
-import static knižnica.Konštanty.CHYBA_CHÝBAJÚCA_MENOVKA;
-import static knižnica.Konštanty.CHYBA_NEZNÁMA_MENOVKA;
-import static knižnica.Konštanty.CHYBA_NEZNÁMA_ŠTRUKTÚRA;
-import static knižnica.Konštanty.CHYBA_NEZNÁME_MENO;
-import static knižnica.Konštanty.CHYBA_NEZNÁME_SLOVO;
+import static knižnica.Konštanty.CHYBA_VOLANIA_SKRIPTU;
+import static knižnica.Konštanty.CHYBA_ČÍTANIA_SKRIPTU;
 import static knižnica.Konštanty.CHYBA_NEZNÁMY_PRÍKAZ;
-import static knižnica.Konštanty.CHYBA_VYKONANIA_PRÍKAZU;
-import static knižnica.Konštanty.POLOHOVÁ_PREMENNÁ;
-import static knižnica.Konštanty.PRERUŠIŤ;
-import static knižnica.Konštanty.REŤAZCOVÁ_PREMENNÁ;
 import static knižnica.Konštanty.SPÔSOB_DEAKTIVÁCIA;
 import static knižnica.Konštanty.UKONČENIE_CHYBOU;
 import static knižnica.Konštanty.UKONČENIE_SKRIPTU;
 import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
-import static knižnica.Konštanty.VYPÍSAŤ_MENOVKU;
-import static knižnica.Konštanty.VYPÍSAŤ_PREMENNÉ;
 import static knižnica.Konštanty.VYPÍSAŤ_PRÍKAZ;
-import static knižnica.Konštanty.VYPÍSAŤ_RIADOK;
-import static knižnica.Konštanty.ZABRÁNIŤ_VYKONANIU;
 import static knižnica.Konštanty.ŽIADNA_CHYBA;
 
 
@@ -188,6 +173,7 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
 			hlavný robot a všetci roboti
 			rozmery
 			rozmery a poloha hlavného okna
+			titulok
 			okraje
 			viditeľnosť, upevnenie a zbalenie
 			vzdialenosti
@@ -456,9 +442,6 @@ public final class Svet extends JFrame
 	// Príznak uloženia konfigurácie sveta (a plátien)
 	private static boolean uložKonfiguráciuSveta = false;
 
-	// Kód poslednej chyby
-	private static int poslednáChyba = 0;
-
 	// Aktívna inštancia v interaktívnom režime
 	private static String interaktívnaInštancia = null;
 
@@ -515,6 +498,7 @@ public final class Svet extends JFrame
 						počiatočnáVýška == svet.getHeight() &&
 						počiatočnéX == svet.getLocation().x &&
 						počiatočnéY == svet.getLocation().y &&
+						počiatočnýStav == svet.getExtendedState() &&
 						(null == ObsluhaUdalostí.počúvadlo ||
 							(!ObsluhaUdalostí.počúvadlo.konfiguráciaZmenená() &&
 							!ObsluhaUdalostí.počúvadlo.konfiguraciaZmenena())))
@@ -558,15 +542,40 @@ public final class Svet extends JFrame
 							konfiguračnýSúbor.aktívnaSekcia.
 								mennýPriestorVlastností = "okno";
 
-							konfiguračnýSúbor.zapíšVlastnosť(
-								"x", svet.getLocation().x); // windowX
-							konfiguračnýSúbor.zapíšVlastnosť(
-								"y", svet.getLocation().y); // windowY
+							int stav = svet.getExtendedState();
+
+							if (NORMAL != stav)
+							{
+								konfiguračnýSúbor.zapíšVlastnosť(
+									"x", poslednéX); // windowX
+								konfiguračnýSúbor.zapíšVlastnosť(
+									"y", poslednéY); // windowY
+
+								konfiguračnýSúbor.zapíšVlastnosť(
+									"šírka", poslednáŠírka); // windowWidth
+								konfiguračnýSúbor.zapíšVlastnosť(
+									"výška", poslednáVýška); // windowHeight
+							}
+							else
+							{
+								konfiguračnýSúbor.zapíšVlastnosť(
+									"x", svet.getLocation().x); // windowX
+								konfiguračnýSúbor.zapíšVlastnosť(
+									"y", svet.getLocation().y); // windowY
+
+								konfiguračnýSúbor.zapíšVlastnosť(
+									"šírka", svet.getWidth()); // windowWidth
+								konfiguračnýSúbor.zapíšVlastnosť(
+									"výška", svet.getHeight()); // windowHeight
+							}
 
 							konfiguračnýSúbor.zapíšVlastnosť(
-								"šírka", svet.getWidth()); // windowWidth
+								"minimalizované", 0 != (stav & ICONIFIED));
 							konfiguračnýSúbor.zapíšVlastnosť(
-								"výška", svet.getHeight()); // windowHeight
+								"maximalizované", 0 != (stav & MAXIMIZED_BOTH));
+							// ‼ Zmrzne:
+							// ‼ if (0 != (stav & MAXIMIZED_BOTH))
+							// ‼ 	svet.setExtendedState(stav & ~MAXIMIZED_BOTH);
 						}
 						catch (Exception e)
 						{ GRobotException.vypíšChybovéHlásenia(e); }
@@ -775,13 +784,19 @@ public final class Svet extends JFrame
 					// catch (Exception e) { GRobotException.vypíšChybovéHlásenia(e); }
 				}
 
-			// Počiatočné rozmery a poloha okna (s definovanými
-				// predvolenými hodnotami)
+			// Počiatočné/posledné rozmery a poloha okna (s definovanými
+				// predvolenými hodnotami) a počiatočný stav okna
 
 				private static int počiatočnáŠírka = 600;
 				private static int počiatočnáVýška = 500;
 				private static int počiatočnéX = 25;
 				private static int počiatočnéY = 25;
+				private static int počiatočnýStav = NORMAL;
+
+				private static int poslednáŠírka = 600;
+				private static int poslednáVýška = 500;
+				private static int poslednéX = 25;
+				private static int poslednéY = 25;
 
 			// Viditeľnosť pri štarte (aplikácie môžu oceniť, keď je hlavné
 				// okno pri štarte skryté a aplikácia sa môže inicializovať
@@ -1071,43 +1086,43 @@ public final class Svet extends JFrame
 			// Zoznam komponentov panelov farieb v poli dialógu spúšťaného
 			// metódou „dialóg“
 			private final static Vector<Farba.PanelFarieb> voľbyFariebDialógu =
-				new Vector<Farba.PanelFarieb>();
+				new Vector<>();
 
 			// Zoznam komponentov panelov polôh v poli dialógu spúšťaného
 			// metódou „dialóg“
 			private final static Vector<Bod.PanelPolohy> voľbyPolohyDialógu =
-				new Vector<Bod.PanelPolohy>();
+				new Vector<>();
 
 			// Zoznam komponentov panelov uhlov (smerov) v poli dialógu
 			// spúšťaného metódou „dialóg“
 			private final static Vector<Uhol.PanelSmeru> voľbySmeruDialógu =
-				new Vector<Uhol.PanelSmeru>();
+				new Vector<>();
 
 			// Zoznam komponentov textových riadkov (polí) dialógu spúšťaného
 			// metódou „dialóg“
 			private final static Vector<RobotTextField> textovéRiadkyDialógu =
-				new Vector<RobotTextField>();
+				new Vector<>();
 
 			// Zoznam komponentov volieb („checkboxov“) dialógu spúšťaného
 			// metódou „dialóg“
 			private final static Vector</*Robot/Nie!*/JCheckBox> voľbyDialógu =
-				new Vector</*Robot/Nie!*/JCheckBox>();
+				new Vector<>();
 
 			// Zoznam vstupných komponentov na zadávanie hesiel dialógu
 			// spúšťaného metódou „dialóg“
 			private final static Vector<RobotPasswordField>
-				riadkyHesielDialógu = new Vector<RobotPasswordField>();
+				riadkyHesielDialógu = new Vector<>();
 
 			// Zoznam panelov vnútorne používaných pri procese tvorby dialógov
 			// spúšťaných metódou „dialóg“
 			private final static Vector<JPanel> panelyDialógu =
-				new Vector<JPanel>();
+				new Vector<>();
 
 			// Zoznam komponentov popisov prvkov, ktorý je v niektorých
 			// prípadoch vnútorne používaných pri procese tvorby dialógov
 			// spúšťaných metódou „dialóg“
 			private final static Vector<JLabel> popisyDialógu =
-				new Vector<JLabel>();
+				new Vector<>();
 
 			// Úvodná obrazovka
 			private static JWindow úvodnáObrazovka = null;
@@ -1128,10 +1143,10 @@ public final class Svet extends JFrame
 						new Point(0, 0), "prázdny");
 
 				private final static TreeMap<String, Cursor> kurzory =
-					new TreeMap<String, Cursor>();
+					new TreeMap<>();
 
 				private final static TreeMap<String, Integer>
-					systémovéNázvyKurzorov = new TreeMap<String, Integer>();
+					systémovéNázvyKurzorov = new TreeMap<>();
 				static
 				{
 					systémovéNázvyKurzorov.put("default",   0);
@@ -1204,7 +1219,7 @@ public final class Svet extends JFrame
 
 			// Zoznam na uchovanie odoslaných vstupných (príkazových) riadkov
 			private static Zoznam<String> históriaVstupnéhoRiadka =
-				new Zoznam<String>();
+				new Zoznam<>();
 
 			// Záloha aktuálneho obsahu vstupného riadka pri začatí pohybu
 			// v histórii príkazov; zálohovaná hodnota sa vráti do vstupného
@@ -1465,14 +1480,22 @@ public final class Svet extends JFrame
 
 				svet.addComponentListener(udalostiOkna);
 				svet.addWindowFocusListener(udalostiOkna);
+				svet.addWindowListener(udalostiOkna);
+				svet.addWindowStateListener(udalostiOkna);
 
 				// Nastavenie ďalších vlastností okna aplikácie
 				// …
 
 				// svet.setResizable(false);
-				svet.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				svet.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+					// neurobí nič pri zavretí – resp. tento framework volá
+					// všetky dostupné reakcie zavretie a zatvorenie, ktoré
+					// predvolene vracajú hodnotu true; ak hociktorá z nich
+					// vráti false, tak sa predvolená akcia Svet.koniec()
+					// nevykoná, v opačnom prípade sa vykoná…
+				// svet.setDefaultCloseOperation(EXIT_ON_CLOSE);
 					// zavrie všetky okná
-				// svet.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				// svet.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 					// zavrie len aktuálne okno
 
 				svet.setTitle(versionString);
@@ -1484,6 +1507,29 @@ public final class Svet extends JFrame
 				svet.setSize(počiatočnáŠírka, počiatočnáVýška);
 				svet.setLocation(počiatočnéX, počiatočnéY);
 				svet.setVisible(zobrazPriŠtarte);
+
+				// TODO: Detekcia retina displejov a implementácia mechanizmu
+				// automatického čítania obrázkov s vyšším rozlíšením.
+				// Odoslať na System.err nasledujúce upozornenie pri
+				// prečítaní prvého obrázka, ku ktorému nebola nájdená verzia
+				// s vyšším rozlíšením:
+				// 
+				// Tip: Programovací rámec hľadá pri čítaní obrázkov súbory
+				// s dvojnásobným rozlíšením v tvare:
+				//     «názov-súboru» 2.«príp»,
+				// kde «názov-súboru» je pôvodný názov súboru obrázka,
+				// «príp» je prípona súboru (jpg, png, gif…) a  2 je reťazec,
+				// ktorý treba pripojiť za pôvodný názov súboru, aby ho rámec
+				// vedel identifikovať.
+				// 
+				// Vytvorte verzie obrázkov s vyšším rozlíšením a umiestnite
+				// ich na rovnakú lokalitu ako pôvodné obrázky, aby ich rámec
+				// mohol nájsť. Budú použité automaticky v prípade, že bude
+				// pri spustení detegovaný displej s vysokým rozlíšením
+				// v mierke 2 : 1.
+
+				if (NORMAL != počiatočnýStav)
+					svet.setExtendedState(počiatočnýStav);
 
 				Svet.predvolenáFarbaPozadia();
 				Svet.zalamujTexty();
@@ -1980,7 +2026,8 @@ public final class Svet extends JFrame
 		// Udalosti okna – ObsluhaUdalostí.počúvadlo myši, klávesnice a udalostí komponentov
 		private static class UdalostiOkna implements MouseListener,
 			MouseMotionListener, MouseWheelListener, KeyListener,
-			ComponentListener, WindowFocusListener
+			ComponentListener, WindowFocusListener, WindowListener,
+			WindowStateListener
 		{
 			public void mouseClicked(MouseEvent e)
 			{
@@ -2295,6 +2342,7 @@ public final class Svet extends JFrame
 				}
 			}
 
+
 			public void componentHidden(ComponentEvent e)
 			{
 				ÚdajeUdalostí.poslednáUdalosťOkna = e;
@@ -2388,7 +2436,11 @@ public final class Svet extends JFrame
 				}
 			}
 
-			public void windowGainedFocus(WindowEvent e)
+			public void windowGainedFocus(WindowEvent e) {}
+			public void windowLostFocus(WindowEvent e) {}
+
+
+			public void windowActivated(WindowEvent e)
 			{
 				ÚdajeUdalostí.poslednáUdalosťAktivityOkna = e;
 
@@ -2411,7 +2463,7 @@ public final class Svet extends JFrame
 				}
 			}
 
-			public void windowLostFocus(WindowEvent e)
+			public void windowDeactivated(WindowEvent e)
 			{
 				ÚdajeUdalostí.poslednáUdalosťAktivityOkna = e;
 
@@ -2430,6 +2482,152 @@ public final class Svet extends JFrame
 					{
 						počúvajúci.deaktiváciaOkna();
 						počúvajúci.deaktivaciaOkna();
+					}
+				}
+			}
+
+
+			public void windowClosed(WindowEvent e) {}
+			public void windowDeiconified(WindowEvent e) {}
+			public void windowIconified(WindowEvent e) {}
+
+			public void windowOpened(WindowEvent e)
+			{
+				ÚdajeUdalostí.poslednáUdalosťAktivityOkna = e;
+
+				if (null != ObsluhaUdalostí.počúvadlo)
+				{
+					synchronized (ÚdajeUdalostí.zámokUdalostí)
+					{
+						ObsluhaUdalostí.počúvadlo.otvorenie();
+					}
+				}
+
+				synchronized (ÚdajeUdalostí.zámokUdalostí)
+				{
+					for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+					{
+						počúvajúci.otvorenie();
+					}
+				}
+			}
+
+			public void windowClosing(WindowEvent e)
+			{
+				ÚdajeUdalostí.poslednáUdalosťAktivityOkna = e;
+				boolean zavrieť = true;
+
+				if (null != ObsluhaUdalostí.počúvadlo)
+				{
+					synchronized (ÚdajeUdalostí.zámokUdalostí)
+					{
+						if (!ObsluhaUdalostí.počúvadlo.zavretie())
+							zavrieť = false;
+						if (!ObsluhaUdalostí.počúvadlo.zatvorenie())
+							zavrieť = false;
+					}
+				}
+
+				synchronized (ÚdajeUdalostí.zámokUdalostí)
+				{
+					for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+					{
+						if (!počúvajúci.zavretie())
+							zavrieť = false;
+						if (!počúvajúci.zatvorenie())
+							zavrieť = false;
+					}
+				}
+
+				if (zavrieť) koniec();
+			}
+
+
+			public void windowStateChanged(WindowEvent e)
+			{
+				int stav = e.getNewState();
+
+				if (NORMAL == stav)
+				{
+					poslednáŠírka = svet.getWidth();
+					poslednáVýška = svet.getHeight();
+					poslednéX = svet.getLocation().x;
+					poslednéY = svet.getLocation().y;
+
+				// Nasledujúci „divne odsadený“ komentár zahŕňa vetvu else:
+				// 	System.out.println("  ukladám[" + poslednéX + "," +
+				// 		poslednéY + "," + poslednáŠírka + "," + poslednáVýška +
+				// 		"]");
+				// }
+				// else
+				// {
+				// 	System.out.println("  zachovávam[" + poslednéX + "," +
+				// 		poslednéY + "," + poslednáŠírka + "," + poslednáVýška +
+				// 		"]");
+				}
+
+				// Ak ma má zaujímať len cieľový stav, musím najprv
+				// kontrolovať minimalizáciu, pretože pri „ikonifikácii“
+				// z maximalizovaného stavu je tento stav uchovaný
+				// a prekryl by minimalizáciu
+				if (0 != (stav & ICONIFIED))
+				{
+					ÚdajeUdalostí.poslednáUdalosťAktivityOkna = e;
+
+					if (null != ObsluhaUdalostí.počúvadlo)
+					{
+						synchronized (ÚdajeUdalostí.zámokUdalostí)
+						{
+							ObsluhaUdalostí.počúvadlo.minimalizovanie();
+						}
+					}
+
+					synchronized (ÚdajeUdalostí.zámokUdalostí)
+					{
+						for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+						{
+							počúvajúci.minimalizovanie();
+						}
+					}
+				}
+				else if (0 != (stav & MAXIMIZED_BOTH))
+				{
+					ÚdajeUdalostí.poslednáUdalosťAktivityOkna = e;
+
+					if (null != ObsluhaUdalostí.počúvadlo)
+					{
+						synchronized (ÚdajeUdalostí.zámokUdalostí)
+						{
+							ObsluhaUdalostí.počúvadlo.maximalizovanie();
+						}
+					}
+
+					synchronized (ÚdajeUdalostí.zámokUdalostí)
+					{
+						for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+						{
+							počúvajúci.maximalizovanie();
+						}
+					}
+				}
+				else if (NORMAL == stav)
+				{
+					ÚdajeUdalostí.poslednáUdalosťAktivityOkna = e;
+
+					if (null != ObsluhaUdalostí.počúvadlo)
+					{
+						synchronized (ÚdajeUdalostí.zámokUdalostí)
+						{
+							ObsluhaUdalostí.počúvadlo.obnovenie();
+						}
+					}
+
+					synchronized (ÚdajeUdalostí.zámokUdalostí)
+					{
+						for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+						{
+							počúvajúci.obnovenie();
+						}
 					}
 				}
 			}
@@ -2671,7 +2869,7 @@ public final class Svet extends JFrame
 		 * prijatieVýzvy}. Argument {@code obrátene} určuje smer
 		 * spracovania. Ak je rovný {@code valtrue}, zoznam robotov bude
 		 * spracovaný od konca, to znamená, že prvý bude vyzvaný buď
-		 * naposledny vytvorený robot, alebo robot aktuálne umiestnený na
+		 * naposledy vytvorený robot, alebo robot aktuálne umiestnený na
 		 * konci vnútorného zoznamu robotov. Záleží od toho, či sme
 		 * dodatočne ovplyvňovali poradie robotov metódami {@link 
 		 * GRobot#naVrch() naVrch}, {@link GRobot#naSpodok() naSpodok},
@@ -2793,10 +2991,16 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #najmenšieX() najmenšieX}.</p> */
 		public static double najmensieX() { return -Plátno.šírkaPlátna / 2; }
 
+		/** <p><a class="alias"></a> Alias pre {@link #najmenšieX() najmenšieX}.</p> */
+		public static double minimálneX() { return -Plátno.šírkaPlátna / 2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #najmenšieX() najmenšieX}.</p> */
+		public static double minimalneX() { return -Plátno.šírkaPlátna / 2; }
+
 		/**
-		 * <p><a class="getter"></a> Zistí najmenšiu y-ovú súradnicu sveta. Plátna podlahy
-		 * a stropu majú obmedzenú veľkosť, ktorá je o niečo väčšia ako
-		 * predvolená veľkosť okna aplikácie.</p>
+		 * <p><a class="getter"></a> Zistí najmenšiu y-ovú súradnicu sveta.
+		 * Plátna podlahy a stropu majú obmedzenú veľkosť, ktorá je o niečo
+		 * väčšia ako predvolená veľkosť okna aplikácie.</p>
 		 * 
 		 * @return najmenšia y-ová súradnica plátien
 		 * 
@@ -2809,10 +3013,16 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #najmenšieY() najmenšieY}.</p> */
 		public static double najmensieY() { return -(Plátno.výškaPlátna - 1) / 2; }
 
+		/** <p><a class="alias"></a> Alias pre {@link #najmenšieY() najmenšieY}.</p> */
+		public static double minimálneY() { return -(Plátno.výškaPlátna - 1) / 2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #najmenšieY() najmenšieY}.</p> */
+		public static double minimalneY() { return -(Plátno.výškaPlátna - 1) / 2; }
+
 		/**
-		 * <p><a class="getter"></a> Zistí najväčšiu x-ovú súradnicu sveta. Plátna podlahy
-		 * a stropu majú obmedzenú veľkosť, ktorá je o niečo väčšia ako
-		 * predvolená veľkosť okna aplikácie.</p>
+		 * <p><a class="getter"></a> Zistí najväčšiu x-ovú súradnicu sveta.
+		 * Plátna podlahy a stropu majú obmedzenú veľkosť, ktorá je o niečo
+		 * väčšia ako predvolená veľkosť okna aplikácie.</p>
 		 * 
 		 * @return najväčšia x-ová súradnica plátien
 		 * 
@@ -2825,10 +3035,16 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #najväčšieX() najväčšieX}.</p> */
 		public static double najvacsieX() { return (Plátno.šírkaPlátna - 1) / 2; }
 
+		/** <p><a class="alias"></a> Alias pre {@link #najväčšieX() najväčšieX}.</p> */
+		public static double maximálneX() { return (Plátno.šírkaPlátna - 1) / 2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #najväčšieX() najväčšieX}.</p> */
+		public static double maximalneX() { return (Plátno.šírkaPlátna - 1) / 2; }
+
 		/**
-		 * <p><a class="getter"></a> Zistí najväčšiu y-ovú súradnicu sveta. Plátna podlahy
-		 * a stropu majú obmedzenú veľkosť, ktorá je o niečo väčšia ako
-		 * predvolená veľkosť okna aplikácie.</p>
+		 * <p><a class="getter"></a> Zistí najväčšiu y-ovú súradnicu sveta.
+		 * Plátna podlahy a stropu majú obmedzenú veľkosť, ktorá je o niečo
+		 * väčšia ako predvolená veľkosť okna aplikácie.</p>
 		 * 
 		 * @return najväčšia y-ová súradnica plátien
 		 * 
@@ -2841,6 +3057,12 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #najväčšieY() najväčšieY}.</p> */
 		public static double najvacsieY() { return Plátno.výškaPlátna / 2; }
 
+
+		/** <p><a class="alias"></a> Alias pre {@link #najväčšieY() najväčšieY}.</p> */
+		public static double maximálneY() { return Plátno.výškaPlátna / 2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #najväčšieY() najväčšieY}.</p> */
+		public static double maximalneY() { return Plátno.výškaPlátna / 2; }
 
 		/**
 		 * <p>Zistí šírku plátien sveta.</p>
@@ -2926,6 +3148,51 @@ public final class Svet extends JFrame
 
 		/** <p><a class="alias"></a> Alias pre {@link #výškaOkna() výškaOkna}.</p> */
 		public static int vyskaOkna() { return výškaOkna(); }
+
+
+		// Titulok
+
+		/**
+		 * <p>Vráti titulok hlavného okna aplikácie. Ak metóda zistí, že
+		 * aktuálny titulok sa zhoduje s predvoleným titulkom (prípadne ak
+		 * hlavné okno ešte nejestvuje), tak vráti hodnotu
+		 * {@code valnull}.</p>
+		 * 
+		 * @return titulok hlavného okna aplikácie alebo {@code valnull}
+		 */
+		public static String titulok()
+		{
+			if (null != oknoCelejObrazovky)
+			{
+				String titulok = oknoCelejObrazovky.getTitle();
+				if (versionString.equals(titulok)) titulok = null;
+				return titulok;
+			}
+
+			if (null != svet)
+			{
+				String titulok = svet.getTitle();
+				if (versionString.equals(titulok)) titulok = null;
+				return titulok;
+			}
+
+			return null;
+		}
+
+		/**
+		 * <p>Nastaví titulok hlavného okna aplikácie. Ak je zadaná hodnota
+		 * {@code valnull}, tak metóda nastaví predvolený titulok okna.</p>
+		 * 
+		 * @param titulok nový titulok hlavného okna aplikácie alebo
+		 *     {@code valnull} na nastavenie predvoleného titulku okna
+		 */
+		public static void titulok(String titulok)
+		{
+			if (null == titulok) titulok = versionString;
+			if (null != svet) svet.setTitle(titulok);
+			if (null != oknoCelejObrazovky)
+				oknoCelejObrazovky.setTitle(titulok);
+		}
 
 
 		// Okraje
@@ -3271,6 +3538,240 @@ public final class Svet extends JFrame
 
 		/** <p><a class="alias"></a> Alias pre {@link #vystreď() vystreď}.</p> */
 		public static void vystred() { svet.setLocationRelativeTo(null); }
+
+		/**
+		 * <p>Umiestni okno sveta na určené zobrazovacie zariadenie.
+		 * Zariadenie je určené jeho poradovým číslom (indexom; čiže
+		 * nula označuje prvé zariadenie). Okno je umiestnené tak, aby
+		 * bola na určenom zariadení viditeľná celá jeho plocha, ak to
+		 * rozmery okna dovoľujú. Ak je okno väčšie, než sú rozmery
+		 * zariadenia, tak je umiestnené do ľavého horného rohu
+		 * zariadenia. Ak zariadenie so zadaným indexom nejestvuje,
+		 * tak nie je vykonaná žiadna operácia.</p>
+		 * 
+		 * @param zariadenie poradové číslo zariadenia, na ktoré má byť
+		 *     okno umiestnené
+		 * 
+		 * @see #početZariadení()
+		 * @see #premiestniNaZariadenie()
+		 */
+		public static void premiestniNaZariadenie(int zariadenie)
+		{
+			GraphicsDevice[] zariadenia = GraphicsEnvironment.
+				getLocalGraphicsEnvironment().getScreenDevices();
+
+			if (zariadenie < zariadenia.length)
+			{
+				GraphicsConfiguration konfigurácia =
+					zariadenia[zariadenie].getDefaultConfiguration();
+				Rectangle2D hraniceZariadenia = konfigurácia.getBounds();
+				Rectangle2D hraniceOkna = svet.getBounds();
+
+				double polohaX =
+					(hraniceOkna.getX() + hraniceOkna.getWidth()) >
+						(hraniceZariadenia.getX() +
+							hraniceZariadenia.getWidth()) ?
+					(hraniceZariadenia.getX() + hraniceZariadenia.getWidth() -
+						hraniceOkna.getWidth()) : hraniceOkna.getX();
+				double polohaY =
+					(hraniceOkna.getY() + hraniceOkna.getHeight()) >
+						(hraniceZariadenia.getY() +
+							hraniceZariadenia.getHeight()) ?
+					(hraniceZariadenia.getY() + hraniceZariadenia.getHeight() -
+						hraniceOkna.getHeight()) : hraniceOkna.getY();
+
+				if (polohaX < hraniceZariadenia.getX())
+					polohaX = hraniceZariadenia.getX();
+				if (polohaY < hraniceZariadenia.getY())
+					polohaY = hraniceZariadenia.getY();
+
+				svet.setLocation((int)polohaX, (int)polohaY);
+			}
+		}
+
+		/**
+		 * <p>Umiestni okno sveta na predvolené zobrazovacie zariadenie.
+		 * Okno je umiestnené tak, aby bola viditeľná celá jeho plocha,
+		 * ak to jeho rozmery dovoľujú. Ak je okno väčšie, než sú rozmery
+		 * zariadenia, tak je umiestnené do ľavého horného rohu.</p>
+		 * 
+		 * @see #početZariadení()
+		 * @see #premiestniNaZariadenie(int)
+		 */
+		public static void premiestniNaZariadenie()
+		{ premiestniNaZariadenie(0); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #premiestniNaZariadenie(int) premiestniNaZariadenie}.</p> */
+		public static void premiestniNaObrazovku(int zariadenie)
+		{ premiestniNaZariadenie(zariadenie); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #premiestniNaZariadenie() premiestniNaZariadenie}.</p> */
+		public static void premiestniNaObrazovku()
+		{ premiestniNaZariadenie(0); }
+
+
+		/** <p><a class="alias"></a> Alias pre {@link #premiestniNaZariadenie(int) premiestniNaZariadenie}.</p> */
+		public static void presuňNaZariadenie(int zariadenie)
+		{ premiestniNaZariadenie(zariadenie); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #premiestniNaZariadenie() premiestniNaZariadenie}.</p> */
+		public static void presuňNaZariadenie()
+		{ premiestniNaZariadenie(0); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #premiestniNaZariadenie(int) premiestniNaZariadenie}.</p> */
+		public static void presunNaZariadenie(int zariadenie)
+		{ premiestniNaZariadenie(zariadenie); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #premiestniNaZariadenie() premiestniNaZariadenie}.</p> */
+		public static void presunNaZariadenie()
+		{ premiestniNaZariadenie(0); }
+
+
+		/** <p><a class="alias"></a> Alias pre {@link #premiestniNaZariadenie(int) premiestniNaZariadenie}.</p> */
+		public static void presuňNaObrazovku(int zariadenie)
+		{ premiestniNaZariadenie(zariadenie); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #premiestniNaZariadenie() premiestniNaZariadenie}.</p> */
+		public static void presuňNaObrazovku()
+		{ premiestniNaZariadenie(0); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #premiestniNaZariadenie(int) premiestniNaZariadenie}.</p> */
+		public static void presunNaObrazovku(int zariadenie)
+		{ premiestniNaZariadenie(zariadenie); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #premiestniNaZariadenie() premiestniNaZariadenie}.</p> */
+		public static void presunNaObrazovku()
+		{ premiestniNaZariadenie(0); }
+
+
+		/**
+		 * <p>Zistí, či je okno sveta v maximalizovanom stave.</p>
+		 * 
+		 * @return ak je okno sveta v maximalizovanom stave, tak vráti hodnotu
+		 *     {@code valtrue}, inak {@code valfalse}
+		 * 
+		 * @see ObsluhaUdalostí#maximalizovanie()
+		 * @see #maximalizuj()
+		 * @see #minimalizovaný()
+		 * @see #minimalizuj()
+		 * @see #normálny()
+		 * @see #obnov()
+		 */
+		public static boolean maximalizovaný()
+		{
+			return 0 != (svet.getExtendedState() & MAXIMIZED_BOTH);
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #maximalizovaný() maximalizovaný}.</p> */
+		public static boolean maximalizovany()
+		{
+			return maximalizovaný();
+		}
+
+
+		/**
+		 * <p>Pokúsi sa prepnúť okno sveta do maximalizovaného stavu. O tom,
+		 * či sa táto akcia podarila sa dá presvedčiť volaním metódy {@link 
+		 * #maximalizovaný() maximalizovaný}.</p>
+		 * 
+		 * @see ObsluhaUdalostí#maximalizovanie()
+		 * @see #maximalizovaný()
+		 * @see #minimalizovaný()
+		 * @see #minimalizuj()
+		 * @see #normálny()
+		 * @see #obnov()
+		 */
+		public static void maximalizuj()
+		{
+			svet.setExtendedState(MAXIMIZED_BOTH);
+		}
+
+
+		/**
+		 * <p>Zistí, či je okno sveta v minimalizovanom stave.</p>
+		 * 
+		 * @return ak je okno sveta v minimalizovanom stave, tak vráti hodnotu
+		 *     {@code valtrue}, inak {@code valfalse}
+		 * 
+		 * @see ObsluhaUdalostí#minimalizovanie()
+		 * @see #maximalizovaný()
+		 * @see #maximalizuj()
+		 * @see #minimalizuj()
+		 * @see #normálny()
+		 * @see #obnov()
+		 */
+		public static boolean minimalizovaný()
+		{
+			return 0 != (svet.getExtendedState() & ICONIFIED);
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #minimalizovaný() minimalizovaný}.</p> */
+		public static boolean minimalizovany()
+		{
+			return minimalizovaný();
+		}
+
+
+		/**
+		 * <p>Pokúsi sa prepnúť okno sveta do minimalizovaného stavu. O tom,
+		 * či sa táto akcia podarila sa dá presvedčiť volaním metódy {@link 
+		 * #minimalizovaný() minimalizovaný}.</p>
+		 * 
+		 * @see ObsluhaUdalostí#minimalizovanie()
+		 * @see #maximalizovaný()
+		 * @see #maximalizuj()
+		 * @see #minimalizovaný()
+		 * @see #normálny()
+		 * @see #obnov()
+		 */
+		public static void minimalizuj()
+		{
+			svet.setExtendedState(ICONIFIED);
+		}
+
+
+		/**
+		 * <p>Zistí, či je okno sveta v normálnom stave.</p>
+		 * 
+		 * @return ak je okno sveta v normálnom stave, tak vráti hodnotu
+		 *     {@code valtrue}, inak {@code valfalse}
+		 * 
+		 * @see ObsluhaUdalostí#obnovenie()
+		 * @see #maximalizovaný()
+		 * @see #maximalizuj()
+		 * @see #minimalizovaný()
+		 * @see #minimalizuj()
+		 * @see #obnov()
+		 */
+		public static boolean normálny()
+		{
+			return NORMAL == svet.getExtendedState();
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #normálny() normálny}.</p> */
+		public static boolean normalny()
+		{
+			return normálny();
+		}
+
+		/**
+		 * <p>Pokúsi sa prepnúť okno sveta do normálneho stavu. (V zmysle
+		 * „nie maximalizovaného a nie minimalizovaného“ stavu.) O tom, či
+		 * sa táto akcia podarila sa dá presvedčiť volaním metódy {@link 
+		 * #normálny() normálny}.</p>
+		 * 
+		 * @see ObsluhaUdalostí#obnovenie()
+		 * @see #maximalizovaný()
+		 * @see #maximalizuj()
+		 * @see #minimalizovaný()
+		 * @see #minimalizuj()
+		 * @see #normálny()
+		 * @see #obnov()
+		 */
+		public static void obnov()
+		{
+			svet.setExtendedState(NORMAL);
+		}
 
 
 		// Vzdialenosti
@@ -4656,7 +5157,7 @@ public final class Svet extends JFrame
 		 *     0 – 255
 		 *     (0 – neviditeľná farba; 255 – nepriehľadná farba)
 		 * @return objekt typu {@link Farba Farba} vytvorený podľa zadaných
-		 *     parametrov
+		 *     hodnôt parametrov
 		 * 
 		 * @see #vyplň(Color)
 		 */
@@ -7232,11 +7733,13 @@ public final class Svet extends JFrame
 
 			// 31. 7. 2018 bol pri používaní programovacieho rámca odhalený
 			// zaujímavý problém. Ak je okno sveta zobrazené, tak sa hlavná
-			// ponuka počas jej vytvárania neaktualizuje… Tento problém zostával
-			// dlho skrytý, pretože vo všetkých predchádzajúcich prípadoch
-			// bolo okno sveta počas vytvárania ponuky z optimalizačných
-			// dôvodov skryté. (Toto je aj naďalej odporúčaný postup, no
-			// i napriek tomu sem bola pridaná nasledujúca záplata.)
+			// ponuka počas jej vytvárania neaktualizuje… Tento problém
+			// zostával dlho skrytý, pretože vo všetkých predchádzajúcich
+			// prípadoch bolo okno sveta počas vytvárania ponuky
+			// z optimalizačných dôvodov skryté. (Toto je aj naďalej
+			// odporúčaný postup, no i napriek tomu sem bola pridaná
+			// nasledujúca záplata, pretože sa tým zabráni zbytočnému
+			// prekresľovaniu a prípadnému „blikaniu“.)
 			if (zobrazený()) hlavnáPonuka.updateUI();
 		}
 
@@ -7287,11 +7790,13 @@ public final class Svet extends JFrame
 
 			// 31. 7. 2018 bol pri používaní programovacieho rámca odhalený
 			// zaujímavý problém. Ak je okno sveta zobrazené, tak sa hlavná
-			// ponuka počas jej vytvárania neaktualizuje… Tento problém zostával
-			// dlho skrytý, pretože vo všetkých predchádzajúcich prípadoch
-			// bolo okno sveta počas vytvárania ponuky z optimalizačných
-			// dôvodov skryté. (Toto je aj naďalej odporúčaný postup, no
-			// i napriek tomu sem bola pridaná nasledujúca záplata.)
+			// ponuka počas jej vytvárania neaktualizuje… Tento problém
+			// zostával dlho skrytý, pretože vo všetkých predchádzajúcich
+			// prípadoch bolo okno sveta počas vytvárania ponuky
+			// z optimalizačných dôvodov skryté. (Toto je aj naďalej
+			// odporúčaný postup, no i napriek tomu sem bola pridaná
+			// nasledujúca záplata, pretože sa tým zabráni zbytočnému
+			// prekresľovaniu a prípadnému „blikaniu“.)
 			if (zobrazený()) hlavnáPonuka.updateUI();
 		}
 
@@ -7310,7 +7815,7 @@ public final class Svet extends JFrame
 		 * odložíme do pomocnej premennej) alebo použiť iný spôsob
 		 * identifikácie. Napríklad metódu {@link PoložkaPonuky#aktivovaná()
 		 * aktivovaná}, ktorá vráti {@code valtrue} v prípade, že bola táto
-		 * položka naposledny aktivovaná.</p>
+		 * položka naposledy aktivovaná.</p>
 		 * 
 		 * @param text reťazec textu pridávanej položky ponuky
 		 * @return objekt novej položky ponuky ({@link PoložkaPonuky
@@ -7635,7 +8140,7 @@ public final class Svet extends JFrame
 				return new String[] {text};
 
 			StringBuffer naZmeny = new StringBuffer(text);
-			Vector<String> zoznam = new Vector<String>();
+			Vector<String> zoznam = new Vector<>();
 
 			int j;
 			while (-1 != (j = naZmeny.indexOf("\t")))
@@ -7696,7 +8201,7 @@ public final class Svet extends JFrame
 				return new String[] {text};
 
 			StringBuffer naZmeny = new StringBuffer(text);
-			Vector<String> zoznam = new Vector<String>();
+			Vector<String> zoznam = new Vector<>();
 
 			int j;
 			while (-1 != (j = naZmeny.indexOf("\t")))
@@ -8151,7 +8656,7 @@ public final class Svet extends JFrame
 		 * <!-- p class="remark"><b>Poznámka:</b> Z dôvodu konzistencie je
 		 * k tejto metóde definovaný alias {@link #obrazok(Image)
 		 * obrazok(obrázok)} (s názvom bez diakritiky), ktorý má korešpondovať
-		 * s aliasom metódy {@link #ikona() ikona()}.</p> NEDÁ SA TODO –
+		 * s aliasom metódy {@link #ikona() ikona()}.</p> NEDÁ SA – TODO:
 		 * vysvetliť prečo a podotknúť, že to neprekáža, lebo metóda
 		 * akceptuje oboje -->
 		 * 
@@ -8175,7 +8680,7 @@ public final class Svet extends JFrame
 		 * ktorý by vracal objekt typu {@link Obrazok Obrazok} (t. j. triedy
 		 * aliasu, ktorej názov tiež neobsahuje diakritiku). Z toho dôvodu je
 		 * alias nahradený metódou {@link #obrazok() obrazok} (bez
-		 * diakritiky).</p> NEDÁ SA – vysvetliť prečo a podotknúť, že to
+		 * diakritiky).</p> NEDÁ SA – TODO: vysvetliť prečo a podotknúť, že to
 		 * bolo vyriešené tak, že táto metóda vracia objekt typu Obrazok bez
 		 * diakritiky, ktorý je akceptovaný aj všade tam, kde by sme inak
 		 * očakávali objekt typu Obrázok s diakritikou. -->
@@ -8195,7 +8700,7 @@ public final class Svet extends JFrame
 		 * použitý aj objekt typu {@link Obrázok Obrázok}). Súradnice {@code 
 		 * x} a {@code x} určujú aktívny bod kurzora (<em>hot spot</em>),
 		 * t. j. bod, ktorý bude považovaný za „špičku“, či „stred“ kurzora
-		 * (záleží od tvaru kurzora). Súradnice [0, 0] sú považované za
+		 * (záleží na tvare kurzora). Súradnice [0, 0] sú považované za
 		 * stred kurzora. Rozsah súradníc je určený rozmermi obrázka.
 		 * Odporúčame zvoliť také rozmery obrázka, ktoré sú štandardné pre
 		 * kurzory, napríklad 32 × 32 bodov, inak by mohlo dôjsť
@@ -8453,7 +8958,7 @@ public final class Svet extends JFrame
 		 * do ikony v systémovej oblasti.</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} AplikáciaVSystémovejOblasti {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -8534,6 +9039,12 @@ public final class Svet extends JFrame
 					}
 				}
 
+				{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@link GRobot#zavretie zavretie}()
+				{
+					{@code comm// Touto reakciou vypneme klasickú akciu zavretia okna.}
+					{@code kwdreturn} {@code valfalse};
+				}
+
 				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#skrytieOkna() skrytieOkna}()
 				{
 					{@code comm// Pri skrytí okna aplikácie bude zobrazená systémová ikona.}
@@ -8542,7 +9053,9 @@ public final class Svet extends JFrame
 
 				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}... args)
 				{
+					{@link Svet Svet}.{@link Svet#skry() skry}();
 					{@code kwdnew} AplikáciaVSystémovejOblasti();
+					{@link Svet Svet}.{@link Svet#zobraz() zobraz}();
 				}
 			}
 			</pre>
@@ -9633,23 +10146,31 @@ public final class Svet extends JFrame
 					konfiguračnýSúbor.aktívnaSekcia.
 						mennýPriestorVlastností = "okno";
 
-					počiatočnéX = konfiguračnýSúbor.
+					poslednéX = počiatočnéX = konfiguračnýSúbor.
 						čítajVlastnosť("x", // windowX
 							// Long.valueOf(x)).intValue();
 							x);
-					počiatočnéY = konfiguračnýSúbor.
+					poslednéY = počiatočnéY = konfiguračnýSúbor.
 						čítajVlastnosť("y", // windowY
 							// Long.valueOf(y)).intValue();
 							y);
 
-					počiatočnáŠírka = konfiguračnýSúbor.
+					poslednáŠírka = počiatočnáŠírka = konfiguračnýSúbor.
 						čítajVlastnosť("šírka", // windowWidth
 							// Long.valueOf(šírka)).intValue();
 							šírka);
-					počiatočnáVýška = konfiguračnýSúbor.
+					poslednáVýška = počiatočnáVýška = konfiguračnýSúbor.
 						čítajVlastnosť("výška", // windowHeight
 							// Long.valueOf(výška)).intValue();
 							výška);
+
+					počiatočnýStav = NORMAL;
+					if (konfiguračnýSúbor.čítajVlastnosť(
+						"minimalizované", false))
+						počiatočnýStav |= ICONIFIED;
+					if (konfiguračnýSúbor.čítajVlastnosť(
+						"maximalizované", false))
+						počiatočnýStav |= MAXIMIZED_BOTH;
 				}
 				catch (Exception e)
 				{ GRobotException.vypíšChybovéHlásenia(e); }
@@ -9737,7 +10258,7 @@ public final class Svet extends JFrame
 		public static void použiKonfiguráciu(
 			int x, int y, int šírka, int výška)
 		{ použiKonfiguráciu(predvolenýNázovKonfiguračnéhoSúboru,
-				x, y, šírka, výška); }
+			x, y, šírka, výška); }
 
 		/** <p><a class="alias"></a> Alias pre {@link #použiKonfiguráciu(int, int, int, int) použiKonfiguráciu}.</p> */
 		public static void pouziKonfiguraciu(
@@ -9934,7 +10455,7 @@ public final class Svet extends JFrame
 		 * schémy:</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.{@link GRobot GRobot};<!-- TODO skontrolovať všetky príklady, ktoré takto importujú knižnicu, či fungujú, ak nie, nahradiť GRobot * … -->
 
 			{@code kwdpublic} {@code typeclass} UkážkaKonfigurácie {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -10618,7 +11139,7 @@ public final class Svet extends JFrame
 		 * rovnako ako jej verzia bez tohto parametra ({@link #otvor(String)
 		 * otvor}), čiže pokúsi sa súbor (dokument) otvoriť v zmysle jeho
 		 * spustenia (čo nadobúda lepší význam napríklad v prípade skriptov).
-		 * Ak je hodnota parametra rovná {@code valtrue}, tak sa metóda
+		 * Ak sa hodnota parametra rovná {@code valtrue}, tak sa metóda
 		 * pokúsi zadaný súbor (dokument) otvoriť v predvolenom editore.
 		 * (Ak tento nie je definovaný, tak je pravdepodobné, že operačný
 		 * systém súbor otvorí/spustí rovnakým spôsobom ako v prvom
@@ -10735,10 +11256,10 @@ public final class Svet extends JFrame
 			/**
 			 * <p>Toto rozhranie slúži na presmerovanie výstupov a denníkov
 			 * inštancií príkazového riadka. Princíp je jednoduchý, len čo
-			 * je do niektorého z atribútov TODO vložená implementácia
+			 * je do niektorého z atribútov …<!--TODO--> vložená implementácia
 			 * tohto rozhrania (dá sa použiť aj funkcionálna syntax, keďže
 			 * rozhranie má jedinú metódu), tak je výstup súvisiacej metódy
-			 * (TODO) presmerovaný do metódy implementovaného rozhrania.</p>
+			 * (…<!--TODO-->) presmerovaný do metódy implementovaného rozhrania.</p>
 			 */
 			public static interface PresmerovanieVýstupu
 			{
@@ -11075,7 +11596,7 @@ public final class Svet extends JFrame
 			public void debug(Object... texty)
 			{
 				if (null != ladenie) ladenie.spracuj(texty);
-				else if (Svet.ladenie)
+				else if (Skript.ladenie)
 				{
 					// Vypísať na vnútornú konzolu:
 					if (null != farbaLadenia)
@@ -11186,8 +11707,9 @@ public final class Svet extends JFrame
 			}
 
 			/**
-			 * <p>Vykonané automaticky po ukončení externého procesu.
-			 * TODO</p>
+			 * <p>Táto metóda je vykonaná automaticky po ukončení
+			 * externého procesu.
+			 * <!-- TODO dopracovať opis --></p>
 			 * 
 			 * @param návratovýKód kód, ktorý vrátil externý proces
 			 *     pri ukončení
@@ -11467,12 +11989,12 @@ public final class Svet extends JFrame
 		 * v anglickom jazyku sú v opise metódy
 		 * <code>ExecuteShellCommand.setVariable(String)</code>.)</li>
 		 * <li><code>TITLE</code> – upraví definíciu titulku okna konzoly,
-		 * ktorá sa automaticky preniesie do titulku okna sveta. (Doplňujúce
+		 * ktorá sa automaticky prenesie do titulku okna sveta. (Doplňujúce
 		 * informácie v anglickom jazyku sú v opise metódy
 		 * <code>ExecuteShellCommand.setTitle(String)</code>.)</li>
 		 * <li><hr/></li>
 		 * <li><code>PAUSE, EXIT</code> – tieto dva príkazy sú vypnuté.
-		 * Metóda ich rozpoznáva, pretože sú relatívne bežné, aby neboli
+		 * Metóda ich rozpoznáva, pretože sú relatívne bežné a aby neboli
 		 * omylom poslané operačnému systému ako žiadosť o spustenie
 		 * procesu, ktorá by sa skončila s chybou.</li>
 		 * </ul>
@@ -12244,9 +12766,32 @@ public final class Svet extends JFrame
 		 * textové vstupné pole s predvolenou zadanou hodnotou (môže to byť
 		 * aj prázdny reťazec {@code srg""}, ale údajový typ musí byť
 		 * {@link String String}),</li>
+		 * 
 		 * <li>hodnota údajového typu {@link Boolean Boolean}, ktorá
 		 * spôsobí, že na určenej pozícii v dialógu sa bude nachádzať
 		 * prvok začiarkavacieho políčka s predvolenou zadanou hodnotou,</li>
+		 * 
+		 * <li>hodnota údajového typu {@link Farba Farba} (čo je trieda
+		 * programovacieho rámca GRobot), ktorá spôsobí, že na určenej pozícii
+		 * dialógu bude zobrazený panel na výber farby s predvolenou zadanou
+		 * farbou, pričom zmenu môže používateľ vykonať výberom z paletoy
+		 * predvolených farieb programovacieho rámca alebo prostredníctvom
+		 * preddefinovaného dialógu Javy, ktorý je dostupný cez prislúchajúce
+		 * tlačidlo,</li>
+		 * 
+		 * <li>hodnota údajového typu {@link Bod Bod} (čo je trieda
+		 * programovacieho rámca GRobot), ktorá spôsobí, že na určenej pozícii
+		 * dialógu bude zobrazený panel na grafickú voľbu polohy s predvolenou
+		 * polohou podľa hodnôt v inštancii {@link Bod Bod} a s možnosťou
+		 * zadania súradníc do vstupných polí,</li>
+		 * 
+		 * <li>hodnota údajového typu {@link Uhol Uhol} (čo je trieda
+		 * programovacieho rámca GRobot), ktorá spôsobí, že na určenej pozícii
+		 * dialógu bude zobrazený panel na grafickú voľbu uhla (smeru)
+		 * s predvolenou hodnotou podľa zadanej inštancie {@link Uhol Uhol}
+		 * a s možnosťou zadania (zmeny) uhla prostredníctvom vstupného
+		 * poľa,</li>
+
 		 * <li>hodnota údajového typu {@link Character Character},
 		 * ktorá má špeciálny význam – je rezervovaná na vkladanie riadiacich
 		 * znakov – v súčasnosti je platná len hodnota znaku nového riadka
@@ -12258,16 +12803,18 @@ public final class Svet extends JFrame
 		 * (<small>to znamená, že každý nový riadok musí byť samostatným prvkom
 		 * vstupného poľa {@code údaje}</small>), budú umiestnené na
 		 * samostatnom neviditeľnom paneli dialógu – akoby v jednom riadku</li>
+		 * 
 		 * <li>a hodnotu {@code valnull}, ktorá spôsobí, že na určenej
 		 * pozícii bude umiestnený vstupný prvok na zadanie hesla.</li>
 		 * </ol>
 		 * 
-		 * <!-- TODO: Doplniť ďalšie (nové) údajové typy… -->
+		 * <!-- TODO: Skontrolovať opis, otestovať, prípadne doplniť novšie
+		 * prvky typu Farba, Bod, Uhol aj do príkladu použitia. -->
 		 * 
-		 * <p>Ku každému prvku poľa {@code údaje} by mal byť zadaný
+		 * <p>Ku každému prvku poľa {@code údaje} musí byť zadaný
 		 * korešpondujúci prvok poľa {@code popisy}, ktorý určí popis
 		 * komponentu. Výnimku tvoria znaky nových riadkov (bod 3. vyššie),
-		 * ktoré nesmú mať zadaný korešpondujúci reťazec – pri ňom zadajte
+		 * ktoré nesmú mať zadaný korešpondujúci reťazec – pri ňom treba zadať
 		 * namiesto platného reťazca hodnotu {@code valnull}, pretože platný
 		 * reťazec by sa automaticky priradil k ďalšiemu komponentu v dialógu,
 		 * čím by sa významovo posunul na nesprávne miesto a to by sa reťazovo
@@ -13901,10 +14448,10 @@ public final class Svet extends JFrame
 			if (0 != početVInteraktívnomRežime)
 			{
 				String príkaz = údajeVstupnéhoRiadka.toString();
-				poslednáChyba = ŽIADNA_CHYBA;
+				Skript.poslednáChyba = ŽIADNA_CHYBA;
 				int početÚspechov; boolean vykonaťRiadok;
 
-				if (ladenie)
+				if (Skript.ladenie)
 				{
 					if (null == ObsluhaUdalostí.počúvadlo ||
 						ObsluhaUdalostí.počúvadlo.
@@ -13914,10 +14461,12 @@ public final class Svet extends JFrame
 						{
 							// nič
 						}
-						else if ('@' == príkaz.charAt(0))
-							Svet.vypíšRiadokLadenia(tmavohnedá, príkaz);
+						else if (Skript.začniVýpisRiadkuLadenia(príkaz))
+						{
+							// nič
+						}
 						else
-							Svet.vypíšRiadokLadenia(tmavomodrá, príkaz);
+							Skript.dokončiVýpisRiadkuLadenia(príkaz);
 					}
 
 					vykonaťRiadok = null == ObsluhaUdalostí.počúvadlo ||
@@ -13934,13 +14483,13 @@ public final class Svet extends JFrame
 						if (príkaz.length() == 1)
 							interaktívnaInštancia = null;
 						else
-							interaktívnaInštancia = príkaz.substring(1).
-								toLowerCase();
+							interaktívnaInštancia =
+								príkaz.substring(1)/*.toLowerCase()*/;
 
 						početÚspechov = 1;
 					}
 					else
-						početÚspechov = Svet.vykonajPríkaz(príkaz,
+						početÚspechov = Skript.vykonajPríkaz(príkaz,
 							interaktívnaInštancia);
 
 					if (0 != početÚspechov)
@@ -13964,8 +14513,8 @@ public final class Svet extends JFrame
 						}
 						return;
 					}
-					else if (ŽIADNA_CHYBA == poslednáChyba)
-						poslednáChyba = CHYBA_NEZNÁMY_PRÍKAZ;
+					else if (ŽIADNA_CHYBA == Skript.poslednáChyba)
+						Skript.poslednáChyba = CHYBA_NEZNÁMY_PRÍKAZ;
 				}
 			}
 
@@ -14987,36 +15536,36 @@ public final class Svet extends JFrame
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
-		 * <!-- TODO dokončiť vzhľad a výsledok príkladu použitia -->
 		 * <pre CLASS="example">
-			import knižnica.*;
+			{@code kwdimport} knižnica.*;
 
-			public class ŠtandardnýVstupNaVnútornúKonzolu extends GRobot
+			{@code kwdpublic} {@code typeclass} ŠtandardnýVstupNaVnútornúKonzolu {@code kwdextends} {@link GRobot GRobot}
 			{
-				private ŠtandardnýVstupNaVnútornúKonzolu()
+				{@code kwdprivate} ŠtandardnýVstupNaVnútornúKonzolu()
 				{
-					Svet.aktivujŠtandardnýVstup();
+					{@link Svet Svet}.{@link Svet#aktivujŠtandardnýVstup() aktivujŠtandardnýVstup}();
 				}
 
-				@Override public void spracujRiadokVstupu(String riadokVstupu)
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#spracujRiadokVstupu(java.lang.String) spracujRiadokVstupu}(String riadokVstupu)
 				{
-					Svet.farbaTextu(tmavohnedá);
-					Svet.vypíšRiadok(riadokVstupu);
+					{@link Svet Svet}.{@link Svet#farbaTextu(java.awt.Color) farbaTextu}({@link GRobot#tmavohnedá tmavohnedá});
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object...) vypíšRiadok}(riadokVstupu);
 				}
 
-				@Override public void koniecVstupu()
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#koniecVstupu() koniecVstupu}()
 				{
-					Svet.farbaTextu(oranžová);
-					Svet.vypíšRiadok("koniec");
+					{@link Svet Svet}.{@link Svet#farbaTextu(java.awt.Color) farbaTextu}({@link GRobot#oranžová oranžová});
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object...) vypíšRiadok}({@code srg"koniec"});
 				}
 
-				public static void main(String[] args)
+				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 				{
-					Svet.použiKonfiguráciu("ŠtandardnýVstupNaVnútornúKonzolu.cfg");
-					new ŠtandardnýVstupNaVnútornúKonzolu();
+					{@link Svet Svet}.{@link Svet#použiKonfiguráciu(java.lang.String) použiKonfiguráciu}({@code srg"ŠtandardnýVstupNaVnútornúKonzolu.cfg"});
+					{@code kwdnew} ŠtandardnýVstupNaVnútornúKonzolu();
 				}
 			}
 			</pre>
+		 * <!-- TODO pridať výsledok príkladu použitia -->
 		 * 
 		 * @return ak bol štandardný vstup bezchybne aktivovaný, tak táto
 		 *     metóda vráti hodnotu {@code valtrue}
@@ -15114,6 +15663,9 @@ public final class Svet extends JFrame
 			System.out.println("Ahoj, " + meno + "!");
 			</pre>
 		 * 
+		 * <p><b>Výsledok:</b></p>
+		 * 
+		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
 		 * <!-- TODO dokončiť vzhľad a výsledok príkladu použitia -->
@@ -15176,6 +15728,9 @@ public final class Svet extends JFrame
 			}
 			</pre>
 		 * 
+		 * <p><b>Výsledok:</b></p>
+		 * 
+		 * 
 		 * @return reťazec prečítaný zo štandardného vstupu alebo
 		 *     {@code valnull}
 		 * 
@@ -15228,6 +15783,9 @@ public final class Svet extends JFrame
 		 * <p class="tip"><b>Tip:</b> Návratovou hodnotou je udalosť {@link 
 		 * KeyEvent KeyEvent}. Použite jej metódu {@link KeyEvent#getKeyChar()
 		 * getKeyChar} na získanie stlačeného znaku.</p>
+		 * 
+		 * <!-- TODO: Overiť, kedy sú tieto metódy bez rizika použiteľné
+		 * a uviesť to do dokumentácie. -->
 		 * 
 		 * @return udalosť klávesnice alebo hodnota {@code valnull}
 		 */
@@ -15382,1350 +15940,17 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #čakajNaKlikAleboKláves() čakajNaKlikAleboKláves}.</p> */
 		public static InputEvent[] cakajNaKlikAleboKlaves() { return čakajNaKlikAleboKláves(); }
 
+		/** <p><a class="alias"></a> Alias pre {@link #čakajNaKlikAleboKláves() čakajNaKlikAleboKláves}.</p> */
+		public static InputEvent[] čakajNaKlávesAleboKlik() { return čakajNaKlikAleboKláves(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #čakajNaKlikAleboKláves() čakajNaKlikAleboKláves}.</p> */
+		public static InputEvent[] cakajNaKlavesAleboKlik() { return čakajNaKlikAleboKláves(); }
+
 
 		// Interaktívny režim
 
 			// Príznak aktivácie interaktívneho režimu pre svet
-			private static boolean interaktívnyRežim = false;
-
-			// Mapy premenných
-			private final static TreeMap<String, Double> premenné =
-				new TreeMap<String, Double>();
-			private final static TreeMap<String, Color> premennéFarby =
-				new TreeMap<String, Color>();
-			private final static TreeMap<String, Poloha> premennéPolohy =
-				new TreeMap<String, Poloha>();
-			private final static TreeMap<String, String> premennéReťazce =
-				new TreeMap<String, String>();
-
-			// Trieda operácií
-			private final static class Operácie
-			{
-				public static double sčítanie(double a, double b)
-				{ return a + b; }
-				public static double odčítanie(double a, double b)
-				{ return a - b; }
-				public static double násobenie(double a, double b)
-				{ return a * b; }
-				public static double delenie(double a, double b)
-				{ return a / b; }
-				public static double zvyšok(double a, double b)
-				{ return a % b; }
-				public static double odseknutie(double a, double b)
-				{ return (long)b; }
-				public static double zmenaZnamienka(double a, double b)
-				{ return -b; }
-
-				public static double zhoda(double a, double b)
-				{ return a == b ? 1.0 : 0.0; }
-				public static double nezhoda(double a, double b)
-				{ return a != b ? 1.0 : 0.0; }
-				public static double negácia(double a, double b)
-				{ return 0.0 != b ? 0.0 : 1.0; }
-				public static double väčší(double a, double b)
-				{ return a > b ? 1.0 : 0.0; }
-				public static double menší(double a, double b)
-				{ return a < b ? 1.0 : 0.0; }
-				public static double väčšíRovný(double a, double b)
-				{ return a >= b ? 1.0 : 0.0; }
-				public static double menšíRovný(double a, double b)
-				{ return a <= b ? 1.0 : 0.0; }
-
-				public static double aSúčasne(double a, double b)
-				{ return (0.0 != a && 0.0 != b) ? 1.0 : 0.0; }
-				public static double alebo(double a, double b)
-				{ return (0.0 != a || 0.0 != b) ? 1.0 : 0.0; }
-			}
-
-			// Mapa operácií
-			private final static TreeMap<String, Method> operácie =
-				new TreeMap<String, Method>()
-			{
-				private void pridaj(String symbol, String metóda)
-				{
-					try
-					{
-						put(symbol, Operácie.class.getMethod(metóda,
-							double.class, double.class));
-					}
-					catch (Exception e)
-					{
-						GRobotException.vypíšChybovéHlásenia(e);
-					}
-				}
-
-				{
-					pridaj("+", "sčítanie");
-					pridaj("-", "odčítanie");
-					pridaj("*", "násobenie");
-					pridaj("/", "delenie");
-					pridaj("%", "zvyšok");
-					pridaj("_", "odseknutie");
-					pridaj("~", "zmenaZnamienka");
-					pridaj("==", "zhoda");
-					pridaj("!=", "nezhoda");
-					pridaj("!", "negácia");
-					pridaj(">", "väčší");
-					pridaj("<", "menší");
-					pridaj(">=", "väčšíRovný");
-					pridaj("<=", "menšíRovný");
-					pridaj("&&", "aSúčasne");
-					pridaj("||", "alebo");
-				}
-			};
-
-			// Vyhodnocuje reálnočíselné literály alebo názvy premenných
-			private static double vyhodnoťReálnyVýraz(String výraz)
-			{
-				if (výraz.equalsIgnoreCase("true") ||
-					výraz.equalsIgnoreCase("áno") ||
-					výraz.equalsIgnoreCase("ano") ||
-					výraz.equalsIgnoreCase("pravda")) return 1.0;
-
-				if (výraz.equalsIgnoreCase("false") ||
-					výraz.equalsIgnoreCase("nie") ||
-					výraz.equalsIgnoreCase("lož") ||
-					výraz.equalsIgnoreCase("loz")) return 0.0;
-
-				try { return Double.parseDouble(výraz); }
-				catch (Exception e) { /* Nevadí, to je len prvý pokus. */ }
-				Double value = premenné.get(výraz.toLowerCase());
-				if (null != value) return value;
-				return 0.0;
-			}
-
-			// Spracúva logické literály, prípadne reálnu číselnú hodnotu,
-			// kedy nula je lož, ostatné hodnoty sú pravda
-			private static boolean vyhodnoťLogickýVýraz(String výraz)
-			{ return 0.0 != vyhodnoťReálnyVýraz(výraz); }
-
-			// Vyhodnocuje farebné literály alebo názvy farebných premenných
-			private static Color vyhodnoťFarbu(String výraz, Color predvolená)
-			{
-				výraz = výraz.toLowerCase();
-				try { return (Color)Farebnosť.class.getField(výraz).
-				get(null); } catch (Exception e) { /* Nevadí… */ }
-				Color value = premennéFarby.get(výraz);
-				if (null != value) return value;
-				return predvolená;
-			}
-
-			// Vyhodnocuje názvy polohových premenných
-			private static Poloha vyhodnoťPolohu(String výraz,
-				Poloha predvolená)
-			{
-				výraz = výraz.toLowerCase();
-				Poloha value = premennéPolohy.get(výraz);
-				if (null != value) return value;
-				return predvolená;
-			}
-
-			// Vyhodnocuje názvy reťazcových premenných
-			private static String vyhodnoťReťazec(String výraz,
-				String predvolená)
-			{
-				výraz = výraz.toLowerCase();
-				String value = premennéReťazce.get(výraz);
-				if (null != value) return value;
-				return predvolená;
-			}
-
-			// Premapovanie niektorých metód
-			private final static TreeMap<String, String> premapovanieMetód =
-				new TreeMap<String, String>()
-			{{
-				put("náhodnéČíslo", "náhodnéReálneČíslo");
-				put("nahodneCislo", "náhodnéReálneČíslo");
-				put("náhodnéCeléČíslo", "náhodnéReálneČíslo");
-				put("nahodneCeleCislo", "náhodnéReálneČíslo");
-
-				put("upravČíslo", "upravReálneČíslo");
-				put("upravCislo", "upravReálneČíslo");
-				put("upravCeléČíslo", "upravReálneČíslo");
-				put("upravCeleCislo", "upravReálneČíslo");
-
-				put("zadajČíslo", "zadajReálneČíslo");
-				put("zadajCislo", "zadajReálneČíslo");
-				put("zadajCeléČíslo", "zadajReálneČíslo");
-				put("zadajCeleCislo", "zadajReálneČíslo");
-				put("zadajReálneČíslo", "zadajReálneČíslo");
-				put("zadajRealneCislo", "zadajReálneČíslo");
-
-				put("zadajReťazec", "zadajReťazec");
-				put("zadajRetazec", "zadajReťazec");
-				put("zadajHeslo", "zadajHeslo");
-
-				// Poznámka: Hľadaj poznámky pri metódach označVšetkyTexty
-				//     a zrušOznačenieTextov nižšie.
-				put("označTexty", "označVšetkyTexty");
-				put("oznacTexty", "označVšetkyTexty");
-				put("zrušOznačenieVšetkýchTextov", "zrušOznačenieTextov");
-				put("zrusOznacenieVsetkychTextov", "zrušOznačenieTextov");
-
-				put("vypisRiadokNa", "vypíšRiadokNa");
-				put("píšRiadokNa", "vypíšRiadokNa");
-				put("pisRiadokNa", "vypíšRiadokNa");
-				put("píšRiadok", "vypíšRiadok");
-				put("pisRiadok", "vypíšRiadok");
-				put("vypisNa", "vypíšNa");
-				put("píšNa", "vypíšNa");
-				put("pisNa", "vypíšNa");
-				put("vypis", "vypíš");
-				put("píš", "vypíš");
-				put("pis", "vypíš");
-
-				put("vp", "vpravo");
-				put("vľ", "vľavo");
-				put("vl", "vľavo");
-				put("do", "dopredu");
-				put("vz", "vzad");
-
-				put("ph", "zdvihniPero");
-				put("pd", "položPero");
-			}};
-
-			private final static Pattern vykonajPríkazTokenizer =
-				Pattern.compile(" *, *| +");
-
-			/*packagePrivate*/ final static Pattern vykonajSkriptRiadkovač =
-				Pattern.compile("\\r?\\n\\r?");
-
-			private final static Pattern ltrim = Pattern.compile("^\\s+");
-
-			private static Method nájdiMetódu(Class<?> trieda,
-				String názovMetódy, Class<?>... typyParametrov)
-			{
-				try
-				{
-					Method metóda = trieda.getMethod(názovMetódy,
-						typyParametrov);
-					// System.out.println("+ " + metóda.getName() +
-					// 	": " + metóda.getParameterCount());
-					return metóda;
-				}
-				catch (Exception e)
-				{
-					// V tomto prípade musia byť chybové
-					// hlásenia ignorované – metóda s nimi
-					// počíta –> určite nejaké vzniknú
-					// GRobotException.vypíšChybovéHlásenia(e/*, false*/);
-				}
-
-				return null;
-			}
-
-			private static Object poslednáNávratováHodnota = null;
-
-			private static Object vykonaj(Method metóda, Object obj, Object...
-				args) throws IllegalAccessException, IllegalArgumentException,
-				InvocationTargetException
-			{
-				if (ladenie)
-				{
-					final StringBuffer volanie = new StringBuffer();
-					volanie.setLength(0);
-					volanie.append(metóda.getName());
-					volanie.append('(');
-					boolean prvý = true;
-					for (Object arg : args)
-					{
-						if (arg instanceof Object[])
-						{
-							Object[] subargs = (Object[])arg;
-							for (Object subarg : subargs)
-							{
-								if (prvý) prvý = false;
-								else volanie.append(", ");
-								if (subarg instanceof CharSequence)
-								{
-									volanie.append('"');
-									volanie.append(subarg.toString());
-									volanie.append('"');
-								}
-								else
-									volanie.append(subarg.toString());
-							}
-						}
-						else
-						{
-							if (prvý) prvý = false; else volanie.append(", ");
-							if (arg instanceof CharSequence)
-							{
-								volanie.append('"');
-								volanie.append(arg.toString());
-								volanie.append('"');
-							}
-							else
-								volanie.append(arg.toString());
-						}
-					}
-					volanie.append(')');
-					String príkaz = volanie.toString();
-					if (null != ObsluhaUdalostí.počúvadlo &&
-						ObsluhaUdalostí.počúvadlo.
-							ladenie(-1, príkaz, ZABRÁNIŤ_VYKONANIU))
-					{
-						throw new GRobotException(
-							"Vykonanie príkazu bolo zrušené: " + príkaz,
-							"commandCancelled", príkaz);
-					}
-				}
-				poslednáNávratováHodnota = metóda.invoke(obj, args);
-				return poslednáNávratováHodnota;
-			}
-
-			// Implementácia príkazov interaktívneho režimu
-			@SuppressWarnings("fallthrough")
-			/*packagePrivate*/ static boolean vykonajPríkaz(
-				String príkaz, Class<?> trieda, Object inštancia)
-			{
-				final StringBuffer názovMetódy = new StringBuffer();
-				String reťazec, slová[];
-
-				int prvéÚvodzovky = príkaz.indexOf('"');
-				if (-1 != prvéÚvodzovky)
-				{
-					int poslednéÚvodzovky = príkaz.lastIndexOf('"');
-					if (-1 != poslednéÚvodzovky &&
-						prvéÚvodzovky != poslednéÚvodzovky)
-					{
-						// System.out.println("reťazec = „" + príkaz +
-						// 	"“.substring(" + (prvéÚvodzovky + 1) + ", " +
-						// 	poslednéÚvodzovky + ");");
-						// System.out.println("príkaz = „" + príkaz +
-						// 	"“.substring(0, " + prvéÚvodzovky + ") + „" +
-						// 	príkaz + "“.substring(" + (poslednéÚvodzovky +
-						// 		1) + ");");
-
-						reťazec = príkaz.substring(prvéÚvodzovky + 1,
-							poslednéÚvodzovky);
-						príkaz = príkaz.substring(0, prvéÚvodzovky) +
-							príkaz.substring(poslednéÚvodzovky + 1);
-
-						// System.out.println("reťazec = „" + reťazec + "“");
-						// System.out.println("príkaz = „" + príkaz + "“");
-					}
-					else
-					{
-						// System.out.println("reťazec = „" + príkaz +
-						// 	"“.substring(" + (prvéÚvodzovky + 1) + ");");
-						// System.out.println("príkaz = „" + príkaz +
-						// 	"“.substring(0, " + prvéÚvodzovky + ");");
-
-						reťazec = príkaz.substring(prvéÚvodzovky + 1);
-						príkaz = príkaz.substring(0, prvéÚvodzovky);
-
-						// System.out.println("reťazec = „" + reťazec + "“");
-						// System.out.println("príkaz = „" + príkaz + "“");
-					}
-				}
-				else reťazec = null;
-
-				slová = vykonajPríkazTokenizer.split(príkaz.trim());
-				// for (String s : slová) System.out.println("Slovo: " + s);
-
-				double argument1 = 0.0, argument2 = 0.0,
-					argument3 = 0.0, argument4 = 0.0;
-				Color farba = null; Poloha poloha = null;
-
-				Object výsledok = null; Method operácia = null;
-				int prvéSlovo = 0; String výsledokDoPremennej = null;
-				Double hodnotaPremennej = null;
-
-				if (slová.length > 1 && null == reťazec)
-				{
-					reťazec = vyhodnoťReťazec(slová[slová.length - 1], null);
-					if (null != reťazec)
-						slová = Arrays.copyOf(slová, slová.length - 1);
-				}
-
-				try {
-
-				if (slová.length > 1 && slová[0].equalsIgnoreCase("nech"))
-				{
-					prvéSlovo = 2;
-					výsledokDoPremennej = slová[1].toLowerCase();
-
-					if (slová.length > 2)
-					{
-						if (slová[2].equals("=")) ++prvéSlovo; else
-						{
-							operácia = operácie.get(slová[2].toLowerCase());
-							if (null != operácia)
-							{
-								++prvéSlovo;
-								if (prvéSlovo >= slová.length &&
-									(slová[2].equals("_") ||
-									slová[2].equals("!") ||
-									slová[2].equals("~")))
-								{
-									// Prejsť na okamžité spracovanie
-									// unárnych operácií (v bloku finally)
-									výsledok = premenné.
-										get(výsledokDoPremennej);
-									if (null == výsledok) výsledok = 0.0;
-									return true;
-								}
-							}
-						}
-
-						if (slová.length > prvéSlovo)
-						{
-							// Overenie, či sa hodnota nedá vyhodnotiť okamžite
-							// Skutočné priradenie je v bloku finally
-							try
-							{
-								// Literál
-								hodnotaPremennej =
-									Double.parseDouble(slová[prvéSlovo]);
-							}
-							catch (Exception e)
-							{
-								// Iná číselná premenná
-								hodnotaPremennej = premenné.
-									get(slová[prvéSlovo].toLowerCase());
-							}
-
-							if (null == hodnotaPremennej)
-							{
-								// Iná farebná premenná
-								výsledok = vyhodnoťFarbu(
-									slová[prvéSlovo], null);
-
-								if (null == výsledok)
-								{
-									// Iná polohová premenná
-									výsledok = vyhodnoťPolohu(
-										slová[prvéSlovo], null);
-
-									if (null == výsledok)
-									{
-										// Iná reťazcová premenná
-										výsledok = vyhodnoťReťazec(
-											slová[prvéSlovo], null);
-
-										if (null != výsledok) return true;
-									}
-									else return true;
-								}
-								else return true;
-							}
-							else
-							{
-								výsledok = hodnotaPremennej;
-								return true;
-							}
-						}
-						else if (null != reťazec)
-						{
-							výsledok = reťazec;
-							return true;
-						}
-					}
-				}
-
-				for (int početArgumentov = 0;
-					početArgumentov + prvéSlovo < slová.length;
-					++početArgumentov)
-				{
-					názovMetódy.setLength(0);
-					názovMetódy.append(slová[prvéSlovo].toLowerCase());
-
-					for (int i = prvéSlovo + 1; i < slová.length -
-						početArgumentov; ++i)
-					{
-						if (slová[i].length() > 1)
-						{
-							názovMetódy.append(Character.
-								toUpperCase(slová[i].charAt(0)));
-							názovMetódy.append(slová[i].
-								substring(1).toLowerCase());
-						}
-						else if (slová[i].length() == 1)
-						{
-							názovMetódy.append(Character.
-								toUpperCase(slová[i].charAt(0)));
-						}
-					}
-
-					String premapovanie = premapovanieMetód.get(
-						názovMetódy.toString());
-					if (null != premapovanie)
-					{
-						názovMetódy.setLength(0);
-						názovMetódy.append(premapovanie);
-					}
-
-					String názovMetódyS = názovMetódy.toString();
-
-					try {
-
-					// Pozor! Vyšší počet argumentov obracia poradie ich
-					// zadania do volanej metódy!
-					switch (početArgumentov)
-					{
-					case 4: argument4 = vyhodnoťReálnyVýraz(
-							slová[slová.length - 4]);
-					case 3: argument3 = vyhodnoťReálnyVýraz(
-							slová[slová.length - 3]);
-					case 2: argument2 = vyhodnoťReálnyVýraz(
-							slová[slová.length - 2]);
-					case 1: argument1 = vyhodnoťReálnyVýraz(
-							slová[slová.length - 1]);
-					}
-
-					Method metóda = null;
-
-
-					// Metódy typu vypíšRiadok
-					if (názovMetódyS.equals("vypíšRiadok"))
-					{
-						metóda = nájdiMetódu(Svet.class,
-							"vypíšRiadok", Object[].class);
-					}
-					else if (názovMetódyS.equals("vypíš"))
-					{
-						metóda = nájdiMetódu(Svet.class,
-							"vypíš", Object[].class);
-					}
-
-					if (null != metóda)
-					{
-						if (null == reťazec)
-						{
-							switch (početArgumentov)
-							{
-							case 0: vykonaj(metóda, null,
-									(Object)new Object[]{}); break;
-							case 1:
-								{
-									farba = vyhodnoťFarbu(
-										slová[slová.length - 1], null);
-									if (null == farba)
-									{
-										poloha = vyhodnoťPolohu(
-											slová[slová.length - 1], null);
-										if (null == poloha)
-											vykonaj(metóda, null, (Object)new
-												Object[]{argument1});
-										else
-											vykonaj(metóda, null, (Object)new
-												Object[]{Bod.
-												polohaNaReťazec(poloha)});
-									}
-									else
-										vykonaj(metóda, null, (Object)new
-											Object[]{Farba.
-											farbaNaReťazec(farba)});
-								}
-								break;
-							// Pozor! Vyšší počet argumentov obracia poradie
-							// ich zadania do volanej metódy!
-							case 2: vykonaj(metóda, null, (Object)new
-									Object[]{argument2, argument1}); break;
-							case 3: vykonaj(metóda, null, (Object)new
-									Object[]{argument3, argument2,
-									argument1}); break;
-							case 4: vykonaj(metóda, null, (Object)new
-									Object[]{argument4, argument3,
-									argument2, argument1}); break;
-							}
-						}
-						else
-						{
-							switch (početArgumentov)
-							{
-							case 0: vykonaj(metóda, null, (Object)new
-									Object[]{reťazec}); break;
-							case 1:
-								{
-									farba = vyhodnoťFarbu(
-										slová[slová.length - 1], null);
-									if (null == farba)
-									{
-										poloha = vyhodnoťPolohu(
-											slová[slová.length - 1], null);
-										if (null == poloha)
-											vykonaj(metóda, null, (Object)new
-												Object[]{reťazec, argument1});
-										else
-											vykonaj(metóda, null, (Object)new
-												Object[]{reťazec, Bod.
-												polohaNaReťazec(poloha)});
-									}
-									else
-										vykonaj(metóda, null, (Object)new
-											Object[]{reťazec,
-											Farba.farbaNaReťazec(farba)});
-								}
-								break;
-							// Pozor! Vyšší počet argumentov obracia poradie
-							// ich zadania do volanej metódy!
-							case 2: vykonaj(metóda, null, (Object)new
-									Object[]{reťazec, argument2, argument1});
-									break;
-							case 3: vykonaj(metóda, null, (Object)new
-									Object[]{reťazec, argument3, argument2,
-									argument1}); break;
-							case 4: vykonaj(metóda, null, (Object)new
-									Object[]{reťazec, argument4, argument3,
-									argument2, argument1}); break;
-							}
-						}
-
-						return true;
-					}
-
-
-					// Metódy typu vypíšRiadokNa
-					if (početArgumentov >= 2)
-					{
-						if (názovMetódyS.equals("vypíšRiadokNa"))
-						{
-							metóda = nájdiMetódu(Svet.class,
-								"vypíšRiadokNa", double.class,
-								double.class, Object[].class);
-						}
-						else if (názovMetódyS.equals("vypíšNa"))
-						{
-							metóda = nájdiMetódu(Svet.class, "vypíšNa",
-								double.class, double.class, Object[].class);
-						}
-
-						if (null != metóda)
-						{
-							if (null == reťazec)
-							{
-								switch (početArgumentov)
-								{
-								// Pozor! Vyšší počet argumentov obracia poradie
-								// ich zadania do volanej metódy!
-								case 2: vykonaj(metóda, null, argument2,
-										argument1, (Object)new
-										Object[]{}); break;
-								case 3: vykonaj(metóda, null, argument3,
-										argument2,(Object)new Object[]{
-										argument1}); break;
-								case 4: vykonaj(metóda, null, argument4,
-										argument3, (Object)new Object[]{
-										argument2, argument1}); break;
-								}
-							}
-							else
-							{
-								switch (početArgumentov)
-								{
-								// Pozor! Vyšší počet argumentov obracia poradie
-								// ich zadania do volanej metódy!
-								case 2: vykonaj(metóda, null, argument2,
-										argument1,(Object)new Object[]{
-										reťazec}); break;
-								case 3: vykonaj(metóda, null, argument3,
-										argument2,(Object)new Object[]{
-										reťazec, argument1}); break;
-								case 4: vykonaj(metóda, null, argument4,
-										argument3, (Object)new Object[]{
-										reťazec, argument2, argument1}); break;
-								}
-							}
-
-							return true;
-						}
-					}
-
-
-					// Klasické spracovanie
-					if (null == reťazec)
-					{
-						switch (početArgumentov)
-						{
-						case 0:
-							metóda = nájdiMetódu(trieda, názovMetódyS);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia);
-								return true;
-							}
-							break;
-
-						case 1:
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								double.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									argument1);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								Double.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									argument1);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								int.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									(int)argument1);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								boolean.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									0.0 != argument1);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								Color.class);
-							if (null != metóda)
-							{
-								farba = vyhodnoťFarbu(
-									slová[slová.length - 1], žiadna);
-								výsledok = vykonaj(metóda, inštancia, farba);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								Poloha.class);
-							if (null != metóda)
-							{
-								poloha = vyhodnoťPolohu(
-									slová[slová.length - 1], null);
-
-								if (null == poloha)
-									výsledok = vykonaj(metóda,
-										inštancia, Poloha.stred);
-								else
-									výsledok = vykonaj(metóda,
-										inštancia, poloha);
-								return true;
-							}
-
-							break;
-
-						// Pozor! Vyšší počet argumentov obracia poradie
-						// ich zadania do volanej metódy!
-						case 2:
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								double.class, double.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									argument2, argument1);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								int.class, int.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									(int)argument2, (int)argument1);
-								return true;
-							}
-							break;
-
-						case 3:
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								double.class, double.class, double.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									argument3, argument2, argument1);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								int.class, int.class, int.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									(int)argument3, (int)argument2,
-									(int)argument1);
-								return true;
-							}
-							break;
-
-						case 4:
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								double.class, double.class, double.class,
-								double.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									argument4, argument3, argument2, argument1);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								int.class, int.class, int.class, int.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									(int)argument4, (int)argument3,
-									(int)argument2, (int)argument1);
-								return true;
-							}
-							break;
-
-						default: return false;
-						}
-					}
-					else
-					{
-						switch (početArgumentov)
-						{
-						case 0:
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								String.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia, reťazec);
-								return true;
-							}
-							break;
-
-						case 1:
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								double.class, String.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									argument1, reťazec);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								Double.class, String.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									argument1, reťazec);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								int.class, String.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									(int)argument1, reťazec);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								boolean.class, String.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									0.0 != argument1, reťazec);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								Color.class, String.class);
-							if (null != metóda)
-							{
-								farba = vyhodnoťFarbu(
-									slová[slová.length - 1], žiadna);
-								výsledok = vykonaj(metóda, inštancia,
-									farba, reťazec);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								Poloha.class, String.class);
-							if (null != metóda)
-							{
-								poloha = vyhodnoťPolohu(
-									slová[slová.length - 1], null);
-								if (null == poloha)
-									výsledok = vykonaj(metóda, inštancia,
-										Poloha.stred, reťazec);
-								else
-									výsledok = vykonaj(metóda, inštancia,
-										poloha, reťazec);
-								return true;
-							}
-
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								String.class, double.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									reťazec, argument1);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								String.class, Double.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									reťazec, argument1);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								String.class, int.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									reťazec, (int)argument1);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								String.class, boolean.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									reťazec, 0.0 != argument1);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								String.class, Color.class);
-							if (null != metóda)
-							{
-								farba = vyhodnoťFarbu(
-									slová[slová.length - 1], žiadna);
-								výsledok = vykonaj(metóda, inštancia,
-									reťazec, farba);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								String.class, Poloha.class);
-							if (null != metóda)
-							{
-								poloha = vyhodnoťPolohu(
-									slová[slová.length - 1], null);
-								if (null == poloha)
-									výsledok = vykonaj(metóda, inštancia,
-										reťazec, Poloha.stred);
-								else
-									výsledok = vykonaj(metóda, inštancia,
-										reťazec, poloha);
-								return true;
-							}
-							break;
-
-						// Pozor! Vyšší počet argumentov obracia poradie
-						// ich zadania do volanej metódy!
-						case 2:
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								double.class, double.class, String.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									argument2, argument1, reťazec);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								int.class, int.class, String.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									(int)argument2, (int)argument1, reťazec);
-								return true;
-							}
-							break;
-
-						case 3:
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								double.class, double.class, double.class,
-								String.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									argument3, argument2, argument1, reťazec);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								int.class, int.class, int.class, String.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									(int)argument3, (int)argument2,
-									(int)argument1, reťazec);
-								return true;
-							}
-
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								String.class, double.class, double.class,
-								double.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia, reťazec,
-									argument3, argument2, argument1);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								String.class, int.class, int.class, int.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									reťazec, (int)argument3, (int)argument2,
-									(int)argument1);
-								return true;
-							}
-							break;
-
-						case 4:
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								double.class, double.class, double.class,
-								double.class, String.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia, argument4,
-									argument3, argument2, argument1, reťazec);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								int.class, int.class, int.class, int.class,
-								String.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia,
-									(int)argument4, (int)argument3,
-									(int)argument2, (int)argument1, reťazec);
-								return true;
-							}
-
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								String.class, double.class, double.class,
-								double.class, double.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia, reťazec,
-									argument4, argument3, argument2, argument1);
-								return true;
-							}
-
-							metóda = nájdiMetódu(trieda, názovMetódyS,
-								String.class, int.class, int.class,
-								int.class, int.class);
-							if (null != metóda)
-							{
-								výsledok = vykonaj(metóda, inštancia, reťazec,
-									(int)argument4, (int)argument3,
-									(int)argument2, (int)argument1);
-								return true;
-							}
-							break;
-
-						default: return false;
-						}
-					}
-
-					} catch (Exception e) {
-						poslednáChyba = CHYBA_VYKONANIA_PRÍKAZU;
-						GRobotException.vypíšChybovéHlásenia(e, true);
-					}
-				} // for
-
-				} // try
-				finally
-				{
-					// System.out.println();
-					// System.out.println("Var: " + výsledokDoPremennej);
-					// System.out.println("Res: " + výsledok);
-					// if (null != výsledok) System.out.println(
-					// 	"RTP: " + výsledok.getClass().getName());
-
-					if (null != výsledokDoPremennej && null != výsledok)
-					{
-						if (výsledok instanceof Color)
-						{
-							premennéFarby.put(výsledokDoPremennej,
-								(Color)výsledok);
-							vypíšPremennú(-1, výsledokDoPremennej,
-								FAREBNÁ_PREMENNÁ);
-						}
-						else if (výsledok instanceof Poloha)
-						{
-							premennéPolohy.put(výsledokDoPremennej,
-								(Poloha)výsledok);
-							vypíšPremennú(-1, výsledokDoPremennej,
-								POLOHOVÁ_PREMENNÁ);
-						}
-						else if (výsledok instanceof String)
-						{
-							premennéReťazce.put(výsledokDoPremennej,
-								(String)výsledok);
-							vypíšPremennú(-1, výsledokDoPremennej,
-								REŤAZCOVÁ_PREMENNÁ);
-						}
-						else if (premennéReťazce.containsKey(
-							výsledokDoPremennej))
-						{
-							if (null != operácia)
-								výsledok = premennéReťazce.
-									get(výsledokDoPremennej) + výsledok;
-
-							// System.out.println("Res2: " + výsledok);
-							// if (null != výsledok) System.out.println(
-							// 	"RTP2: " + výsledok.getClass().getName());
-
-							premennéReťazce.put(výsledokDoPremennej,
-								(String)výsledok);
-							vypíšPremennú(-1, výsledokDoPremennej,
-								REŤAZCOVÁ_PREMENNÁ);
-						}
-						else
-						{
-							for (;;)
-							{
-								if (výsledok instanceof Double)
-								{
-									argument1 = (Double)výsledok;
-								}
-								else if (výsledok instanceof Long)
-								{
-									argument1 = ((Long)výsledok).doubleValue();
-								}
-								else if (výsledok instanceof Integer)
-								{
-									argument1 =
-										((Integer)výsledok).doubleValue();
-								}
-								else if (výsledok instanceof Boolean)
-								{
-									argument1 = ((Boolean)výsledok) ?
-										1.0 : 0.0;
-								}
-								else
-								{
-									argument1 = 0.0;
-								}
-
-								if (null != operácia)
-								{
-									hodnotaPremennej = premenné.
-										get(výsledokDoPremennej);
-									if (null == hodnotaPremennej)
-										hodnotaPremennej = 0.0;
-									try {
-										výsledok = operácia.invoke(
-											null, hodnotaPremennej,
-											argument1);
-									} catch (Exception e) {
-										// chybná operácia je ignorovaná,
-										// ale ten prípad by nemal nastať,
-										// lebo operácie sú definované
-										// v očakávanom tvare (binárnej op.)
-									}
-									operácia = null;
-									continue;
-								}
-
-								break;
-							}
-
-							premenné.put(výsledokDoPremennej, argument1);
-							vypíšPremennú(-1, výsledokDoPremennej,
-								ČÍSELNÁ_PREMENNÁ);
-						}
-					}
-				}
-
-				return false;
-			}
-
-			/*packagePrivate*/ static int vykonajPríkaz(
-				String príkaz, String inštancia)
-			{
-				int početÚspechov = 0;
-
-				if (null == inštancia)
-				{
-					for (GRobot robot : GRobot.zoznamRobotov)
-						if (robot.interaktívnyRežim &&
-							robot.vykonajPríkaz(príkaz))
-							++početÚspechov;
-
-					if (0 == početÚspechov && interaktívnyRežim &&
-						vykonajPríkaz(príkaz)) ++početÚspechov;
-
-					if (0 == početÚspechov && GRobot.podlaha.interaktívnyRežim &&
-						GRobot.podlaha.vykonajPríkaz(príkaz)) ++početÚspechov;
-
-					if (0 == početÚspechov && GRobot.strop.interaktívnyRežim &&
-						GRobot.strop.vykonajPríkaz(príkaz)) ++početÚspechov;
-				}
-				else
-				{
-					if (inštancia.equals("svet"))
-					{
-						if (vykonajPríkaz(príkaz))
-							++početÚspechov;
-					}
-					else if (inštancia.equals("podlaha"))
-					{
-						if (GRobot.podlaha.vykonajPríkaz(príkaz))
-							++početÚspechov;
-					}
-					else if (inštancia.equals("strop"))
-					{
-						if (GRobot.strop.vykonajPríkaz(príkaz))
-							++početÚspechov;
-					}
-					else if (inštancia.equals("robot"))
-					{
-						if (hlavnýRobot.vykonajPríkaz(príkaz))
-							++početÚspechov;
-					}
-					else
-					{
-						GRobot robot = GRobot.menáRobotov.get(inštancia);
-						if (null == robot)
-						{
-							poslednáChyba = CHYBA_NEZNÁME_MENO;
-						}
-						else
-						{
-							if (robot.vykonajPríkaz(príkaz))
-								++početÚspechov;
-						}
-					}
-				}
-
-				return početÚspechov;
-			}
-
-			private static boolean ladenie = false;
-
-			private static void vypíšPremennú(int riadok,
-				String názov, int typ)
-			{
-				if (ladenie && (null == ObsluhaUdalostí.počúvadlo ||
-					ObsluhaUdalostí.počúvadlo.
-						ladenie(riadok, názov, typ)))
-				{
-					názov = názov.toLowerCase();
-
-					Double hodnota1 = (0 == typ || ČÍSELNÁ_PREMENNÁ == typ) ?
-						premenné.get(názov) : null;
-					Color hodnota2  = (0 == typ || FAREBNÁ_PREMENNÁ == typ) ?
-						premennéFarby.get(názov) : null;
-					Poloha hodnota3 = (0 == typ || POLOHOVÁ_PREMENNÁ == typ) ?
-						premennéPolohy.get(názov) : null;
-					String hodnota4 = (0 == typ || REŤAZCOVÁ_PREMENNÁ == typ) ?
-						premennéReťazce.get(názov) : null;
-
-					if (null == hodnota1 && null == hodnota2 &&
-						null == hodnota3 && null == hodnota4)
-						vypíšRiadokLadenia(tmavotyrkysová, "     ",
-							názov, "?");
-
-					if (null != hodnota1)
-						vypíšRiadokLadenia(tmavotyrkysová, "     ",
-							názov, " = ", hodnota1);
-
-					if (null != hodnota2)
-						vypíšRiadokLadenia(tmavotyrkysová, "     ",
-							názov, " = ", Farba.farbaNaReťazec(hodnota2));
-
-					if (null != hodnota3)
-						vypíšRiadokLadenia(tmavotyrkysová, "     ",
-							názov, " = ", Bod.polohaNaReťazec(hodnota3));
-
-					if (null != hodnota4)
-						vypíšRiadokLadenia(tmavotyrkysová, "     ",
-							názov, " = \"", hodnota4);
-				}
-			}
-
-			private static void vypíšPremenné()
-			{
-				if (ladenie && (null == ObsluhaUdalostí.počúvadlo ||
-					ObsluhaUdalostí.počúvadlo.ladenie(-1, null, VYPÍSAŤ_PREMENNÉ)))
-				{
-					for (Map.Entry<String, Double>
-						premenná : premenné.entrySet())
-						vypíšRiadokLadenia(tmavotyrkysová,
-							"     ", premenná.getKey(),
-							" = ", premenná.getValue());
-
-					for (Map.Entry<String, Color>
-						premenná : premennéFarby.entrySet())
-						vypíšRiadokLadenia(tmavotyrkysová,
-							"     ", premenná.getKey(),
-							" = ", Farba.farbaNaReťazec(premenná.getValue()));
-
-					for (Map.Entry<String, Poloha>
-						premenná : premennéPolohy.entrySet())
-						vypíšRiadokLadenia(tmavotyrkysová,
-							"     ", premenná.getKey(),
-							" = ", Bod.polohaNaReťazec(premenná.getValue()));
-
-					for (Map.Entry<String, String>
-						premenná : premennéReťazce.entrySet())
-						vypíšRiadokLadenia(tmavotyrkysová,
-							"     ", premenná.getKey(),
-							" = \"", premenná.getValue());
-				}
-			}
-
-			private static int počítadloRiadkovLadenia = 0;
-
-			private static void vypíšRiadokLadenia(Farba f,
-				Object... argumenty)
-			{
-				Color fb = farbaTextu();
-				farbaTextu(f);
-				vypíšRiadok(argumenty);
-				farbaTextu(fb);
-				++počítadloRiadkovLadenia;
-			}
-
-			private static void vypíšÚdajLadenia(Farba f,
-				Object... argumenty)
-			{
-				Color fb = farbaTextu();
-				farbaTextu(f);
-				vypíš(argumenty);
-				farbaTextu(fb);
-			}
-
-			private static String dajMenovku(String riadok)
-			{
-				riadok = riadok.substring(1);
-				riadok = riadok.trim();
-				int medzera = riadok.indexOf(' ');
-				if (-1 != medzera) riadok = riadok.substring(0, medzera);
-				return riadok;
-			}
-
-			private static boolean prerušiťLadenie(int čr, String riadok)
-			{
-				if (null == ObsluhaUdalostí.počúvadlo) return false;
-
-				while (ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok, ČAKAŤ))
-					try { Thread.sleep(350); }
-					catch (InterruptedException ie) {} // …
-
-				return ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok, PRERUŠIŤ);
-			}
-
+			/*packagePrivate*/ static boolean interaktívnyRežim = false;
 
 		/**
 		 * <p>Zapne alebo vypne režim ladenia programovacieho rámca GRobot.
@@ -16747,6 +15972,7 @@ public final class Svet extends JFrame
 		 * @param zapniLadenie {@code valtrue} alebo {@code valfalse}
 		 * 
 		 * @see #režimLadenia()
+		 * @see #lenRežimLadenia()
 		 * @see #režimLadenia(boolean, boolean)
 		 * @see #interaktívnyRežim(boolean)
 		 * @see #vykonajPríkaz(String)
@@ -16754,7 +15980,7 @@ public final class Svet extends JFrame
 		 * @see ObsluhaUdalostí#ladenie(int, String, int)
 		 */
 		public static void režimLadenia(boolean zapniLadenie)
-		{ GRobotException.vypíšChybovéHlásenia = ladenie = zapniLadenie; }
+		{ GRobotException.vypíšChybovéHlásenia = Skript.ladenie = zapniLadenie; }
 
 		/** <p><a class="alias"></a> Alias pre {@link #režimLadenia(boolean) režimLadenia}.</p> */
 		public static void rezimLadenia(boolean zapniLadenie)
@@ -16772,12 +15998,13 @@ public final class Svet extends JFrame
 		 * ObsluhaUdalostí#ladenie(int, String, int) ladenie} (pozri napríklad
 		 * správy ladenia: {@link GRobot#VYPÍSAŤ_PRÍKAZ VYPÍSAŤ_PRÍKAZ}, {@link 
 		 * GRobot#VYPÍSAŤ_RIADOK VYPÍSAŤ_RIADOK} alebo {@link 
-		 * GRobot#VYPÍSAŤ_MENOVKU VYPÍSAŤ_MENOVKU}).</p>
+		 * GRobot#VYPÍSAŤ_MENOVKY VYPÍSAŤ_MENOVKY}).</p>
 		 * 
 		 * @param zapniLadenie {@code valtrue} alebo {@code valfalse}
 		 * @param vypíšChybovéHlásenia {@code valtrue} alebo {@code valfalse}
 		 * 
 		 * @see #režimLadenia()
+		 * @see #lenRežimLadenia()
 		 * @see #režimLadenia(boolean)
 		 * @see #výpisChybovýchHlásení()
 		 * @see #interaktívnyRežim(boolean)
@@ -16788,8 +16015,8 @@ public final class Svet extends JFrame
 		public static void režimLadenia(boolean zapniLadenie,
 			boolean vypíšChybovéHlásenia)
 		{
-			// TODO – pridať reakciu vzniklaVýnimka(GRobotExveption výnimka)…
-			ladenie = zapniLadenie;
+			// TODO – pridať reakciu vzniklaVýnimka(GRobotException výnimka)…
+			Skript.ladenie = zapniLadenie;
 			GRobotException.vypíšChybovéHlásenia = vypíšChybovéHlásenia;
 		}
 
@@ -16802,7 +16029,10 @@ public final class Svet extends JFrame
 		 * <p>Zistí, či je zapnutý režim ladenia programovacieho rámca
 		 * GRobot alebo aspoň výpis chybových hlásení programovacieho rámca.
 		 * (Stačí, ak je aktívna aspoň jedna z vlastností. Pozri: {@link 
-		 * #režimLadenia(boolean, boolean) režimLadenia}.)</p>
+		 * #režimLadenia(boolean, boolean) režimLadenia}. Táto metóda bola
+		 * takto navrhnutá z dôvodu kompatibility s jej jednoparametrickou
+		 * verziou: {@link #režimLadenia(boolean)
+		 * režimLadenia(zapniLadenie)}.)</p>
 		 * 
 		 * @return {@code valtrue} alebo {@code valfalse}
 		 * 
@@ -16810,17 +16040,38 @@ public final class Svet extends JFrame
 		 * @see #režimLadenia(boolean, boolean)
 		 */
 		public static boolean režimLadenia()
-		{ return GRobotException.vypíšChybovéHlásenia || ladenie; }
+		{ return GRobotException.vypíšChybovéHlásenia || Skript.ladenie; }
 
 		/** <p><a class="alias"></a> Alias pre {@link #režimLadenia() režimLadenia}.</p> */
 		public static boolean rezimLadenia() { return režimLadenia(); }
 
 		/**
-		 * <p>Zistí, či je zapnutý výpis chybových hlásení programovacieho
-		 * rámca.</p>
+		 * <p>Zistí, či je zapnutý režim ladenia programovacieho rámca
+		 * GRobot bez ohľadu na režim výpisu chybových hlásení rámca.
+		 * (Pozri: {@link #režimLadenia(boolean, boolean) režimLadenia}.)</p>
 		 * 
 		 * @return {@code valtrue} alebo {@code valfalse}
 		 * 
+		 * @see #režimLadenia()
+		 * @see #režimLadenia(boolean)
+		 * @see #režimLadenia(boolean, boolean)
+		 * @see #výpisChybovýchHlásení()
+		 */
+		public static boolean lenRežimLadenia() { return Skript.ladenie; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #lenRežimLadenia() lenRežimLadenia}.</p> */
+		public static boolean lenRezimLadenia() { return Skript.ladenie; }
+
+		/**
+		 * <p>Zistí, či je zapnutý výpis chybových hlásení programovacieho
+		 * rámca. (Pozri: {@link #režimLadenia(boolean, boolean)
+		 * režimLadenia}.)</p>
+		 * 
+		 * @return {@code valtrue} alebo {@code valfalse}
+		 * 
+		 * @see #režimLadenia()
+		 * @see #lenRežimLadenia()
+		 * @see #režimLadenia(boolean)
 		 * @see #režimLadenia(boolean, boolean)
 		 */
 		public static boolean výpisChybovýchHlásení()
@@ -16843,109 +16094,138 @@ public final class Svet extends JFrame
 		 *     ak premenná nejestvuje alebo bol zadaný nepovolený údajový
 		 *     typ premennej, tak je návratovou hodnotou tejto metódy
 		 *     hodnota {@code valfalse}
+		 * 
+		 * @see PremennéSkriptu#jestvuje(String, Class)
 		 */
 		public static boolean premennáJestvuje(String názov, Class<?> typ)
 		{
-			názov = názov.toLowerCase();
-
-			if (typ == Double.class)
-				return premenné.containsKey(názov);
-			else if (typ == Color.class)
-				return premennéFarby.containsKey(názov);
-			else if (typ == Poloha.class)
-				return premennéPolohy.containsKey(názov);
-			else if (typ == String.class)
-				return premennéReťazce.containsKey(názov);
-
-			return false;
+			// názov = názov.toLowerCase();
+			return Skript.premennáJestvuje(názov, typ);
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #premennáJestvuje(String, Class) premennáJestvuje}.</p> */
 		public static boolean premennaJestvuje(String názov, Class<?> typ)
-		{ return premennáJestvuje(názov, typ); }
+		{ return Skript.premennáJestvuje(názov, typ); }
 
 		/** <p><a class="alias"></a> Alias pre {@link #premennáJestvuje(String, Class) premennáJestvuje}.</p> */
 		public static boolean premennáExistuje(String názov, Class<?> typ)
-		{ return premennáJestvuje(názov, typ); }
+		{ return Skript.premennáJestvuje(názov, typ); }
 
 		/** <p><a class="alias"></a> Alias pre {@link #premennáJestvuje(String, Class) premennáJestvuje}.</p> */
 		public static boolean premennaExistuje(String názov, Class<?> typ)
-		{ return premennáJestvuje(názov, typ); }
+		{ return Skript.premennáJestvuje(názov, typ); }
 
 		/**
-		 * <p>Zistí hodnotu premennej {@linkplain Svet#interaktívnyRežim(boolean)
+		 * <p>Zistí hodnotu premennej zadaného údajového typu
+		 * {@linkplain Svet#interaktívnyRežim(boolean)
 		 * interaktívneho režimu}. (Ak hodnota jestvuje.)</p>
 		 * 
 		 * @param názov názov premennej
 		 * @param typ typ premennej – povolené sú: {@link Double Double.class},
 		 *     {@link Color Color.class}, {@link Poloha Poloha.class} alebo
 		 *     {@link String String.class}
-		 * @return ak premenná jestvuje a má neprázdnu hodnotu, tak je
-		 *     návratovou hodnotou tejto metódy hodnota premennej; ak hodnota
-		 *     buď nejestvuje, alebo je prázdna (rovná {@code valnull}), alebo
-		 *     bol zadaný nepovolený údajový typ premennej, tak je návratová
-		 *     hodnota tejto metódy {@code valnull}
+		 * @return ak premenná jestvuje, tak je návratovou hodnotou tejto
+		 *     metódy hodnota tejto premennej; ak premenná nejestvuje,
+		 *     prípadne bol zadaný nepovolený údajový typ premennej, tak je
+		 *     návratovou hodnotou tejto metódy hodnota {@code valnull}
+		 * 
+		 * @see PremennéSkriptu#čítaj(String, Class)
 		 */
 		public static Object čítajPremennú(String názov, Class<?> typ)
 		{
-			názov = názov.toLowerCase();
-
-			if (typ == Double.class) return premenné.get(názov);
-			else if (typ == Color.class) return premennéFarby.get(názov);
-			else if (typ == Poloha.class) return premennéPolohy.get(názov);
-			else if (typ == String.class) return premennéReťazce.get(názov);
-
-			return null;
+			// názov = názov.toLowerCase();
+			return Skript.čítajPremennú(názov, typ);
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #čítajPremennú(String, Class) čítajPremennú}.</p> */
 		public static Object citajPremennu(String názov, Class<?> typ)
-		{ return čítajPremennú(názov, typ); }
+		{ return Skript.čítajPremennú(názov, typ); }
 
 		/**
 		 * <p>Nastaví novú hodnotu premennej
 		 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}.
 		 * Ak je zadaná hodnota nepovoleného údajového typu, tak nebude
-		 * nastavená hodnota žiadnej premennej.</p>
+		 * nastavená hodnota žiadnej premennej. To isté platí pri pokuse
+		 * o zapísanie hodnoty {@code valnull}. Úspešnosť (resp. neúspešnosť)
+		 * nastavenia hodnoty premennej potvrdzuje návratová hodnota tejto
+		 * metódy – {@code valtrue} (úspech) / {@code valfalse}
+		 * (neúspech).</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda
+		 * automaticky definuje nejestvujúce premenné.</p>
 		 * 
 		 * @param názov názov premennej
 		 * @param hodnota hodnota premennej povoleného údajového typu –
 		 *     povolené sú: {@link Double Double},
 		 *     {@link Color Color}, {@link Poloha Poloha} alebo
 		 *     {@link String String}
+		 * @return kontrolná návratová hodnota (ide najmä o overenie toho,
+		 *     či zadaná hodnota naozaj bola niektorého povoleného typu);
+		 *     ak je návratová hodnota {@code valtrue}, tak bola zadaná
+		 *     hodnota zapísaná do premennej prislúchajúceho údajového typu
+		 * 
+		 * @see PremennéSkriptu#zapíš(String, Object)
 		 */
-		public static void zapíšPremennú(String názov, Object hodnota)
+		public static boolean zapíšPremennú(String názov, Object hodnota)
 		{
-			názov = názov.toLowerCase();
-			if (hodnota instanceof Double)
-				premenné.put(názov, (Double)hodnota);
-			else if (hodnota instanceof Color)
-				premennéFarby.put(názov, (Color)hodnota);
-			else if (hodnota instanceof Poloha)
-				premennéPolohy.put(názov, (Poloha)hodnota);
-			else if (hodnota instanceof String)
-				premennéReťazce.put(názov, (String)hodnota);
+			// názov = názov.toLowerCase();
+			return Skript.zapíšPremennú(názov, hodnota);
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #zapíšPremennú(String, Object) zapíšPremennú}.</p> */
-		public static void zapisPremennu(String názov, Object hodnota)
-		{ zapíšPremennú(názov, hodnota); }
+		public static boolean zapisPremennu(String názov, Object hodnota)
+		{ return Skript.zapíšPremennú(názov, hodnota); }
+
+		/**
+		 * <p>Vymaže definíciu premennej zadaného údajového typu
+		 * {@linkplain Svet#interaktívnyRežim(boolean)
+		 * interaktívneho režimu}. (Ak jestvuje.)</p>
+		 * 
+		 * @param názov názov premennej
+		 * @param typ typ premennej – povolené sú: {@link Double Double.class},
+		 *     {@link Color Color.class}, {@link Poloha Poloha.class} alebo
+		 *     {@link String String.class}
+		 * 
+		 * @see PremennéSkriptu#vymaž(String, Class)
+		 */
+		public static void vymažPremennú(String názov, Class<?> typ)
+		{
+			// názov = názov.toLowerCase();
+			Skript.vymažPremennú(názov, typ);
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #vymažPremennú(String, Class) vymažPremennú}.</p> */
+		public static void vymazPremennu(String názov, Class<?> typ)
+		{ Skript.vymažPremennú(názov, typ); }
 
 
 		/**
 		 * <p>Vykoná skript uložený v poli reťazcov. Táto metóda vyžaduje,
-		 * aby aspoň jeden robot a/alebo svet bol/i v {@linkplain 
-		 * Svet#interaktívnyRežim(boolean) interaktívnom režime},
-		 * inak vykonávanie skriptu nebude mať žiadny efekt, resp. sa skončí
-		 * chybou hneď po prvom príkaze určenom pre robota alebo svet. Každý
-		 * riadok teda smie obsahovať buď príkaz použiteľný s metódou robota
-		 * {@link GRobot#vykonajPríkaz(String) vykonajPríkaz} alebo sveta
-		 * {@link #vykonajPríkaz(String) vykonajPríkaz}, komentár,
-		 * alebo jeden z nasledujúcich príkazov skriptu:
-		 * definíciu menovky, nepodmienený skok, podmienený skok, podmienený
+		 * aby v čase vykonania prvého príkazu bol aspoň jeden robot, svet
+		 * alebo niektoré z plátien v {@linkplain 
+		 * Svet#interaktívnyRežim(boolean) interaktívnom režime}, inak sa
+		 * vykonávanie skriptu skončí chybou.</p>
+		 * 
+		 * <p>Každý neprázdny riadok skriptu smie obsahovať niektorú
+		 * z položiek v nasledujúcom zozname:</p>
+		 * 
+		 * <ul>
+		 * <li>platný príkaz – taký, ktorý je zároveň použiteľný s metódou
+		 * na vykonávanie príkazov robota (pozri: {@link 
+		 * GRobot#vykonajPríkaz(String) vykonajPríkaz}), plátna ({@link 
+		 * Plátno#vykonajPríkaz(String) vykonajPríkaz}) alebo sveta (pozri:
+		 * {@link #vykonajPríkaz(String) vykonajPríkaz}),</li>
+		 * <li>aktivovanie alebo deaktivovanie {@linkplain 
+		 * #interaktívnaInštancia(String) interaktívnej inštancie} (pozri
+		 * nižšie),</li>
+		 * <li>komentár (pozri nižšie),</li>
+		 * <li>definíciu menovky (pozri nižšie),</li>
+		 * <li>alebo jeden z rezervovaných príkazov skriptu (podrobnosti
+		 * sú opäť nižšie): nepodmienený skok, podmienený skok, podmienený
 		 * skok s dekrementáciou premennej („cyklus“), podmienený skok
-		 * s alternatívou alebo podmienený skok s dekrementáciou premennej
-		 * s alternatívou („cyklus s alternatívou“):</p>
+		 * s alternatívou, podmienený skok s dekrementáciou premennej
+		 * a alternatívou („cyklus s alternatívou“).</li>
+		 * </ul>
 		 * 
 		 * <p> </p>
 		 * 
@@ -16957,10 +16237,10 @@ public final class Svet extends JFrame
 		 * pozri nižšie)</td></tr>
 		 * <tr><td><code>@</code><em
 		 * >«názov inštancie»</em></td><td
-		 * >–</td><td>definícia {@linkplain #interaktívnaInštancia(String)
-		 * aktívnej inštancie}</td></tr>
-		 * <tr><td><code>@</code></td><td>–</td><td>zrušenie
-		 * {@linkplain #interaktívnaInštancia(String) aktívnej
+		 * >–</td><td>aktivovanie {@linkplain #interaktívnaInštancia(String)
+		 * interaktívnej inštancie}</td></tr>
+		 * <tr><td><code>@</code></td><td>–</td><td>zrušenie aktivácie
+		 * {@linkplain #interaktívnaInštancia(String) interaktívnej
 		 * inštancie}</td></tr>
 		 * <tr><td><code>na </code> <em>«menovka»</em></td><td>–</td>
 		 * <td>nepodmienený skok – vykonávanie skriptu prejde (preskočí) na
@@ -16979,22 +16259,21 @@ public final class Svet extends JFrame
 		 * nenulová, tak vykonávanie skriptu prejde (preskočí) na riadok
 		 * označený menovkou <em>«menovka1»</em>, inak na riadok označený
 		 * menovkou <em>«menovka2»</em></td></tr>
-		 * <tr><td><code>dokedy </code><em
-		 * >«premenná»</em> <em>«menovka»</em></td><td>–</td><td>podmienený
-		 * skok s dekrementáciou premennej („cyklus“) – najprv sa zníži
-		 * hodnota premennej o 1 a ak je výsledok výpočtu záporný, nastaví sa
-		 * jej hodnota na nulu; ak je výsledná hodnota premennej kladná, tak
-		 * vykonávanie skriptu prejde (preskočí) na riadok označený
-		 * menovkou</td></tr>
 		 * <tr><td><code>dokedy </code><em>«premenná»</em> <em
-		 * >«menovka1»</em><code> inak </code><em
-		 * >«menovka2»</em></td><td>–</td><td>podmienený skok s dekrementáciou
-		 * premennej („cyklus“) s alternatívou – najprv sa zníži hodnota
-		 * premennej o 1 a ak je výsledok výpočtu záporný, nastaví sa jej
-		 * hodnota na nulu; ak je výsledná hodnota premennej kladná, tak
-		 * vykonávanie skriptu prejde (preskočí) na riadok označený menovkou
-		 * <em>«menovka1»</em>, inak na riadok označený menovkou
-		 * <em>«menovka2»</em></td></tr>
+		 * >«menovka»</em></td><td>–</td><td>podmienený
+		 * skok s dekrementáciou premennej („cyklus“) – najprv sa zníži
+		 * hodnota premennej o 1 a ak je výsledok výpočtu záporný, tak sa
+		 * jej hodnota nastaví na nulu; ak je konečná hodnota premennej
+		 * kladná, tak vykonávanie skriptu prejde (preskočí) na riadok
+		 * označený menovkou</td></tr>
+		 * <tr><td><code>dokedy </code><em>«premenná»</em> <em
+		 * >«menovka1»</em><code> inak </code><em>«menovka2»</em></td><td
+		 * >–</td><td>podmienený skok s dekrementáciou premennej („cyklus“)
+		 * s alternatívou – najprv sa zníži hodnota premennej o 1 a ak je
+		 * výsledok výpočtu záporný, tak sa jej hodnota nastaví na nulu;
+		 * ak je konečná hodnota premennej kladná, tak vykonávanie skriptu
+		 * prejde (preskočí) na riadok označený menovkou <em>«menovka1»</em>,
+		 * inak na riadok označený menovkou <em>«menovka2»</em></td></tr>
 		 * <tr><td colspan="2"> </td>
 		 * <td>podmienené skoky s dekrementáciou premennej sú navrhnuté tak,
 		 * aby pomyselne predpokladali prítomnosť kladnej hodnoty v riadiacej
@@ -17002,10 +16281,10 @@ public final class Svet extends JFrame
 		 * v riadiacej premennej (pričom nie je dovolené, aby sa v riadiacej
 		 * premennej vyskytla záporná hodnota – záporné hodnoty sú prepísané
 		 * nulou); to znamená, že všetky priebehy vykonania s hodnotou
-		 * riadiacej premennej menšej alebo rovnej jednej sú identické<!--;
-		 * dôvodom tohto návrhu je kladenie dôrazu na čo najvyššiu
-		 * jednoduchosť pri implementácii (poznámka: bolo to inšpirované
-		 * jazykom symbolických inštrukcií)--></td></tr>
+		 * riadiacej premennej menšej alebo rovnej jednej sú identické<!--
+		 * skrytá poznámka: dôvodom tohto návrhu bolo kladenie dôrazu na čo
+		 * najvyššiu jednoduchosť pri implementácii a bolo to inšpirované
+		 * jazykom symbolických inštrukcií --></td></tr>
 		 * </table>
 		 * 
 		 * @param riadky pole reťazcov reprezentujúcich riadky skriptu
@@ -17023,7 +16302,9 @@ public final class Svet extends JFrame
 		 * @see #spustiSkript(List<String>)
 		 * @see #spustiSkript(String, boolean)
 		 * @see #kódPoslednejChyby()
+		 * @see #riadokPoslednejChyby()
 		 * @see #textPoslednejChyby()
+		 * @see #textChyby(int)
 		 * 
 		 * @throws GRobotException ak bolo vykonávanie niektorého príkazu
 		 *     skriptu zrušené
@@ -17040,278 +16321,236 @@ public final class Svet extends JFrame
 		 */
 		public static int vykonajSkript(String[] riadky)
 		{
-			počítadloRiadkovLadenia = 0;
-			poslednáChyba = ŽIADNA_CHYBA;
-			if (ladenie) vypíšPremenné();
+			Skript skript = vyrobSkript(riadky);
+			return skript.vykonaj();
 
-			final TreeMap<String, Integer> menovky =
-				new TreeMap<String, Integer>();
+			/* DEPRECATED:
+				počítadloRiadkovLadenia = 0;
+				poslednáChyba = ŽIADNA_CHYBA;
+				if (Skript.ladenie) vypíšPremenné();
 
-			int i = 0, čr = 1;
-			for (String riadok : riadky)
-			{
-				// Orezať všetky medzery zľava
-				riadky[i] = riadok = ltrim.matcher(riadok).
-					replaceAll("")
-					// Pozor! Nesmiem tu previesť na malé písmená!
-					// Zničil by sa prípadný reťazec na vypísanie!
-					// .toLowerCase()
-					;
+				final TreeMap<String, Integer> menovky =
+					new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-				if (!riadok.isEmpty() && ':' == riadok.charAt(0))
+				int i = 0, čr = 1;
+				for (String riadok : riadky)
 				{
-					riadok = dajMenovku(riadok);
+					// Orezať všetky medzery zľava
+					riadky[i] = riadok = ltrim.matcher(riadok).replaceAll("$1")
+						// Pozor! Nesmiem tu previesť na malé písmená!
+						// 	.toLowerCase()
+						// Zničil by sa prípadný reťazec na vypísanie!
+						;
 
-					if (!riadok.isEmpty())
-					{
-						if (ladenie && (null == ObsluhaUdalostí.počúvadlo ||
-							ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok,
-							VYPÍSAŤ_MENOVKU))) vypíšRiadokLadenia(
-								tmavooranžová, ":", String.format(
-									Locale.ENGLISH, "%3d", čr), riadok);
-						if (menovky.containsKey(riadok))
-						{
-							poslednáChyba = CHYBA_DVOJITÁ_MENOVKA;
-							return čr; // chyba – dvojitá menovka
-						}
-						menovky.put(riadok, i);
-					}
-					// riadky[i] = "";
-				}
-				++i; ++čr;
-			}
-
-			if (počítadloRiadkovLadenia > 0)
-				/*ladenie && (!menovky.isEmpty() || !premenné.isEmpty() ||
-				!premennéFarby.isEmpty() || !premennéPolohy.isEmpty() ||
-				!premennéReťazce.isEmpty())*/
-				vypíšRiadok();
-
-			String inštancia = interaktívnaInštancia;
-
-			for (i = 0, čr = 1; i < riadky.length; ++i, ++čr)
-			{
-				String riadok = riadky[i];
-
-				if (riadok.isEmpty())
-				{
-					if (ladenie && (null == ObsluhaUdalostí.počúvadlo ||
-						ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok, VYPÍSAŤ_RIADOK)))
-						vypíšRiadokLadenia(šedá, " ", String.format(
-							Locale.ENGLISH, "%3d", čr));
-
-					if (prerušiťLadenie(čr, riadok)) break;
-
-					continue;
-				}
-				else if (';' == riadok.charAt(0))
-				{
-					if (ladenie && (null == ObsluhaUdalostí.počúvadlo ||
-						ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok, VYPÍSAŤ_RIADOK)))
-						vypíšRiadokLadenia(svetlošedá, ";", String.
-							format(Locale.ENGLISH, "%3d", čr),
-						riadok.substring(1));
-
-					if (prerušiťLadenie(čr, riadok)) break;
-
-					continue;
-				}
-				else if (':' == riadok.charAt(0))
-				{
-					if (ladenie && (null == ObsluhaUdalostí.počúvadlo ||
-						ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok, VYPÍSAŤ_RIADOK)))
+					if (!riadok.isEmpty() && ':' == riadok.charAt(0))
 					{
 						riadok = dajMenovku(riadok);
 
-						if (riadok.isEmpty())
+						if (!riadok.isEmpty())
+						{
+							if (Skript.ladenie && (null == ObsluhaUdalostí.počúvadlo ||
+								ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok,
+								VYPÍSAŤ_MENOVKY))) vypíšRiadokLadenia(
+									tmavooranžová, ":", String.format(
+										Locale.ENGLISH, "%3d", čr), riadok);
+							if (menovky.containsKey(riadok))
+							{
+								poslednáChyba = CHYBA_DVOJITÁ_MENOVKA;
+								return čr; // chyba – dvojitá menovka
+							}
+							menovky.put(riadok, i);
+						}
+						// riadky[i] = "";
+					}
+					++i; ++čr;
+				}
+
+				if (počítadloRiadkovLadenia > 0)
+					/*Skript.ladenie && (!menovky.isEmpty() ||
+					!globálnePremenné.premenné.isEmpty() ||
+					!globálnePremenné.premennéFarby.isEmpty() ||
+					!globálnePremenné.premennéPolohy.isEmpty() ||
+					!globálnePremenné.premennéReťazce.isEmpty())* /
+					vypíšRiadok();
+
+				String aktuálnaInštancia = interaktívnaInštancia;
+
+				for (i = 0, čr = 1; i < riadky.length; ++i, ++čr)
+				{
+					String riadok = riadky[i];
+
+					if (riadok.isEmpty())
+					{
+						if (Skript.ladenie && (null == ObsluhaUdalostí.počúvadlo ||
+							ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok, VYPÍSAŤ_RIADOK)))
 							vypíšRiadokLadenia(šedá, " ", String.format(
 								Locale.ENGLISH, "%3d", čr));
-						else
-							vypíšRiadokLadenia(tmavošedá, ":",
-								String.format(Locale.ENGLISH, "%3d", čr),
-								riadok);
-					}
-
-					if (prerušiťLadenie(čr, riadok)) break;
-
-					continue;
-				}
-				else if ('@' == riadok.charAt(0))
-				{
-					if (ladenie && (null == ObsluhaUdalostí.počúvadlo ||
-						ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok, VYPÍSAŤ_RIADOK)))
-					{
-						vypíšRiadokLadenia(tmavohnedá, "@",
-							String.format(Locale.ENGLISH, "%3d", čr),
-							riadok.substring(1));
-					}
-
-					if (prerušiťLadenie(čr, riadok)) break;
-
-					if (riadok.length() == 1)
-						inštancia = null;
-					else
-						inštancia = riadok.substring(1).toLowerCase();
-					continue;
-				}
-				else if (riadok.regionMatches(true, 0, "na ", 0, 3))
-				{
-					String[] slová = vykonajPríkazTokenizer.split(riadok);
-
-					if (slová.length < 2)
-					{
-						poslednáChyba = CHYBA_CHÝBAJÚCA_MENOVKA;
-						return čr;
-					}
-
-					Integer skoč1 = menovky.get(slová[1].toLowerCase());
-					if (null == skoč1)
-					{
-						poslednáChyba = CHYBA_NEZNÁMA_MENOVKA;
-						return čr;
-					}
-
-					boolean vypísať = false;
-
-					if (ladenie)
-					{
-						vypísať = null == ObsluhaUdalostí.počúvadlo ||
-							ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok, VYPÍSAŤ_RIADOK);
-						if (vypísať)
-							vypíšRiadokLadenia(modrá, " ",
-								String.format(Locale.ENGLISH, "%3d", čr),
-								slová[0], slová[1]);
 
 						if (prerušiťLadenie(čr, riadok)) break;
+
+						continue;
 					}
-
-					čr = (i = skoč1) + 1;
-
-					if (ladenie && vypísať)
+					else if (';' == riadok.charAt(0))
 					{
-						riadok = dajMenovku(riadky[i]);
-						vypíšRiadokLadenia(tmavošedá, ":",
-							String.format(Locale.ENGLISH,
-							"%3d", čr), riadok);
+						if (Skript.ladenie && (null == ObsluhaUdalostí.počúvadlo ||
+							ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok, VYPÍSAŤ_RIADOK)))
+							vypíšRiadokLadenia(svetlošedá, ";", String.
+								format(Locale.ENGLISH, "%3d", čr),
+							riadok.substring(1));
+
+						if (prerušiťLadenie(čr, riadok)) break;
+
+						continue;
 					}
-
-					continue;
-				}
-				else if (riadok.regionMatches(true, 0, "ak ", 0, 3) ||
-					riadok.regionMatches(true, 0, "dokedy ", 0, 7))
-				{
-					String[] slová = vykonajPríkazTokenizer.split(riadok);
-					// for (String s : slová) System.out.println("Slovo: " + s);
-
-					if (slová.length < 3)
+					else if (':' == riadok.charAt(0))
 					{
-						poslednáChyba = CHYBA_CHÝBAJÚCA_MENOVKA;
-						return čr;
-					}
-
-					Integer skoč1 = menovky.get(slová[2].toLowerCase());
-					if (null == skoč1)
-					{
-						poslednáChyba = CHYBA_NEZNÁMA_MENOVKA;
-						return čr;
-					}
-
-					Integer skoč2;
-					if (slová.length >= 5)
-					{
-						if (!slová[3].equalsIgnoreCase("inak"))
+						if (Skript.ladenie && (null == ObsluhaUdalostí.počúvadlo ||
+							ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok, VYPÍSAŤ_RIADOK)))
 						{
-							poslednáChyba = CHYBA_NEZNÁME_SLOVO;
+							riadok = dajMenovku(riadok);
+
+							if (riadok.isEmpty())
+								vypíšRiadokLadenia(šedá, " ", String.format(
+									Locale.ENGLISH, "%3d", čr));
+							else
+								vypíšRiadokLadenia(tmavošedá, ":",
+									String.format(Locale.ENGLISH, "%3d", čr),
+									riadok);
+						}
+
+						if (prerušiťLadenie(čr, riadok)) break;
+
+						continue;
+					}
+					else if ('@' == riadok.charAt(0))
+					{
+						if (Skript.ladenie && (null == ObsluhaUdalostí.počúvadlo ||
+							ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok, VYPÍSAŤ_RIADOK)))
+						{
+							vypíšRiadokLadenia(tmavohnedá, "@",
+								String.format(Locale.ENGLISH, "%3d", čr),
+								riadok.substring(1));
+						}
+
+						if (prerušiťLadenie(čr, riadok)) break;
+
+						if (riadok.length() == 1)
+							aktuálnaInštancia = null;
+						else
+							aktuálnaInštancia = riadok.substring(1).toLowerCase();
+						continue;
+					}
+					else if (riadok.regionMatches(true, 0, "na ", 0, 3))
+					{
+						String[] slová = vykonajPríkazTokenizer.split(riadok);
+
+						if (slová.length < 2)
+						{
+							poslednáChyba = CHYBA_CHÝBAJÚCA_MENOVKA;
 							return čr;
 						}
-						skoč2 = menovky.get(slová[4].toLowerCase());
-						if (null == skoč2)
+
+						Integer skoč1 = menovky.get(
+							slová[1]// .toLowerCase()
+							);
+						if (null == skoč1)
 						{
 							poslednáChyba = CHYBA_NEZNÁMA_MENOVKA;
 							return čr;
 						}
-					}
-					else if (slová.length >= 4)
-					{
-						skoč2 = menovky.get(slová[3].toLowerCase());
-						if (null == skoč2)
-						{
-							poslednáChyba = CHYBA_NEZNÁMA_MENOVKA;
-							return čr;
-						}
-					}
-					else skoč2 = null;
 
-					Boolean podmienka;
-
-					if (slová[0].equalsIgnoreCase("ak"))
-					{
-						podmienka = vyhodnoťLogickýVýraz(slová[1]);
 						boolean vypísať = false;
 
-						if (ladenie)
+						if (Skript.ladenie)
 						{
 							vypísať = null == ObsluhaUdalostí.počúvadlo ||
 								ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok, VYPÍSAŤ_RIADOK);
 							if (vypísať)
-								vypíšÚdajLadenia(purpurová, "?",
+								vypíšRiadokLadenia(modrá, " ",
 									String.format(Locale.ENGLISH, "%3d", čr),
-									slová[0], slová[1], ": ");
+									slová[0], slová[1]);
 
 							if (prerušiťLadenie(čr, riadok)) break;
 						}
 
-						if (podmienka) čr = (i = skoč1) + 1;
-						else if (null != skoč2) čr = (i = skoč2) + 1;
+						čr = (i = skoč1) + 1;
 
-						if (ladenie && vypísať)
+						if (Skript.ladenie && vypísať)
 						{
-							if (podmienka)
-								vypíšRiadokLadenia(tmavozelená,
-									"pravda, prejsť na", slová[2]);
-							else if (null != skoč2)
-								vypíšRiadokLadenia(tmavooranžová,
-									"lož, prejsť na", (slová.length >= 5 ?
-										slová[4] : slová[3]));
-							else
-								vypíšRiadokLadenia(tmavočervená,
-									"lož, neprejsť nikam");
-
-							if (podmienka || null != skoč2)
-							{
-								riadok = dajMenovku(riadky[i]);
-								vypíšRiadokLadenia(tmavošedá, ":",
-									String.format(Locale.ENGLISH,
-									"%3d", čr), riadok);
-							}
+							riadok = dajMenovku(riadky[i]);
+							vypíšRiadokLadenia(tmavošedá, ":",
+								String.format(Locale.ENGLISH,
+								"%3d", čr), riadok);
 						}
+
 						continue;
 					}
-					else if (slová[0].equalsIgnoreCase("dokedy"))
+					else if (riadok.regionMatches(true, 0, "ak ", 0, 3) ||
+						riadok.regionMatches(true, 0, "dokedy ", 0, 7))
 					{
-						slová[1] = slová[1].toLowerCase();
-						if (premenné.containsKey(slová[1]))
+						String[] slová = vykonajPríkazTokenizer.split(riadok);
+						// for (String s : slová) System.out.println("Slovo: " + s);
+
+						if (slová.length < 3)
 						{
-							// Ak je výsledok výpočtu záporný, nastaví sa
-							// hodnota premennej na nulu, aby mohla byť
-							// podmienka v nasledujúcom kroku
-							// (vyhodnoťLogickýVýraz) vyhodnotená ako
-							// nepravdivá.
-							premenné.put(slová[1], Math.max(Math.rint(
-								premenné.get(slová[1]) - 1), 0.0));
-							vypíšPremennú(čr, slová[1], ČÍSELNÁ_PREMENNÁ);
+							poslednáChyba = CHYBA_CHÝBAJÚCA_MENOVKA;
+							return čr;
+						}
+
+						Integer skoč1 = menovky.get(
+							slová[2]// .toLowerCase()
+							);
+						if (null == skoč1)
+						{
+							poslednáChyba = CHYBA_NEZNÁMA_MENOVKA;
+							return čr;
+						}
+
+						Integer skoč2;
+						if (slová.length >= 5)
+						{
+							if (!slová[3].equalsIgnoreCase("inak"))
+							{
+								poslednáChyba = CHYBA_NEZNÁME_SLOVO;
+								return čr;
+							}
+							skoč2 = menovky.get(
+								slová[4]// .toLowerCase()
+								);
+							if (null == skoč2)
+							{
+								poslednáChyba = CHYBA_NEZNÁMA_MENOVKA;
+								return čr;
+							}
+						}
+						else if (slová.length >= 4)
+						{
+							skoč2 = menovky.get(
+								slová[3]// .toLowerCase()
+								);
+							if (null == skoč2)
+							{
+								poslednáChyba = CHYBA_NEZNÁMA_MENOVKA;
+								return čr;
+							}
+						}
+						else skoč2 = null;
+
+						Boolean podmienka;
+
+						if (slová[0].equalsIgnoreCase("ak"))
+						{
 							podmienka = vyhodnoťLogickýVýraz(slová[1]);
 							boolean vypísať = false;
 
-							if (ladenie)
+							if (Skript.ladenie)
 							{
 								vypísať = null == ObsluhaUdalostí.počúvadlo ||
-									ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok,
-										VYPÍSAŤ_RIADOK);
+									ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok, VYPÍSAŤ_RIADOK);
 								if (vypísať)
-									vypíšÚdajLadenia(tmavopurpurová, "@",
-										String.format(Locale.ENGLISH, "%3d",
-											čr), slová[0], slová[1], ": ");
+									vypíšÚdajLadenia(purpurová, "?",
+										String.format(Locale.ENGLISH, "%3d", čr),
+										slová[0], slová[1], ": ");
 
 								if (prerušiťLadenie(čr, riadok)) break;
 							}
@@ -17319,7 +16558,7 @@ public final class Svet extends JFrame
 							if (podmienka) čr = (i = skoč1) + 1;
 							else if (null != skoč2) čr = (i = skoč2) + 1;
 
-							if (ladenie && vypísať)
+							if (Skript.ladenie && vypísať)
 							{
 								if (podmienka)
 									vypíšRiadokLadenia(tmavozelená,
@@ -17342,36 +16581,95 @@ public final class Svet extends JFrame
 							}
 							continue;
 						}
-						// else
-						// {
-						// 	TODO — Zvážiť: CHYBA_NEZNÁMA_PREMENNÁ.
-						// }
+						else if (slová[0].equalsIgnoreCase("dokedy"))
+						{
+							// slová[1] = slová[1].toLowerCase();
+							if (premennáJestvuje(slová[1], Double.class))
+							{
+								// Ak je výsledok výpočtu záporný, nastaví sa
+								// hodnota premennej na nulu, aby mohla byť
+								// podmienka v nasledujúcom kroku
+								// (vyhodnoťLogickýVýraz) vyhodnotená ako
+								// nepravdivá.
+
+								// ✗ Test…
+								zapíšPremennú(slová[1], new Double(Math.max(
+									Math.rint((Double)čítajPremennú(slová[1],
+										Double.class) - 1.0), 0.0)));
+								vypíšPremennú(čr, slová[1], ČÍSELNÁ_PREMENNÁ);
+								podmienka = vyhodnoťLogickýVýraz(slová[1]);
+								boolean vypísať = false;
+
+								if (Skript.ladenie)
+								{
+									vypísať = null == ObsluhaUdalostí.počúvadlo ||
+										ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok,
+											VYPÍSAŤ_RIADOK);
+									if (vypísať)
+										vypíšÚdajLadenia(tmavopurpurová, "@",
+											String.format(Locale.ENGLISH, "%3d",
+												čr), slová[0], slová[1], ": ");
+
+									if (prerušiťLadenie(čr, riadok)) break;
+								}
+
+								if (podmienka) čr = (i = skoč1) + 1;
+								else if (null != skoč2) čr = (i = skoč2) + 1;
+
+								if (Skript.ladenie && vypísať)
+								{
+									if (podmienka)
+										vypíšRiadokLadenia(tmavozelená,
+											"pravda, prejsť na", slová[2]);
+									else if (null != skoč2)
+										vypíšRiadokLadenia(tmavooranžová,
+											"lož, prejsť na", (slová.length >= 5 ?
+												slová[4] : slová[3]));
+									else
+										vypíšRiadokLadenia(tmavočervená,
+											"lož, neprejsť nikam");
+
+									if (podmienka || null != skoč2)
+									{
+										riadok = dajMenovku(riadky[i]);
+										vypíšRiadokLadenia(tmavošedá, ":",
+											String.format(Locale.ENGLISH,
+											"%3d", čr), riadok);
+									}
+								}
+								continue;
+							}
+							// else
+							// {
+							// 	✗ Zvážiť: CHYBA_NEZNÁMA_PREMENNÁ ✗
+							// }
+						}
+
+						poslednáChyba = CHYBA_CHYBNÁ_ŠTRUKTÚRA;
+						return čr;
 					}
 
-					poslednáChyba = CHYBA_NEZNÁMA_ŠTRUKTÚRA;
-					return čr;
+					if (Skript.ladenie)
+					{
+						if (null == ObsluhaUdalostí.počúvadlo ||
+							ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok, VYPÍSAŤ_RIADOK))
+							vypíšRiadokLadenia(tmavomodrá, " ", String.format(
+								Locale.ENGLISH, "%3d", čr), riadok);
+
+						if (prerušiťLadenie(čr, riadok)) break;
+					}
+
+					int početÚspechov = vykonajPríkaz(riadok, aktuálnaInštancia);
+					if (0 == početÚspechov)
+					{
+						if (ŽIADNA_CHYBA == poslednáChyba)
+							poslednáChyba = CHYBA_NEZNÁMY_PRÍKAZ;
+						return čr;
+					}
 				}
 
-				if (ladenie)
-				{
-					if (null == ObsluhaUdalostí.počúvadlo ||
-						ObsluhaUdalostí.počúvadlo.ladenie(čr, riadok, VYPÍSAŤ_RIADOK))
-						vypíšRiadokLadenia(tmavomodrá, " ", String.format(
-							Locale.ENGLISH, "%3d", čr), riadok);
-
-					if (prerušiťLadenie(čr, riadok)) break;
-				}
-
-				int početÚspechov = vykonajPríkaz(riadok, inštancia);
-				if (0 == početÚspechov)
-				{
-					if (ŽIADNA_CHYBA == poslednáChyba)
-						poslednáChyba = CHYBA_NEZNÁMY_PRÍKAZ;
-					return čr;
-				}
-			}
-
-			return 0;
+				return 0;
+			*/
 		}
 
 		/**
@@ -17395,7 +16693,9 @@ public final class Svet extends JFrame
 		 * @see #spustiSkript(List<String>)
 		 * @see #spustiSkript(String, boolean)
 		 * @see #kódPoslednejChyby()
+		 * @see #riadokPoslednejChyby()
 		 * @see #textPoslednejChyby()
+		 * @see #textChyby(int)
 		 * 
 		 * @throws GRobotException ak bolo vykonávanie niektorého príkazu
 		 *     skriptu zrušené
@@ -17412,9 +16712,7 @@ public final class Svet extends JFrame
 		 */
 		public static int vykonajSkript(String skript)
 		{
-			String riadky[] = vykonajSkriptRiadkovač.split(skript);
-			// for (String s : riadky) System.out.println("Riadok: " + s);
-
+			String riadky[] = Skript.vykonajSkriptRiadkovač.split(skript);
 			return vykonajSkript(riadky);
 		}
 
@@ -17442,7 +16740,9 @@ public final class Svet extends JFrame
 		 * @see #spustiSkript(List<String>)
 		 * @see #spustiSkript(String, boolean)
 		 * @see #kódPoslednejChyby()
+		 * @see #riadokPoslednejChyby()
 		 * @see #textPoslednejChyby()
+		 * @see #textChyby(int)
 		 * 
 		 * @throws GRobotException ak bolo vykonávanie niektorého príkazu
 		 *     skriptu zrušené
@@ -17477,8 +16777,9 @@ public final class Svet extends JFrame
 		 * #vykonajSkript(String) vykonajSkript(skript)}. Ak je druhý
 		 * parameter rovný {@code valtrue}, tak prvý parameter je
 		 * považovaný za názov súboru, z ktorého má byť skript prečítaný
-		 * a vykonaný. Pravidlá vykonávania sú rovnaké ako pri metóde
-		 * {@link #vykonajSkript(String[]) vykonajSkript(riadky)}.</p>
+		 * a vykonaný. Pravidlá vykonávania sú v oboch prípadoch rovnaké
+		 * ako pri metóde {@link #vykonajSkript(String[])
+		 * vykonajSkript(riadky)}.</p>
 		 * 
 		 * <p><b>Príklad skriptu uloženého v súbore:</b></p>
 		 * 
@@ -17550,7 +16851,9 @@ public final class Svet extends JFrame
 		 * @see #spustiSkript(List<String>)
 		 * @see #spustiSkript(String, boolean)
 		 * @see #kódPoslednejChyby()
+		 * @see #riadokPoslednejChyby()
 		 * @see #textPoslednejChyby()
+		 * @see #textChyby(int)
 		 * 
 		 * @throws GRobotException ak skript so zadaným menom nebol nájdený
 		 *     alebo ak bolo vykonávanie niektorého príkazu skriptu zrušené
@@ -17572,7 +16875,7 @@ public final class Svet extends JFrame
 			try
 			{
 				BufferedReader čítanie;
-				Vector<String> riadky = new Vector<String>();
+				Vector<String> riadky = new Vector<>();
 
 				try
 				{
@@ -17614,12 +16917,402 @@ public final class Svet extends JFrame
 				čítanie.close();
 				if (riadky.isEmpty()) return 0;
 
-				return vykonajSkript(riadky.toArray(new String[riadky.size()]));
+				return vykonajSkript(riadky.
+					toArray(new String[riadky.size()]));
 			}
 			catch (Exception e)
 			{
 				GRobotException.vypíšChybovéHlásenia(e);
 				return -1;
+			}
+		}
+
+
+		/**
+		 * <p>Nahrá skript zo súboru a uloží ho do vnútornej pamäte pod
+		 * zadaným názvom. Ak počas nahrávania skriptu vznikne chyba, tak
+		 * metóda vráti hodnotu {@code valnull}, v opačnom prípade vráti
+		 * inštanciu triedy {@link Skript Skript} na prípadné ďalšie
+		 * spracovanie.</p>
+		 * 
+		 * @param názov názov skriptu, pod ktorým bude tento skript (v prípade
+		 *     úspešného nahratia) evidovaný vo vnútornom zozname skriptov
+		 * @param súbor súbor, z ktorého bude skript nahraný
+		 * @return inštancia triedy {@link Skript Skript} na ďalšie
+		 *     spracovanie, prípadne {@code valnull}
+		 * 
+		 * @see #nahrajSkript(String)
+		 * @see #vyrobSkript(String, boolean)
+		 * @see #vyrobSkript(String)
+		 * @see #vyrobSkript(List)
+		 * @see #vyrobSkript(String[])
+		 * @see #registrujSkript(String, String)
+		 * @see #registrujSkript(String, List)
+		 * @see #registrujSkript(String, String[])
+		 * @see #dajSkript(String)
+		 * @see #volajSkript(String)
+		 */
+		public static Skript nahrajSkript(String názov, String súbor)
+		{
+			Skript skript = vyrobSkript(súbor, true);
+			if (null != skript)
+				Skript.zoznamSkriptov.put(názov, skript);
+			return skript;
+		}
+
+		/**
+		 * <p>Toto je klon metódy {@link #nahrajSkript(String, String)
+		 * nahrajSkript(názov, súbor)}, ktorý bol definovaný preto, aby
+		 * bolo možné nahrávať zo súborov skripty aj v rámci iných
+		 * skriptov. Metóda bude považovať za názov skriptu meno súboru,
+		 * to jest časť medzi posledným oddeľovačom cesty (buď {@code \},
+		 * alebo {@code /}) a posledným oddeľovačom prípony
+		 * ({@code .}).</p>
+		 * 
+		 * @param súbor súbor, z ktorého bude skript nahraný; názov skriptu
+		 *     je tiež odvodený z tohto reťazca
+		 * @return inštancia úspešne nahratého skriptu alebo hodnota
+		 *     {@code valnull}
+		 * 
+		 * @see #nahrajSkript(String, String)
+		 */
+		public static Skript nahrajSkript(String súbor)
+		{
+			int indexOf1 = 1 + Math.max(
+				súbor.lastIndexOf('\\'), súbor.lastIndexOf('/'));
+			int indexOf2 = súbor.lastIndexOf('.');
+			if (indexOf1 >= indexOf2) indexOf2 = súbor.length();
+			String názov = súbor.substring(indexOf1, indexOf2);
+			if (názov.isEmpty()) názov = súbor;
+			// if (!súbor.endsWith(".GRScript")) súbor += ".GRScript"; // NO‼
+			return nahrajSkript(názov, súbor);
+		}
+
+
+		/**
+		 * <p>Vyrobí skript (zo zadaného textového reťazca alebo zo súboru)
+		 * a vráti ho v inštancii triedy {@link Skript Skript} na ďalšie
+		 * spracovanie. Ak je parameter {@code zoSúboru} rovný
+		 * {@code valfalse}, tak je v parametri {@code skript} očakávaný
+		 * text skriptu. Ak je parameter {@code zoSúboru} rovný
+		 * {@code valtrue}, tak je v parametri {@code skript} očakávaný
+		 * názov súboru, z ktorého má byť skript prečítaný. Ak vznikne počas
+		 * čítania alebo spracovania (výroby) skriptu chyba, tak metóda
+		 * vráti hodnotu {@code valnull}.</p>
+		 * 
+		 * @param skript názov súboru so skriptom alebo skript uložený
+		 *     v jednom reťazci
+		 * @param zoSúboru ak je {@code valtrue}, tak je prvý parameter
+		 *     považovaný za názov súboru so skriptom; ak je {@code valfalse},
+		 *     tak je prvý parameter považovaný za skript (rovnako ako pri
+		 *     metóde {@link #vyrobSkript(String) vyrobSkript(skript)})
+		 * @return inštancia triedy {@link Skript Skript} alebo {@code valnull}
+		 * 
+		 * @see #nahrajSkript(String, String)
+		 * @see #vyrobSkript(String)
+		 * @see #vyrobSkript(List)
+		 * @see #vyrobSkript(String[])
+		 * @see #registrujSkript(String, String)
+		 * @see #registrujSkript(String, List)
+		 * @see #registrujSkript(String, String[])
+		 * @see #dajSkript(String)
+		 * @see #volajSkript(String)
+		 */
+		public static Skript vyrobSkript(String skript, boolean zoSúboru)
+		{
+			if (zoSúboru)
+			{
+				try
+				{
+					BufferedReader čítanie;
+					Vector<String> riadky = new Vector<>();
+
+					try
+					{
+						// Vyhľadá súbor na pevnom disku
+						čítanie = new BufferedReader(new InputStreamReader(
+							Súbor.dajVstupnýPrúdSúboru(skript), "UTF-8"));
+					}
+					catch (FileNotFoundException notFound)
+					{
+						try
+						{
+							// Pokúsi sa prečítať skript zo zdroja .jar súboru
+							čítanie = new BufferedReader(new InputStreamReader(
+								Súbor.dajVstupnýPrúdZdroja(skript), "UTF-8"));
+						}
+						catch (NullPointerException isNull)
+						{
+							throw new GRobotException(
+								"Skript „" + skript + "“ nebol nájdený.",
+								"scriptNotFound", skript, notFound);
+						}
+					}
+
+					String riadok = čítanie.readLine();
+					if (null != riadok)
+					{
+						if (!riadok.isEmpty() &&
+							riadok.charAt(0) == '\uFEFF')
+							riadok = riadok.substring(1);
+
+						do
+						{
+							riadky.add(riadok);
+							riadok = čítanie.readLine();
+						}
+						while (null != riadok);
+					}
+
+					čítanie.close();
+					if (riadky.isEmpty()) return null;
+
+					return Skript.vyrob(riadky.toArray(
+						new String[riadky.size()]));
+				}
+				catch (Exception e)
+				{
+					GRobotException.vypíšChybovéHlásenia(e);
+				}
+			}
+			else return vyrobSkript(skript);
+
+			return null;
+		}
+
+		/**
+		 * <p>Vyrobí zo zadaného textového reťazca skript a vráti ho
+		 * v inštancii triedy {@link Skript Skript} na ďalšie spracovanie.
+		 * Ak počas výroby skriptu vznikne chyba, tak metóda vráti hodnotu
+		 * {@code valnull}.</p>
+		 * 
+		 * @param skript skript v textovom tvare (reťazec obsahujúci celý
+		 *     skript)
+		 * @return inštancia triedy {@link Skript Skript} alebo {@code valnull}
+		 * 
+		 * @see #nahrajSkript(String, String)
+		 * @see #vyrobSkript(String, boolean)
+		 * @see #vyrobSkript(List)
+		 * @see #vyrobSkript(String[])
+		 * @see #registrujSkript(String, String)
+		 * @see #registrujSkript(String, List)
+		 * @see #registrujSkript(String, String[])
+		 * @see #dajSkript(String)
+		 * @see #volajSkript(String)
+		 */
+		public static Skript vyrobSkript(String skript)
+		{
+			String riadky[] = Skript.vykonajSkriptRiadkovač.split(skript);
+			return vyrobSkript(riadky);
+		}
+
+		/**
+		 * <p>Vyrobí zo zadaného zoznamu reťazcov reprezentujúcich riadky
+		 * skriptu nový skript a vráti ho v inštancii triedy {@link Skript
+		 * Skript} na ďalšie spracovanie. Ak vznikne počas výroby skriptu
+		 * chyba, tak metóda vráti hodnotu {@code valnull}.</p>
+		 * 
+		 * @param skript zoznam s riadkami skriptu
+		 * @return inštancia triedy {@link Skript Skript} alebo {@code valnull}
+		 * 
+		 * @see #nahrajSkript(String, String)
+		 * @see #vyrobSkript(String, boolean)
+		 * @see #vyrobSkript(String)
+		 * @see #vyrobSkript(String[])
+		 * @see #registrujSkript(String, String)
+		 * @see #registrujSkript(String, List)
+		 * @see #registrujSkript(String, String[])
+		 * @see #dajSkript(String)
+		 * @see #volajSkript(String)
+		 */
+		public static Skript vyrobSkript(List<String> skript)
+		{
+			return vyrobSkript(skript.toArray(new String[skript.size()]));
+		}
+
+		/**
+		 * <p>Vyrobí zo zadaného reťazcového poľa, ktorého prvky reprezentujú
+		 * riadky skriptu, nový skript a vráti ho na ďalšie spracovanie
+		 * v inštancii triedy {@link Skript Skript}. Ak vznikne počas výroby
+		 * skriptu chyba, tak metóda vráti hodnotu {@code valnull}.</p>
+		 * 
+		 * @param skript pole reťazcov reprezentujúcich riadky skriptu
+		 * @return inštancia triedy {@link Skript Skript} alebo {@code valnull}
+		 * 
+		 * @see #nahrajSkript(String, String)
+		 * @see #vyrobSkript(String, boolean)
+		 * @see #vyrobSkript(String)
+		 * @see #vyrobSkript(List)
+		 * @see #registrujSkript(String, String)
+		 * @see #registrujSkript(String, List)
+		 * @see #registrujSkript(String, String[])
+		 * @see #dajSkript(String)
+		 * @see #volajSkript(String)
+		 */
+		public static Skript vyrobSkript(String[] skript)
+		{
+			return Skript.vyrob(skript);
+		}
+
+		/**
+		 * <p>Vyrobí zo zadaného reťazca nový skript, registruje ho pod
+		 * zadaným názvom a vráti ho na prípadné ďalšie spracovanie.
+		 * Metóda funguje podobne ako metóda {@link #nahrajSkript(String,
+		 * String) nahrajSkript} s tým rozdielom, že skript nie je čítaný
+		 * zo súboru, ale je prijatý vo forme reťazca.</p>
+		 * 
+		 * @param názov názov skriptu, pod ktorým bude tento skript (v prípade
+		 *     úspešného vyrobenia) evidovaný vo vnútornom zozname skriptov
+		 * @param skript skript v textovom tvare (reťazec obsahujúci celý
+		 *     skript)
+		 * @return inštancia triedy {@link Skript Skript} na ďalšie
+		 *     spracovanie alebo {@code valnull} v prípade chyby
+		 * 
+		 * @see #nahrajSkript(String, String)
+		 * @see #vyrobSkript(String, boolean)
+		 * @see #vyrobSkript(String)
+		 * @see #vyrobSkript(List)
+		 * @see #vyrobSkript(String[])
+		 * @see #registrujSkript(String, List)
+		 * @see #registrujSkript(String, String[])
+		 * @see #dajSkript(String)
+		 * @see #volajSkript(String)
+		 */
+		public static Skript registrujSkript(String názov, String skript)
+		{
+			String riadky[] = Skript.vykonajSkriptRiadkovač.split(skript);
+			return registrujSkript(názov, riadky);
+		}
+
+		/**
+		 * <p>Vyrobí zo zadaného zoznamu reťazcov nový skript, registruje
+		 * ho pod zadaným názvom a vráti ho na prípadné ďalšie spracovanie.
+		 * Metóda funguje podobne ako metóda {@link #vyrobSkript(List)
+		 * vyrobSkript} (ibaže skript navyše aj registruje vo vnútornej
+		 * pamäti).</p>
+		 * 
+		 * @param názov názov skriptu, pod ktorým bude tento skript (v prípade
+		 *     úspešného vyrobenia) evidovaný vo vnútornom zozname skriptov
+		 * @param skript zoznam s riadkami skriptu
+		 * @return inštancia triedy {@link Skript Skript} na ďalšie
+		 *     spracovanie alebo {@code valnull} v prípade chyby
+		 * 
+		 * @see #nahrajSkript(String, String)
+		 * @see #vyrobSkript(String, boolean)
+		 * @see #vyrobSkript(String)
+		 * @see #vyrobSkript(List)
+		 * @see #vyrobSkript(String[])
+		 * @see #registrujSkript(String, String)
+		 * @see #registrujSkript(String, String[])
+		 * @see #dajSkript(String)
+		 * @see #volajSkript(String)
+		 */
+		public static Skript registrujSkript(String názov, List<String> skript)
+		{
+			return registrujSkript(názov, skript.toArray(
+				new String[skript.size()]));
+		}
+
+		/**
+		 * <p>Vyrobí zo zadaného reťazcového poľa nový skript, registruje
+		 * ho pod zadaným názvom a vráti ho na prípadné ďalšie spracovanie.
+		 * Metóda funguje podobne ako metóda {@link #vyrobSkript(String[])
+		 * vyrobSkript} (ibaže skript navyše aj registruje vo vnútornej
+		 * pamäti).</p>
+		 * 
+		 * @param názov názov skriptu, pod ktorým bude tento skript (v prípade
+		 *     úspešného vyrobenia) evidovaný vo vnútornom zozname skriptov
+		 * @param skript pole reťazcov reprezentujúcich riadky skriptu
+		 * @return inštancia triedy {@link Skript Skript} na ďalšie
+		 *     spracovanie alebo {@code valnull} v prípade chyby
+		 * 
+		 * @see #nahrajSkript(String, String)
+		 * @see #vyrobSkript(String, boolean)
+		 * @see #vyrobSkript(String)
+		 * @see #vyrobSkript(List)
+		 * @see #vyrobSkript(String[])
+		 * @see #registrujSkript(String, String)
+		 * @see #registrujSkript(String, List)
+		 * @see #dajSkript(String)
+		 * @see #volajSkript(String)
+		 */
+		public static Skript registrujSkript(String názov, String[] skript)
+		{
+			Skript vyrobenýSkript = Skript.vyrob(skript);
+			if (null != vyrobenýSkript)
+				Skript.zoznamSkriptov.put(názov, vyrobenýSkript);
+			return vyrobenýSkript;
+		}
+
+		/**
+		 * <p>Vráti inštanciu skriptu registrovanú vo vnútornej pamäti
+		 * programovacieho rámca pod zadaným menom.</p>
+		 * 
+		 * @param názov názov skriptu vopred registrovaného vo vnútornom
+		 *     zozname skriptov (napríklad metódou {@link #nahrajSkript(String,
+		 *     String) nahrajSkript})
+		 * @return inštancia triedy {@link Skript Skript} alebo {@code valnull}
+		 * 
+		 * @see #nahrajSkript(String, String)
+		 * @see #vyrobSkript(String, boolean)
+		 * @see #vyrobSkript(String)
+		 * @see #vyrobSkript(List)
+		 * @see #vyrobSkript(String[])
+		 * @see #registrujSkript(String, String)
+		 * @see #registrujSkript(String, List)
+		 * @see #registrujSkript(String, String[])
+		 * @see #volajSkript(String)
+		 */
+		public static Skript dajSkript(String názov)
+		{
+			return Skript.zoznamSkriptov.get(názov);
+		}
+
+			// TODO.
+			private static int hĺbkaVolania = 0;
+
+		/**
+		 * <p>Spustí skript registrovaný vo vnútornej pamäti rámca pod
+		 * zadaným menom.</p>
+		 * 
+		 * @param názov názov skriptu vopred registrovaného vo vnútornom
+		 *     zozname skriptov (napríklad metódou {@link #nahrajSkript(String,
+		 *     String) nahrajSkript})
+		 * @return {@link Konštanty#CHYBA_ČÍTANIA_SKRIPTU
+		 *     CHYBA_ČÍTANIA_SKRIPTU} ({@code num-1}) v prípade, že skript
+		 *     nebol nájdený, {@link Konštanty#ŽIADNA_CHYBA ŽIADNA_CHYBA}
+		 *     v prípade bezchybného vykonania skriptu alebo kladné číslo
+		 *     vyjadrujúce číslo riadka, na ktorom vznikla chyba
+		 * 
+		 * @see #nahrajSkript(String, String)
+		 * @see #vyrobSkript(String, boolean)
+		 * @see #vyrobSkript(String)
+		 * @see #vyrobSkript(List)
+		 * @see #vyrobSkript(String[])
+		 * @see #registrujSkript(String, String)
+		 * @see #registrujSkript(String, List)
+		 * @see #registrujSkript(String, String[])
+		 * @see #dajSkript(String)
+		 */
+		public static int volajSkript(String názov)
+		{
+			if (hĺbkaVolania > 15)
+			{
+				// TODO: Tento bezpečnostný mechanizmus nie je zďaleka
+				// dokončený‼ Na jeho dokončenie by bolo treba zabezpečiť,
+				// aby sa v tomto okamihu zastavilo vykonávanie všetkých
+				// skriptov.
+				hĺbkaVolania = 0;
+				return CHYBA_VOLANIA_SKRIPTU;
+			}
+			else
+			{
+				Skript skript = Skript.zoznamSkriptov.get(názov);
+				if (null == skript) return -1;
+				++hĺbkaVolania;
+				int kódSkriptu = skript.vykonaj();
+				--hĺbkaVolania;
+				return kódSkriptu;
 			}
 		}
 
@@ -17676,7 +17369,7 @@ public final class Svet extends JFrame
 		 * príklad v podstate iba naznačuje rôzne aspekty ladenia.</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} TestLadenieSkriptu {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -17724,7 +17417,7 @@ public final class Svet extends JFrame
 									{@code kwdreturn} prerušiť;
 
 								{@code comm// Výpis definovaných menoviek skriptu odfiltrujeme:}
-								{@code kwdcase} {@link GRobot#VYPÍSAŤ_MENOVKU VYPÍSAŤ_MENOVKU}: {@code kwdreturn} {@code valfalse};
+								{@code kwdcase} {@link GRobot#VYPÍSAŤ_MENOVKY VYPÍSAŤ_MENOVKY}: {@code kwdreturn} {@code valfalse};
 
 								{@code kwdcase} {@link GRobot#UKONČENIE_SKRIPTU UKONČENIE_SKRIPTU}:
 									{@code kwdif} (!prerušiť)
@@ -17808,8 +17501,8 @@ public final class Svet extends JFrame
 
 					{@code comm// Musíme zapnúť režim interaktívny režim (zapneme len Svet a robota),}
 					{@code comm// režim ladenia a zabezpečíme, aby sa robot automaticky neskryl po}
-					{@code comm// prvom výpise na vnútornú konzolu programovacieho rámca (pozri poznámku na konci}
-					{@code comm// opisu metódy Plátno.}{@link Plátno#vypíš(Object[]) vypíš}{@code comm)}
+					{@code comm// prvom výpise na vnútornú konzolu programovacieho rámca (pozri}
+					{@code comm// poznámku na konci opisu metódy Plátno.}{@link Plátno#vypíš(Object[]) vypíš}{@code comm)}.
 					{@link Svet Svet}.{@link Svet#režimLadenia(boolean) režimLadenia}({@code valtrue});
 					{@link Svet Svet}.{@link Svet#interaktívnyRežim(boolean) interaktívnyRežim}({@code valtrue});
 					{@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code valthis});
@@ -17856,7 +17549,9 @@ public final class Svet extends JFrame
 		 * @see #spustiSkript(List<String>)
 		 * @see #spustiSkript(String, boolean)
 		 * @see #kódPoslednejChyby()
+		 * @see #riadokPoslednejChyby()
 		 * @see #textPoslednejChyby()
+		 * @see #textChyby(int)
 		 * 
 		 * @throws GRobotException ak bolo vykonávanie niektorého príkazu
 		 *     skriptu zrušené
@@ -17882,16 +17577,15 @@ public final class Svet extends JFrame
 
 					if (null != ObsluhaUdalostí.počúvadlo)
 					{
-						if (0 == chyba)
+						if (ŽIADNA_CHYBA == chyba)
 						{
-							poslednáChyba = 0;
+							Skript.poslednáChyba = ŽIADNA_CHYBA;
 							ObsluhaUdalostí.počúvadlo.ladenie(
-								0, null, UKONČENIE_SKRIPTU);
+								ŽIADNA_CHYBA, null, UKONČENIE_SKRIPTU);
 						}
 						else
-							ObsluhaUdalostí.počúvadlo.ladenie(
-								chyba, textPoslednejChyby(),
-								UKONČENIE_CHYBOU);
+							ObsluhaUdalostí.počúvadlo.ladenie(chyba,
+								textPoslednejChyby(), UKONČENIE_CHYBOU);
 					}
 
 					skriptJeSpustený = false;
@@ -17933,7 +17627,9 @@ public final class Svet extends JFrame
 		 * @see #spustiSkript(List<String>)
 		 * @see #spustiSkript(String, boolean)
 		 * @see #kódPoslednejChyby()
+		 * @see #riadokPoslednejChyby()
 		 * @see #textPoslednejChyby()
+		 * @see #textChyby(int)
 		 * 
 		 * @throws GRobotException ak bolo vykonávanie niektorého príkazu
 		 *     skriptu zrušené
@@ -17950,9 +17646,7 @@ public final class Svet extends JFrame
 		 */
 		public static void spustiSkript(String skript)
 		{
-			String riadky[] = vykonajSkriptRiadkovač.split(skript);
-			// for (String s : riadky) System.out.println("Riadok: " + s);
-
+			String riadky[] = Skript.vykonajSkriptRiadkovač.split(skript);
 			spustiSkript(riadky);
 		}
 
@@ -17978,7 +17672,9 @@ public final class Svet extends JFrame
 		 * @see #spustiSkript(String[])
 		 * @see #spustiSkript(String, boolean)
 		 * @see #kódPoslednejChyby()
+		 * @see #riadokPoslednejChyby()
 		 * @see #textPoslednejChyby()
+		 * @see #textChyby(int)
 		 * 
 		 * @throws GRobotException ak bolo vykonávanie niektorého príkazu
 		 *     skriptu zrušené
@@ -18045,7 +17741,9 @@ public final class Svet extends JFrame
 		 * @see #spustiSkript(String)
 		 * @see #spustiSkript(List<String>)
 		 * @see #kódPoslednejChyby()
+		 * @see #riadokPoslednejChyby()
 		 * @see #textPoslednejChyby()
+		 * @see #textChyby(int)
 		 * 
 		 * @throws GRobotException ak skript so zadaným menom nebol nájdený
 		 *     alebo ak bolo vykonávanie niektorého príkazu skriptu zrušené
@@ -18067,7 +17765,7 @@ public final class Svet extends JFrame
 				try
 				{
 					BufferedReader čítanie;
-					Vector<String> riadky = new Vector<String>();
+					Vector<String> riadky = new Vector<>();
 
 					try
 					{
@@ -18115,10 +17813,9 @@ public final class Svet extends JFrame
 					GRobotException.vypíšChybovéHlásenia(e);
 					if (null != ObsluhaUdalostí.počúvadlo)
 					{
-						poslednáChyba = -1;
-						ObsluhaUdalostí.počúvadlo.ladenie(
-							-1, "Chyba pri čítaní skriptu",
-							UKONČENIE_CHYBOU);
+						Skript.poslednáChyba = CHYBA_ČÍTANIA_SKRIPTU;
+						ObsluhaUdalostí.počúvadlo.ladenie(Skript.poslednáChyba,
+							textPoslednejChyby(), UKONČENIE_CHYBOU);
 					}
 				}
 			}
@@ -18157,10 +17854,10 @@ public final class Svet extends JFrame
 		 */
 		public static boolean vykonajPríkaz(String príkaz)
 		{
-			if (vykonajPríkaz(príkaz, Svet.class, null)) return true;
-			if (vykonajPríkaz(príkaz, Math.class, null)) return true;
-			if (vykonajPríkaz(príkaz, Bod.class, null)) return true;
-			return vykonajPríkaz(príkaz, Farba.class, null);
+			if (Skript.vykonajPríkaz(príkaz, Svet.class, null)) return true;
+			if (Skript.vykonajPríkaz(príkaz, Math.class, null)) return true;
+			if (Skript.vykonajPríkaz(príkaz, Bod.class, null)) return true;
+			return Skript.vykonajPríkaz(príkaz, Farba.class, null);
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #vykonajPríkaz(String) vykonajPríkaz}.</p> */
@@ -18241,27 +17938,28 @@ public final class Svet extends JFrame
 		 * z nasledujúcich podmienok:</p>
 		 * 
 		 * <ul>
-		 * <li>neprijíma žiadny parameter,</li>
-		 * <li>prijíma jeden až štyri číselné parametre
+		 * <li>neprijíma žiadny argument,</li>
+		 * <li>prijíma jeden až štyri číselné argumenty
 		 * (typ {@code typedouble} alebo {@code typeint}),</li>
-		 * <li>prijíma jeden booleovský parameter (typ
+		 * <li>prijíma jeden booleovský argument (typ
 		 * {@code typeboolean}),</li>
-		 * <li>prijíma jeden parameter určujúci farbu, ktorá musí byť
+		 * <li>prijíma jeden argument určujúci farbu, ktorá musí byť
 		 * v skripte alebo príkazovom riadku zapísaná slovne: červená,
 		 * zelená, modrá… (tu sú dovolené len preddefinované farby,
-		 * ale číselnými kombináciami parametrov je možné namiešať
-		 * ľubovoľnú farbu),</li>
+		 * ale číselnými kombináciami argumentov (nasmerovaných do inej
+		 * verzie tejto metódy) je možné namiešať ľubovoľnú farbu),</li>
 		 * <li>všetky vyššie uvedené možnosti s jedným reťazcovým
 		 * parametrom navyše, ktorý môže originálna metóda prijímať buď
-		 * na prvom mieste, alebo poslednom mieste (zápis reťazca
-		 * v skripte je však vždy povolený len na poslednom mieste).</li>
+		 * na prvom mieste, alebo poslednom mieste (zápis reťazca v skripte
+		 * je povolený buď na poslednom mieste s jednou úvodzovkou, alebo
+		 * na ľubovoľnom mieste s dvomi úvodzovkami).</li>
 		 * </ul>
 		 * 
 		 * <p>Počet argumentov konkrétneho príkazu musí byť rovnaký ako
 		 * počet parametrov metódy, ktorej volanie má reprezentovať. To,
 		 * že počet číselných argumentov sa môže pohybovať v rozsahu nula
 		 * až štyri znamená, že interaktívny režim vyhľadáva iba také
-		 * metódy, ktoré majú uvedený počet argumentov.</p>
+		 * metódy, ktoré majú deklarovaný uvedený počet parametrov.</p>
 		 * 
 		 * <p>Jednotlivé slová príkazov interaktívneho režimu musia byť
 		 * oddelené medzerou, na veľkosti písmen nezáleží a diakritika musí
@@ -18408,7 +18106,7 @@ public final class Svet extends JFrame
 		 * <p> </p>
 		 * 
 		 * <!--
-		 * TODO
+		 * ✗ Bolo nakoniec implementované inak:
 		 * 
 		 * Definuj novú metódu upravPríkaz(), ktorá vyhľadá v zadanom
 		 * príkazovom riadku reťazce v tvare "…", odfiltruje
@@ -18452,7 +18150,9 @@ public final class Svet extends JFrame
 		 * @see #režimLadenia(boolean)
 		 * @see ObsluhaUdalostí#ladenie(int, String, int)
 		 * @see #kódPoslednejChyby()
+		 * @see #riadokPoslednejChyby()
 		 * @see #textPoslednejChyby()
+		 * @see #textChyby(int)
 		 */
 		public static void interaktívnyRežim(boolean zapni)
 		{
@@ -18531,11 +18231,11 @@ public final class Svet extends JFrame
 		 * @see ObsluhaUdalostí#ladenie(int, String, int)
 		 */
 		public static void interaktívnaInštancia(String inštancia)
-		{ interaktívnaInštancia = inštancia.toLowerCase(); }
+		{ interaktívnaInštancia = inštancia/*.toLowerCase()*/; }
 
 		/** <p><a class="alias"></a> Alias pre {@link #interaktívnaInštancia(String) interaktívnaInštancia}.</p> */
 		public static void interaktivnaInstancia(String inštancia)
-		{ interaktívnaInštancia = inštancia.toLowerCase(); }
+		{ interaktívnaInštancia = inštancia/*.toLowerCase()*/; }
 
 		/**
 		 * <p><a class="getter"></a> Vráti aktívnu inštanciu {@linkplain 
@@ -18568,10 +18268,11 @@ public final class Svet extends JFrame
 		{ interaktívnaInštancia = null; }
 
 		/**
-		 * <p>Získa kód poslednej chyby, ktorá nastala počas vykonávania príkazov
-		 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}
-		 * alebo {@linkplain Svet#vykonajSkript(String[]) skriptu}. Môže ísť
-		 * o jeden z nasledujúcich kódov:</p>
+		 * <p>Získa kód poslednej chyby, ktorá nastala počas vykonávania
+		 * príkazov {@linkplain Svet#interaktívnyRežim(boolean)
+		 * interaktívneho režimu} alebo {@linkplain 
+		 * Svet#vykonajSkript(String[]) skriptu}. Môže ísť o jeden
+		 * z nasledujúcich kódov:</p>
 		 * 
 		 * <ul>
 		 * <li>{@link GRobot#ŽIADNA_CHYBA ŽIADNA_CHYBA},</li>
@@ -18580,20 +18281,41 @@ public final class Svet extends JFrame
 		 * <li>{@link GRobot#CHYBA_CHÝBAJÚCA_MENOVKA CHYBA_CHÝBAJÚCA_MENOVKA},</li>
 		 * <li>{@link GRobot#CHYBA_NEZNÁMA_MENOVKA CHYBA_NEZNÁMA_MENOVKA},</li>
 		 * <li>{@link GRobot#CHYBA_NEZNÁME_SLOVO CHYBA_NEZNÁME_SLOVO},</li>
-		 * <li>{@link GRobot#CHYBA_NEZNÁMA_ŠTRUKTÚRA CHYBA_NEZNÁMA_ŠTRUKTÚRA},</li>
+		 * <li>{@link GRobot#CHYBA_CHYBNÁ_ŠTRUKTÚRA CHYBA_CHYBNÁ_ŠTRUKTÚRA},</li>
 		 * <li>{@link GRobot#CHYBA_NEZNÁME_MENO CHYBA_NEZNÁME_MENO},</li>
-		 * <li>{@link GRobot#CHYBA_NEZNÁMY_PRÍKAZ CHYBA_NEZNÁMY_PRÍKAZ}.</li>
+		 * <li>{@link GRobot#CHYBA_NEZNÁMY_PRÍKAZ CHYBA_NEZNÁMY_PRÍKAZ},</li>
+		 * <li>{@link GRobot#CHYBA_ČÍTANIA_SKRIPTU CHYBA_ČÍTANIA_SKRIPTU}.</li>
+		 * <li>alebo {@link GRobot#CHYBA_VOLANIA_SKRIPTU
+		 * CHYBA_VOLANIA_SKRIPTU}.</li>
 		 * </ul>
 		 * 
 		 * @return kód chyby – na získanie podrobností klikni na meno chyby
 		 *     v zozname vyššie
 		 * 
+		 * @see #riadokPoslednejChyby()
 		 * @see #textPoslednejChyby()
+		 * @see #textChyby(int)
 		 */
-		public static int kódPoslednejChyby() { return poslednáChyba; }
+		public static int kódPoslednejChyby()
+		{ return Skript.poslednáChyba % 100; }
 
 		/** <p><a class="alias"></a> Alias pre {@link #kódPoslednejChyby() kódPoslednejChyby}.</p> */
-		public static int kodPoslednejChyby() { return poslednáChyba; }
+		public static int kodPoslednejChyby()
+		{ return Skript.poslednáChyba % 100; }
+
+		/**
+		 * <p>Ak posledná chyba vznikla na konkrétnom riadku {@linkplain 
+		 * Svet#vykonajSkript(String[]) skriptu}, tak táto metóda vráti
+		 * číslo tohto riadka.</p>
+		 * 
+		 * @return číslo riadka, na ktorom vznikla posledná chyba
+		 * 
+		 * @see #kódPoslednejChyby()
+		 * @see #textPoslednejChyby()
+		 * @see #textChyby(int)
+		 */
+		public static int riadokPoslednejChyby()
+		{ return Skript.poslednáChyba / 100; }
 
 		/**
 		 * <p>Vráti vysvetľujúci text ku kódu poslednej chyby, ktorá nastala
@@ -18605,56 +18327,29 @@ public final class Svet extends JFrame
 		 * @return text ku kódu chyby
 		 * 
 		 * @see #kódPoslednejChyby()
+		 * @see #riadokPoslednejChyby()
+		 * @see #textChyby(int)
 		 */
 		public static String textPoslednejChyby()
+		{ return Skript.textChyby(Skript.poslednáChyba); }
+
+		/**
+		 * <p>Vráti vysvetľujúci text ku kódu chyby určenej parametrom
+		 * {@code kódChyby}. Ide o kódy vnútorne definované a používané
+		 * pri hláseniach o nesprávnych stavoch počas vykonávania príkazov
+		 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}
+		 * alebo
+		 * {@linkplain Svet#vykonajSkript(String[]) skriptu}.</p>
+		 * 
+		 * @return text ku kódu chyby
+		 * 
+		 * @see #kódPoslednejChyby()
+		 * @see #riadokPoslednejChyby()
+		 * @see #textPoslednejChyby()
+		 */
+		public static String textChyby(int kódChyby)
 		{
-			switch (poslednáChyba)
-			{
-				case ŽIADNA_CHYBA: return "Nenastala žiadna chyba. " +
-					"(Prípadne mohla nastať neznáma chyba.)";
-
-				case CHYBA_VYKONANIA_PRÍKAZU: return "Nastala chyba počas " +
-					"vykonávania posledného príkazu. (Mohlo ísť napríklad " +
-					"o zadanie nesprávneho argumentu a pod.)";
-
-				case CHYBA_DVOJITÁ_MENOVKA: return "V skripte sa vyskytla " +
-					"dvojnásobná definícia menovky. (Vykonávaie skriptu " +
-					"nemôže pokračovať, pretože skript by pri vykonávaní " +
-					"riadiacich príkazov „ak“ alebo „dokedy“ (s ich " +
-					"prípadnou alternatívou „inak“) nevedel identifikovať, " +
-					"ktorým riadkom má jeho vykonávanie pokračovať.)";
-
-				case CHYBA_CHÝBAJÚCA_MENOVKA: return "Za riadiacim " +
-					"príkazom „na“, „ak“, „dokedy“ alebo za alternatívou " +
-					"„inak“ chýba zadanie menovky.";
-
-				case CHYBA_NEZNÁMA_MENOVKA: return "Menovka za riadiacim " +
-					"príkazom „na“, „ak“, „dokedy“ alebo za alternatívou " +
-					"„inak“) je neznáma. (Nebola definovaná " +
-					"v rámci celého skriptu.)";
-
-				case CHYBA_NEZNÁME_SLOVO: return "Za menovkou riadiaceho " +
-					"príkazu „ak“ alebo „dokedy“ sa vyskylo nezáme slovo. " +
-					"Za zadaním prvej menovky môže nasledovať ďalšia " +
-					"menovka a to buď bezprostredne, alebo za slovom " +
-					"určujúcim alternatívu – „inak“. Ostané slová sú " +
-					"považované za neznáme.";
-
-				case CHYBA_NEZNÁMA_ŠTRUKTÚRA: return "Pokus o korektné " +
-					"rozpoznanie riadiaceho príkazu „ak“ alebo „dokedy“ " +
-					"zlyhal. (Ak ide o riadiaci príkaz „dokedy“, tak možno " +
-					"nie je definovaná riadiaca premenná, ktorú sa pokúša " +
-					"použiť na svoju činnosť.)";
-
-				case CHYBA_NEZNÁME_MENO: return "Naposledny aktivovaná " +
-					"inštancia už alebo ešte nejestvuje. (Zadané meno " +
-					"inštancie je neznáme.)";
-
-				case CHYBA_NEZNÁMY_PRÍKAZ: return "Zadaný príkaz nebol " +
-					"rozpoznaný.";
-			}
-
-			return "Nastala nezáma chyba.";
+			return Skript.textChyby(kódChyby);
 		}
 
 		/**
@@ -18665,18 +18360,35 @@ public final class Svet extends JFrame
 		 * @return návratová hodnota naposledy vykonaného príkazu
 		 */
 		public static Object poslednáNávratováHodnota()
-		{ return poslednáNávratováHodnota; }
+		{ return Skript.poslednáNávratováHodnota(); }
 
 		/** <p><a class="alias"></a> Alias pre {@link #poslednáNávratováHodnota() poslednáNávratováHodnota}.</p> */
 		public static Object poslednaNavratovaHodnota()
-		{ return poslednáNávratováHodnota; }
+		{ return Skript.poslednáNávratováHodnota(); }
 
 
-		// Sformuluje znenie chyby skriptu pre skripty tlačidiel a položiek
-		// ponuky. Tieto skripty by nemali inú možnosť poskytnutia spätnej
-		// väzby používateľovi.
-		/*packagePrivate*/ static void formulujChybuSkriptu(
-			int kódSkriptu, String titulokChyby)
+		/**
+		 * <p>Sformuluje znenie chyby skriptu na základe zadaného kódu chyby
+		 * a zobrazí dialóg s chybovým hlásením rozdeleným na riadky so
+		 * zadaným počtom znakov a zadaným titulkom chybového dialógu.
+		 * Kód chyby je návratová hodnota skriptu (pozri {@link Skript
+		 * Skript}{@code .}{@link Skript#vykonaj() vykonaj}{@code ()}).</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda bola pôvodne
+		 * vytvorená na vnútorné účely – pre skripty tlačidiel a položiek
+		 * ponuky, ktoré by inak nemali žiadnu možnosť poskytnutia spätnej
+		 * väzby používateľovi. Tieto skripty stále metódu používajú, ale
+		 * medzičasom sa metóda stala verejnou a vznikli jej ďalšie
+		 * verzie.</p>
+		 * 
+		 * @param kódSkriptu chybový kód, na základe ktorého metóda
+		 *     sformuluje a zobrazí chybové hlásenie v dialógovom okne
+		 * @param titulokChyby text titulku dialógového okna chyby
+		 * @param šírkaRiadka počet znakov na jednom riadku chybového
+		 *     hlásenia
+		 */
+		public static void formulujChybuSkriptu(int kódSkriptu,
+			String titulokChyby, int šírkaRiadka)
 		{
 			StringBuilder sb = new StringBuilder();
 			sb.append("Chyba na riadku ");
@@ -18684,7 +18396,7 @@ public final class Svet extends JFrame
 			sb.append(". ");
 			sb.append(textPoslednejChyby());
 
-			String[] riadky = textNaRiadky(sb.toString(), 60);
+			String[] riadky = textNaRiadky(sb.toString(), šírkaRiadka);
 
 			sb.setLength(0);
 			for (String riadok : riadky)
@@ -18702,7 +18414,7 @@ public final class Svet extends JFrame
 					"riešení. Napríklad: Vložte nový riadok pred riadkom, " +
 					"na ktorom nastala chyba a použite syntax @«inštancia» " +
 					"na nastavenie inštancie. Príklady: @svet, @podlaha, " +
-					"@strop, @robot…)", 60);
+					"@strop, @robot…)", šírkaRiadka);
 				for (String riadok : riadky)
 				{
 					sb.append(riadok);
@@ -18712,6 +18424,54 @@ public final class Svet extends JFrame
 
 			Svet.chyba(sb.toString(), titulokChyby);
 		}
+
+		/**
+		 * <p>Sformuluje znenie chyby skriptu na základe zadaného kódu chyby
+		 * a zobrazí dialóg s chybovým hlásením rozdeleným na riadky so
+		 * predvoleným počtom znakov (@code num60) a zadaným titulkom
+		 * chybového dialógu. Kód chyby je návratová hodnota skriptu (pozri
+		 * {@link Skript Skript}{@code .}{@link Skript#vykonaj()
+		 * vykonaj}{@code ()}).</p>
+		 * 
+		 * @param kódSkriptu chybový kód, na základe ktorého metóda
+		 *     sformuluje a zobrazí chybové hlásenie v dialógovom okne
+		 * @param titulokChyby text titulku dialógového okna chyby
+		 */
+		public static void formulujChybuSkriptu(int kódSkriptu,
+			String titulokChyby)
+		{ formulujChybuSkriptu(kódSkriptu, titulokChyby, 60); }
+
+		/**
+		 * <p>Sformuluje znenie chyby skriptu na základe zadaného kódu chyby
+		 * a zobrazí dialóg s chybovým hlásením rozdeleným na riadky so
+		 * zadaným počtom znakov a predvoleným titulkom chybového dialógu
+		 * ({@code srg"Chyba skriptu…"}). Kód chyby je návratová hodnota
+		 * skriptu (pozri {@link Skript Skript}{@code .}{@link 
+		 * Skript#vykonaj() vykonaj}{@code ()}).</p>
+		 * 
+		 * @param kódSkriptu chybový kód, na základe ktorého metóda
+		 *     sformuluje a zobrazí chybové hlásenie v dialógovom okne
+		 * @param šírkaRiadka počet znakov na jednom riadku chybového
+		 *     hlásenia
+		 */
+		public static void formulujChybuSkriptu(int kódSkriptu,
+			int šírkaRiadka)
+		{ formulujChybuSkriptu(kódSkriptu, "Chyba skriptu…", šírkaRiadka); }
+
+		/**
+		 * <p>Sformuluje znenie chyby skriptu na základe zadaného kódu chyby
+		 * a zobrazí dialóg s chybovým hlásením rozdeleným na riadky so
+		 * predvoleným počtom znakov (@code num60) a predvoleným titulkom
+		 * chybového dialógu ({@code srg"Chyba skriptu…"}).
+		 * Kód chyby je návratová hodnota skriptu (pozri {@link Skript
+		 * Skript}{@code .}{@link Skript#vykonaj() vykonaj}{@code ()}).</p>
+		 * 
+		 * @param kódSkriptu chybový kód, na základe ktorého metóda
+		 *     sformuluje a zobrazí chybové hlásenie v dialógovom okne
+		 */
+		public static void formulujChybuSkriptu(int kódSkriptu)
+		{ formulujChybuSkriptu(kódSkriptu, "Chyba skriptu…", 60); }
+
 
 		// Vnútorná konzola
 
@@ -18730,9 +18490,8 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p><a class="setter"></a> Nastaví vlastnosť zalamovania textov
-		 * vnútornej konzoly stropu podľa zadaného parametra. Má rovnaký efekt
-		 * ako keby sme volali metódu
-		 * {@link Plátno#zalamujTexty(boolean)
+		 * vnútornej konzoly stropu podľa hodnoty parametra. Má rovnaký efekt
+		 * ako keby sme volali metódu {@link Plátno#zalamujTexty(boolean)
 		 * strop.zalamujTexty(zalamuj)}.</p>
 		 * 
 		 * @param zalamuj {@code valtrue} ak chceme, aby boli texty stropu
@@ -18818,14 +18577,14 @@ public final class Svet extends JFrame
 		public static String bodVAktívnomSlove(Poloha poloha)
 		{
 			return GRobot.strop.bodVAktívnomSlove(
-				poloha.polohaX(), poloha.polohaY()); 
+				poloha.polohaX(), poloha.polohaY());
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #bodVAktívnomSlove(Poloha) bodVAktívnomSlove}.</p> */
 		public static String bodVAktivnomSlove(Poloha poloha)
 		{
 			return GRobot.strop.bodVAktívnomSlove(
-				poloha.polohaX(), poloha.polohaY()); 
+				poloha.polohaX(), poloha.polohaY());
 		}
 
 		/**
@@ -19223,6 +18982,7 @@ public final class Svet extends JFrame
 		 * @see Plátno#obrázok(double, double, String)
 		 * @see Plátno#obrázok(Poloha, String)
 		 * @see Plátno#vyplň(String)
+		 * @see Obrázok#priečinokObrázkov(String)
 		 * @see Obrázok#čítaj(String)
 		 * @see Obrázok#vyplň(Shape, String)
 		 * @see Obrázok#kresli(String)
@@ -19278,6 +19038,7 @@ public final class Svet extends JFrame
 		 * @see Plátno#obrázok(double, double, String)
 		 * @see Plátno#obrázok(Poloha, String)
 		 * @see Plátno#vyplň(String)
+		 * @see Obrázok#priečinokObrázkov()
 		 * @see Obrázok#čítaj(String)
 		 * @see Obrázok#vyplň(Shape, String)
 		 * @see Obrázok#kresli(String)
@@ -19919,9 +19680,11 @@ public final class Svet extends JFrame
 		 * základného komponentu okna aplikácie, na ktorom je umiestnené
 		 * plátno a prípadne ďalšie komponenty.</p>
 		 * 
-		 * <!-- TODO – príklad použitia s vhodne „veľkým“ (malým) obrázkom
-		 * porovnávajúcim okno s predvolenou farbou plochy a vedľa dajme
-		 * tomu čiernou -->
+		 * <!-- TODO – overiť vzhľad ukážky -->
+		 * <p><image>farba-plochy-small.png<alt/>Ukážka farieb
+		 * plochy.</image>Ukážka troch farieb plochy. Zľava doprava:
+		 * systémom predvolená, {@link Farebnosť#papierová papierová}
+		 * a {@link Farebnosť#antracitová antracitová}.</p>
 		 * 
 		 * @param nováFarba objekt určujúci novú farbu plochy;
 		 *     jestvuje paleta predvolených farieb (pozri: {@link #biela
@@ -22120,7 +21883,7 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Pomocou lineárnej interpolácie je možné získať ľubovoľnú
 		 * „priamočiaru“ hodnotu ležiacu medzi hodnotami {@code a}
-		 *  a {@code b} a to s pomocou parametra {@code t}. Parameter
+		 * a {@code b} a to s pomocou parametra {@code t}. Parameter
 		 * {@code t} by mal nadobúdať hodnoty medzi {@code num0.0}
 		 * a {@code num1.0}. Keď je lineárna interpolácia použitá
 		 * napríklad so začiatočnými a koncovými súradnicami bodu
@@ -22134,6 +21897,16 @@ public final class Svet extends JFrame
 		 * <p><image>linearnaInterpolacia.png<alt/>Body vypočítané
 		 * s použitím lineárnej interpolácie.</image>Body vypočítané pomocou
 		 * lineárnej interpolácie ležiace na nakreslenej úsečke.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Podmieňovací spôsob („by mali“)
+		 * použitý výššie v súvislosti hodnotou parametra {@code t} bol
+		 * použitý úmyselne. Zamerajme sa na príklad kreslenia bodov (podľa
+		 * súradníc vypočítaných s pomocou lineárnej interpolácie) ležiacich
+		 * na úsečke s počiatočným bodom A[x<sub>1</sub>, y<sub>1</sub>]
+		 * a koncovým bodom B[x<sub>2</sub>, y<sub>2</sub>]. Ak sa hodnota
+		 * parametra {@code t} bude nachádzať mimo povoleného (resp.
+		 * odporúčaného) rozashu ⟨0; 1⟩, tak vypočítame bod ležiaci na priamke
+		 * určenej hraničnými bodmi A a B, ktorý neleží na úsečke |AB|.</p>
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
@@ -22845,7 +22618,7 @@ public final class Svet extends JFrame
 			double xx = x1 + a * Δx / d;
 			double yy = y1 + a * Δy / d;
 
-			// Zoznam<Poloha> priesečníky = new Zoznam<Poloha>();
+			// Zoznam<Poloha> priesečníky = new Zoznam<>();
 
 			if (0.0 == h)
 			{
@@ -22968,7 +22741,7 @@ public final class Svet extends JFrame
 			if (disc < 0.0) return null;
 			// Situáciu, keď „disc“ je rovný nule riešime neskôr.
 
-			// Zoznam<Poloha> priesečníky = new Zoznam<Poloha>();
+			// Zoznam<Poloha> priesečníky = new Zoznam<>();
 
 			double d = Math.sqrt(disc);
 			double s = -p + d;
@@ -23087,7 +22860,7 @@ public final class Svet extends JFrame
 
 			if (determinant < 0.0) return null;
 
-			// Zoznam<Poloha> priesečníky = new Zoznam<Poloha>();
+			// Zoznam<Poloha> priesečníky = new Zoznam<>();
 
 			if (0.0 == determinant)
 			{
@@ -23418,10 +23191,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <p><image>«názov».png<alt/></image>«Popis…»<!-- TODO -->.</p>
 		 * 
-		 * <!-- TODO dokončiť opis, definovať alias(y) bez diakritiky
-		 * a viaceré verzie podľa vzoru viacerých verzií metód
-		 * priesečníkÚsečiek a priesečníkPriamok, zaradiť do kategórií
-		 * metód. -->
+		 * <!-- TODO dokončiť opis. -->
 		 * 
 		 * @param x0 x-ová súradnica voľného bodu
 		 * @param y0 y-ová súradnica voľného bodu
@@ -23774,29 +23544,59 @@ public final class Svet extends JFrame
 
 
 		/**
-		 * <p>Vypočíta vzdialenosť od zadaného voľného bodu ku
-		 * kružnici.</p>
+		 * <p>Vypočíta vzdialenosť od zadaného voľného bodu V ku
+		 * kružnici určenej stredom S a polomerom r.</p>
 		 * 
-		 * <!-- TODO dokončiť opis, definovať alias(y) bez diakritiky
-		 * a viaceré verzie podľa vzoru viacerých verzií metód
-		 * priesečníkÚsečiek a priesečníkPriamok, zaradiť do kategórií
-		 * metód. -->
+		 * <!-- TODO dokončiť opis, definovať viaceré verzie podľa vzoru
+		 * viacerých verzií metód priesečníkÚsečiek a priesečníkPriamok. -->
 		 * 
-		 * <p>[x0, y0] – voľný bod; [x1, y1] – stred; r – polomer</p>
+		 * <p>Parametre metódy určujú: V[x0, y0] – voľný bod; S[x1, y1] –
+		 * stred kružnice; r – polomer kružnice.</p>
+		 * 
+		 * @param x0 x-ová súradnica voľného bodu
+		 * @param y0 y-ová súradnica voľného bodu
+		 * @param x1 x-ová súradnica stredu S kružnice
+		 * @param y1 y-ová súradnica stredu S kružnice
+		 * @param r polomer kružnice
+		 * @return vzdialenosť bodu od kružnice
 		 */
 		public final static double vzdialenosťBoduOdKružnice(
 			double x0, double y0, double x1, double y1, double r)
 		{ return Math.hypot(x1 - x0, y1 - y0) - r; }
 
+		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťBoduOdKružnice(double, double, double, double, double) vzdialenosťBoduOdKružnice}.</p> */
+		public final static double vzdialenostBoduOdKruznice(
+			double x0, double y0, double x1, double y1, double r)
+		{ return Math.hypot(x1 - x0, y1 - y0) - r; }
+
 
 		/**
-		 * <p>Vypočíta vzdialenosť medzi dvomi kružnicami. Ak majú kružnice
+		 * <p>Vypočíta vzdialenosť medzi dvomi kružnicami, ktoré sú určené
+		 * svojími stredmi (S1, S2) a polomermi (r1, r2). Ak majú kružnice
 		 * prienik, tak je vzdialenosť záporná. (Ak sa dotýkajú v jedinom
 		 * bode, tak je nulová.)</p>
 		 * 
-		 * <p>[x1, y1] – stred prvej kružnice; r1 – polomer prvej kružnice; [x2, y2] – stred druhej kružnice; r2 – polomer druhej kružnice</p>
+		 * <!-- TODO dokončiť opis, definovať viaceré verzie podľa vzoru
+		 * viacerých verzií metód priesečníkÚsečiek a priesečníkPriamok. -->
+		 * 
+		 * <p>Parametre metódy určujú: S1[x1, y1] – stred prvej kružnice;
+		 * r1 – polomer prvej kružnice; S2[x2, y2] – stred druhej kružnice;
+		 * r2 – polomer druhej kružnice.</p>
+		 * 
+		 * @param x1 x-ová súradnica stredu S1 (prvej) kružnice
+		 * @param y1 y-ová súradnica stredu S1 (prvej) kružnice
+		 * @param r1 polomer prvej kružnice
+		 * @param x2 x-ová súradnica stredu S2 (druhej) kružnice
+		 * @param y2 y-ová súradnica stredu S2 (druhej) kružnice
+		 * @param r2 polomer druhej kružnice
+		 * @return vzdialenosť kružníc
 		 */
 		public final static double vzdialenosťKružníc(
+			double x1, double y1, double r1, double x2, double y2, double r2)
+		{ return Math.hypot(x1 - x2, y1 - y2) - r1 - r2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťKružníc(double, double, double, double, double, double) vzdialenosťKružníc}.</p> */
+		public final static double vzdialenostKruznic(
 			double x1, double y1, double r1, double x2, double y2, double r2)
 		{ return Math.hypot(x1 - x2, y1 - y2) - r1 - r2; }
 
@@ -23807,16 +23607,26 @@ public final class Svet extends JFrame
 		//     Uložené do: DistanceLine3Line3.pdf (TODO: dať kópiu k dispozícii)
 
 		/**
-		 * <p>Vypočíta vzdialenosť medzi dvomi úsečkami. Ak sa úsečky
-		 * pretínajú, tak je vzdialenosť nulová.</p>
+		 * <p>Vypočíta vzdialenosť medzi dvomi úsečkami |AB| a |CD|. Ak sa
+		 * úsečky pretínajú, tak je vzdialenosť nulová. V opačnom prípade
+		 * metóda nájde najbližšie body úsečiek a vypočíta vzdialenosť medzi
+		 * nimi.</p>
 		 * 
-		 * <!-- TODO dokončiť opis, definovať alias(y) bez diakritiky
-		 * a viaceré verzie podľa vzoru viacerých verzií metód
-		 * priesečníkÚsečiek a priesečníkPriamok, zaradiť do kategórií
-		 * metód. -->
+		 * <!-- TODO dokončiť opis, definovať viaceré verzie podľa vzoru
+		 * viacerých verzií metód priesečníkÚsečiek a priesečníkPriamok. -->
 		 * 
-		 * <p>[x1, y1] – [x2, y2] – krajné body prvej úsečky; [x3, y3] –
-		 * [x4, y4] – krajné body druhej úsečky</p>
+		 * <p>Parametre metódy vyjadrujú: A[x1, y1] – B[x2, y2] – krajné body
+		 * prvej úsečky; C[x3, y3] – D[x4, y4] – krajné body druhej úsečky.</p>
+		 * 
+		 * @param x1 x-ová súradnica určujúceho bodu A prvej úsečky
+		 * @param y1 y-ová súradnica určujúceho bodu A prvej úsečky
+		 * @param x2 x-ová súradnica určujúceho bodu B prvej úsečky
+		 * @param y2 y-ová súradnica určujúceho bodu B prvej úsečky
+		 * @param x3 x-ová súradnica určujúceho bodu C druhej úsečky
+		 * @param y3 y-ová súradnica určujúceho bodu C druhej úsečky
+		 * @param x4 x-ová súradnica určujúceho bodu D druhej úsečky
+		 * @param y4 y-ová súradnica určujúceho bodu D druhej úsečky
+		 * @return vzájomná vzdialenosť dvoch úsečiek
 		 */
 		public final static double vzdialenosťÚsečiek(
 			double x1, double y1, double x2, double y2,
@@ -23831,16 +23641,21 @@ public final class Svet extends JFrame
 			// [x1, y1] – [x2, y2]: Line2D.ptSegDist(x1, y1, x2, y2, x0, y0);
 
 			double vzdialenosť = Line2D.ptSegDist(x1, y1, x2, y2, x3, y3);
-			double compare = Line2D.ptSegDist(x1, y1, x2, y2, x4, y4);
-			if (vzdialenosť > compare) vzdialenosť = compare;
-			compare = Line2D.ptSegDist(x3, y3, x4, y4, x1, y1);
-			if (vzdialenosť > compare) vzdialenosť = compare;
-			compare = Line2D.ptSegDist(x3, y3, x4, y4, x2, y2);
-			if (vzdialenosť > compare) vzdialenosť = compare;
+			double porovnaj = Line2D.ptSegDist(x1, y1, x2, y2, x4, y4);
+			if (vzdialenosť > porovnaj) vzdialenosť = porovnaj;
+			porovnaj = Line2D.ptSegDist(x3, y3, x4, y4, x1, y1);
+			if (vzdialenosť > porovnaj) vzdialenosť = porovnaj;
+			porovnaj = Line2D.ptSegDist(x3, y3, x4, y4, x2, y2);
+			if (vzdialenosť > porovnaj) vzdialenosť = porovnaj;
 
 			return vzdialenosť;
 		}
 
+		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťÚsečiek(double, double, double, double, double, double, double, double) vzdialenosťÚsečiek}.</p> */
+		public final static double vzdialenostUseciek(
+			double x1, double y1, double x2, double y2,
+			double x3, double y3, double x4, double y4)
+		{ return vzdialenosťÚsečiek(x1, y1, x2, y2, x3, y3, x4, y4); }
 
 		// Koreňové metódy slúžiace na výpočet vzdialenosti priamky od
 		// kružnice a úsečky od kružnice som najskôr analyticky vyriešil
@@ -23865,21 +23680,27 @@ public final class Svet extends JFrame
 		 * priamku a kružnicu) vznikol až po analytickom riešení problému ako
 		 * vysvetlenie spôsobu riešenia, ktoré bolo zvolené tak, aby bolo čo
 		 * najmenej výpočtovo náročné. V skutočnosti je veľmi priamočiare.
-		 * Je to rozdiel vzdialenosti stredu kružnice od priamky a polomeru
-		 * kružnice. (Algoritmus výpočtu vzdialenosti bodu od priamky nie je
+		 * Je to rozdiel:<br />
+		 * – vzdialenosti stredu kružnice od priamky<br />
+		 * – a polomeru kružnice.<br />
+		 * (Algoritmus výpočtu vzdialenosti bodu od priamky nie je
 		 * príliš výpočtovo náročný a aj v triedach Javy sa nachádza
 		 * {@linkplain Line2D#ptLineDist(double, double, double, double,
 		 * double, double) metóda}, ktorá tento algoritmus implementuje.)</p>
 		 * 
-		 * <!-- TODO dokončiť opis, definovať alias(y) bez diakritiky
-		 * a viaceré verzie podľa vzoru viacerých verzií metód
-		 * priesečníkÚsečiek a priesečníkPriamok, zaradiť do kategórií
-		 * metód. -->
+		 * <!-- TODO dokončiť opis, definovať viaceré verzie podľa vzoru
+		 * viacerých verzií metód priesečníkÚsečiek a priesečníkPriamok. -->
 		 * 
 		 * <p>[x1, y1] – [x2, y2] – určujúce body priamky; [x3, y3] – stred;
 		 * r – polomer</p>
 		 */
 		public final static double vzdialenosťPriamkyOdKružnice(
+			double x1, double y1, double x2, double y2,
+			double x3, double y3, double r)
+		{ return Line2D.ptLineDist(x1, y1, x2, y2, x3, y3) - r; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťPriamkyOdKružnice(double, double, double, double, double, double, double) vzdialenosťPriamkyOdKružnice}.</p> */
+		public final static double vzdialenostPriamkyOdKruznice(
 			double x1, double y1, double x2, double y2,
 			double x3, double y3, double r)
 		{ return Line2D.ptLineDist(x1, y1, x2, y2, x3, y3) - r; }
@@ -23892,15 +23713,19 @@ public final class Svet extends JFrame
 		 * na úsečke od stredu kružnice. (Ak sa kružnica a úsečka dotýkajú
 		 * v jedinom bode, tak je vzdialenosť nulová.)</p>
 		 * 
-		 * <!-- TODO dokončiť opis, definovať alias(y) bez diakritiky
-		 * a viaceré verzie podľa vzoru viacerých verzií metód
-		 * priesečníkÚsečiek a priesečníkPriamok, zaradiť do kategórií
-		 * metód. -->
+		 * <!-- TODO dokončiť opis, definovať viaceré verzie podľa vzoru
+		 * viacerých verzií metód priesečníkÚsečiek a priesečníkPriamok. -->
 		 * 
 		 * <p>[x1, y1] – [x2, y2] – krajné body úsečky; [x3, y3] – stred;
 		 * r – polomer</p>
 		 */
 		public final static double vzdialenosťÚsečkyOdKružnice(
+			double x1, double y1, double x2, double y2,
+			double x3, double y3, double r)
+		{ return Line2D.ptSegDist(x1, y1, x2, y2, x3, y3) - r; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťÚsečkyOdKružnice(double, double, double, double, double, double, double) vzdialenosťÚsečkyOdKružnice}.</p> */
+		public final static double vzdialenostUseckyOdKruznice(
 			double x1, double y1, double x2, double y2,
 			double x3, double y3, double r)
 		{ return Line2D.ptSegDist(x1, y1, x2, y2, x3, y3) - r; }
@@ -23923,6 +23748,7 @@ public final class Svet extends JFrame
 		 * @see #celáObrazovka(int)
 		 * @see #celáObrazovka(boolean)
 		 * @see #celáObrazovka(int, boolean)
+		 * @see #premiestniNaZariadenie(int)
 		 */
 		public static int početZariadení()
 		{
@@ -23932,6 +23758,12 @@ public final class Svet extends JFrame
 
 		/** <p><a class="alias"></a> Alias pre {@link #početZariadení() početZariadení}.</p> */
 		public static int pocetZariadení() { return početZariadení(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #početZariadení() početZariadení}.</p> */
+		public static int početObrazoviek() { return početZariadení(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #početZariadení() početZariadení}.</p> */
+		public static int pocetObrazoviek() { return početZariadení(); }
 
 
 		/**
@@ -23954,8 +23786,16 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #šírkaZariadenia() šírkaZariadenia}.</p> */
 		public static int sirkaZariadenia() { return šírkaZariadenia(0); }
 
+		/** <p><a class="alias"></a> Alias pre {@link #šírkaZariadenia() šírkaZariadenia}.</p> */
+		public static int šírkaObrazovky() { return šírkaZariadenia(0); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #šírkaZariadenia() šírkaZariadenia}.</p> */
+		public static int sirkaObrazovky() { return šírkaZariadenia(0); }
+
 		/**
-		 * <p>Zistí šírku dostupného obrazovkového zariadenia.</p>
+		 * <p>Zistí šírku dostupného obrazovkového zariadenia.
+		 * Zariadenie je určené jeho poradovým číslom (indexom; čiže
+		 * nula označuje prvé zariadenie).</p>
 		 * 
 		 * @param zariadenie poradové číslo zariadenia, ktorého šírka má byť
 		 *     zistená
@@ -23982,6 +23822,12 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #šírkaZariadenia(int) šírkaZariadenia}.</p> */
 		public static int sirkaZariadenia(int zariadenie) { return šírkaZariadenia(zariadenie); }
 
+		/** <p><a class="alias"></a> Alias pre {@link #šírkaZariadenia(int) šírkaZariadenia}.</p> */
+		public static int šírkaObrazovky(int zariadenie) { return šírkaZariadenia(zariadenie); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #šírkaZariadenia(int) šírkaZariadenia}.</p> */
+		public static int sirkaObrazovky(int zariadenie) { return šírkaZariadenia(zariadenie); }
+
 		/**
 		 * <p>Zistí výšku dostupného obrazovkového zariadenia.</p>
 		 * 
@@ -24002,8 +23848,16 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #výškaZariadenia() výškaZariadenia}.</p> */
 		public static int vyskaZariadenia() { return výškaZariadenia(0); }
 
+		/** <p><a class="alias"></a> Alias pre {@link #výškaZariadenia() výškaZariadenia}.</p> */
+		public static int výškaObrazovky() { return výškaZariadenia(0); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #výškaZariadenia() výškaZariadenia}.</p> */
+		public static int vyskaObrazovky() { return výškaZariadenia(0); }
+
 		/**
-		 * <p>Zistí výšku dostupného obrazovkového zariadenia.</p>
+		 * <p>Zistí výšku dostupného obrazovkového zariadenia.
+		 * Zariadenie je určené jeho poradovým číslom (indexom; čiže
+		 * nula označuje prvé zariadenie).</p>
 		 * 
 		 * @param zariadenie poradové číslo zariadenia, ktorého výška má byť
 		 *     zistená
@@ -24030,6 +23884,12 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #výškaZariadenia(int) výškaZariadenia}.</p> */
 		public static int vyskaZariadenia(int zariadenie) { return výškaZariadenia(zariadenie); }
 
+		/** <p><a class="alias"></a> Alias pre {@link #výškaZariadenia(int) výškaZariadenia}.</p> */
+		public static int výškaObrazovky(int zariadenie) { return výškaZariadenia(zariadenie); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #výškaZariadenia(int) výškaZariadenia}.</p> */
+		public static int vyskaObrazovky(int zariadenie) { return výškaZariadenia(zariadenie); }
+
 
 		/**
 		 * <p>Pokúsi sa prepnúť svet do režimu celej obrazovky.</p>
@@ -24053,7 +23913,9 @@ public final class Svet extends JFrame
 
 
 		/**
-		 * <p>Pokúsi sa prepnúť svet do režimu celej obrazovky.</p>
+		 * <p>Pokúsi sa prepnúť svet do režimu celej obrazovky na určenom
+		 * zobrazovacom zariadení. Zariadenie je určené jeho poradovým
+		 * číslom (indexom; čiže nula označuje prvé zariadenie).</p>
 		 * 
 		 * <p>(Príklad použitia tejto metódy je pri opise metódy
 		 * {@link #celáObrazovka(int, boolean)}.)</p>
@@ -24116,7 +23978,10 @@ public final class Svet extends JFrame
 		public static ZmenaCelejObrazovky zmenaCelejObrazovky = null;
 
 		/**
-		 * <p>Pokúsi sa prepnúť svet do režimu celej obrazovky alebo späť.</p>
+		 * <p>Pokúsi sa prepnúť svet do režimu celej obrazovky alebo späť
+		 * na určenom zobrazovacom zariadení. Zariadenie je určené jeho
+		 * poradovým číslom (indexom; čiže nula označuje prvé
+		 * zariadenie).</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> V režime celej obrazovky nie
 		 * je dostupná ponuka, pretože testovanie ukázalo, že v režime celej
@@ -24428,7 +24293,7 @@ public final class Svet extends JFrame
 
 		// Zoznam klávesových skratiek podľa akcií
 		/*packagePrivate*/ final static TreeMap<String, KlávesováSkratka>
-			klávesovéSkratky = new TreeMap<String, KlávesováSkratka>();
+			klávesovéSkratky = new TreeMap<>();
 
 		/**
 		 * <p>Definuje novú klávesovú skratku s modifikátorom pre ponuky, ktorá
@@ -25157,3 +25022,5 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #odstráňVlnenie() odstráňVlnenie}.</p> */
 		public static void odstranVlnenie() { odstráňVlnenie(); }
 }
+
+// :wrap=none:

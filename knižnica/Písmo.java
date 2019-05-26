@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2018 by Roman Horváth
+ // Copyright © 2010 – 2019 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -403,8 +403,7 @@ public class Písmo extends Font
 	private static HashMap<TextAttribute, Object>
 		zostavAtribúty(Object... atribúty)
 	{
-		HashMap<TextAttribute, Object> mapa =
-			new HashMap<TextAttribute, Object>();
+		HashMap<TextAttribute, Object> mapa = new HashMap<>();
 		int hranica = atribúty.length;
 		for (int i = 0; i < hranica; ++i)
 		{
@@ -505,7 +504,7 @@ public class Písmo extends Font
 					{
 						Boolean hodnota = false;
 
-						if (TextAttribute.RUN_DIRECTION	 ==
+						if (TextAttribute.RUN_DIRECTION ==
 							(TextAttribute)atribúty[i])
 							hodnota = null;
 
