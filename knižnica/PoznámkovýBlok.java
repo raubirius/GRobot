@@ -60,8 +60,6 @@ import static knižnica.Farebnosť.*;
 // ------------------------------- //
 
 /**
- * <p class="TODO">TODO.</p>
- * 
  * <p>Trieda {@code currPoznámkovýBlok} dovoľuje vytvárať v aplikácii
  * používajúcej robota textové bloky, ktoré sú zobrazované nad plátnom
  * (t. j. nie sú jeho súčasťou) a dovoľujú zobraziť alebo upraviť väčšie
@@ -303,8 +301,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * <p>Vytvorí poznámkový blok umiestnený v strede plátna
 	 * s predvolenými rozmermi 400 × 300 bodov.</p>
 	 * 
-	 * @see #GRobot.PoznámkovýBlok(String)
-	 * @see #GRobot.PoznámkovýBlok(String, boolean)
+	 * @see #PoznámkovýBlok(String)
+	 * @see #PoznámkovýBlok(String, boolean)
 	 */
 	public PoznámkovýBlok()
 	{
@@ -332,8 +330,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * 
 	 * @param text predvolený text poznámkového bloku
 	 * 
-	 * @see #GRobot.PoznámkovýBlok()
-	 * @see #GRobot.PoznámkovýBlok(String, boolean)
+	 * @see #PoznámkovýBlok()
+	 * @see #PoznámkovýBlok(String, boolean)
 	 * @see #text(String)
 	 */
 	public PoznámkovýBlok(String text)
@@ -371,8 +369,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 *     úpravy – {@code valtrue} alebo len na čítanie –
 	 *     {@code valfalse}
 	 * 
-	 * @see #GRobot.PoznámkovýBlok()
-	 * @see #GRobot.PoznámkovýBlok(String)
+	 * @see #PoznámkovýBlok()
+	 * @see #PoznámkovýBlok(String)
 	 * @see #text(String)
 	 * @see #neupravuj()
 	 * @see #upravuj()
@@ -994,8 +992,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * @param nováFarba objekt typu {@link Color Color} (alebo
 	 *     odvodeného napr. {@link Farba Farba}) s novou farbou textu
 	 *     poznámkového bloku; jestvuje paleta predvolených farieb
-	 *     (pozri napr.: {@link #biela biela}, {@link #červená červená},
-	 *     {@link #čierna čierna}…)
+	 *     (pozri napr.: {@link Farebnosť#biela biela}, {@link Farebnosť#červená červená},
+	 *     {@link Farebnosť#čierna čierna}…)
 	 */
 	public void farbaTextu(Color nováFarba)
 	{
@@ -1095,8 +1093,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * @param nováFarba objekt typu {@link Color Color} (alebo
 	 *     odvodeného napr. {@link Farba Farba}) s novou farbou pozadia
 	 *     textu poznámkového bloku; jestvuje paleta predvolených farieb
-	 *     (pozri napr.: {@link #biela biela}, {@link #červená červená},
-	 *     {@link #čierna čierna}…)
+	 *     (pozri napr.: {@link Farebnosť#biela biela}, {@link Farebnosť#červená červená},
+	 *     {@link Farebnosť#čierna čierna}…)
 	 */
 	public void farbaPozadiaTextu(Color nováFarba)
 	{
@@ -1188,8 +1186,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * označenia poznámkového bloku podľa zadanej farebnej inštancie.</p>
 	 * 
 	 * @param nováFarba objekt určujúci novú farbu textu označenia;
-	 *     jestvuje paleta predvolených farieb (pozri: {@link #biela
-	 *     biela}, {@link #červená červená}, {@link #čierna čierna}…)
+	 *     jestvuje paleta predvolených farieb (pozri: {@link Farebnosť#biela
+	 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna čierna}…)
 	 */
 	public void farbaTextuOznačenia(Color nováFarba)
 	{ setSelectedTextColor(nováFarba); }
@@ -1283,8 +1281,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * farebnej inštancie.</p>
 	 * 
 	 * @param nováFarba objekt určujúci novú farbu pozadia označenia;
-	 *     jestvuje paleta predvolených farieb (pozri: {@link #biela
-	 *     biela}, {@link #červená červená}, {@link #čierna čierna}…)
+	 *     jestvuje paleta predvolených farieb (pozri: {@link Farebnosť#biela
+	 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna čierna}…)
 	 */
 	public void farbaPozadiaOznačenia(Color nováFarba)
 	{ setSelectionColor(nováFarba); }
@@ -1389,8 +1387,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.</p>
 	 * 
 	 * @param nováFarba objekt určujúci novú farbu pozadia;
-	 *     jestvuje paleta predvolených farieb (pozri: {@link #biela
-	 *     biela}, {@link #červená červená}, {@link #čierna čierna}…)
+	 *     jestvuje paleta predvolených farieb (pozri: {@link Farebnosť#biela
+	 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna čierna}…)
 	 */
 	public void farbaPozadia(Color nováFarba)
 	{
@@ -1480,8 +1478,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * poznámkového bloku podľa zadanej farebnej inštancie.</p>
 	 * 
 	 * @param nováFarba objekt určujúci novú farbu kurzora;
-	 *     jestvuje paleta predvolených farieb (pozri: {@link #biela
-	 *     biela}, {@link #červená červená}, {@link #čierna čierna}…)
+	 *     jestvuje paleta predvolených farieb (pozri: {@link Farebnosť#biela
+	 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna čierna}…)
 	 */
 	public void farbaKurzora(Color nováFarba)
 	{ setCaretColor(nováFarba); }
@@ -1557,8 +1555,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * deaktivovaného} poznámkového bloku.)</p>
 	 * 
 	 * @param nováFarba objekt určujúci novú farbu neaktívneho textu;
-	 *     jestvuje paleta predvolených farieb (pozri: {@link #biela
-	 *     biela}, {@link #červená červená}, {@link #čierna čierna}…)
+	 *     jestvuje paleta predvolených farieb (pozri: {@link Farebnosť#biela
+	 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna čierna}…)
 	 */
 	public void farbaNeaktívnehoTextu(Color nováFarba)
 	{ setDisabledTextColor(nováFarba); }
@@ -1996,8 +1994,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * 
 	 * @param text nový čistý text poznámkového bloku
 	 * 
-	 * @see #GRobot.PoznámkovýBlok(String)
-	 * @see #GRobot.PoznámkovýBlok(String, boolean)
+	 * @see #PoznámkovýBlok(String)
+	 * @see #PoznámkovýBlok(String, boolean)
 	 * @see #text()
 	 */
 	public void text(String text)
@@ -2040,8 +2038,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * 
 	 * @param text nový HTML obsah poznámkového bloku
 	 * 
-	 * @see #GRobot.PoznámkovýBlok(String)
-	 * @see #GRobot.PoznámkovýBlok(String, boolean)
+	 * @see #PoznámkovýBlok(String)
+	 * @see #PoznámkovýBlok(String, boolean)
 	 * @see #html()
 	 */
 	public void html(String html)

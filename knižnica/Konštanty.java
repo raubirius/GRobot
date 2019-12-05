@@ -70,13 +70,13 @@ public interface Konštanty
 		/** <p>Konštanta minoritnej verzie tohto robota.</p> */
 		public final static int minorVersion = 00;
 		/** <p>Konštanta poznámky verzie tohto robota.</p> */
-		public final static String versionNote = " (2019-05-26)";
+		public final static String versionNote = " (2019-11-19)";
 		/** <p>Konštanta rozpätia rokov vývoja tejto verzie…
 			(v podstate na účel výpisu copyrightu…)</p> */
 		public final static String years = "2010 – 2019";
 		/** <p>Konštanta rozpätia rokov a mesiacov vývoja tejto verzie…
 			(na účely automatického spracovania dokumentácie…)</p> */
-		public final static String yearsMonths = "august 2010 – máj 2019";
+		public final static String yearsMonths = "august 2010 – november 2019";
 		/** <p>Konštanta s menom hlavného (zatiaľ jediného) vývojára tejto
 			verzie… (v podstate na účel výpisu copyrightu… kto vie, či časom
 			pribudnú aj nejakí ďalší…)</p> */
@@ -99,22 +99,23 @@ public interface Konštanty
 		/**
 		 * <p>Príznak priameho spôsobu písania textov a kreslenia obrázkov –
 		 * nerotuje, necentruje. Nachádza využitie pri metódach {@link 
-		 * #spôsobKreslenia(int) spôsobKreslenia}, {@link #text(String, int)
-		 * text} alebo {@link #obrázok(String, int) obrázok}.</p>
+		 * GRobot#spôsobKreslenia(int) spôsobKreslenia}, {@link 
+		 * GRobot#text(String, int) text} alebo {@link GRobot#obrázok(String,
+		 * int) obrázok}.</p>
 		 */
 		public final static int KRESLI_PRIAMO = 0;
 		/**
 		 * <p>Príznak centrovania textu alebo obrázka na polohu (stred) robota.
-		 * Nachádza využitie pri metódach {@link #spôsobKreslenia(int)
-		 * spôsobKreslenia}, {@link #text(String, int) text} alebo {@link 
-		 * #obrázok(String, int) obrázok}.</p>
+		 * Nachádza využitie pri metódach {@link GRobot#spôsobKreslenia(int)
+		 * spôsobKreslenia}, {@link GRobot#text(String, int) text} alebo {@link 
+		 * GRobot#obrázok(String, int) obrázok}.</p>
 		 */
 		public final static int KRESLI_NA_STRED = 1;
 		/**
 		 * <p>Príznak rotovania textu alebo obrázka kolmo na smer robota.
-		 * Nachádza využitie pri metódach {@link #spôsobKreslenia(int)
-		 * spôsobKreslenia}, {@link #text(String, int) text} alebo {@link 
-		 * #obrázok(String, int) obrázok}.</p>
+		 * Nachádza využitie pri metódach {@link GRobot#spôsobKreslenia(int)
+		 * spôsobKreslenia}, {@link GRobot#text(String, int) text} alebo
+		 * {@link GRobot#obrázok(String, int) obrázok}.</p>
 		 */
 		public final static int KRESLI_ROTOVANÉ = 2;
 
@@ -133,7 +134,7 @@ public interface Konštanty
 		/**
 		 * <p>Číselná konštanta, ktorá môže mať v budúcnosti aj iný význam, ale
 		 * aktuálne len určuje, že robot nepoužíva žiadny spôsob
-		 * {@linkplain #ohraničenie(double, double, double, double, int)
+		 * {@linkplain GRobot#ohranič(double, double, double, double, int)
 		 * ohraničenia}.</p>
 		 */
 		public final static int ŽIADNE = 0;
@@ -141,9 +142,10 @@ public interface Konštanty
 		public final static int ZIADNE = ŽIADNE;
 
 		/**
-		 * <p>Číselná konštanta spôsobu {@linkplain #ohraničenie(double, double,
-		 * double, double, int) ohraničenia robota}, kedy sa robot po kontakte
-		 * s hranicami odrazí naspäť do priestoru vymedzeného hranicami.</p>
+		 * <p>Číselná konštanta spôsobu {@linkplain GRobot#ohranič(double,
+		 * double, double, double, int) ohraničenia robota}, kedy sa robot po
+		 * kontakte s hranicami odrazí naspäť do priestoru vymedzeného
+		 * hranicami.</p>
 		 */
 		public final static int ODRAZ = 1;
 		/** <p><a class="alias"></a> Alias pre {@link #ODRAZ}.</p> */
@@ -154,10 +156,10 @@ public interface Konštanty
 		public final static int ODRAZIT = ODRAZ;
 
 		/**
-		 * <p>Číselná konštanta spôsobu {@linkplain #ohraničenie(double, double,
-		 * double, double, int) ohraničenia robota}, kedy sa robot po kontakte
-		 * s hranicami kĺže pozdĺž hranice, dokedy nedosiahne bod, ktorý je
-		 * najbližšie k cieľovému umiestneniu.</p>
+		 * <p>Číselná konštanta spôsobu {@linkplain GRobot#ohranič(double,
+		 * double, double, double, int) ohraničenia robota}, kedy sa robot po
+		 * kontakte s hranicami kĺže pozdĺž hranice, dokedy nedosiahne bod,
+		 * ktorý je najbližšie k cieľovému umiestneniu.</p>
 		 */
 		public final static int PLOT = 2;
 		/** <p><a class="alias"></a> Alias pre {@link #PLOT}.</p> */
@@ -168,10 +170,10 @@ public interface Konštanty
 		public final static int OPLOTIT = PLOT;
 
 		/**
-		 * <p>Číselná konštanta spôsobu {@linkplain #ohraničenie(double, double,
-		 * double, double, int) ohraničenia robota}, kedy sa robot po prekročení
-		 * hranice presunie na protiľahnú stranu ohraničenia a pokračuje ďalej
-		 * v rámci vymedzenej plochy.</p>
+		 * <p>Číselná konštanta spôsobu {@linkplain GRobot#ohranič(double,
+		 * double, double, double, int) ohraničenia robota}, kedy sa robot po
+		 * prekročení hranice presunie na protiľahnú stranu ohraničenia
+		 * a pokračuje ďalej v rámci vymedzenej plochy.</p>
 		 */
 		public final static int PRETOČ = 3;
 		/** <p><a class="alias"></a> Alias pre {@link #PRETOČ}.</p> */
@@ -229,12 +231,12 @@ public interface Konštanty
 	// Ukončenie úprav textu
 
 		/**
-		 * <p>Spôsob {@linkplain #ukončenieÚpravyTextu(String, int) ukončenia
-		 * úprav textu} klávesom {@code ESCAPE}.</p>
+		 * <p>Spôsob {@linkplain GRbobot#ukončenieÚpravyTextu(String, int)
+		 * ukončenia úprav textu} klávesom {@code ESCAPE}.</p>
 		 * 
-		 * @see #upravText(String)
-		 * @see #upravText(String, double)
-		 * @see #ukončenieÚpravyTextu(String, int)
+		 * @see GRobot#upravText(String)
+		 * @see GRobot#upravText(String, double)
+		 * @see GRbobot#ukončenieÚpravyTextu(String, int)
 		 */
 		public final static int SPÔSOB_ESCAPE = -2;
 
@@ -242,12 +244,12 @@ public interface Konštanty
 		public final static int SPOSOB_ESCAPE = -2;
 
 		/**
-		 * <p>Spôsob {@linkplain #ukončenieÚpravyTextu(String, int) ukončenia
-		 * úprav textu} klávesom {@code ENTER}.</p>
+		 * <p>Spôsob {@linkplain GRbobot#ukončenieÚpravyTextu(String, int)
+		 * ukončenia úprav textu} klávesom {@code ENTER}.</p>
 		 * 
-		 * @see #upravText(String)
-		 * @see #upravText(String, double)
-		 * @see #ukončenieÚpravyTextu(String, int)
+		 * @see GRobot#upravText(String)
+		 * @see GRobot#upravText(String, double)
+		 * @see GRbobot#ukončenieÚpravyTextu(String, int)
 		 */
 		public final static int SPÔSOB_ENTER = 0;
 
@@ -255,13 +257,13 @@ public interface Konštanty
 		public final static int SPOSOB_ENTER = 0;
 
 		/**
-		 * <p>Spôsob {@linkplain #ukončenieÚpravyTextu(String, int) ukončenia
-		 * úprav textu} klávesom {@code TAB} (čo je aliasom kávesu {@code 
-		 * TABULÁTOR}).</p>
+		 * <p>Spôsob {@linkplain GRbobot#ukončenieÚpravyTextu(String, int)
+		 * ukončenia úprav textu} klávesom {@code TAB} (čo je aliasom kávesu
+		 * {@code TABULÁTOR}).</p>
 		 * 
-		 * @see #upravText(String)
-		 * @see #upravText(String, double)
-		 * @see #ukončenieÚpravyTextu(String, int)
+		 * @see GRobot#upravText(String)
+		 * @see GRobot#upravText(String, double)
+		 * @see GRbobot#ukončenieÚpravyTextu(String, int)
 		 */
 		public final static int SPÔSOB_TAB = 1;
 
@@ -269,13 +271,13 @@ public interface Konštanty
 		public final static int SPOSOB_TAB = 1;
 
 		/**
-		 * <p>Spôsob {@linkplain #ukončenieÚpravyTextu(String, int) ukončenia
-		 * úprav textu} klávesom {@code TABULÁTOR} (čo je aliasom kávesu
-		 * {@code TAB}).</p>
+		 * <p>Spôsob {@linkplain GRbobot#ukončenieÚpravyTextu(String, int)
+		 * ukončenia úprav textu} klávesom {@code TABULÁTOR} (čo je aliasom
+		 * kávesu {@code TAB}).</p>
 		 * 
-		 * @see #upravText(String)
-		 * @see #upravText(String, double)
-		 * @see #ukončenieÚpravyTextu(String, int)
+		 * @see GRobot#upravText(String)
+		 * @see GRobot#upravText(String, double)
+		 * @see GRbobot#ukončenieÚpravyTextu(String, int)
 		 */
 		public final static int SPÔSOB_TABULÁTOR = 1;
 
@@ -283,13 +285,13 @@ public interface Konštanty
 		public final static int SPOSOB_TABULATOR = 1;
 
 		/**
-		 * <p>Spôsob {@linkplain #ukončenieÚpravyTextu(String, int) ukončenia
-		 * úprav textu} klávesovou kombináciou {@code Shift + TAB} (resp.
-		 * {@code Shift + tabulátor}).</p>
+		 * <p>Spôsob {@linkplain GRbobot#ukončenieÚpravyTextu(String, int)
+		 * ukončenia úprav textu} klávesovou kombináciou {@code Shift + TAB}
+		 * (resp. {@code Shift + tabulátor}).</p>
 		 * 
-		 * @see #upravText(String)
-		 * @see #upravText(String, double)
-		 * @see #ukončenieÚpravyTextu(String, int)
+		 * @see GRobot#upravText(String)
+		 * @see GRobot#upravText(String, double)
+		 * @see GRbobot#ukončenieÚpravyTextu(String, int)
 		 */
 		public final static int SPÔSOB_SHIFT_TAB = -1;
 
@@ -297,13 +299,13 @@ public interface Konštanty
 		public final static int SPOSOB_SHIFT_TAB = -1;
 
 		/**
-		 * <p>Spôsob {@linkplain #ukončenieÚpravyTextu(String, int) ukončenia
-		 * úprav textu} klávesovou kombináciou {@code Shift + tabulátor}
-		 * (resp. {@code Shift + TAB}).</p>
+		 * <p>Spôsob {@linkplain GRbobot#ukončenieÚpravyTextu(String, int)
+		 * ukončenia úprav textu} klávesovou kombináciou
+		 * {@code Shift + tabulátor} (resp. {@code Shift + TAB}).</p>
 		 * 
-		 * @see #upravText(String)
-		 * @see #upravText(String, double)
-		 * @see #ukončenieÚpravyTextu(String, int)
+		 * @see GRobot#upravText(String)
+		 * @see GRobot#upravText(String, double)
+		 * @see GRbobot#ukončenieÚpravyTextu(String, int)
 		 */
 		public final static int SPÔSOB_SHIFT_TABULÁTOR = -1;
 
@@ -311,13 +313,13 @@ public interface Konštanty
 		public final static int SPOSOB_SHIFT_TABULATOR = -1;
 
 		/**
-		 * <p>Spôsob {@linkplain #ukončenieÚpravyTextu(String, int) ukončenia
-		 * úprav textu} dekativáciou textového komponentu (napríklad kliknutím
-		 * myšou na platne).</p>
+		 * <p>Spôsob {@linkplain GRbobot#ukončenieÚpravyTextu(String, int)
+		 * ukončenia úprav textu} dekativáciou textového komponentu
+		 * (napríklad kliknutím myšou na plátne).</p>
 		 * 
-		 * @see #upravText(String)
-		 * @see #upravText(String, double)
-		 * @see #ukončenieÚpravyTextu(String, int)
+		 * @see GRobot#upravText(String)
+		 * @see GRobot#upravText(String, double)
+		 * @see GRbobot#ukončenieÚpravyTextu(String, int)
 		 */
 		public final static int SPÔSOB_DEAKTIVÁCIA = 2;
 
@@ -506,7 +508,7 @@ public interface Konštanty
 		 * Parameter {@code kódSpracovania} uvedenej reakcie nadobúda túto
 		 * hodnotu počas informovania o stave odovzdávania údajov relevantnou
 		 * metódou triedy {@link Spojenie Spojenie}. (Napríklad {@link 
-		 * Spojenie#pošliSúbor(String) pošliSúbor}{@code (názovSúboru))}.)</p>
+		 * Spojenie#pošliSúbor(String) pošliSúbor}{@code (názovSúboru)}.)</p>
 		 */
 		public final static int ODOVZDANIE_ÚDAJOV = 8;
 

@@ -432,7 +432,8 @@ public interface Farebnosť
 	 * Farba}{@code (}{@code num16}{@code , }{@code num16}{@code , }
 	 * {@code num16}{@code )}</small>).</p>
 	 */
-	public final static Farba uhlíková = new Farba(16, 16, 16); // 101010
+	// public final static Farba uhlíková = new Farba(16, 16, 16); // 101010
+	public final static Farba uhlíková = new Farba(48, 48, 48); // 303030
 
 	/** <p><a class="alias"></a> Alias pre {@link #uhlíková uhlíková}.</p> */
 	public final static Farba uhlikova = uhlíková;
@@ -442,7 +443,8 @@ public interface Farebnosť
 	 * Farba}{@code (}{@code num32}{@code , }{@code num32}{@code , }
 	 * {@code num32}{@code )}</small>).</p>
 	 */
-	public final static Farba antracitová = new Farba(32, 32, 32); // 202020
+	// public final static Farba antracitová = new Farba(32, 32, 32); // 202020
+	public final static Farba antracitová = new Farba(64, 64, 64); // 404040
 
 	/** <p><a class="alias"></a> Alias pre {@link #antracitová antracitová}.</p> */
 	public final static Farba antracitova = antracitová;

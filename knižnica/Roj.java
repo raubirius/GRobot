@@ -44,12 +44,13 @@ import static java.lang.Math.*;
  * v trojrozmernom priestore. Body môžu byť prepojené spojmi a v každom bode
  * môže byť definovaný objekt na nakreslenie.</p>
  * 
- * <p>TODO.</p>
+ * <!-- TODO -->
  * 
  * <p>Súradnicový systém roja je orientovaný pravotočivo.
  * <!-- TODO – overiť, doplniť obrázok a opis. -->…</p>
  * 
- * <p>TODO.</p>
+ * <p class="remark"><b>Poznámka:</b> Pracujeme na spresnení opisu.</p>
+ * <!-- TODO -->
  * 
  * <p> </p>
  * 
@@ -61,8 +62,9 @@ import static java.lang.Math.*;
  * <p class="remark"><b>Poznámka:</b> Zdroje môžu obsahovať chyby (v čase
  * ich citovania ich obsahovali), preto je vhodné informácie z nich
  * konfrontovať s inou (napríklad tlačenou) literatúrou. Autor pri tvorbe
- * tejto triedy použil uvedené zdroje najmä na pripomenutie si informácií,
- * ktoré získal počas svojho vysokoškolského štúdia.</p>
+ * tejto triedy použil uvedené zdroje najmä na pripomenutie si informácií
+ * o 3D grafike a súvisiacich operáciách s maticami (ktoré naposledy
+ * používal asi 12 až 15 rokov pred začatím písania tejto triedy).</p>
  * 
  * <ul>
  * <li><small>Liekens, Anthony</small>: <em>Computers » Rendering
@@ -70,19 +72,22 @@ import static java.lang.Math.*;
  * <a href="http://anthony.liekens.net/index.php/Computers/RenderingTutorial"
  * target="_blank"
  * >http://anthony.liekens.net/index.php/Computers/RenderingTutorial</a>.
- * Naposledy pristúpené: 15. 10. 2017.</li>
+ * Citované: 15. 10. 2017.</li>
  * <li><em>Matrix multiplication – Wikipedia.</em> Dostupné na:
  * <a href="https://en.wikipedia.org/wiki/Matrix_multiplication"
  * target="_blank">https://en.wikipedia.org/wiki/Matrix_multiplication</a>.
- * Naposledy pristúpené: 15. 10. 2017.</li>
+ * Citované: 15. 10. 2017.</li>
  * <li><em>Rotation matrix – Wikipedia.</em> Dostupné na:
  * <a href="https://en.wikipedia.org/wiki/Rotation_matrix"
  * target="_blank">https://en.wikipedia.org/wiki/Rotation_matrix</a>.
- * Naposledy pristúpené: 15. 10. 2017.</li>
+ * Citované: 15. 10. 2017.</li>
  * </ul>
  */
 public class Roj
 {
+	// <!-- Varovanie‼ JavaDoc nechce vygenerovať záznamy o Bode a Smerníku,
+	// Preto treba všetky zmeny v prvej vete preniesť aj do RoboDoc.java. -->
+
 	/**
 	 * <p>Trieda uchovávajúca údaje o jednom bode roja. Kreslenie, aktivitu
 	 * a potrebné prepočty zabezpečuje programátor s pomocou vstavaných metód
@@ -1092,6 +1097,9 @@ public class Roj
 		throws IOException { uložDoSúboru(súbor, identifikátor); }
 	}
 
+
+	// <!-- Varovanie‼ JavaDoc nechce vygenerovať záznamy o Bode a Smerníku,
+	// Preto treba všetky zmeny v prvej vete preniesť aj do RoboDoc.java. -->
 
 	/**
 	 * <p>Pomocná trieda na riadené vkladanie bodov do roja. Smerník je

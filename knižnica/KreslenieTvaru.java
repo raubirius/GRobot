@@ -49,14 +49,14 @@ package knižnica;
  * <p><b>Príklad:</b></p>
  * 
  * <pre CLASS="example">
-	{@code kwdimport} knižnica.{@link GRobot GRobot};
+	{@code kwdimport} knižnica.*;
 
 	{@code kwdpublic} {@code typeclass} GKruh {@code kwdextends} {@link GRobot GRobot}
 	{
 		{@code comm// Statická inštancia kreslenia vlastného tvaru – statickosť znamená, že}
 		{@code comm// bude vytvorený jediný objekt pre všetky inštancie triedy GKruh (pozri}
 		{@code comm// hlavnú metódu nižšie).}
-		{@code kwdpublic} {@code kwdstatic} {@link KreslenieTvaru KreslenieTvaru} tvarKruhu = {@code kwdnew} {@link KreslenieTvaru#KreslenieTvaru() KreslenieTvaru}()
+		{@code kwdpublic} {@code kwdstatic} {@link KreslenieTvaru KreslenieTvaru} tvarKruhu = {@code kwdnew} {@link KreslenieTvaru KreslenieTvaru}()
 		{
 			{@code kwdpublic} {@code typevoid} {@link KreslenieTvaru#kresli(GRobot) kresli}({@link GRobot GRobot} r)
 			{
@@ -175,7 +175,7 @@ package knižnica;
 	{@code comm// …}
 	</pre>
  * 
- * @see #vlastnýTvar(KreslenieTvaru)
+ * @see GRobot#vlastnýTvar(KreslenieTvaru)
  */
 public interface KreslenieTvaru
 {
@@ -195,7 +195,7 @@ public interface KreslenieTvaru
 	 * <p><b>Príklad:</b></p>
 	 * 
 	 * <pre CLASS="example">
-		{@link GRobot#vlastnýTvar(KreslenieTvaru) vlastnýTvar}({@code kwdnew} {@link KreslenieTvaru#KreslenieTvaru() KreslenieTvaru}()
+		{@link GRobot#vlastnýTvar(KreslenieTvaru) vlastnýTvar}({@code kwdnew} {@link KreslenieTvaru KreslenieTvaru}()
 		{
 			{@code kwdpublic} {@code typevoid} {@code currkresli}({@link GRobot GRobot} r)
 			{

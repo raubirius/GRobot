@@ -67,7 +67,7 @@ import javax.swing.KeyStroke;
  * Oba spôsoby ukazuje nasledujúci príklad:</p>
  * 
  * <pre CLASS="example">
-	{@code kwdfinal} {@code currPoložkaPonuky} položkaPípni = {@code kwdnew} {@link PoložkaPonuky#GRobot.PoložkaPonuky(String) PoložkaPonuky}({@code srg"Pípni"});
+	{@code kwdfinal} {@code currPoložkaPonuky} položkaPípni = {@code kwdnew} {@link PoložkaPonuky#PoložkaPonuky(String) PoložkaPonuky}({@code srg"Pípni"});
 	{@code kwdfinal} {@code currPoložkaPonuky} položkaVypíš = {@link Svet Svet}.{@link Svet#pridajPoložkuPonuky(String) pridajPoložkuPonuky}({@code srg"Vypíš „Ahoj!“"});
 
 	{@code kwdnew} {@link ObsluhaUdalostí#ObsluhaUdalostí() ObsluhaUdalostí}()
@@ -110,7 +110,7 @@ import javax.swing.KeyStroke;
  * s obrázkom, ako je to zaužívané v rámci sveta grafického robota:</p>
  * 
  * <pre CLASS="example">
-	{@code kwdfinal} {@code currPoložkaPonuky} položkaVoľba = {@code kwdnew} {@link PoložkaPonuky#GRobot.PoložkaPonuky(String) PoložkaPonuky}({@code srg"Voľba"});
+	{@code kwdfinal} {@code currPoložkaPonuky} položkaVoľba = {@code kwdnew} {@link PoložkaPonuky#PoložkaPonuky(String) PoložkaPonuky}({@code srg"Voľba"});
 	položkaVoľba.{@link #ikona(String) ikona}({@code srg"začiarknuté.png"});
 	</pre>
  * 
@@ -542,7 +542,7 @@ public class PoložkaPonuky extends JMenuItem
 	 * @param nováFarba objekt typu {@link Color Color} (alebo
 	 *     odvodeného napr. {@link Farba Farba}) s novou farbou textu
 	 *     položky; jestvuje paleta predvolených farieb (pozri napr.:
-	 *     {@link #biela biela}, {@link #červená červená}, {@link #čierna
+	 *     {@link Farebnosť#biela biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna
 	 *     čierna}…)
 	 */
 	public void farbaTextu(Color nováFarba) { setForeground(nováFarba); }
@@ -650,8 +650,8 @@ public class PoložkaPonuky extends JMenuItem
 	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.</p>
 	 * 
 	 * @param nováFarba objekt určujúci novú farbu pozadia;
-	 *     jestvuje paleta predvolených farieb (pozri: {@link #biela
-	 *     biela}, {@link #červená červená}, {@link #čierna čierna}…)
+	 *     jestvuje paleta predvolených farieb (pozri: {@link Farebnosť#biela
+	 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna čierna}…)
 	 */
 	public void farbaPozadia(Color nováFarba) { setBackground(nováFarba); }
 
@@ -1093,11 +1093,7 @@ public class PoložkaPonuky extends JMenuItem
 	 * @see #klávesováSkratka(int)
 	 */
 	public void klávesováSkratka(int kódKlávesu, int modifikátor)
-	{
-		setAccelerator(KeyStroke.getKeyStroke(
-			kódKlávesu, Toolkit.getDefaultToolkit().
-			getMenuShortcutKeyMask()));
-	}
+	{ setAccelerator(KeyStroke.getKeyStroke(kódKlávesu, modifikátor)); }
 
 	/** <p><a class="alias"></a> Alias pre {@link #klávesováSkratka(int, int) klávesováSkratka}.</p> */
 	public void klavesovaSkratka(int kódKlávesu, int modifikátor)

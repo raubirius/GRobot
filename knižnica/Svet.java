@@ -266,9 +266,9 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
 	{@code currSvet}.{@link #neskrývajVstupnýRiadok() neskrývajVstupnýRiadok}();
 	{@code currSvet}.{@link #vymažPonuku() vymažPonuku}();
 	{@code currSvet}.{@link #zobraz() zobraz}();
-	{@code currSvet}.{@link #farbaTextu(Color) farbaTextu}({@link GRobot#hnedá hnedá});
-	{@code currSvet}.{@link #vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Hra na ozvenu…"}, {@link GRobot#riadok riadok});
-	{@code currSvet}.{@link #farbaTextu(Color) farbaTextu}({@link GRobot#tmavotyrkysová tmavotyrkysová});
+	{@code currSvet}.{@link #farbaTextu(Color) farbaTextu}({@link Farebnosť#hnedá hnedá});
+	{@code currSvet}.{@link #vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Hra na ozvenu…"}, {@link Konštanty#riadok riadok});
+	{@code currSvet}.{@link #farbaTextu(Color) farbaTextu}({@link Farebnosť#tmavotyrkysová tmavotyrkysová});
 
 	{@code kwdnew} {@link ObsluhaUdalostí#ObsluhaUdalostí() ObsluhaUdalostí}()
 	{
@@ -283,7 +283,7 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
  * prehliadača obrázkov:</p>
  * 
  * <pre CLASS="example">
-	{@code kwdimport} knižnica.{@link GRobot GRobot};
+	{@code kwdimport} knižnica.*;
 
 	{@code kwdpublic} {@code typeclass} PrehliadačObrázkov {@code kwdextends} {@link GRobot GRobot}
 	{
@@ -3773,6 +3773,28 @@ public final class Svet extends JFrame
 			svet.setExtendedState(NORMAL);
 		}
 
+		/**
+		 * <p>Poskytne komponent hlavného panela vloženého v hlavnom okne
+		 * aplikácie (vo svete).</p>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b> Neodborná manipulácia
+		 * s týmto komponentom môže mať nežiaduce vedľajšie účinky.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda bola do
+		 * programovacieho rámca niekoľkokrát pridaná na testovacie účely,
+		 * pričom hneď po skončení testov bola odobraná. Autor rámca nemal
+		 * v úmysle trvalé ponechanie možnosti získania hlavného panela
+		 * na ďalšiu manipuláciu, ale dňa 12. 6. 2019 ho okolnosti presvedčili
+		 * o tom, aby túto možnosť predsa ponechal dostupnú natrvalo.
+		 * Riaďte sa však upozornením vyššie.</p>
+		 * 
+		 * @return hlavný panel aplikačného okna
+		 */
+		public static JPanel hlavnýPanel() { return hlavnýPanel; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #hlavnýPanel() hlavnýPanel}.</p> */
+		public static JPanel hlavnyPanel() { return hlavnýPanel; }
+
 
 		// Vzdialenosti
 
@@ -4146,7 +4168,7 @@ public final class Svet extends JFrame
 		 * @return uhol (smer) medzi osou x a priamkou určenou stredom
 		 *     súradnicovej sústavy a zadaným bodom
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(double, double)
 		 * @see Svet#smer(Poloha)
 		 * @see Svet#smer(Shape)
 		 */
@@ -4171,7 +4193,7 @@ public final class Svet extends JFrame
 		 * @return uhol (smer) medzi osou x a priamkou určenou stredom
 		 *     súradnicovej sústavy a bodom určeným polohou zadaného objektu
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Poloha)
 		 * @see Svet#smer(double, double)
 		 * @see Svet#smer(Shape)
 		 */
@@ -4203,7 +4225,7 @@ public final class Svet extends JFrame
 		 *     súradnicovej sústavy a bodom určeným stredom hraníc zadaného
 		 *     tvaru Javy
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Shape)
 		 * @see Svet#smer(double, double)
 		 * @see Svet#smer(Poloha)
 		 */
@@ -4233,7 +4255,7 @@ public final class Svet extends JFrame
 		 * @param súradnicaBoduY2 y-ová súradnica druhého bodu
 		 * @return uhol (smer) medzi osou x a priamkou vedúcou zadanými bodmi
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(double, double)
 		 * @see Svet#smer(Poloha, Poloha)
 		 * @see Svet#smer(Shape, Shape)
 		 */
@@ -4259,7 +4281,7 @@ public final class Svet extends JFrame
 		 * @param objekt2 druhý objekt, ktorého súradnice sa berú do úvahy
 		 * @return uhol (smer) medzi osou x a priamkou vedúcou zadanými bodmi
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Poloha)
 		 * @see Svet#smer(double, double, double, double)
 		 * @see Svet#smer(Shape, Shape)
 		 */
@@ -4291,7 +4313,7 @@ public final class Svet extends JFrame
 		 *     stred hraníc sa berie do úvahy
 		 * @return uhol (smer) medzi osou x a priamkou vedúcou zadanými bodmi
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Shape)
 		 * @see Svet#smer(double, double, double, double)
 		 * @see Svet#smer(Poloha, Poloha)
 		 */
@@ -4325,7 +4347,7 @@ public final class Svet extends JFrame
 		 * @param súradnicaBoduY2 y-ová súradnica druhého bodu
 		 * @return uhol (smer) medzi osou x a určenou priamkou
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Poloha)
 		 * @see Svet#smer(Shape, double, double)
 		 */
 		public static double smer(Poloha objekt1,
@@ -4357,7 +4379,7 @@ public final class Svet extends JFrame
 		 * @param súradnicaBoduY2 y-ová súradnica druhého bodu
 		 * @return uhol (smer) medzi osou x a určenou priamkou
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Shape)
 		 * @see Svet#smer(Poloha, double, double)
 		 */
 		public static double smer(Shape tvar1,
@@ -4386,7 +4408,7 @@ public final class Svet extends JFrame
 		 * @param objekt2 objekt, ktorého súradnice sa berú do úvahy
 		 * @return uhol (smer) medzi osou x a určenou priamkou
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Poloha)
 		 * @see Svet#smer(Shape, Poloha)
 		 */
 		public static double smer(
@@ -4418,7 +4440,7 @@ public final class Svet extends JFrame
 		 * @param objekt2 objekt, ktorého súradnice sa berú do úvahy
 		 * @return uhol (smer) medzi osou x a určenou priamkou
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Poloha)
 		 * @see Svet#smer(double, double, Poloha)
 		 */
 		public static double smer(Shape tvar1, Poloha objekt2)
@@ -4455,7 +4477,7 @@ public final class Svet extends JFrame
 		 *     stred hraníc sa berie do úvahy
 		 * @return uhol (smer) medzi osou x a určenou priamkou
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Shape)
 		 * @see Svet#smer(Poloha, Shape)
 		 */
 		public static double smer(
@@ -4490,7 +4512,7 @@ public final class Svet extends JFrame
 		 *     stred hraníc sa berie do úvahy
 		 * @return uhol (smer) medzi osou x a určenou priamkou
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Shape)
 		 * @see Svet#smer(double, double, Shape)
 		 */
 		public static double smer(Poloha objekt1, Shape tvar2)
@@ -4519,7 +4541,7 @@ public final class Svet extends JFrame
 		 * @return uhol medzi osou x a priamkou určenou stredom súradnicovej
 		 *     sústavy a zadaným bodom
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(double, double)
 		 * @see Svet#uhol(Poloha)
 		 * @see Svet#uhol(Shape)
 		 */
@@ -4543,7 +4565,7 @@ public final class Svet extends JFrame
 		 * @return uhol medzi osou x a priamkou určenou stredom súradnicovej
 		 *     sústavy a bodom určeným polohou zadaného objektu
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Poloha)
 		 * @see Svet#uhol(double, double)
 		 * @see Svet#uhol(Shape)
 		 */
@@ -4574,7 +4596,7 @@ public final class Svet extends JFrame
 		 * @return uhol medzi osou x a priamkou určenou stredom súradnicovej
 		 *     sústavy a bodom určeným stredom hraníc zadaného tvaru Javy
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Shape)
 		 * @see Svet#uhol(double, double)
 		 * @see Svet#uhol(Poloha)
 		 */
@@ -4604,7 +4626,7 @@ public final class Svet extends JFrame
 		 * @param súradnicaBoduY2 y-ová súradnica druhého bodu
 		 * @return uhol medzi osou x a priamkou vedúcou zadanými bodmi
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(double, double)
 		 * @see Svet#uhol(Poloha, Poloha)
 		 * @see Svet#uhol(Shape, Shape)
 		 */
@@ -4630,7 +4652,7 @@ public final class Svet extends JFrame
 		 * @param objekt2 druhý objekt, ktorého súradnice sa berú do úvahy
 		 * @return uhol medzi osou x a priamkou vedúcou zadanými bodmi
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Poloha)
 		 * @see Svet#uhol(double, double, double, double)
 		 * @see Svet#uhol(Shape, Shape)
 		 */
@@ -4662,7 +4684,7 @@ public final class Svet extends JFrame
 		 *     stred hraníc sa berie do úvahy
 		 * @return uhol medzi osou x a priamkou vedúcou zadanými bodmi
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Shape)
 		 * @see Svet#uhol(double, double, double, double)
 		 * @see Svet#uhol(Poloha, Poloha)
 		 */
@@ -4696,7 +4718,7 @@ public final class Svet extends JFrame
 		 * @param súradnicaBoduY2 y-ová súradnica druhého bodu
 		 * @return uhol medzi osou x a určenou priamkou
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(double, double)
 		 * @see Svet#uhol(Shape, double, double)
 		 */
 		public static double uhol(Poloha objekt1,
@@ -4728,7 +4750,7 @@ public final class Svet extends JFrame
 		 * @param súradnicaBoduY2 y-ová súradnica druhého bodu
 		 * @return uhol medzi osou x a určenou priamkou
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(double, double)
 		 * @see Svet#uhol(Poloha, double, double)
 		 */
 		public static double uhol(Shape tvar1,
@@ -4757,7 +4779,7 @@ public final class Svet extends JFrame
 		 * @param objekt2 objekt, ktorého súradnice sa berú do úvahy
 		 * @return uhol medzi osou x a určenou priamkou
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Poloha)
 		 * @see Svet#uhol(Shape, Poloha)
 		 */
 		public static double uhol(
@@ -4789,7 +4811,7 @@ public final class Svet extends JFrame
 		 * @param objekt2 objekt, ktorého súradnice sa berú do úvahy
 		 * @return uhol medzi osou x a určenou priamkou
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Poloha)
 		 * @see Svet#uhol(double, double, Poloha)
 		 */
 		public static double uhol(Shape tvar1, Poloha objekt2)
@@ -4826,7 +4848,7 @@ public final class Svet extends JFrame
 		 *     stred hraníc sa berie do úvahy
 		 * @return uhol medzi osou x a určenou priamkou
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Shape)
 		 * @see Svet#uhol(Poloha, Shape)
 		 */
 		public static double uhol(
@@ -4861,7 +4883,7 @@ public final class Svet extends JFrame
 		 *     stred hraníc sa berie do úvahy
 		 * @return uhol medzi osou x a určenou priamkou
 		 * 
-		 * @see GRobot#smerNa()
+		 * @see GRobot#smerNa(Shape)
 		 * @see Svet#uhol(double, double, Shape)
 		 */
 		public static double uhol(Poloha objekt1, Shape tvar2)
@@ -4969,7 +4991,7 @@ public final class Svet extends JFrame
 		 * sú ďalšie vznikajúce udalosti presmerované do zadanej inštancie
 		 * {@code obsluha}. Táto akcia automaticky vyradí z činnosti
 		 * predchádzajúcu inštanciu obsluhy udalostí, z čoho vyplýva, že
-		 * <em>v činnosti môže byť vždy len jedna obsluha udalostí</em>.</p>
+		 * <em>v činnosti môže byť vždy len jedna obsluha udalostí.</em></p>
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
@@ -4982,7 +5004,7 @@ public final class Svet extends JFrame
 		 * hlavného robota}…</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} ViacnásobnáObsluhaUdalostí {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -4991,7 +5013,7 @@ public final class Svet extends JFrame
 				{@code kwdprivate} ViacnásobnáObsluhaUdalostí()
 				{
 					{@code comm// Napísanie bieleho textu}
-					{@link GRobot#farba(Color) farba}({@link GRobot#biela biela});
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#biela biela});
 					{@link GRobot#text(String) text}({@code srg"…kliknite myšou…"});
 
 					{@code comm// Nastavenie vlastností hlavného robota}
@@ -5012,7 +5034,7 @@ public final class Svet extends JFrame
 						{
 							{@link GRobot#zobraz() zobraz}();
 							{@link Svet Svet}.{@link #vymaž() vymaž}();
-							{@link Svet Svet}.{@link #farbaPozadia(Color) farbaPozadia}({@link GRobot#svetlotyrkysová svetlotyrkysová}.{@link Farba#svetlejšia() svetlejšia}());
+							{@link Svet Svet}.{@link #farbaPozadia(Color) farbaPozadia}({@link Farebnosť#svetlotyrkysová svetlotyrkysová}.{@link Farba#svetlejšia() svetlejšia}());
 							{@link Svet Svet}.{@code currpresmerujObsluhuUdalostí}(obsluha2);
 						}
 					};
@@ -5031,7 +5053,7 @@ public final class Svet extends JFrame
 					};
 
 					{@code comm// Nastavenie vlastností sveta}
-					{@link Svet Svet}.{@link #farbaPozadia(Color) farbaPozadia}({@link GRobot#čierna čierna});
+					{@link Svet Svet}.{@link #farbaPozadia(Color) farbaPozadia}({@link Farebnosť#čierna čierna});
 					{@link Svet Svet}.{@link #upevni() upevni}();
 					{@link Svet Svet}.{@link #zbaľ() zbaľ}();
 				}
@@ -5271,8 +5293,7 @@ public final class Svet extends JFrame
 		 * upravovať myšou.</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
-			{@code kwdimport} knižnica.{@link Poloha Poloha};
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} TestVypĺňaniaTextúrou {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -5311,16 +5332,16 @@ public final class Svet extends JFrame
 
 					{@code comm// Vytvorenie relatívne komplikovaného tvaru oblasti – medzikružie}
 					{@code comm// prekryté dvomi pootočenými hviezdami – „jež v obruči“:}
-					{@link #veľkosť(double) veľkosť}({@code num200});
+					{@link GRobot#veľkosť(double) veľkosť}({@code num200});
 					oblasť = {@code kwdnew} {@link Oblasť#Oblasť() Oblasť}();
-					oblasť.{@link Oblasť#pridaj(Shape) pridaj}({@link #kruh(double) kruh}({@link #veľkosť() veľkosť}() * {@code num4.0} / {@code num5.0}));
-					oblasť.{@link Oblasť#odober(Shape) odober}({@link #kruh(double) kruh}({@link #veľkosť() veľkosť}() * {@code num3.0} / {@code num4.0}));
-					{@link #vpravo(double) vpravo}({@code num18});
-					oblasť.{@link Oblasť#pridaj(Shape) pridaj}({@link #hviezda() hviezda}());
-					{@link #vľavo(double) vľavo}({@code num36});
-					oblasť.{@link Oblasť#pridaj(Shape) pridaj}({@link #hviezda() hviezda}());
-					{@link #vpravo(double) vpravo}({@code num18});
-					oblasť.{@link Oblasť#pridaj(Shape) pridaj}({@link #kruh(double) kruh}({@link #veľkosť() veľkosť}() * {@code num2.0} / {@code num3.0}));
+					oblasť.{@link Oblasť#pridaj(Shape) pridaj}({@link GRobot#kruh(double) kruh}({@link GRobot#veľkosť() veľkosť}() * {@code num4.0} / {@code num5.0}));
+					oblasť.{@link Oblasť#odober(Shape) odober}({@link GRobot#kruh(double) kruh}({@link GRobot#veľkosť() veľkosť}() * {@code num3.0} / {@code num4.0}));
+					{@link GRobot#vpravo(double) vpravo}({@code num18});
+					oblasť.{@link Oblasť#pridaj(Shape) pridaj}({@link GRobot#hviezda() hviezda}());
+					{@link GRobot#vľavo(double) vľavo}({@code num36});
+					oblasť.{@link Oblasť#pridaj(Shape) pridaj}({@link GRobot#hviezda() hviezda}());
+					{@link GRobot#vpravo(double) vpravo}({@code num18});
+					oblasť.{@link Oblasť#pridaj(Shape) pridaj}({@link GRobot#kruh(double) kruh}({@link GRobot#veľkosť() veľkosť}() * {@code num2.0} / {@code num3.0}));
 
 					{@code comm// Vytvorenie práznych inštancií obrázkov. Prvá inštancia „obrázok“}
 					{@code comm// je jedným z cieľov vypĺňania. Druhá inštancia „textúra“ je výplň}
@@ -5351,26 +5372,26 @@ public final class Svet extends JFrame
 					{@code comm// Záloha stavu robota pred generovaním textúry (nesúvisí so zálohou}
 					{@code comm// pre jeden z režimov – toto je nezávislá záloha tých vlastností}
 					{@code comm// robota, ktoré táto metóda ovplyvňuje):}
-					{@link Farba Farba} zálohaFarby = {@link #farba() farba}();
-					{@link Poloha Poloha} zálohaPolohy = {@link #poloha() poloha}();
-					{@code typedouble} zálohaSmeru  = {@link #smer() smer}();
-					{@code typedouble} zálohaHrúbky = {@link #hrúbkaČiary() hrúbkaČiary}();
+					{@link Farba Farba} zálohaFarby = {@link GRobot#farba() farba}();
+					{@link Poloha Poloha} zálohaPolohy = {@link GRobot#poloha() poloha}();
+					{@code typedouble} zálohaSmeru  = {@link GRobot#smer() smer}();
+					{@code typedouble} zálohaHrúbky = {@link GRobot#hrúbkaČiary() hrúbkaČiary}();
 
 					{@code comm// Presmerovanie kreslenia robota. Toto je jediná vlastnosť, ktorú}
 					{@code comm// metóda nezálohuje poctivo – spoliehame sa na to, že robot bude}
 					{@code comm// pred aj po vykonaní tejto metódy kresliť na podlahu (čo je}
 					{@code comm// predvolené nastavenie robota):}
-					{@link #kresliDoObrázka(Obrázok) kresliDoObrázka}(textúra);
+					{@link GRobot#kresliDoObrázka(Obrázok) kresliDoObrázka}(textúra);
 					textúra.{@link Obrázok#vymaž() vymaž}();
 
 					{@code comm// Generovanie textúry aktuálneho typu:}
 					{@code kwdfor} ({@code typeint} i = {@code num0}; i &lt; {@code num280}; ++i)
 					{
 						{@code comm// Farba, poloha, smer aj hrúbka čiary sú náhodne zmenené:}
-						{@link #náhodnáFarba() náhodnáFarba}();
-						{@link #náhodnáPoloha() náhodnáPoloha}();
-						{@link #náhodnýSmer() náhodnýSmer}();
-						{@link #hrúbkaČiary(double) hrúbkaČiary}({@link Svet Svet}.{@link Svet#náhodnéReálneČíslo(double, double) náhodnéReálneČíslo}({@code num3}, {@code num5}));
+						{@link GRobot#náhodnáFarba() náhodnáFarba}();
+						{@link GRobot#náhodnáPoloha() náhodnáPoloha}();
+						{@link GRobot#náhodnýSmer() náhodnýSmer}();
+						{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@link Svet Svet}.{@link Svet#náhodnéReálneČíslo(double, double) náhodnéReálneČíslo}({@code num3}, {@code num5}));
 
 						{@code kwdif} (bezšvová)
 						{
@@ -5419,7 +5440,7 @@ public final class Svet extends JFrame
 
 							{@code comm// Zálohujeme polohu – budeme ju recyklovať ako východiskovú}
 							{@code comm// polohu:}
-							{@link Poloha Poloha} poloha = {@link #poloha() poloha}();
+							{@link Poloha Poloha} poloha = {@link GRobot#poloha() poloha}();
 
 							{@code comm// Podľa hodnoty atribútu typ vygenerujeme textúru:}
 							{@code kwdswitch} (typ % {@code num3})
@@ -5433,49 +5454,49 @@ public final class Svet extends JFrame
 									{@code comm// Vygenerujeme veľkosť:}
 									{@code typedouble} veľkosť = {@link Svet Svet}.{@link Svet#náhodnéReálneČíslo(double, double) náhodnéReálneČíslo}({@code num3}, {@code num12});
 									{@code comm// Nakreslíme strednú kružnicu:}
-									{@link #kružnica(double) kružnica}(veľkosť);
+									{@link GRobot#kružnica(double) kružnica}(veľkosť);
 
 									{@code comm// Presunieme sa do východiskovej polohy, posunieme}
 									{@code comm// sa doľava o šírku textúry a nakreslíme ďalšiu}
 									{@code comm// kružnicu:}
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, {@code num0});
-									{@link #kružnica(double) kružnica}(veľkosť);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, {@code num0});
+									{@link GRobot#kružnica(double) kružnica}(veľkosť);
 
 									{@code comm// (Podobne doprava.)}
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, {@code num0});
-									{@link #kružnica(double) kružnica}(veľkosť);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, {@code num0});
+									{@link GRobot#kružnica(double) kružnica}(veľkosť);
 
 									{@code comm// (Hore.)}
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}({@code num0}, -textúra.{@link Obrázok#výška výška});
-									{@link #kružnica(double) kružnica}(veľkosť);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}({@code num0}, -textúra.{@link Obrázok#výška výška});
+									{@link GRobot#kružnica(double) kružnica}(veľkosť);
 
 									{@code comm// (Dole.)}
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}({@code num0}, textúra.{@link Obrázok#výška výška});
-									{@link #kružnica(double) kružnica}(veľkosť);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}({@code num0}, textúra.{@link Obrázok#výška výška});
+									{@link GRobot#kružnica(double) kružnica}(veľkosť);
 
 									{@code comm// (Vľavo dole.)}
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, -textúra.{@link Obrázok#výška výška});
-									{@link #kružnica(double) kružnica}(veľkosť);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, -textúra.{@link Obrázok#výška výška});
+									{@link GRobot#kružnica(double) kružnica}(veľkosť);
 
 									{@code comm// (Vľavo hore.)}
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, textúra.{@link Obrázok#výška výška});
-									{@link #kružnica(double) kružnica}(veľkosť);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, textúra.{@link Obrázok#výška výška});
+									{@link GRobot#kružnica(double) kružnica}(veľkosť);
 
 									{@code comm// (Vpravo dole.)}
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, -textúra.{@link Obrázok#výška výška});
-									{@link #kružnica(double) kružnica}(veľkosť);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, -textúra.{@link Obrázok#výška výška});
+									{@link GRobot#kružnica(double) kružnica}(veľkosť);
 
 									{@code comm// (Vpravo hore.)}
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, textúra.{@link Obrázok#výška výška});
-									{@link #kružnica(double) kružnica}(veľkosť);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, textúra.{@link Obrázok#výška výška});
+									{@link GRobot#kružnica(double) kružnica}(veľkosť);
 								}
 								{@code kwdbreak};
 
@@ -5484,39 +5505,39 @@ public final class Svet extends JFrame
 									{@code comm// (Princíp je rovnaký ako pri krúžkoch vyššie, ale}
 									{@code comm// vygenerovaná hodnota je použitá ako dĺžka čiary.)}
 									{@code typedouble} dĺžka = {@link Svet Svet}.{@link Svet#náhodnéReálneČíslo(double, double) náhodnéReálneČíslo}({@code num60}, {@code num100});
-									{@link #dopredu(double) dopredu}(dĺžka);
+									{@link GRobot#dopredu(double) dopredu}(dĺžka);
 
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, {@code num0});
-									{@link #dopredu(double) dopredu}(dĺžka);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, {@code num0});
+									{@link GRobot#dopredu(double) dopredu}(dĺžka);
 
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, {@code num0});
-									{@link #dopredu(double) dopredu}(dĺžka);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, {@code num0});
+									{@link GRobot#dopredu(double) dopredu}(dĺžka);
 
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}({@code num0}, -textúra.{@link Obrázok#výška výška});
-									{@link #dopredu(double) dopredu}(dĺžka);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}({@code num0}, -textúra.{@link Obrázok#výška výška});
+									{@link GRobot#dopredu(double) dopredu}(dĺžka);
 
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}({@code num0}, textúra.{@link Obrázok#výška výška});
-									{@link #dopredu(double) dopredu}(dĺžka);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}({@code num0}, textúra.{@link Obrázok#výška výška});
+									{@link GRobot#dopredu(double) dopredu}(dĺžka);
 
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, -textúra.{@link Obrázok#výška výška});
-									{@link #dopredu(double) dopredu}(dĺžka);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, -textúra.{@link Obrázok#výška výška});
+									{@link GRobot#dopredu(double) dopredu}(dĺžka);
 
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, textúra.{@link Obrázok#výška výška});
-									{@link #dopredu(double) dopredu}(dĺžka);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, textúra.{@link Obrázok#výška výška});
+									{@link GRobot#dopredu(double) dopredu}(dĺžka);
 
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, -textúra.{@link Obrázok#výška výška});
-									{@link #dopredu(double) dopredu}(dĺžka);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, -textúra.{@link Obrázok#výška výška});
+									{@link GRobot#dopredu(double) dopredu}(dĺžka);
 
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, textúra.{@link Obrázok#výška výška});
-									{@link #dopredu(double) dopredu}(dĺžka);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, textúra.{@link Obrázok#výška výška});
+									{@link GRobot#dopredu(double) dopredu}(dĺžka);
 								}
 								{@code kwdbreak};
 
@@ -5525,39 +5546,39 @@ public final class Svet extends JFrame
 									{@code comm// (Princíp je rovnaký ako pri krúžkoch vyššie,}
 									{@code comm// len sú kreslené plné kruhy.)}
 									{@code typedouble} veľkosť = {@link Svet Svet}.{@link Svet#náhodnéReálneČíslo(double, double) náhodnéReálneČíslo}({@code num3}, {@code num12});
-									{@link #kruh(double) kruh}(veľkosť);
+									{@link GRobot#kruh(double) kruh}(veľkosť);
 
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, {@code num0});
-									{@link #kruh(double) kruh}(veľkosť);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, {@code num0});
+									{@link GRobot#kruh(double) kruh}(veľkosť);
 
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, {@code num0});
-									{@link #kruh(double) kruh}(veľkosť);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, {@code num0});
+									{@link GRobot#kruh(double) kruh}(veľkosť);
 
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}({@code num0}, -textúra.{@link Obrázok#výška výška});
-									{@link #kruh(double) kruh}(veľkosť);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}({@code num0}, -textúra.{@link Obrázok#výška výška});
+									{@link GRobot#kruh(double) kruh}(veľkosť);
 
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}({@code num0}, textúra.{@link Obrázok#výška výška});
-									{@link #kruh(double) kruh}(veľkosť);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}({@code num0}, textúra.{@link Obrázok#výška výška});
+									{@link GRobot#kruh(double) kruh}(veľkosť);
 
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, -textúra.{@link Obrázok#výška výška});
-									{@link #kruh(double) kruh}(veľkosť);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, -textúra.{@link Obrázok#výška výška});
+									{@link GRobot#kruh(double) kruh}(veľkosť);
 
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, textúra.{@link Obrázok#výška výška});
-									{@link #kruh(double) kruh}(veľkosť);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(-textúra.{@link Obrázok#šírka šírka}, textúra.{@link Obrázok#výška výška});
+									{@link GRobot#kruh(double) kruh}(veľkosť);
 
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, -textúra.{@link Obrázok#výška výška});
-									{@link #kruh(double) kruh}(veľkosť);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, -textúra.{@link Obrázok#výška výška});
+									{@link GRobot#kruh(double) kruh}(veľkosť);
 
-									{@link #skočNa(Poloha) skočNa}(poloha);
-									{@link #skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, textúra.{@link Obrázok#výška výška});
-									{@link #kruh(double) kruh}(veľkosť);
+									{@link GRobot#skočNa(Poloha) skočNa}(poloha);
+									{@link GRobot#skoč(double, double) skoč}(textúra.{@link Obrázok#šírka šírka}, textúra.{@link Obrázok#výška výška});
+									{@link GRobot#kruh(double) kruh}(veľkosť);
 								}
 							}
 						}
@@ -5567,27 +5588,27 @@ public final class Svet extends JFrame
 							{@code kwdswitch} (typ % {@code num3})
 							{
 							{@code kwdcase} {@code num1}:
-								{@link #kružnica(double) kružnica}({@link Svet Svet}.{@link Svet#náhodnéReálneČíslo(double, double) náhodnéReálneČíslo}({@code num3}, {@code num12}));
+								{@link GRobot#kružnica(double) kružnica}({@link Svet Svet}.{@link Svet#náhodnéReálneČíslo(double, double) náhodnéReálneČíslo}({@code num3}, {@code num12}));
 								{@code kwdbreak};
 
 							{@code kwdcase} {@code num2}:
-								{@link #dopredu(double) dopredu}({@link Svet Svet}.{@link Svet#náhodnéReálneČíslo(double, double) náhodnéReálneČíslo}({@code num60}, {@code num100}));
+								{@link GRobot#dopredu(double) dopredu}({@link Svet Svet}.{@link Svet#náhodnéReálneČíslo(double, double) náhodnéReálneČíslo}({@code num60}, {@code num100}));
 								{@code kwdbreak};
 
 							{@code kwddefault}:
-								{@link #kruh(double) kruh}({@link Svet Svet}.{@link Svet#náhodnéReálneČíslo(double, double) náhodnéReálneČíslo}({@code num3}, {@code num12}));
+								{@link GRobot#kruh(double) kruh}({@link Svet Svet}.{@link Svet#náhodnéReálneČíslo(double, double) náhodnéReálneČíslo}({@code num3}, {@code num12}));
 							}
 						}
 					}
 
 					{@code comm// Presmerujeme kreslenie späť na podlahu:}
-					{@link #kresliNaPodlahu() kresliNaPodlahu}();
+					{@link GRobot#kresliNaPodlahu() kresliNaPodlahu}();
 
 					{@code comm// Vrátenie zálohy vykonanej na začiatku tejto metódy:}
-					{@link #farba(Color) farba}(zálohaFarby);
-					{@link #skočNa(Poloha) skočNa}(zálohaPolohy);
-					{@link #smer(double) smer}(zálohaSmeru);
-					{@link #hrúbkaČiary(double) hrúbkaČiary}(zálohaHrúbky);
+					{@link GRobot#farba(Color) farba}(zálohaFarby);
+					{@link GRobot#skočNa(Poloha) skočNa}(zálohaPolohy);
+					{@link GRobot#smer(double) smer}(zálohaSmeru);
+					{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}(zálohaHrúbky);
 				}
 
 				{@code comm// Vyplnenie aktuálneho cieľa vypĺňania textúrou}
@@ -5614,17 +5635,17 @@ public final class Svet extends JFrame
 					{@code kwdcase} {@code num0}:
 						obrázok.{@link Obrázok#vymaž() vymaž}();
 						obrázok.{@link Obrázok#vyplň(Image) vyplň}(textúra);
-						{@link #obrázok(Image, double) obrázok}(obrázok, {@code num1.0});
+						{@link GRobot#obrázok(Image, double) obrázok}(obrázok, {@code num1.0});
 						{@code kwdbreak};
 
 					{@code kwdcase} {@code num1}:
 						{@code comm// Kreslenie tvarov nie je vypnuté, preto sa hviezda zároveň}
 						{@code comm// nakreslí na plochu plátna aktuálnou hrúbkou a farbou čiary.}
-						{@link #vyplňTvar(Shape) vyplňTvar}({@link #hviezda() hviezda}(), textúra);
+						{@link GRobot#vyplňTvar(Shape) vyplňTvar}({@link GRobot#hviezda() hviezda}(), textúra);
 						{@code kwdbreak};
 
 					{@code kwdcase} {@code num2}:
-						{@link #vyplňOblasť(Area, Image) vyplňOblasť}(oblasť, textúra);
+						{@link GRobot#vyplňOblasť(Area, Image) vyplňOblasť}(oblasť, textúra);
 						{@code kwdbreak};
 
 					{@code kwdcase} {@code num3}:
@@ -5654,27 +5675,27 @@ public final class Svet extends JFrame
 							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Klávesy 1 až 4 prepínajú ciele vypĺňania: obrázok, tvar hviezdy, oblasť ježa v obruči a celú plochu podlahy. (Všímajte si odlišnosti.)"});
 							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Kláves F prepne na ďalší typ textúry a vygeneruje novú náhodnú textúru (v aktuálnom režime)."});
 							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Kláves G vygeneruje novú náhodnú textúru aktuálneho typu v aktuálnom režime."});
-							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Kláves H prepne medzi režimom bezšvovej a švovej textúry a vygeneruje novú náhodnú textúru (aktuálneho typu)."}, {@link #riadok riadok});
+							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Kláves H prepne medzi režimom bezšvovej a švovej textúry a vygeneruje novú náhodnú textúru (aktuálneho typu)."}, {@link Konštanty#riadok riadok});
 						}
 
 						{@code kwdif} (zobrazenie &gt;= {@code num1})
 						{
 							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Kliknutím alebo ťahaním niektorým tlačidlom myši vykonáte jednu z nasledujúcich akcií s tvarom (v režime úprav tvaru):"});
 							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg" — ľavé tlačidlo: posunutie tvaru,"});
-							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg" — pravé tlačidlo: pootočenie tvaru."}, {@link #riadok riadok});
+							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg" — pravé tlačidlo: pootočenie tvaru."}, {@link Konštanty#riadok riadok});
 
 							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Kliknutím alebo ťahaním niektorým tlačidlom myši vykonáte jednu z nasledujúcich akcií s textúrou (v režime úprav textúry):"});
 							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg" — ak je posúvanie a otáčenie textúry voľné:"});
 							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"   — ľavé tlačidlo: posunutie textúry,"});
-							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"   — pravé tlačidlo: pootočenie textúry,"}, {@link #riadok riadok});
+							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"   — pravé tlačidlo: pootočenie textúry,"}, {@link Konštanty#riadok riadok});
 							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg" — ak je posúvanie a otáčenie textúry zamknuté:"});
 							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"   — ľavé tlačidlo: posunutie stredu otáčania textúry,"});
-							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"   — pravé tlačidlo: zmena mierky textúry."}, {@link #riadok riadok});
+							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"   — pravé tlačidlo: zmena mierky textúry."}, {@link Konštanty#riadok riadok});
 						}
 
 						{@code kwdif} (zobrazenie &gt;= {@code num0})
 						{
-							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Aktuálny stav:"}, {@link #riadok riadok});
+							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Aktuálny stav:"}, {@link Konštanty#riadok riadok});
 
 							{@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg" — Cieľ výplne: "});
 							{@code kwdswitch} (cieľVýplne)
@@ -5701,9 +5722,9 @@ public final class Svet extends JFrame
 							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"."});
 						}
 
-						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@link #riadok riadok}, {@code srg"(Tip: Ak je miera zobrazených textov pomocníka vyššia, tak kolieskom myši môžete rolovať text…)"});
+						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@link Konštanty#riadok riadok}, {@code srg"(Tip: Ak je miera zobrazených textov pomocníka vyššia, tak kolieskom myši môžete rolovať text…)"});
 
-						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@link #riadok riadok}, {@code srg"Stlačte Escape…"});
+						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@link Konštanty#riadok riadok}, {@code srg"Stlačte Escape…"});
 					}
 				}
 
@@ -5711,33 +5732,33 @@ public final class Svet extends JFrame
 				{@code comm// Obsluhy udalostí (časovača, myši a klávesnice):}
 
 
-				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link #tik() tik}()
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#tik() tik}()
 				{
 					{@code kwdif} ({@link Svet Svet}.{@link Svet#neboloPrekreslené() neboloPrekreslené}()) {@link Svet Svet}.{@link Svet#prekresli() prekresli}();
 				}
 
-				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link #stlačenieTlačidlaMyši() stlačenieTlačidlaMyši}()
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#stlačenieTlačidlaMyši() stlačenieTlačidlaMyši}()
 				{
-					{@link #ťahanieMyšou() ťahanieMyšou}();
+					{@link GRobot#ťahanieMyšou() ťahanieMyšou}();
 				}
 
-				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link #ťahanieMyšou() ťahanieMyšou}()
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#ťahanieMyšou() ťahanieMyšou}()
 				{
 					{@code kwdif} (upravTextúru)
 					{
 						{@code kwdif} (zamknuté)
 						{
-							{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link ÚdajeUdalostí#ĽAVÉ ĽAVÉ}))
+							{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#ĽAVÉ ĽAVÉ}))
 								{@link Svet Svet}.{@link Svet#stredOtáčaniaVýplne(double, double) stredOtáčaniaVýplne}(
-									{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#súradnicaMyšiX() súradnicaMyšiX}() &#45; {@link #súradnicaX() súradnicaX}(),
-									{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#súradnicaMyšiY() súradnicaMyšiY}() &#45; {@link #súradnicaY() súradnicaY}());
+									{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#súradnicaMyšiX() súradnicaMyšiX}() &#45; {@link GRobot#súradnicaX() súradnicaX}(),
+									{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#súradnicaMyšiY() súradnicaMyšiY}() &#45; {@link GRobot#súradnicaY() súradnicaY}());
 							{@code kwdelse}
 								{@link Svet Svet}.{@link Svet#mierkaVýplne(double, double) mierkaVýplne}({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#súradnicaMyšiX() súradnicaMyšiX}() / {@code num100.0},
 									{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#súradnicaMyšiY() súradnicaMyšiY}() / {@code num100.0});
 						}
 						{@code kwdelse}
 						{
-							{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link ÚdajeUdalostí#ĽAVÉ ĽAVÉ}))
+							{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#ĽAVÉ ĽAVÉ}))
 								{@link Svet Svet}.{@link Svet#posunutieVýplneNaMyš() posunutieVýplneNaMyš}();
 							{@code kwdelse}
 								{@link Svet Svet}.{@link Svet#pootočenieVýplneNaMyš() pootočenieVýplneNaMyš}();
@@ -5745,17 +5766,17 @@ public final class Svet extends JFrame
 					}
 					{@code kwdelse}
 					{
-						{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link ÚdajeUdalostí#ĽAVÉ ĽAVÉ}))
-							{@link #skočNaMyš() skočNaMyš}();
+						{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#ĽAVÉ ĽAVÉ}))
+							{@link GRobot#skočNaMyš() skočNaMyš}();
 						{@code kwdelse}
-							{@link #otočNaMyš() otočNaMyš}();
+							{@link GRobot#otočNaMyš() otočNaMyš}();
 					}
 
 					vyplňTextúrou();
 				}
 
 				{@code kwd@}SuppressWarnings({@code srg"fallthrough"}) {@code comm// toto je vysvetlené na konci metódy}
-				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link #uvoľnenieKlávesu() uvoľnenieKlávesu}()
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#uvoľnenieKlávesu() uvoľnenieKlávesu}()
 				{
 					{@code kwdswitch} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#kláves() kláves}())
 					{
@@ -7278,7 +7299,7 @@ public final class Svet extends JFrame
 		 * <p><b>Príklad:</b></p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} TestPrekresľovania {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -7460,7 +7481,7 @@ public final class Svet extends JFrame
 		 * <pre CLASS="example">
 			{@code comm// V tomto príklade nakreslíme „Novú Zem“:}
 
-			{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@link GRobot#modrá modrá});
+			{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@link Farebnosť#modrá modrá});
 			{@link Svet Svet}.{@link Svet#nekresli() nekresli}();
 			{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num1.5});
 
@@ -7483,9 +7504,9 @@ public final class Svet extends JFrame
 					{@code typedouble} výpočet = {@link GRobot#vzdialenosť() vzdialenosť}() / {@code num50} &#45; {@link GRobot#vzdialenosť() vzdialenosť}() % {@code num50};
 
 					{@code kwdif} ((výpočet % {@code num2}) &gt;= {@code num1})
-						{@link GRobot#farba(Color) farba}({@link GRobot#červená červená});
+						{@link GRobot#farba(Color) farba}({@link Farebnosť#červená červená});
 					{@code kwdelse}
-						{@link GRobot#farba(Color) farba}({@link GRobot#zelená zelená});
+						{@link GRobot#farba(Color) farba}({@link Farebnosť#zelená zelená});
 				}
 
 				{@link Svet Svet}.{@code currprekresli}();
@@ -8717,11 +8738,11 @@ public final class Svet extends JFrame
 			{@link GRobot#kresliDoObrázka(Obrázok) kresliDoObrázka}(ihla);
 			{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num2.5});
 
-			{@link GRobot#farba(Color) farba}({@link GRobot#tyrkysová tyrkysová});
+			{@link GRobot#farba(Color) farba}({@link Farebnosť#tyrkysová tyrkysová});
 			{@link GRobot#choďNa(double, double) choďNa}(&#45;{@code num16}, &#45;{@code num16});
 
 			{@link GRobot#domov() domov}();
-			{@link GRobot#farba(Color) farba}({@link GRobot#modrá modrá});
+			{@link GRobot#farba(Color) farba}({@link Farebnosť#modrá modrá});
 			{@link GRobot#kruh(double) kruh}({@code num4.5});
 
 			{@link Svet Svet}.{@code currnovýKurzorMyši}(ihla, &#45;{@code num15}, &#45;{@code num15}, {@code srg"ihla"});
@@ -8969,7 +8990,7 @@ public final class Svet extends JFrame
 
 					{@code comm// Vyrobenie grafiky ikony a jej použitie ako ikony aplikácie.}
 					{@link Obrázok Obrázok} ikona = {@code kwdnew} {@link Obrázok#Obrázok(int, int) Obrázok}({@code num32}, {@code num32});
-					ikona.{@link Obrázok#vyplň(Color) vyplň}({@link GRobot#žltá žltá});
+					ikona.{@link Obrázok#vyplň(Color) vyplň}({@link Farebnosť#žltá žltá});
 					{@link GRobot#kresliDoObrázka(Obrázok) kresliDoObrázka}(ikona);
 					{@link GRobot#kruh(double) kruh}({@code num12});
 					{@link GRobot#kresliNaPodlahu() kresliNaPodlahu}();
@@ -9003,7 +9024,7 @@ public final class Svet extends JFrame
 					{
 						{@code comm// V opačnom prípade vypíšeme informáciu o tom, že systém túto}
 						{@code comm// vlastnosť nepodporuje (alebo jej použitiu bránia iné okolnosti).}
-						{@link GRobot#farba(Color) farba}({@link GRobot#červená červená});
+						{@link GRobot#farba(Color) farba}({@link Farebnosť#červená červená});
 						{@link GRobot#text(String) text}({@code srg"Systémová ikona nie je podporovaná."});
 					}
 
@@ -10272,7 +10293,8 @@ public final class Svet extends JFrame
 		 * hlavného robota}, čiže ešte pred začatím inicializácie sveta
 		 * (najlepšie v hlavnej metóde).
 		 * V súčasnosti konfigurácia sveta zahŕňa polohu a rozmery hlavného
-		 * okna a ukladanie vlastností registrovaných robotov. Meno
+		 * okna (vrátane stavu minimalizovania/maximalizovania okna)
+		 * a ukladanie vlastností registrovaných robotov. Meno
 		 * konfiguračného súboru určuje parameter {@code 
 		 * názovSúboru}. Súbor nemusí jestvovať, v takom prípade bude
 		 * vytvorený automaticky pri ukončení aplikácie.</p>
@@ -10322,7 +10344,8 @@ public final class Svet extends JFrame
 		 * hlavného robota}, čiže ešte pred začatím inicializácie sveta
 		 * (najlepšie v hlavnej metóde).
 		 * V súčasnosti konfigurácia sveta zahŕňa polohu a rozmery hlavného
-		 * okna a ukladanie vlastností registrovaných robotov. Metóda
+		 * okna (vrátane stavu minimalizovania/maximalizovania okna)
+		 * a ukladanie vlastností registrovaných robotov. Metóda
 		 * použije predvolené meno konfiguračného súboru {@code 
 		 * srg"grobot.cfg"}. Súbor nemusí jestvovať, v takom prípade bude
 		 * vytvorený automaticky pri ukončení aplikácie.</p>
@@ -10455,7 +10478,7 @@ public final class Svet extends JFrame
 		 * schémy:</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};<!-- TODO skontrolovať všetky príklady, ktoré takto importujú knižnicu, či fungujú, ak nie, nahradiť GRobot * … -->
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} UkážkaKonfigurácie {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -10601,7 +10624,7 @@ public final class Svet extends JFrame
 		 * <p>Vhodné je použiť nasledujúcu schému:</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} UkážkaKonfigurácie {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -10848,7 +10871,7 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Táto metóda slúži na zadanie príkazov Javy, ktoré majú byť
 		 * vykonané „neskôr“ – pozri opis metódy {@link 
-		 * vykonaťNeskôr(Runnable) vykonaťNeskôr(vykonať)}. Toto je verzia
+		 * #vykonaťNeskôr(Runnable) vykonaťNeskôr(vykonať)}. Toto je verzia
 		 * metódy, ktorá umožňuje určiť, či má byť vytvorené samostatné
 		 * vlákno, ktoré bude vykonávať blok zadaných príkazov.</p>
 		 * 
@@ -12767,6 +12790,15 @@ public final class Svet extends JFrame
 		 * aj prázdny reťazec {@code srg""}, ale údajový typ musí byť
 		 * {@link String String}),</li>
 		 * 
+		 * <li>hodnota údajového typu {@link Double Double}, ktorá
+		 * spôsobí, že na určenej pozícii v dialógu sa bude nachádzať
+		 * textové vstupné pole s predvolenou zadanou číselnou hodnotou;
+		 * funguje podobne ako typ {@link String String}, ale výsledok je
+		 * automaticky prevedený na reálne číslo metódou {@link 
+		 * #reťazecNaReálneČíslo(String) reťazecNaReálneČíslo}; ak pri
+		 * prevode nastane chyba, v objekte bude uložená hodnota
+		 * {@link Double#NaN Double.NaN},</li>
+		 * 
 		 * <li>hodnota údajového typu {@link Boolean Boolean}, ktorá
 		 * spôsobí, že na určenej pozícii v dialógu sa bude nachádzať
 		 * prvok začiarkavacieho políčka s predvolenou zadanou hodnotou,</li>
@@ -12796,7 +12828,7 @@ public final class Svet extends JFrame
 		 * ktorá má špeciálny význam – je rezervovaná na vkladanie riadiacich
 		 * znakov – v súčasnosti je platná len hodnota znaku nového riadka
 		 * ({@code srg'\n' } – odporúčame použiť znakovú konštantu
-		 * {@link #riadok riadok}), ktorá prepne dialóg zo stĺpcového do
+		 * {@link Konštanty#riadok riadok}), ktorá prepne dialóg zo stĺpcového do
 		 * riadkového režimu a všetky komponenty dialógu (<small>zodpovedajúce
 		 * jednotlivým prvkom vstupného poľa – zdrojovým prvkom</small>),
 		 * ktorých zdrojové prvky sú umiestnené medzi prvkami nového riadka
@@ -13604,9 +13636,9 @@ public final class Svet extends JFrame
 		 * <table><tr><td>
 		 * <pre CLASS="example">
 			{@code typeint} i = {@link Svet Svet}.{@code currotázka}({@code srg"Dobre?"});
-			{@code kwdif} ({@link #ÁNO ÁNO} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Odpoveď: áno"});
-			{@code kwdif} ({@link #NIE NIE} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Odpoveď: nie"});
-			{@code kwdif} ({@link #ZAVRETÉ ZAVRETÉ} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Nechceš odpovedať…"});
+			{@code kwdif} ({@link Konštanty#ÁNO ÁNO} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Odpoveď: áno"});
+			{@code kwdif} ({@link Konštanty#NIE NIE} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Odpoveď: nie"});
+			{@code kwdif} ({@link Konštanty#ZAVRETÉ ZAVRETÉ} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Nechceš odpovedať…"});
 			</pre>
 		 * </td><td><table>
 		 * <tr><td rowspan="3"><image>otazka1A.png<alt/></image></td>
@@ -13652,9 +13684,9 @@ public final class Svet extends JFrame
 		 * <table><tr><td>
 		 * <pre CLASS="example">
 			{@code typeint} i = {@link Svet Svet}.{@code currotázka}({@code srg"Dobre?"}, {@code srg"Otázočka na teba…"});
-			{@code kwdif} ({@link #ÁNO ÁNO} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Odpoveď: áno"});
-			{@code kwdif} ({@link #NIE NIE} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Odpoveď: nie"});
-			{@code kwdif} ({@link #ZAVRETÉ ZAVRETÉ} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Nechceš odpovedať…"});
+			{@code kwdif} ({@link Konštanty#ÁNO ÁNO} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Odpoveď: áno"});
+			{@code kwdif} ({@link Konštanty#NIE NIE} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Odpoveď: nie"});
+			{@code kwdif} ({@link Konštanty#ZAVRETÉ ZAVRETÉ} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Nechceš odpovedať…"});
 			</pre>
 		 * </td><td><table>
 		 * <tr><td rowspan="3"><image>otazka1B.png<alt/></image></td>
@@ -13828,7 +13860,7 @@ public final class Svet extends JFrame
 			{@code typeint} i = {@link Svet Svet}.{@code currotázka}({@code srg"Ako?"}, {@code srg"Otázočka na teba…"}, {@code kwdnew} {@link String#String(java.lang.String) String}[]{{@code srg"Zle"}, {@code srg"Dobre"}}, {@code num1});
 			{@code kwdif} (0 == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Zle, vravíš? Škoda…"});
 			{@code kwdif} (1 == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Dobre, vravíš? Výborne!"});
-			{@code kwdif} ({@link #ZAVRETÉ ZAVRETÉ} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Nechceš odpovedať…"});
+			{@code kwdif} ({@link Konštanty#ZAVRETÉ ZAVRETÉ} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Nechceš odpovedať…"});
 			</pre>
 		 * </td><td><table>
 		 * <tr><td><image>otazka1F.png<alt/></image></td></tr>
@@ -14009,7 +14041,7 @@ public final class Svet extends JFrame
 		 * <p><b>Príklad:</b></p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} HlavnáTrieda {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -14198,7 +14230,7 @@ public final class Svet extends JFrame
 		 * <p><b>Príklad:</b></p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} HlavnáTrieda {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -15548,13 +15580,13 @@ public final class Svet extends JFrame
 
 				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#spracujRiadokVstupu(java.lang.String) spracujRiadokVstupu}(String riadokVstupu)
 				{
-					{@link Svet Svet}.{@link Svet#farbaTextu(java.awt.Color) farbaTextu}({@link GRobot#tmavohnedá tmavohnedá});
+					{@link Svet Svet}.{@link Svet#farbaTextu(java.awt.Color) farbaTextu}({@link Farebnosť#tmavohnedá tmavohnedá});
 					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object...) vypíšRiadok}(riadokVstupu);
 				}
 
 				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#koniecVstupu() koniecVstupu}()
 				{
-					{@link Svet Svet}.{@link Svet#farbaTextu(java.awt.Color) farbaTextu}({@link GRobot#oranžová oranžová});
+					{@link Svet Svet}.{@link Svet#farbaTextu(java.awt.Color) farbaTextu}({@link Farebnosť#oranžová oranžová});
 					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object...) vypíšRiadok}({@code srg"koniec"});
 				}
 
@@ -16294,12 +16326,14 @@ public final class Svet extends JFrame
 		 * @see #interaktívnyRežim(boolean)
 		 * @see #režimLadenia(boolean)
 		 * @see #vykonajSkript(String)
-		 * @see #vykonajSkript(List<String>)
+		 * <!-- @see #vykonajSkript(List<String>) TODO: porovnaj nižšie -->
+		 * @see #vykonajSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * @see #vykonajSkript(String, boolean)
 		 * @see #skriptJeSpustený()
 		 * @see #spustiSkript(String[])
 		 * @see #spustiSkript(String)
-		 * @see #spustiSkript(List<String>)
+		 * <!-- @see #spustiSkript(List<String>) TODO: porovnaj nižšie -->
+		 * @see #spustiSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * @see #spustiSkript(String, boolean)
 		 * @see #kódPoslednejChyby()
 		 * @see #riadokPoslednejChyby()
@@ -16685,12 +16719,14 @@ public final class Svet extends JFrame
 		 * @see #interaktívnyRežim(boolean)
 		 * @see #režimLadenia(boolean)
 		 * @see #vykonajSkript(String[])
-		 * @see #vykonajSkript(List<String>)
+		 * <!-- @see #vykonajSkript(List<String>) TODO: porovnaj nižšie -->
+		 * @see #vykonajSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * @see #vykonajSkript(String, boolean)
 		 * @see #skriptJeSpustený()
 		 * @see #spustiSkript(String[])
 		 * @see #spustiSkript(String)
-		 * @see #spustiSkript(List<String>)
+		 * <!-- @see #spustiSkript(List<String>) TODO: porovnaj nižšie -->
+		 * @see #spustiSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * @see #spustiSkript(String, boolean)
 		 * @see #kódPoslednejChyby()
 		 * @see #riadokPoslednejChyby()
@@ -16737,7 +16773,8 @@ public final class Svet extends JFrame
 		 * @see #skriptJeSpustený()
 		 * @see #spustiSkript(String[])
 		 * @see #spustiSkript(String)
-		 * @see #spustiSkript(List<String>)
+		 * <!-- @see #spustiSkript(List<String>) TODO: porovnaj nižšie -->
+		 * @see #spustiSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * @see #spustiSkript(String, boolean)
 		 * @see #kódPoslednejChyby()
 		 * @see #riadokPoslednejChyby()
@@ -16844,11 +16881,13 @@ public final class Svet extends JFrame
 		 * @see #režimLadenia(boolean)
 		 * @see #vykonajSkript(String[])
 		 * @see #vykonajSkript(String)
-		 * @see #vykonajSkript(List<String>)
+		 * <!-- @see #vykonajSkript(List<String>) TODO: porovnaj nižšie -->
+		 * @see #vykonajSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * @see #skriptJeSpustený()
 		 * @see #spustiSkript(String[])
 		 * @see #spustiSkript(String)
-		 * @see #spustiSkript(List<String>)
+		 * <!-- @see #spustiSkript(List<String>) TODO: porovnaj nižšie -->
+		 * @see #spustiSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * @see #spustiSkript(String, boolean)
 		 * @see #kódPoslednejChyby()
 		 * @see #riadokPoslednejChyby()
@@ -17328,7 +17367,8 @@ public final class Svet extends JFrame
 		 * 
 		 * @see #spustiSkript(String[])
 		 * @see #spustiSkript(String)
-		 * @see #spustiSkript(List<String>)
+		 * <!-- @see #spustiSkript(List<String>) TODO: porovnaj nižšie -->
+		 * @see #spustiSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * @see #spustiSkript(String, boolean)
 		 */
 		public static boolean skriptJeSpustený() { return skriptJeSpustený; }
@@ -17407,11 +17447,11 @@ public final class Svet extends JFrame
 									{@code comm// Predčasné ukončenie vykonávania skriptu:}
 									{@code kwdif} (prerušiť)
 									{
-										{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link GRobot#tmavooranžová tmavooranžová});
+										{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#tmavooranžová tmavooranžová});
 										{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Vykonávanie bolo prerušené."});
 										{@code comm// Ďalšie podrobnosti by sme mohli vypísať}
 										{@code comm// napríklad pomocou nasledujúceho úryvku kódu:}
-										{@code comm//    "na riadku", riadok, ":", GRobot.}{@link GRobot#riadok riadok}{@code comm,}
+										{@code comm//    "na riadku", riadok, ":", GRobot.}{@link Konštanty#riadok riadok}{@code comm,}
 										{@code comm//    príkaz}
 									}
 									{@code kwdreturn} prerušiť;
@@ -17456,7 +17496,7 @@ public final class Svet extends JFrame
 							{@code comm// číselnej premennej (toto je tu uvedené na demonštračné}
 							{@code comm// účely, dalo by sa to rozpracovať tak, aby si používateľ}
 							{@code comm// mohol zvoliť typ premennej).}
-							{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link ÚdajeUdalostí#PRAVÉ PRAVÉ}))
+							{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#PRAVÉ PRAVÉ}))
 							{
 								{@link String String} názov = {@link Svet Svet}.{@link Svet#zadajReťazec(String) zadajReťazec}(
 									{@code srg"Názov číselnej premennej:"});
@@ -17542,11 +17582,13 @@ public final class Svet extends JFrame
 		 * @see #režimLadenia(boolean)
 		 * @see #vykonajSkript(String[])
 		 * @see #vykonajSkript(String)
-		 * @see #vykonajSkript(List<String>)
+		 * <!-- @see #vykonajSkript(List<String>) TODO: porovnaj nižšie -->
+		 * @see #vykonajSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * @see #vykonajSkript(String, boolean)
 		 * @see #skriptJeSpustený()
 		 * @see #spustiSkript(String)
-		 * @see #spustiSkript(List<String>)
+		 * <!-- @see #spustiSkript(List<String>) TODO: porovnaj nižšie -->
+		 * @see #spustiSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * @see #spustiSkript(String, boolean)
 		 * @see #kódPoslednejChyby()
 		 * @see #riadokPoslednejChyby()
@@ -17620,11 +17662,13 @@ public final class Svet extends JFrame
 		 * @see #režimLadenia(boolean)
 		 * @see #vykonajSkript(String[])
 		 * @see #vykonajSkript(String)
-		 * @see #vykonajSkript(List<String>)
+		 * <!-- @see #vykonajSkript(List<String>) TODO: porovnaj nižšie -->
+		 * @see #vykonajSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * @see #vykonajSkript(String, boolean)
 		 * @see #skriptJeSpustený()
 		 * @see #spustiSkript(String[])
-		 * @see #spustiSkript(List<String>)
+		 * <!-- @see #spustiSkript(List<String>) TODO: porovnaj nižšie -->
+		 * @see #spustiSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * @see #spustiSkript(String, boolean)
 		 * @see #kódPoslednejChyby()
 		 * @see #riadokPoslednejChyby()
@@ -17651,7 +17695,7 @@ public final class Svet extends JFrame
 		}
 
 		/**
-		 * <p>Funguje podobne ako {@link #vykonajSkript(List<String>)
+		 * <p>Funguje podobne ako {@link #vykonajSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * vykonajSkript(skript)} a principiálne pre neho platia rovnaké
 		 * pravidlá ako pre {@link #spustiSkript(String)
 		 * spustiSkript(skript)}. Pozri opisy oboch metód na získanie
@@ -17666,7 +17710,8 @@ public final class Svet extends JFrame
 		 * @see #režimLadenia(boolean)
 		 * @see #vykonajSkript(String[])
 		 * @see #vykonajSkript(String)
-		 * @see #vykonajSkript(List<String>)
+		 * <!-- @see #vykonajSkript(List<String>) TODO: porovnaj nižšie -->
+		 * @see #vykonajSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * @see #vykonajSkript(String, boolean)
 		 * @see #skriptJeSpustený()
 		 * @see #spustiSkript(String[])
@@ -17734,12 +17779,14 @@ public final class Svet extends JFrame
 		 * @see #režimLadenia(boolean)
 		 * @see #vykonajSkript(String[])
 		 * @see #vykonajSkript(String)
-		 * @see #vykonajSkript(List<String>)
+		 * <!-- @see #vykonajSkript(List<String>) TODO: porovnaj nižšie -->
+		 * @see #vykonajSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * @see #vykonajSkript(String, boolean)
 		 * @see #skriptJeSpustený()
 		 * @see #spustiSkript(String[])
 		 * @see #spustiSkript(String)
-		 * @see #spustiSkript(List<String>)
+		 * <!-- @see #spustiSkript(List<String>) TODO: porovnaj nižšie -->
+		 * @see #spustiSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * @see #kódPoslednejChyby()
 		 * @see #riadokPoslednejChyby()
 		 * @see #textPoslednejChyby()
@@ -18143,7 +18190,8 @@ public final class Svet extends JFrame
 		 * @see Plátno#vykonajPríkaz(String)
 		 * @see #vykonajSkript(String[])
 		 * @see #vykonajSkript(String)
-		 * @see #vykonajSkript(List<String>)
+		 * <!-- @see #vykonajSkript(List<String>) TODO: porovnaj nižšie -->
+		 * @see #vykonajSkript(List) <!-- TODO: overiť, či to tak môže byť -->
 		 * @see #vykonajSkript(String, boolean)
 		 * @see #interaktívnaInštancia()
 		 * @see #zrušInteraktívnuInštanciu()
@@ -19546,8 +19594,8 @@ public final class Svet extends JFrame
 		 * je svet grafických robotov vyplnený farbou pozadia.</p>
 		 * 
 		 * @param nováFarba objekt určujúci novú farbu pozadia;
-		 *     jestvuje paleta predvolených farieb (pozri: {@link #biela
-		 *     biela}, {@link #červená červená}, {@link #čierna čierna}…)
+		 *     jestvuje paleta predvolených farieb (pozri: {@link Farebnosť#biela
+		 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna čierna}…)
 		 * 
 		 * @see #vymaž()
 		 */
@@ -19687,8 +19735,8 @@ public final class Svet extends JFrame
 		 * a {@link Farebnosť#antracitová antracitová}.</p>
 		 * 
 		 * @param nováFarba objekt určujúci novú farbu plochy;
-		 *     jestvuje paleta predvolených farieb (pozri: {@link #biela
-		 *     biela}, {@link #červená červená}, {@link #čierna čierna}…)
+		 *     jestvuje paleta predvolených farieb (pozri: {@link Farebnosť#biela
+		 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna čierna}…)
 		 * 
 		 * @see #vymaž()
 		 */
@@ -19824,7 +19872,7 @@ public final class Svet extends JFrame
 		 * tejto metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdif} ({@link Svet Svet}.{@code currfarbaBodu}({@code num3.0}, {@code num5.0}, {@link GRobot#modrá modrá})) …
+			{@code kwdif} ({@link Svet Svet}.{@code currfarbaBodu}({@code num3.0}, {@code num5.0}, {@link Farebnosť#modrá modrá})) …
 			</pre>
 		 * 
 		 * @param x x-ová súradnica vyšetrovaného bodu
@@ -19853,7 +19901,7 @@ public final class Svet extends JFrame
 		 * farbu pomocou tejto metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdif} ({@link Svet Svet}.{@code currfarbaBodu}({@code valthis}, {@link GRobot#modrá modrá})) …
+			{@code kwdif} ({@link Svet Svet}.{@code currfarbaBodu}({@code valthis}, {@link Farebnosť#modrá modrá})) …
 			</pre>
 		 * 
 		 * @param objekt objekt, na ktorého pozícii chceme overiť farbu bodu
@@ -20100,14 +20148,14 @@ public final class Svet extends JFrame
 				}
 			};
 
-			{@link GRobot#vlastnýTvar(KreslenieTvaru) vlastnýTvar}({@code kwdnew} {@link KreslenieTvaru#KreslenieTvaru() KreslenieTvaru}()
+			{@link GRobot#vlastnýTvar(KreslenieTvaru) vlastnýTvar}({@code kwdnew} {@link KreslenieTvaru KreslenieTvaru}()
 			{
 				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link KreslenieTvaru#kresli(GRobot) kresli}({@link GRobot GRobot} r)
 				{
 					{@link Farba Farba} mojaFarba = r.{@link GRobot#farba() farba}();
-					{@link GRobot#farba(Color) farba}({@link GRobot#čierna čierna});
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#čierna čierna});
 					{@link GRobot#kruh(double) kruh}({@code num30});
-					{@link GRobot#farba(Color) farba}({@link GRobot#biela biela});
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#biela biela});
 					{@link GRobot#kruh(double) kruh}({@code num25});
 					{@link GRobot#farba(Color) farba}(mojaFarba);
 					{@link GRobot#kruh(double) kruh}({@code num20});
@@ -20144,7 +20192,7 @@ public final class Svet extends JFrame
 		 * metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdif} ({@link Svet Svet}.{@code currfarbaNaMyši}({@link GRobot#modrá modrá})) …
+			{@code kwdif} ({@link Svet Svet}.{@code currfarbaNaMyši}({@link Farebnosť#modrá modrá})) …
 			</pre>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Ak by súradnice myši boli náhodou
@@ -20175,7 +20223,7 @@ public final class Svet extends JFrame
 		 * metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdif} ({@link Svet Svet}.{@code currfarbaNaMyši}({@link GRobot#modrá modrá})) …
+			{@code kwdif} ({@link Svet Svet}.{@code currfarbaNaMyši}({@link Farebnosť#modrá modrá})) …
 			</pre>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Ak by súradnice myši boli náhodou
@@ -21751,6 +21799,12 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #časovačAktívny() časovačAktívny}.</p> */
 		public static boolean casovacAktivny() { return časovač.aktívny(); }
 
+		/** <p><a class="alias"></a> Alias pre {@link #časovačAktívny() časovačAktívny}.</p> */
+		public static boolean časovačSpustený() { return časovač.aktívny(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #časovačAktívny() časovačAktívny}.</p> */
+		public static boolean casovacSpusteny() { return časovač.aktívny(); }
+
 		/**
 		 * <p>Vráti časový interval časovača v sekundách.</p>
 		 * 
@@ -21987,7 +22041,7 @@ public final class Svet extends JFrame
 			return (ti * a + 2.0 * t * b) * ti + t * t * c;
 		}
 
-		/** <p><a class="alias"></a> Alias pre {@link #kvadratickáInterpolácia(double, double, double, double, double) kvadratickáInterpolácia}.</p> */
+		/** <p><a class="alias"></a> Alias pre {@link #kvadratickáInterpolácia(double, double, double, double) kvadratickáInterpolácia}.</p> */
 		public final static double kvadratickaInterpolacia(
 			double a, double b, double c, double t)
 		{ return kvadratickáInterpolácia(a, b, c, t); }
@@ -22014,7 +22068,7 @@ public final class Svet extends JFrame
 		 * a posúvaním bodov možné ovplyvňovať kresbu).</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} TestInterpolácie {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -22407,7 +22461,7 @@ public final class Svet extends JFrame
 		 */
 		public final static Bod priesečníkÚsečiek(Poloha[] poleBodov)
 		{
-			if (null == poleBodov || 4 > poleBodov.length/* NOPE  ||
+			if (null == poleBodov || 4 > poleBodov.length/* NOPE ||
 				null == poleBodov[0] || null == poleBodov[1] ||
 				null == poleBodov[2] || null == poleBodov[3]*/) return null;
 			try
@@ -22702,14 +22756,15 @@ public final class Svet extends JFrame
 		 * target="_blank">User:arne.b</a> – and others</small>: <a
 		 * href="https://stackoverflow.com/questions/13053061/circle-line-intersection-points"
 		 * target="_blank"><em>Circle line intersection points.</em>
-		 * Stack Overflow, 2012.</a></li>
+		 * Stack Overflow, 2012. Citované: 2016 – 2018.</a></li>
 		 * 
 		 * <li><small><a
 		 * href="http://mathworld.wolfram.com/about/author.html"
 		 * target="_blank">Weisstein, Eric W.</a></small>: <a
 		 * href="http://mathworld.wolfram.com/Circle-LineIntersection.html"
 		 * target="_blank"><em>Circle-Line Intersection.</em>
-		 * Wolfram MathWorld, A Wolfram Web Resource.</a></li>
+		 * Wolfram MathWorld, A Wolfram Web Resource. Citované: 2016 –
+		 * 2018.</a></li>
 		 * </ul>
 		 * 
 		 * @param x1 x-ová súradnica určujúceho bodu priamky A
@@ -22823,7 +22878,7 @@ public final class Svet extends JFrame
 		 * target="_blank">User:arne.b</a> – and others</small>: <a
 		 * href="https://stackoverflow.com/questions/13053061/circle-line-intersection-points"
 		 * target="_blank"><em>Circle line intersection points.</em>
-		 * Stack Overflow, 2012.</a></li>
+		 * Stack Overflow, 2012. Citované: 2016 – 2018.</a></li>
 		 * </ul -->
 		 * 
 		 * <!-- p>Zdroje, ktoré už nefungujú: https://sites.google.com/site/
@@ -22916,7 +22971,7 @@ public final class Svet extends JFrame
 		 * 
 		 * @param A poloha bodu A úsečky
 		 * @param B poloha bodu B úsečky
-		 * @param S poloha stredu S kružnice
+		 * @param S poloha stredu S kružnice
 		 * @param r polomer kružnice
 		 * @return pole priesečníkov alebo {@code valnull}, ak nejestvujú
 		 */
@@ -22966,7 +23021,7 @@ public final class Svet extends JFrame
 		 * target="_blank">Michael Lloyd Lee</a></small>: <a
 		 * href="https://stackoverflow.com/questions/1459368/snap-point-to-a-line/1459397#1459397"
 		 * target="_blank"><em>Snap point to a line.</em> Stack Overflow,
-		 * 2017.</a></li>
+		 * 2017. Citované: 2017 – 2018.</a></li>
 		 * </ul>
 		 * 
 		 * @param x0 x-ová súradnica voľného bodu V
@@ -23039,7 +23094,7 @@ public final class Svet extends JFrame
 		 */
 		public final static Bod najbližšíBodNaPriamke(Poloha[] poleBodov)
 		{
-			if (null == poleBodov || 3 > poleBodov.length/* NOPE  ||
+			if (null == poleBodov || 3 > poleBodov.length/* NOPE ||
 				null == poleBodov[0] || null == poleBodov[1] ||
 				null == poleBodov[2]*/) return null;
 
@@ -23151,7 +23206,7 @@ public final class Svet extends JFrame
 		 */
 		public final static Bod najbližšíBodNaÚsečke(Poloha[] poleBodov)
 		{
-			if (null == poleBodov || 3 > poleBodov.length/* NOPE  ||
+			if (null == poleBodov || 3 > poleBodov.length/* NOPE ||
 				null == poleBodov[0] || null == poleBodov[1] ||
 				null == poleBodov[2]*/) return null;
 
@@ -23263,7 +23318,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <ul><li><a href="https://docs.oracle.com/javase/8/docs/api/java/awt/geom/Point2D.html#distance-double-double-double-double-"
 		 * target="_blank"><em>Distance of Point2D (Java Platform SE 8).</em>
-		 * Oracle.</a></li></ul>
+		 * Oracle. Citované: 2016 – 2018.</a></li></ul>
 		 * 
 		 * @param x1 x-ová súradnica prvého bodu
 		 * @param y1 y-ová súradnica prvého bodu
@@ -23312,7 +23367,7 @@ public final class Svet extends JFrame
 		 */
 		public final static double vzdialenosťBodov(Poloha[] poleBodov)
 		{
-			if (null == poleBodov || 2 > poleBodov.length/* NOPE  ||
+			if (null == poleBodov || 2 > poleBodov.length/* NOPE ||
 				null == poleBodov[0] || null == poleBodov[1]*/)
 			return Double.NaN;
 
@@ -23331,7 +23386,8 @@ public final class Svet extends JFrame
 		 * k priamke určenej dvomi bodmi A[x1, y1] a B[x2, y2]. (Ak bod
 		 * leží na priamke, tak je vzdialenosť rovná nule.) Táto metóda
 		 * volá metódu jazyka Java {@link Line2D#ptLineDist(double, double,
-		 * double, double) Line2D.ptLineDist(x1, y1, x2, y2, x0, y0)}.</p>
+		 * double, double, double, double) Line2D.ptLineDist(x1, y1, x2, y2,
+		 * x0, y0)}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> V skutočnosti by sme nemali
 		 * hovoriť, že ide o „metódu jazyka Java.“ Je to statická metóda
@@ -23361,7 +23417,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <ul><li><a href="https://docs.oracle.com/javase/8/docs/api/java/awt/geom/Line2D.html#ptLineDist-double-double-double-double-double-double-"
 		 * target="_blank"><em>Point to line distance of Line2D (Java
-		 * Platform SE 8).</em> Oracle.</a></li></ul>
+		 * Platform SE 8).</em> Oracle. Citované: 2016 – 2018.</a></li></ul>
 		 * 
 		 * @param x0 x-ová súradnica voľného bodu
 		 * @param y0 y-ová súradnica voľného bodu
@@ -23393,14 +23449,14 @@ public final class Svet extends JFrame
 		 */
 		public final static double vzdialenosťBoduOdPriamky(
 			Poloha V, Poloha A, Poloha B)
-		{ return Line2D.ptLineDist(V.polohaX(), V.polohaY(),
-			A.polohaX(), A.polohaY(), B.polohaX(), B.polohaY()); }
+		{ return Line2D.ptLineDist(A.polohaX(), A.polohaY(),
+			B.polohaX(), B.polohaY(), V.polohaX(), V.polohaY()); }
 
 		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťBoduOdPriamky(Poloha, Poloha, Poloha) vzdialenosťBoduOdPriamky}.</p> */
 		public final static double vzdialenostBoduOdPriamky(
 			Poloha V, Poloha A, Poloha B)
-		{ return Line2D.ptLineDist(V.polohaX(), V.polohaY(),
-			A.polohaX(), A.polohaY(), B.polohaX(), B.polohaY()); }
+		{ return Line2D.ptLineDist(A.polohaX(), A.polohaY(),
+			B.polohaX(), B.polohaY(), V.polohaX(), V.polohaY()); }
 
 		/**
 		 * <p>Vypočíta vzdialenosť medzi voľným bodom a priamkou, ktoré
@@ -23417,7 +23473,7 @@ public final class Svet extends JFrame
 		 */
 		public final static double vzdialenosťBoduOdPriamky(Poloha[] poleBodov)
 		{
-			if (null == poleBodov || 3 > poleBodov.length/* NOPE  ||
+			if (null == poleBodov || 3 > poleBodov.length/* NOPE ||
 				null == poleBodov[0] || null == poleBodov[1] ||
 				null == poleBodov[2]*/) return Double.NaN;
 
@@ -23438,16 +23494,18 @@ public final class Svet extends JFrame
 		 * k úsečke určenej dvomi bodmi A[x1, y1] a B[x2, y2]. (Ak bod
 		 * leží na úsečke, tak je vzdialenosť rovná nule.) Táto metóda
 		 * volá metódu jazyka Java {@link Line2D#ptSegDist(double, double,
-		 * double, double) Line2D.ptSegDist(x1, y1, x2, y2, x0, y0)}.</p>
+		 * double, double, double, double) Line2D.ptSegDist(x1, y1, x2, y2,
+		 * x0, y0)}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> V skutočnosti by sme nemali
 		 * hovoriť, že ide o „metódu jazyka Java.“ Je to statická metóda
 		 * triedy {@link Line2D Line2D} štandardného balíčka <a
 		 * href="https://docs.oracle.com/javase/8/docs/api/java/awt/geom/package-summary.html"
-		 * target="_blank"><code>java.awt.geom</code> jazyka Java (a aj na
-		 * tomto opise by sa dalo ešte niečo spresňovať), ale z dôvodu
+		 * target="_blank"><code>java.awt.geom</code></a> jazyka Java (a aj
+		 * na tomto opise by sa dalo ešte niečo spresňovať), ale z dôvodu
 		 * pedagogickej transformácie ponechávame v opise zjednodušené
-		 * označenie.</a></p>
+		 * označenie. Podobne postupujeme na viacerých miestach tejto
+		 * dokumentácie.</p>
 		 * 
 		 * <p class="image"><img src="resources/vzdialenost-bodu-od-usecky.svg"
 		 * alt="Určovanie vzdialenosti bodu od úsečky."
@@ -23468,7 +23526,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <ul><li><a href="https://docs.oracle.com/javase/8/docs/api/java/awt/geom/Line2D.html#ptSegDist-double-double-double-double-double-double-"
 		 * target="_blank"><em>Point to line segment distance of Line2D (Java
-		 * Platform SE 8).</em> Oracle.</a></li></ul>
+		 * Platform SE 8).</em> Oracle. Citované: 2016 – 2018.</a></li></ul>
 		 * 
 		 * @param x0 x-ová súradnica voľného bodu
 		 * @param y0 y-ová súradnica voľného bodu
@@ -23477,9 +23535,6 @@ public final class Svet extends JFrame
 		 * @param x2 x-ová súradnica určujúceho bodu B úsečky
 		 * @param y2 y-ová súradnica určujúceho bodu B úsečky
 		 * @return vzdialenosť bodu od úsečky
-		 * 
-		 * <p>Zdroj: https://docs.oracle.com/javase/8/docs/api/java/awt/geom/Line2D.html#-double-double-double-double-double-double-</p>
-		 * <!-- TODO – lepšie spracovať zdroj. -->
 		 */
 		public final static double vzdialenosťBoduOdÚsečky(
 			double x0, double y0, double x1, double y1, double x2, double y2)
@@ -23503,22 +23558,22 @@ public final class Svet extends JFrame
 		 */
 		public final static double vzdialenosťBoduOdÚsečky(
 			Poloha V, Poloha A, Poloha B)
-		{ return Line2D.ptSegDist(V.polohaX(), V.polohaY(),
-			A.polohaX(), A.polohaY(), B.polohaX(), B.polohaY()); }
+		{ return Line2D.ptSegDist(A.polohaX(), A.polohaY(),
+			B.polohaX(), B.polohaY(), V.polohaX(), V.polohaY()); }
 
 		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťBoduOdÚsečky(Poloha, Poloha, Poloha) vzdialenosťBoduOdÚsečky}.</p> */
 		public final static double vzdialenostBoduOdUsecky(
 			Poloha V, Poloha A, Poloha B)
-		{ return Line2D.ptSegDist(V.polohaX(), V.polohaY(),
-			A.polohaX(), A.polohaY(), B.polohaX(), B.polohaY()); }
+		{ return Line2D.ptSegDist(A.polohaX(), A.polohaY(),
+			B.polohaX(), B.polohaY(), V.polohaX(), V.polohaY()); }
 
 		/**
-		 * <p>Vypočíta vzdialenosť medzi voľným bodom a úsečkou, ktoré
-		 * sú určené určenými polohami bodov v poli parametra. Pole musí
-		 * obsahovať aspoň tri prvky. Prvý prvok obsahuje súradnice voľného
-		 * bodu a ďalšie dva prvky určujúce body úsečky. Pozri aj opis
-		 * metódy {@link #vzdialenosťBoduOdÚsečky(double, double, double,
-		 * double, double, double) vzdialenosťBoduOdÚsečky}, ktorej
+		 * <p>Vypočíta vzdialenosť medzi voľným bodom V a úsečkou |AB|, ktoré
+		 * sú určené polohami bodov v poli parametra {@code poleBodov}. Pole
+		 * musí obsahovať aspoň tri prvky. Prvý prvok obsahuje súradnice
+		 * voľného bodu V a ďalšie dva prvky určujúce body úsečky |AB|. Pozri
+		 * aj opis metódy {@link #vzdialenosťBoduOdÚsečky(double, double,
+		 * double, double, double, double) vzdialenosťBoduOdÚsečky}, ktorej
 		 * správanie táto metóda kopíruje.</p>
 		 * 
 		 * @param poleBodov polohy voľného bodu a určujúcich bodov úsečky
@@ -23527,7 +23582,7 @@ public final class Svet extends JFrame
 		 */
 		public final static double vzdialenosťBoduOdÚsečky(Poloha[] poleBodov)
 		{
-			if (null == poleBodov || 3 > poleBodov.length/* NOPE  ||
+			if (null == poleBodov || 3 > poleBodov.length/* NOPE ||
 				null == poleBodov[0] || null == poleBodov[1] ||
 				null == poleBodov[2]*/) return Double.NaN;
 
@@ -23537,28 +23592,42 @@ public final class Svet extends JFrame
 				poleBodov[0].polohaX(), poleBodov[0].polohaY());
 		}
 
-		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťBoduOdÚsečky(double, double, double, double, double, double) vzdialenosťBoduOdÚsečky}.</p> */
+		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťBoduOdÚsečky(Poloha[]) vzdialenosťBoduOdÚsečky}.</p> */
 		public final static double vzdialenostBoduOdUsecky(
 			Poloha[] poleBodov)
 		{ return vzdialenosťBoduOdÚsečky(poleBodov); }
 
 
 		/**
-		 * <p>Vypočíta vzdialenosť od zadaného voľného bodu V ku
-		 * kružnici určenej stredom S a polomerom r.</p>
+		 * <p>Vypočíta vzdialenosť od zadaného voľného bodu V ku kružnici
+		 * určenej stredom S a polomerom r. Tento výpočet je v skutočnosti
+		 * technicky veľmi jednoduchý. Stačí vypočítať vzdialenosť bodu
+		 * od stredu kružnice a odpočítať polomer kružnice. Na výpočet
+		 * vzdialenosti je použitá metóda {@link Math#hypot(double, double)
+		 * Math.hypot(x, y)}.</p>
 		 * 
-		 * <!-- TODO dokončiť opis, definovať viaceré verzie podľa vzoru
-		 * viacerých verzií metód priesečníkÚsečiek a priesečníkPriamok. -->
+		 * <p>Zopár úvah na kontrolu správnosti: Ak bod leží na kružnici,
+		 * jeho vzdialenosť od stredu kružnice sa rovná polomeru kružnice,
+		 * čiže vzdialenosť od kružnice je nulová. Ak bod leží vovnútri
+		 * kružnice, tak bez použitia absolútnej hodnoty vyjde vzdialenosť
+		 * záporná, čo je technicky nezmysel, ale na rýchle odlíšenie tejto
+		 * situácie (a tiež na zjednodušenie pouźitia pri niektorých
+		 * algoritmoch) je tejto metóde ponechaná schopnosť vracania zápornej
+		 * vzdialenosti. Podobný prístup volia viaceré metódy programovacieho
+		 * rámca.</p>
+		 * 
+		 * <!-- TODO pridať príklad použitia a/alebo obrázok. -->
 		 * 
 		 * <p>Parametre metódy určujú: V[x0, y0] – voľný bod; S[x1, y1] –
 		 * stred kružnice; r – polomer kružnice.</p>
 		 * 
 		 * @param x0 x-ová súradnica voľného bodu
 		 * @param y0 y-ová súradnica voľného bodu
-		 * @param x1 x-ová súradnica stredu S kružnice
-		 * @param y1 y-ová súradnica stredu S kružnice
+		 * @param x1 x-ová súradnica stredu S kružnice
+		 * @param y1 y-ová súradnica stredu S kružnice
 		 * @param r polomer kružnice
-		 * @return vzdialenosť bodu od kružnice
+		 * @return vzdialenosť bodu od kružnice; záporná hodnota signalizuje,
+		 *     že bod sa nachádza vovnútri kružnice
 		 */
 		public final static double vzdialenosťBoduOdKružnice(
 			double x0, double y0, double x1, double y1, double r)
@@ -23569,6 +23638,64 @@ public final class Svet extends JFrame
 			double x0, double y0, double x1, double y1, double r)
 		{ return Math.hypot(x1 - x0, y1 - y0) - r; }
 
+		/**
+		 * <p>Vypočíta vzdialenosť od zadaného voľného bodu V ku kružnici
+		 * určenej stredom S a polomerom r. Pozri aj opis metódy {@link 
+		 * #vzdialenosťBoduOdKružnice(double, double, double, double, double)
+		 * vzdialenosťBoduOdKružnice}, ktorej správanie táto metóda
+		 * kopíruje.</p>
+		 * 
+		 * @param V poloha voľného bodu
+		 * @param S poloha stredu kružnice
+		 * @param r polomer kružnice
+		 * @return vzdialenosť bodu od úsečky; záporná hodnota signalizuje,
+		 *     že bod sa nachádza vovnútri kružnice
+		 */
+		public final static double vzdialenosťBoduOdKružnice(
+			Poloha V, Poloha S, double r)
+		{ return Math.hypot(S.polohaX() - V.polohaX(),
+			S.polohaY() - V.polohaY()) - r; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťBoduOdKružnice(Poloha, Poloha, double) vzdialenosťBoduOdKružnice}.</p> */
+		public final static double vzdialenostBoduOdKruznice(
+			Poloha V, Poloha S, double r)
+		{ return Math.hypot(S.polohaX() - V.polohaX(),
+			S.polohaY() - V.polohaY()) - r; }
+
+		/**
+		 * <p>Vypočíta vzdialenosť medzi voľným bodom V a kružnicou, ktorá
+		 * je určená stredom S a polomerom r, pričom body V a S sú prvkami
+		 * poľa {@code poleBodov} a r je uložený v parametri {@code polomer}).
+		 * Z uvedeného vyplýva, že pole musí obsahovať aspoň dva prvky. Prvý
+		 * uchováva súradnice voľného bodu V a druhý stredu kružnice S.
+		 * (Posledný parameter {@code polomer} určuje polomer kružnice.) Pozri
+		 * aj opis metódy {@link #vzdialenosťBoduOdKružnice(double,
+		 * double, double, double, double) vzdialenosťBoduOdKružnice},
+		 * ktorej správanie táto metóda kopíruje.</p>
+		 * 
+		 * @param poleBodov polohy voľného bodu a stredu kružnice
+		 * @param polomer polomer kružnice
+		 * @return vzdialenosť bodu od kružnice (prípadne hodnota
+		 *     {@link Double#NaN Double.NaN} – v prípade chyby); záporná
+		 *     hodnota signalizuje, že bod sa nachádza vovnútri kružnice
+		 */
+		public final static double vzdialenosťBoduOdKružnice(
+			Poloha[] poleBodov, double polomer)
+		{
+			if (null == poleBodov || 2 > poleBodov.length/* NOPE ||
+				null == poleBodov[0] || null == poleBodov[1]*/)
+				return Double.NaN;
+
+			return Math.hypot(
+				poleBodov[1].polohaX() - poleBodov[0].polohaX(),
+				poleBodov[1].polohaY() - poleBodov[0].polohaY()) - polomer;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťBoduOdKružnice(Poloha[], double) vzdialenosťBoduOdKružnice}.</p> */
+		public final static double vzdialenostBoduOdKruznice(
+			Poloha[] poleBodov, double polomer)
+		{ return vzdialenosťBoduOdKružnice(poleBodov, polomer); }
+
 
 		/**
 		 * <p>Vypočíta vzdialenosť medzi dvomi kružnicami, ktoré sú určené
@@ -23576,8 +23703,7 @@ public final class Svet extends JFrame
 		 * prienik, tak je vzdialenosť záporná. (Ak sa dotýkajú v jedinom
 		 * bode, tak je nulová.)</p>
 		 * 
-		 * <!-- TODO dokončiť opis, definovať viaceré verzie podľa vzoru
-		 * viacerých verzií metód priesečníkÚsečiek a priesečníkPriamok. -->
+		 * <!-- TODO pridať príklad použitia a/alebo obrázok. -->
 		 * 
 		 * <p>Parametre metódy určujú: S1[x1, y1] – stred prvej kružnice;
 		 * r1 – polomer prvej kružnice; S2[x2, y2] – stred druhej kružnice;
@@ -23589,7 +23715,8 @@ public final class Svet extends JFrame
 		 * @param x2 x-ová súradnica stredu S2 (druhej) kružnice
 		 * @param y2 y-ová súradnica stredu S2 (druhej) kružnice
 		 * @param r2 polomer druhej kružnice
-		 * @return vzdialenosť kružníc
+		 * @return vzdialenosť kružníc; záporná hodnota signalizuje,
+		 *     že kružnice majú spoločný viac, než jeden bod (prekrývajú sa)
 		 */
 		public final static double vzdialenosťKružníc(
 			double x1, double y1, double r1, double x2, double y2, double r2)
@@ -23599,6 +23726,66 @@ public final class Svet extends JFrame
 		public final static double vzdialenostKruznic(
 			double x1, double y1, double r1, double x2, double y2, double r2)
 		{ return Math.hypot(x1 - x2, y1 - y2) - r1 - r2; }
+
+		/**
+		 * <p>Vypočíta vzdialenosť medzi dvomi kružnicami, ktoré sú určené
+		 * svojími stredmi (S1, S2) a polomermi (r1, r2). Pozri aj opis metódy
+		 * {@link #vzdialenosťKružníc(double, double, double, double, double,
+		 * double) vzdialenosťKružníc}, ktorej správanie táto metóda
+		 * kopíruje.</p>
+		 * 
+		 * @param S1 poloha stredu prvej kružnice
+		 * @param r1 polomer prvej kružnice
+		 * @param S2 poloha stredu druhej kružnice
+		 * @param r2 polomer druhej kružnice
+		 * @return vzdialenosť kružníc; záporná hodnota signalizuje, že
+		 *     kružnice majú spoločný viac, než jeden bod (prekrývajú sa)
+		 */
+		public final static double vzdialenosťKružníc(
+			Poloha S1, double r1, Poloha S2, double r2)
+		{ return Math.hypot(S2.polohaX() - S1.polohaX(),
+			S2.polohaY() - S1.polohaY()) - r1 - r2; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťKružníc(Poloha, double, Poloha, double) vzdialenosťKružníc}.</p> */
+		public final static double vzdialenostKruznic(
+			Poloha S1, double r1, Poloha S2, double r2)
+		{ return Math.hypot(S2.polohaX() - S1.polohaX(),
+			S2.polohaY() - S1.polohaY()) - r1 - r2; }
+
+		/**
+		 * <p>Vypočíta vzdialenosť medzi dvomi kružnicami určenými stredmi
+		 * S1 a S2 a polomermi r1 a r2, pričom stredy S1 a S2 sú prvkami
+		 * poľa {@code poleBodov}. To znamená, že pole musí obsahovať aspoň
+		 * dva prvky. Prvý obsahuje súradnice stredu prvej kružnice S1 a druhý
+		 * druhej kružnice S2. Parametre r1 a r2 určujú polomery kružníc.
+		 * Pozri aj opis metódy {@link #vzdialenosťKružníc(double,
+		 * double, double, double, double, double) vzdialenosťKružníc},
+		 * ktorej správanie táto metóda kopíruje.</p>
+		 * 
+		 * @param poleBodov polohy stredov kružníc
+		 * @param polomer1 polomer prvej kružnice
+		 * @param polomer2 polomer druhej kružnice
+		 * @return vzdialenosť kružníc (prípadne hodnota {@link Double#NaN
+		 *     Double.NaN} – v prípade chyby); záporná hodnota signalizuje,
+		 *     že kružnice majú spoločný viac, než jeden bod (prekrývajú sa)
+		 */
+		public final static double vzdialenosťKružníc(
+			Poloha[] poleBodov, double polomer1, double polomer2)
+		{
+			if (null == poleBodov || 2 > poleBodov.length/* NOPE ||
+				null == poleBodov[0] || null == poleBodov[1]*/)
+				return Double.NaN;
+
+			return Math.hypot(
+				poleBodov[1].polohaX() - poleBodov[0].polohaX(),
+				poleBodov[1].polohaY() - poleBodov[0].polohaY()) -
+				polomer1 - polomer2;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťKružníc(Poloha[], double, double) vzdialenosťKružníc}.</p> */
+		public final static double vzdialenostKruznic(
+			Poloha[] poleBodov, double polomer1, double polomer2)
+		{ return vzdialenosťKružníc(poleBodov, polomer1, polomer2); }
 
 
 		// TODO – správne zaradiť:
@@ -23612,8 +23799,7 @@ public final class Svet extends JFrame
 		 * metóda nájde najbližšie body úsečiek a vypočíta vzdialenosť medzi
 		 * nimi.</p>
 		 * 
-		 * <!-- TODO dokončiť opis, definovať viaceré verzie podľa vzoru
-		 * viacerých verzií metód priesečníkÚsečiek a priesečníkPriamok. -->
+		 * <!-- TODO pridať príklad použitia a/alebo obrázok. -->
 		 * 
 		 * <p>Parametre metódy vyjadrujú: A[x1, y1] – B[x2, y2] – krajné body
 		 * prvej úsečky; C[x3, y3] – D[x4, y4] – krajné body druhej úsečky.</p>
@@ -23657,6 +23843,65 @@ public final class Svet extends JFrame
 			double x3, double y3, double x4, double y4)
 		{ return vzdialenosťÚsečiek(x1, y1, x2, y2, x3, y3, x4, y4); }
 
+		/**
+		 * <p>Vypočíta vzdialenosť medzi dvomi úsečkami |AB| a |CD|. Ak sa
+		 * úsečky pretínajú, tak je vzdialenosť nulová. V opačnom prípade
+		 * metóda nájde najbližšie body úsečiek a vypočíta vzdialenosť medzi
+		 * nimi. Pozri aj opis metódy {@link #vzdialenosťÚsečiek(double,
+		 * double, double, double, double, double, double, double)
+		 * vzdialenosťÚsečiek}, ktorej správanie táto metóda kopíruje.</p>
+		 * 
+		 * @param A poloha určujúceho bodu A prvej úsečky
+		 * @param B poloha určujúceho bodu B prvej úsečky
+		 * @param C poloha určujúceho bodu C druhej úsečky
+		 * @param D poloha určujúceho bodu D druhej úsečky
+		 * @return vzájomná vzdialenosť dvoch úsečiek
+		 */
+		public final static double vzdialenosťÚsečiek(
+			Poloha A, Poloha B, Poloha C, Poloha D)
+		{ return vzdialenosťÚsečiek(A.polohaX(), A.polohaY(), B.polohaX(),
+			B.polohaY(), C.polohaX(), C.polohaY(), D.polohaX(), D.polohaY()); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťÚsečiek(Poloha, Poloha, Poloha, Poloha) vzdialenosťÚsečiek}.</p> */
+		public final static double vzdialenostUseciek(
+			Poloha A, Poloha B, Poloha C, Poloha D)
+		{ return vzdialenosťÚsečiek(A.polohaX(), A.polohaY(), B.polohaX(),
+			B.polohaY(), C.polohaX(), C.polohaY(), D.polohaX(), D.polohaY()); }
+
+		/**
+		 * <p>Vypočíta vzdialenosť medzi dvomi úsečkami |AB| a |CD|, pričom
+		 * ich určujúce body sú prvkami poľa {@code poleBodov}. To znamená,
+		 * že pole musí obsahovať aspoň štyri prvky. Prvé dva prvky sú
+		 * určujúce body prvej úsečky (A, B) a ďalšie dva druhej (C, D).
+		 * Ak sa úsečky pretínajú, tak je vzdialenosť nulová. V opačnom
+		 * prípade metóda nájde najbližšie body úsečiek a vypočíta
+		 * vzdialenosť medzi nimi. Pozri aj opis metódy {@link 
+		 * #vzdialenosťÚsečiek(double, double, double, double, double,
+		 * double, double, double) vzdialenosťÚsečiek}, ktorej správanie
+		 * táto metóda kopíruje.</p>
+		 * 
+		 * @param poleBodov polohy určujúcich bodov úsečiek
+		 * @return vzájomná vzdialenosť dvoch úsečiek (prípadne hodnota
+		 *     {@link Double#NaN Double.NaN} – v prípade chyby)
+		 */
+		public final static double vzdialenosťÚsečiek(Poloha[] poleBodov)
+		{
+			if (null == poleBodov || 4 > poleBodov.length/* NOPE ||
+				null == poleBodov[0] || null == poleBodov[1] ||
+				null == poleBodov[2] || null == poleBodov[3]*/)
+				return Double.NaN;
+
+			return vzdialenosťÚsečiek(poleBodov[0].polohaX(),
+				poleBodov[0].polohaY(), poleBodov[1].polohaX(),
+				poleBodov[1].polohaY(), poleBodov[2].polohaX(),
+				poleBodov[2].polohaY(), poleBodov[3].polohaX(),
+				poleBodov[3].polohaY());
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťÚsečiek(Poloha[]) vzdialenosťÚsečiek}.</p> */
+		public final static double vzdialenostUseciek(Poloha[] poleBodov)
+		{ return vzdialenosťÚsečiek(poleBodov); }
+
 		// Koreňové metódy slúžiace na výpočet vzdialenosti priamky od
 		// kružnice a úsečky od kružnice som najskôr analyticky vyriešil
 		// a potom som zistil, že Java má na tieto riešenia už definované
@@ -23688,11 +23933,18 @@ public final class Svet extends JFrame
 		 * {@linkplain Line2D#ptLineDist(double, double, double, double,
 		 * double, double) metóda}, ktorá tento algoritmus implementuje.)</p>
 		 * 
-		 * <!-- TODO dokončiť opis, definovať viaceré verzie podľa vzoru
-		 * viacerých verzií metód priesečníkÚsečiek a priesečníkPriamok. -->
+		 * <!-- TODO pridať príklad použitia a/alebo obrázok. -->
 		 * 
 		 * <p>[x1, y1] – [x2, y2] – určujúce body priamky; [x3, y3] – stred;
 		 * r – polomer</p>
+		 * 
+		 * @param x1 x-ová súradnica určujúceho bodu A priamky
+		 * @param y1 y-ová súradnica určujúceho bodu A priamky
+		 * @param x2 x-ová súradnica určujúceho bodu B priamky
+		 * @param y2 y-ová súradnica určujúceho bodu B priamky
+		 * @param x3 x-ová súradnica stredu kružnice
+		 * @param y3 y-ová súradnica stredu kružnice
+		 * @param r polomer kružnice
 		 */
 		public final static double vzdialenosťPriamkyOdKružnice(
 			double x1, double y1, double x2, double y2,
@@ -23705,6 +23957,62 @@ public final class Svet extends JFrame
 			double x3, double y3, double r)
 		{ return Line2D.ptLineDist(x1, y1, x2, y2, x3, y3) - r; }
 
+		/**
+		 * <p>Vypočíta vzdialenosť medzi určenou priamkou |AB| a kružnicou
+		 * so stredom S a polomerom r. Pozri aj opis metódy {@link 
+		 * #vzdialenosťPriamkyOdKružnice(double, double, double, double,
+		 * double, double, double) vzdialenosťPriamkyOdKružnice}, ktorej
+		 * správanie táto metóda kopíruje.</p>
+		 * 
+		 * @param A poloha určujúceho bodu A priamky
+		 * @param B poloha určujúceho bodu B priamky
+		 * @param S poloha stredu kružnice
+		 * @param r polomer kružnice
+		 */
+		public final static double vzdialenosťPriamkyOdKružnice(
+			Poloha A, Poloha B, Poloha S, double r)
+		{ return Line2D.ptLineDist(A.polohaX(), A.polohaY(), B.polohaX(),
+			B.polohaY(), S.polohaX(), S.polohaY()) - r; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťPriamkyOdKružnice(Poloha, Poloha, Poloha, double) vzdialenosťPriamkyOdKružnice}.</p> */
+		public final static double vzdialenostPriamkyOdKruznice(
+			Poloha A, Poloha B, Poloha S, double r)
+		{ return Line2D.ptLineDist(A.polohaX(), A.polohaY(), B.polohaX(),
+			B.polohaY(), S.polohaX(), S.polohaY()) - r; }
+
+		/**
+		 * <p>Vypočíta vzdialenosť medzi určenou priamkou |AB| a kružnicou
+		 * so stredom S a polomerom r, pričom body A, B a stred S sú určené
+		 * prvkami poľa {@code poleBodov}. To znamená, že pole musí obsahovať
+		 * aspoň tri prvky. Prvé dva prvky sú určujúce body priamky (A a B)
+		 * a tretí prvok je stred kružnice (S). Pozri aj opis metódy {@link 
+		 * #vzdialenosťPriamkyOdKružnice(double, double, double, double,
+		 * double, double, double) vzdialenosťPriamkyOdKružnice}, ktorej
+		 * správanie táto metóda kopíruje.</p>
+		 * 
+		 * @param poleBodov polohy určujúcich bodov priamky a poloha stredu
+		 *     kružnice
+		 * @param r polomer kružnice
+		 */
+		public final static double vzdialenosťPriamkyOdKružnice(
+			Poloha[] poleBodov, double r)
+		{
+			if (null == poleBodov || 3 > poleBodov.length/* NOPE ||
+				null == poleBodov[0] || null == poleBodov[1] ||
+				null == poleBodov[2]*/)
+				return Double.NaN;
+
+			return Line2D.ptLineDist(poleBodov[0].polohaX(),
+				poleBodov[0].polohaY(), poleBodov[1].polohaX(),
+				poleBodov[1].polohaY(), poleBodov[2].polohaX(),
+				poleBodov[2].polohaY()) - r;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťPriamkyOdKružnice(Poloha[], double) vzdialenosťPriamkyOdKružnice}.</p> */
+		public final static double vzdialenostPriamkyOdKruznice(
+			Poloha[] poleBodov, double r)
+		{ return vzdialenosťPriamkyOdKružnice(poleBodov, r); }
+
 
 		/**
 		 * <p>Vypočíta vzdialenosť medzi určenou úsečkou a kružnicou. Ak sa
@@ -23713,11 +24021,17 @@ public final class Svet extends JFrame
 		 * na úsečke od stredu kružnice. (Ak sa kružnica a úsečka dotýkajú
 		 * v jedinom bode, tak je vzdialenosť nulová.)</p>
 		 * 
-		 * <!-- TODO dokončiť opis, definovať viaceré verzie podľa vzoru
-		 * viacerých verzií metód priesečníkÚsečiek a priesečníkPriamok. -->
+		 * <!-- TODO pridať príklad použitia a/alebo obrázok. -->
 		 * 
 		 * <p>[x1, y1] – [x2, y2] – krajné body úsečky; [x3, y3] – stred;
 		 * r – polomer</p>
+		 * @param x1 x-ová súradnica určujúceho bodu A úsečky
+		 * @param y1 y-ová súradnica určujúceho bodu A úsečky
+		 * @param x2 x-ová súradnica určujúceho bodu B úsečky
+		 * @param y2 y-ová súradnica určujúceho bodu B úsečky
+		 * @param x3 x-ová súradnica stredu kružnice
+		 * @param y3 y-ová súradnica stredu kružnice
+		 * @param r polomer kružnice
 		 */
 		public final static double vzdialenosťÚsečkyOdKružnice(
 			double x1, double y1, double x2, double y2,
@@ -23729,6 +24043,62 @@ public final class Svet extends JFrame
 			double x1, double y1, double x2, double y2,
 			double x3, double y3, double r)
 		{ return Line2D.ptSegDist(x1, y1, x2, y2, x3, y3) - r; }
+
+		/**
+		 * <p>Vypočíta vzdialenosť medzi určenou úsečkou |AB| a kružnicou
+		 * so stredom S a polomerom r. Pozri aj opis metódy {@link 
+		 * #vzdialenosťÚsečkyOdKružnice(double, double, double, double,
+		 * double, double, double) vzdialenosťÚsečkyOdKružnice}, ktorej
+		 * správanie táto metóda kopíruje.</p>
+		 * 
+		 * @param A poloha určujúceho bodu A úsečky
+		 * @param B poloha určujúceho bodu B úsečky
+		 * @param S poloha stredu kružnice
+		 * @param r polomer kružnice
+		 */
+		public final static double vzdialenosťÚsečkyOdKružnice(
+			Poloha A, Poloha B, Poloha S, double r)
+		{ return Line2D.ptSegDist(A.polohaX(), A.polohaY(), B.polohaX(),
+			B.polohaY(), S.polohaX(), S.polohaY()) - r; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťÚsečkyOdKružnice(Poloha, Poloha, Poloha, double) vzdialenosťÚsečkyOdKružnice}.</p> */
+		public final static double vzdialenostUseckyOdKruznice(
+			Poloha A, Poloha B, Poloha S, double r)
+		{ return Line2D.ptSegDist(A.polohaX(), A.polohaY(), B.polohaX(),
+			B.polohaY(), S.polohaX(), S.polohaY()) - r; }
+
+		/**
+		 * <p>Vypočíta vzdialenosť medzi určenou úsečkou |AB| a kružnicou
+		 * so stredom S a polomerom r, pričom body A, B a stred S sú určené
+		 * prvkami poľa {@code poleBodov}. To znamená, že pole musí obsahovať
+		 * aspoň tri prvky. Prvé dva prvky sú určujúce body úsečky (A a B)
+		 * a tretí prvok je stred kružnice (S). Pozri aj opis metódy {@link 
+		 * #vzdialenosťÚsečkyOdKružnice(double, double, double, double,
+		 * double, double, double) vzdialenosťÚsečkyOdKružnice}, ktorej
+		 * správanie táto metóda kopíruje.</p>
+		 * 
+		 * @param poleBodov polohy určujúcich bodov úsečky a poloha stredu
+		 *     kružnice
+		 * @param r polomer kružnice
+		 */
+		public final static double vzdialenosťÚsečkyOdKružnice(
+			Poloha[] poleBodov, double r)
+		{
+			if (null == poleBodov || 3 > poleBodov.length/* NOPE ||
+				null == poleBodov[0] || null == poleBodov[1] ||
+				null == poleBodov[2]*/)
+				return Double.NaN;
+
+			return Line2D.ptSegDist(poleBodov[0].polohaX(),
+				poleBodov[0].polohaY(), poleBodov[1].polohaX(),
+				poleBodov[1].polohaY(), poleBodov[2].polohaX(),
+				poleBodov[2].polohaY()) - r;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťÚsečkyOdKružnice(Poloha[], double) vzdialenosťÚsečkyOdKružnice}.</p> */
+		public final static double vzdialenostUseckyOdKruznice(
+			Poloha[] poleBodov, double r)
+		{ return vzdialenosťÚsečkyOdKružnice(poleBodov, r); }
 
 
 	// --- Celá obrazovka
@@ -24007,7 +24377,7 @@ public final class Svet extends JFrame
 		 * <p><b>Príklad:</b></p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} TestCelejObrazovky {@code kwdextends} {@link GRobot GRobot}
 			{

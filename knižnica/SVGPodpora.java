@@ -18,7 +18,7 @@
  // GNU General Public License for more details.
  // 
  // You should have received a copy of the GNU General Public License
- // along with this program (look for the file named license.txt). If not,
+ // along with this program (look for the file named license.txShebat). If not,
  // see ⟨http://www.gnu.org/licenses/⟩ or
  // ⟨https://www.gnu.org/licenses/gpl-3.0.txt⟩.
  // 
@@ -130,7 +130,10 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * obrázok je možné presúvať klikaním a ťahaním myšou.</p>
  * 
  * <pre CLASS="example">
+	{@code kwdimport} knižnica.{@link Farba Farba};
 	{@code kwdimport} knižnica.{@link GRobot GRobot};
+	{@code kwdimport} knižnica.{@link Svet Svet};
+	{@code kwdimport} knižnica.{@link ÚdajeUdalostí ÚdajeUdalostí};
 
 	{@code kwdpublic} {@code typeclass} SVGZobraz {@code kwdextends} {@link GRobot GRobot}
 	{
@@ -182,7 +185,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#klik() klik}()
 		{
 			{@link Plátno podlaha}.{@link Plátno#vymažGrafiku() vymažGrafiku}();
-			{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link ÚdajeUdalostí#ĽAVÉ ĽAVÉ}))
+			{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#ĽAVÉ ĽAVÉ}))
 				{@link GRobot#skočNaMyš() skočNaMyš}(); {@code kwdelse} {@link GRobot#otočNaMyš() otočNaMyš}();
 			vykresli();
 		}
@@ -227,7 +230,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 				farba = {@link SVGPodpora svgPodpora}.{@link SVGPodpora#farbaČiary(int) farbaČiary}(i);
 				{@code kwdif} ({@code valnull} != farba)
 				{
-					{@code typedouble} hrúbkaČiary = {@link SVGPodpora svgPodpora}.{@link SVGPodpora#hrúbkaČiary(double) hrúbkaČiary}(i);
+					{@code typedouble} hrúbkaČiary = {@link SVGPodpora svgPodpora}.{@link SVGPodpora#hrúbkaČiary(int) hrúbkaČiary}(i);
 					{@code kwdif} ({@link Double Double}.{@link Double#isFinite(double) isFinite}(hrúbkaČiary))
 						{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}(hrúbkaČiary);
 					{@code kwdelse}
@@ -260,8 +263,10 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * <p><b>Výsledok:</b></p>
  * 
  * <p><image>svg-panak.png<alt/>Nakreslený panák prečítaný z SVG
- * súboru.</image>Vzhľad plochy sveta po spustení
- * príkladu<br /><small>(plátno ukážky je zmenšené)</small>.</p>
+ * súboru.</image>Vzhľad časti plochy sveta po spustení príkladu a miernom
+ * posunutí panáka myšou smerom nadol<br /><small>(plátno ukážky je orezané
+ * a zmenšené; veľkosť okna je po prvom spustení menšia, než veľkosť
+ * plochy)</small>.</p>
  * 
  * <p> </p>
  * 
@@ -309,8 +314,8 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * tvarov prečítaných zo súboru a nula, ktorá znamená predvolený tvar.</p>
  * 
  * <pre CLASS="example">
-	{@code kwdimport} knižnica.{@link GRobot GRobot};
-	{@code kwdimport} knižnica.{@link GRobot GRobot}.{@link SVGPodpora SVGPodpora}.{@link Transformácia Transformácia};
+	{@code kwdimport} knižnica.*;
+	{@code kwdimport} knižnica.{@link SVGPodpora SVGPodpora}.{@link Transformácia Transformácia};
 
 	{@code kwdimport} java.awt.{@link Shape Shape};
 
@@ -703,7 +708,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * o nezvyšovanie zložitosti príkladu.)</p>
  * 
  * <pre CLASS="example">
-	{@code kwdimport} knižnica.{@link GRobot GRobot};
+	{@code kwdimport} knižnica.*;
 
 	{@code kwdpublic} {@code typeclass} SVGKruhy {@code kwdextends} {@link GRobot GRobot}
 	{
@@ -890,7 +895,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * príkladu sú v jeho komentároch.</p>
  * 
  * <pre CLASS="example">
-	{@code kwdimport} knižnica.{@link GRobot GRobot};
+	{@code kwdimport} knižnica.*;
 
 	{@code comm// Túto triedu Javy reprezentujúcu 2D úsečku potrebujeme na pridávanie}
 	{@code comm// jednotlivých úsečiek do inštancie svgPodpora.}
@@ -1241,7 +1246,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * target="_blank"><em>Scalable Vector Graphics (SVG) 2.</em> W3C
  * Editor’s Draft 10 July 2016. Copyright © 2016 W3C<sup>®</sup> (MIT,
  * ERCIM, Keio, Beihang). W3C liability, trademark and document use rules
- * apply.</a></li>
+ * apply. Citované: 2016 – 2018.</a></li>
  * 
  * <li><small><a href="mailto:nikos.andronikos@cisra.canon.com.au"
  * target="_blank">Andronikos, Nikos (Canon, Inc.)</a> –
@@ -1270,7 +1275,8 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * <a href="https://www.w3.org/TR/SVG2/" target="_blank"><em>Scalable
  * Vector Graphics (SVG) 2. W3C Working Draft 15 September 2015.</em>
  * Copyright © 2015 W3C<sup>®</sup> (MIT, ERCIM, Keio, Beihang). W3C
- * liability, trademark and document use rules apply.</a></li>
+ * liability, trademark and document use rules apply. Citované: 2016 –
+ * 2018.</a></li>
  * 
  * <li><a href="https://www.w3schools.com/graphics/svg_intro.asp"
  * target="_blank"><em>SVG Tutorial.</em></a> <a
@@ -1293,6 +1299,8 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * href="https://math.stackexchange.com/questions/584911/how-to-calculate-the-tangent-angle-with-the-axis-of-an-ellipse"
  * target="_blank"><em>How to calculate the tangent angle with the axis of
  * an ellipse?</em> Mathematics Stack Exchange (calculus), 2013.</a></li>
+ * 
+ * <li><small>(Zdroje citované: 2016 – 2018.)</small></li>
  * </ul>
  */
 public class SVGPodpora
@@ -3449,7 +3457,7 @@ public class SVGPodpora
 	 * 
 	 * <pre CLASS="example">
 		{@code comm// Získame súradnice stredu:}
-		{@link Bod Bod} stred = {@link #svgPodpora svgPodpora}.{@code currstredKresby}();
+		{@link Bod Bod} stred = {@link GRobot#svgPodpora svgPodpora}.{@code currstredKresby}();
 
 		{@code comm// Vyrobíme transformáciu posunutia, ktorá však očakáva súradnice}
 		{@code comm// v rámci súradnicového priestoru Javy (preto neobrátime y-ovú}
@@ -3458,11 +3466,11 @@ public class SVGPodpora
 			{@link AffineTransform#getTranslateInstance(double, double) getTranslateInstance}(&#45;stred.{@link Bod#polohaX() polohaX}(), stred.{@link Bod#polohaY() polohaY}());
 
 		{@code comm// Uložíme počet tvarov kresby do pomocnej premennej:}
-		{@code typeint} počet = {@link #svgPodpora svgPodpora}.{@link SVGPodpora#počet() počet}();
+		{@code typeint} počet = {@link GRobot#svgPodpora svgPodpora}.{@link SVGPodpora#počet() počet}();
 
 		{@code comm// Pridáme transformáciu ku každému tvaru:}
 		{@code kwdfor} ({@code typeint} i = {@code num0}; i &lt; počet; ++i)
-			{@link #svgPodpora svgPodpora}.{@link SVGPodpora#pridajTransformácie(int, AffineTransform, AffineTransform[]) pridajTransformácie}(i, posun);
+			{@link GRobot#svgPodpora svgPodpora}.{@link SVGPodpora#pridajTransformácie(int, AffineTransform, AffineTransform[]) pridajTransformácie}(i, posun);
 		</pre>
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda nesúvisí s metódou
@@ -4110,7 +4118,7 @@ public class SVGPodpora
 	 * triedy). Ak sa farbu nepodarí zistiť, tak metóda vráti hodnotu
 	 * {@code valnull}.</p>
 	 * 
-	 * <p>Táto metóda vracia ako predvolenú farbu (to jest ak nie je
+	 * <p>Táto metóda vracia ako predvolenú farbu (to jest, ak nie je
 	 * definovaný atribút {@code fill}) čiernu.</p>
 	 * 
 	 * @param index index tvaru v rámci vnútorného zásobníka (táto
@@ -4279,6 +4287,11 @@ public class SVGPodpora
 			prepíšAtribút(index, "fill", null);
 			prepíšAtribút(index, "fill-opacity", null);
 		}
+		else if (Farebnosť.žiadna == farba)
+		{
+			prepíšAtribút(index, "fill", "none");
+			prepíšAtribút(index, "fill-opacity", null);
+		}
 		else
 		{
 			prepíšAtribút(index, "fill", farbaNaReťazec(farba, true));
@@ -4427,7 +4440,7 @@ public class SVGPodpora
 	 * (‚transform‘) tvaru určeného indexom podľa hodnoty zadaného
 	 * reťazca alebo série reťazcov.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+	 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 	 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 	 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 	 * žiadneho objektu, neprítomnosť žiadnej inštancie.
@@ -4495,7 +4508,7 @@ public class SVGPodpora
 	 * (‚transform‘) tvaru určeného indexom podľa hodnôt prvkov
 	 * zadaného poľa reťazcov.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+	 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 	 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 	 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 	 * žiadneho objektu, neprítomnosť žiadnej inštancie.
@@ -4553,7 +4566,7 @@ public class SVGPodpora
 	 * {@code matrix(…)}). (Na spôsob výstupu tejto metódy má vplyv aj
 	 * hodnota príznaku {@link Transformácia#SVG2 Transformácia.SVG2}.)</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+	 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 	 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 	 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 	 * žiadneho objektu, neprítomnosť žiadnej inštancie.
@@ -4626,7 +4639,7 @@ public class SVGPodpora
 	 * {@code matrix(…)}). (Na spôsob výstupu tejto metódy má vplyv aj
 	 * hodnota príznaku {@link Transformácia#SVG2 Transformácia.SVG2}.)</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+	 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 	 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 	 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 	 * žiadneho objektu, neprítomnosť žiadnej inštancie.
@@ -4685,7 +4698,7 @@ public class SVGPodpora
 	 * metódy má vplyv aj hodnota príznaku {@link Transformácia#SVG2
 	 * Transformácia.SVG2}.)</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+	 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 	 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 	 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 	 * žiadneho objektu, neprítomnosť žiadnej inštancie.
@@ -4758,7 +4771,7 @@ public class SVGPodpora
 	 * metódy má vplyv aj hodnota príznaku {@link Transformácia#SVG2
 	 * Transformácia.SVG2}.)</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+	 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 	 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 	 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 	 * žiadneho objektu, neprítomnosť žiadnej inštancie.

@@ -141,7 +141,7 @@ import static knižnica.Konštanty.ZÁPIS_GIF_ANIMÁCIE;
  * v režime celej obrazovky.</p>
  * 
  * <pre CLASS="example">
-	{@code kwdimport} knižnica.{@link GRobot GRobot};
+	{@code kwdimport} knižnica.*;
 
 	{@code kwdimport} java.util.{@link Calendar Calendar};
 
@@ -1554,7 +1554,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * aby fungoval<br /> </p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} AnimujGIF {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -1657,7 +1657,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * {@code .jpg} alebo {@code .jpeg}</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} AnimujSekvenciuPNG {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -1760,10 +1760,10 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 							{@code comm// prečítanom súbore:}
 
 							{@link GRobot#skoč(double, double) skoč}(percento * {@code num200} &#45; {@code num200}, {@code num0});
-							{@link farba farba}({@link svetlošedá svetlošedá});
+							{@link GRobot#farba(Color) farba}({@link Farebnosť#svetlošedá svetlošedá});
 							{@link GRobot#vyplňObdĺžnik(double, double) vyplňObdĺžnik}(percento * {@code num200}, {@code num10});
 
-							{@link farba farba}(čierna);
+							{@link GRobot#farba(Color) farba}(čierna);
 							{@link GRobot#skočNa(double, double) skočNa}({@code num0}, {@code num0});
 							{@link GRobot#kresliObdĺžnik(double, double) kresliObdĺžnik}({@code num200}, {@code num10});
 							{@link GRobot#text(String) text}({@link GRobot#F(double, int) F}(percento * {@code num100.0}, {@code num0}) + {@code srg" % ("} +
@@ -2231,7 +2231,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * <p><b>Príklad:</b></p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} TestZmenyVeľkosti {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -3816,6 +3816,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 						b /= faktor; if (b > 255) b = 255;
 					}
 
+					// a je už „prepočítané“/má správnu hodnotu (a << 24):
 					údajeObrázka[j] = a | (r << 16) | (g << 8) | b;
 				// }
 			}
@@ -3863,6 +3864,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 					g *= faktor; if (g < 0) g = 0;
 					b *= faktor; if (b < 0) b = 0;
 
+					// a je už „prepočítané“/má správnu hodnotu (a << 24):
 					údajeObrázka[j] = a | (r << 16) | (g << 8) | b;
 				// }
 			}
@@ -3940,6 +3942,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 					r = (r + g + b) / 3;
 
+					// a je už „prepočítané“/má správnu hodnotu (a << 24):
 					údajeObrázka[j] = a | (r << 16) | (r << 8) | r;
 				// }
 			}
@@ -4022,7 +4025,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * href="https://www.dfstudios.co.uk/articles/programming/image-programming-algorithms/image-processing-algorithms-part-3-greyscale-conversion/"
 		 * target="_blank"><small>Francis G. Loch</small>: <em>Image
 		 * Processing Algorithms Part 3: Greyscale Conversion.</em> Dreamland
-		 * Fantasy Studios, 2008, 2010.</a></li></ul>
+		 * Fantasy Studios, 2008, 2010. Citované: 2018.</a></li></ul>
 		 * 
 		 * @param vyvážiťZložky pravdivostná hodnota určujúca, či majú byť
 		 *     odtiene vypočítané algoritmom vyvažovania farebných zložiek
@@ -4078,6 +4081,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 				r = (int)(0.299 * (double)r + 0.587 * (double)g +
 					0.114 * (double)b);
 
+				// a je už „prepočítané“/má správnu hodnotu (a << 24):
 				údajeObrázka[j] = a | (r << 16) | (r << 8) | r;
 			}
 		}
@@ -4139,6 +4143,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 				if (r < 0) r = 0; else if (r > 255) r = 255;
 
+				// a je už „prepočítané“/má správnu hodnotu (a << 24):
 				údajeObrázka[j] = a | (r << 16) | (r << 8) | r;
 			}
 		}
@@ -4206,6 +4211,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 					b = (r * B) / 0xff;
 					r = (r * R) / 0xff;
 
+					// a je už „prepočítané“/má správnu hodnotu (a << 24):
 					údajeObrázka[j] = a | (r << 16) | (g << 8) | b;
 				// }
 			}
@@ -4265,6 +4271,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 					b = (r + B) / 2;
 					r = (r + R) / 2;
 
+					// a je už „prepočítané“/má správnu hodnotu (a << 24):
 					údajeObrázka[j] = a | (r << 16) | (g << 8) | b;
 				// }
 			}
@@ -4334,6 +4341,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 				b = (g + B) / 2;
 				r = (b + R) / 2;
 
+				// a je už „prepočítané“/má správnu hodnotu (a << 24):
 				údajeObrázka[j] = a | (r << 16) | (g << 8) | b;
 			}
 		}
@@ -4845,12 +4853,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * href="https://www.dfstudios.co.uk/articles/programming/image-programming-algorithms/image-processing-algorithms-part-4-brightness-adjustment/"
 		 * target="_blank"><small>Francis G. Loch</small>: <em>Image
 		 * Processing Algorithms Part 4: Brightness Adjustment.</em>
-		 * Dreamland Fantasy Studios, 2008, 2010.</a></li>
+		 * Dreamland Fantasy Studios, 2008, 2010. Citované: 2018.</a></li>
 		 * <li><a
 		 * href="https://www.dfstudios.co.uk/articles/programming/image-programming-algorithms/image-processing-algorithms-part-4-brightness-adjustment/"
 		 * target="_blank"><small>Francis G. Loch</small>: <em>Image
 		 * Processing Algorithms Part 4: Brightness Adjustment.</em>
-		 * Dreamland Fantasy Studios, 2008, 2010.</a></li>
+		 * Dreamland Fantasy Studios, 2008, 2010. Citované: 2018.</a></li>
 		 * </ul>
 		 * 
 		 * @param jas reálnočíselná hodnota určujúca mieru zmeny jasu obrázka;
@@ -4998,17 +5006,17 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 				{@link GRobot#smer(double) smer}({@code num90});
 				{@code typelong} polomer = {@link Svet Svet}.{@link Svet#náhodnéCeléČíslo(long, long) náhodnéCeléČíslo}({@code num30}, {@code num50});
 
-				guma.{@link Obrázok#vyplň(Color) vyplň}({@link GRobot#čierna čierna});
-				{@link GRobot#farba(Color) farba}({@link GRobot#biela biela});
+				guma.{@link Obrázok#vyplň(Color) vyplň}({@link Farebnosť#čierna čierna});
+				{@link GRobot#farba(Color) farba}({@link Farebnosť#biela biela});
 				{@link GRobot#kresliDoObrázka(Obrázok) kresliDoObrázka}(guma);
 				{@link GRobot#kruh(double) kruh}(polomer);
 				bublinky.{@link Obrázok#vymažKresbu(BufferedImage) vymažKresbu}(guma);
 
 				{@code kwdswitch} (i % {@code num3})
 				{
-				{@code kwdcase} {@code num0}: {@link GRobot#farba(Color) farba}({@link GRobot#svetlotyrkysová svetlotyrkysová}); {@code kwdbreak};
-				{@code kwdcase} {@code num1}: {@link GRobot#farba(Color) farba}({@link GRobot#tyrkysová tyrkysová}); {@code kwdbreak};
-				{@code kwdcase} {@code num2}: {@link GRobot#farba(Color) farba}({@link GRobot#tmavotyrkysová tmavotyrkysová});
+				{@code kwdcase} {@code num0}: {@link GRobot#farba(Color) farba}({@link Farebnosť#svetlotyrkysová svetlotyrkysová}); {@code kwdbreak};
+				{@code kwdcase} {@code num1}: {@link GRobot#farba(Color) farba}({@link Farebnosť#tyrkysová tyrkysová}); {@code kwdbreak};
+				{@code kwdcase} {@code num2}: {@link GRobot#farba(Color) farba}({@link Farebnosť#tmavotyrkysová tmavotyrkysová});
 				}
 
 				{@link GRobot#kresliDoObrázka(Obrázok) kresliDoObrázka}(bublinky);
@@ -5039,7 +5047,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * href="https://www.dfstudios.co.uk/articles/programming/image-programming-algorithms/image-processing-algorithms-part-6-gamma-correction/"
 		 * target="_blank"><small>Francis G. Loch</small>: <em>Image
 		 * Processing Algorithms Part 6: Gamma Correction.</em> Dreamland
-		 * Fantasy Studios, 2008, 2010.</a></li></ul>
+		 * Fantasy Studios, 2008, 2010. Citované: 2018.</a></li></ul>
 		 * 
 		 * @param γ hodnota, ktorá určí mieru korekcie intenzity farieb obrázka;
 		 *     vhodný rozsah hodnôt je zhruba v rozmedzí 0,01 – 7,99
@@ -5157,7 +5165,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * href="https://www.dfstudios.co.uk/articles/programming/image-programming-algorithms/image-processing-algorithms-part-1-finding-nearest-colour/"
 		 * target="_blank"><small>Francis G. Loch</small>: <em>Image
 		 * Processing Algorithms Part 1: Finding The Nearest Colour.</em>
-		 * Dreamland Fantasy Studios, 2008, 2010.</a></li></ul>
+		 * Dreamland Fantasy Studios, 2008, 2010. Citované: 2018.</a></li></ul>
 		 * 
 		 * @param paleta paleta na posterizáciu
 		 * 
@@ -5336,12 +5344,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * href="https://www.dfstudios.co.uk/articles/programming/image-programming-algorithms/image-processing-algorithms-part-1-finding-nearest-colour/"
 		 * target="_blank"><small>Francis G. Loch</small>: <em>Image
 		 * Processing Algorithms Part 1: Finding The Nearest Colour.</em>
-		 * Dreamland Fantasy Studios, 2008, 2010.</a></li>
+		 * Dreamland Fantasy Studios, 2008, 2010. Citované: 2018.</a></li>
 		 * <li><a
 		 * href="https://www.dfstudios.co.uk/articles/programming/image-programming-algorithms/image-processing-algorithms-part-2-error-diffusion/"
 		 * target="_blank"><small>Francis G. Loch</small>: <em>Image
 		 * Processing Algorithms Part 2: Error Diffusion.</em> Dreamland
-		 * Fantasy Studios, 2008, 2010.</a></li>
+		 * Fantasy Studios, 2008, 2010. Citované: 2018.</a></li>
 		 * </ul>
 		 * 
 		 * @param difúziaChyby pravdivostná hodnota určujúca, či má byť pri
@@ -6471,7 +6479,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * názvov súborov.)</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} VytvorAnimovanýGIF {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -6701,7 +6709,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * snímok aký má aktuálna sekvencia.</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} VytvorSekvenciuPNG {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -6732,11 +6740,11 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 					{@code comm// Nakreslenie šedej výplne tej časti indikátora, ktorá reprezentuje}
 					{@code comm// nedokončenú časť úlohy:}
-					{@link farba farba}({@link šedá šedá});
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#šedá šedá});
 					{@link GRobot#vyplňObdĺžnik(double, double) vyplňObdĺžnik}(šírkaIndikátora, výškaIndikátora);
 
 					{@code comm// Nakreslenie čierneho obrysu rovnakej časti indikátora:}
-					{@link farba farba}({@link čierna čierna});
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#čierna čierna});
 					{@link GRobot#kresliObdĺžnik(double, double) kresliObdĺžnik}(šírkaIndikátora, výškaIndikátora);
 
 					{@code comm// Presunutie robota na správne miesto tak, aby bola „dokončená časť“}
@@ -6745,11 +6753,11 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 					{@code comm// Nakreslenie zelenej výplne tej časti indikátora, ktorá reprezentuje}
 					{@code comm// dokončenú časť úlohy:}
-					{@link farba farba}({@link zelená zelená});
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#zelená zelená});
 					{@link GRobot#vyplňObdĺžnik(double, double) vyplňObdĺžnik}(hotovo, výškaIndikátora);
 
 					{@code comm// Nakreslenie čierneho obrysu rovnakej časti indikátora:}
-					{@link farba farba}({@link čierna čierna});
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#čierna čierna});
 					kresliObdĺžnik(hotovo, výškaIndikátora);
 				}
 
@@ -6766,20 +6774,20 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 					{@code comm// Uloženie prvého bodu do poľa (zámerne je umiestnený mimo plátna,}
 					{@code comm// aby nebolo vidno začiatok krivky – pôsobilo by to rušivo):}
 					{@link GRobot#skočNa(double, double) skočNa}({@code num0}, -{@link Svet Svet}.{@link Svet#výška() výška}() &#45; {@code num10});
-					čiara[{@code num0}] = {@link poloha poloha}();
+					čiara[{@code num0}] = {@link GRobot#poloha() poloha}();
 
 					{@code comm// Pridanie požadovaného počtu náhodných bodov}
 					{@code comm// (okrem prvého a posledného):}
 					{@code kwdfor} ({@code typeint} i = {@code num1}; i &lt; početBodov &#45; {@code num1}; ++i)
 					{
 						{@link GRobot#náhodnáPoloha() náhodnáPoloha}();
-						čiara[i] = {@link poloha poloha}();
+						čiara[i] = {@link GRobot#poloha() poloha}();
 					}
 
 					{@code comm// Uloženie posledného bodu do poľa (tiež je umiestnený mimo plátna,}
 					{@code comm// aby nebolo vidno koniec krivky):}
 					{@link GRobot#skočNa(double, double) skočNa}({@code num0}, {@link Svet Svet}.{@link Svet#výška() výška}() + {@code num10});
-					čiara[početBodov &#45; {@code num1}] = {@link poloha poloha}();
+					čiara[početBodov &#45; {@code num1}] = {@link GRobot#poloha() poloha}();
 
 					{@code comm// Pole farieb použitých na nakreslenie krivky:}
 					{@link Farba Farba}[] farby = {@code kwdnew} {@link Farba Farba}[početBodov];
@@ -6830,12 +6838,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 							{@code comm// Skočíme na začiatok krivky:}
 							{@link GRobot#skočNa(double, double) skočNa}(čiara[{@code num0}]);
-							{@link farba farba}(farby[{@code num0}]);
+							{@link GRobot#farba(Color) farba}(farby[{@code num0}]);
 							{@link GRobot#smer(double) smer}(uhol);
 
 							{@code comm// Ak na snímke jestvuje kresba krivky (ak toto nie je prvá}
 							{@code comm// snímka), tak ju rozmažeme:}
-							{@code kwdif} ({@code num0} != j) animovanýObrázok.{@link Obrázok#rozmaž(int, Color) rozmaž}({@code num10}, {@link čierna čierna});
+							{@code kwdif} ({@code num0} != j) animovanýObrázok.{@link Obrázok#rozmaž(int, Color) rozmaž}({@code num10}, {@link Farebnosť#čierna čierna});
 
 							{@code comm// Nakreslíme farebnú krivku (štruktúra try-catch je}
 							{@code comm// potrebná, lebo metóda choďNaPoOblúku môže zlyhať; my však}
@@ -6843,7 +6851,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 							{@code kwdfor} ({@code typeint} i = {@code num1}; i &lt; početBodov; ++i)
 								{@code kwdtry}
 								{
-									{@link farba farba}(farby[i]);
+									{@link GRobot#farba(Color) farba}(farby[i]);
 									{@link GRobot#choďNaPoOblúku(double, double) choďNaPoOblúku}(čiara[i]);
 								}
 								{@code kwdcatch} ({@link Exception Exception} e)
@@ -6948,7 +6956,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 					{@link Svet Svet}.{@link Svet#spustiČasovač(double) spustiČasovač}({@code num0.040});
 
 					{@code comm// Na záver nastavíme čiernu farbu pozadia:}
-					{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@link čierna čierna});
+					{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@link Farebnosť#čierna čierna});
 				}
 
 				{@code comm// Táto reakcia je automaticky spúšťaná počas zápisu (alebo čítania)}

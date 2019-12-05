@@ -84,7 +84,7 @@ import javax.swing.SwingConstants;
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#klik() klik}()
 		{
 			{@code comm// Kontextová ponuka sa zobrazí po stlačení pravého tlačidla:}
-			{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši() tlačidloMyši}({@link ÚdajeUdalostí#PRAVÉ PRAVÉ}))
+			{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši() tlačidloMyši}({@link Konštanty#PRAVÉ PRAVÉ}))
 				mojaKontextováPonuka.{@link #zobraz() zobraz}();
 		}
 
@@ -332,9 +332,11 @@ public class KontextováPonuka extends JPopupMenu
 	 * <p>Vytvorí novú položku ponuky so zadaným textom a pripojí ju na
 	 * koniec ponuky.</p>
 	 * 
-	 * <!--p class="remark"><b>Poznámka:</b> Táto metóda prekrýva originálnu
-	 * metódu {@link JPopupMenu#add(String)}. </p TODO – skúsiť automaticky
-	 * overovať v dokumentácii. -->
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda prekrýva originálnu
+	 * metódu {@link JPopupMenu#add(String)}. </p>
+	 * <!-- TODO – skúsiť automaticky overovať v dokumentácii a ak to
+	 * nepôjde, doplniť rovnakú poznámku ku všetkým prekrytým metódam
+	 * v programovacom rámci. -->
 	 * 
 	 * @param text text novej kontextovej položky
 	 * @return nová kontextová položka; aj keď je návratová hodnota

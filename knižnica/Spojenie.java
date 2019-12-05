@@ -80,8 +80,6 @@ import static knižnica.Konštanty.ODOVZDANIE_ÚDAJOV;
  * odvolávajú. (Napríklad: {@code login.php}, {@code acceptFile.php}
  * a podobne.)</p>
  * 
- * <p> </p>
- * 
  * <p>Test spojenia:</p>
  * 
  * <p>Táto ukážka použitia predpokladá, že lokálny ({@code srg"localhost"})
@@ -90,7 +88,7 @@ import static knižnica.Konštanty.ODOVZDANIE_ÚDAJOV;
  * jednoduchý PHP skript {@code test.php}, ktorého výpis je uvedený
  * nižšie.</p>
  * 
- * <!-- TODO – overiť vzhľad a funkčnosť príkladu, pridať výsledok… -->
+ * <!-- TODO – pridať výsledok… -->
  * 
  * <pre CLASS="example">
 	{@code kwdprivate} {@code typeboolean} test()
@@ -109,7 +107,7 @@ import static knižnica.Konštanty.ODOVZDANIE_ÚDAJOV;
  * serveri ({@code localhost}) v priečinku {@code bjpu-server} (toto je
  * jediný PHP príklad uvedený v tejto dokumentácii):</p>
  * 
- * <!-- TODO – overiť vzhľad a funkčnosť príkladu, pridať výsledok… -->
+ * <!-- TODO – pridať výsledok… -->
  * 
  * <pre CLASS="example">
 	&lt;?php
@@ -127,7 +125,7 @@ import static knižnica.Konštanty.ODOVZDANIE_ÚDAJOV;
  * prihlasovacie údaje (meno a heslo) v údajových poliach {@code login}
  * a {@code password}.</p>
  * 
- * <!-- TODO – overiť vzhľad a funkčnosť príkladu, pridať výsledok… -->
+ * <!-- TODO – pridať výsledok… -->
  * 
  * <pre CLASS="example">
 	{@code kwdprivate} {@code currSpojenie} spojenie = {@code kwdnew} {@link Spojenie#Spojenie() Spojenie}();
@@ -192,7 +190,7 @@ import static knižnica.Konštanty.ODOVZDANIE_ÚDAJOV;
  * metódy {@link #dajOdpoveď() dajOdpoveď}):</p>
  * 
  * <p class="remark"><b>Poznámka:</b> Budeme predpokladať, že odpoveď sa
- * bude zhodovať s nasledujúcou šablónou vyjadrenou vo forme regulárneho
+ * bude zhodovať s nasledujúcou šablónou vyjadrenou s pomocou regulárneho
  * výrazu:<br />
  *  <br /><code>ERR[+\-]{0,1}[0-9]+: «správa»</code><br /> <br />
  * Napríklad: {@code ERR0: OK}, {@code ERR-1: No error.},
@@ -234,17 +232,18 @@ import static knižnica.Konštanty.ODOVZDANIE_ÚDAJOV;
  * target="_blank">User:Willi Mentzel</a> – and others</small>: <a
  * href="http://stackoverflow.com/questions/1314249/upload-and-post-file-to-php-page"
  * target="_blank"><em>Upload and POST file to PHP page with Java.</em> Stack
- * Overflow, 2009, 2017.</a></li>
+ * Overflow, 2009, 2017. Citované: 2018.</a></li>
  * 
  * <li><small>Vlad Patryshev</small>: <a
  * href="http://www.devx.com/java/Article/17679/1954" target="_blank"><em>Send
- * Form Data from Java: A Painless Solution.</em> developer.com, 2003.</a></li>
+ * Form Data from Java: A Painless Solution.</em> developer.com, 2003.
+ * Citované: 2018.</a></li>
  * 
  * <li><small><a href="http://www.mkyong.com/author/mkyong/"
  * target="_blank">mkyong</a></small>: <a
  * href="http://www.mkyong.com/java/how-to-get-mac-address-in-java/"
  * target="_blank"><em>How to get MAC address in Java.</em> mkyong.com,
- * 2010.</a></li>
+ * 2010. Citované: 2018.</a></li>
  * </ul>
  */
 public class Spojenie
@@ -1543,7 +1542,7 @@ public class Spojenie
 	 * HTTP/1.1 – Section 10: Status Code Definitions</a> (súhrnný zoznam
 	 * kódov sa nachádza v <a
 	 * href="https://tools.ietf.org/html/rfc2616#section-6.1.1"
-	 * target="_blank">sekcii 6.1.1</a> uvedeného dokumentu).</p>
+	 * target="_blank">sekcii 6.1.1</a> uvedeného dokumentu; citované: 2018).</p>
 	 * 
 	 * @return HTTP kód poslednej odpovede servera alebo −1
 	 * 

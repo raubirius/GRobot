@@ -123,7 +123,7 @@ public class Zoznam<Typ> extends Vector<Typ>
 	 * target="_blank">User:rogerdpack</a></small>: <a
 	 * href="https://stackoverflow.com/questions/1098117/can-one-do-a-for-each-loop-in-java-in-reverse-order"
 	 * target="_blank"><em>Can one do a for-each loop in Java in reverse
-	 * order?</em> Stack Overflow, 2009, 2016.</a></li></ul>
+	 * order?</em> Stack Overflow, 2009, 2016. Citované: 2016.</a></li></ul>
 	 * 
 	 * @see Zoznam#odzadu()
 	 * @see Zoznam#odzadu(List)
@@ -321,6 +321,18 @@ public class Zoznam<Typ> extends Vector<Typ>
 	public void pridaj(Typ prvok) { addElement(prvok); }
 
 	/**
+	 * <p>Pridá prvky zadaného poľa na koniec tohto zoznamu. Metóda sa počas
+	 * pridávania jednotlivých prvkov poľa správa rovnako ako metóda {@link 
+	 * #pridaj(Object) pridaj}{@code (prvok)}.</p>
+	 * 
+	 * @param pole pole prvkov, ktoré majú byť pridané na koniec zoznamu
+	 */
+	public void pridaj(Typ[] pole)
+	{
+		for (Typ prvok : pole) addElement(prvok);
+	}
+
+	/**
 	 * <p>Pridá zadaný zoznam na koniec tohto zoznamu podľa poradia určeného
 	 * zadaným zoznamom (jeho iterátorom). Výsledok akcie je
 	 * nepredvídateľný ak počas operácie dôjde ku zmene zadaného zoznamu.</p>
@@ -473,11 +485,11 @@ public class Zoznam<Typ> extends Vector<Typ>
 		removeRange(začiatok, koniec);
 	}
 
-	/** <p><a class="alias"></a> Alias pre {@link #odoberOdKonca(int) odoberOdKonca}.</p> */
+	/** <p><a class="alias"></a> Alias pre {@link #odoberOdKonca(int, int) odoberOdKonca}.</p> */
 	public void vymažOdKonca(int začiatok, int koniec)
 	{ odoberOdKonca(začiatok, koniec); }
 
-	/** <p><a class="alias"></a> Alias pre {@link #odoberOdKonca(int) odoberOdKonca}.</p> */
+	/** <p><a class="alias"></a> Alias pre {@link #odoberOdKonca(int, int) odoberOdKonca}.</p> */
 	public void vymazOdKonca(int začiatok, int koniec)
 	{ odoberOdKonca(začiatok, koniec); }
 

@@ -59,57 +59,68 @@ import knižnica.apacheAntZIP.ZipOutputStream;
 import static java.util.Calendar.*;
 
 /**
- * <p>TODO</p>
+ * <p>Táto trieda slúži na prácu s údajovými archívmi vo formáte ZIP.
+ * Poskytuje programátorské rozhranie na čo najjednoduchšie vytvorenie
+ * archívu jeho zápis, čítanie alebo analýzu. Programovací rámec umožňuje
+ * prepojenie iných súčastí (napríklad {@linkplain Súbor súboru}) s archívom
+ * a tým ešte väčšmi zjednodušiť prácu s ním.</p>
  * 
- * 
+ * <p class="remark"><b>Poznámka:</b> Pracujeme na spresnení opisu.</p>
+ * <!-- TODO – dokončiť opis. -->
  * 
  * <p><b>Príklad:</b></p>
- * <!-- TODO dokončiť príklad aj jeho opis -->
+ * 
+ * <p>Tento príklad ukazuje ako pripojiť archív ku konfiguračnému súboru
+ * (čím sa vytvorí zbalená konfigurácia) a naznačuje prácu s konfiguráciou
+ * (ktorá je štandardná – rovnaká ako v prípade nepripojeného archívu –
+ * pozri napríklad príklad v opise triedy {@link ObsluhaUdalostí
+ * ObsluhaUdalostí} – v sekcii Ďalšie udalosti).</p>
+ * 
  * <pre CLASS="example">
-	import knižnica.*;
+	{@code kwdimport} knižnica.*;
 
-	public class PripojenieArchívu extends GRobot
+	{@code kwdpublic} {@code typeclass} PripojenieArchívu {@code kwdextends} GRobot
 	{
-		private PripojenieArchívu()
+		{@code kwdprivate} PripojenieArchívu()
 		{
-			new ObsluhaUdalostí()
+			{@code kwdnew} {@link ObsluhaUdalostí#ObsluhaUdalostí() ObsluhaUdalostí}()
 			{
-				@Override public boolean konfiguráciaZmenená()
+				{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@link ObsluhaUdalostí#konfiguráciaZmenená() konfiguráciaZmenená}()
 				{
-					// Overenie podmienok a ak treba zapísať konfiguráciu,
-					// tak návrat: return true;
-					return false;
+					{@code comm// Overenie podmienok a ak treba zapísať konfiguráciu,}
+					{@code comm// tak návrat: return true;}
+					{@code kwdreturn} {@code valfalse};
 				}
 
-				@Override public void zapíšKonfiguráciu(Súbor súbor)
-					throws java.io.IOException
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zapíšKonfiguráciu(Súbor) zapíšKonfiguráciu}(Súbor súbor)
+					{@code kwdthrows} java.io.IOException
 				{
-					// Zápis vlastných vlastností:
-					// súbor.zapíšVlastnosť("názov", hodnota);
-					// …
+					{@code comm// Zápis vlastných vlastností:}
+					{@code comm// súbor.zapíšVlastnosť("názov", hodnota);}
+					{@code comm// …}
 				}
 
-				@Override public void čítajKonfiguráciu(Súbor súbor)
-					throws java.io.IOException
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#čítajKonfiguráciu(Súbor) čítajKonfiguráciu}(Súbor súbor)
+					{@code kwdthrows} java.io.IOException
 				{
-					// Čítanie vlastných vlastností:
-					// hodnota = súbor.čítajVlastnosť("názov", predvolenáHodnota);
-					// …
+					{@code comm// Čítanie vlastných vlastností:}
+					{@code comm// hodnota = súbor.čítajVlastnosť("názov", predvolenáHodnota);}
+					{@code comm// …}
 				}
 			};
 		}
 
-		public static void main(String[] args)
+		{@code kwdpublic} {@code kwdstatic} {@code typevoid} main(String[] args)
 		{
-			// Pripojenie archívu ku konfigurácii:
-			Svet.konfiguračnýSúbor().pripojArchív(
-				new Archív("PripojenieArchívu.zip"));
+			{@code comm// Pripojenie archívu ku konfigurácii:}
+			{@link Svet Svet}.{@link Svet#konfiguračnýSúbor() konfiguračnýSúbor}().{@link Súbor#pripojArchív(Archív) pripojArchív}(
+				{@code kwdnew} {@link Archív#Archív(String) Archív}({@code srg"PripojenieArchívu.zip"}));
 
-			// Použitie konfigurácie:
-			Svet.použiKonfiguráciu("PripojenieArchívu.cfg");
+			{@code comm// Použitie konfigurácie:}
+			{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"PripojenieArchívu.cfg"});
 
-			// Konštrukcia:
-			new PripojenieArchívu();
+			{@code comm// Konštrukcia:}
+			{@code kwdnew} PripojenieArchívu();
 		}
 	}
 	</pre>
@@ -125,8 +136,8 @@ public class Archív implements Closeable
 	// metódou ignorujChyby(boolean) sa to zapne/vypne, keď je to zapnuté,
 	// tak všetky metódy budú silou mocou obchádzať vrhanie výnimiek a ak
 	// to pre nich bude možné, tak sa budú usilovať indikovať chybový stav
-	// nejako inak (návratovou hodnotou, inak?). (V každom prípade: denník
-	// funguje.)
+	// nejako inak (návratovou hodnotou, inak?; v každom prípade: denník
+	// funguje).
 	// Ak je to vypnuté, tak budú vrhať výnimky aj metódy ako veľkosťPoložky
 	// a pod.
 	// Lenže toto isté by sa hodilo implementovať aj do triedy Súbor.
@@ -280,7 +291,7 @@ public class Archív implements Closeable
 	 * <p>Nastaví príznak toho, či smie byť umožnené automatické otvorenie
 	 * tohto archívu inými inštanciami programovacieho rámca, ktoré ho budú
 	 * chcieť použiť. Napríklad trieda {@link Súbor Súbor} s {@linkplain 
-	 * #pripojArchív(Archív) pripojeným archívom}. Automatické otvorenie
+	 * Súbor#pripojArchív(Archív) pripojeným archívom}. Automatické otvorenie
 	 * vyžaduje, aby mal archív priradený {@linkplain #názov(String) názov}.
 	 * To sa dá docieliť rôznymi spôsobmi – prislúchajúcim konštruktorom
 	 * ({@link #Archív(String) Archív(názov)} alebo {@link #Archív(String,
@@ -1287,7 +1298,7 @@ public class Archív implements Closeable
 	 * 
 	 * @param názovPoložky názov položky, ktorej dátum má byť nastavený
 	 * @param dátumPoložky reťazcový tvar dátumu položky
-	 * @return {@link valtrue} v prípade úspechu akcie
+	 * @return {@code valtrue} v prípade úspechu akcie
 	 * 
 	 * @see #dátumPoložky(String)
 	 * @see #dátumPoložkyAkoČíslo(String)
@@ -1779,7 +1790,7 @@ public class Archív implements Closeable
 	 * <b>{@linkplain #otvorNaZápis(String) zápis}</b>.</p>
 	 * 
 	 * @param komentár —
-	 * @return {@link valtrue} v prípade úspechu akcie
+	 * @return {@code valtrue} v prípade úspechu akcie
 	 * 
 	 * @throws GRobotException ak archív nie je otvorený na zápis
 	 * 

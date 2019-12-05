@@ -148,7 +148,7 @@ import static knižnica.Konštanty.PRIPÁJANIE_SÚBOROV;
 		{@code comm// Použijeme vnútornú konzolu robota na výpis textu chyby červenou}
 		{@code comm// farbou:}
 		{@link Farba Farba} záloha = {@link Svet Svet}.{@link Svet#farbaTextu() farbaTextu}();
-		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link GRobot#červená červená});
+		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#červená červená});
 		{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(e.{@link IOException#getMessage() getMessage}());
 		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}(záloha);
 	}
@@ -163,7 +163,7 @@ import static knižnica.Konštanty.PRIPÁJANIE_SÚBOROV;
 	{
 		{@code comm// Chyby vypíše červenou farbou…}
 		{@link Farba Farba} záloha = {@link Svet Svet}.{@link Svet#farbaTextu() farbaTextu}();
-		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link GRobot#červená červená});
+		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#červená červená});
 		{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(e.{@link IOException#getMessage() getMessage}());
 		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}(záloha);
 	}
@@ -308,14 +308,14 @@ import static knižnica.Konštanty.PRIPÁJANIE_SÚBOROV;
 	{
 		{@code comm// Chyby vypíše červenou farbou…}
 		{@link Farba Farba} záloha = {@link Svet Svet}.{@link Svet#farbaTextu() farbaTextu}();
-		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link GRobot#červená červená});
+		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#červená červená});
 		{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(e.{@link IOException#getMessage() getMessage}());
 		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}(záloha);
 	}
 	{@code kwdcatch} ({@link IllegalArgumentException IllegalArgumentException} e)
 	{
 		{@link Farba Farba} záloha = {@link Svet Svet}.{@link Svet#farbaTextu() farbaTextu}();
-		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link GRobot#červená červená});
+		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#červená červená});
 		{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(e.{@link IllegalArgumentException#getMessage() getMessage}());
 		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}(záloha);
 	}
@@ -329,7 +329,7 @@ import static knižnica.Konštanty.PRIPÁJANIE_SÚBOROV;
 		{@code kwdcatch} ({@link IOException IOException} e)
 		{
 			{@link Farba Farba} záloha = {@link Svet Svet}.{@link Svet#farbaTextu() farbaTextu}();
-			{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link GRobot#červená červená});
+			{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#červená červená});
 			{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(e.{@link IOException#getMessage() getMessage}());
 			{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}(záloha);
 		}
@@ -374,7 +374,7 @@ import static knižnica.Konštanty.PRIPÁJANIE_SÚBOROV;
 	{@code kwdcatch} ({@link IOException IOException} | {@link IllegalArgumentException IllegalArgumentException} e)
 	{
 		{@link Farba Farba} záloha = {@link Svet Svet}.{@link Svet#farbaTextu() farbaTextu}();
-		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link GRobot#červená červená});
+		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#červená červená});
 		{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(e.{@link IOException#getMessage() getMessage}());
 		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}(záloha);
 	}
@@ -2542,7 +2542,7 @@ public class Súbor implements Closeable
 		 * Object, Object, long, long) variantom pre jednotlivých robotov}).
 		 * Počas procesu porovnávania je uvedená reakcia spúšťaná (samozrejme
 		 * aj so všetkými jej variantmi) s kódom spracovania
-		 * {@link #POROVNANIE_SÚBOROV POROVNANIE_SÚBOROV}.</p>
+		 * {@link Konštanty#POROVNANIE_SÚBOROV POROVNANIE_SÚBOROV}.</p>
 		 * 
 		 * @param názov1 názov (a cesta) prvého súboru
 		 * @param názov2 názov (a cesta) druhého súboru
@@ -2778,7 +2778,7 @@ public class Súbor implements Closeable
 		 * Object, Object, long, long) variantom pre jednotlivých robotov}).
 		 * Počas procesu kopírovania je uvedená reakcia spúšťaná (samozrejme
 		 * aj so všetkými jej variantmi) s kódom spracovania {@link 
-		 * #KOPÍROVANIE_SÚBOROV KOPÍROVANIE_SÚBOROV}.</p>
+		 * Konštanty#KOPÍROVANIE_SÚBOROV KOPÍROVANIE_SÚBOROV}.</p>
 		 * 
 		 * @param zdroj názov (a cesta) zdrojového súboru
 		 * @param cieľ názov (a cesta) cieľového súboru
@@ -2959,7 +2959,7 @@ public class Súbor implements Closeable
 		 * Object, Object, long, long) variantom pre jednotlivých robotov}).
 		 * Počas procesu pripájania je uvedená reakcia spúšťaná (samozrejme
 		 * aj so všetkými jej variantmi) s kódom spracovania {@link 
-		 * #PRIPÁJANIE_SÚBOROV PRIPÁJANIE_SÚBOROV}.</p>
+		 * Konštanty#PRIPÁJANIE_SÚBOROV PRIPÁJANIE_SÚBOROV}.</p>
 		 * 
 		 * @param zdroj názov (a cesta) zdrojového súboru
 		 * @param cieľ názov (a cesta) cieľového súboru
@@ -3469,12 +3469,12 @@ public class Súbor implements Closeable
 			{@code comm// týchto tried (čo sú v prípade uvedených tried prakticky všetky metódy)}
 			{@code comm// nie sú jednoduchým spôsobom odlíšiteľné (nemajú prefix triedy).}
 
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.*;
 			{@code kwdimport} java.io.{@link IOException IOException};
 
 			{@code kwdimport} {@code kwdstatic} java.lang.{@link Math Math}.*;
-			{@code kwdimport} {@code kwdstatic} knižnica.{@link GRobot GRobot}.{@link Svet Svet}.*;
-			{@code kwdimport} {@code kwdstatic} knižnica.{@link GRobot GRobot}.{@link ÚdajeUdalostí ÚdajeUdalostí}.*;
+			{@code kwdimport} {@code kwdstatic} knižnica.{@link Svet Svet}.*;
+			{@code kwdimport} {@code kwdstatic} knižnica.{@link ÚdajeUdalostí ÚdajeUdalostí}.*;
 
 			{@code kwdpublic} {@code typeclass} SkicárMiestností {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -3554,8 +3554,8 @@ public class Súbor implements Closeable
 				{@code kwdprivate} SkicárMiestností()
 				{
 					{@code valsuper}({@code srg"Skicár miestností…"});
-					{@link Svet#farbaPozadia(Color) farbaPozadia}({@link GRobot#šedá šedá});
-					{@link Svet#farbaPlochy(Color) farbaPlochy}({@link GRobot#tmavošedá tmavošedá});
+					{@link Svet#farbaPozadia(Color) farbaPozadia}({@link Farebnosť#šedá šedá});
+					{@link Svet#farbaPlochy(Color) farbaPlochy}({@link Farebnosť#tmavošedá tmavošedá});
 					{@link GRobot#písmo(String, double) písmo}({@code srg"Calibri"}, {@code num14});
 					{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num2.5});
 					{@link GRobot#skry() skry}();
@@ -3826,7 +3826,7 @@ public class Súbor implements Closeable
 					{
 						{@link Plátno podlaha}.{@link Plátno#vymažGrafiku() vymažGrafiku}();
 
-						{@link GRobot#farba(Color) farba}({@link GRobot#čierna čierna});
+						{@link GRobot#farba(Color) farba}({@link Farebnosť#čierna čierna});
 						{@code kwdfor} (Miestnosť miestnosť : miestnosti)
 						{
 							{@link GRobot#skočNa(Poloha) skočNa}(miestnosť);
@@ -3834,12 +3834,12 @@ public class Súbor implements Closeable
 							{@code kwdif} (miestnosť.výška &lt; {@code num0.0}) miestnosť.výška = {@code num0.0};
 							{@code kwdif} (miestnosť == {@code valthis}.miestnosť)
 							{
-								{@link GRobot#farba(Color) farba}({@link GRobot#oranžová oranžová});
+								{@link GRobot#farba(Color) farba}({@link Farebnosť#oranžová oranžová});
 								{@code kwdif} ({@code num0.0} == miestnosť.šírka && {@code num0.0} == miestnosť.výška)
 									{@link GRobot#kruh(double) kruh}({@code num2.0});
 								{@code kwdelse}
 									{@link GRobot#kresliObdĺžnik(double, double) kresliObdĺžnik}(miestnosť.šírka, miestnosť.výška);
-								{@link GRobot#farba(Color) farba}({@link GRobot#čierna čierna});
+								{@link GRobot#farba(Color) farba}({@link Farebnosť#čierna čierna});
 							}
 							{@code kwdelse} {@code kwdif} ({@code num0.0} == miestnosť.šírka && {@code num0.0} == miestnosť.výška)
 								{@link GRobot#kruh(double) kruh}({@code num2.0});
@@ -3847,7 +3847,7 @@ public class Súbor implements Closeable
 								{@link GRobot#kresliObdĺžnik(double, double) kresliObdĺžnik}(miestnosť.šírka, miestnosť.výška);
 						}
 
-						{@link GRobot#farba(Color) farba}({@link GRobot#biela biela});
+						{@link GRobot#farba(Color) farba}({@link Farebnosť#biela biela});
 						{@code kwdfor} (Miestnosť miestnosť : miestnosti)
 						{
 							{@link GRobot#skočNa(Poloha) skočNa}(miestnosť);
@@ -3855,7 +3855,7 @@ public class Súbor implements Closeable
 								{@link GRobot#vyplňObdĺžnik(double, double) vyplňObdĺžnik}(miestnosť.šírka, miestnosť.výška);
 						}
 
-						{@link GRobot#farba(Color) farba}({@link GRobot#hnedá hnedá});
+						{@link GRobot#farba(Color) farba}({@link Farebnosť#hnedá hnedá});
 						{@code kwdfor} (Miestnosť miestnosť : miestnosti)
 						{
 							{@link GRobot#skočNa(Poloha) skočNa}(miestnosť);
@@ -3863,7 +3863,7 @@ public class Súbor implements Closeable
 							{
 								{@code kwdif} ({@code valnull} != miestnosť.meno)
 								{
-									{@link GRobot#farba(Color) farba}({@link GRobot#šedá šedá});
+									{@link GRobot#farba(Color) farba}({@link Farebnosť#šedá šedá});
 									{@code kwdif} ({@code num90.0} != miestnosť.{@link Častica#uhol uhol})
 									{
 										{@link GRobot#vľavo(double) vľavo}({@code num90} &#45; miestnosť.{@link Častica#uhol uhol});
@@ -3871,7 +3871,7 @@ public class Súbor implements Closeable
 										{@link GRobot#vpravo(double) vpravo}({@code num90} &#45; miestnosť.{@link Častica#uhol uhol});
 									}
 									{@code kwdelse} {@link GRobot#text(String) text}(miestnosť.meno);
-									{@link GRobot#farba(Color) farba}({@link GRobot#hnedá hnedá});
+									{@link GRobot#farba(Color) farba}({@link Farebnosť#hnedá hnedá});
 								}
 							}
 							{@code kwdelse} {@code kwdif} ({@code num90.0} != miestnosť.{@link Častica#uhol uhol})

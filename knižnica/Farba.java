@@ -110,13 +110,13 @@ import static knižnica.Farebnosť.*;
  * <pre CLASS="example">
 	{@code comm// Zoznam farieb}
 	{@code kwdfinal} {@code currFarba}[] farby = {
-			{@link GRobot#svetločervená svetločervená}, {@link GRobot#červená červená}, {@link GRobot#tmavočervená tmavočervená}, {@link GRobot#svetlozelená svetlozelená}, {@link GRobot#zelená zelená},
-			{@link GRobot#tmavozelená tmavozelená}, {@link GRobot#svetlomodrá svetlomodrá}, {@link GRobot#modrá modrá}, {@link GRobot#tmavomodrá tmavomodrá}, {@link GRobot#svetlotyrkysová svetlotyrkysová},
-			{@link GRobot#tyrkysová tyrkysová}, {@link GRobot#tmavotyrkysová tmavotyrkysová}, {@link GRobot#svetlopurpurová svetlopurpurová}, {@link GRobot#purpurová purpurová},
-			{@link GRobot#tmavopurpurová tmavopurpurová}, {@link GRobot#svetložltá svetložltá}, {@link GRobot#žltá žltá}, {@link GRobot#tmavožltá tmavožltá}, {@link GRobot#čierna čierna}, {@link GRobot#tmavošedá tmavošedá},
-			{@link GRobot#šedá šedá}, {@link GRobot#svetlošedá svetlošedá}, {@link GRobot#biela biela}, {@link GRobot#svetlohnedá svetlohnedá}, {@link GRobot#hnedá hnedá}, {@link GRobot#tmavohnedá tmavohnedá},
-			{@link GRobot#svetlooranžová svetlooranžová}, {@link GRobot#oranžová oranžová}, {@link GRobot#tmavooranžová tmavooranžová}, {@link GRobot#svetloružová svetloružová}, {@link GRobot#ružová ružová},
-			{@link GRobot#tmavoružová tmavoružová},
+			{@link Farebnosť#svetločervená svetločervená}, {@link Farebnosť#červená červená}, {@link Farebnosť#tmavočervená tmavočervená}, {@link Farebnosť#svetlozelená svetlozelená}, {@link Farebnosť#zelená zelená},
+			{@link Farebnosť#tmavozelená tmavozelená}, {@link Farebnosť#svetlomodrá svetlomodrá}, {@link Farebnosť#modrá modrá}, {@link Farebnosť#tmavomodrá tmavomodrá}, {@link Farebnosť#svetlotyrkysová svetlotyrkysová},
+			{@link Farebnosť#tyrkysová tyrkysová}, {@link Farebnosť#tmavotyrkysová tmavotyrkysová}, {@link Farebnosť#svetlopurpurová svetlopurpurová}, {@link Farebnosť#purpurová purpurová},
+			{@link Farebnosť#tmavopurpurová tmavopurpurová}, {@link Farebnosť#svetložltá svetložltá}, {@link Farebnosť#žltá žltá}, {@link Farebnosť#tmavožltá tmavožltá}, {@link Farebnosť#čierna čierna}, {@link Farebnosť#tmavošedá tmavošedá},
+			{@link Farebnosť#šedá šedá}, {@link Farebnosť#svetlošedá svetlošedá}, {@link Farebnosť#biela biela}, {@link Farebnosť#svetlohnedá svetlohnedá}, {@link Farebnosť#hnedá hnedá}, {@link Farebnosť#tmavohnedá tmavohnedá},
+			{@link Farebnosť#svetlooranžová svetlooranžová}, {@link Farebnosť#oranžová oranžová}, {@link Farebnosť#tmavooranžová tmavooranžová}, {@link Farebnosť#svetloružová svetloružová}, {@link Farebnosť#ružová ružová},
+			{@link Farebnosť#tmavoružová tmavoružová},
 		};
 
 	{@link GRobot#skry() skry}();
@@ -1053,10 +1053,10 @@ public class Farba extends Color implements Comparable<Color>
 	 * 
 	 * <p class="image">Ukážka rôznych úrovní úpravy jasu a kontrastu
 	 * (oboje v rozsahu −240 až 240 s krokom 80) zvolených farieb<br />(zľava
-	 * doprava: {@link GRobot#žltá žltá}, {@link GRobot#tmavotyrkysová
-	 * tmavotyrkysová}, {@link GRobot#svetlopurpurová svetlopurpurová},
-	 * {@link GRobot#tmavočervená tmavočervená}, {@link GRobot#modrá
-	 * modrá} a {@link GRobot#svetlozelená svetlozelená}).</p>
+	 * doprava: {@link Farebnosť#žltá žltá}, {@link Farebnosť#tmavotyrkysová
+	 * tmavotyrkysová}, {@link Farebnosť#svetlopurpurová svetlopurpurová},
+	 * {@link Farebnosť#tmavočervená tmavočervená}, {@link Farebnosť#modrá
+	 * modrá} a {@link Farebnosť#svetlozelená svetlozelená}).</p>
 	 * 
 	 * <p> </p>
 	 * 
@@ -1205,11 +1205,11 @@ public class Farba extends Color implements Comparable<Color>
 	 * </tr></table>
 	 * 
 	 * <p class="image">Ukážka rôznych mier gama korekcie niekoľkých
-	 * predvolených farieb<br />(zľava doprava: {@link GRobot#žltá žltá},
-	 * {@link GRobot#tmavotyrkysová tmavotyrkysová},
-	 * {@link GRobot#svetlopurpurová svetlopurpurová},
-	 * {@link GRobot#tmavočervená tmavočervená}, {@link GRobot#modrá
-	 * modrá}<br />a {@link GRobot#svetlozelená svetlozelená} postupne
+	 * predvolených farieb<br />(zľava doprava: {@link Farebnosť#žltá žltá},
+	 * {@link Farebnosť#tmavotyrkysová tmavotyrkysová},
+	 * {@link Farebnosť#svetlopurpurová svetlopurpurová},
+	 * {@link Farebnosť#tmavočervená tmavočervená}, {@link Farebnosť#modrá
+	 * modrá}<br />a {@link Farebnosť#svetlozelená svetlozelená} postupne
 	 * upravené hodnotami γ: 0,01; 0,25; 0,5; 1,0; 2,0; 4,0 a 7.99).</p>
 	 * 
 	 * @param γ miera gama korekcie (gama korekcia súvisí s intenzitou

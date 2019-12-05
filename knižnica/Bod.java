@@ -71,6 +71,10 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 // import javax.swing.event.ChangeListener;
 
+
+// import knižnica.podpora.Alias; //
+
+
 // -------------------- //
 //  *** Trieda Bod ***  //
 // -------------------- //
@@ -277,6 +281,75 @@ public class Bod extends Point2D implements Poloha
 	// Pozor! Každý setter – treba preťažiť v inštancii Poloha.stred
 
 
+	// Pozor! Každý setter – treba preťažiť v inštancii Poloha.stred
+
+	/**
+	 * <p>Upraví súradnice tohto bodu podľa zadaných hodnôt zmeny
+	 * v horizontálnom (Δx) a vertikálnom (Δy) smere.</p>
+	 * 
+	 * @param Δx miera posunutia v smere osi x
+	 * @param Δy miera posunutia v smere osi y
+	 */
+	public void posuň(double Δx, double Δy)
+	{
+		this.x += Δx;
+		this.y += Δy;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #posuň(double, double) posuň}.</p> */
+	public void posun(double Δx, double Δy) { posuň(Δx, Δy); }
+
+	/**
+	 * <p>Upraví (posunie) súradnice tohto bodu podľa súradníc zadanej
+	 * inštancie polohového vektora. Súradnica polohy x zadanej inštancie
+	 * určí mieru posunutia v horizontálnom smere a súradnica polohy
+	 * y vo vertikálnom smere.</p>
+	 * 
+	 * @param poloha inštancia určujúca mieru posunutia tohto bodu
+	 */
+	public void posuň(Poloha poloha)
+	{
+		this.x += poloha.polohaX();
+		this.y += poloha.polohaY();
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #posuň(Poloha) posuň}.</p> */
+	public void posun(Poloha poloha) { posuň(poloha); }
+
+	/**
+	 * <p>Posunie súradnice tohto bodu určeným smerom o zadanú vzdialenosť.</p>
+	 * 
+	 * @param smer smer, v ktorom sa má bod posunúť
+	 * @param dĺžka vzdialenosť, o ktorú sa má bod posunúť
+	 */
+	public void posuňVSmere(double smer, double dĺžka)
+	{
+		this.x += Math.cos(Math.toRadians(smer)) * dĺžka;
+		this.y += Math.sin(Math.toRadians(smer)) * dĺžka;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #posuňVSmere(double, double) posuňVSmere}.</p> */
+	public void posunVSmere(double smer, double dĺžka)
+	{ posuňVSmere(smer, dĺžka); }
+
+	/**
+	 * <p>Posunie súradnice tohto bodu určeným smerom o zadanú vzdialenosť.</p>
+	 * 
+	 * @param smer inštancia určujúca smer, v ktorom sa má bod posunúť
+	 * @param dĺžka vzdialenosť, o ktorú sa má bod posunúť
+	 */
+	public void posuňVSmere(Smer smer, double dĺžka)
+	{
+		this.x += Math.cos(Math.toRadians(smer.smer())) * dĺžka;
+		this.y += Math.sin(Math.toRadians(smer.smer())) * dĺžka;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #posuňVSmere(Smer, double) posuňVSmere}.</p> */
+	public void posunVSmere(Smer smer, double dĺžka)
+	{ posuňVSmere(smer, dĺžka); }
+
+	// Pozor! Každý setter – treba preťažiť v inštancii Poloha.stred
+
 
 	/**
 	 * <p>Zistí vzdialenosť tohto bodu od bodu zadaného prostredníctvom
@@ -290,6 +363,7 @@ public class Bod extends Point2D implements Poloha
 	{ return Math.hypot(súradnicaX - x, súradnicaY - y); }
 
 	/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťOd(double, double) vzdialenosťOd}.</p> */
+	// @ Alias ( " vzdialenosťOd " ) //
 	public double vzdialenostOd(double súradnicaX, double súradnicaY)
 	{ return vzdialenosťOd(súradnicaX, súradnicaY); }
 

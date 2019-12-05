@@ -470,7 +470,7 @@ public class ÚdajeUdalostí
 	 * s vertikálnym kolieskom kláves {@code Shift}):</p>
 	 * 
 	 * <pre CLASS="example">
-		{@code kwdimport} knižnica.{@link GRobot GRobot};
+		{@code kwdimport} knižnica.*;
 
 		{@code kwdpublic} {@code typeclass} RolovanieKolieskom {@code kwdextends} {@link GRobot GRobot}
 		{
@@ -760,8 +760,8 @@ public class ÚdajeUdalostí
 	 * valtrue}, inak {@code valfalse}.</p>
 	 * 
 	 * @param ktoré poradové číslo tlačidla myši: 1 až 3 – {@link 
-	 *     ÚdajeUdalostí#ĽAVÉ ĽAVÉ}, {@link ÚdajeUdalostí#STREDNÉ STREDNÉ},
-	 *     {@link ÚdajeUdalostí#PRAVÉ PRAVÉ}
+	 *     Konštanty#ĽAVÉ ĽAVÉ}, {@link Konštanty#STREDNÉ STREDNÉ},
+	 *     {@link Konštanty#PRAVÉ PRAVÉ}
 	 * @return {@code valtrue} ak je stanovené tlačidlo stlačené,
 	 *     v opačnom prípade {@code valfalse}; ak je parameter
 	 *     {@code ktoré} mimo povolených hodnôt (1 – 3), metóda vráti
@@ -808,8 +808,8 @@ public class ÚdajeUdalostí
 	 * valtrue}, inak {@code valfalse}.</p>
 	 * 
 	 * @param ktoré poradové číslo tlačidla myši: 1 až 3 – {@link 
-	 *     ÚdajeUdalostí#ĽAVÉ ĽAVÉ}, {@link ÚdajeUdalostí#STREDNÉ STREDNÉ},
-	 *     {@link ÚdajeUdalostí#PRAVÉ PRAVÉ}
+	 *     Konštanty#ĽAVÉ ĽAVÉ}, {@link Konštanty#STREDNÉ STREDNÉ},
+	 *     {@link Konštanty#PRAVÉ PRAVÉ}
 	 * @return {@code valtrue} ak je stanovené tlačidlo uvoľnené,
 	 *     v opačnom prípade {@code valfalse}; ak je parameter
 	 *     {@code ktoré} mimo povolených hodnôt (1 – 3), metóda vráti
@@ -854,8 +854,8 @@ public class ÚdajeUdalostí
 	 * <p>Vráti poradové číslo tlačidla myši, s ktorým bolo naposledy
 	 * manipulované. (Či už bolo stlačené alebo uvoľnené.)</p>
 	 * 
-	 * @return 0 – so žiadnym; 1 až 3 – {@link ÚdajeUdalostí#ĽAVÉ ĽAVÉ},
-	 *     {@link ÚdajeUdalostí#STREDNÉ STREDNÉ}, {@link ÚdajeUdalostí#PRAVÉ
+	 * @return 0 – so žiadnym; 1 až 3 – {@link Konštanty#ĽAVÉ ĽAVÉ},
+	 *     {@link Konštanty#STREDNÉ STREDNÉ}, {@link Konštanty#PRAVÉ
 	 *     PRAVÉ}
 	 * 
 	 * @see #myš()
@@ -884,8 +884,8 @@ public class ÚdajeUdalostí
 	 * <p>Overí, či bolo naposledy manipulované (či bolo stlačené alebo
 	 * uvoľnené) s tlačidlom myši so zadaným poradovým číslom.</p>
 	 * 
-	 * @param ktoré 0 – žiadne; 1 až 3 – {@link ÚdajeUdalostí#ĽAVÉ ĽAVÉ},
-	 *     {@link ÚdajeUdalostí#STREDNÉ STREDNÉ}, {@link ÚdajeUdalostí#PRAVÉ
+	 * @param ktoré 0 – žiadne; 1 až 3 – {@link Konštanty#ĽAVÉ ĽAVÉ},
+	 *     {@link Konštanty#STREDNÉ STREDNÉ}, {@link Konštanty#PRAVÉ
 	 *     PRAVÉ}
 	 * 
 	 * @see #myš()

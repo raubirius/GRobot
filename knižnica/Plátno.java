@@ -84,6 +84,7 @@ import static knižnica.Konštanty.ZVISLÁ;
 		okraje
 		záloha a obnovenie
 		kreslenie tvarov
+		nastavenie farby bodu
 		farba bodu
 		farba textu
 		farba pozadia textu
@@ -144,7 +145,7 @@ import static knižnica.Konštanty.ZVISLÁ;
  * 
  * <pre CLASS="example">
 	{@link GRobot#hrúbkaPera(double) hrúbkaPera}({@code num5.5});
-	{@link GRobot#farba(Color) farba}({@link GRobot#hnedá hnedá});
+	{@link GRobot#farba(Color) farba}({@link Farebnosť#hnedá hnedá});
 
 	{@code kwdnew} {@link ObsluhaUdalostí#ObsluhaUdalostí() ObsluhaUdalostí}()
 	{
@@ -158,12 +159,12 @@ import static knižnica.Konštanty.ZVISLÁ;
 					{@code kwdif} ({@link GRobot#kreslímNaPodlahu() kreslímNaPodlahu}())
 					{
 						{@link GRobot#kresliNaStrop() kresliNaStrop}();
-						{@link GRobot#farba(Color) farba}({@link GRobot#tyrkysová tyrkysová});
+						{@link GRobot#farba(Color) farba}({@link Farebnosť#tyrkysová tyrkysová});
 					}
 					{@code kwdelse}
 					{
 						{@link GRobot#kresliNaPodlahu() kresliNaPodlahu}();
-						{@link GRobot#farba(Color) farba}({@link GRobot#hnedá hnedá});
+						{@link GRobot#farba(Color) farba}({@link Farebnosť#hnedá hnedá});
 					}
 
 					{@code kwdbreak};
@@ -191,7 +192,7 @@ import static knižnica.Konštanty.ZVISLÁ;
  * o textoch, ktoré na neho boli vypísané prostredníctvom metód, ktorých
  * prvotným cieľom bolo nahradiť funkčnosť textového režimu známu aj pod
  * termínom konzola. Preto vznikla v plátne relatívne rozsiahla definícia
- * skrytých objektov, ktorú nazývame <em>vnútorná konzola</em>.</p>
+ * skrytých objektov, ktorú nazývame <em>vnútorná konzola.</em></p>
  * 
  * <p>Na prácu s jej obsahom slúži niekoľko skupín metód vymenovaných
  * a utriedených v <a href="kategorie-metod.html#Plátno">kategóriách
@@ -3205,6 +3206,278 @@ public class Plátno implements Priehľadnosť
 		public void vypln(Shape tvar) { vyplň(tvar); }
 
 
+	// Nastavenie farby bodu
+
+		/**
+		 * <p>Prepíše farebné zložky a zložku priehľadnosti bodu plátna na
+		 * zadanej pozícii zadanou farbou.</p>
+		 * 
+		 * @param x x-ová súradnica bodu v súradnicovom priestore rámca
+		 * @param y y-ová súradnica bodu v súradnicovom priestore rámca
+		 * @param farba objekt určujúci novú farbu bodu
+		 */
+		public void prepíšBod(double x, double y, Color farba)
+		{
+			try
+			{
+				obrázokPlátna.setRGB(
+					(int)((šírkaPlátna / 2.0) + x),
+					(int)((výškaPlátna / 2.0) - y),
+					farba.getRGB());
+			}
+			catch (ArrayIndexOutOfBoundsException e)
+			{
+				// Túto chybu zamlčíme – prejdeme to potichu…
+				// (Jednoducho bod nebude nastavený a hotovo.)
+				// e.printStackTrace()
+			}
+		}
+
+		/**
+		 * <p>Prepíše farebné zložky a zložku priehľadnosti bodu plátna na
+		 * zadanej pozícii farbou zadaného objektu.</p>
+		 * 
+		 * @param x x-ová súradnica bodu v súradnicovom priestore rámca
+		 * @param y y-ová súradnica bodu v súradnicovom priestore rámca
+		 * @param objekt objekt určujúci novú farbu bodu
+		 */
+		public void prepíšBod(double x, double y, Farebnosť objekt)
+		{
+			try
+			{
+				obrázokPlátna.setRGB(
+					(int)((šírkaPlátna / 2.0) + x),
+					(int)((výškaPlátna / 2.0) - y),
+					objekt.farba().getRGB());
+			}
+			catch (ArrayIndexOutOfBoundsException e)
+			{
+				// Túto chybu zamlčíme – prejdeme to potichu…
+				// (Jednoducho bod nebude nastavený a hotovo.)
+				// e.printStackTrace()
+			}
+		}
+
+		/**
+		 * <p>Prepíše farebné zložky a zložku priehľadnosti bodu plátna na
+		 * zadanej pozícii zadanou kombináciou zložiek ARGB zakódovaných
+		 * v celočíselnej hodnote.</p>
+		 * 
+		 * @param x x-ová súradnica bodu v súradnicovom priestore rámca
+		 * @param y y-ová súradnica bodu v súradnicovom priestore rámca
+		 * @param farba celé číslo obsahujúce kombináciu farebných zložiek
+		 *     RGB a priehľadnosti
+		 */
+		public void prepíšBod(double x, double y, int farba)
+		{
+			try
+			{
+				obrázokPlátna.setRGB(
+					(int)((šírkaPlátna / 2.0) + x),
+					(int)((výškaPlátna / 2.0) - y),
+					farba);
+			}
+			catch (ArrayIndexOutOfBoundsException e)
+			{
+				// Túto chybu zamlčíme – prejdeme to potichu…
+				// (Jednoducho bod nebude nastavený a hotovo.)
+				// e.printStackTrace()
+			}
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #prepíšBod(double, double, Color) prepíšBod}.</p> */
+		public void prepisBod(double x, double y, Color farba)
+		{ prepíšBod(x, y, farba); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #prepíšBod(double, double, Farebnosť) prepíšBod}.</p> */
+		public void prepisBod(double x, double y, Farebnosť objekt)
+		{ prepíšBod(x, y, objekt); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #prepíšBod(double, double, int) prepíšBod}.</p> */
+		public void prepisBod(double x, double y, int farba)
+		{ prepíšBod(x, y, farba); }
+
+
+		/**
+		 * <p>Prepíše farebné zložky a zložku priehľadnosti na pozícii
+		 * zadaného bodu na plátne zadanou farbou.</p>
+		 * 
+		 * @param bod objekt reprezentujúci súradnice bodu (v súradnicovom
+		 *     priestore robota)
+		 * @param farba objekt určujúci novú farbu bodu
+		 */
+		public void prepíšBod(Poloha bod, Color farba)
+		{
+			try
+			{
+				obrázokPlátna.setRGB(
+					(int)((šírkaPlátna / 2.0) + bod.polohaX()),
+					(int)((výškaPlátna / 2.0) - bod.polohaY()),
+					farba.getRGB());
+			}
+			catch (ArrayIndexOutOfBoundsException e)
+			{
+				// Túto chybu zamlčíme – prejdeme to potichu…
+				// (Jednoducho bod nebude nastavený a hotovo.)
+				// e.printStackTrace()
+			}
+		}
+
+		/**
+		 * <p>Prepíše farebné zložky a zložku priehľadnosti na pozícii
+		 * zadaného bodu farbou zadaného objektu.</p>
+		 * 
+		 * @param bod objekt reprezentujúci súradnice bodu (v súradnicovom
+		 *     priestore robota)
+		 * @param objekt objekt určujúci novú farbu bodu
+		 */
+		public void prepíšBod(Poloha bod, Farebnosť objekt)
+		{
+			try
+			{
+				obrázokPlátna.setRGB(
+					(int)((šírkaPlátna / 2.0) + bod.polohaX()),
+					(int)((výškaPlátna / 2.0) - bod.polohaY()),
+					objekt.farba().getRGB());
+			}
+			catch (ArrayIndexOutOfBoundsException e)
+			{
+				// Túto chybu zamlčíme – prejdeme to potichu…
+				// (Jednoducho bod nebude nastavený a hotovo.)
+				// e.printStackTrace()
+			}
+		}
+
+		/**
+		 * <p>Prepíše farebné zložky a zložku priehľadnosti na pozícii
+		 * zadaného bodu na plátne zadanou kombináciou zložiek ARGB
+		 * zakódovaných v celočíselnej hodnote.</p>
+		 * 
+		 * @param bod objekt reprezentujúci súradnice bodu (v súradnicovom
+		 *     priestore robota)
+		 * @param farba celé číslo obsahujúce kombináciu farebných zložiek
+		 *     RGB a priehľadnosti
+		 */
+		public void prepíšBod(Poloha bod, int farba)
+		{
+			try
+			{
+				obrázokPlátna.setRGB(
+					(int)((šírkaPlátna / 2.0) + bod.polohaX()),
+					(int)((výškaPlátna / 2.0) - bod.polohaY()),
+					farba);
+			}
+			catch (ArrayIndexOutOfBoundsException e)
+			{
+				// Túto chybu zamlčíme – prejdeme to potichu…
+				// (Jednoducho bod nebude nastavený a hotovo.)
+				// e.printStackTrace()
+			}
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #prepíšBod(Poloha, Color) prepíšBod}.</p> */
+		public void prepisBod(Poloha bod, Color farba)
+		{ prepíšBod(bod, farba); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #prepíšBod(Poloha, Farebnosť) prepíšBod}.</p> */
+		public void prepisBod(Poloha bod, Farebnosť objekt)
+		{ prepíšBod(bod, objekt); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #prepíšBod(Poloha, int) prepíšBod}.</p> */
+		public void prepisBod(Poloha bod, int farba)
+		{ prepíšBod(bod, farba); }
+
+
+		/**
+		 * <p>Prepíše farebné zložky a zložku priehľadnosti na pozícii
+		 * zadaného bodu na plátne zadanou farbou.</p>
+		 * 
+		 * @param bod objekt reprezentujúci súradnice bodu (v súradnicovom
+		 *     priestore robota)
+		 * @param farba objekt určujúci novú farbu bodu
+		 */
+		public void prepíšBodNaMyši(Color farba)
+		{
+			try
+			{
+				obrázokPlátna.setRGB(
+					(int)((šírkaPlátna / 2.0) + ÚdajeUdalostí.súradnicaMyšiX),
+					(int)((výškaPlátna / 2.0) - ÚdajeUdalostí.súradnicaMyšiY),
+					farba.getRGB());
+			}
+			catch (ArrayIndexOutOfBoundsException e)
+			{
+				// Túto chybu zamlčíme – prejdeme to potichu…
+				// (Jednoducho bod nebude nastavený a hotovo.)
+				// e.printStackTrace()
+			}
+		}
+
+		/**
+		 * <p>Prepíše farebné zložky a zložku priehľadnosti na pozícii
+		 * zadaného bodu farbou zadaného objektu.</p>
+		 * 
+		 * @param bod objekt reprezentujúci súradnice bodu (v súradnicovom
+		 *     priestore robota)
+		 * @param objekt objekt určujúci novú farbu bodu
+		 */
+		public void prepíšBodNaMyši(Farebnosť objekt)
+		{
+			try
+			{
+				obrázokPlátna.setRGB(
+					(int)((šírkaPlátna / 2.0) + ÚdajeUdalostí.súradnicaMyšiX),
+					(int)((výškaPlátna / 2.0) - ÚdajeUdalostí.súradnicaMyšiY),
+					objekt.farba().getRGB());
+			}
+			catch (ArrayIndexOutOfBoundsException e)
+			{
+				// Túto chybu zamlčíme – prejdeme to potichu…
+				// (Jednoducho bod nebude nastavený a hotovo.)
+				// e.printStackTrace()
+			}
+		}
+
+		/**
+		 * <p>Prepíše farebné zložky a zložku priehľadnosti na pozícii
+		 * zadaného bodu na plátne zadanou kombináciou zložiek ARGB
+		 * zakódovaných v celočíselnej hodnote.</p>
+		 * 
+		 * @param bod objekt reprezentujúci súradnice bodu (v súradnicovom
+		 *     priestore robota)
+		 * @param farba celé číslo obsahujúce kombináciu farebných zložiek
+		 *     RGB a priehľadnosti
+		 */
+		public void prepíšBodNaMyši(int farba)
+		{
+			try
+			{
+				obrázokPlátna.setRGB(
+					(int)((šírkaPlátna / 2.0) + ÚdajeUdalostí.súradnicaMyšiX),
+					(int)((výškaPlátna / 2.0) - ÚdajeUdalostí.súradnicaMyšiY),
+					farba);
+			}
+			catch (ArrayIndexOutOfBoundsException e)
+			{
+				// Túto chybu zamlčíme – prejdeme to potichu…
+				// (Jednoducho bod nebude nastavený a hotovo.)
+				// e.printStackTrace()
+			}
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #prepíšBodNaMyši(Color) prepíšBodNaMyši}.</p> */
+		public void prepisBodNaMysi(Color farba)
+		{ prepíšBodNaMyši(farba); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #prepíšBodNaMyši(Farebnosť) prepíšBodNaMyši}.</p> */
+		public void prepisBodNaMysi(Farebnosť objekt)
+		{ prepíšBodNaMyši(objekt); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #prepíšBodNaMyši(int) prepíšBodNaMyši}.</p> */
+		public void prepisBodNaMysi(int farba)
+		{ prepíšBodNaMyši(farba); }
+
+
 	// Farba bodu
 
 		/**
@@ -3265,7 +3538,7 @@ public class Plátno implements Priehľadnosť
 		 * pomocou tejto metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdif} ({@code currfarbaBodu}({@code num3.0}, {@code num5.0}, {@link GRobot#modrá modrá})) …
+			{@code kwdif} ({@code currfarbaBodu}({@code num3.0}, {@code num5.0}, {@link Farebnosť#modrá modrá})) …
 			</pre>
 		 * 
 		 * @param x x-ová súradnica vyšetrovaného bodu
@@ -3295,7 +3568,7 @@ public class Plátno implements Priehľadnosť
 		 * pomocou tejto metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdif} ({@code currfarbaBodu}({@code valthis}, {@link GRobot#modrá modrá})) …
+			{@code kwdif} ({@code currfarbaBodu}({@code valthis}, {@link Farebnosť#modrá modrá})) …
 			</pre>
 		 * 
 		 * @param objekt objekt, na ktorého pozícii chceme overiť farbu bodu
@@ -3529,7 +3802,7 @@ public class Plátno implements Priehľadnosť
 		 * metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdif} ({@code currfarbaNaMyši}({@link GRobot#modrá modrá})) …
+			{@code kwdif} ({@code currfarbaNaMyši}({@link Farebnosť#modrá modrá})) …
 			</pre>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Ak by súradnice myši boli náhodou
@@ -3675,7 +3948,8 @@ public class Plátno implements Priehľadnosť
 		 * @param nováFarba objekt typu {@link Color Color} (alebo
 		 *     odvodeného napr. {@link Farba Farba}) s novou farbou textov
 		 *     plátna; jestvuje paleta predvolených farieb (pozri napr.:
-		 *     {@link #biela biela}, {@link #červená červená}, {@link #čierna
+		 *     {@link Farebnosť#biela biela}, {@link Farebnosť#červená
+		 *     červená}, {@link Farebnosť#čierna
 		 *     čierna}…)
 		 */
 		public void farbaTextu(Color nováFarba)
@@ -3778,7 +4052,7 @@ public class Plátno implements Priehľadnosť
 		 * objektu. Ak je zadaná pretypovaná hodnota {@code (}{@link Farba
 		 * Farba}{@code )}{@code valnull}, tak je farba pozadia zrušená.</p>
 		 * 
-		 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+		 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 		 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 		 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 		 * žiadneho objektu, neprítomnosť žiadnej inštancie.
@@ -3790,8 +4064,8 @@ public class Plátno implements Priehľadnosť
 		 * @param nováFarba objekt typu {@link Color Color} (alebo
 		 *     odvodeného napr. {@link Farba Farba}) s novou farbou pozadia
 		 *     textov plátna; jestvuje paleta predvolených farieb (pozri
-		 *     napríklad: {@link #biela biela}, {@link #červená červená},
-		 *     {@link #čierna čierna}…)
+		 *     napríklad: {@link Farebnosť#biela biela}, {@link Farebnosť#červená červená},
+		 *     {@link Farebnosť#čierna čierna}…)
 		 */
 		public void farbaPozadiaTextu(Color nováFarba)
 		{
@@ -3819,7 +4093,7 @@ public class Plátno implements Priehľadnosť
 		 * pretypovaná hodnota {@code (}{@link Farebnosť Farebnosť}{@code 
 		 * )}{@code valnull}, tak je farba pozadia zrušená.</p>
 		 * 
-		 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+		 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 		 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 		 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 		 * žiadneho objektu, neprítomnosť žiadnej inštancie.
@@ -3925,14 +4199,14 @@ public class Plátno implements Priehľadnosť
 		 * podlahy alebo stropu podľa zadaného objektu. Ak je zadaná
 		 * pretypovaná hodnota {@code (}{@link Farba Farba}{@code )}{@code 
 		 * valnull}, tak je farba pozadia označenia nastavená na predvolenú
-		 * {@linkplain #svetložltá svetložltú}.</p>
+		 * {@linkplain Farebnosť#svetložltá svetložltú}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Predvolenú farbu pozadia a textu,
 		 * ktorý je označený je možné individuálne prekryť pre každý označený
 		 * výpis. Pozri napríklad metódu {@link #označVýpis(int, int, Color...)
 		 * označVýpis}.</p>
 		 * 
-		 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+		 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 		 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 		 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 		 * žiadneho objektu, neprítomnosť žiadnej inštancie.
@@ -3944,8 +4218,8 @@ public class Plátno implements Priehľadnosť
 		 * @param nováFarba objekt typu {@link Color Color} (alebo
 		 *     odvodeného napr. {@link Farba Farba}) s novou farbou pozadia
 		 *     označenia textov konzoly plátna; jestvuje paleta predvolených
-		 *     farieb (pozri napríklad: {@link #biela biela}, {@link #červená
-		 *     červená}, {@link #čierna čierna}…)
+		 *     farieb (pozri napríklad: {@link Farebnosť#biela biela}, {@link Farebnosť#červená
+		 *     červená}, {@link Farebnosť#čierna čierna}…)
 		 * 
 		 * @see #predvolenáFarbaPozadiaOznačenia()
 		 * @see #predvolenáFarbaPozadiaOznačenia(Farebnosť)
@@ -3980,7 +4254,7 @@ public class Plátno implements Priehľadnosť
 		 * stropu podľa zadaného objektu. Ak je zadaná pretypovaná hodnota
 		 * {@code (}{@link Farebnosť Farebnosť}{@code )}{@code valnull},
 		 * tak je farba pozadia označenia nastavená na
-		 * {@linkplain #svetložltá svetložltú}, ktorá je predvolenou farbou
+		 * {@linkplain Farebnosť#svetložltá svetložltú}, ktorá je predvolenou farbou
 		 * pri štarte frameworku.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Predvolenú farbu pozadia a textu,
@@ -3988,7 +4262,7 @@ public class Plátno implements Priehľadnosť
 		 * výpis. Pozri napríklad metódu {@link #označVýpis(int, int, Color...)
 		 * označVýpis}.</p>
 		 * 
-		 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+		 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 		 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 		 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 		 * žiadneho objektu, neprítomnosť žiadnej inštancie.
@@ -4149,7 +4423,7 @@ public class Plátno implements Priehľadnosť
 		 * výpis. Pozri napríklad metódu {@link #označVýpis(int, int, Color...)
 		 * označVýpis}.</p>
 		 * 
-		 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+		 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 		 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 		 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 		 * žiadneho objektu, neprítomnosť žiadnej inštancie.
@@ -4161,8 +4435,8 @@ public class Plátno implements Priehľadnosť
 		 * @param nováFarba objekt typu {@link Color Color} (alebo
 		 *     odvodeného napr. {@link Farba Farba}) s novou farbou
 		 *     označených textov plátna; jestvuje paleta predvolených
-		 *     farieb (pozri napr.: {@link #biela biela}, {@link #červená
-		 *     červená}, {@link #čierna čierna}…)
+		 *     farieb (pozri napr.: {@link Farebnosť#biela biela}, {@link Farebnosť#červená
+		 *     červená}, {@link Farebnosť#čierna čierna}…)
 		 * 
 		 * @see #predvolenáFarbaPozadiaOznačenia()
 		 * @see #predvolenáFarbaPozadiaOznačenia(Color)
@@ -4207,7 +4481,7 @@ public class Plátno implements Priehľadnosť
 		 * výpis. Pozri napríklad metódu {@link #označVýpis(int, int, Color...)
 		 * označVýpis}.</p>
 		 * 
-		 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+		 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 		 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 		 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 		 * žiadneho objektu, neprítomnosť žiadnej inštancie.
@@ -4794,7 +5068,7 @@ public class Plátno implements Priehľadnosť
 		 * skopírovaním označených textov do schránky.</p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.*;
 
 			{@code kwdpublic} {@code typeclass} TestovanieOznačenia {@code kwdextends} {@link GRobot GRobot}
 			{
@@ -7059,7 +7333,7 @@ public class Plátno implements Priehľadnosť
 		 * 
 		 * <pre CLASS="example">
 			{@code typeint} a = {@code num10};  {@code comm// pre potreby ukážky}
-			{@link Plátno podlaha}.{@code currvypíš}({@code srg"Hodnota:"}, a, {@link GRobot#riadok riadok});
+			{@link Plátno podlaha}.{@code currvypíš}({@code srg"Hodnota:"}, a, {@link Konštanty#riadok riadok});
 			{@link Plátno podlaha}.{@link #vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Hodnota:"}, a);
 			{@link Plátno podlaha}.{@link #vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Hodnota: "} + a);
 			</pre>
@@ -8152,7 +8426,7 @@ public class Plátno implements Priehľadnosť
 		 * tejto metóde zavolať metódu {@link Svet#prekresli() prekresli},
 		 * aby sa efekt reálne prejavil.</p>
 		 * 
-		 * @see #farba(Color)
+		 * @see GRobot#farba(Color)
 		 * @see #vypíš(Object[]) vypíš(Object...)
 		 * @see #vypíšRiadok(Object[]) vypíšRiadok(Object...)
 		 * @see #farbaTextu(Color)
@@ -8202,7 +8476,7 @@ public class Plátno implements Priehľadnosť
 		 * vypíš}, {@link #vypíšRiadok(Object[]) vypíšRiadok}. Pre úplnosť
 		 * dodávame, že texty konzoly majú iné vlastnosti v porovnaní
 		 * s pečiatkovými textami, ktoré môžu grafické roboty „nakresliť“
-		 * napríklad metódou {@link #text(String) text}. Pečiatkové texty sú
+		 * napríklad metódou {@link GRobot#text(String) text}. Pečiatkové texty sú
 		 * grafické a v tomto prípade zostanú zachované.</p>
 		 * 
 		 * <p>Táto metóda <b>nevyvolá</b> vznik udalosti vymazania plátna,
@@ -8297,7 +8571,7 @@ public class Plátno implements Priehľadnosť
 		 * 
 		 * <p><small>[1] – Vnútorná konzola obsahuje predovšetkým textové
 		 * informácie. Tieto texty nie sú (na rozdiel od textov
-		 * {@linkplain #text(String) „nakreslených“ robotmi}) vnímané ako
+		 * {@linkplain GRobot#text(String) „nakreslených“ robotmi}) vnímané ako
 		 * grafické.</small></p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Metóda berie do úvahy použitie
@@ -8312,7 +8586,7 @@ public class Plátno implements Priehľadnosť
 		 * 
 		 * @see #vymaž()
 		 * @see #vymažTexty()
-		 * @see #farba(Color)
+		 * @see GRobot#farba(Color)
 		 */
 		public void vymažGrafiku()
 		{
@@ -9066,7 +9340,7 @@ public class Plátno implements Priehľadnosť
 			{@code comm// Nakreslíme niekoľko skupín čiastočne priehľadných bielych}
 			{@code comm// elíps na tyrkysovom pozadí:}
 
-			{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@link GRobot#tyrkysová tyrkysová});
+			{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@link Farebnosť#tyrkysová tyrkysová});
 
 			{@link GRobot#farba(int, int, int, int) farba}({@code num250}, {@code num250}, {@code num250}, {@code num150});
 			{@link GRobot#zdvihniPero() zdvihniPero}();

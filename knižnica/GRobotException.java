@@ -73,7 +73,7 @@ import java.util.Vector;
  * (nulovým – {@code valnull}) menom. Môže ísť priamo o pokus o otvorenie
  * archívu metódami triedy {@link Archív Archív}, o pokus o pridanie položky
  * sprostredkovane, napríklad triedou {@link Súbor Súbor} s {@linkplain 
- * #pripojArchív(Archív) pripojeným archívom} a podobne. Spresňujúcim
+ * Súbor#pripojArchív(Archív) pripojeným archívom} a podobne. Spresňujúcim
  * objektom je inštancia {@link NullPointerException} (bez textu).</td></tr>
  * 
  * <tr><td><code>archiveNotOpenForReading</code></td><td>Archív nie je
@@ -713,7 +713,7 @@ public class GRobotException extends RuntimeException
 	 * programovacím rámcom.</p>
 	 * 
 	 * @return inštancia naposledy generovanej výnimky programovacím rámcom
-	 *     (môže byť aj {@link valnull}, ak ešte žiadna výnimka nevznikla)
+	 *     (môže byť aj {@code valnull}, ak ešte žiadna výnimka nevznikla)
 	 * 
 	 * @see Denník
 	 * @see Chyba

@@ -89,6 +89,38 @@ public interface Poloha
 		@Override public void poloha(Poloha poloha)
 		{ throw new GRobotException("Polohu stredu nie je možné meniť!",
 			"zeroPositionCannotBeChanged"); }
+
+		@Override public void posuň(double Δx, double Δy)
+		{ throw new GRobotException("Polohu stredu nie je možné meniť!",
+			"zeroPositionCannotBeChanged"); }
+
+		@Override public void posun(double Δx, double Δy)
+		{ throw new GRobotException("Polohu stredu nie je možné meniť!",
+			"zeroPositionCannotBeChanged"); }
+
+		@Override public void posuň(Poloha poloha)
+		{ throw new GRobotException("Polohu stredu nie je možné meniť!",
+			"zeroPositionCannotBeChanged"); }
+
+		@Override public void posun(Poloha poloha)
+		{ throw new GRobotException("Polohu stredu nie je možné meniť!",
+			"zeroPositionCannotBeChanged"); }
+
+		@Override public void posuňVSmere(double smer, double dĺžka)
+		{ throw new GRobotException("Polohu stredu nie je možné meniť!",
+			"zeroPositionCannotBeChanged"); }
+
+		@Override public void posunVSmere(double smer, double dĺžka)
+		{ throw new GRobotException("Polohu stredu nie je možné meniť!",
+			"zeroPositionCannotBeChanged"); }
+
+		@Override public void posuňVSmere(Smer smer, double dĺžka)
+		{ throw new GRobotException("Polohu stredu nie je možné meniť!",
+			"zeroPositionCannotBeChanged"); }
+
+		@Override public void posunVSmere(Smer smer, double dĺžka)
+		{ throw new GRobotException("Polohu stredu nie je možné meniť!",
+			"zeroPositionCannotBeChanged"); }
 	};
 
 	// …

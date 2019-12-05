@@ -103,7 +103,7 @@ import java.awt.geom.Rectangle2D;
  * plochu plátna vyšrafovanie iba vymedzenej plochy.</p>
  * 
  * <pre CLASS="example">
-	{@code kwdimport} knižnica.{@link GRobot GRobot};
+	{@code kwdimport} knižnica.*;
 
 	{@code kwdpublic} {@code typeclass} ŠrafovanýObrázokZOblastí {@code kwdextends} {@link GRobot GRobot}
 	{

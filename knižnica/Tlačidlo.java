@@ -939,7 +939,7 @@ public class Tlačidlo extends JButton implements Poloha
 	 * @param nováFarba objekt typu {@link Color Color} (alebo
 	 *     odvodeného napr. {@link Farba Farba}) s novou farbou textu
 	 *     tlačidla; jestvuje paleta predvolených farieb (pozri napr.:
-	 *     {@link #biela biela}, {@link #červená červená}, {@link #čierna
+	 *     {@link Farebnosť#biela biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna
 	 *     čierna}…)
 	 */
 	public void farbaTextu(Color nováFarba) { setForeground(nováFarba); }
@@ -1047,8 +1047,8 @@ public class Tlačidlo extends JButton implements Poloha
 	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.</p>
 	 * 
 	 * @param nováFarba objekt určujúci novú farbu pozadia;
-	 *     jestvuje paleta predvolených farieb (pozri: {@link #biela
-	 *     biela}, {@link #červená červená}, {@link #čierna čierna}…)
+	 *     jestvuje paleta predvolených farieb (pozri: {@link Farebnosť#biela
+	 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna čierna}…)
 	 */
 	public void farbaPozadia(Color nováFarba) { setBackground(nováFarba); }
 

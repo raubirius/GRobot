@@ -110,16 +110,28 @@ import javax.swing.SwingUtilities;
  * Zatiaľ som ho ešte nepoužil…
  * -->
  * <p>Táto dokumentácia je podporným materiálom na vyučovanie predmetov
- * programovania v Jave s podporou <em>programovacieho rámca GRobot</em>.
+ * programovania v Jave s podporou <em>programovacieho rámca GRobot.</em>
  * Obsahuje úplný opis všetkých tried a metód vrátane príkladov použitia.
  * (Materiál môže byť priebežne aktualizovaný, preto odporúčame sledovať
- * tieto stránky.) Novšie verzie rámca budú publikované na <a
+ * tieto stránky.)<!-- Novšie verzie rámca budú publikované na <a
  * href="http://pdf.truni.sk/katedry/kmi/pracovnici?horvath"
  * target="_blank">stránkach autora</a> (buď samostatne, alebo v rámci <a
  * href="http://pdf.truni.sk/horvath/softver?generator"
  * target="_blank">generátora projektov</a> pre <a
  * href="https://www.bluej.org/" target="_blank">BlueJ</a>, ktorý spomíname
- * neskôr).</p>
+ * neskôr).--></p>
+ * 
+ * <p>Od 12. 3. 2019 je zdrojový kód programovacieho rámca GRobot umiestenný
+ * na serveroch <a href="https://github.com/" target="_blank">GitHub</a>.
+ * <a href="https://github.com/raubirius/GRobot" target="_blank">Jeho
+ * projekt</a> je v nepravidelných intervaloch aktualizovaný. Môže nastať
+ * prípad, kedy sa aktuálna verzia tejto dokumentácie presunie na niektorú
+ * pridruženú službu repozitára. V tom prípade by sa táto informácia objavila
+ * v opise repozitára. Aktuálna verzia <a
+ * href="http://pdf.truni.sk/horvath/download?installs-winter-2018/GRobot.jar"
+ * target="_blank">balíčka JAR</a> (t. j. binárna verzia rámca), môže svoje
+ * umiestnenie tiež zmeniť. Aj o tejto skutočnosti sa pokúsime podať
+ * informáciu na vhodnom umiestnení (on-line).</p>
  * 
  * <p>Programovací rámec má uľahčiť vstup do problematiky programovania.
  * Programovanie je široká oblasť. Vstup do tejto problematiky s použitím
@@ -308,7 +320,7 @@ import javax.swing.SwingUtilities;
 
 		{@code kwdprivate} {@code typevoid} definujVlastnéKreslenie()
 		{
-			{@link #vlastnýTvar(KreslenieTvaru) vlastnýTvar}({@code kwdnew} {@link KreslenieTvaru#KreslenieTvaru() KreslenieTvaru}()
+			{@link #vlastnýTvar(KreslenieTvaru) vlastnýTvar}({@code kwdnew} {@link KreslenieTvaru KreslenieTvaru}()
 			{
 				{@code kwdpublic} {@code typevoid} {@link KreslenieTvaru#kresli(GRobot) kresli}({@code currGRobot} r)
 				{
@@ -418,7 +430,7 @@ import javax.swing.SwingUtilities;
  * nie je preložiteľný:</p>
  * 
  * <pre CLASS="example">
-	{@link PolozkaPonuky PolozkaPonuky} položka = {@code kwdnew} {@link PoložkaPonuky#GRobot.PoložkaPonuky(String) PoložkaPonuky}({@code srg"Položka"});
+	{@link PolozkaPonuky PolozkaPonuky} položka = {@code kwdnew} {@link PoložkaPonuky#PoložkaPonuky(String) PoložkaPonuky}({@code srg"Položka"});
 	</pre>
  * 
  * <p>Rovnako nie je použiteľný žiadny identifikátor s čiastočne použitou
@@ -520,10 +532,10 @@ import javax.swing.SwingUtilities;
  * prístupu tvorby programovacích rámcov (angl. framework) v jazyku Java.
  * Tým sa však transformácia neskončila a významný prerod zaznamenala až
  * v roku 2018, kedy boli všetky pôvodné aj novšie vnorené triedy (okrem
- * jednej – {@link #Spojnica Spojnica}) presunuté na vyššiu úroveň v zmysle
+ * jednej – {@link Spojnica Spojnica}) presunuté na vyššiu úroveň v zmysle
  * ich transformácie na samostatné triedy balíčka (aj keď v rámci balíčka
- * stále úzko prepojené) a knižnica (vtedy vo verzii 1.85) bola premenovaná
- * na programovací rámec s číslom verzie 2.0.</p>
+ * zostali stále úzko prepojené) a knižnica (vtedy vo verzii 1.85) bola
+ * premenovaná na programovací rámec s číslom verzie 2.0.</p>
  * 
  * <p>Transformácia bola dlho odkladaná, pretože po pôvodnom (počiatočnom)
  * rozhodnutí umiestniť „všetko do jediného súboru“ bolo veľmi komplikované
@@ -568,18 +580,21 @@ import javax.swing.SwingUtilities;
  * <tr><td>3.</td><td><small>Zajacová, Katarína</small>: <em>Základy
  * programovania.</em> Trnava : 2010. [online]. Dostupné na: <a
  * href="http://cec.truni.sk/zajacova/2010_ZP_Java/index.html" target="_blank"
- * >http://cec.truni.sk/zajacova/2010_ZP_Java/index.html</a>.</td></tr>
+ * >http://cec.truni.sk/zajacova/2010_ZP_Java/index.html</a>. Citované: 2010 –
+ * 2012.</td></tr>
  * 
  * <tr><td>4.</td><td><small>Hudeková, Dominika</small>: <em>Zbierka úloh
  * v Jave.</em> Trnava : 2012. [online]. Dostupné na: <a
  * href="http://cec.truni.sk/hudekova/2012_ZU_Java/index.html" target="_blank"
- * >http://cec.truni.sk/hudekova/2012_ZU_Java/index.html</a>.</td></tr>
+ * >http://cec.truni.sk/hudekova/2012_ZU_Java/index.html</a>. Citované: 2012 –
+ * 2014.</td></tr>
  * 
  * <tr><td>5.</td><td><small>Hudeková, Dominika – Novák, Lukáš</small>:
  * <em>Java – programovací jazyk pre pokročilých programátorov + Java ako
  * prvý programovací jazyk.</em> Trnava : 2014. [online]. Dostupné na: <a
  * href="http://cec.truni.sk/hudekova/2014_EU_Java/" target="_blank"
- * >http://cec.truni.sk/hudekova/2014_EU_Java/</a>.</td></tr>
+ * >http://cec.truni.sk/hudekova/2014_EU_Java/</a>. Citované: 2014 –
+ * 2016.</td></tr>
  * 
  * </table>
  * 
@@ -595,12 +610,14 @@ import javax.swing.SwingUtilities;
  * <tr><td>2.</td><td><em>The Java Tutorials (Learning the Java
  * Language).</em> Oracle, 1995, 2015. [online]. Dostupné na:
  * <a target="_blank" href="https://docs.oracle.com/javase/tutorial/"
- * >https://docs.oracle.com/javase/tutorial/</a>.</td></tr>
+ * >https://docs.oracle.com/javase/tutorial/</a>. Citované: 2015 –
+ * 2016.</td></tr>
  * 
  * <tr><td>3.</td><td><em>Java Platform Standard Edition 8
  * Documentation.</em> Oracle. [online]. Dostupné na:
  * <a target="_blank" href="https://docs.oracle.com/javase/8/docs/"
- * >https://docs.oracle.com/javase/8/docs/</a>.</td></tr>
+ * >https://docs.oracle.com/javase/8/docs/</a>. Citované: 2014 –
+ * 2016.</td></tr>
  * 
  * </table>
  * 
@@ -1087,8 +1104,8 @@ TODO: na úvodnú stránku
 			 * je možné robotov na plátne presúvať myšou.</p>
 			 * 
 			 * <pre CLASS="example">
-				{@code kwdimport} knižnica.{@link GRobot GRobot};
-				{@code kwdimport} {@code kwdstatic} knižnica.{@link GRobot GRobot}.*;
+				{@code kwdimport} knižnica.*;
+				{@code kwdimport} {@code kwdstatic} knižnica.{@link Konštanty Konštanty}.*;
 
 				{@code kwdpublic} {@code typeclass} TestovanieSpojníc
 				{
@@ -1207,12 +1224,12 @@ TODO: na úvodnú stránku
 								{
 									{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#myš() myš}().{@link MouseEvent#isShiftDown() isShiftDown}())
 									{
-										{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link ÚdajeUdalostí#ĽAVÉ ĽAVÉ}))
+										{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#ĽAVÉ ĽAVÉ}))
 											aktívnyRobot.{@link GRobot#otočNaMyš() otočNaMyš}();
 									}
 									{@code kwdelse}
 									{
-										{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link ÚdajeUdalostí#ĽAVÉ ĽAVÉ}))
+										{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#ĽAVÉ ĽAVÉ}))
 											aktívnyRobot.{@link GRobot#skočNaMyš() skočNaMyš}();
 									}
 								}
@@ -2539,7 +2556,7 @@ TODO: na úvodnú stránku
 						{@link GRobot#veľkosť(double) veľkosť}(veľkosťRobota);
 						{@link GRobot#vlastnýTvar(KreslenieTvaru) vlastnýTvar}(tvar);
 						{@link GRobot#nekresliTvary() nekresliTvary}();
-						{@link GRobot#farba(Color) farba}({@link GRobot#modrá modrá});
+						{@link GRobot#farba(Color) farba}({@link Farebnosť#modrá modrá});
 						{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num3});
 						{@link GRobot#písmo(String, double) písmo}({@code srg"Arial"}, {@code num28});
 
@@ -2553,7 +2570,7 @@ TODO: na úvodnú stránku
 						{@link GRobot#veľkosť(double) veľkosť}(veľkosťRobota);
 						{@link GRobot#vlastnýTvar(KreslenieTvaru) vlastnýTvar}(tvar);
 						{@link GRobot#nekresliTvary() nekresliTvary}();
-						{@link GRobot#farba(Color) farba}({@link GRobot#purpurová purpurová});
+						{@link GRobot#farba(Color) farba}({@link Farebnosť#purpurová purpurová});
 						{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num3});
 						{@link GRobot#písmo(String, double) písmo}({@code srg"Arial"}, {@code num28});
 
@@ -2576,23 +2593,23 @@ TODO: na úvodnú stránku
 					{@link Svet Svet}.{@link Svet#čakaj(double) čakaj}({@code num3.0});
 
 					{@code comm// Zmena farieb a orientácie prvého robota:}
-					štart.{@link GRobot#farba(Color) farba}({@link GRobot#zelená zelená});
+					štart.{@link GRobot#farba(Color) farba}({@link Farebnosť#zelená zelená});
 					{@link Svet Svet}.{@link Svet#čakaj(double) čakaj}({@code num1.5});
-					štart.{@link GRobot#cieľováFarba(Color) cieľováFarba}({@link GRobot#žltá žltá});
+					štart.{@link GRobot#cieľováFarba(Color) cieľováFarba}({@link Farebnosť#žltá žltá});
 					{@link Svet Svet}.{@link Svet#čakaj(double) čakaj}({@code num1.5});
 					štart.{@link GRobot#vpravo(double) vpravo}({@code num30});
 					{@link Svet Svet}.{@link Svet#čakaj(double) čakaj}({@code num1.5});
 
 					{@code comm// Zmena farieb a orientácie druhého robota:}
-					koniec.{@link GRobot#farba(Color) farba}({@link GRobot#červená červená});
+					koniec.{@link GRobot#farba(Color) farba}({@link Farebnosť#červená červená});
 					{@link Svet Svet}.{@link Svet#čakaj(double) čakaj}({@code num1.5});
-					koniec.{@link GRobot#cieľováFarba(Color) cieľováFarba}({@link GRobot#oranžová oranžová});
+					koniec.{@link GRobot#cieľováFarba(Color) cieľováFarba}({@link Farebnosť#oranžová oranžová});
 					{@link Svet Svet}.{@link Svet#čakaj(double) čakaj}({@code num1.5});
 					koniec.{@link GRobot#vľavo(double) vľavo}({@code num30});
 					{@link Svet Svet}.{@link Svet#čakaj(double) čakaj}({@code num1.5});
 
 					{@code comm// Nastavenie vlastných farieb spojnice:}
-					spojnica.{@link GRobot#farba(Color) farba}({@link GRobot#svetlomodrá svetlomodrá}.{@link Farba#bledšia() bledšia}()).{@link Spojnica#farbaKonca(Color) farbaKonca}({@link tyrkysová tyrkysová});
+					spojnica.{@link GRobot#farba(Color) farba}({@link Farebnosť#svetlomodrá svetlomodrá}.{@link Farba#bledšia() bledšia}()).{@link Spojnica#farbaKonca(Color) farbaKonca}({@link Farebnosť#tyrkysová tyrkysová});
 					</pre>
 				 * 
 				 * <p><b>Výsledok:</b></p>
@@ -2897,7 +2914,7 @@ TODO: na úvodnú stránku
 
 						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#ťahanieMyšou() ťahanieMyšou}()
 						{
-							{@code kwdif} ({@code valnull} != r && {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link ÚdajeUdalostí#ĽAVÉ ĽAVÉ}))
+							{@code kwdif} ({@code valnull} != r && {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#ĽAVÉ ĽAVÉ}))
 							{
 								{@code comm// Ak je aktívny jeden z robotov, tak ťahanie ľavého}
 								{@code comm// tlačidla myši so súčasným držaním klávesu Shift ho}
@@ -3418,6 +3435,8 @@ TODO: na úvodnú stránku
 						!getClass().getMethod("zastavenieAnimacie",
 							Obrázok.class).getDeclaringClass().
 							equals(GRobot.class) ||
+
+						// TODO: V režime ladenia to vypisovalo chybu. Overiť‼
 						!getClass().getMethod("ukončenieProcesu",
 							Svet.PríkazovýRiadok.class, int.class).
 							getDeclaringClass().equals(GRobot.class) ||
@@ -4972,8 +4991,6 @@ TODO: na úvodnú stránku
 			}
 
 
-
-
 		// Práca s oblasťami
 
 			// Kreslenie oblastí
@@ -5274,9 +5291,7 @@ TODO: na úvodnú stránku
 		{
 			registrujUdalostiRobota();
 			Svet.inicializujGrafiku();
-			svet.setTitle(novýTitulok);
-			if (null != Svet.oknoCelejObrazovky)
-				Svet.oknoCelejObrazovky.setTitle(novýTitulok);
+			Svet.titulok(novýTitulok);
 			inicializujRobota();
 		}
 
@@ -5401,9 +5416,7 @@ TODO: na úvodnú stránku
 				obrázok.upravPosun();
 
 			Svet.inicializujGrafiku();
-			svet.setTitle(novýTitulok);
-			if (null != Svet.oknoCelejObrazovky)
-				Svet.oknoCelejObrazovky.setTitle(novýTitulok);
+			Svet.titulok(novýTitulok);
 			inicializujRobota();
 		}
 
@@ -5761,8 +5774,8 @@ TODO: na úvodnú stránku
 				 * 
 				 * @param nováFarba objekt farebného údajového typu určujúci
 				 *     novú farbu robota; jestvuje paleta predvolených farieb
-				 *     (pozri napríklad: {@link #biela biela}, {@link #červená
-				 *     červená}, {@link #čierna čierna}…)
+				 *     (pozri napríklad: {@link Farebnosť#biela biela}, {@link Farebnosť#červená
+				 *     červená}, {@link Farebnosť#čierna čierna}…)
 				 * 
 				 * @see #farba()
 				 * @see #farba(Farebnosť)
@@ -5872,7 +5885,7 @@ TODO: na úvodnú stránku
 
 				/**
 				 * <p>Nastaví farbu robota na predvolenú farbu.
-				 * (Predvolenou farbou robota je {@linkplain #čierna čierna}.
+				 * (Predvolenou farbou robota je {@linkplain Farebnosť#čierna čierna}.
 				 * Farba robota ovplyvňuje farebnosť predvoleného tvaru robota
 				 * a farbu kreslenia – čiar aj pečiatok.)</p>
 				 * 
@@ -5956,9 +5969,9 @@ TODO: na úvodnú stránku
 					{@code valsuper}({@code num250}, {@code num250});
 					{@link GRobot#skry() skry}();
 
-					{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@link GRobot#tmavošedá tmavošedá});
-					{@link GRobot#farba(Color) farba}({@link GRobot#svetlotyrkysová svetlotyrkysová});
-					{@link GRobot#cieľováFarba(Color) cieľováFarba}({@link GRobot#svetlooranžová svetlooranžová});
+					{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@link Farebnosť#tmavošedá tmavošedá});
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#svetlotyrkysová svetlotyrkysová});
+					{@link GRobot#cieľováFarba(Color) cieľováFarba}({@link Farebnosť#svetlooranžová svetlooranžová});
 					{@link GRobot#veľkosť(double) veľkosť}({@code num50});
 					{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num5});
 
@@ -5979,8 +5992,8 @@ TODO: na úvodnú stránku
 				 * 
 				 * @param nováFarba objekt farebného údajového typu
 				 *     určujúci cieľovú farbu robota; jestvuje paleta
-				 *     predvolených farieb (pozri napríklad: {@link #biela
-				 *     biela}, {@link #červená červená}, {@link #čierna
+				 *     predvolených farieb (pozri napríklad: {@link Farebnosť#biela
+				 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna
 				 *     čierna}…)
 				 * 
 				 * @see #cieľováFarba()
@@ -6279,7 +6292,7 @@ TODO: na úvodnú stránku
 
 					{@code comm// Príprava polí kotiev:}
 					{@code typefloat}[] polohy = {{@code num0.0f}, {@code num0.33f}, {@code num1.0f}};
-					{@link Farba Farba}[] farby  = {{@link GRobot#svetlošedá svetlošedá}, {@link GRobot#biela biela}, {@link GRobot#svetlotyrkysová svetlotyrkysová}};
+					{@link Farba Farba}[] farby  = {{@link Farebnosť#svetlošedá svetlošedá}, {@link Farebnosť#biela biela}, {@link Farebnosť#svetlotyrkysová svetlotyrkysová}};
 
 					{@code comm// Vytvorenie náteru kruhového farebného prechodu:}
 					{@link java.awt.RadialGradientPaint RadialGradientPaint} náter = {@code kwdnew} {@link java.awt.RadialGradientPaint#RadialGradientPaint(float, float, float, float, float, float[], Color[], java.awt.MultipleGradientPaint.CycleMethod) RadialGradientPaint}(
@@ -6321,7 +6334,7 @@ TODO: na úvodnú stránku
 
 					{@code comm// Príprava polí kotiev:}
 					{@code typefloat}[] polohy = {{@code num0.0f}, {@code num1.0f}};
-					{@link Farba Farba}[] farby  = {{@link GRobot#čierna čierna}, {@link Farebnosť#žiadna žiadna}};
+					{@link Farba Farba}[] farby  = {{@link Farebnosť#čierna čierna}, {@link Farebnosť#žiadna žiadna}};
 
 					{@code comm// Vytvorenie inštancie stredu tieňa s prepočítanými súradnicami:}
 					{@link java.awt.geom.Point2D Point2D}.{@link java.awt.geom.Point2D.Double Double} polohaStredu = {@code kwdnew} {@link java.awt.geom.Point2D.Double#Point2D.Double(double, double) Point2D.Double}(
@@ -6350,13 +6363,13 @@ TODO: na úvodnú stránku
 					{@link GRobot#náter(java.awt.Paint) náter}(náter);
 					{@link GRobot#vyplňElipsu(double, double) vyplňElipsu}(rozmer * {@code num2}, rozmer);
 					{@link Plátno podlaha}.{@link Plátno#rozmaž(int, int) rozmaž}({@code num12}, {@code num3});
-					{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@link GRobot#svetlošedá svetlošedá}.{@link Farba#bledšia() bledšia}());
+					{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@link Farebnosť#svetlošedá svetlošedá}.{@link Farba#bledšia() bledšia}());
 					{@link GRobot#náter(java.awt.Paint) náter}({@code valnull});
 					{@link GRobot#skoč(double) skoč}(rozmer * {@code num1.75});
 
 					{@code comm// Nakreslenie lúčov nad guľou:}
 					{@link GRobot#skoč(double) skoč}(rozmer);
-					{@link GRobot#farba(Color) farba}({@link GRobot#žltá žltá});
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#žltá žltá});
 					{@link GRobot#vyplňHviezdu(double) vyplňHviezdu}(rozmer * {@code num2});
 					{@link GRobot#vpravo(double) vpravo}({@code num36});
 					{@link GRobot#vyplňHviezdu(double) vyplňHviezdu}(rozmer * {@code num2});
@@ -6364,7 +6377,7 @@ TODO: na úvodnú stránku
 					{@link GRobot#odskoč(double) odskoč}(rozmer);
 
 					{@code comm// Nakreslenie gule:}
-					{@link GRobot#farba(Color) farba}({@link GRobot#svetlomodrá svetlomodrá});
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#svetlomodrá svetlomodrá});
 					{@link GRobot#kruh(double) kruh}(rozmer * {@code num2});
 					</pre>
 				 * 
@@ -7034,7 +7047,7 @@ TODO: na úvodnú stránku
 
 				/**
 				 * <p><a class="setter"></a> Prikáže robotovi, aby preskočil na
-				 * konkrétnu súradnicu na podlahe (strope) v smere x. Robot
+				 * konkrétnu súradnicu na podlahe (strope) v smere osi x. Robot
 				 * nekreslí čiaru, ani nezmení smer.</p>
 				 * 
 				 * @param novéX nová x-ová súradnica
@@ -7070,7 +7083,7 @@ TODO: na úvodnú stránku
 
 				/**
 				 * <p><a class="setter"></a> Prikáže robotovi, aby preskočil na
-				 * konkrétnu súradnicu na podlahe (strope) v smere y. Robot
+				 * konkrétnu súradnicu na podlahe (strope) v smere osi y. Robot
 				 * nekreslí čiaru, ani nezmení smer.</p>
 				 * 
 				 * @param novéY nová y-ová súradnica
@@ -7343,15 +7356,17 @@ TODO: na úvodnú stránku
 				/**
 				 * <p><a class="getter"></a> Zistí aktuálnu hodnotu otáčania
 				 * robota pri použití bezparametrických verzií metód
-				 * {@link #vpravo() vpravo} a {@link #vľavo() vľavo}.</p>
+				 * {@link #vpravo() vpravo}, {@link #vľavo() vľavo} a iných.</p>
 				 * 
 				 * @return aktuálny uhol pootočenia robota pri použití metód
-				 *     {@link #vpravo() vpravo}{@code ()}
-				 *     a {@link #vľavo() vľavo}{@code ()}
+				 *     {@link #vpravo() vpravo}{@code ()},
+				 *     {@link #vľavo() vľavo}{@code ()} a iných
 				 * 
 				 * @see #uholOtáčania(double)
 				 * @see #vpravo()
 				 * @see #vľavo()
+				 * @see #choďNaPoOblúku(double, double)
+				 * @see #skočNaPoOblúku(double, double)
 				 */
 				public double uholOtáčania()
 				{
@@ -7364,15 +7379,17 @@ TODO: na úvodnú stránku
 				/**
 				 * <p><a class="setter"></a> Zmení hodnotu otáčania robota pri
 				 * použití bezparametrických verzií metód
-				 * {@link #vpravo() vpravo} a {@link #vľavo() vľavo}.</p>
+				 * {@link #vpravo() vpravo}, {@link #vľavo() vľavo} a iných.</p>
 				 * 
 				 * @param uhol nový uhol pootočenia robota pre metódy
-				 *     {@link #vpravo() vpravo}{@code ()}
-				 *     a {@link #vľavo() vľavo}{@code ()}
+				 *     {@link #vpravo() vpravo}{@code ()},
+				 *     {@link #vľavo() vľavo}{@code ()} iných
 				 * 
 				 * @see #uholOtáčania()
 				 * @see #vpravo()
 				 * @see #vľavo()
+				 * @see #choďNaPoOblúku(double, double)
+				 * @see #skočNaPoOblúku(double, double)
 				 */
 				public void uholOtáčania(double uhol)
 				{
@@ -9121,10 +9138,10 @@ TODO: na úvodnú stránku
 				/**
 				 * <p>Zistí ako sa mení farba po prechode robota
 				 * {@linkplain #domov() domov}. Buď je vrátená konkrétna
-				 * farba, alebo hodnota {@link valnull}, ktorá
+				 * farba, alebo hodnota {@code valnull}, ktorá
 				 * signalizuje, že farba sa po prechode domov nemení.</p>
 				 * 
-				 * @return farba na domovskej pozícii alebo {@link valnull}
+				 * @return farba na domovskej pozícii alebo {@code valnull}
 				 * 
 				 * @see #farbaDoma(Color)
 				 * @see #farbaDoma(Farebnosť)
@@ -9140,10 +9157,10 @@ TODO: na úvodnú stránku
 				 * prechode {@linkplain #domov() domov}. Ak je zadaná
 				 * konkrétna farebná inštancia, tak sa bude farba robota po
 				 * prechode domov meniť na zadanú hodnotu. Ak je zadaná
-				 * hodnota {@code (Farba)}{@link valnull}, tak farba nebude
+				 * hodnota {@code (Farba)}{@code valnull}, tak farba nebude
 				 * po prechode domov ovplyvnená.</p>
 				 * 
-				 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+				 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 				 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 				 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 				 * žiadneho objektu, neprítomnosť žiadnej inštancie.
@@ -9153,7 +9170,7 @@ TODO: na úvodnú stránku
 				 * metód má volať.</p>
 				 * 
 				 * @param nováFarba nová farba na domovskej pozícii alebo
-				 *     pretypovaná hodnota {@code (Farba)}{@link valnull}
+				 *     pretypovaná hodnota {@code (Farba)}{@code valnull}
 				 * 
 				 * @see #farbaDoma()
 				 * @see #farbaDoma(Farebnosť)
@@ -9176,10 +9193,10 @@ TODO: na úvodnú stránku
 				 * prechode {@linkplain #domov() domov}. Ak je zadaná
 				 * konkrétna farebná inštancia, tak sa bude farba robota po
 				 * prechode domov meniť na zadanú hodnotu. Ak je zadaná
-				 * hodnota {@code (Farebnosť)}{@link valnull}, tak farba
+				 * hodnota {@code (Farebnosť)}{@code valnull}, tak farba
 				 * nebude po prechode domov ovplyvnená.</p>
 				 * 
-				 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+				 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 				 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 				 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 				 * žiadneho objektu, neprítomnosť žiadnej inštancie.
@@ -9190,7 +9207,7 @@ TODO: na úvodnú stránku
 				 * 
 				 * @param podľaObjektu objekt určujúci novú farbu na
 				 *     domovskej pozícii alebo pretypovaná hodnota
-				 *     {@code (Farebnosť)}{@link valnull}
+				 *     {@code (Farebnosť)}{@code valnull}
 				 * 
 				 * @see #farbaDoma()
 				 * @see #farbaDoma(Color)
@@ -9269,11 +9286,11 @@ TODO: na úvodnú stránku
 				/**
 				 * <p>Zistí ako sa mení cieľová farba po prechode robota
 				 * {@linkplain #domov() domov}. Buď je vrátená konkrétna
-				 * farba, alebo hodnota {@link valnull}, ktorá signalizuje
+				 * farba, alebo hodnota {@code valnull}, ktorá signalizuje
 				 * to, že cieľová farba nie je po prechode robota domov
 				 * ovplyvnená.</p>
 				 * 
-				 * @return cieľová farba na domovskej pozícii alebo {@link valnull}
+				 * @return cieľová farba na domovskej pozícii alebo {@code valnull}
 				 * 
 				 * @see #cieľováFarbaDoma(Color)
 				 * @see #cieľováFarbaDoma(Farebnosť)
@@ -9297,7 +9314,7 @@ TODO: na úvodnú stránku
 				 * doma}, tak cieľová farba nie je po prechode domov
 				 * ovplyvnená.</p>
 				 * 
-				 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+				 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 				 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 				 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 				 * žiadneho objektu, neprítomnosť žiadnej inštancie.
@@ -9308,7 +9325,7 @@ TODO: na úvodnú stránku
 				 * 
 				 * @param nováFarba cieľová farba robota po prechode na
 				 *     domovskú pozíciu alebo pretypovaná hodnota
-				 *     {@code (Farba)}{@link valnull}
+				 *     {@code (Farba)}{@code valnull}
 				 * 
 				 * @see #cieľováFarbaDoma()
 				 * @see #cieľováFarbaDoma(Farebnosť)
@@ -9335,10 +9352,10 @@ TODO: na úvodnú stránku
 				/**
 				 * <p>Zmení nastavenie cieľovej farby robota po jeho prechode
 				 * {@linkplain #domov() domov}. Hodnota {@code 
-				 * (Farebnosť)}{@link valnull} znamená, že cieľová farba nie
+				 * (Farebnosť)}{@code valnull} znamená, že cieľová farba nie
 				 * je po prechode domov ovplyvnená.</p>
 				 * 
-				 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+				 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 				 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 				 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 				 * žiadneho objektu, neprítomnosť žiadnej inštancie.
@@ -9349,7 +9366,7 @@ TODO: na úvodnú stránku
 				 * 
 				 * @param podľaObjektu objekt určujúci nastavenie cieľovej
 				 *     farby na domovskej pozícii, pričom pretypovaná hodnota
-				 *     {@code (Farebnosť)}{@link valnull} signalizuje zrušenie
+				 *     {@code (Farebnosť)}{@code valnull} signalizuje zrušenie
 				 *     nastavenia cieľovej farby po prechode domov
 				 * 
 				 * @see #cieľováFarbaDoma()
@@ -9511,10 +9528,10 @@ TODO: na úvodnú stránku
 				/**
 				 * <p>Zistí ako sa mení hrúbka pera po prechode robota
 				 * {@linkplain #domov() domov}. Buď je vrátená konkrétna
-				 * číselná hodnota, alebo hodnota {@link valnull}, ktorá
+				 * číselná hodnota, alebo hodnota {@code valnull}, ktorá
 				 * signalizuje, že hrúbka pera sa po prechode domov nemení.</p>
 				 * 
-				 * @return hrúbka pera domovskej pozície alebo {@link valnull}
+				 * @return hrúbka pera domovskej pozície alebo {@code valnull}
 				 * 
 				 * @see #hrúbkaČiaryDoma()
 				 * @see #hrúbkaPeraDoma(Double)
@@ -9531,10 +9548,10 @@ TODO: na úvodnú stránku
 				/**
 				 * <p>Zistí ako sa mení hrúbka pera po prechode robota
 				 * {@linkplain #domov() domov}. Buď je vrátená konkrétna
-				 * číselná hodnota, alebo hodnota {@link valnull}, ktorá
+				 * číselná hodnota, alebo hodnota {@code valnull}, ktorá
 				 * signalizuje, že hrúbka pera sa po prechode domov nemení.</p>
 				 * 
-				 * @return hrúbka pera domovskej pozície alebo {@link valnull}
+				 * @return hrúbka pera domovskej pozície alebo {@code valnull}
 				 * 
 				 * @see #hrúbkaPeraDoma()
 				 * @see #hrúbkaPeraDoma(Double)
@@ -9557,7 +9574,7 @@ TODO: na úvodnú stránku
 				 * ovplyvnená.</p>
 				 * 
 				 * @param nováHrúbka nová hrúbka pera domovskej pozície alebo
-				 *     {@link valnull}
+				 *     {@code valnull}
 				 * 
 				 * @see #hrúbkaPeraDoma()
 				 * @see #hrúbkaČiaryDoma()
@@ -9582,7 +9599,7 @@ TODO: na úvodnú stránku
 				 * ovplyvnená.</p>
 				 * 
 				 * @param nováHrúbka nová hrúbka pera domovskej pozície alebo
-				 *     {@link valnull}
+				 *     {@code valnull}
 				 * 
 				 * @see #hrúbkaPeraDoma()
 				 * @see #hrúbkaČiaryDoma()
@@ -9638,12 +9655,12 @@ TODO: na úvodnú stránku
 				/**
 				 * <p>Zistí ako sa mení veľkosť robota po jeho prechode na
 				 * {@linkplain #domov() domovskú pozíciu}. Buď je vrátená
-				 * konkrétna číselná hodnota, alebo hodnota {@link valnull},
+				 * konkrétna číselná hodnota, alebo hodnota {@code valnull},
 				 * ktorá signalizuje, že veľkosť robota sa po prechode domov
 				 * nemení.</p>
 				 * 
 				 * @return veľkosť robota na domovskej pozícii alebo
-				 *     {@link valnull}
+				 *     {@code valnull}
 				 * 
 				 * @see #veľkosťDoma(Double)
 				 * @see #zachovajVeľkosťDoma()
@@ -9659,11 +9676,11 @@ TODO: na úvodnú stránku
 				 * prechode na {@linkplain #domov() domovskú pozíciu}. Ak je
 				 * zadaná konkrétna číselná hodnota, veľkosť robota robota bude
 				 * po prechode domov upravená na zadanú hodnotu. Ak je zadaná
-				 * hodnota {@link valnull}, tak veľkosť robota nebude po
+				 * hodnota {@code valnull}, tak veľkosť robota nebude po
 				 * prechode domov ovplyvnená.</p>
 				 * 
 				 * @param nováVeľkosť nová veľkosť robota na domovskej pozícii
-				 *     alebo {@link valnull}
+				 *     alebo {@code valnull}
 				 * 
 				 * @see #veľkosťDoma()
 				 * @see #zachovajVeľkosťDoma()
@@ -9693,12 +9710,12 @@ TODO: na úvodnú stránku
 				/**
 				 * <p>Zistí ako sa mení priehľadnosť robota po jeho prechode na
 				 * {@linkplain #domov() domovskú pozíciu}. Buď je vrátená
-				 * konkrétna číselná hodnota, alebo hodnota {@link valnull},
+				 * konkrétna číselná hodnota, alebo hodnota {@code valnull},
 				 * ktorá signalizuje, že priehľadnosť robota sa po prechode
 				 * domov nemení.</p>
 				 * 
 				 * @return priehľadnosť robota na domovskej pozícii alebo
-				 *     {@link valnull}
+				 *     {@code valnull}
 				 * 
 				 * @see #priehľadnosťDoma(Double)
 				 * @see #zachovajPriehľadnosťDoma()
@@ -9718,11 +9735,11 @@ TODO: na úvodnú stránku
 				 * jeho prechode na {@linkplain #domov() domovskú pozíciu}.
 				 * Ak je zadaná konkrétna číselná hodnota, priehľadnosť robota
 				 * bude po prechode domov upravená na zadanú hodnotu. Ak je
-				 * zadaná hodnota {@link valnull}, tak priehľadnosť robota
+				 * zadaná hodnota {@code valnull}, tak priehľadnosť robota
 				 * nebude po prechode domov ovplyvnená.</p>
 				 * 
 				 * @param nováPriehľadnosť nová priehľadnosť robota na domovskej
-				 *     pozícii alebo {@link valnull}
+				 *     pozícii alebo {@code valnull}
 				 * 
 				 * @see #priehľadnosťDoma()
 				 * @see #zachovajPriehľadnosťDoma()
@@ -9760,10 +9777,10 @@ TODO: na úvodnú stránku
 				 * <p>Zistí ako sa mení písmo robota po jeho prechode na
 				 * {@linkplain #domov() domovskú pozíciu}. Buď je vrátený
 				 * konkrétny objekt reprezentujúci písmo, alebo hodnota
-				 * {@link valnull}, ktorá signalizuje, že písmo robota sa po
+				 * {@code valnull}, ktorá signalizuje, že písmo robota sa po
 				 * prechode domov nemení.</p>
 				 * 
-				 * @return písmo robota na domovskej pozícii alebo {@link valnull}
+				 * @return písmo robota na domovskej pozícii alebo {@code valnull}
 				 * 
 				 * @see #písmoDoma(Font)
 				 * @see #písmoDoma(String, double)
@@ -9780,11 +9797,11 @@ TODO: na úvodnú stránku
 				 * {@linkplain #domov() domovskú pozíciu}. Ak je zadaný objekt
 				 * typu {@link Písmo} alebo {@link java.awt.Font}, tak písmo
 				 * robota sa po prechode domov zmení podľa zadaného objektu.
-				 * Ak je zadaná hodnota {@link valnull}, tak písmo robota nebude
+				 * Ak je zadaná hodnota {@code valnull}, tak písmo robota nebude
 				 * po prechode domov ovplyvnené.</p>
 				 * 
 				 * @param novéPísmo objekt typu {@link Písmo} alebo
-				 *     {@link java.awt.Font} alebo {@link valnull}
+				 *     {@link java.awt.Font} alebo {@code valnull}
 				 * 
 				 * @see #písmoDoma()
 				 * @see #písmoDoma(String, double)
@@ -10857,21 +10874,29 @@ TODO: na úvodnú stránku
 			// Smer a krokový pohyb v smere
 
 				/**
-				 * <p>Prikáže robotovi, aby sa posunul dopredu o zadaný počet
-				 * bodov v aktuálnom smere. Keď je pero položené, tak kreslí
+				 * <p>Prikáže robotovi, aby sa posunul dopredu o zadanú dĺžku
+				 * v aktuálnom smere. Keď je pero položené, tak kreslí
 				 * čiaru. Opakom je metóda {@link #vzad(double) vzad}.</p>
 				 * 
-				 * <p>(Pôvodný jazyk Logo definoval ku každému príkazu pohybu
-				 * jeho dvojpísmenové skratky. Pri preklade Loga do slovenčiny
-				 * vznikali rôzne nejednoznačnosti, ktoré autori vyriešili
-				 * ustálením nasledujúcich tvarov príkazov pohybu korytnačky:
-				 * dopredu, vzad, vpravo, vľavo. Grafický robot nemôže
-				 * definovať pre tieto príkazy pôvodné skratky, pretože
-				 * jedna z nich je v konflikte s kľúčovým slovom Javy. Preto
-				 * aspoň definuje všetky aliasy: vpred, doprava, doľava
-				 * a dozadu.)</p>
+				 * * <p class="remark"><b>Poznámka:</b> V pôvodnom jazyku
+				 * Logo (v anglickej verzii) sú ku každému príkazu pohybu
+				 * korytnačky (z toho pochádza termín „korytnačia grafika“;
+				 * korytnačku v tomto rámci nahrádza grafický robot)
+				 * definované jeho dvojpísmenové skratky (fd – forward –
+				 * dopredu; bk – backward – vzad; rt – right – vpravo; lt –
+				 * left – vľavo). Pri preklade Loga do slovenčiny vznikali
+				 * rôzne nejednoznačnosti, ktoré autori vyriešili ustálením
+				 * nasledujúcich tvarov príkazov pohybu korytnačky:
+				 * dopredu, vzad, vpravo a vľavo, ku ktorým prislúchajú skratky
+				 * príkazov do, vz, vp a vľ. Ak chceme dodržať pravidlo
+				 * vytvorenia skratky z prvých dvoch písmen, tak v slovenskom
+				 * jazyku nenájdeme iné jednoznačné priradenie. V jazyku Java
+				 * je však slovo {@code kwddo} rezervované. Preto
+				 * v programovacom rámci GRobot nemôžu byť skratky pre tieto
+				 * príkazy definované. Rozhodli sme sa aspoň definovať všetky
+				 * aliasy príkazov pohybu: vpred, doprava, doľava a dozadu.</p>
 				 * 
-				 * @param dĺžka počet bodov, o ktorý sa má robot posunúť
+				 * @param dĺžka vzdialenosť, o ktorú sa má robot posunúť
 				 * 
 				 * @see #dopredu() dopredu (bez zadania dĺžky)
 				 * @see #vpred(double) (vpred)
@@ -10943,22 +10968,30 @@ TODO: na úvodnú stránku
 				public void vpred(double dĺžka) { dopredu(dĺžka); }
 
 				/**
-				 * <p>Prikáže robotovi, aby cúvol z aktuálneho miesta o zadaný
-				 * počet bodov (v aktuálnom smere). Keď je pero položené, tak
+				 * <p>Prikáže robotovi, aby cúvol z aktuálneho miesta o zadanú
+				 * dĺžku (v aktuálnom smere). Keď je pero položené, tak
 				 * kreslí čiaru. Opakom je metóda {@link #dopredu(double)
 				 * dopredu}.</p>
 				 * 
-				 * <p>(Pôvodný jazyk Logo definoval ku každému príkazu pohybu
-				 * jeho dvojpísmenové skratky. Pri preklade Loga do slovenčiny
-				 * vznikali rôzne nejednoznačnosti, ktoré autori vyriešili
-				 * ustálením nasledujúcich tvarov príkazov pohybu korytnačky:
-				 * dopredu, vzad, vpravo, vľavo. Grafický robot nemôže
-				 * definovať pre tieto príkazy pôvodné skratky, pretože
-				 * jedna z nich je v konflikte s kľúčovým slovom Javy. Preto
-				 * aspoň definuje všetky aliasy: vpred, doprava, doľava
-				 * a dozadu.)</p>
+				 * * <p class="remark"><b>Poznámka:</b> V pôvodnom jazyku
+				 * Logo (v anglickej verzii) sú ku každému príkazu pohybu
+				 * korytnačky (z toho pochádza termín „korytnačia grafika“;
+				 * korytnačku v tomto rámci nahrádza grafický robot)
+				 * definované jeho dvojpísmenové skratky (fd – forward –
+				 * dopredu; bk – backward – vzad; rt – right – vpravo; lt –
+				 * left – vľavo). Pri preklade Loga do slovenčiny vznikali
+				 * rôzne nejednoznačnosti, ktoré autori vyriešili ustálením
+				 * nasledujúcich tvarov príkazov pohybu korytnačky:
+				 * dopredu, vzad, vpravo a vľavo, ku ktorým prislúchajú skratky
+				 * príkazov do, vz, vp a vľ. Ak chceme dodržať pravidlo
+				 * vytvorenia skratky z prvých dvoch písmen, tak v slovenskom
+				 * jazyku nenájdeme iné jednoznačné priradenie. V jazyku Java
+				 * je však slovo {@code kwddo} rezervované. Preto
+				 * v programovacom rámci GRobot nemôžu byť skratky pre tieto
+				 * príkazy definované. Rozhodli sme sa aspoň definovať všetky
+				 * aliasy príkazov pohybu: vpred, doprava, doľava a dozadu.</p>
 				 * 
-				 * @param dĺžka počet bodov, o ktorý sa má robot posunúť
+				 * @param dĺžka vzdialenosť, o ktorú sa má robot posunúť
 				 * 
 				 * @see #vzad() vzad (bez zadania dĺžky)
 				 * @see #dopredu(double) dopredu
@@ -10985,15 +11018,23 @@ TODO: na úvodnú stránku
 				 * hodinových ručičiek. Opakom je metóda {@link #vľavo(double)
 				 * vľavo}.</p>
 				 * 
-				 * <p>(Pôvodný jazyk Logo definoval ku každému príkazu pohybu
-				 * jeho dvojpísmenové skratky. Pri preklade Loga do slovenčiny
-				 * vznikali rôzne nejednoznačnosti, ktoré autori vyriešili
-				 * ustálením nasledujúcich tvarov príkazov pohybu korytnačky:
-				 * dopredu, vzad, vpravo, vľavo. Grafický robot nemôže
-				 * definovať pre tieto príkazy pôvodné skratky, pretože
-				 * jedna z nich je v konflikte s kľúčovým slovom Javy. Preto
-				 * aspoň definuje všetky aliasy: vpred, doprava, doľava
-				 * a dozadu.)</p>
+				 * * <p class="remark"><b>Poznámka:</b> V pôvodnom jazyku
+				 * Logo (v anglickej verzii) sú ku každému príkazu pohybu
+				 * korytnačky (z toho pochádza termín „korytnačia grafika“;
+				 * korytnačku v tomto rámci nahrádza grafický robot)
+				 * definované jeho dvojpísmenové skratky (fd – forward –
+				 * dopredu; bk – backward – vzad; rt – right – vpravo; lt –
+				 * left – vľavo). Pri preklade Loga do slovenčiny vznikali
+				 * rôzne nejednoznačnosti, ktoré autori vyriešili ustálením
+				 * nasledujúcich tvarov príkazov pohybu korytnačky:
+				 * dopredu, vzad, vpravo a vľavo, ku ktorým prislúchajú skratky
+				 * príkazov do, vz, vp a vľ. Ak chceme dodržať pravidlo
+				 * vytvorenia skratky z prvých dvoch písmen, tak v slovenskom
+				 * jazyku nenájdeme iné jednoznačné priradenie. V jazyku Java
+				 * je však slovo {@code kwddo} rezervované. Preto
+				 * v programovacom rámci GRobot nemôžu byť skratky pre tieto
+				 * príkazy definované. Rozhodli sme sa aspoň definovať všetky
+				 * aliasy príkazov pohybu: vpred, doprava, doľava a dozadu.</p>
 				 * 
 				 * @param uhol uhol, o ktorý sa má robot otočiť
 				 * 
@@ -11026,15 +11067,23 @@ TODO: na úvodnú stránku
 				 * hodinových ručičiek. Opakom je metóda {@link 
 				 * #vpravo(double) vpravo}.</p>
 				 * 
-				 * <p>(Pôvodný jazyk Logo definoval ku každému príkazu pohybu
-				 * jeho dvojpísmenové skratky. Pri preklade Loga do slovenčiny
-				 * vznikali rôzne nejednoznačnosti, ktoré autori vyriešili
-				 * ustálením nasledujúcich tvarov príkazov pohybu korytnačky:
-				 * dopredu, vzad, vpravo, vľavo. Grafický robot nemôže
-				 * definovať pre tieto príkazy pôvodné skratky, pretože
-				 * jedna z nich je v konflikte s kľúčovým slovom Javy. Preto
-				 * aspoň definuje všetky aliasy: vpred, doprava, doľava
-				 * a dozadu.)</p>
+				 * * <p class="remark"><b>Poznámka:</b> V pôvodnom jazyku
+				 * Logo (v anglickej verzii) sú ku každému príkazu pohybu
+				 * korytnačky (z toho pochádza termín „korytnačia grafika“;
+				 * korytnačku v tomto rámci nahrádza grafický robot)
+				 * definované jeho dvojpísmenové skratky (fd – forward –
+				 * dopredu; bk – backward – vzad; rt – right – vpravo; lt –
+				 * left – vľavo). Pri preklade Loga do slovenčiny vznikali
+				 * rôzne nejednoznačnosti, ktoré autori vyriešili ustálením
+				 * nasledujúcich tvarov príkazov pohybu korytnačky:
+				 * dopredu, vzad, vpravo a vľavo, ku ktorým prislúchajú skratky
+				 * príkazov do, vz, vp a vľ. Ak chceme dodržať pravidlo
+				 * vytvorenia skratky z prvých dvoch písmen, tak v slovenskom
+				 * jazyku nenájdeme iné jednoznačné priradenie. V jazyku Java
+				 * je však slovo {@code kwddo} rezervované. Preto
+				 * v programovacom rámci GRobot nemôžu byť skratky pre tieto
+				 * príkazy definované. Rozhodli sme sa aspoň definovať všetky
+				 * aliasy príkazov pohybu: vpred, doprava, doľava a dozadu.</p>
 				 * 
 				 * @param uhol uhol, o ktorý sa má robot otočiť
 				 * 
@@ -11204,12 +11253,12 @@ TODO: na úvodnú stránku
 
 
 				/**
-				 * <p>Prikáže robotovi, aby preskočil dopredu o zadaný počet
-				 * bodov v aktuálnom smere. Robot pri skákaní nekreslí
-				 * čiaru. Opakom je metóda {@link #odskoč(double) odskoč}.
+				 * <p>Prikáže robotovi, aby preskočil dopredu o zadanú dĺžku
+				 * v aktuálnom smere. Robot pri skákaní nekreslí čiaru.
+				 * Opakom je metóda {@link #odskoč(double) odskoč}.
 				 * (Pozri aj metódu {@link #skoč() skoč()}.)</p>
 				 * 
-				 * @param dĺžka počet bodov, ktoré má robot preskočiť
+				 * @param dĺžka vzdialenosť, o ktorú má robot preskočiť
 				 * 
 				 * @see #dopredu(double) dopredu
 				 */
@@ -11258,12 +11307,11 @@ TODO: na úvodnú stránku
 
 				/**
 				 * <p>Prikáže robotovi, aby skokom cúvol z aktuálneho miesta
-				 * o zadaný počet bodov (v aktuálnom smere). Robot pri
-				 * skákaní nekreslí čiaru. Opakom je metóda
-				 * {@link #skoč(double) skoč}.
+				 * o zadanú dĺžku (v aktuálnom smere). Robot pri skákaní
+				 * nekreslí čiaru. Opakom je metóda {@link #skoč(double) skoč}.
 				 * (Pozri aj metódu {@link #odskoč() odskoč()}.)</p>
 				 * 
-				 * @param dĺžka počet bodov, ktoré má robot preskočiť
+				 * @param dĺžka vzdialenosť, o ktorú má robot preskočiť
 				 * 
 				 * @see #vzad(double) vzad
 				 */
@@ -11326,13 +11374,13 @@ TODO: na úvodnú stránku
 
 
 				/**
-				 * <p>Prikáže robotovi, aby sa posunul vpravo o zadaný počet
-				 * bodov (vzhľadom na aktuálnu orientáciu). Robot zostane
+				 * <p>Prikáže robotovi, aby sa posunul vpravo o zadanú dĺžku
+				 * (vzhľadom na aktuálnu orientáciu). Robot zostane
 				 * obrátený tam, kam bol. Keď je pero položené, tak kreslí
 				 * čiaru. Protikladom je metóda {@link #posuňVľavo(double)
 				 * posuňVľavo}.</p>
 				 * 
-				 * @param dĺžka počet bodov, o ktorý sa má robot posunúť
+				 * @param dĺžka vzdialenosť, o ktorú sa má robot posunúť
 				 */
 				public void posuňVpravo(double dĺžka)
 				{
@@ -11396,13 +11444,13 @@ TODO: na úvodnú stránku
 				public void posunDoprava(double dĺžka) { posuňVpravo(dĺžka); }
 
 				/**
-				 * <p>Prikáže robotovi, aby sa posunul vľavo o zadaný počet bodov
+				 * <p>Prikáže robotovi, aby sa posunul vľavo o zadanú dĺžku
 				 * (vzhľadom na aktuálnu orientáciu). Robot zostane obrátený
 				 * tam, kam bol. Keď je pero položené, tak kreslí čiaru.
 				 * Protikladom je metóda {@link #posuňVpravo(double)
 				 * posuňVpravo}.</p>
 				 * 
-				 * @param dĺžka počet bodov, o ktorý sa má robot posunúť
+				 * @param dĺžka vzdialenosť, o ktorú sa má robot posunúť
 				 */
 				public void posuňVľavo(double dĺžka)
 				{
@@ -11466,12 +11514,51 @@ TODO: na úvodnú stránku
 				public void posunDolava(double dĺžka) { posuňVľavo(dĺžka); }
 
 				/**
-				 * <p>Prikáže robotovi, aby sa posunul v zadanom smere o zadaný
-				 * počet bodov. Robot zostane obrátený tam, kam bol. Keď je
-				 * pero položené, tak kreslí čiaru.</p>
+				 * <p>Prikáže robotovi, aby sa posunul vpravo o hodnotu svojej
+				 * {@linkplain #veľkosť() veľkosti} násobenej {@linkplain 
+				 * #pomer() pomerom} (vzhľadom na aktuálnu orientáciu). Robot
+				 * zostane obrátený tam, kam bol. Keď je pero položené, tak
+				 * kreslí čiaru. Protikladom je metóda {@link #posuňVľavo()
+				 * posuňVľavo}.</p>
+				 */
+				public void posuňVpravo() { posuňVpravo(veľkosť * pomerVeľkosti); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #posuňVpravo() posuňVpravo}.</p> */
+				public void posunVpravo() { posuňVpravo(veľkosť * pomerVeľkosti); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #posuňVpravo() posuňVpravo}.</p> */
+				public void posuňDoprava() { posuňVpravo(veľkosť * pomerVeľkosti); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #posuňDoprava() posuňDoprava}.</p> */
+				public void posunDoprava() { posuňVpravo(veľkosť * pomerVeľkosti); }
+
+				/**
+				 * <p>Prikáže robotovi, aby sa posunul vľavo o hodnotu svojej
+				 * {@linkplain #veľkosť() veľkosti} násobenej {@linkplain 
+				 * #pomer() pomerom} (vzhľadom na aktuálnu orientáciu). Robot
+				 * zostane obrátený tam, kam bol. Keď je pero položené, tak
+				 * kreslí čiaru. Protikladom je metóda {@link #posuňVpravo()
+				 * posuňVpravo}.</p>
+				 */
+				public void posuňVľavo() { posuňVľavo(veľkosť * pomerVeľkosti); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #posuňVľavo() posuňVľavo}.</p> */
+				public void posunVlavo() { posuňVľavo(veľkosť * pomerVeľkosti); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #posuňVľavo() posuňVľavo}.</p> */
+				public void posuňDoľava() { posuňVľavo(veľkosť * pomerVeľkosti); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #posuňDoľava() posuňDoľava}.</p> */
+				public void posunDolava() { posuňVľavo(veľkosť * pomerVeľkosti); }
+
+
+				/**
+				 * <p>Prikáže robotovi, aby sa posunul v zadanom smere
+				 * o zadanú dĺžku. Robot zostane obrátený tam, kam bol. Keď
+				 * je pero položené, tak kreslí čiaru.</p>
 				 * 
 				 * @param smer uhol smeru, ktorým sa má robot posunúť
-				 * @param dĺžka počet bodov, o ktorý sa má robot posunúť
+				 * @param dĺžka vzdialenosť, o ktorú sa má robot posunúť
 				 */
 				public void posuňVSmere(double smer, double dĺžka)
 				{
@@ -11529,50 +11616,11 @@ TODO: na úvodnú stránku
 				public void posunVSmere(double smer, double dĺžka)
 				{ posuňVSmere(smer, dĺžka); }
 
-
 				/**
-				 * <p>Prikáže robotovi, aby sa posunul vpravo o hodnotu svojej
-				 * {@linkplain #veľkosť() veľkosti} násobenej {@linkplain 
-				 * #pomer() pomerom} (vzhľadom na aktuálnu orientáciu). Robot
+				 * <p>Prikáže robotovi, aby sa posunul v zadanom smere
+				 * o hodnotu svojej {@linkplain #veľkosť() veľkosti}. Robot
 				 * zostane obrátený tam, kam bol. Keď je pero položené, tak
-				 * kreslí čiaru. Protikladom je metóda {@link #posuňVľavo()
-				 * posuňVľavo}.</p>
-				 */
-				public void posuňVpravo() { posuňVpravo(veľkosť * pomerVeľkosti); }
-
-				/** <p><a class="alias"></a> Alias pre {@link #posuňVpravo() posuňVpravo}.</p> */
-				public void posunVpravo() { posuňVpravo(veľkosť * pomerVeľkosti); }
-
-				/** <p><a class="alias"></a> Alias pre {@link #posuňVpravo() posuňVpravo}.</p> */
-				public void posuňDoprava() { posuňVpravo(veľkosť * pomerVeľkosti); }
-
-				/** <p><a class="alias"></a> Alias pre {@link #posuňDoprava() posuňDoprava}.</p> */
-				public void posunDoprava() { posuňVpravo(veľkosť * pomerVeľkosti); }
-
-				/**
-				 * <p>Prikáže robotovi, aby sa posunul vľavo o hodnotu svojej
-				 * {@linkplain #veľkosť() veľkosti} násobenej {@linkplain 
-				 * #pomer() pomerom} (vzhľadom na aktuálnu orientáciu). Robot
-				 * zostane obrátený tam, kam bol. Keď je pero položené, tak
-				 * kreslí čiaru. Protikladom je metóda {@link #posuňVpravo()
-				 * posuňVpravo}.</p>
-				 */
-				public void posuňVľavo() { posuňVľavo(veľkosť * pomerVeľkosti); }
-
-				/** <p><a class="alias"></a> Alias pre {@link #posuňVľavo() posuňVľavo}.</p> */
-				public void posunVlavo() { posuňVľavo(veľkosť * pomerVeľkosti); }
-
-				/** <p><a class="alias"></a> Alias pre {@link #posuňVľavo() posuňVľavo}.</p> */
-				public void posuňDoľava() { posuňVľavo(veľkosť * pomerVeľkosti); }
-
-				/** <p><a class="alias"></a> Alias pre {@link #posuňDoľava() posuňDoľava}.</p> */
-				public void posunDolava() { posuňVľavo(veľkosť * pomerVeľkosti); }
-
-				/**
-				 * <p>Prikáže robotovi, aby sa posunul v zadanom smere o hodnotu
-				 * svojej {@linkplain #veľkosť() veľkosti}. Robot zostane
-				 * obrátený tam, kam bol. Keď je pero položené, tak kreslí
-				 * čiaru.</p>
+				 * kreslí čiaru.</p>
 				 * 
 				 * @param smer uhol smeru, ktorým sa má robot posunúť
 				 */
@@ -11583,15 +11631,95 @@ TODO: na úvodnú stránku
 				public void posunVSmere(double smer)
 				{ posuňVSmere(smer, veľkosť); }
 
+				/**
+				 * <p>Prikáže robotovi, aby sa posunul v zadanom smere
+				 * o zadanú dĺžku. Robot zostane obrátený tam, kam bol. Keď
+				 * je pero položené, tak kreslí čiaru.</p>
+				 * 
+				 * @param smer inštancia určujúca smer, ktorým sa má robot
+				 *     posunúť
+				 * @param dĺžka vzdialenosť, o ktorú sa má robot posunúť
+				 */
+				public void posuňVSmere(Smer smer, double dĺžka)
+				{
+					// Prvý krok ohraničenia (ak je aktívne)
+					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+
+					double novéX = aktuálneX + Math.cos(
+						Math.toRadians(smer.smer())) * dĺžka;
+					double novéY = aktuálneY + Math.sin(
+						Math.toRadians(smer.smer())) * dĺžka;
+
+					if (peroPoložené)
+					{
+						úsečka(aktuálneX, aktuálneY, novéX, novéY);
+						aktualizujPôsobisko();
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+						aktualizujPôsobisko();
+					}
+					else
+					{
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+					}
+
+					if (záznamCesty)
+					{
+						if (peroPoložené || záznamCestyBezPolohyPera)
+							cesta.lineTo(
+								Svet.prepočítajX(novéX),
+								Svet.prepočítajY(novéY));
+						else
+							cesta.moveTo(
+								Svet.prepočítajX(novéX),
+								Svet.prepočítajY(novéY));
+						/*
+						cesta.addPoint(
+							(int)Svet.prepočítajX(novéX),
+							(int)Svet.prepočítajY(novéY));
+						*/
+					}
+
+					// Kontrola ohraničenia
+					if (!kreslímVlastnýTvar && vyriešOhraničenie())
+					{
+						registrujPretočOhraničenie(() ->
+							posuňVSmere(smer.smer(), dĺžka));
+						while (doriešOhraničenie());
+					}
+
+					if (viditeľný || peroPoložené) Svet.automatickéPrekreslenie();
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #posuňVSmere(Smer, double) posuňVSmere}.</p> */
+				public void posunVSmere(Smer smer, double dĺžka)
+				{ posuňVSmere(smer, dĺžka); }
 
 				/**
-				 * <p>Prikáže robotovi, aby preskočil vpravo o zadaný počet
-				 * bodov (vzhľadom na aktuálnu orientáciu). Robot zostane
-				 * obrátený tam, kam bol a pri skákaní nekreslí
-				 * čiaru. Protikladom je metóda {@link #preskočVľavo(double)
-				 * preskočVľavo}.</p>
+				 * <p>Prikáže robotovi, aby sa posunul v zadanom smere
+				 * o hodnotu svojej {@linkplain #veľkosť() veľkosti}. Robot
+				 * zostane obrátený tam, kam bol. Keď je pero položené, tak
+				 * kreslí čiaru.</p>
 				 * 
-				 * @param dĺžka počet bodov, ktoré má robot preskočiť
+				 * @param smer inštancia určujúca smer, ktorým sa má robot
+				 *     posunúť
+				 */
+				public void posuňVSmere(Smer smer)
+				{ posuňVSmere(smer, veľkosť); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #posuňVSmere(Smer) posuňVSmere}.</p> */
+				public void posunVSmere(Smer smer)
+				{ posuňVSmere(smer, veľkosť); }
+
+
+				/**
+				 * <p>Prikáže robotovi, aby preskočil vpravo o zadanú dĺžku
+				 * (vzhľadom na aktuálnu orientáciu). Robot zostane obrátený
+				 * tam, kam bol a pri skákaní nekreslí čiaru. Protikladom je
+				 * metóda {@link #preskočVľavo(double) preskočVľavo}.</p>
+				 * 
+				 * @param dĺžka vzdialenosť, o ktorú má robot preskočiť
 				 */
 				public void preskočVpravo(double dĺžka)
 				{
@@ -11644,13 +11772,13 @@ TODO: na úvodnú stránku
 				public void preskocDoprava(double dĺžka) { preskočVpravo(dĺžka); }
 
 				/**
-				 * <p>Prikáže robotovi, aby preskočil vľavo o zadaný počet bodov
+				 * <p>Prikáže robotovi, aby preskočil vľavo o zadanú dĺžku
 				 * (vzhľadom na aktuálnu orientáciu). Robot zostane obrátený
 				 * tam, kam bol a pri skákaní nekreslí čiaru.
 				 * Protikladom je metóda {@link #preskočVpravo(double)
 				 * preskočVpravo}.</p>
 				 * 
-				 * @param dĺžka počet bodov, ktoré má robot preskočiť
+				 * @param dĺžka vzdialenosť, o ktorú má robot preskočiť
 				 */
 				public void preskočVľavo(double dĺžka)
 				{
@@ -11703,12 +11831,51 @@ TODO: na úvodnú stránku
 				public void preskocDolava(double dĺžka) { preskočVľavo(dĺžka); }
 
 				/**
-				 * <p>Prikáže robotovi, aby preskočil v zadanom smere o zadaný
-				 * počet bodov. Robot zostane obrátený tam, kam bol
+				 * <p>Prikáže robotovi, aby preskočil vpravo o hodnotu svojej
+				 * {@linkplain #veľkosť() veľkosti} násobenej {@linkplain 
+				 * #pomer() pomerom} (vzhľadom na aktuálnu orientáciu). Robot
+				 * zostane obrátený tam, kam bol a pri skákaní nekreslí čiaru.
+				 * Protikladom je metóda {@link #preskočVľavo()
+				 * preskočVľavo}.</p>
+				 */
+				public void preskočVpravo() { preskočVpravo(veľkosť * pomerVeľkosti); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #preskočVpravo() preskočVpravo}.</p> */
+				public void preskocVpravo() { preskočVpravo(veľkosť * pomerVeľkosti); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #preskočVpravo() preskočVpravo}.</p> */
+				public void preskočDoprava() { preskočVpravo(veľkosť * pomerVeľkosti); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #preskočDoprava() preskočDoprava}.</p> */
+				public void preskocDoprava() { preskočVpravo(veľkosť * pomerVeľkosti); }
+
+				/**
+				 * <p>Prikáže robotovi, aby preskočil vľavo o hodnotu svojej
+				 * {@linkplain #veľkosť() veľkosti} násobenej {@linkplain 
+				 * #pomer() pomerom} (vzhľadom na aktuálnu orientáciu). Robot
+				 * zostane obrátený tam, kam bol a pri skákaní nekreslí čiaru.
+				 * Protikladom je metóda {@link #preskočVpravo()
+				 * preskočVpravo}.</p>
+				 */
+				public void preskočVľavo() { preskočVľavo(veľkosť * pomerVeľkosti); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #preskočVľavo() preskočVľavo}.</p> */
+				public void preskocVlavo() { preskočVľavo(veľkosť * pomerVeľkosti); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #preskočVľavo() preskočVľavo}.</p> */
+				public void preskočDoľava() { preskočVľavo(veľkosť * pomerVeľkosti); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #preskočDoľava() preskočDoľava}.</p> */
+				public void preskocDolava() { preskočVľavo(veľkosť * pomerVeľkosti); }
+
+
+				/**
+				 * <p>Prikáže robotovi, aby preskočil v zadanom smere
+				 * o zadanú dĺžku. Robot zostane obrátený tam, kam bol
 				 * a pri skákaní nekreslí čiaru.</p>
 				 * 
 				 * @param smer uhol smeru, ktorým má robot skočiť
-				 * @param dĺžka počet bodov, ktoré má robot preskočiť
+				 * @param dĺžka vzdialenosť, o ktorú má robot preskočiť
 				 */
 				public void preskočVSmere(double smer, double dĺžka)
 				{
@@ -11755,45 +11922,6 @@ TODO: na úvodnú stránku
 				public void preskocVSmere(double smer, double dĺžka)
 				{ preskočVSmere(smer, dĺžka); }
 
-
-				/**
-				 * <p>Prikáže robotovi, aby preskočil vpravo o hodnotu svojej
-				 * {@linkplain #veľkosť() veľkosti} násobenej {@linkplain 
-				 * #pomer() pomerom} (vzhľadom na aktuálnu orientáciu). Robot
-				 * zostane obrátený tam, kam bol a pri skákaní nekreslí čiaru.
-				 * Protikladom je metóda {@link #preskočVľavo()
-				 * preskočVľavo}.</p>
-				 */
-				public void preskočVpravo() { preskočVpravo(veľkosť * pomerVeľkosti); }
-
-				/** <p><a class="alias"></a> Alias pre {@link #preskočVpravo() preskočVpravo}.</p> */
-				public void preskocVpravo() { preskočVpravo(veľkosť * pomerVeľkosti); }
-
-				/** <p><a class="alias"></a> Alias pre {@link #preskočVpravo() preskočVpravo}.</p> */
-				public void preskočDoprava() { preskočVpravo(veľkosť * pomerVeľkosti); }
-
-				/** <p><a class="alias"></a> Alias pre {@link #preskočDoprava() preskočDoprava}.</p> */
-				public void preskocDoprava() { preskočVpravo(veľkosť * pomerVeľkosti); }
-
-				/**
-				 * <p>Prikáže robotovi, aby preskočil vľavo o hodnotu svojej
-				 * {@linkplain #veľkosť() veľkosti} násobenej {@linkplain 
-				 * #pomer() pomerom} (vzhľadom na aktuálnu orientáciu). Robot
-				 * zostane obrátený tam, kam bol a pri skákaní nekreslí čiaru.
-				 * Protikladom je metóda {@link #preskočVpravo()
-				 * preskočVpravo}.</p>
-				 */
-				public void preskočVľavo() { preskočVľavo(veľkosť * pomerVeľkosti); }
-
-				/** <p><a class="alias"></a> Alias pre {@link #preskočVľavo() preskočVľavo}.</p> */
-				public void preskocVlavo() { preskočVľavo(veľkosť * pomerVeľkosti); }
-
-				/** <p><a class="alias"></a> Alias pre {@link #preskočVľavo() preskočVľavo}.</p> */
-				public void preskočDoľava() { preskočVľavo(veľkosť * pomerVeľkosti); }
-
-				/** <p><a class="alias"></a> Alias pre {@link #preskočDoľava() preskočDoľava}.</p> */
-				public void preskocDolava() { preskočVľavo(veľkosť * pomerVeľkosti); }
-
 				/**
 				 * <p>Prikáže robotovi, aby preskočil v zadanom smere o hodnotu
 				 * svojej {@linkplain #veľkosť() veľkosti}. Robot zostane
@@ -11807,6 +11935,74 @@ TODO: na úvodnú stránku
 
 				/** <p><a class="alias"></a> Alias pre {@link #preskočVSmere(double) preskočVSmere}.</p> */
 				public void preskocVSmere(double smer)
+				{ preskočVSmere(smer, veľkosť); }
+
+				/**
+				 * <p>Prikáže robotovi, aby preskočil v zadanom smere
+				 * o zadanú dĺžku. Robot zostane obrátený tam, kam bol
+				 * a pri skákaní nekreslí čiaru.</p>
+				 * 
+				 * @param smer inštancia určujúca smer, ktorým má robot skočiť
+				 * @param dĺžka vzdialenosť, o ktorú má robot preskočiť
+				 */
+				public void preskočVSmere(Smer smer, double dĺžka)
+				{
+					// Prvý krok ohraničenia (ak je aktívne)
+					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+
+					double novéX = aktuálneX + Math.cos(
+						Math.toRadians(smer.smer())) * dĺžka;
+					double novéY = aktuálneY + Math.sin(
+						Math.toRadians(smer.smer())) * dĺžka;
+
+					aktuálneX = novéX;
+					aktuálneY = novéY;
+
+					if (záznamCesty)
+					{
+						if (záznamCestyBezPolohyPera)
+							cesta.lineTo(
+								Svet.prepočítajX(novéX),
+								Svet.prepočítajY(novéY));
+						else
+							cesta.moveTo(
+								Svet.prepočítajX(novéX),
+								Svet.prepočítajY(novéY));
+						/*
+						cesta.addPoint(
+							(int)Svet.prepočítajX(novéX),
+							(int)Svet.prepočítajY(novéY));
+						*/
+					}
+
+					// Kontrola ohraničenia
+					if (!kreslímVlastnýTvar && vyriešOhraničenie())
+					{
+						registrujPretočOhraničenie(() ->
+							preskočVSmere(smer.smer(), dĺžka));
+						while (doriešOhraničenie());
+					}
+
+					if (viditeľný) Svet.automatickéPrekreslenie();
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #preskočVSmere(Smer, double) preskočVSmere}.</p> */
+				public void preskocVSmere(Smer smer, double dĺžka)
+				{ preskočVSmere(smer, dĺžka); }
+
+				/**
+				 * <p>Prikáže robotovi, aby preskočil v zadanom smere o hodnotu
+				 * svojej {@linkplain #veľkosť() veľkosti}. Robot zostane
+				 * obrátený tam, kam bol a pri skákaní nekreslí
+				 * čiaru.</p>
+				 * 
+				 * @param smer inštancia určujúca smer, ktorým má robot skočiť
+				 */
+				public void preskočVSmere(Smer smer)
+				{ preskočVSmere(smer, veľkosť); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #preskočVSmere(Smer) preskočVSmere}.</p> */
+				public void preskocVSmere(Smer smer)
 				{ preskočVSmere(smer, veľkosť); }
 
 
@@ -12043,8 +12239,8 @@ TODO: na úvodnú stránku
 				 * relatívnymi súradnicami – súradnicami vztiahnutými
 				 * k súčasnej polohe robota.)</p>
 				 * 
-				 * @param Δx odchýlka v smere x
-				 * @param Δy odchýlka v smere y
+				 * @param Δx odchýlka v smere osi x
+				 * @param Δy odchýlka v smere osi y
 				 * @return hodnota uhla určujúceho smer od stredu
 				 *     súradnicovej sústavy k zadanému bodu
 				 * 
@@ -12505,8 +12701,8 @@ TODO: na úvodnú stránku
 				 * metóda pracuje s tzv. relatívnymi súradnicami – súradnicami
 				 * vztiahnutými k súčasnej polohe robota.)</p>
 				 * 
-				 * @param Δx odchýlka v smere x
-				 * @param Δy odchýlka v smere y
+				 * @param Δx odchýlka v smere osi x
+				 * @param Δy odchýlka v smere osi y
 				 * 
 				 * @see #smer(double)
 				 * @see #uhol(double)
@@ -12554,8 +12750,8 @@ TODO: na úvodnú stránku
 				 * neotočí robota okamžite smerom na zadané súradnice, iba ním
 				 * pootočí stanoveným smerom o maximálnu zadanú hodnotu uhla.</p>
 				 * 
-				 * @param Δx odchýlka v smere x
-				 * @param Δy odchýlka v smere y
+				 * @param Δx odchýlka v smere osi x
+				 * @param Δy odchýlka v smere osi y
 				 * @param najviacO maximálna hodnota uhla, o ktorú sa môže
 				 *     robot otočiť smerom k bodu [Δx, Δy]
 				 * 
@@ -13268,13 +13464,13 @@ TODO: na úvodnú stránku
 
 
 				/**
-				 * <p>Prikáže robotovi, aby sa na posunul o zadaný počet bodov
+				 * <p>Prikáže robotovi, aby sa na posunul o zadané súradnice
 				 * v horizontálnom a vertikálnom smere. Keď je pero položené,
 				 * tak kreslí čiaru po aktívnom plátne (podlahe alebo strope).
 				 * Robot nezmení aktuálny smer.</p>
 				 * 
-				 * @param Δx počet bodov v smere x
-				 * @param Δy počet bodov v smere y
+				 * @param Δx miera posunutia v smere osi x
+				 * @param Δy miera posunutia v smere osi y
 				 * 
 				 * @see #choďNa(double, double)
 				 * @see #choďNa(Poloha)
@@ -13565,11 +13761,11 @@ TODO: na úvodnú stránku
 
 				/**
 				 * <p>Prikáže robotovi, aby sa na na podlahe (strope) preskočil
-				 * o zadaný počet bodov v horizontálnom a vertikálnom smere.
+				 * o zadané súradnice v horizontálnom a vertikálnom smere.
 				 * Robot nekreslí čiaru, ani nezmení svoj aktuálny smer.</p>
 				 * 
-				 * @param Δx počet bodov v smere x
-				 * @param Δy počet bodov v smere y
+				 * @param Δx miera posunutia v smere osi x
+				 * @param Δy miera posunutia v smere osi y
 				 * 
 				 * @see #choďNa(double, double)
 				 * @see #choďNa(Poloha)
@@ -13619,7 +13815,7 @@ TODO: na úvodnú stránku
 
 
 				/**
-				 * <p>Prikáže robotovi, aby sa posunul o zadaný počet bodov
+				 * <p>Prikáže robotovi, aby sa posunul o zadané súradnice
 				 * smere osí x a y, pričom obe osi sú pootočené podľa
 				 * rozdielu aktuálneho smeru robota a uhla 90°. To znamená,
 				 * že ak je aktuálny uhol robota rovný 90° (čo je predvolená
@@ -13633,10 +13829,10 @@ TODO: na úvodnú stránku
 				 * túto metódu je v opise metódy {@link #preskoč(double,
 				 * double) preskoč}.</p>
 				 * 
-				 * @param Δx počet bodov, o ktorý sa má robot posunúť
+				 * @param Δx miera posunutia, o ktorú sa má robot posunúť
 				 *     „doprava“ – v smere kolmom vzhľadom na svoju orientáciu
 				 *     (záporné hodnoty posúvajú robota „doľava“)
-				 * @param Δy počet bodov, o ktorý sa má robot posunúť
+				 * @param Δy miera posunutia, o ktorú sa má robot posunúť
 				 *     „dopredu“ – priamo v smere svojej orientácie (opäť,
 				 *     záporné súradnice posúvajú robota „dozadu“)
 				 */
@@ -13698,7 +13894,7 @@ TODO: na úvodnú stránku
 				public void posun(double Δx, double Δy) { posuň(Δx, Δy); }
 
 				/**
-				 * <p>Prikáže robotovi, aby preskočil o zadaný počet bodov
+				 * <p>Prikáže robotovi, aby preskočil o zadané súradnice
 				 * smere osí x a y, pričom obe osi sú pootočené podľa
 				 * rozdielu aktuálneho smeru robota a uhla 90°. To znamená,
 				 * že ak je aktuálny uhol robota rovný 90° (čo je predvolená
@@ -13738,13 +13934,13 @@ TODO: na úvodnú stránku
 							{@link GRobot#skočNa(double, double) skočNa}({@code num0}, {@code num0});
 
 							{@code comm// Stabilná súradnicová sústava:}
-							{@link GRobot#farba(Color) farba}({@link GRobot#čierna čierna});
+							{@link GRobot#farba(Color) farba}({@link Farebnosť#čierna čierna});
 							{@link GRobot#skoč(double, double) skoč}(-{@code num200}, {@code num0}); {@link GRobot#choď(double, double) choď}({@code num400}, {@code num0});
 							{@link GRobot#skoč(double, double) skoč}(-{@code num200}, {@code num200}); {@link GRobot#choď(double, double) choď}({@code num0}, -{@code num400});
 							{@link GRobot#skoč(double, double) skoč}({@code num0}, {@code num200});
 
 							{@code comm// Pootočená súradnicová sústava:}
-							{@link GRobot#farba(Color) farba}({@link GRobot#tyrkysová tyrkysová});
+							{@link GRobot#farba(Color) farba}({@link Farebnosť#tyrkysová tyrkysová});
 							{@link GRobot#preskoč(double, double) preskoč}(-{@code num200}, {@code num0}); {@link GRobot#posuň(double, double) posuň}({@code num400}, {@code num0});
 							{@link GRobot#preskoč(double, double) preskoč}(-{@code num200}, {@code num200}); {@link GRobot#posuň(double, double) posuň}({@code num0}, -{@code num400});
 
@@ -13778,7 +13974,7 @@ TODO: na úvodnú stránku
 								{@code comm// Ostatné tlačidlá otočia robota na myš:}
 								{@link Svet Svet}.{@link Svet#vymaž() vymaž}();
 								{@link GRobot#otočNaMyš() otočNaMyš}();
-								{@link GRobot#kresliOsi() kresliOsi}();
+								kresliOsi();
 							}
 						}
 
@@ -13792,10 +13988,10 @@ TODO: na úvodnú stránku
 					}
 					</pre>
 				 * 
-				 * @param Δx počet bodov, o ktoré má robot preskočiť
+				 * @param Δx miera posunutia, o ktorú má robot preskočiť
 				 *     „doprava“ – v smere kolmom vzhľadom na jeho orientáciu
 				 *     (záporné hodnoty kážu robotovi skákať „doľava“)
-				 * @param Δy počet bodov, o ktoré má robot preskočiť
+				 * @param Δy miera posunutia, o ktorú má robot preskočiť
 				 *     „dopredu“ – priamo v smere svojej orientácie (opäť,
 				 *     záporné súradnice mu kážu skákať „dozadu“)
 				 */
@@ -13851,15 +14047,18 @@ TODO: na úvodnú stránku
 				/**
 				 * <p>Pohne robotom po oblúku so zadaným polomerom o zadaný
 				 * uhol a v prípade, že je položené pero, tak oblúk aj
-				 * nakreslí. Robot sa predvolene otáča doprava (t. j. pri
+				 * nakreslí. Robot sa predvolene otáča doľava (t. j. pri
 				 * zadaní kladného uhla otáčania a kladného polomeru sa robot
-				 * pri pohybe dopredu otáča doprava, čiže kreslí pravotočivý
-				 * oblúk). Na obrátenie smeru otáčania (kreslenie ľavotočivého
+				 * pri pohybe dopredu otáča doľava, čiže kreslí ľavotočivý
+				 * oblúk). Na obrátenie smeru otáčania (kreslenie pravotočivého
 				 * oblúka) zadajte záporný polomer otáčania. Pri zadaní
 				 * záporného uhla bude robot cúvať. Keď je polomer rovný nule,
 				 * robot zostane stáť aj v prípade, že je uhol nenulový,
 				 * pretože nie je možné určiť vzdialenosť akú by mal prejsť.</p>
 				 * 
+				 * <p class="attention"><b>Upozornenie:</b> Vo verzii 2.0
+				 * sa zmenil predvolený smer otáčania robota!</p>
+				 *
 				 * @param uhol uhol, o ktorý sa má robot otočiť okolo
 				 *     zadaného polomeru
 				 * @param polomer polomer otáčania
@@ -13870,6 +14069,8 @@ TODO: na úvodnú stránku
 				 * @see #vľavo(double) vľavo
 				 * @see #choďNa(double, double) choďNa
 				 * @see #skočNa(double, double) skočNa
+				 * @see #choďPoOblúku(double)
+				 * @see #choďPoOblúku()
 				 * @see #skočPoOblúku(double, double)
 				 * @see #choďNaPoOblúku(double, double)
 				 * @see #skočNaPoOblúku(double, double)
@@ -13916,12 +14117,9 @@ TODO: na úvodnú stránku
 					// stredu otáčania, pootočením o uhol otáčania a posunom
 					// späť na dráhu oblúka…
 
-					if (polomer < 0)
+					if (polomer >= 0)
 					{
-						// 
-						polomer = -polomer;
 						priemer = 2 * polomer;
-						// 
 
 						prepočítanéX -= polomer * (1 - Math.cos(
 							Math.toRadians(aktuálnyUhol + 90)));
@@ -13952,6 +14150,7 @@ TODO: na úvodnú stránku
 					}
 					else
 					{
+						polomer = -polomer;
 						priemer = 2 * polomer;
 
 						prepočítanéX -= polomer * (1 - Math.cos(
@@ -14039,7 +14238,7 @@ TODO: na úvodnú stránku
 
 				/* *
 				 * <p>Pohne robotom po oblúku so zadaným polomerom o zadaný
-				 * uhol. Robot sa predvolene otáča doprava. Na obrátenie
+				 * uhol. Robot sa predvolene otáča doľava. Na obrátenie
 				 * smeru otáčania zadajte záporný uhol.</p>
 				 * 
 				 * @param uhol uhol, o ktorý sa má robot otočiť okolo
@@ -14077,15 +14276,18 @@ TODO: na úvodnú stránku
 				/**
 				 * <p>Pohne robotom po oblúku so zadaným polomerom o zadaný
 				 * uhol bez jeho nakreslenia. Robot sa predvolene otáča
-				 * doprava (t. j. pri zadaní kladného uhla otáčania a kladného
-				 * polomeru sa robot pri pohybe dopredu otáča doprava, čiže sa
-				 * pohybuje po pravotočivom oblúku). Na obrátenie smeru
-				 * otáčania (pohyb po ľavotočivom oblúku) zadajte záporný
+				 * doľava (t. j. pri zadaní kladného uhla otáčania a kladného
+				 * polomeru sa robot pri pohybe dopredu otáča doľava, čiže sa
+				 * pohybuje po ľavotočivom oblúku). Na obrátenie smeru
+				 * otáčania (pohyb po pravotočivom oblúku) zadajte záporný
 				 * polomer otáčania. Pri zadaní záporného uhla bude robot
 				 * cúvať. Keď je polomer rovný nule, robot zostane stáť aj
 				 * v prípade, že je uhol nenulový, pretože nie je možné
 				 * určiť vzdialenosť akú by mal prejsť.</p>
 				 * 
+				 * <p class="attention"><b>Upozornenie:</b> Vo verzii 2.0
+				 * sa zmenil predvolený smer otáčania robota!</p>
+				 *
 				 * @param uhol uhol, o ktorý sa má robot otočiť okolo
 				 *     zadaného polomeru
 				 * @param polomer polomer otáčania
@@ -14096,6 +14298,8 @@ TODO: na úvodnú stránku
 				 * @see #vľavo(double) vľavo
 				 * @see #choďNa(double, double) choďNa
 				 * @see #skočNa(double, double) skočNa
+				 * @see #skočPoOblúku(double)
+				 * @see #skočPoOblúku()
 				 * @see #choďPoOblúku(double, double)
 				 * @see #choďNaPoOblúku(double, double)
 				 * @see #skočNaPoOblúku(double, double)
@@ -14125,12 +14329,9 @@ TODO: na úvodnú stránku
 					// stredu otáčania, pootočením o uhol otáčania a posunom
 					// späť na dráhu oblúka…
 
-					if (polomer < 0)
+					if (polomer >= 0)
 					{
-						// 
-						polomer = -polomer;
 						priemer = 2 * polomer;
-						// 
 
 						prepočítanéX -= polomer * (1 - Math.cos(
 							Math.toRadians(aktuálnyUhol + 90)));
@@ -14160,6 +14361,7 @@ TODO: na úvodnú stránku
 					}
 					else
 					{
+						polomer = -polomer;
 						priemer = 2 * polomer;
 
 						prepočítanéX -= polomer * (1 - Math.cos(
@@ -14206,6 +14408,187 @@ TODO: na úvodnú stránku
 				/** <p><a class="alias"></a> Alias pre {@link #skočPoOblúku(double, double) skočPoOblúku}.</p> */
 				public void skocPoObluku(double uhol, double polomer)
 				{ skočPoOblúku(uhol, polomer); }
+
+
+				/**
+				 * <p>Pohne robotom po oblúku s polomerom rovným veľkosti
+				 * robota o zadaný uhol a v prípade, že je položené pero,
+				 * tak oblúk aj nakreslí. Ďalej platia rovnaké informácie
+				 * ako pri metóde {@link #choďPoOblúku(double, double)
+				 * choďPoOblúku(uhol, polomer)}.</p>
+				 * 
+				 * @param uhol uhol, o ktorý sa má robot otočiť okolo
+				 *     polomeru určeného veľkosťou robota
+				 * 
+				 * @see #choďPoOblúku(double, double)
+				 * @see #veľkosť()
+				 */
+				public void choďPoOblúku(double uhol)
+				{ choďPoOblúku(uhol, veľkosť); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #choďPoOblúku(double) choďPoOblúku}.</p> */
+				public void chodPoObluku(double uhol)
+				{ choďPoOblúku(uhol, veľkosť); }
+
+
+				/**
+				 * <p>Pohne robotom po oblúku s polomerom rovným veľkosti
+				 * robota o zadaný uhol bez jeho nakreslenia. Ďalej platia
+				 * rovnaké informácie ako pri metóde
+				 * {@link #skočPoOblúku(double, double)
+				 * skočPoOblúku(uhol, polomer)}.</p>
+				 * 
+				 * @param uhol uhol, o ktorý sa má robot otočiť okolo
+				 *     polomeru určeného veľkosťou robota
+				 * 
+				 * @see #skočNaPoOblúku(double, double)
+				 * @see #veľkosť()
+				 */
+				public void skočPoOblúku(double uhol)
+				{ skočPoOblúku(uhol, veľkosť); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #skočPoOblúku(double) skočPoOblúku}.</p> */
+				public void skocPoObluku(double uhol)
+				{ skočPoOblúku(uhol, veľkosť); }
+
+
+				/**
+				 * <p>Pohne robotom po oblúku s polomerom rovným veľkosti
+				 * robota o aktuálny uhol otáčania a v prípade, že je položené
+				 * pero, tak oblúk aj nakreslí. Pozri metódy{@link #veľkosť()}
+				 * a {@link #uholOtáčania()}. Ďalej platia rovnaké informácie
+				 * ako pri metóde {@link #choďPoOblúku(double, double)
+				 * choďPoOblúku(uhol, polomer)}.</p>
+				 * 
+				 * @see #choďPoOblúku(double, double)
+				 * @see #veľkosť()
+				 * @see #uholOtáčania()
+				 */
+				public void choďPoOblúku()
+				{ choďPoOblúku(uholOtáčania, veľkosť); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #choďPoOblúku(double) choďPoOblúku}.</p> */
+				public void chodPoObluku()
+				{ choďPoOblúku(uholOtáčania, veľkosť); }
+
+
+				/**
+				 * <p>Pohne robotom po oblúku s polomerom rovným veľkosti
+				 * robota o aktuálny uhol otáčania bez nakreslenia oblúka.
+				 * Pozri metódy{@link #veľkosť()} a {@link #uholOtáčania()}.
+				 * Ďalej platia rovnaké informácie ako pri metóde
+				 * {@link #skočPoOblúku(double, double)
+				 * skočPoOblúku(uhol, polomer)}.</p>
+				 * 
+				 * @see #skočNaPoOblúku(double, double)
+				 * @see #veľkosť()
+				 * @see #uholOtáčania()
+				 */
+				public void skočPoOblúku()
+				{ skočPoOblúku(uholOtáčania, veľkosť); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #skočPoOblúku(double) skočPoOblúku}.</p> */
+				public void skocPoObluku()
+				{ skočPoOblúku(uholOtáčania, veľkosť); }
+
+
+				/**
+				 * <p>Pohne robotom po oblúku s polomerom rovným veľkosti
+				 * robota o zadaný uhol a v prípade, že je položené pero,
+				 * tak oblúk aj nakreslí. Ak je hodnota parametra
+				 * {@code vpravo} rovná {@code valtrue}, tak sa robot bude
+				 * otáčať doprava. Inak platia rovnaké informácie
+				 * ako pri metóde {@link #choďPoOblúku(double, double)
+				 * choďPoOblúku(uhol, polomer)}.</p>
+				 * 
+				 * @param uhol uhol, o ktorý sa má robot otočiť okolo
+				 *     polomeru určeného veľkosťou robota
+				 * @param vpravo ak je táto hodnota rovná {@code valtrue},
+				 *     tak sa robot bude otáčať doprava
+				 * 
+				 * @see #choďPoOblúku(double, double)
+				 * @see #veľkosť()
+				 */
+				public void choďPoOblúku(double uhol, boolean vpravo)
+				{ choďPoOblúku(uhol, vpravo ? -veľkosť : veľkosť); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #choďPoOblúku(double) choďPoOblúku}.</p> */
+				public void chodPoObluku(double uhol, boolean vpravo)
+				{ choďPoOblúku(uhol, vpravo ? -veľkosť : veľkosť); }
+
+
+				/**
+				 * <p>Pohne robotom po oblúku s polomerom rovným veľkosti
+				 * robota o zadaný uhol bez jeho nakreslenia. Ak je hodnota
+				 * parametra {@code vpravo} rovná {@code valtrue}, tak sa
+				 * robot bude otáčať doprava. Inak platia rovnaké informácie
+				 * ako pri metóde {@link #skočPoOblúku(double, double)
+				 * skočPoOblúku(uhol, polomer)}.</p>
+				 * 
+				 * @param uhol uhol, o ktorý sa má robot otočiť okolo
+				 *     polomeru určeného veľkosťou robota
+				 * @param vpravo ak je táto hodnota rovná {@code valtrue},
+				 *     tak sa robot bude otáčať doprava
+				 * 
+				 * @see #skočNaPoOblúku(double, double)
+				 * @see #veľkosť()
+				 */
+				public void skočPoOblúku(double uhol, boolean vpravo)
+				{ skočPoOblúku(uhol, vpravo ? -veľkosť : veľkosť); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #skočPoOblúku(double) skočPoOblúku}.</p> */
+				public void skocPoObluku(double uhol, boolean vpravo)
+				{ skočPoOblúku(uhol, vpravo ? -veľkosť : veľkosť); }
+
+
+				/**
+				 * <p>Pohne robotom po oblúku s polomerom rovným veľkosti
+				 * robota o aktuálny uhol otáčania a v prípade, že je položené
+				 * pero, tak oblúk aj nakreslí. Pozri metódy{@link #veľkosť()}
+				 * a {@link #uholOtáčania()}. Ak je hodnota parametra
+				 * {@code vpravo} rovná {@code valtrue}, tak sa robot bude
+				 * otáčať doprava. Inak platia rovnaké informácie
+				 * ako pri metóde {@link #choďPoOblúku(double, double)
+				 * choďPoOblúku(uhol, polomer)}.</p>
+				 * 
+				 * @param vpravo ak je táto hodnota rovná {@code valtrue},
+				 *     tak sa robot bude otáčať doprava
+				 * 
+				 * @see #choďPoOblúku(double, double)
+				 * @see #veľkosť()
+				 * @see #uholOtáčania()
+				 */
+				public void choďPoOblúku(boolean vpravo)
+				{ choďPoOblúku(uholOtáčania, vpravo ? -veľkosť : veľkosť); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #choďPoOblúku(double) choďPoOblúku}.</p> */
+				public void chodPoObluku(boolean vpravo)
+				{ choďPoOblúku(uholOtáčania, vpravo ? -veľkosť : veľkosť); }
+
+
+				/**
+				 * <p>Pohne robotom po oblúku s polomerom rovným veľkosti
+				 * robota o aktuálny uhol otáčania bez nakreslenia oblúka.
+				 * Pozri metódy{@link #veľkosť()} a {@link #uholOtáčania()}.
+				 * Ak je hodnota parametra {@code vpravo} rovná
+				 * {@code valtrue}, tak sa robot bude otáčať doprava. Inak
+				 * platia rovnaké informácie ako pri metóde
+				 * {@link #skočPoOblúku(double, double)
+				 * skočPoOblúku(uhol, polomer)}.</p>
+				 * 
+				 * @param vpravo ak je táto hodnota rovná {@code valtrue},
+				 *     tak sa robot bude otáčať doprava
+				 * 
+				 * @see #skočNaPoOblúku(double, double)
+				 * @see #veľkosť()
+				 * @see #uholOtáčania()
+				 */
+				public void skočPoOblúku(boolean vpravo)
+				{ skočPoOblúku(uholOtáčania, vpravo ? -veľkosť : veľkosť); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #skočPoOblúku(double) skočPoOblúku}.</p> */
+				public void skocPoObluku(boolean vpravo)
+				{ skočPoOblúku(uholOtáčania, vpravo ? -veľkosť : veľkosť); }
 
 
 				// Súkromný atribút slúžiaci niektorým metódam (momentálne
@@ -14394,7 +14777,7 @@ TODO: na úvodnú stránku
 
 							// System.out.println("uhol 1: " + uhol);
 
-							choďPoOblúku(uhol, -polomer);
+							choďPoOblúku(uhol, polomer);
 						}
 						else
 						{
@@ -14406,7 +14789,7 @@ TODO: na úvodnú stránku
 
 							// System.out.println("uhol 2: " + uhol);
 
-							choďPoOblúku(uhol, polomer);
+							choďPoOblúku(uhol, -polomer);
 						}
 					}
 					catch (RuntimeException e)
@@ -14572,7 +14955,7 @@ TODO: na úvodnú stránku
 								x3 - x)) - pracovnýUhol2) % 360;
 							if (uhol < 0) uhol += 360;
 
-							skočPoOblúku(uhol, -polomer);
+							skočPoOblúku(uhol, polomer);
 						}
 						else
 						{
@@ -14582,7 +14965,7 @@ TODO: na úvodnú stránku
 									x3 - x))) % 360;
 							if (uhol < 0) uhol += 360;
 
-							skočPoOblúku(uhol, polomer);
+							skočPoOblúku(uhol, -polomer);
 						}
 					}
 					catch (RuntimeException e)
@@ -14997,6 +15380,7 @@ TODO: na úvodnú stránku
 				 * @see #zastav(boolean)
 				 * @see #zastav(int, boolean)
 				 * @see #deaktivuj()
+				 * @see #zastavPosun()
 				 */
 				public void zastav() { zastav(0, false); }
 
@@ -15032,6 +15416,7 @@ TODO: na úvodnú stránku
 				 * @see #zastav()
 				 * @see #zastav(boolean)
 				 * @see #zastav(int, boolean)
+				 * @see #zastavPosun()
 				 */
 				public void zastav(int trvaniePasivity) { zastav(trvaniePasivity, false); }
 
@@ -15048,6 +15433,7 @@ TODO: na úvodnú stránku
 				 * @see #zastav()
 				 * @see #zastav(int)
 				 * @see #zastav(int, boolean)
+				 * @see #zastavPosun()
 				 */
 				public void zastav(boolean ajČasovač) { zastav(0, ajČasovač); }
 
@@ -15070,6 +15456,7 @@ TODO: na úvodnú stránku
 				 * @see #zastav()
 				 * @see #zastav(int)
 				 * @see #zastav(boolean)
+				 * @see #zastavPosun()
 				 */
 				public void zastav(int trvaniePasivity, boolean ajČasovač)
 				{
@@ -15087,6 +15474,54 @@ TODO: na úvodnú stránku
 						Svet.spustiČasovač();
 					}
 					zastavenie();
+				}
+
+				/**
+				 * <p>Volanie tejto metódy (či už automatické alebo ručné)
+				 * spôsobí zastavenie pohybu v kolmom smere voči aktuálnej
+				 * orientácii robota – zastavenie {@linkplain 
+				 * #rýchlosťPosunu(double) posunu}.</p>
+				 * 
+				 * <p>Táto metóda je automaticky spustená pri splnení
+				 * nasledujúcich podmienok:</p>
+				 * 
+				 * <ul>
+				 * <li>{@linkplain #zrýchleniePosunu(double) zrýchlenie
+				 * posunu} má nenulovú hodnotu,</li>
+				 * <li>je nastavený príznak {@linkplain 
+				 * #zastavPoSpomaleníPosunu() zastavenia po spomalení
+				 * posunu}</li>
+				 * <li>a {@linkplain #rýchlosťPosunu(double) rýchlosť posun}
+				 * sa dotkla nulovej hranice.</li>
+				 * </ul>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Ak je {@linkplain 
+				 * #zrýchleniePosunu(double) zrýchlenie posunu} nenulové,
+				 * tak nemá volanie tejto metódy zmysel. Vtedy sa dá posun
+				 * zastaviť jedine nastavením nulovej {@linkplain 
+				 * #rýchlosťPosunu(double) rýchlosti posunu}.</p>
+				 * 
+				 * <p>Úspešné vykonanie zastavenia posunu je signalizované
+				 * udalosťou {@link #zastaveniePosunu() zastaveniePosunu}.</p>
+				 * 
+				 * @see #zastav()
+				 * @see #zastav(int)
+				 * @see #zastav(boolean)
+				 * @see #zastav(int, boolean)
+				 * @see #zastaveniePosunu()
+				 * @see #rýchlosťPosunu()
+				 * @see #zrýchleniePosunu()
+				 * @see #zastavPoSpomaleníPosunu()
+				 */
+				public void zastavPosun()
+				{
+					if (zrýchleniePosunu != 0.0)
+					{
+						rýchlosťPosunu = 0.0;
+						zrýchleniePosunu = 0.0;
+						zastavPoSpomaleníPosunu = false;
+						zastaveniePosunu();
+					}
 				}
 
 				/**
@@ -16061,7 +16496,8 @@ TODO: na úvodnú stránku
 				 * hodnotu, keď sa pohybuje smerom dopredu, tak na zápornú.
 				 * Vlastnosť rýchlosti posunu bola do programovacieho rámca
 				 * pridaná v neskorších verziách a jej aspekty nie sú touto
-				 * metódou ovplyvňované.</p>
+				 * metódou ovplyvňované. (Pozri {@link #zastavPosun()
+				 * zastavPosun}.)</p>
 				 * 
 				 * <p class="caution"><b>Pozor!</b> Pozor na podobnosť názvu
 				 * s metódou {@link #zastav() zastav}, ktorá má na starosti
@@ -16070,6 +16506,7 @@ TODO: na úvodnú stránku
 				 * @see #rozbehniSa()
 				 * @see #začniCúvať()
 				 * @see #zabrzdi(double)
+				 * @see #zastavPosun()
 				 */
 				public void zabrzdi()
 				{
@@ -16111,7 +16548,8 @@ TODO: na úvodnú stránku
 				 * zápornú.
 				 * Vlastnosť rýchlosti posunu bola do programovacieho rámca
 				 * pridaná v neskorších verziách a jej aspekty nie sú touto
-				 * metódou ovplyvňované.</p>
+				 * metódou ovplyvňované. (Pozri {@link #zastavPosun()
+				 * zastavPosun}.)</p>
 				 * 
 				 * <p class="caution"><b>Pozor!</b> Pozor na podobnosť názvu
 				 * s metódou {@link #zastav() zastav}, ktorá má na starosti
@@ -16125,6 +16563,7 @@ TODO: na úvodnú stránku
 				 * @see #rozbehniSa(double, boolean)
 				 * @see #rozbehniSa(double, double, boolean)
 				 * @see #zabrzdi()
+				 * @see #zastavPosun()
 				 */
 				public void zabrzdi(double zrýchlenie)
 				{
@@ -16202,8 +16641,8 @@ TODO: na úvodnú stránku
 
 				/**
 				 * <p>Zistí, či má robot prikázané automaticky {@linkplain 
-				 * #zastav() zastaviť} pri najbližšom dosiahnutí nulovej
-				 * rýchlosti posunu.</p>
+				 * #zastavPosun() zastaviť posun} pri najbližšom dosiahnutí
+				 * nulovej rýchlosti posunu.</p>
 				 * 
 				 * @return {@code valtrue} – áno; {@code valfalse} – nie
 				 */
@@ -16216,7 +16655,9 @@ TODO: na úvodnú stránku
 
 				/**
 				 * <p>Prikáže robotovi, aby najbližšie, keď dosiahne nulovú
-				 * rýchlosť posunu automaticky {@linkplain #zastav() zastavil}.</p>
+				 * rýchlosť posunu automaticky {@linkplain #zastavPosun() 
+				 * zastavil posun}. Táto akcia automaticky nastaví nulové
+				 * {@linkplain #zrýchleniePosunu() zrýchlenie posunu}.</p>
 				 */
 				public void zastavPoSpomaleníPosunu()
 				{
@@ -16232,7 +16673,9 @@ TODO: na úvodnú stránku
 				/**
 				 * <p>Zruší robotovi príkaz, ktorý mu určoval, aby sa
 				 * najbližšie, keď dosiahne nulovú rýchlosť posunu automaticky
-				 * {@linkplain #zastav() zastavil}.</p>
+				 * {@linkplain #zastavPosun() posun zastavil} (s nastavením
+				 * nulového {@linkplain #zrýchleniePosunu() zrýchlenia
+				 * posunu}).</p>
 				 */
 				public void nezastavujPoSpomaleníPosunu()
 				{
@@ -18557,7 +19000,7 @@ TODO: na úvodnú stránku
 				 * <table><tr><td>
 				 * 
 				 * <pre CLASS="example">
-					{@code kwdimport} knižnica.{@link GRobot GRobot};
+					{@code kwdimport} knižnica.*;
 
 					{@code kwdpublic} {@code typeclass} TestKráčajPoDráhe {@code kwdextends} {@link GRobot GRobot}
 					{
@@ -19803,8 +20246,9 @@ TODO: na úvodnú stránku
 									}
 								}
 
-								dopredu(rýchlosť);
-								posuňVpravo(rýchlosťPosunu);
+								/* dopredu(rýchlosť);
+								posuňVpravo(rýchlosťPosunu);*/
+								posuň(rýchlosťPosunu, rýchlosť);
 								doľava(uhlováRýchlosť);
 
 								if (zastavPoSpomalení &&
@@ -19816,7 +20260,7 @@ TODO: na úvodnú stránku
 										{
 											rýchlosť = 0.0;
 											zastavPoSpomalení = false;
-											zastavPoSpomaleníPosunu = false;
+											// nie: zastavPoSpomaleníPosunu = false;
 											zastav();
 										}
 									}
@@ -19826,7 +20270,7 @@ TODO: na úvodnú stránku
 										{
 											rýchlosť = 0.0;
 											zastavPoSpomalení = false;
-											zastavPoSpomaleníPosunu = false;
+											// nie: zastavPoSpomaleníPosunu = false;
 											zastav();
 										}
 									}
@@ -19840,9 +20284,14 @@ TODO: na úvodnú stránku
 										if (rýchlosťPosunu >= 0.0)
 										{
 											rýchlosťPosunu = 0.0;
-											zastavPoSpomalení = false;
+											// nie: zastavPoSpomalení = false;
 											zastavPoSpomaleníPosunu = false;
-											zastav();
+											// pozor‼
+											// zrýchleniePosunu = 0.0;
+											// ^ toto je vnútri nasledujúcej
+											// (volanej) metódy a keby to bolo
+											// nulové, metóda by neurobila nič‼
+											zastavPosun();
 										}
 									}
 									else
@@ -19850,9 +20299,14 @@ TODO: na úvodnú stránku
 										if (rýchlosťPosunu <= 0.0)
 										{
 											rýchlosťPosunu = 0.0;
-											zastavPoSpomalení = false;
+											// nie: zastavPoSpomalení = false;
 											zastavPoSpomaleníPosunu = false;
-											zastav();
+											// pozor‼
+											// zrýchleniePosunu = 0.0;
+											// ^ toto je vnútri nasledujúcej
+											// (volanej) metódy a keby to bolo
+											// nulové, metóda by neurobila nič‼
+											zastavPosun();
 										}
 									}
 								}
@@ -20208,13 +20662,13 @@ TODO: na úvodnú stránku
 				 * 
 				 * <table><tr><td>
 				 * <pre CLASS="example">
-					{@code kwdimport} knižnica.{@link GRobot GRobot};
+					{@code kwdimport} knižnica.*;
 
 					{@code kwdpublic} {@code typeclass} HlavnáTrieda {@code kwdextends} {@link GRobot GRobot}
 					{
 						{@code kwdprivate} HlavnáTrieda()
 						{
-							{@link #farba(Color) farba}({@link #šedá šedá});
+							{@link #farba(Color) farba}({@link Farebnosť#šedá šedá});
 							{@link #aktivuj() aktivuj}();
 						}
 
@@ -20274,13 +20728,13 @@ TODO: na úvodnú stránku
 				 * inicializovať farbu robota na jeden z odtieňov oranžovej.</p>
 				 * 
 				 * <pre CLASS="example">
-					{@code kwdimport} knižnica.{@link GRobot GRobot};
+					{@code kwdimport} knižnica.*;
 
 					{@code kwdpublic} {@code typeclass} HlavnáTrieda {@code kwdextends} {@link GRobot GRobot}
 					{
 						{@code kwdprivate} HlavnáTrieda()
 						{
-							{@link #farba(Color) farba}({@link #oranžová oranžová});
+							{@link #farba(Color) farba}({@link Farebnosť#oranžová oranžová});
 
 							{@code comm// Nastavíme predvolený vyplnený tvar robota a zväčšíme}
 							{@code comm// jeho veľkosť, aby bol efekt lepšie viditeľný:}
@@ -20290,10 +20744,10 @@ TODO: na úvodnú stránku
 
 						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@code currpasivita}()
 						{
-							{@code kwdif} ({@link #oranžová oranžová} == {@link #farba() farba}())
-								{@link #farba(Color) farba}({@link #tmavooranžová tmavooranžová});
+							{@code kwdif} ({@link Farebnosť#oranžová oranžová} == {@link #farba() farba}())
+								{@link #farba(Color) farba}({@link Farebnosť#tmavooranžová tmavooranžová});
 							{@code kwdelse}
-								{@link #farba(Color) farba}({@link #oranžová oranžová});
+								{@link #farba(Color) farba}({@link Farebnosť#oranžová oranžová});
 						}
 
 						{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
@@ -20335,7 +20789,7 @@ TODO: na úvodnú stránku
 				 * skryje.</p>
 				 * 
 				 * <pre CLASS="example">
-					{@code kwdimport} knižnica.{@link GRobot GRobot};
+					{@code kwdimport} knižnica.*;
 
 					{@code kwdpublic} {@code typeclass} HlavnáTrieda {@code kwdextends} {@link GRobot GRobot}
 					{
@@ -20427,7 +20881,7 @@ TODO: na úvodnú stránku
 				 * cieľa, naopak, skryje.</p>
 				 * 
 				 * <pre CLASS="example">
-					{@code kwdimport} knižnica.{@link GRobot GRobot};
+					{@code kwdimport} knižnica.*;
 
 					{@code kwdpublic} {@code typeclass} HlavnáTrieda {@code kwdextends} {@link GRobot GRobot}
 					{
@@ -20491,6 +20945,22 @@ TODO: na úvodnú stránku
 				public void zastavenie() {}
 
 				/**
+				 * <p>Táto metóda je predvolene prázdna. Je automaticky
+				 * spustená pri volaní metódy {@link #zastavPosun()
+				 * zastavPosun} po splnení podmienok, ktoré sú pri nej určené.
+				 * Prekrytím tejto metódy môžete upraviť správanie robota pri
+				 * zastavení {@linkplain #rýchlosťPosunu() posunu} (čo je druh
+				 * pohybu kolmý na aktuálny smer robota).</p>
+				 * 
+				 * @see #zastavenie()
+				 * @see #zastavPosun()
+				 * @see #rýchlosťPosunu()
+				 * @see #zrýchleniePosunu()
+				 * @see #zastavPoSpomaleníPosunu()
+				 */
+				public void zastaveniePosunu() {}
+
+				/**
 				 * <p>Táto metóda je predvolene prázdna. Je automaticky spustená
 				 * metódou {@link #pracuj() pracuj} po dosiahnutí {@linkplain 
 				 * #cieľ(double, double) cieľa}. Jej prekrytím môžete upraviť
@@ -20504,7 +20974,7 @@ TODO: na úvodnú stránku
 				 * num5} až {@code num25}.</p>
 				 * 
 				 * <pre CLASS="example">
-					{@code kwdimport} knižnica.{@link GRobot GRobot};
+					{@code kwdimport} knižnica.*;
 
 					{@code kwdpublic} {@code typeclass} HlavnáTrieda {@code kwdextends} {@link GRobot GRobot}
 					{
@@ -20642,10 +21112,10 @@ TODO: na úvodnú stránku
 				 * situáciu v čase kolízie robota s niektorou z hraníc
 				 * ohraničenia. Prvý bod poľa obsahuje súradnice robota pred
 				 * začatím pohybu, druhý cieľové súradnice, na ktoré bude robot
-				 * presunutý ak táto metóda dovolí ďalšie spracovanie
+				 * presunutý, ak táto metóda dovolí ďalšie spracovanie
 				 * ohraničenia (návratovou hodnotou) a ďalšie dva body
 				 * vymedzujú úsečku tej hranice ohraničenia, na ktorú robot
-				 * narazil. Aktuálna poloha robota je presne tá mimo
+				 * narazil. Aktuálna poloha robota je presne tá, ktorá je mimo
 				 * hraníc.</p>
 				 * 
 				 * <p>Posledný parameter určuje orientáciu robota pred
@@ -20711,7 +21181,7 @@ TODO: na úvodnú stránku
 						{@code comm// Vyhľadá polohu, ktorá nekoliduje so žiadnym vytvoreným robotom.}
 						{@code kwdprivate} {@code typevoid} nájdiPolohu()
 						{
-							{@link GRobot#farba(Color) farba}({@link GRobot#šedá šedá});
+							{@link GRobot#farba(Color) farba}({@link Farebnosť#šedá šedá});
 							{@code kwddo}
 							{
 								kolíziaPolôh = {@code valfalse};
@@ -20732,7 +21202,7 @@ TODO: na úvodnú stránku
 								{@link GRobot#vyzviRobotov(int) vyzviRobotov}(-{@code num2});
 							}
 							{@code kwdwhile} (kolíziaPolôh);
-							{@link GRobot#farba(Color) farba}({@link GRobot#modrá modrá});
+							{@link GRobot#farba(Color) farba}({@link Farebnosť#modrá modrá});
 						}
 
 						{@code comm// Viacúčelová reakcia na hromadnú výzvu vytvorených robotov.}
@@ -20742,8 +21212,8 @@ TODO: na úvodnú stránku
 							{@code kwdif} ({@code num0} &lt;= kľúč)
 							{
 								dotknutý = indexRobota == kľúč % početRobotov;
-								{@code kwdif} (dotknutý) {@link GRobot#farba(Color) farba}({@link GRobot#tyrkysová tyrkysová});
-								{@code kwdelse} {@link GRobot#farba(Color) farba}({@link GRobot#oranžová oranžová});
+								{@code kwdif} (dotknutý) {@link GRobot#farba(Color) farba}({@link Farebnosť#tyrkysová tyrkysová});
+								{@code kwdelse} {@link GRobot#farba(Color) farba}({@link Farebnosť#oranžová oranžová});
 							}
 							{@code comm// Kľúč −2 je rezervovaný na hľadanie kolízií priestorov ohraničenia}
 							{@code comm// robotov.}
@@ -20753,13 +21223,13 @@ TODO: na úvodnú stránku
 								{
 									{@code kwdif} ({@link GRobot#bodVObdĺžniku(Poloha, double, double) bodVObdĺžniku}(autor, {@code num210}, {@code num110}))
 									{
-										{@link GRobot#farba(Color) farba}({@link GRobot#červená červená});
+										{@link GRobot#farba(Color) farba}({@link Farebnosť#červená červená});
 										{@link GRobot#krúžok() krúžok}();
 										kolíziaPolôh = {@code valtrue};
 									}
 									{@code kwdelse}
 									{
-										{@link GRobot#farba(Color) farba}({@link GRobot#zelená zelená});
+										{@link GRobot#farba(Color) farba}({@link Farebnosť#zelená zelená});
 										{@link GRobot#krúžok() krúžok}();
 									}
 								}
@@ -20768,7 +21238,7 @@ TODO: na úvodnú stránku
 							{@code kwdelse} {@code kwdif} (-{@code num3} == kľúč)
 							{
 								{@link GRobot#domov() domov}();
-								{@link GRobot#farba(Color) farba}({@link GRobot#biela biela});
+								{@link GRobot#farba(Color) farba}({@link Farebnosť#biela biela});
 								{@link GRobot#vyplňObdĺžnik(double, double) vyplňObdĺžnik}({@code num100}, {@code num50});
 							}
 							{@code comm// Kľúč −2 je rezervovaný na nakreslenie orámovania priestoru ohraničenia}
@@ -20776,7 +21246,7 @@ TODO: na úvodnú stránku
 							{@code kwdelse} {@code kwdif} (-{@code num4} == kľúč)
 							{
 								{@link GRobot#domov() domov}();
-								{@link GRobot#farba(Color) farba}({@link GRobot#čierna čierna});
+								{@link GRobot#farba(Color) farba}({@link Farebnosť#čierna čierna});
 								{@link GRobot#kresliObdĺžnik(double, double) kresliObdĺžnik}({@code num100}, {@code num50});
 							}
 						}
@@ -20831,7 +21301,7 @@ TODO: na úvodnú stránku
 							{@code comm// priestoru ohraničenia pre každého robota a dotknutie prvého robota}
 							{@code comm// v poradí.}
 							{@link Plátno podlaha}.{@link Plátno#vymažGrafiku() vymažGrafiku}();
-							{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@link GRobot#šedá šedá});
+							{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@link Farebnosť#šedá šedá});
 							{@link Svet Svet}.{@link Svet#vyzviRobotov(int) vyzviRobotov}(-{@code num3});
 							{@link Svet Svet}.{@link Svet#vyzviRobotov(int) vyzviRobotov}(-{@code num4});
 							{@link Svet Svet}.{@link Svet#vyzviRobotov(int) vyzviRobotov}(ukazovadloRobota);
@@ -21515,6 +21985,16 @@ TODO: na úvodnú stránku
 				 * konfiguráciaZmenená}{@code ()}, ktorá je historicky staršia
 				 * (preto mohla nájsť širšie použitie).</p>
 				 * 
+				 * <p class="attention"><b>Upozornenie:</b> Pri prekrývaní
+				 * tejto reakcie majte na pamäti, že nie je garantované jej
+				 * automatické vykonanie pri ukončovaní aplikácie (ak vyššia
+				 * vrstva zistí, že konfigurácia bola zmenená, tak ďalej
+				 * nevyšetruje, či ju treba, alebo netreba ukladať
+				 * a automaticky pristúpi k procesu uloženia konfigurácie).
+				 * Vložte do do tela tejto reakcie len taký kód, ktorý rýchlo
+				 * overí, či nastali nejaké zmeny v konfigurácii, ktoré
+				 * treba uložiť a vráti túto informáciu vyššej vrstve.</p>
+				 *
 				 * @see Svet#použiKonfiguráciu()
 				 */
 				public boolean konfiguráciaZmenená() { return false; }
@@ -21574,7 +22054,7 @@ TODO: na úvodnú stránku
 				 * náročným spracovaním údajov počas práce s pevným diskom
 				 * (pozri aj {@link ObsluhaUdalostí
 				 * ObsluhaUdalostí}{@code .}{@link 
-				 * ObsluhaUdalostí#sekvencia(int, String, String, long, long)
+				 * ObsluhaUdalostí#sekvencia(int, Object, Object, long, long)
 				 * sekvencia}{@code (kódSpracovania, zdroj, cieľ, stav,
 				 * celkovo)}), napríklad s {@link Obrázok#čítaj(String)
 				 * čítaním} a {@link Obrázok#ulož(String, boolean) zápisom}
@@ -22464,7 +22944,7 @@ TODO: na úvodnú stránku
 			 * Testovať farbu pomocou tejto metódy môžeme napríklad takto:</p>
 			 * 
 			 * <pre CLASS="example">
-				{@code kwdif} ({@code currfarbaBodu}({@link GRobot#modrá modrá})) …
+				{@code kwdif} ({@code currfarbaBodu}({@link Farebnosť#modrá modrá})) …
 				</pre>
 			 * 
 			 * @param farba farba, ktorú chceme porovnať s farbou bodu na
@@ -22504,7 +22984,7 @@ TODO: na úvodnú stránku
 			 * Testovať farbu pomocou tejto metódy môžeme napríklad takto:</p>
 			 * 
 			 * <pre CLASS="example">
-				{@code kwdif} ({@code currfarbaBodu}({@link GRobot#modrá modrá})) …
+				{@code kwdif} ({@code currfarbaBodu}({@link Farebnosť#modrá modrá})) …
 				</pre>
 			 * 
 			 * @param objekt objekt, ktorého farbu porovnávame s farbou bodu
@@ -22659,7 +23139,7 @@ TODO: na úvodnú stránku
 			 * napríklad takto:</p>
 			 * 
 			 * <pre CLASS="example">
-				{@code kwdif} ({@code currfarbaNaMyši}({@link GRobot#modrá modrá})) …
+				{@code kwdif} ({@code currfarbaNaMyši}({@link Farebnosť#modrá modrá})) …
 				</pre>
 			 * 
 			 * <p class="remark"><b>Poznámka:</b> Ak by súradnice myši boli náhodou
@@ -22680,7 +23160,7 @@ TODO: na úvodnú stránku
 				{
 					{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#pohybMyši() pohybMyši}()
 					{
-						{@code kwdif} ({@code currfarbaNaMyši}({@link #čierna čierna}))
+						{@code kwdif} ({@code currfarbaNaMyši}({@link Farebnosť#čierna čierna}))
 						{
 							{@link Svet Svet}.{@link Svet#pípni() pípni}();
 						}
@@ -22859,9 +23339,9 @@ TODO: na úvodnú stránku
 			 * <pre CLASS="example">
 				{@code comm// Najskôr nakreslíme na plátno „čmáranicu“:}
 
-				{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@link GRobot#modrá modrá});
+				{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@link Farebnosť#modrá modrá});
 				{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num1.5});
-				{@link GRobot#farba(Color) farba}({@link GRobot#biela biela});
+				{@link GRobot#farba(Color) farba}({@link Farebnosť#biela biela});
 				{@link GRobot#skry() skry}();
 				{@link GRobot#náhodnáPoloha() náhodnáPoloha}();
 
@@ -30262,7 +30742,7 @@ TODO: na úvodnú stránku
 			 * vlastne na plátno kreslí.</p>
 			 * 
 			 * <pre CLASS="example">
-				{@code kwdimport} knižnica.{@link GRobot GRobot};
+				{@code kwdimport} knižnica.*;
 
 				{@code kwdpublic} {@code typeclass} TestRotovaniaObrázkov {@code kwdextends} {@link GRobot GRobot}
 				{
@@ -31155,7 +31635,7 @@ TODO: na úvodnú stránku
 			 * odstrániť alebo prislúchajúcim spôsobom upraviť.)</p>
 			 * 
 			 * <pre CLASS="example">
-				{@code kwdimport} knižnica.{@link GRobot GRobot};
+				{@code kwdimport} knižnica.*;
 
 				{@code kwdpublic} {@code typeclass} TestÚpravTextov {@code kwdextends} {@link GRobot GRobot}
 				{
@@ -31205,7 +31685,7 @@ TODO: na úvodnú stránku
 			 * <p> </p>
 			 * 
 			 * <pre CLASS="example">
-				{@code kwdimport} knižnica.{@link GRobot GRobot};
+				{@code kwdimport} knižnica.*;
 
 				{@code kwdpublic} {@code typeclass} TestÚpravTextov {@code kwdextends} {@link GRobot GRobot}
 				{
@@ -31522,7 +32002,7 @@ TODO: na úvodnú stránku
 			 * 
 			 * <pre CLASS="example">
 				{@code typedouble} {@code a = }{@code num10.335}{@code ;}
-				{@link Svet Svet}{@code .}{@link Svet#vypíšRiadok(Object...) vypíšRiadok}{@code (}{@code srg"1234567"}{@code , }{@link #riadok riadok}{@code , }{@code currF}{@code (a, }{@code num7}{@code , }{@code num2}{@code ));}
+				{@link Svet Svet}{@code .}{@link Svet#vypíšRiadok(Object...) vypíšRiadok}{@code (}{@code srg"1234567"}{@code , }{@link Konštanty#riadok riadok}{@code , }{@code currF}{@code (a, }{@code num7}{@code , }{@code num2}{@code ));}
 				</pre>
 			 * 
 			 * <p><b>Výsledok:</b></p>
@@ -31953,8 +32433,8 @@ TODO: na úvodnú stránku
 			 * súradnicového priestoru Javy.</p>
 			 * 
 			 * <pre CLASS="example">
-				{@code kwdimport} knižnica.{@link GRobot GRobot};
-				{@code kwdimport} knižnica.{@link GRobot GRobot}.{@link SVGPodpora SVGPodpora}.{@link Transformácia Transformácia};
+				{@code kwdimport} knižnica.*;
+				{@code kwdimport} knižnica.{@link SVGPodpora SVGPodpora}.{@link Transformácia Transformácia};
 
 				{@code comm// Ak by sme sa rozhodli využiť triedu Javy }{@link Shape Shape}{@code comm, tak takto by sme ju}
 				{@code comm// importovali:}
@@ -35366,7 +35846,7 @@ TODO: na úvodnú stránku
 			 * oblasti nájdete v opise metódy {@link #koliduje(GRobot)
 			 * koliduje}.</p>
 			 * 
-			 * <p class="remark"><b>Poznámka:</b> Hodnota {@link valnull}
+			 * <p class="remark"><b>Poznámka:</b> Hodnota {@code valnull}
 			 * nemá žiadny údajový typ. Je akoby „spoločná pre všetky
 			 * údajové typy.“ Táto hodnota vyjadruje neprítomnosť
 			 * žiadneho objektu, neprítomnosť žiadnej inštancie.
@@ -35483,7 +35963,7 @@ TODO: na úvodnú stránku
 				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link GRobot GRobot} modrý = {@code kwdnew} {@link GRobot#GRobot() GRobot}()
 				{{
 					{@link #zdvihniPero() zdvihniPero}();
-					{@link #farba(Color) farba}({@link #modrá modrá});
+					{@link #farba(Color) farba}({@link Farebnosť#modrá modrá});
 					{@link #veľkosť(double) veľkosť}({@code num20});
 					{@link #domov(double, double, double) domov}({@code num40}, {@code num35}, {@code num200});
 					{@link #rýchlosť(double) rýchlosť}({@code num10});
@@ -35493,7 +35973,7 @@ TODO: na úvodnú stránku
 				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link GRobot GRobot} tyrkysový = {@code kwdnew} {@link GRobot#GRobot() GRobot}()
 				{{
 					{@link #zdvihniPero() zdvihniPero}();
-					{@link #farba(Color) farba}({@link #tyrkysová tyrkysová});
+					{@link #farba(Color) farba}({@link Farebnosť#tyrkysová tyrkysová});
 					{@link #veľkosť(double) veľkosť}({@code num15});
 					{@link #domov(double, double, double) domov}(&#45;{@code num40}, &#45;{@code num35}, {@code num80});
 					{@link #rýchlosť(double) rýchlosť}({@code num10});
@@ -35833,7 +36313,7 @@ TODO: na úvodnú stránku
 			 * KreslenieTvaru#kresli(GRobot) kresli}{@code (}{@link GRobot
 			 * GRobot}{@code  r)}. Prekrytie tejto metódy ({@code 
 			 * currkresliTvar}) je síce najjednoduchší spôsob zmeny tvaru
-			 * robota, ale <em>je menej efektívny</em>.</p>
+			 * robota, ale <em>je menej efektívny.</em></p>
 			 * 
 			 * <div class="remark"><p><b>Poznámka:</b> Táto metóda v skrytosti
 			 * využíva rovnaký mechanizmus ako definovanie {@linkplain 
@@ -35863,6 +36343,10 @@ TODO: na úvodnú stránku
 				}
 				</pre>
 			 * 
+			 * <p class="remark"><b>Poznámka:</b> Ak potrebujete vytlačiť
+			 * na aktuálne plátno pečiatku aktuálneho tvaru, volajte metódu
+			 * {@link #pečiatka() pečiatka}.</p>
+			 * 
 			 * <p class="remark"><b>Poznámka:</b> Názov tejto metódy koliduje
 			 * s názvom novších metód {@link #kresliTvar(Shape)
 			 * kresliTvar(tvar)} a {@link #kresliTvar(Shape, boolean)
@@ -35878,6 +36362,7 @@ TODO: na úvodnú stránku
 			 * @see #predvolenýTvar()
 			 * @see #predvolenýTvar(boolean)
 			 * @see #jePredvolenýTvarVyplnený()
+			 * @see #pečiatka()
 			 * @see #vlastnýTvar(String)
 			 * @see #vlastnýTvar(Image)
 			 * @see #vlastnýTvar(String, boolean)

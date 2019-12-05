@@ -69,7 +69,7 @@ import java.io.IOException;
  * doprogramovaním) tejto statickej triedy. Ako bolo práve čiastočne
  * podotknuté, táto trieda i všetky jej metódy sú statické. Z toho
  * vyplýva, že nemá zmysel vytvárať jej inštancie ({@linkplain 
- * Svet#schránka jedna je i tak vytvorená automaticky}). Použitie
+ * GRobot#schránka jedna je i tak vytvorená automaticky}). Použitie
  * triedy je jednoduché, stačí napísať názov triedy (prípadne jej
  * statickej inštancie – rozdiel je vo veľkosti prvého písmena)
  * a za bodkou názov metódy, ktorú chceme použiť. Napríklad na

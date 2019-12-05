@@ -162,8 +162,7 @@ import knižnica.Poloha;
  * </table>
  * 
  * <pre CLASS="example">
-	{@code kwdimport} knižnica.{@link GRobot GRobot};
-	{@code kwdimport} knižnica.{@code currVlnenie};
+	{@code kwdimport} knižnica.*;
 
 	{@code kwdpublic} {@code typeclass} TestovanieVlnenia {@code kwdextends} {@link GRobot GRobot}
 	{
@@ -187,7 +186,7 @@ import knižnica.Poloha;
 			{@link Svet Svet}.{@link Svet#nekresli() nekresli}();
 
 			{@code comm// Nastavenie parametrov robota:}
-			{@link GRobot#farba(Color) farba}({@link červená červená});
+			{@link GRobot#farba(Color) farba}({@link Farebnosť#červená červená});
 			{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num3});
 			{@link GRobot#zdvihniPero() zdvihniPero}();
 			{@link GRobot#nekresliTvary() nekresliTvary}();
@@ -539,7 +538,7 @@ import knižnica.Poloha;
 
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#ťahanieMyšou() ťahanieMyšou}()
 		{
-			{@code kwdif} ({@link GRobot.ÚdajeUdalostí ÚdajeUdalostí}.{@link GRobot.ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link ÚdajeUdalostí#ĽAVÉ ĽAVÉ}))
+			{@code kwdif} ({@link GRobot.ÚdajeUdalostí ÚdajeUdalostí}.{@link GRobot.ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#ĽAVÉ ĽAVÉ}))
 			{
 				{@code comm// Ľavé tlačidlo určí robotovi nový cieľ:}
 				{@link GRobot#cieľNaMyš() cieľNaMyš}();
@@ -611,7 +610,7 @@ import knižnica.Poloha;
  * 
  * <ul><li><a href="http://www.neilwallis.com/projects/java/water/index.php"
  * target="_blank"><small>Wallis, Neil</small>: <em>Simulate ripples on
- * water.</em> December 2004.</a></li></ul>
+ * water.</em> December 2004. (Citované zhruba: 2014 – 2016.)</a></li></ul>
  */
 public class Vlnenie
 {
@@ -710,10 +709,10 @@ public class Vlnenie
 	 * zabezpečuje simuláciu vlnenia a tiež prekresľovanie zvlneného rastra,
 	 * ktorý získa metódou {@link #zvlnenýRaster() zvlnenýRaster}.</p>
 	 * 
-	 * <p><small>(<b>Pripomenutie faktov:</b> Animácia vlnenia použitého
+	 * <p class="remark"><b>Pripomenutie faktov:</b> Animácia vlnenia použitého
 	 * v rámci programovacieho rámca je vykonávaná automaticky počas činnosti
 	 * časovača a zvlnený raster je v rámci programovacieho rámca tiež použitý
-	 * automaticky v čase kreslenia objektu.)</small></p>
+	 * automaticky v čase kreslenia objektu.</p>
 	 * 
 	 * @param zdroj obraz predlohy, ktorá má byť vlnená, napríklad
 	 *     {@linkplain Obrázok obrázok programovacieho rámca GRobot},
@@ -4937,10 +4936,10 @@ public class Vlnenie
 	 * Obrázok obrázka}) navonok vždy reprezentuje len svoju nezvlnenú
 	 * verziu.</p>
 	 * 
-	 * <p><small>(<b>Pripomenutie faktov:</b> Animácia vlnenia použitého
+	 * <p class="remark"><b>Pripomenutie faktov:</b> Animácia vlnenia použitého
 	 * v rámci programovacieho rámca je vykonávaná automaticky počas činnosti
 	 * časovača a zvlnený raster je v rámci programovacieho rámca tiež použitý
-	 * automaticky v čase kreslenia objektu.)</small></p>
+	 * automaticky v čase kreslenia objektu.</p>
 	 * 
 	 * @return inštancia obsahujúca raster zvlnenej verzie tohto
 	 *     obrázka alebo {@code valnull}, ak vlnenie pre tento obrázok

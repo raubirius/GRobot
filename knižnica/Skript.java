@@ -87,7 +87,7 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
  * je automatické. Verejné statické metódy poskytujú základné
  * rozhranie na prácu so skriptovacím strojom, napríklad:
  * {@link #vyrob(String[]) vyrob}, {@link #ladenie(boolean) ladenie},
- * {@link #čítajPremennú(String, Class<?>) čítajPremennú},
+ * {@link #čítajPremennú(String, Class) čítajPremennú},
  * {@link #zapíšPremennú(String, Object) zapíšPremennú},
  * {@link #kódPoslednejChyby() kódPoslednejChyby}, {@link #vyrob(String[])
  * vyrob} a podobne. Dve inštančné metódy komunikujú s konkrétnymi
@@ -3644,7 +3644,7 @@ public abstract class Skript
 		 * @return inštancia triedy premenných skriptov (pomenovaný
 		 *     priestor premenných skriptov – obzor)
 		 * 
-		 * @see #obzorJestvuje()
+		 * @see #obzorJestvuje(String)
 		 * @see PremennéSkriptu
 		 */
 		public static PremenneSkriptu dajObzor(String názovObzoru)
@@ -4549,21 +4549,21 @@ public abstract class Skript
 	 * <p>Získa kód poslednej chyby, ktorá nastala počas vykonávania
 	 * príkazov {@linkplain Svet#interaktívnyRežim(boolean)
 	 * interaktívneho režimu} alebo {@linkplain 
-	 * #vykonajSkript(String[]) skriptu}. Môže ísť buď o jeden
+	 * Svet#vykonajSkript(String[]) skriptu}. Môže ísť buď o jeden
 	 * z nasledujúcich kódov:</p>
 	 * 
 	 * <ul>
-	 * <li>{@link GRobot#ŽIADNA_CHYBA ŽIADNA_CHYBA},</li>
-	 * <li>{@link GRobot#CHYBA_VYKONANIA_PRÍKAZU CHYBA_VYKONANIA_PRÍKAZU},</li>
-	 * <li>{@link GRobot#CHYBA_DVOJITÁ_MENOVKA CHYBA_DVOJITÁ_MENOVKA},</li>
-	 * <li>{@link GRobot#CHYBA_CHÝBAJÚCA_MENOVKA CHYBA_CHÝBAJÚCA_MENOVKA},</li>
-	 * <li>{@link GRobot#CHYBA_NEZNÁMA_MENOVKA CHYBA_NEZNÁMA_MENOVKA},</li>
-	 * <li>{@link GRobot#CHYBA_NEZNÁME_SLOVO CHYBA_NEZNÁME_SLOVO},</li>
-	 * <li>{@link GRobot#CHYBA_CHYBNÁ_ŠTRUKTÚRA CHYBA_CHYBNÁ_ŠTRUKTÚRA},</li>
-	 * <li>{@link GRobot#CHYBA_NEZNÁME_MENO CHYBA_NEZNÁME_MENO},</li>
-	 * <li>{@link GRobot#CHYBA_NEZNÁMY_PRÍKAZ CHYBA_NEZNÁMY_PRÍKAZ},</li>
-	 * <li>{@link GRobot#CHYBA_ČÍTANIA_SKRIPTU CHYBA_ČÍTANIA_SKRIPTU},</li>
-	 * <li>alebo {@link GRobot#CHYBA_VOLANIA_SKRIPTU
+	 * <li>{@link Konštanty#ŽIADNA_CHYBA ŽIADNA_CHYBA},</li>
+	 * <li>{@link Konštanty#CHYBA_VYKONANIA_PRÍKAZU CHYBA_VYKONANIA_PRÍKAZU},</li>
+	 * <li>{@link Konštanty#CHYBA_DVOJITÁ_MENOVKA CHYBA_DVOJITÁ_MENOVKA},</li>
+	 * <li>{@link Konštanty#CHYBA_CHÝBAJÚCA_MENOVKA CHYBA_CHÝBAJÚCA_MENOVKA},</li>
+	 * <li>{@link Konštanty#CHYBA_NEZNÁMA_MENOVKA CHYBA_NEZNÁMA_MENOVKA},</li>
+	 * <li>{@link Konštanty#CHYBA_NEZNÁME_SLOVO CHYBA_NEZNÁME_SLOVO},</li>
+	 * <li>{@link Konštanty#CHYBA_CHYBNÁ_ŠTRUKTÚRA CHYBA_CHYBNÁ_ŠTRUKTÚRA},</li>
+	 * <li>{@link Konštanty#CHYBA_NEZNÁME_MENO CHYBA_NEZNÁME_MENO},</li>
+	 * <li>{@link Konštanty#CHYBA_NEZNÁMY_PRÍKAZ CHYBA_NEZNÁMY_PRÍKAZ},</li>
+	 * <li>{@link Konštanty#CHYBA_ČÍTANIA_SKRIPTU CHYBA_ČÍTANIA_SKRIPTU},</li>
+	 * <li>alebo {@link Konštanty#CHYBA_VOLANIA_SKRIPTU
 	 * CHYBA_VOLANIA_SKRIPTU},</li>
 	 * </ul>
 	 * 
@@ -4618,6 +4618,11 @@ public abstract class Skript
 	 * pri hláseniach o nesprávnych stavoch počas vykonávania príkazov
 	 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}
 	 * alebo skriptu.</p>
+	 * 
+	 * <!-- TODO – Uviesť zoznam chýb (podobne ako pri chybách
+	 * GRobotException) s ich úplným znením (kódmi a krátkym vysvetlením)
+	 * a odkázať sa na neho všade, kde treba (Svet.textPoslednejChyby,
+	 * Skript.textPoslednejChyby…) -->
 	 * 
 	 * @return text ku kódu chyby
 	 * 
@@ -4734,9 +4739,9 @@ public abstract class Skript
 	 * GRobot#podlaha podlahy}. Od okamihu vykonania tejto metódy, budú
 	 * všetky aktivity presmerované na vnútornú konzolu podlahy.</p>
 	 * 
-	 * @see presmerujNaStrop()
-	 * @see používaPodlahu()
-	 * @see používaStrop()
+	 * @see #presmerujNaStrop()
+	 * @see #používaPodlahu()
+	 * @see #používaStrop()
 	 */
 	public static void presmerujNaPodlahu()
 	{
@@ -4751,9 +4756,9 @@ public abstract class Skript
 	 * vykonania tejto metódy, budú všetky aktivity presmerované na
 	 * vnútornú konzolu podlahy (ak to tak dovtedy nebolo).</p>
 	 * 
-	 * @see presmerujNaPodlahu()
-	 * @see používaPodlahu()
-	 * @see používaStrop()
+	 * @see #presmerujNaPodlahu()
+	 * @see #používaPodlahu()
+	 * @see #používaStrop()
 	 */
 	public static void presmerujNaStrop()
 	{
@@ -4772,9 +4777,9 @@ public abstract class Skript
 	 *     vnútornú konzolu {@linkplain GRobot#podlaha podlahy},
 	 *     {@code valfalse} v opačnom prípade
 	 * 
-	 * @see presmerujNaPodlahu()
-	 * @see presmerujNaStrop()
-	 * @see používaStrop()
+	 * @see #presmerujNaPodlahu()
+	 * @see #presmerujNaStrop()
+	 * @see #používaStrop()
 	 */
 	public static boolean používaPodlahu()
 	{
@@ -4799,9 +4804,9 @@ public abstract class Skript
 	 *     vnútornú konzolu {@linkplain GRobot#strop stropu}, {@code valfalse}
 	 *     v opačnom prípade
 	 * 
-	 * @see presmerujNaPodlahu()
-	 * @see presmerujNaStrop()
-	 * @see používaPodlahu()
+	 * @see #presmerujNaPodlahu()
+	 * @see #presmerujNaStrop()
+	 * @see #používaPodlahu()
 	 */
 	public static boolean používaStrop()
 	{

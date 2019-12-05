@@ -54,52 +54,96 @@ import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
  * <pre CLASS="example">
 	{@code kwdnew} {@link ObsluhaUdalostí#ObsluhaUdalostí() ObsluhaUdalostí}()
 	{
+		{@code comm// Časovač}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#tik() tik}() {}
+
+		{@code comm// Klávesnica}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#stlačenieKlávesu() stlačenieKlávesu}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#uvoľnenieKlávesu() uvoľnenieKlávesu}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zadanieZnaku() zadanieZnaku}() {}
+
+		{@code comm// Myš}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#klik() klik}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#voľbaPoložkyPonuky() voľbaPoložkyPonuky}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#voľbaKontextovejPoložky() voľbaKontextovejPoložky}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#voľbaTlačidla() voľbaTlačidla}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zmenaPosunuLišty() zmenaPosunuLišty}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#voľbaSystémovejIkony() voľbaSystémovejIkony}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#voľbaSystémovejPoložky() voľbaSystémovejPoložky}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#vymazanie() vymazanie}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#prekreslenie() prekreslenie}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zobrazenieOkna() zobrazenieOkna}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#skrytieOkna() skrytieOkna}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#presunutieOkna() presunutieOkna}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zmenaVeľkostiOkna() zmenaVeľkostiOkna}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#aktiváciaOkna() aktiváciaOkna}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#deaktiváciaOkna() deaktiváciaOkna}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#maximalizovanie() maximalizovanie}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#minimalizovanie() minimalizovanie}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#obnovenie() obnovenie}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#otvorenie() otvorenie}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zavretie() zavretie}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zatvorenie() zatvorenie}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#ukončenie() ukončenie}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#potvrdenieÚdajov() potvrdenieÚdajov}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zrušenieÚdajov() zrušenieÚdajov}() {}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#stlačenieTlačidlaMyši() stlačenieTlačidlaMyši}() {}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#uvoľnenieTlačidlaMyši() uvoľnenieTlačidlaMyši}() {}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#pohybMyši() pohybMyši}() {}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#ťahanieMyšou() ťahanieMyšou}() {}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#rolovanieKolieskomMyši() rolovanieKolieskomMyši}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#stlačenieKlávesu() stlačenieKlávesu}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#uvoľnenieKlávesu() uvoľnenieKlávesu}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zadanieZnaku() zadanieZnaku}() {}
+
+		{@code comm// Rozhranie (položky, tlačidlá, skratky…)}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#voľbaPoložkyPonuky() voľbaPoložkyPonuky}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#voľbaKontextovejPoložky() voľbaKontextovejPoložky}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#voľbaTlačidla() voľbaTlačidla}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#voľbaSystémovejIkony() voľbaSystémovejIkony}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#voľbaSystémovejPoložky() voľbaSystémovejPoložky}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#aktiváciaOdkazu() aktiváciaOdkazu}() {}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#klávesováSkratka() klávesováSkratka}() {}
-
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zmenaPosunuLišty() zmenaPosunuLišty}() {}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#ťahanieSúborov() ťahanieSúborov}() {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#pustenieSúboru(String) pustenieSúboru}(String súbor) {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#pustenieSúboru(String) pustenieSúboru}({@link String String} súbor) {}
 
+		{@code comm// Prekresľovanie}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#prekreslenie() prekreslenie}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#vymazanie() vymazanie}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#dokreslenie() dokreslenie}() {}
+
+		{@code comm// Sekvencia}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#sekvencia(int, Object, Object, long, long) sekvencia}({@code typeint} kódSpracovania,
+			{@link Object Object} zdroj, {@link Object Object} cieľ, {@code typelong} stav, {@code typelong} celkovo) {}
+
+		{@code comm// Animácia}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zastavenieAnimácie(Obrázok) zastavenieAnimácie}({@link Obrázok Obrázok} obrázok) {}
+
+		{@code comm// Okno}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#aktiváciaOkna() aktiváciaOkna}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#deaktiváciaOkna() deaktiváciaOkna}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#maximalizovanie() maximalizovanie}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#minimalizovanie() minimalizovanie}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#obnovenie() obnovenie}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zobrazenieOkna() zobrazenieOkna}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#skrytieOkna() skrytieOkna}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#presunutieOkna() presunutieOkna}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zmenaVeľkostiOkna() zmenaVeľkostiOkna}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#otvorenie() otvorenie}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@link ObsluhaUdalostí#zavretie() zavretie}() { {@code kwdreturn} {@code valtrue}; }
+			{@code comm// Alternatíva: zatvorenie()}
+
+		{@code comm// Ukončenie aplikácie}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#ukončenie() ukončenie}() {}
+
+		{@code comm// Konfigurácia}
+		{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@link ObsluhaUdalostí#konfiguráciaZmenená() konfiguráciaZmenená}() { {@code kwdreturn} {@code valfalse}; }
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#čítajKonfiguráciu(Súbor) čítajKonfiguráciu}(Súbor súbor) {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zapíšKonfiguráciu(Súbor) zapíšKonfiguráciu}(Súbor súbor) {}
+
+		{@code comm// Konzola (vizuálna vlastnosť textu konzoly)}
+		{@code comm// vyžaduje import java.awt.Color;}
 		{@code kwd@}Override {@code kwdpublic} {@link Color Color} {@link ObsluhaUdalostí#farbaAktívnehoSlova(String) farbaAktívnehoSlova}({@link String String} slovo) { {@code kwdreturn} {@code valnull}; }
 
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#aktiváciaOdkazu() aktiváciaOdkazu}() {}
-		{@code comm// atď.}
+		{@code comm// Vstupný riadok}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#potvrdenieÚdajov() potvrdenieÚdajov}() {}
+			{@code comm// Alternatíva: potvrdenieVstupu()}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zrušenieÚdajov() zrušenieÚdajov}() {}
+			{@code comm// Alternatíva: zrušenieVstupu()}
+
+		{@code comm// Štandardný vstup}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#spracujRiadokVstupu(String) spracujRiadokVstupu}({@link String String} riadokVstupu) {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#koniecVstupu() koniecVstupu}() {}
+
+		{@code comm// Príkazový riadok}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#ukončenieProcesu(Svet.PríkazovýRiadok, int) ukončenieProcesu}(
+			Svet.PríkazovýRiadok príkazovýRiadok, {@code typeint} návratovýKód) {}
+
+		{@code comm// Ladenie a interaktívny režim}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#spracovaniePríkazu() spracovaniePríkazu}() {}
+		{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@link ObsluhaUdalostí#ladenie(int, String, int) ladenie}({@code typeint} riadok, {@link String String} príkaz, {@code typeint} správa)
+		{ {@code kwdreturn} {@code valsuper}.ladenie(riadok, príkaz, správa); }
+
+		{@code comm// (Prípadne iné.)}
 	};
 	</pre>
  * 
- * <p>Musí byť presne dodržaná syntax metód:
+ * <p>Musí byť presne dodržaná syntax metód, to jest vo väčšine prípadov:
  * {@code kwd@}{@code Override }{@code kwdpublic }{@code 
  * typevoid }<em>«názov reakcie»</em>{@code () }<code>{ … }</code>, kde
  * <em>«názov reakcie»</em> je jeden z názvov vyššie uvedených reakcií.
@@ -169,7 +213,7 @@ import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
  * nasledujúcim spôsobom:</p>
  * 
  * <pre CLASS="example">
-	{@code kwdimport} knižnica.{@link GRobot GRobot};
+	{@code kwdimport} knižnica.*;
 
 	{@code kwdpublic} {@code typeclass} TestKonfigurácie {@code kwdextends} {@link GRobot GRobot}
 	{
@@ -806,7 +850,7 @@ public class ObsluhaUdalostí
 	 * 
 	 * @param riadokVstupu riadok údajov prijatý zo štandardného vstupu
 	 * 
-	 * @see GRobot#spracujRiadokVstupu()
+	 * @see GRobot#spracujRiadokVstupu(String)
 	 * @see #koniecVstupu()
 	 * @see Svet#aktivujŠtandardnýVstup()
 	 * @see Svet#aktivujŠtandardnýVstup(String)
@@ -1111,7 +1155,7 @@ public class ObsluhaUdalostí
 	 * Užitočné doplňujúce údaje súvisiace s touto udalosťou poskytujú metódy
 	 * {@link ÚdajeUdalostí#poslednýOdkaz() poslednýOdkaz} a {@link 
 	 * ÚdajeUdalostí#poslednýPoznámkovýBlok() poslednýPoznámkovýBlok}.
-	 * Metóda {@link Svet#otvorWebovýOdkaz(String} otvorWebovýOdkaz}
+	 * Metóda {@link Svet#otvorWebovýOdkaz(String) otvorWebovýOdkaz}
 	 * umožňuje otvorenie poskytnutého odkazu v predvolenom webovom
 	 * prehliadači.</p>
 	 * 
@@ -1126,10 +1170,18 @@ public class ObsluhaUdalostí
 	 * 
 	 * <p>Tento príklad ukazuje minimálne požiadavky, ktoré musia byť
 	 * splnené na to, aby fungovalo klikanie na webové odkazy v poznámkovom
-	 * bloku. Navyše je len zmena veľkosti plátna (volaním nadradeného
-	 * konštruktora {@code valsuper} v prvom riadku konštruktora triedy)
-	 * a nastavovanie automatického rozťahovania (výšky a šírky) poznámkového
-	 * bloku. Ostatné prvky príkladu sú nevyhnutné.</p>
+	 * bloku. Nepotrebnými bonusmi v tomto príklade sú len zmena veľkosti
+	 * plátna (volaním nadradeného konštruktora robota – {@code valsuper}
+	 * v prvom riadku konštruktora odvodenej triedy), nastavenie
+	 * automatického rozťahovania (výšky a šírky) poznámkového bloku,
+	 * prípadne aj skrytie hlavného robota (podľa toho, za akú veľkú
+	 * prekážku považujeme jeho vizuálna prítomnosť na plátne).
+	 * Ostatné časti príkladu sú nevyhnutné.</p>
+	 * 
+	 * <!-- TODO Overiť, či je v reťazci srg" správne zobrazený HTML kód,
+	 * lebo keď som tam použil HTML entity v dobrej viere, že to bude
+	 * v poriadku, tak to zobrazilo zle. Overiť podobné veci v celej
+	 * dokumentácii (ak sa bude dať). TODO -->
 	 * 
 	 * <pre CLASS="example">
 		{@code kwdimport} knižnica.*;
@@ -1138,13 +1190,13 @@ public class ObsluhaUdalostí
 		{
 			{@code kwdprivate} OtvoriťWebovýOdkaz()
 			{
-				{@code valsuper}({@link Svet Svet}.{@link Svet#šírkaZariadenia() šírkaZariadenia}(), {@link Svet Svet}.{@link Svet#výškaZariadenia() výškaZariadenia}());
+				{@code valsuper}({@link Svet Svet}.{@link Svet#šírkaZariadenia() šírkaZariadenia}(), {@link Svet Svet}.{@link Svet#výškaZariadenia() výškaZariadenia}()); {@code comm// Nie je nevyhnutné.}
 				{@link PoznámkovýBlok PoznámkovýBlok} blok = {@code kwdnew} {@link PoznámkovýBlok#PoznámkovýBlok() PoznámkovýBlok}();
-				blok.{@link PoznámkovýBlok#roztiahniNaŠírku() roztiahniNaŠírku}();
-				blok.{@link PoznámkovýBlok#roztiahniNaVýšku() roztiahniNaVýšku}();
-				blok.{@link PoznámkovýBlok#html(String) html}({@code srg"&lt;a href=\"http://pdf.truni.sk/\"&gt;Klikni na odkaz.&lt;/a&gt;"});
+				blok.{@link PoznámkovýBlok#roztiahniNaŠírku() roztiahniNaŠírku}(); {@code comm// Nie je nevyhnutné.}
+				blok.{@link PoznámkovýBlok#roztiahniNaVýšku() roztiahniNaVýšku}(); {@code comm// Nie je nevyhnutné.}
+				blok.{@link PoznámkovýBlok#html(String) html}({@code srg"<a href=\"http://pdf.truni.sk/\">Klikni na odkaz.</a>"});
 				blok.{@link PoznámkovýBlok#neupravuj() neupravuj}();
-				{@link GRobot#skry() skry}();
+				{@link GRobot#skry() skry}(); {@code comm// Tiež je možné vynechať.}
 			}
 
 			{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#aktiváciaOdkazu() aktiváciaOdkazu}()
@@ -1197,11 +1249,20 @@ public class ObsluhaUdalostí
 	 * Príklad použitia je uvedený v hlavnej sekcii opisu triedy {@link 
 	 * ObsluhaUdalostí ObsluhaUdalostí}.</p>
 	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Pri prekrývaní tejto reakcie
+	 * majte na pamäti, že nie je garantované jej automatické vykonanie pri
+	 * ukončovaní aplikácie (ak vyššia vrstva zistí, že konfigurácia bola
+	 * zmenená, tak ďalej nevyšetruje, či ju treba, alebo netreba ukladať
+	 * a automaticky pristúpi k procesu uloženia konfigurácie). Vložte do
+	 * tela tejto reakcie len taký kód, ktorý rýchlo overí, či nastali nejaké
+	 * zmeny v konfigurácii, ktoré treba uložiť a vráti túto informáciu
+	 * vyššej vrstve.</p>
+	 * 
 	 * @return signál dovoľujúci programovaciemu rámcu overiť, či bola zmenená
-	 *     aspoň jedna položka konfigurácie a či je potrebné zapísať
-	 *     konfiguráciu na disk; ak majú byť zmenené prvky konfigurácie
-	 *     korektne zapísané na disk je nevyhnutné zariadiť, aby
-	 *     návratová hodnota prekrývajúcej verzie tejto metódy bola
+	 *     aspoň jedna položka voliteľnej konfigurácie a či je potrebné
+	 *     zapísať konfiguráciu na disk; ak majú byť zmenené prvky
+	 *     konfigurácie korektne zapísané na disk, tak je nevyhnutné zariadiť,
+	 *     aby návratová hodnota prekrývajúcej verzie tejto metódy bola
 	 *     rovná {@code valtrue}
 	 * 
 	 * @see #čítajKonfiguráciu(Súbor)
@@ -1274,16 +1335,16 @@ public class ObsluhaUdalostí
 	 * 
 	 * @param kódSpracovania obsahuje kód činnosti, ktorá spôsobila
 	 *     vznik tejto udalosti; aktuálne platné kódy sú:
-	 *     {@link #ČÍTANIE_PNG_SEKVENCIE ČÍTANIE_PNG_SEKVENCIE},
-	 *     {@link #CHYBA_ČÍTANIA_PNG_SEKVENCIE
-	 *     CHYBA_ČÍTANIA_PNG_SEKVENCIE}, {@link #ZÁPIS_PNG_SEKVENCIE
-	 *     ZÁPIS_PNG_SEKVENCIE}, {@link #ČÍTANIE_GIF_ANIMÁCIE
-	 *     ČÍTANIE_GIF_ANIMÁCIE}, {@link #ZÁPIS_GIF_ANIMÁCIE
-	 *     ZÁPIS_GIF_ANIMÁCIE}, {@link #KOPÍROVANIE_SÚBOROV
-	 *     KOPÍROVANIE_SÚBOROV}, {@link #PRIPÁJANIE_SÚBOROV
-	 *     PRIPÁJANIE_SÚBOROV}, {@link #POROVNANIE_SÚBOROV
-	 *     POROVNANIE_SÚBOROV}, {@link #ODOVZDANIE_ÚDAJOV
-	 *     ODOVZDANIE_ÚDAJOV} a {@link #PREVZATIE_ÚDAJOV
+	 *     {@link Konštanty#ČÍTANIE_PNG_SEKVENCIE ČÍTANIE_PNG_SEKVENCIE},
+	 *     {@link Konštanty#CHYBA_ČÍTANIA_PNG_SEKVENCIE
+	 *     CHYBA_ČÍTANIA_PNG_SEKVENCIE}, {@link Konštanty#ZÁPIS_PNG_SEKVENCIE
+	 *     ZÁPIS_PNG_SEKVENCIE}, {@link Konštanty#ČÍTANIE_GIF_ANIMÁCIE
+	 *     ČÍTANIE_GIF_ANIMÁCIE}, {@link Konštanty#ZÁPIS_GIF_ANIMÁCIE
+	 *     ZÁPIS_GIF_ANIMÁCIE}, {@link Konštanty#KOPÍROVANIE_SÚBOROV
+	 *     KOPÍROVANIE_SÚBOROV}, {@link Konštanty#PRIPÁJANIE_SÚBOROV
+	 *     PRIPÁJANIE_SÚBOROV}, {@link Konštanty#POROVNANIE_SÚBOROV
+	 *     POROVNANIE_SÚBOROV}, {@link Konštanty#ODOVZDANIE_ÚDAJOV
+	 *     ODOVZDANIE_ÚDAJOV} a {@link Konštanty#PREVZATIE_ÚDAJOV
 	 *     PREVZATIE_ÚDAJOV}
 	 * @param zdroj objekt súvisiaci so zdrojom alebo {@code valnull};
 	 *     napríklad v prípade kopírovania súborov je to {@linkplain 
@@ -1355,47 +1416,47 @@ public class ObsluhaUdalostí
 	 * <p> </p>
 	 * 
 	 * <table class="commands">
-	 * <tr><td>{@link #VYPÍSAŤ_PREMENNÉ VYPÍSAŤ_PREMENNÉ}</td><td
+	 * <tr><td>{@link Konštanty#VYPÍSAŤ_PREMENNÉ VYPÍSAŤ_PREMENNÉ}</td><td
 	 * >–</td><td>Má režim ladenia vypísať obsah všetkých premenných
 	 * (pred začatím vykonávania skriptu)?</td></tr>
-	 * <tr><td>{@link #VYPÍSAŤ_MENOVKY VYPÍSAŤ_MENOVKY}</td><td
+	 * <tr><td>{@link Konštanty#VYPÍSAŤ_MENOVKY VYPÍSAŤ_MENOVKY}</td><td
 	 * >–</td><td>Má režim ladenia vypísať (pred začatím vykonávania
 	 * skriptu) definície všetkých menoviek, ktoré našiel počas analýzy
 	 * skriptu?</td></tr>
-	 * <tr><td>{@link #VYPÍSAŤ_RIADOK VYPÍSAŤ_RIADOK}</td><td>–</td><td>Má
+	 * <tr><td>{@link Konštanty#VYPÍSAŤ_RIADOK VYPÍSAŤ_RIADOK}</td><td>–</td><td>Má
 	 * režim ladenia vypísať aktuálny riadok skriptu?</td></tr>
-	 * <tr><td>{@link #ČAKAŤ ČAKAŤ}</td><td>–</td><td>Má režim ladenia
+	 * <tr><td>{@link Konštanty#ČAKAŤ ČAKAŤ}</td><td>–</td><td>Má režim ladenia
 	 * čakať pred vykonaním riadka skriptu? Ak je odpoveď „áno“,
 	 * tak je táto správa posielaná opakovane (každých 350 ms).</td></tr>
-	 * <tr><td>{@link #PRERUŠIŤ PRERUŠIŤ}</td><td>–</td><td>Má režim
+	 * <tr><td>{@link Konštanty#PRERUŠIŤ PRERUŠIŤ}</td><td>–</td><td>Má režim
 	 * prerušiť vykonávanie skriptu?</td></tr>
-	 * <tr><td>{@link #ZABRÁNIŤ_VYKONANIU ZABRÁNIŤ_VYKONANIU}</td><td
+	 * <tr><td>{@link Konštanty#ZABRÁNIŤ_VYKONANIU ZABRÁNIŤ_VYKONANIU}</td><td
 	 * >–</td><td>Má režim v poslednej chvíli zabrániť vykonaniu
 	 * príkazu s konkrétnymi hodnotami argumentov?</td></tr>
-	 * <tr><td>{@link #VYPÍSAŤ_PRÍKAZ VYPÍSAŤ_PRÍKAZ}</td><td>–</td><td>Má
+	 * <tr><td>{@link Konštanty#VYPÍSAŤ_PRÍKAZ VYPÍSAŤ_PRÍKAZ}</td><td>–</td><td>Má
 	 * režim vypísať ozvenu potvrdeného príkazu {@linkplain 
 	 * Svet#interaktívnyRežim(boolean) interaktívneho režimu}?</td></tr>
-	 * <tr><td>{@link #VYKONAŤ_PRÍKAZ VYKONAŤ_PRÍKAZ}</td><td>–</td><td>Má
+	 * <tr><td>{@link Konštanty#VYKONAŤ_PRÍKAZ VYKONAŤ_PRÍKAZ}</td><td>–</td><td>Má
 	 * režim vykonať potvrdený príkaz {@linkplain 
 	 * Svet#interaktívnyRežim(boolean) interaktívneho režimu}?</td></tr>
-	 * <tr><td>{@link #UKONČENIE_SKRIPTU UKONČENIE_SKRIPTU}</td><td
+	 * <tr><td>{@link Konštanty#UKONČENIE_SKRIPTU UKONČENIE_SKRIPTU}</td><td
 	 * >–</td><td>{@linkplain Svet#spustiSkript(String[]) Vykonávanie
 	 * skriptu v samostatnom vlákne} oznamuje, že jeho činnosť bola
 	 * ukončená (bez chyby).</td></tr>
-	 * <tr><td>{@link #UKONČENIE_CHYBOU UKONČENIE_CHYBOU}</td><td
+	 * <tr><td>{@link Konštanty#UKONČENIE_CHYBOU UKONČENIE_CHYBOU}</td><td
 	 * >–</td><td>{@linkplain Svet#spustiSkript(String[]) Vykonávanie
 	 * skriptu v samostatnom vlákne} oznamuje, že jeho činnosť bola
 	 * ukončená chybou. V parametri {@code riadok} je číslo riadka, na
 	 * ktorom vznikla chyba a reťazec parametra {@code príkaz} obsahuje
 	 * v tomto prípade jednoduchý text chybového hlásenia.</td></tr>
-	 * <tr><td>{@link #VYPÍSAŤ_SKRIPT VYPÍSAŤ_SKRIPT}</td><td>–</td><td>Má
+	 * <tr><td>{@link Konštanty#VYPÍSAŤ_SKRIPT VYPÍSAŤ_SKRIPT}</td><td>–</td><td>Má
 	 * režim ladenia vypísať úplné znenie aktuálne vykonávaného
 	 * skriptu?</td></tr>
 	 * 
-	 * <tr><td>{@link #ČÍSELNÁ_PREMENNÁ ČÍSELNÁ_PREMENNÁ}<br />
-	 * {@link #FAREBNÁ_PREMENNÁ FAREBNÁ_PREMENNÁ}<br />
-	 * {@link #POLOHOVÁ_PREMENNÁ POLOHOVÁ_PREMENNÁ}<br />
-	 * {@link #REŤAZCOVÁ_PREMENNÁ REŤAZCOVÁ_PREMENNÁ}</td><td
+	 * <tr><td>{@link Konštanty#ČÍSELNÁ_PREMENNÁ ČÍSELNÁ_PREMENNÁ}<br />
+	 * {@link Konštanty#FAREBNÁ_PREMENNÁ FAREBNÁ_PREMENNÁ}<br />
+	 * {@link Konštanty#POLOHOVÁ_PREMENNÁ POLOHOVÁ_PREMENNÁ}<br />
+	 * {@link Konštanty#REŤAZCOVÁ_PREMENNÁ REŤAZCOVÁ_PREMENNÁ}</td><td
 	 * >–</td><td>Má režim vypísať obsah premennej prislúchajúceho
 	 * údajového typu? Táto otázka vznikne vždy, keď sa zmení hodnota
 	 * premennej.</td></tr>
@@ -1406,13 +1467,13 @@ public class ObsluhaUdalostí
 	 * <p>Ak je {@linkplain Svet#režimLadenia(boolean) režim ladenia}
 	 * zapnutý počas {@linkplain Svet#interaktívnyRežim(boolean)
 	 * interaktívneho režimu}, tak pred vykonaním každého potvrdeného
-	 * riadka vznikne otázka typu {@link #VYKONAŤ_PRÍKAZ
+	 * riadka vznikne otázka typu {@link Konštanty#VYKONAŤ_PRÍKAZ
 	 * VYKONAŤ_PRÍKAZ}.</p>
 	 * 
 	 * <p><b>Príklad:</b></p>
 	 * 
 	 * <pre CLASS="example">
-		{@code kwdimport} knižnica.{@link GRobot GRobot};
+		{@code kwdimport} knižnica.*;
 
 		{@code kwdpublic} {@code typeclass} RežimLadeniaInteraktívne {@code kwdextends} {@link GRobot GRobot}
 		{
@@ -1437,8 +1498,8 @@ public class ObsluhaUdalostí
 					{
 						{@code kwdswitch} (správa)
 						{
-						{@code kwdcase} {@link GRobot#VYPÍSAŤ_PRÍKAZ VYPÍSAŤ_PRÍKAZ}:
-						{@code kwdcase} {@link GRobot#VYKONAŤ_PRÍKAZ VYKONAŤ_PRÍKAZ}:
+						{@code kwdcase} {@link Konštanty#VYPÍSAŤ_PRÍKAZ VYPÍSAŤ_PRÍKAZ}:
+						{@code kwdcase} {@link Konštanty#VYKONAŤ_PRÍKAZ VYKONAŤ_PRÍKAZ}:
 							{@code kwdreturn} {@code valtrue};
 						}
 

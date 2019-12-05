@@ -70,7 +70,7 @@ import static knižnica.Konštanty.VODOROVNÁ;
  * zhoršovali. Dokedy nevznikne iná implementácia, treba sa zmieriť
  * s tým, že tlačidlá líšt jednoducho nefungujú. Zdrojové kódy
  * niektorých implementácií, ktoré by mohli poslúžiť ako vzory
- * do budúcna sú dostupné tu: <a
+ * do budúcna, sú dostupné tu: <a
  * href="http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/6-b27/javax/swing/JScrollBar.java"
  * target="_blank">grepcode.com</a>, <a
  * href="http://developer.classpath.org/doc/javax/swing/JScrollBar-source.html"
@@ -90,10 +90,10 @@ import static knižnica.Konštanty.VODOROVNÁ;
  * neželaná spätná väzba a mechanizmus by nefungoval tak, ako má.</p>
  * 
  * <pre CLASS="example">
-	{@code kwdimport} knižnica.{@link GRobot GRobot};
+	{@code kwdimport} knižnica.*;
 
-	{@code kwdimport} {@code kwdstatic} knižnica.{@link GRobot GRobot}.{@link Svet Svet}.*;
-	{@code kwdimport} {@code kwdstatic} knižnica.{@link GRobot GRobot}.{@link ÚdajeUdalostí ÚdajeUdalostí}.*;
+	{@code kwdimport} {@code kwdstatic} knižnica.{@link Svet Svet}.*;
+	{@code kwdimport} {@code kwdstatic} knižnica.{@link ÚdajeUdalostí ÚdajeUdalostí}.*;
 
 	{@code kwdpublic} {@code typeclass} TestRolovacíchLíšt {@code kwdextends} {@link GRobot GRobot}
 	{
@@ -104,7 +104,7 @@ import static knižnica.Konštanty.VODOROVNÁ;
 		{
 			{@code comm// Vytvorenie obrázka pre tlačidlo}
 			{@link Obrázok Obrázok} obrázok = {@code kwdnew} {@link Obrázok#Obrázok(int, int) Obrázok}({@code num20}, {@code num20});
-			obrázok.{@link Obrázok#vyplň(Color) vyplň}({@link GRobot#šedá šedá}.{@link Farba#svetlejšia() svetlejšia}());
+			obrázok.{@link Obrázok#vyplň(Color) vyplň}({@link Farebnosť#šedá šedá}.{@link Farba#svetlejšia() svetlejšia}());
 
 			{@code comm// Vytvorenie tlačidla, ktoré umiestnime do rohu medzi lišty}
 			{@link Tlačidlo Tlačidlo} tlačidlo = {@code kwdnew} {@link Tlačidlo#Tlačidlo(Image) Tlačidlo}(obrázok);
@@ -114,7 +114,7 @@ import static knižnica.Konštanty.VODOROVNÁ;
 			tlačidlo.{@link Tlačidlo#prilepDole() prilepDole}();
 
 			{@code comm// Vytvorenie zvislej rolovacej lišty}
-			zvislá = {@code kwdnew} {@link RolovaciaLišta#GRobot.RolovaciaLišta(int) RolovaciaLišta}({@link RolovaciaLišta RolovaciaLišta}.{@link Konštanty#ZVISLÁ ZVISLÁ});
+			zvislá = {@code kwdnew} {@link RolovaciaLišta#RolovaciaLišta(int) RolovaciaLišta}({@link RolovaciaLišta RolovaciaLišta}.{@link Konštanty#ZVISLÁ ZVISLÁ});
 			zvislá.{@link GRobot#skoč(double, double) skoč}({@code num0}, {@code num20});
 			zvislá.{@link RolovaciaLišta#prilepVpravo() prilepVpravo}();
 			zvislá.{@link RolovaciaLišta#roztiahniNaVýšku() roztiahniNaVýšku}();<!--
@@ -123,7 +123,7 @@ import static knižnica.Konštanty.VODOROVNÁ;
 			zvislá.{@link RolovaciaLišta#hornáHranica(int) hornáHranica}({@link Svet#výška() výška}() / {@code num2});
 
 			{@code comm// Vytvorenie vodorovnej rolovacej lišty}
-			vodorovná = {@code kwdnew} {@link RolovaciaLišta#GRobot.RolovaciaLišta(int) RolovaciaLišta}({@link RolovaciaLišta RolovaciaLišta}.{@link Konštanty#VODOROVNÁ VODOROVNÁ});
+			vodorovná = {@code kwdnew} {@link RolovaciaLišta#RolovaciaLišta(int) RolovaciaLišta}({@link RolovaciaLišta RolovaciaLišta}.{@link Konštanty#VODOROVNÁ VODOROVNÁ});
 			vodorovná.{@link GRobot#skoč(double, double) skoč}(-{@code num20}, {@code num0});
 			vodorovná.{@link RolovaciaLišta#prilepDole() prilepDole}();
 			vodorovná.{@link RolovaciaLišta#roztiahniNaŠírku() roztiahniNaŠírku}();<!--

@@ -56,7 +56,7 @@ package knižnica;
  * implementácii simulácie ohňostroja.</p>
  * 
  * <pre CLASS="example">
-	{@code kwdimport} knižnica.{@link GRobot GRobot};
+	{@code kwdimport} knižnica.*;
 
 	{@code kwdpublic} {@code typeclass} Ohňostroj {@code kwdextends} {@link GRobot GRobot}
 	{

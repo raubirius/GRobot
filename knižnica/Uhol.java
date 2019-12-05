@@ -77,12 +77,14 @@ import javax.swing.event.ChangeEvent;
  * Smer Smer}, čo všetko zvyšuje jej univerzálnosť a použiteľnosť. Statická
  * metóda {@link #vyberSmer() vyberSmer} (a jej klony) otvorí dialóg na
  * grafický výber uhla. Rovnaký grafický komponent je použitý
- * v konfigurovateľnom {@linkplain #dialóg(String[], Object[], String)
+ * v konfigurovateľnom {@linkplain Svet#dialóg(String[], Object[], String)
  * dialógu} na vstup (a úpravu) údajov dostupnom cez triedu {@link Svet
  * Svet}.</p>
  * 
- * <!-- TODO: test, či funguje autoboxing a unboxing a ak áno, uviesť to
- * do dokumentácie-->
+ * <!--
+ * Poznámka: Autoboxing a unboxing funguje len s primitívnymi údajovými typmi.
+ * (https://docs.oracle.com/javase/tutorial/java/data/autoboxing.html)
+ * -->
  */
 @SuppressWarnings("serial")
 public final class Uhol extends Number implements Comparable<Uhol>, Smer
@@ -103,7 +105,7 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	 * <ul><li><a
 	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#MAX_VALUE"
 	 * target="_blank"><em>Double (Java Platform SE 8) –
-	 * <code>MAX_VALUE</code>.</em> Oracle.</a></li></ul>
+	 * <code>MAX_VALUE</code>.</em> Oracle. Citované: 2018.</a></li></ul>
 	 */
 	public static final double MAX_VALUE = 0x1.fffffffffffffP+1023; // 1.7976931348623157e+308
 
@@ -118,7 +120,7 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	 * <ul><li><a
 	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#MIN_NORMAL"
 	 * target="_blank"><em>Double (Java Platform SE 8) –
-	 * <code>MIN_NORMAL</code>.</em> Oracle.</a></li></ul>
+	 * <code>MIN_NORMAL</code>.</em> Oracle. Citované: 2018.</a></li></ul>
 	 */
 	public static final double MIN_NORMAL = 0x1.0p-1022; // 2.2250738585072014E-308
 
@@ -133,7 +135,7 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	 * <ul><li><a
 	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#MIN_VALUE"
 	 * target="_blank"><em>Double (Java Platform SE 8) –
-	 * <code>MIN_VALUE</code>.</em> Oracle.</a></li></ul>
+	 * <code>MIN_VALUE</code>.</em> Oracle. Citované: 2018.</a></li></ul>
 	 */
 	public static final double MIN_VALUE = 0x0.0000000000001P-1022; // 4.9e-324
 
@@ -146,7 +148,7 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	 * <ul><li><a
 	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#MAX_EXPONENT"
 	 * target="_blank"><em>Double (Java Platform SE 8) –
-	 * <code>MAX_EXPONENT</code>.</em> Oracle.</a></li></ul>
+	 * <code>MAX_EXPONENT</code>.</em> Oracle. Citované: 2018.</a></li></ul>
 	 */
 	public static final int MAX_EXPONENT = 1023;
 
@@ -159,7 +161,7 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	 * <ul><li><a
 	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#MIN_EXPONENT"
 	 * target="_blank"><em>Double (Java Platform SE 8) –
-	 * <code>MIN_EXPONENT</code>.</em> Oracle.</a></li></ul>
+	 * <code>MIN_EXPONENT</code>.</em> Oracle. Citované: 2018.</a></li></ul>
 	 */
 	public static final int MIN_EXPONENT = -1022;
 
@@ -172,7 +174,7 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	 * <ul><li><a
 	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#SIZE"
 	 * target="_blank"><em>Double (Java Platform SE 8) –
-	 * <code>SIZE</code>.</em> Oracle.</a></li></ul>
+	 * <code>SIZE</code>.</em> Oracle. Citované: 2018.</a></li></ul>
 	 */
 	public static final int SIZE = 64;
 
@@ -186,7 +188,7 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	 * <ul><li><a
 	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#BYTES"
 	 * target="_blank"><em>Double (Java Platform SE 8) –
-	 * <code>BYTES</code>.</em> Oracle.</a></li></ul>
+	 * <code>BYTES</code>.</em> Oracle. Citované: 2018.</a></li></ul>
 	 */
 	public static final int BYTES = SIZE / Byte.SIZE;
 
@@ -200,7 +202,7 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	 * <ul><li><a
 	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#TYPE"
 	 * target="_blank"><em>Double (Java Platform SE 8) –
-	 * <code>TYPE</code>.</em> Oracle.</a></li></ul>
+	 * <code>TYPE</code>.</em> Oracle. Citované: 2018.</a></li></ul>
 	 */
 	public static final Class<Double> TYPE = Double.TYPE;
 
@@ -253,7 +255,7 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	 * <ul><li><a
 	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#isNaN--"
 	 * target="_blank"><em>Double (Java Platform SE 8) –
-	 * <code>isNaN</code>.</em> Oracle.</a></li></ul>
+	 * <code>isNaN</code>.</em> Oracle. Citované: 2018.</a></li></ul>
 	 * 
 	 * @return {@code valtrue} ak je hodnota reprezentovaná touto inštanciou <a
 	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#NaN"
@@ -274,7 +276,7 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	 * <ul><li><a
 	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#isInfinite--"
 	 * target="_blank"><em>Double (Java Platform SE 8) –
-	 * <code>isInfinite</code>.</em> Oracle.</a></li></ul>
+	 * <code>isInfinite</code>.</em> Oracle. Citované: 2018.</a></li></ul>
 	 * 
 	 * @return {@code valtrue}, ak je hodnota uhla tejto inštancie kladné
 	 *     alebo záporné nekonečno; {@code valfalse} v opačnom prípade
@@ -297,7 +299,8 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	 * <ul><li><a
 	 * href="https://docs.oracle.com/javase/8/docs/api/java/lang/Double.html#isFinite--"
 	 * target="_blank"><em>Double (Java Platform SE 8) –
-	 * <code>isFinite(d)</code> (static version).</em> Oracle.</a></li></ul>
+	 * <code>isFinite(d)</code> (static version).</em> Oracle. Citované:
+	 * 2018.</a></li></ul>
 	 * 
 	 * @return {@code valtrue}, ak je hodnota uhla tejto inštancie konečná;
 	 *     {@code valfalse} v opačnom prípade
@@ -310,7 +313,7 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	/**
 	 * <p>Prevedie hodnotu tejto inštancie na reťazec s použitím metódy
 	 * inštancie {@link Svet#formát Svet.formát}{@code .}{@link 
-	 * java.text.DecimalFormat.format(double) format} a pripojí na koniec
+	 * java.text.DecimalFormat#format(double) format} a pripojí na koniec
 	 * výsledného reťazca znak stupňa (°).</p>
 	 * 
 	 * @return hodnota uložená v tejto inštancii uhla prevedená na reťazec
@@ -487,7 +490,7 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	/**
 	 * <p>Prevedie zadanú reálnočíselnú hodnotu uhla na reťazec s použitím
 	 * metódy inštancie {@link Svet#formát Svet.formát}{@code .}{@link 
-	 * java.text.DecimalFormat.format(double) format}, pričom pripojí na
+	 * java.text.DecimalFormat#format(double) format}, pričom pripojí na
 	 * koniec výsledného reťazca znak stupňa (°).</p>
 	 * 
 	 * @param d reálnočíselná hodnota uhla, ktorá má byť prevedená na reťazec
