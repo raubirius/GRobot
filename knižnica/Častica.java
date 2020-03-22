@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -353,12 +353,24 @@ public class Častica implements Poloha, Smer
 	/**
 	 * <p>Táto metóda je predvolene prázdna. Je určená na prekrytie
 	 * v triedach odvodených od častice. Častica môže byť chápaná ako
-	 * odľahčená verzia robota. O celú jej funkčnosť (vrátane aktivity)
-	 * sa musí postarať programátor, ktorý sa ju rozhodne rozšíriť
-	 * a využiť na svoje účely. Aktivita častice nie je v programovacom
-	 * rámci GRobot nikde vnútorne použitá, ale jej definícia
-	 * v tejto triede poskytuje spoločný bod použitia všetkých
-	 * odvodených tried.</p>
+	 * odľahčená verzia robota. O celú jej funkčnosť (vrátane aktivity
+	 * alebo pasivity) sa musí postarať programátor, ktorý sa ju rozhodne
+	 * rozšíriť a využiť na svoje účely. Aktivita (rovnako ako pasivita)
+	 * častice nie je v programovacom rámci GRobot nikde vnútorne použitá,
+	 * ale jej definícia v tejto triede poskytuje spoločný bod použitia
+	 * všetkých odvodených tried.</p>
 	 */
 	public void aktivita() {}
+
+	/**
+	 * <p>Táto metóda je predvolene prázdna. Je určená na prekrytie
+	 * v triedach odvodených od častice. Častica môže byť chápaná ako
+	 * odľahčená verzia robota. O celú jej funkčnosť (vrátane aktivity
+	 * alebo pasivity) sa musí postarať programátor, ktorý sa ju rozhodne
+	 * rozšíriť a využiť na svoje účely. Pasivita (rovnako ako aktivita)
+	 * častice nie je v programovacom rámci GRobot nikde vnútorne použitá,
+	 * ale jej definícia v tejto triede poskytuje spoločný bod použitia
+	 * všetkých odvodených tried.</p>
+	 */
+	public void pasivita() {}
 }

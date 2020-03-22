@@ -45,7 +45,7 @@ import java.io.IOException;
  * target="_blank">RFC 4648</a>.)</p>
  * 
  * @author Roman Horváth
- * @version 9. 6. 2018
+ * @version 9. 3. 2020
  * 
  * @exclude
  */
@@ -651,8 +651,8 @@ public abstract class Base64
 	 * <em>«original image name»</em>{@code .base64}.
 	 * Following prefix will be written in front of the Base64 data:
 	 * {@code data:}<em>«mimeType»</em>{@code ;base64,}; where
-	 * <em>«mimeType»</em> can be one of: {@code image/png}, {@code image/gif},
-	 * or {@code image/jpeg}.</p>
+	 * <em>«mimeType»</em> can be one of: {@code image/png},
+	 * {@code image/gif}, {@code image/svg}, or {@code image/jpeg}.</p>
 	 * 
 	 * @param imageFile the name of the file containing an image
 	 */
@@ -666,8 +666,8 @@ public abstract class Base64
 	 * a new file that will contain data encoded using the Base64 algorithm.
 	 * Following prefix will be written in front of the Base64 data:
 	 * {@code data:}<em>«mimeType»</em>{@code ;base64,}; where
-	 * <em>«mimeType»</em> can be one of: {@code image/png}, {@code image/gif},
-	 * or {@code image/jpeg}.</p>
+	 * <em>«mimeType»</em> can be one of: {@code image/png},
+	 * {@code image/gif}, {@code image/gif}, or {@code image/jpeg}.</p>
 	 * 
 	 * @param imageFile the name of the file containing an image
 	 * @param base64File the name of the file to write the Base64 data
@@ -693,6 +693,7 @@ public abstract class Base64
 
 		if (mimeType.equalsIgnoreCase("png")) mimeType = "image/png";
 		else if (mimeType.equalsIgnoreCase("gif")) mimeType = "image/gif";
+		else if (mimeType.equalsIgnoreCase("svg")) mimeType = "image/svg+xml";
 		else mimeType = "image/jpeg";
 
 		// System.out.println("Input: " + imageFile);
@@ -708,8 +709,8 @@ public abstract class Base64
 	 * a new file that will contain data encoded using the Base64 algorithm.
 	 * Following prefix will be written in front of the Base64 data:
 	 * {@code data:}<em>«mimeType»</em>{@code ;base64,}; where
-	 * <em>«mimeType»</em> can be one of: {@code image/png}, {@code image/gif},
-	 * or {@code image/jpeg}.</p>
+	 * <em>«mimeType»</em> can be one of: {@code image/png},
+	 * {@code image/gif}, {@code image/svg}, or {@code image/jpeg}.</p>
 	 * 
 	 * @param imageFile the name of the file containing an image
 	 * @param outputStream stream to write the Base64 data
@@ -725,6 +726,7 @@ public abstract class Base64
 
 		if (mimeType.equalsIgnoreCase("png")) mimeType = "image/png";
 		else if (mimeType.equalsIgnoreCase("gif")) mimeType = "image/gif";
+		else if (mimeType.equalsIgnoreCase("svg")) mimeType = "image/svg+xml";
 		else mimeType = "image/jpeg";
 
 		bytes = readBytes(imageFile); encode();

@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -593,12 +593,143 @@ public interface Farebnosť
 	/**
 	 * <p>Zoznam (pole) všetkých preddefinovaných farieb. Farby v tomto
 	 * poli sú usporiadané podľa zobrazenia v dialógu {@linkplain 
-	 * Farba#vyberFarbu() výberu farby} (a príbuzných komponentov). Pri
+	 * Farba#vyberFarbu() výberu farby} (a príbuzných komponentov), s tým
+	 * drobným rozdielom, že zobrazenie v dialógu je transponované. Pri
 	 * zoraďovaní boli brané do úvahy najmä tieto dve pravidlá: svetlé
 	 * farby umiestňovať vyššie (prípadne vľavo) a príbuzné farby podľa
-	 * možností (s ohľadom na rôznorodosť palety) čo najbližšie k sebe.
-	 * Výsledok je zobrazený v opise metódy na zobrazenie dialógu
-	 * {@linkplain Farba#vyberFarbu() výberu farby}.</p>
+	 * možností (s ohľadom na rôznorodosť palety) čo najbližšie k sebe.</p>
+	 * 
+	 * <p><b>Tabuľka farieb zoradených tak, ako sú umiestnené v tomto
+	 * poli farieb:</b></p>
+	 * 
+	 * <style>
+	 * svg.color-box
+	 * {
+	 * 	width: 24;
+	 * 	height: 24;
+	 * }
+	 * 
+	 * svg.color-box rect
+	 * {
+	 * 	x: 1; y: 1;
+	 * 	width: 22px;
+	 * 	height: 22px;
+	 * 	stroke-width: 2;
+	 * 	stroke: black;
+	 * }
+	 * </style>
+	 * 
+	 * <table>
+	 * <tr>
+	 * 
+	 * <td>{@link #biela biela} <br
+	 * /><svg class="color-box"><rect style="fill: #FFFFFF" /></svg></td>
+	 * <td>{@link #snehová snehová} <br
+	 * /><svg class="color-box"><rect style="fill: #F0F0F0" /></svg></td>
+	 * <td>{@link #papierová papierová} <br
+	 * /><svg class="color-box"><rect style="fill: #E0E0E0" /></svg></td>
+	 * <td>{@link #svetlošedá svetlošedá} <br
+	 * /><svg class="color-box"><rect style="fill: #B0B0B0" /></svg></td>
+	 * <td>{@link #šedá šedá} <br
+	 * /><svg class="color-box"><rect style="fill: #909090" /></svg></td>
+	 * <td>{@link #tmavošedá tmavošedá} <br
+	 * /><svg class="color-box"><rect style="fill: #606060" /></svg></td>
+	 * </tr><tr>
+	 * <td>{@link #svetláNebeská svetláNebeská} <br
+	 * /><svg class="color-box"><rect style="fill: #D9FFFF" /></svg></td>
+	 * <td>{@link #nebeská nebeská} <br
+	 * /><svg class="color-box"><rect style="fill: #B3FFFF" /></svg></td>
+	 * <td>{@link #tmaváNebeská tmaváNebeská} <br
+	 * /><svg class="color-box"><rect style="fill: #8CFFFF" /></svg></td>
+	 * <td>{@link #svetloakvamarínová svetloakvamarínová} <br
+	 * /><svg class="color-box"><rect style="fill: #14F5FF" /></svg></td>
+	 * <td>{@link #akvamarínová akvamarínová} <br
+	 * /><svg class="color-box"><rect style="fill: #00E1FF" /></svg></td>
+	 * <td>{@link #tmavoakvamarínová tmavoakvamarínová} <br
+	 * /><svg class="color-box"><rect style="fill: #00CDFF" /></svg></td>
+	 * </tr><tr>
+	 * <td>{@link #svetlotyrkysová svetlotyrkysová} <br
+	 * /><svg class="color-box"><rect style="fill: #00E0E0" /></svg></td>
+	 * <td>{@link #tyrkysová tyrkysová} <br
+	 * /><svg class="color-box"><rect style="fill: #00B0B0" /></svg></td>
+	 * <td>{@link #tmavotyrkysová tmavotyrkysová} <br
+	 * /><svg class="color-box"><rect style="fill: #009090" /></svg></td>
+	 * <td>{@link #svetlozelená svetlozelená} <br
+	 * /><svg class="color-box"><rect style="fill: #00E000" /></svg></td>
+	 * <td>{@link #zelená zelená} <br
+	 * /><svg class="color-box"><rect style="fill: #00B000" /></svg></td>
+	 * <td>{@link #tmavozelená tmavozelená} <br
+	 * /><svg class="color-box"><rect style="fill: #009000" /></svg></td>
+	 * </tr><tr>
+	 * <td>{@link #svetloatramentová svetloatramentová} <br
+	 * /><svg class="color-box"><rect style="fill: #2369FF" /></svg></td>
+	 * <td>{@link #atramentová atramentová} <br
+	 * /><svg class="color-box"><rect style="fill: #0F4BFF" /></svg></td>
+	 * <td>{@link #tmavoatramentová tmavoatramentová} <br
+	 * /><svg class="color-box"><rect style="fill: #002DFF" /></svg></td>
+	 * <td>{@link #svetlomodrá svetlomodrá} <br
+	 * /><svg class="color-box"><rect style="fill: #0000E0" /></svg></td>
+	 * <td>{@link #modrá modrá} <br
+	 * /><svg class="color-box"><rect style="fill: #0000B0" /></svg></td>
+	 * <td>{@link #tmavomodrá tmavomodrá} <br
+	 * /><svg class="color-box"><rect style="fill: #000090" /></svg></td>
+	 * </tr><tr>
+	 * <td>{@link #svetloružová svetloružová} <br
+	 * /><svg class="color-box"><rect style="fill: #FFD9D9" /></svg></td>
+	 * <td>{@link #ružová ružová} <br
+	 * /><svg class="color-box"><rect style="fill: #FFB3B3" /></svg></td>
+	 * <td>{@link #tmavoružová tmavoružová} <br
+	 * /><svg class="color-box"><rect style="fill: #FF8C8C" /></svg></td>
+	 * <td>{@link #svetločervená svetločervená} <br
+	 * /><svg class="color-box"><rect style="fill: #E00000" /></svg></td>
+	 * <td>{@link #červená červená} <br
+	 * /><svg class="color-box"><rect style="fill: #B00000" /></svg></td>
+	 * <td>{@link #tmavočervená tmavočervená} <br
+	 * /><svg class="color-box"><rect style="fill: #900000" /></svg></td>
+	 * </tr><tr>
+	 * <td>{@link #svetložltá svetložltá} <br
+	 * /><svg class="color-box"><rect style="fill: #F0F000" /></svg></td>
+	 * <td>{@link #žltá žltá} <br
+	 * /><svg class="color-box"><rect style="fill: #E0E000" /></svg></td>
+	 * <td>{@link #tmavožltá tmavožltá} <br
+	 * /><svg class="color-box"><rect style="fill: #D0D000" /></svg></td>
+	 * <td>{@link #svetlopurpurová svetlopurpurová} <br
+	 * /><svg class="color-box"><rect style="fill: #E000E0" /></svg></td>
+	 * <td>{@link #purpurová purpurová} <br
+	 * /><svg class="color-box"><rect style="fill: #B000B0" /></svg></td>
+	 * <td>{@link #tmavopurpurová tmavopurpurová} <br
+	 * /><svg class="color-box"><rect style="fill: #900090" /></svg></td>
+	 * </tr><tr>
+	 * <td>{@link #svetlooranžová svetlooranžová} <br
+	 * /><svg class="color-box"><rect style="fill: #F0B400" /></svg></td>
+	 * <td>{@link #oranžová oranžová} <br
+	 * /><svg class="color-box"><rect style="fill: #DC9600" /></svg></td>
+	 * <td>{@link #tmavooranžová tmavooranžová} <br
+	 * /><svg class="color-box"><rect style="fill: #C87800" /></svg></td>
+	 * <td>{@link #svetlofialová svetlofialová} <br
+	 * /><svg class="color-box"><rect style="fill: #E070E0" /></svg></td>
+	 * <td>{@link #fialová fialová} <br
+	 * /><svg class="color-box"><rect style="fill: #B050B0" /></svg></td>
+	 * <td>{@link #tmavofialová tmavofialová} <br
+	 * /><svg class="color-box"><rect style="fill: #903090" /></svg></td>
+	 * </tr><tr>
+	 * <td>{@link #svetlohnedá svetlohnedá} <br
+	 * /><svg class="color-box"><rect style="fill: #B46000" /></svg></td>
+	 * <td>{@link #hnedá hnedá} <br
+	 * /><svg class="color-box"><rect style="fill: #A05000" /></svg></td>
+	 * <td>{@link #tmavohnedá tmavohnedá} <br
+	 * /><svg class="color-box"><rect style="fill: #8C4000" /></svg></td>
+	 * <td>{@link #antracitová antracitová} <br
+	 * /><svg class="color-box"><rect style="fill: #404040" /></svg></td>
+	 * <td>{@link #uhlíková uhlíková} <br
+	 * /><svg class="color-box"><rect style="fill: #303030" /></svg></td>
+	 * <td>{@link #čierna čierna} <br
+	 * /><svg class="color-box"><rect style="fill: #000000" /></svg></td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * <p>(Pozri aj opis metódy {@linkplain Farba#vyberFarbu() dialógu
+	 * na výber farby.})</p>
 	 */
 	public final static Farba preddefinovanéFarby[] = {
 		biela, snehová, papierová,

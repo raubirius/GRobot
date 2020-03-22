@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -125,6 +125,15 @@ public class Bod extends Point2D implements Poloha
 	 * @param bod objekt určujúci počiatočné súradnice tohto objektu
 	 */
 	public Bod(Point2D bod) { setLocation(bod.getX(), bod.getY()); }
+
+	/**
+	 * <p>Konštruktor – prijíma implementáciu polohy určujúcu bod.</p>
+	 * 
+	 * @param poloha implementácia polohy určujúca počiatočné súradnice
+	 *     tohto objektu
+	 */
+	public Bod(Poloha poloha) { setLocation(poloha.polohaX(),
+		poloha.polohaY()); }
 
 	/**
 	 * <p>Kopírovací konštruktor.</p>

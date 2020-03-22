@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -103,6 +103,9 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import java.net.URI;
 import java.net.URLEncoder;
 
@@ -142,6 +145,7 @@ import javax.imageio.ImageIO;
 
 import knižnica.podpora.BeepChannel;
 import knižnica.podpora.ExecuteShellCommand;
+import knižnica.podpora.PerlinNoise;
 import knižnica.podpora.ReadStandardInput;
 import static knižnica.Farebnosť.*;
 
@@ -339,8 +343,8 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
 				}
 			}
 
-			{@link GRobot#predvolenýTvar(boolean) predvolenýTvar}({@code valfalse});
-			{@link GRobot#veľkosť(double) veľkosť}({@code num10});
+			<!--predvolenýTvar(false);//už netreba
+			-->{@link GRobot#veľkosť(double) veľkosť}({@code num10});
 			{@code kwdreturn} {@code valfalse};
 		}
 
@@ -1712,18 +1716,18 @@ public final class Svet extends JFrame
 					// 
 					// Adaptované R. Horváthom v r. 2015
 
-					double menovateľ = (y3 - y2) * (x1 - x0) -
-						(x3 - x2) * (y1 - y0);
-					if (menovateľ == 0.0)
-						throw new GRobotException("Úsečky sú paralelné.",
-							"segmentsAreParallel");
+					double Δx10 = x1 - x0, Δy10 = y1 - y0;
+					double Δx32 = x3 - x2, Δy32 = y3 - y2;
+					double menovateľ = Δx10 * Δy32 - Δx32 * Δy10;
 
-					double t1 = ((x3 - x2) * (y0 - y2) -
-						(y3 - y2) * (x0 - x2)) / menovateľ;
-					double t2 = ((x1 - x0) * (y0 - y2) -
-						(y1 - y0) * (x0 - x2)) / menovateľ;
+					if (menovateľ == 0.0) throw new GRobotException(
+						"Úsečky sú paralelné.", "segmentsAreParallel");
 
-					priesečník.poloha(x0 + t1 * (x1 - x0), y0 + t1 * (y1 - y0));
+					double Δx02 = x0 - x2, Δy02 = y0 - y2;
+					double t1 = (Δx32 * Δy02 - Δy32 * Δx02) / menovateľ;
+					double t2 = (Δx10 * Δy02 - Δy10 * Δx02) / menovateľ;
+
+					priesečník.poloha(x0 + t1 * Δx10, y0 + t1 * Δy10);
 					// Ak je návratová hodnota true, tak ide zároveň
 					// o priesečník úsečiek určených zadanými súradnicami bodov
 					return t1 >= 0.0 && t1 <= 1.0 && t2 >= 0.0 && t2 <= 1.0;
@@ -1938,6 +1942,9 @@ public final class Svet extends JFrame
 
 					for (Obrázok animácia : Obrázok.animácie)
 						animácia.animuj();
+
+					for (Plazma plazma : Plazma.plazmy)
+						plazma.pracuj();
 
 					if (!Vlnenie.vlnenia.isEmpty())
 					{
@@ -2688,7 +2695,7 @@ public final class Svet extends JFrame
 		 * <p><a class="getter"></a> Vráti hlavného robota. Hlavný robot je
 		 * predvolene prvý vytvorený robot. Tento robot je považovaný za
 		 * vlastníka sveta. On asistuje pri vytvorení okna aplikácie,
-		 * pomocou neho sú spracované niektoré úlohy… O svoje privilégium
+		 * s pomocou neho sú spracované niektoré úlohy… O svoje privilégium
 		 * by mohol prísť jedine v prípade, že by bol (pravdepodobne omylom)
 		 * {@linkplain #uvoľni(GRobot) uvoľnený}. V takom prípade by bol
 		 * nahradený najbližším definovaným robotom s posunutím všetkých
@@ -2731,7 +2738,7 @@ public final class Svet extends JFrame
 		 * <p class="remark"><b>Poznámka:</b> Mechanizmus výziev nie je taký
 		 * efektívny ako definícia vlastného {@linkplain Zoznam zoznamu robotov}
 		 * (prípadne inštancií odvodených tried) a vykonanie hromadnej akcie
-		 * pomocou tohto zoznamu. Slúži predovšedkým na umožnenie hromadného
+		 * s pomocou tohto zoznamu. Slúži predovšedkým na umožnenie hromadného
 		 * spracovania bez nevyhnutnosti vytvárania takého zoznamu (napríklad
 		 * pri malom počte robotov alebo predtým, než sa programátor
 		 * podrobnejšie oboznámi s možnosťami zoznamov).</p>
@@ -2781,7 +2788,7 @@ public final class Svet extends JFrame
 		 * <p>Spustením tejto metódy sa pre každého robota (podľa ich
 		 * aktuálneho poradia) vykoná reakcia {@link 
 		 * GRobot#prijatieVýzvy(GRobot, int) prijatieVýzvy} bez určenia
-		 * autora výzvy (autor je rovný {@code valnull}). Pomocou argumentu
+		 * autora výzvy (autor je rovný {@code valnull}). S pomocou argumentu
 		 * {@code kľúč} môžeme odlišovať rôzne druhy výziev a ovplyvňovať
 		 * tým správanie reakcie {@link GRobot#prijatieVýzvy(GRobot, int)
 		 * prijatieVýzvy}. Prvotné poradie robotov je určené poradím ich
@@ -2807,7 +2814,7 @@ public final class Svet extends JFrame
 		 * <p class="remark"><b>Poznámka:</b> Mechanizmus výziev nie je taký
 		 * efektívny ako definícia vlastného {@linkplain Zoznam zoznamu robotov}
 		 * (prípadne inštancií odvodených tried) a vykonanie hromadnej akcie
-		 * pomocou tohto zoznamu. Slúži predovšedkým na umožnenie hromadného
+		 * s pomocou tohto zoznamu. Slúži predovšedkým na umožnenie hromadného
 		 * spracovania bez nevyhnutnosti vytvárania takého zoznamu (napríklad
 		 * pri malom počte robotov alebo predtým, než sa programátor
 		 * podrobnejšie oboznámi s možnosťami zoznamov).</p>
@@ -2863,7 +2870,7 @@ public final class Svet extends JFrame
 		 * <p>Spustením tejto metódy sa pre každého robota (podľa ich
 		 * aktuálneho poradia) vykoná reakcia {@link 
 		 * GRobot#prijatieVýzvy(GRobot, int) prijatieVýzvy} bez určenia
-		 * autora výzvy (autor je rovný {@code valnull}). Pomocou argumentu
+		 * autora výzvy (autor je rovný {@code valnull}). S pomocou argumentu
 		 * {@code kľúč} môžeme odlišovať rôzne druhy výziev a ovplyvňovať
 		 * tým správanie reakcie {@link GRobot#prijatieVýzvy(GRobot, int)
 		 * prijatieVýzvy}. Argument {@code obrátene} určuje smer
@@ -2891,7 +2898,7 @@ public final class Svet extends JFrame
 		 * <p class="remark"><b>Poznámka:</b> Mechanizmus výziev nepovažujeme
 		 * za taký efektívny ako je definícia vlastného {@linkplain Zoznam
 		 * zoznamu robotov} (prípadne inštancií odvodených tried) a nasledujúce
-		 * vykonanie hromadnej akcie pomocou tohto vlastného zoznamu. Výzvy
+		 * vykonanie hromadnej akcie s pomocou tohto vlastného zoznamu. Výzvy
 		 * slúžia predovšedkým na umožnenie hromadného spracovania bez
 		 * nevyhnutnosti vytvárania takého zoznamu (napríklad v prípade, keď
 		 * nepovažujeme vytvorenie vlastného zoznamu za významný prínos,
@@ -3503,6 +3510,8 @@ public final class Svet extends JFrame
 		 * uvoľni}{@code (}{@link GRobot GRobot}{@code )},
 		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.Class)
 		 * uvoľni}{@code (}{@link java.lang.Class Class}{@code )},
+		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Plazma)
+		 * uvoľni}{@code (}{@link Plazma Plazma}{@code )}
 		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Obrázok)
 		 * uvoľni}{@code (}{@link Obrázok Obrázok}{@code )}
 		 * a {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.String)
@@ -5022,8 +5031,8 @@ public final class Svet extends JFrame
 					{@link GRobot#veľkosť(double) veľkosť}({@code num30});
 					{@link GRobot#zdvihniPero() zdvihniPero}();
 					{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num3});
-					{@link GRobot#predvolenýTvar(boolean) predvolenýTvar}({@code valfalse});
-					{@link GRobot#zrýchlenie(double, boolean) zrýchlenie}({@code num0.5}, {@code valfalse});
+					<!--predvolenýTvar(false);//už netreba
+					-->{@link GRobot#zrýchlenie(double, boolean) zrýchlenie}({@code num0.5}, {@code valfalse});
 					{@link GRobot#maximálnaRýchlosť(double) maximálnaRýchlosť}({@code num20});
 					{@link GRobot#rýchlosťOtáčania(double, boolean) rýchlosťOtáčania}({@code num5}, {@code valfalse});
 
@@ -7176,7 +7185,7 @@ public final class Svet extends JFrame
 		 * je zmenšené)</small>.</p></td><td> </td>
 		 * <td
 		 * style="vertical-align:top"><p><image>upravPriehladnost2.png<alt/></image>
-		 * Fáza prelivu obrázkov pomocou priehľadnosti<br />(zhruba
+		 * Fáza prelivu obrázkov s pomocou priehľadnosti<br />(zhruba
 		 * v polovici procesu)<br /><small>(plátno na obrázku je
 		 * zmenšené)</small>.</p></td><td> </td>
 		 * <td
@@ -7829,7 +7838,7 @@ public final class Svet extends JFrame
 		 * <p>Pridá do hlavnej ponuky položku so zadaným textom. Zvolenie položky
 		 * vyvolá reakciu {@link ObsluhaUdalostí#voľbaPoložkyPonuky()
 		 * voľbaPoložkyPonuky} v triede obsluhy udalostí. V tej je možné
-		 * položku identifikovať pomocou metódy
+		 * položku identifikovať s pomocou metódy
 		 * {@link ÚdajeUdalostí#položkaPonuky() ÚdajeUdalostí.položkaPonuky}
 		 * ktorá vracia objekt typu {@link PoložkaPonuky PoložkaPonuky}.
 		 * Ten môžeme porovnať s hodnotou vrátenou z tejto metódy (ktorú si
@@ -8641,6 +8650,37 @@ public final class Svet extends JFrame
 			// return String.format(Locale.ENGLISH,
 			// 	"%" + šírka + "." + desatinné + "f", číslo);
 		}
+
+
+		/**
+		 * <p>Zaokrúhli zadané číslo na zadaný počet (desatinných) miest.
+		 * 
+		 * Počet miest rovný nule znamená zaokrúhlenie na celé číslo (myslené
+		 * iba terminologicky, pretože vrátená hodnota je vždy údajového typu
+		 * {@code typedouble}).
+		 * 
+		 * Ak je zadaný záporný počet miest na zaokrúhlenie, tak bude výsledné
+		 * číslo zaokrúhlené na počet miest pred desatinnou čiarkou (desiatky,
+		 * stovky…).
+		 * 
+		 * Pri zaokrúhľovaní je uplatnené pravidlo „half up“ (od polovice
+		 * nahor), to znamená, že hodnoty 0 – 4 na pozícii zaokrúhlenia
+		 * zaokrúhľujú výsledok smerom nadol a 5 – 9 nahor.</p>
+		 * 
+		 * @param hodnota hodnota, ktorá má byť zaokrúhlená
+		 * @param miest počet (desatinných) miest, ktoré majú byť zachované
+		 * @return výsledná zaokrúhlená hodnota
+		 */
+		public static double zaokrúhli(double hodnota, int miest)
+		{
+			BigDecimal bd = new BigDecimal(hodnota);
+			bd = bd.setScale(miest, RoundingMode.HALF_UP);
+			return bd.doubleValue();
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #zaokrúhli(double, int) zaokrúhli}.</p> */
+		public static double zaokruhli(double hodnota, int miest)
+		{ return zaokrúhli(hodnota, miest); }
 
 
 		// Ikony, kurzory a ukončenie
@@ -9648,7 +9688,7 @@ public final class Svet extends JFrame
 		 * <p>Vráti grafický objekt sveta na kreslenie v reakcii {@link 
 		 * ObsluhaUdalostí#dokreslenie() ObsluhaUdalostí.dokreslenie()}.
 		 * Tento objekt pracuje v súradnicovom priestore Javy a všetko, čo
-		 * pomocou neho nakreslíte, bude na obrazovke zobrazené len do
+		 * s pomocou neho nakreslíte, bude na obrazovke zobrazené len do
 		 * najbližšieho prekreslenia. Jeho používanie je vyhradené
 		 * viac-menej iba pre skúsených programátorov. Žiadny robot nedokáže
 		 * priamo kresliť do tohto objektu, ale niektoré metódy robotov môžu
@@ -9695,12 +9735,13 @@ public final class Svet extends JFrame
 		 * o hocijakú inštanciu odvodeného údajového typu). Zadaný objekt
 		 * bude potom vymazaný z vnútorného zoznamu robotov. Keď
 		 * aplikácia zabezpečí aj vynulovanie všetkých ostatných premenných,
-		 * v ktorých je stanovená inštancia uložená, objekt by mal byť uvoľnený
-		 * z pamäte počítača zberačom odpadkov Javy. <b>Uvoľneného robota už
-		 * nie je možné do sveta vrátiť!</b> V prípade, že je uvoľnený
-		 * {@linkplain #hlavnýRobot() hlavný robot}, nastúpi na jeho miesto
-		 * najbližší jestvujúci robot. Problém by mohol nastať, keby nie je
-		 * k dispozícii žiadny ďalší robot, ktorý by ho mohol nahradiť.</p>
+		 * v ktorých je stanovená inštancia uložená, objekt by mal byť (resp.
+		 * bude, aj keď možno nie hneď) uvoľnený z pamäte počítača zberačom
+		 * odpadkov Javy. <b>Uvoľneného robota už nie je možné do sveta
+		 * vrátiť!</b> V prípade, že je uvoľnený {@linkplain #hlavnýRobot()
+		 * hlavný robot}, nastúpi na jeho miesto najbližší jestvujúci robot.
+		 * Problém by mohol nastať, keby nie je k dispozícii žiadny ďalší
+		 * robot, ktorý by ho mohol nahradiť.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Názov {@code curruvoľni} má
 		 * v programovacom rámci GRobot deväť rôznych metód:
@@ -9722,6 +9763,8 @@ public final class Svet extends JFrame
 		 * uvoľni}{@code (}{@link GRobot GRobot}{@code )},
 		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.Class)
 		 * uvoľni}{@code (}{@link java.lang.Class Class}{@code )},
+		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Plazma)
+		 * uvoľni}{@code (}{@link Plazma Plazma}{@code )}
 		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Obrázok)
 		 * uvoľni}{@code (}{@link Obrázok Obrázok}{@code )}
 		 * a {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.String)
@@ -9779,17 +9822,17 @@ public final class Svet extends JFrame
 		 * z vnútorného zoznamu robotov. Očakáva určenie údajového typu
 		 * prostredníctvom inštancie typu {@link java.lang.Class Class}. Tú
 		 * môžeme získať, napríklad takto: {@code GRobot.class}, {@code 
-		 * Postavička.class}…). Zo zoznamu budú v dôsledku toho vymazané všetky
-		 * inštancie určeného typu, ale aj inštancie odvodených tried. Preto
-		 * je dobré byť pri hromadnom odstraňovaní obozretný. Ak si nie ste
-		 * istí, aký dopad by malo použitie tejto metódy, použite radšej na
-		 * uvoľnenie konkrétnych robotov metódu {@link Svet#uvoľni(GRobot)
-		 * uvoľni}{@code (}{@link GRobot GRobot}{@code )}. <b>Uvoľnených
-		 * robotov už nie je možné do sveta vrátiť!</b> V prípade, že nastane
-		 * uvoľnenie {@linkplain #hlavnýRobot() hlavného robota}, nastúpi na
-		 * jeho miesto najbližší jestvujúci robot. Problém by mohol nastať,
-		 * keby nie je k dispozícii žiadny ďalší robot, ktorý by ho mohol
-		 * nahradiť.</p>
+		 * Postavička.class}…). Zo zoznamu budú v dôsledku toho vymazané
+		 * všetky inštancie určeného typu, ale aj inštancie odvodených
+		 * tried. Preto je dobré byť pri hromadnom odstraňovaní obozretný.
+		 * Ak si nie ste istí, aký dopad by malo použitie tejto metódy,
+		 * použite radšej na uvoľnenie konkrétnych robotov metódu {@link 
+		 * Svet#uvoľni(GRobot) uvoľni}{@code (}{@link GRobot 
+		 * GRobot}{@code )}. <b>Uvoľnených robotov už nie je možné do sveta
+		 * vrátiť!</b> V prípade, že nastane uvoľnenie {@linkplain 
+		 * #hlavnýRobot() hlavného robota}, nastúpi na jeho miesto najbližší
+		 * jestvujúci robot. Problém by mohol nastať, keby nie je
+		 * k dispozícii žiadny ďalší robot, ktorý by ho mohol nahradiť.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Názov {@code curruvoľni} má
 		 * v programovacom rámci GRobot deväť rôznych metód:
@@ -9811,6 +9854,8 @@ public final class Svet extends JFrame
 		 * uvoľni}{@code (}{@link GRobot GRobot}{@code )},
 		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.Class)
 		 * uvoľni}{@code (}{@link java.lang.Class Class}{@code )},
+		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Plazma)
+		 * uvoľni}{@code (}{@link Plazma Plazma}{@code )}
 		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Obrázok)
 		 * uvoľni}{@code (}{@link Obrázok Obrázok}{@code )}
 		 * a {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.String)
@@ -9871,15 +9916,16 @@ public final class Svet extends JFrame
 
 
 		/**
-		 * <p>Táto metóda slúži na odstránenie konkrétneho obrázka z vnútorného
-		 * zoznamu obrázkov. Prijíma jeden argument typu {@link Obrázok
-		 * Obrázok}, ktorý určuje objekt určený na vymazanie z vnútorného
-		 * zoznamu obrázkov. Aplikácia musí zabezpečiť vynulovanie všetkých
-		 * premenných, v ktorých je inštancia tohto obrázka uložená, pretože
-		 * po vymazaní obrázka z vnútorného zoznamu prestane byť objekt
-		 * synchronizovaný so zvyškom programovacieho rámca a mohol by sa správať
-		 * inak než by sa od neho očakávalo. <b>Uvoľnený obrázok už nie je možné
-		 * do sveta vrátiť!</b></p>
+		 * <p>Táto metóda slúži na odstránenie konkrétnej inštancie
+		 * pixelového generátora plazmy z vnútorného zoznamu týchto
+		 * generátorov. Prijíma jeden argument typu {@link Plazma
+		 * Plazma}, ktorý určuje objekt určený na vymazanie z vnútorného
+		 * zoznamu generátorov. Aplikácia musí zabezpečiť vynulovanie všetkých
+		 * premenných, v ktorých je inštancia tohto generátora uložená, pretože
+		 * po vymazaní generátora z vnútorného zoznamu prestane byť objekt
+		 * synchronizovaný so zvyškom programovacieho rámca a mohol by sa
+		 * správať inak než by sa od neho očakávalo. <b>Uvoľnený pixelový
+		 * generátor plazmy už nie je možné do sveta vrátiť!</b></p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Názov {@code curruvoľni} má
 		 * v programovacom rámci GRobot deväť rôznych metód:
@@ -9901,6 +9947,71 @@ public final class Svet extends JFrame
 		 * uvoľni}{@code (}{@link GRobot GRobot}{@code )},
 		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.Class)
 		 * uvoľni}{@code (}{@link java.lang.Class Class}{@code )},
+		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Plazma)
+		 * uvoľni}{@code (}{@link Plazma Plazma}{@code )}
+		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Obrázok)
+		 * uvoľni}{@code (}{@link Obrázok Obrázok}{@code )}
+		 * a {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.String)
+		 * uvoľni}{@code (}{@link java.lang.String String}{@code )} –
+		 * slúžia na uvoľňovanie nepotrebných inštancií robotov,
+		 * vytvorených alebo prečítaných obrázkov a prečítaných zvukov
+		 * z vnútorných zoznamov zdrojov (robotov, obrázkov, zvukov), čo
+		 * je jednak nevyhnutnou podmienkou ich úspešného vymazania
+		 * z pamäte zberačom odpadkov Javy a jednak to môže byť niekedy
+		 * potrebné (napríklad ak sa obsah súboru so zdrojom uloženým na
+		 * disku zmenil).</p>
+		 * 
+		 * @param ktorá inštancia plazmy, ktorá má byť odstránená
+		 *     z vnútorného zoznamu
+		 */
+		public static void uvoľni(Plazma ktorá)
+		{ Plazma.plazmy.remove(ktorá); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #uvoľni(Plazma) uvoľni}.</p> */
+		public static void uvolni(Plazma ktorá) { uvoľni(ktorá); }
+
+
+		/**
+		 * <p>Táto metóda slúži na odstránenie konkrétneho obrázka
+		 * z vnútorného zoznamu obrázkov. Prijíma jeden argument typu
+		 * {@link Obrázok Obrázok}, ktorý určuje objekt určený na vymazanie
+		 * z vnútorného zoznamu obrázkov. Aplikácia musí zabezpečiť
+		 * vynulovanie všetkých premenných, v ktorých je inštancia tohto
+		 * obrázka uložená, pretože po vymazaní obrázka z vnútorného zoznamu
+		 * prestane byť objekt synchronizovaný so zvyškom programovacieho
+		 * rámca a mohol by sa správať inak než by sa od neho očakávalo.
+		 * <b>Uvoľnený obrázok už nie je možné do sveta vrátiť!</b></p>
+		 * 
+		 * <p>Táto metóda (rovnako ako všetky jej klony) je nevyhnutná pri
+		 * implementácii správy vnútornej pamäte programovacieho rámca. Ak
+		 * aplikácia pracuje s veľkým množstvom grafických a/alebo zvukových
+		 * súborov, je dôležité priebežne pamäť uvoľňovať, inak bude
+		 * vyčerpaná a aplikácia sa zrúti. Základné použitie tejto metódy
+		 * je ukázané v opise metódy {@link 
+		 * ObsluhaUdalostí#pustenieSúboru(String) pustenieSúboru}.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Názov {@code curruvoľni} má
+		 * v programovacom rámci GRobot deväť rôznych metód:
+		 * {@link GRobot GRobot}{@code .}{@link GRobot#uvoľni()
+		 * uvoľni}{@code ()},
+		 * {@link GRobot GRobot}{@code .}{@link GRobot#uvoľni(Oblasť)
+		 * uvoľni}{@code (}{@link Oblasť Oblasť}{@code )},
+		 * {@link Oblasť Oblasť}{@code .}{@link Oblasť#uvoľni()
+		 * uvoľni}{@code ()},
+		 * {@link Oblasť Oblasť}{@code .}{@link Oblasť#uvoľni(GRobot)
+		 * uvoľni}{@code (}{@link GRobot GRobot}{@code )} –
+		 * slúžia na uvoľnenie robota zo zamestnania pre stanovenú
+		 * oblasť (čo je geometrická trieda),
+		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni() uvoľni}{@code ()} –
+		 * slúži na uvoľnenie hlavného okna sveta, t. j. umožnenie
+		 * zmeny veľkosti okna používateľovi (ide o opak metódy {@link 
+		 * Svet#upevni() Svet.upevni}) a nakoniec
+		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(GRobot)
+		 * uvoľni}{@code (}{@link GRobot GRobot}{@code )},
+		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.Class)
+		 * uvoľni}{@code (}{@link java.lang.Class Class}{@code )},
+		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Plazma)
+		 * uvoľni}{@code (}{@link Plazma Plazma}{@code )}
 		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Obrázok)
 		 * uvoľni}{@code (}{@link Obrázok Obrázok}{@code )}
 		 * a {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.String)
@@ -9916,22 +10027,38 @@ public final class Svet extends JFrame
 		 * @param ktorý objekt, ktorý má byť odstránený z vnútorného zoznamu
 		 */
 		public static void uvoľni(Obrázok ktorý)
-		{ Obrázok.zoznamObrázkovKnižnice.remove(ktorý); }
+		{
+			Obrázok.zoznamObrázkovKnižnice.remove(ktorý);
+			for (int i = 0; i < Plazma.plazmy.size(); ++i)
+			{
+				Plazma plazma = Plazma.plazmy.get(i);
+				if (plazma.obrázok == ktorý)
+					Plazma.plazmy.remove(plazma);
+			}
+		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #uvoľni(Obrázok) uvoľni}.</p> */
 		public static void uvolni(Obrázok ktorý) { uvoľni(ktorý); }
 
 
 		/**
-		 * <p>Táto metóda slúži na odstránenie zdrojov (obrázkov a/alebo zvukov)
-		 * z vnútorných zoznamov zdrojov sveta. Argument určuje názov súboru,
-		 * z ktorého bol objekt zdroja prečítaný. Podľa neho sú vo vnútorných
-		 * zoznamoch sveta (označovaných v tejto dokumentácii aj termínom
-		 * „vnútorná pamäť sveta“) vyhľadané všetky korešpondujúce záznamy
-		 * a sú z nich vymazané. Pri najbližšom čítaní tohto zdroja bude
-		 * zdroj opätovne prečítaný z pevného disku (zdrojového súboru)
-		 * a nová verzia bude opäť uložená do vnútorného zoznamu zdrojov
-		 * sveta.</p>
+		 * <p>Táto metóda slúži na odstránenie zdrojov (obrázkov a/alebo
+		 * zvukov) z vnútorných zoznamov zdrojov sveta. Argument určuje
+		 * názov súboru, z ktorého bol objekt zdroja prečítaný. Podľa neho
+		 * sú vo vnútorných zoznamoch sveta (označovaných v tejto
+		 * dokumentácii aj termínom „vnútorná pamäť sveta“) vyhľadané
+		 * všetky korešpondujúce záznamy a sú z nich vymazané. Pri
+		 * najbližšom čítaní tohto zdroja bude zdroj opätovne prečítaný
+		 * z pevného disku (zdrojového súboru) a nová verzia bude opäť
+		 * uložená do vnútorného zoznamu zdrojov sveta.</p>
+		 * 
+		 * <p>Táto metóda (rovnako ako všetky jej klony) je nevyhnutná pri
+		 * implementácii správy vnútornej pamäte programovacieho rámca. Ak
+		 * aplikácia pracuje s veľkým množstvom grafických a/alebo zvukových
+		 * súborov, je dôležité priebežne pamäť uvoľňovať, inak bude
+		 * vyčerpaná a aplikácia sa zrúti. Základné použitie tejto metódy
+		 * je ukázané v opise metódy {@link 
+		 * ObsluhaUdalostí#pustenieSúboru(String) pustenieSúboru}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Názov {@code curruvoľni} má
 		 * v programovacom rámci GRobot deväť rôznych metód:
@@ -9953,6 +10080,8 @@ public final class Svet extends JFrame
 		 * uvoľni}{@code (}{@link GRobot GRobot}{@code )},
 		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.Class)
 		 * uvoľni}{@code (}{@link java.lang.Class Class}{@code )},
+		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Plazma)
+		 * uvoľni}{@code (}{@link Plazma Plazma}{@code )}
 		 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Obrázok)
 		 * uvoľni}{@code (}{@link Obrázok Obrázok}{@code )}
 		 * a {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.String)
@@ -9988,7 +10117,7 @@ public final class Svet extends JFrame
 			if (null != zoznamZvukov)
 			{
 				for (Zvuk zvuk : zoznamZvukov) zvuk.uvoľni();
-				zoznamZvukov.clear();
+				zoznamZvukov.clear(); // vymaže zoznam rovnakých zvukov
 				Zvuk.zoznamSúborovZvukov.remove(názovZdroja);
 			}
 		}
@@ -11273,6 +11402,310 @@ public final class Svet extends JFrame
 		 * Verejné atribúty tejto triedy a vnútorné rozhranie na
 		 * presmerovanie výstupov nemajú z dôvodu výrazného zjednodušenia
 		 * celej implementácie definované aliasy bez diakritiky.</p>
+		 * 
+		 * <p><b>Príklad – grafická konzola:</b></p>
+		 * 
+		 * <pre CLASS="example">
+			{@code kwdimport} knižnica.*;
+			{@code kwdimport} java.io.IOException;
+
+			{@code kwdpublic} {@code typeclass} GrafickáKonzola {@code kwdextends} {@link GRobot GRobot}
+			{
+				{@code comm// Súčasť implementácie rolovania a posúvania textov vnútornej konzoly}
+				{@code comm// stropu s pomocou klávesnice.}
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} home = {@code srg"home"};
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} end  = {@code srg"end"};
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} hore = {@code srg"hore"};
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} dole = {@code srg"dole"};
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} pgUp = {@code srg"pgUp"};
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} pgDn = {@code srg"pgDn"};
+
+				{@code comm// Súčasť implementácie ukončenia spusteného procesu klávesovou}
+				{@code comm// skratkou.}
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} kill = {@code srg"kill"};
+
+				{@code comm// Súčasť implementácie označovania a kopírovania textov stropu.}
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} dAll = {@code srg"dAll"};
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} sAll = {@code srg"sAll"};
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} copy = {@code srg"copy"};
+
+				{@code comm// Príznak aktivovania vnútorného príkazu pause.}
+				{@code kwdprivate} {@code typeboolean} pause = {@code valfalse};
+
+				{@code comm// Konštruktor.}
+				{@code kwdprivate} GrafickáKonzola()
+				{
+					{@link GRobot#skry() skry}();
+					{@link Svet Svet}.{@link Svet#neskrývajVstupnýRiadok(boolean) neskrývajVstupnýRiadok}({@code valtrue});
+					{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#output(Object...) output}({@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#getVersion() getVersion}());
+					{@link Plátno strop}.{@link Plátno#automatickéZobrazovanieLíšt(boolean) automatickéZobrazovanieLíšt}({@code valtrue});
+					{@link Plátno strop}.{@link Plátno#písmo(String, double) písmo}({@code srg"Consolas"}, {@code num14});
+
+					{@code comm// Súčasť implementácie rolovania a posúvania textov vnútornej}
+					{@code comm// konzoly stropu s pomocou klávesnice.}
+					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int) pridajKlávesovúSkratku}(home, {@link Kláves Kláves}.{@link Kláves#HOME HOME});
+					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int) pridajKlávesovúSkratku}(end,  {@link Kláves Kláves}.{@link Kláves#END END});
+					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int) pridajKlávesovúSkratku}(hore, {@link Kláves Kláves}.{@link Kláves#HORE HORE});
+					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int) pridajKlávesovúSkratku}(dole, {@link Kláves Kláves}.{@link Kláves#DOLE DOLE});
+					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int, int) pridajKlávesovúSkratku}(pgUp, {@link Kláves Kláves}.{@link Kláves#PAGE_UP PAGE_UP}, {@code num0}); {@code comm// bez ctrl…}
+					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int, int) pridajKlávesovúSkratku}(pgDn, {@link Kláves Kláves}.{@link Kláves#PAGE_DOWN PAGE_DOWN}, {@code num0});
+
+					{@code comm// Súčasť implementácie ukončenia spusteného procesu klávesovou}
+					{@code comm// skratkou.}
+					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int) pridajKlávesovúSkratku}(kill, {@link Kláves Kláves}.{@link Kláves#VK_D VK_D});
+
+					{@code comm// Súčasť implementácie označovania a kopírovania textov stropu.}
+					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int, int) pridajKlávesovúSkratku}(dAll, {@link Kláves Kláves}.{@link Kláves#VK_A VK_A},
+						{@link Kláves Kláves}.{@link Kláves#SKRATKA_PONUKY SKRATKA_PONUKY} | {@link Kláves Kláves}.{@link Kláves#SHIFT_MASK SHIFT_MASK});
+					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int, int, boolean) pridajKlávesovúSkratku}(dAll, {@link Kláves Kláves}.{@link Kláves#ESCAPE ESCAPE}, {@code num0}, {@code valfalse});
+					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int, int, boolean) pridajKlávesovúSkratku}(sAll, {@link Kláves Kláves}.{@link Kláves#VK_A VK_A},
+						{@link Kláves Kláves}.{@link Kláves#SKRATKA_PONUKY SKRATKA_PONUKY}, {@code valfalse});
+					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int, int, boolean) pridajKlávesovúSkratku}(copy, {@link Kláves Kláves}.{@link Kláves#VK_C VK_C},
+						{@link Kláves Kláves}.{@link Kláves#SKRATKA_PONUKY SKRATKA_PONUKY}, {@code valfalse});
+				}
+
+				{@code comm// Súčasť implementácie ukončenia spusteného procesu klávesovou}
+				{@code comm// skratkou. (Metóda je zároveň využitá v reakcii na ukončenie}
+				{@code comm// aplikácie.)}
+				{@code kwdprivate} {@code typevoid} killProcess()
+				{
+					{@link Process Process} proces = {@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#getRunningProcess() getRunningProcess}();
+					{@code kwdif} ({@code valnull} != proces)
+						proces.{@link Process#destroy() destroy}();
+				}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#klávesováSkratka() klávesováSkratka}()
+				{
+					{@link String String} skratka = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#príkazSkratky() príkazSkratky}();
+
+					{@code comm// Súčasť implementácie rolovania a posúvania textov vnútornej}
+					{@code comm// konzoly stropu s pomocou klávesnice.}
+					{@code kwdif} (skratka == home) {@link Plátno strop}.{@link Plátno#posunutieTextov(int, int) posunutieTextov}(
+						{@link Plátno strop}.{@link Plátno#posunutieTextovX() posunutieTextovX}(), {@link Plátno strop}.{@link Plátno#poslednáVýškaTextu() poslednáVýškaTextu}());
+					{@code kwdelse} {@code kwdif} (skratka == end)
+						{@link Plátno strop}.{@link Plátno#posunutieTextov(int, int) posunutieTextov}({@link Plátno strop}.{@link Plátno#posunutieTextovX() posunutieTextovX}(), {@code num0});
+					{@code kwdelse} {@code kwdif} (skratka == hore)
+						{@link Plátno strop}.{@link Plátno#rolujTexty(int, int) rolujTexty}({@code num0}, {@link Plátno strop}.{@link Plátno#výškaRiadka() výškaRiadka}());
+					{@code kwdelse} {@code kwdif} (skratka == dole)
+						{@link Plátno strop}.{@link Plátno#rolujTexty(int, int) rolujTexty}({@code num0}, -{@link Plátno strop}.{@link Plátno#výškaRiadka() výškaRiadka}());
+					{@code kwdelse} {@code kwdif} (skratka == pgUp)
+						{@link Plátno strop}.{@link Plátno#rolujTexty(int, int) rolujTexty}({@code num0}, {@link Plátno Plátno}.{@link Plátno#viditeľnáVýška() viditeľnáVýška}() &#45; {@code num10});
+					{@code kwdelse} {@code kwdif} (skratka == pgDn)
+						{@link Plátno strop}.{@link Plátno#rolujTexty(int, int) rolujTexty}({@code num0}, {@code num10} &#45; {@link Plátno Plátno}.{@link Plátno#viditeľnáVýška() viditeľnáVýška}());
+
+					{@code comm// Súčasť implementácie ukončenia spusteného procesu klávesovou}
+					{@code comm// skratkou.}
+					{@code kwdelse} {@code kwdif} (skratka == kill) killProcess();
+
+					{@code comm// Súčasť implementácie označovania a kopírovania textov stropu.}
+					{@code kwdelse} {@code kwdif} (skratka == dAll) {@link Plátno strop}.{@link Plátno#zrušOznačenieTextov() zrušOznačenieTextov}();
+					{@code kwdelse} {@code kwdif} (skratka == sAll) {@link Plátno strop}.{@link Plátno#označVšetkyTexty(Color...) označVšetkyTexty}();
+					{@code kwdelse} {@code kwdif} (skratka == copy) {@link Plátno strop}.{@link Plátno#textyDoSchránky(boolean) textyDoSchránky}({@code valtrue});
+				}
+
+				{@code comm// Využitie vstupného riadka na vstup príkazového riadka.}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#potvrdenieVstupu() potvrdenieVstupu}()
+				{
+					{@code kwdif} (pause)
+					{
+						pause = {@code valfalse};
+						{@code kwdreturn};
+					}
+
+					{@link String String} príkaz = {@link Svet Svet}.{@link Svet#prevezmiReťazec() prevezmiReťazec}();
+					{@code kwdif} (!{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#isProcessRunning() isProcessRunning}())
+					{
+						{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#output(Object...) output}({@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#expandPrompt() expandPrompt}());
+						{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#output(Object...) output}(príkaz);
+						{@code kwdif} (príkaz.{@link String#isEmpty() isEmpty}()) {@code kwdreturn};
+
+						{@code comm// Prekrytie dvoch predvolene deaktivovaných príkazov:}
+						{@code typeint}[] zhoda = {@link Svet Svet}.{@link Svet.PríkazovýRiadok PríkazovýRiadok}.{@link Svet.PríkazovýRiadok#matchCommand(String, String...) matchCommand}(
+							príkaz, {@code srg"pause"}, {@code srg"exit"});
+
+						{@code comm// Poznámka: Na to, aby niektoré príkazy fungovali rovnako ako}
+						{@code comm//     v systémovej konzole, by musela byť na tomto mieste}
+						{@code comm//     vykonaná dodatočná implementácia. Súvisí to najmä}
+						{@code comm//     s príkazom na zmenu priečinka (cd/chdir). V príkazovom}
+						{@code comm//     riadku Windows sa zvyknú používať tieto skrátené formy}
+						{@code comm//     príkazu:}
+						{@code comm// }
+						{@code comm//     cd\   chdir\}
+						{@code comm// }
+						{@code comm//     (Podobne ako v iných OS tvary: cd/ a chdir/)}
+						{@code comm// }
+						{@code comm//     Znamenajú prechod do koreňového priečinka aktuálnej}
+						{@code comm//     jednotky. Tieto skrátené tvary nie sú spracované. Okrem}
+						{@code comm//     tohto faktu samotný symbol \ alebo / nemá v tejto}
+						{@code comm//     konzole význam koreňového priečinka. Implementácia}
+						{@code comm//     metódy ExecuteShellCommand.changePath sa správa inak:}
+						{@code comm//       1. prevezme zadaný reťazec,}
+						{@code comm//       2. identifikuje, či ide o relatívnu alebo absolútnu}
+						{@code comm//          cestu}
+						{@code comm//       3. a podľa toho nastaví novú aktuálnu cestu.}
+						{@code comm//     Samotné znaky \ a / nenesú informáciu o zmene}
+						{@code comm//     priečinka, takže sú v podstate ignorované.}
+						{@code comm// }
+						{@code comm//     Ďalšia odlišnosť je správanie sa príkazu cd/chdir}
+						{@code comm//     bez parametrov. V súlade s opisom fungovania metódy}
+						{@code comm//     ExecuteShellCommand.changePath spôsobí potvrdenie}
+						{@code comm//     tohto príkazu návrat do aktuálneho štartovacieho}
+						{@code comm//     priečinka virtuálneho stroja javy (JVM), to jest,}
+						{@code comm//     cesta, na ktorej bola spustená aktuálna aplikácia}
+						{@code comm//     (nemusí sa nevyhnutne zhodovať s cestou, na ktorej}
+						{@code comm//     je aplikácia umiestnená).}
+
+						{@code kwdif} ({@code valnull} != zhoda && {@code num3} != zhoda[{@code num0}])
+						{
+							{@link String String} argumenty = príkaz.{@link String#substring(int) substring}(zhoda[{@code num2}]);
+
+							{@code kwdswitch} (zhoda[{@code num1}])
+							{
+							{@code kwdcase} {@code num0}: {@code comm// pause}
+								{@code kwdif} (argumenty.{@link String#isEmpty() isEmpty}())
+									{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#outputLine(Object...) outputLine}(riadok,
+										{@code srg"Potvrďte ďalší príkazový riadok."});
+								{@code kwdelse}
+									{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#outputLine(Object...) outputLine}(riadok,
+										{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#expandVariables(String) expandVariables}(argumenty));
+								pause = {@code valtrue};
+								{@code kwdreturn};
+
+							{@code kwdcase} {@code num1}: {@code comm// exit}
+								{@link Svet Svet}.{@link Svet#koniec() koniec}();
+								{@code kwdreturn};
+							}
+						}
+					}
+					{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#updateTitle() updateTitle}();
+					{@link Svet Svet}.{@link Svet#spracujPríkaz(String) spracujPríkaz}(príkaz);
+					{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#updateTitle() updateTitle}();
+				}
+
+				{@code comm// Súčasť ukladania a čítania konfigurácie príkazového riadka.}
+				{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@link GRobot#konfiguráciaZmenená() konfiguráciaZmenená}()
+				{
+					{@code kwdif} ({@code valnull} == {@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}) {@code kwdreturn} {@code valfalse};
+					{@code kwdreturn} {@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#konfiguráciaZmenená konfiguráciaZmenená};
+				}
+
+				{@code comm// Súčasť ukladania a čítania konfigurácie príkazového riadka.}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#zapíšKonfiguráciu(Súbor) zapíšKonfiguráciu}({@link Súbor Súbor} súbor) {@code kwdthrows} {@link IOException IOException}
+				{
+					{@code kwdif} ({@code valnull} == {@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}) {@code kwdreturn};
+
+					{@code comm// Pozor‼ V čase zápisu konfigurácie by vlastnosti nastavení}
+					{@code comm// príkazového riadka mali byť pre istotu zapísané bez ohľadu}
+					{@code comm// na hodnotu príznaku „Svet.príkazovýRiadok.konfiguráciaZmenená.“}
+					{@code comm// Nemáme istotu, že inštancia konfiguračného súboru nemá nastavenú}
+					{@code comm// vlastnosť „odstraňujNepoužitéVlastnosti.“}
+
+					{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#zapíšKonfiguráciu(Súbor) zapíšKonfiguráciu}(súbor);
+				}
+
+				{@code comm// Súčasť ukladania a čítania konfigurácie príkazového riadka.}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#čítajKonfiguráciu(Súbor) čítajKonfiguráciu}({@link Súbor Súbor} súbor) {@code kwdthrows} {@link IOException IOException}
+				{
+					{@code kwdif} ({@code valnull} == {@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}) {@code kwdreturn};
+					{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#čítajKonfiguráciu(Súbor) čítajKonfiguráciu}(súbor);
+				}
+
+				{@code comm// Súčasť implementácie označovania a kopírovania textov stropu.}
+				{@code kwdprivate} {@code typeint} počiatočnýRiadok, koncovýRiadok, počiatočnýBlok, koncovýBlok;
+
+				{@code comm// Súčasť implementácie označovania a kopírovania textov stropu.}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#stlačenieTlačidlaMyši() stlačenieTlačidlaMyši}()
+				{
+					{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link GRobot#PRAVÉ PRAVÉ}))
+					{
+						{@link Plátno strop}.{@link Plátno#textyDoSchránky(boolean) textyDoSchránky}({@code valtrue});
+						{@link Plátno strop}.{@link Plátno#zrušOznačenieTextov() zrušOznačenieTextov}();
+						{@link Svet Svet}.{@link Svet#pípni() pípni}();
+					}
+					{@code kwdelse}
+					{
+						{@code kwdif} (!{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#myš() myš}().{@link java.awt.event.InputEvent#isControlDown() isControlDown}())
+							{@link Plátno strop}.{@link Plátno#zrušOznačenieTextov() zrušOznačenieTextov}();
+
+						{@code typeint}[] výpis = {@link Plátno strop}.{@link Plátno#výpisPriMyši() výpisPriMyši}();
+						{@code kwdif} ({@code valnull} != výpis)
+						{
+							počiatočnýRiadok = koncovýRiadok = výpis[{@code num0}];
+							počiatočnýBlok   = koncovýBlok   = výpis[{@code num1}];
+						}
+					}
+				}
+
+				{@code comm// Súčasť implementácie označovania a kopírovania textov stropu.}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#ťahanieMyšou() ťahanieMyšou}()
+				{
+					{@code typeint}[] výpis = {@link Plátno strop}.{@link Plátno#výpisPriMyši() výpisPriMyši}();
+
+					{@code kwdif} ({@code valnull} != výpis)
+					{
+						{@link Plátno strop}.{@link Plátno#zrušOznačenieVýpisov(int, int, int, int) zrušOznačenieVýpisov}(
+							počiatočnýRiadok, počiatočnýBlok,
+							koncovýRiadok, koncovýBlok);
+
+						koncovýRiadok = výpis[{@code num0}];
+						koncovýBlok   = výpis[{@code num1}];
+
+						{@link Plátno strop}.{@link Plátno#označVýpisy(int, int, int, int, Color...) označVýpisy}(
+							počiatočnýRiadok, počiatočnýBlok,
+							koncovýRiadok, koncovýBlok);
+					}
+				}
+
+				{@code comm// Alternatívna implementácia klávesovej skratky ESC (bez držania}
+				{@code comm// ktoréhokoľvek z modifikátorov), ktorá má význam zrušenia označenia}
+				{@code comm// textov konzoly:}
+				{@code comm/&#42;@Override public void stlačenieKlávesu()}
+				{@code comm&#123;}
+				{@code comm    // Tento príznak je platný len vtedy, ak nebol stlačený žiadny}
+				{@code comm    // modifikátor:}
+				{@code comm    boolean nACS = !(ÚdajeUdalostí.klávesnica().isAltDown() ||}
+				{@code comm        ÚdajeUdalostí.klávesnica().isControlDown() ||}
+				{@code comm        ÚdajeUdalostí.klávesnica().isMetaDown() ||}
+				{@code comm        ÚdajeUdalostí.klávesnica().isShiftDown());}
+
+				{@code comm    // Súčasť implementácie označovania a kopírovania textov stropu.}
+				{@code comm    switch (ÚdajeUdalostí.kláves())}
+				{@code comm    &#123;}
+				{@code comm    case Kláves.ESCAPE: if (nACS) strop.zrušOznačenieTextov(); break;}
+				{@code comm    &#125;}
+				{@code comm&#125;&#42;/}
+
+				{@code comm// (Prekresľovanie s pomocou časovača, aby bola činnosť}
+				{@code comm// konzoly svižnejšia.)}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#tik() tik}()
+				{
+					{@code kwdif} ({@link Svet Svet}.{@link Svet#neboloPrekreslené() neboloPrekreslené}())
+						{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
+				}
+
+				{@code comm// Ukončenie.}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#ukončenie() ukončenie}()
+				{
+					{@code comm// Ak je náhodou spustený vnorený (detský) proces, nezostáva iné}
+					{@code comm// riešenie ako ho ukončiť:}
+					killProcess();
+				}
+
+				{@code comm// Hlavná (vstupná) metóda.}
+				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
+				{
+					{@link Svet Svet}.{@link Svet#režimLadenia(boolean) režimLadenia}({@code valtrue});
+					{@link Svet Svet}.{@link Svet#skry() skry}();
+					{@link Svet Svet}.{@link Svet#nekresli() nekresli}();
+					{@link Svet Svet}.{@link Svet#aktivujHistóriuVstupnéhoRiadka() aktivujHistóriuVstupnéhoRiadka}();
+					{@link Svet Svet}.{@link Svet#uchovajHistóriuVstupnéhoRiadka() uchovajHistóriuVstupnéhoRiadka}();
+					{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"GrafickáKonzola.cfg"});
+					{@code kwdnew} GrafickáKonzola();
+					{@link Svet Svet}.{@link Svet#spustiČasovač() spustiČasovač}();
+					{@link Svet Svet}.{@link Svet#zobraz() zobraz}();
+				}
+			}
+			</pre>
 		 */
 		public static class PríkazovýRiadok extends ExecuteShellCommand
 		{
@@ -13651,9 +14084,9 @@ public final class Svet extends JFrame
 		 * </table></td></tr></table>
 		 * 
 		 * @param otázka text otázky
-		 * @return celé číslo označujúce poradové číslo tlačidla zvoleného
-		 *     ako odpoveď alebo {@link GRobot#ZAVRETÉ ZAVRETÉ}, keď
-		 *     používateľ zavrel dialóg
+		 * @return celé číslo označujúce poradové číslo (index) tlačidla
+		 *     zvoleného ako odpoveď alebo {@link GRobot#ZAVRETÉ ZAVRETÉ},
+		 *     keď používateľ zavrel dialóg
 		 * 
 		 * @see #správa(String)
 		 * @see #správa(String, String)
@@ -13700,9 +14133,9 @@ public final class Svet extends JFrame
 		 * 
 		 * @param otázka text otázky
 		 * @param titulok text titulku okna s otázkou
-		 * @return celé číslo označujúce poradové číslo tlačidla zvoleného
-		 *     ako odpoveď alebo {@link GRobot#ZAVRETÉ ZAVRETÉ}, keď
-		 *     používateľ zavrel dialóg
+		 * @return celé číslo označujúce poradové číslo (index) tlačidla
+		 *     zvoleného ako odpoveď alebo {@link GRobot#ZAVRETÉ ZAVRETÉ},
+		 *     keď používateľ zavrel dialóg
 		 * 
 		 * @see #správa(String)
 		 * @see #správa(String, String)
@@ -13740,9 +14173,9 @@ public final class Svet extends JFrame
 		 * 
 		 * @param otázka text otázky
 		 * @param tlačidlá zoznam popisov tlačidiel
-		 * @return celé číslo označujúce poradové číslo tlačidla zvoleného
-		 *     ako odpoveď alebo {@link GRobot#ZAVRETÉ ZAVRETÉ}, keď
-		 *     používateľ zavrel dialóg
+		 * @return celé číslo označujúce poradové číslo (index) tlačidla
+		 *     zvoleného ako odpoveď alebo {@link GRobot#ZAVRETÉ ZAVRETÉ},
+		 *     keď používateľ zavrel dialóg
 		 * 
 		 * @see #správa(String)
 		 * @see #správa(String, String)
@@ -13781,9 +14214,9 @@ public final class Svet extends JFrame
 		 * @param otázka text otázky
 		 * @param titulok text titulku okna s otázkou
 		 * @param tlačidlá zoznam popisov tlačidiel
-		 * @return celé číslo označujúce poradové číslo tlačidla zvoleného
-		 *     ako odpoveď alebo {@link GRobot#ZAVRETÉ ZAVRETÉ}, keď
-		 *     používateľ zavrel dialóg
+		 * @return celé číslo označujúce poradové číslo (index) tlačidla
+		 *     zvoleného ako odpoveď alebo {@link GRobot#ZAVRETÉ ZAVRETÉ},
+		 *     keď používateľ zavrel dialóg
 		 * 
 		 * @see #správa(String)
 		 * @see #správa(String, String)
@@ -13822,10 +14255,11 @@ public final class Svet extends JFrame
 		 * 
 		 * @param otázka text otázky
 		 * @param tlačidlá zoznam popisov tlačidiel
-		 * @param predvolenéTlačidlo poradové číslo predvoleného tlačidla
-		 * @return celé číslo označujúce poradové číslo tlačidla zvoleného
-		 *     ako odpoveď alebo {@link GRobot#ZAVRETÉ ZAVRETÉ}, keď
-		 *     používateľ zavrel dialóg
+		 * @param predvolenéTlačidlo poradové číslo (index) predvoleného
+		 *     tlačidla
+		 * @return celé číslo označujúce poradové číslo (index) tlačidla
+		 *     zvoleného tlačidla ako odpoveď alebo {@link GRobot#ZAVRETÉ
+		 *     ZAVRETÉ}, keď používateľ zavrel dialóg
 		 * 
 		 * @see #správa(String)
 		 * @see #správa(String, String)
@@ -13875,10 +14309,11 @@ public final class Svet extends JFrame
 		 * @param otázka text otázky
 		 * @param titulok text titulku okna s otázkou
 		 * @param tlačidlá zoznam popisov tlačidiel
-		 * @param predvolenéTlačidlo poradové číslo predvoleného tlačidla
-		 * @return celé číslo označujúce poradové číslo tlačidla zvoleného
-		 *     ako odpoveď alebo {@link GRobot#ZAVRETÉ ZAVRETÉ}, keď
-		 *     používateľ zavrel dialóg
+		 * @param predvolenéTlačidlo poradové číslo (index) predvoleného
+		 *     tlačidla
+		 * @return celé číslo označujúce poradové číslo (index) tlačidla
+		 *     zvoleného ako odpoveď alebo {@link GRobot#ZAVRETÉ ZAVRETÉ},
+		 *     keď používateľ zavrel dialóg
 		 * 
 		 * @see #správa(String)
 		 * @see #správa(String, String)
@@ -14026,11 +14461,11 @@ public final class Svet extends JFrame
 		 * <p>Obrázok pre túto verziu metódy musíte definovať sami. Nie je
 		 * predpísaný spôsob, ale priam sa ponúka využitie triedy {@link 
 		 * Obrázok Obrázok} a mechanizmu {@linkplain 
-		 * GRobot#kresliNaObrázok(Obrázok) kreslenia na obrázok pomocou
+		 * GRobot#kresliNaObrázok(Obrázok) kreslenia na obrázok s pomocou
 		 * robota}. Treba pri tom zvážiť viacero okolností. Zobrazenie
 		 * úvodnej obrazovky je očakávané v čase, keď ešte hlavné okno nie
 		 * je zobrazené. V podstate v čase, keď ešte nejestvuje žiadny
-		 * robot. Preto, ak chceme používať kreslenie pomocou robota, musíme
+		 * robot. Preto, ak chceme používať kreslenie s pomocou robota, musíme
 		 * jedného na tento účel vytvoriť. Prvý vytvorený robot je zároveň
 		 * {@linkplain #hlavnýRobot() hlavný robot} zodpovedný za
 		 * vytvorenie a zobrazenie hlavného okna. Preto musíme pred jeho
@@ -15122,7 +15557,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Vráti reťazec zadaný do vstupného riadka po potvrdení klávesom
-		 * {@code Enter}. Vstup pomocou vstupného riadka sa zahajuje metódou
+		 * {@code Enter}. Vstup s pomocou vstupného riadka sa zahajuje metódou
 		 * {@link #začniVstup() začniVstup}.</p>
 		 * 
 		 * @return objekt typu {@link java.lang.String String} obsahujúci
@@ -15163,7 +15598,7 @@ public final class Svet extends JFrame
 		 * <p>Vráti celé číslo zadané do vstupného riadka po potvrdení
 		 * klávesom {@code Enter}. Metóda vráti hodnotu {@code valnull}
 		 * v prípade, že do vstupného riadka nebolo zadané celé číslo.
-		 * Vstup pomocou vstupného riadka sa zahajuje metódou {@link 
+		 * Vstup s pomocou vstupného riadka sa zahajuje metódou {@link 
 		 * #začniVstup() začniVstup}.</p>
 		 * 
 		 * @return objekt typu {@link Long} obsahujúci zadané celé číslo,
@@ -15193,7 +15628,7 @@ public final class Svet extends JFrame
 		 * <p>Vráti reálne číslo zadané do vstupného riadka po potvrdení
 		 * klávesom {@code Enter}. Metóda vráti hodnotu {@code valnull}
 		 * v prípade, že do vstupného riadka nebolo zadané reálne číslo.
-		 * Vstup pomocou vstupného riadka sa zahajuje metódou {@link 
+		 * Vstup s pomocou vstupného riadka sa zahajuje metódou {@link 
 		 * #začniVstup() začniVstup}.</p>
 		 * 
 		 * @return objekt typu {@link java.lang.Double Double} obsahujúci
@@ -16232,92 +16667,12 @@ public final class Svet extends JFrame
 
 
 		/**
-		 * <p>Vykoná skript uložený v poli reťazcov. Táto metóda vyžaduje,
-		 * aby v čase vykonania prvého príkazu bol aspoň jeden robot, svet
-		 * alebo niektoré z plátien v {@linkplain 
-		 * Svet#interaktívnyRežim(boolean) interaktívnom režime}, inak sa
-		 * vykonávanie skriptu skončí chybou.</p>
+		 * <p>Vykoná skript uložený v poli reťazcov. <b>Pozri triedu {@link 
+		 * Skript Skript}.</b></p>
 		 * 
-		 * <p>Každý neprázdny riadok skriptu smie obsahovať niektorú
-		 * z položiek v nasledujúcom zozname:</p>
-		 * 
-		 * <ul>
-		 * <li>platný príkaz – taký, ktorý je zároveň použiteľný s metódou
-		 * na vykonávanie príkazov robota (pozri: {@link 
-		 * GRobot#vykonajPríkaz(String) vykonajPríkaz}), plátna ({@link 
-		 * Plátno#vykonajPríkaz(String) vykonajPríkaz}) alebo sveta (pozri:
-		 * {@link #vykonajPríkaz(String) vykonajPríkaz}),</li>
-		 * <li>aktivovanie alebo deaktivovanie {@linkplain 
-		 * #interaktívnaInštancia(String) interaktívnej inštancie} (pozri
-		 * nižšie),</li>
-		 * <li>komentár (pozri nižšie),</li>
-		 * <li>definíciu menovky (pozri nižšie),</li>
-		 * <li>alebo jeden z rezervovaných príkazov skriptu (podrobnosti
-		 * sú opäť nižšie): nepodmienený skok, podmienený skok, podmienený
-		 * skok s dekrementáciou premennej („cyklus“), podmienený skok
-		 * s alternatívou, podmienený skok s dekrementáciou premennej
-		 * a alternatívou („cyklus s alternatívou“).</li>
-		 * </ul>
-		 * 
-		 * <p> </p>
-		 * 
-		 * <table class="commands">
-		 * <tr><td><code>; </code><em>«text»</em></td><td>–</td><td
-		 * >komentár – tento riadok bude ignorovaný</td></tr>
-		 * <tr><td><code>:</code><em>«názov»</em></td><td>–</td><td>definícia
-		 * menovky, ktorá je používaná na skoky (podmienené a nepodmienené –
-		 * pozri nižšie)</td></tr>
-		 * <tr><td><code>@</code><em
-		 * >«názov inštancie»</em></td><td
-		 * >–</td><td>aktivovanie {@linkplain #interaktívnaInštancia(String)
-		 * interaktívnej inštancie}</td></tr>
-		 * <tr><td><code>@</code></td><td>–</td><td>zrušenie aktivácie
-		 * {@linkplain #interaktívnaInštancia(String) interaktívnej
-		 * inštancie}</td></tr>
-		 * <tr><td><code>na </code> <em>«menovka»</em></td><td>–</td>
-		 * <td>nepodmienený skok – vykonávanie skriptu prejde (preskočí) na
-		 * riadok označený menovkou (pozri vyššie)</td></tr>
-		 * <tr><td><code>ak </code><em
-		 * >«premenná alebo hodnota»</em> <em
-		 * >«menovka»</em></td><td>–</td>
-		 * <td>podmienený skok – ak je <em>«premenná alebo hodnota»</em>
-		 * nenulová, tak vykonávanie skriptu prejde (preskočí) na riadok
-		 * označený menovkou</td></tr>
-		 * <tr><td><code>ak </code><em
-		 * >«premenná alebo hodnota»</em> <em
-		 * >«menovka1»</em><code> inak </code><em
-		 * >«menovka2»</em></td><td>–</td><td>podmienený
-		 * skok s alternatívou – ak je <em>«premenná alebo hodnota»</em>
-		 * nenulová, tak vykonávanie skriptu prejde (preskočí) na riadok
-		 * označený menovkou <em>«menovka1»</em>, inak na riadok označený
-		 * menovkou <em>«menovka2»</em></td></tr>
-		 * <tr><td><code>dokedy </code><em>«premenná»</em> <em
-		 * >«menovka»</em></td><td>–</td><td>podmienený
-		 * skok s dekrementáciou premennej („cyklus“) – najprv sa zníži
-		 * hodnota premennej o 1 a ak je výsledok výpočtu záporný, tak sa
-		 * jej hodnota nastaví na nulu; ak je konečná hodnota premennej
-		 * kladná, tak vykonávanie skriptu prejde (preskočí) na riadok
-		 * označený menovkou</td></tr>
-		 * <tr><td><code>dokedy </code><em>«premenná»</em> <em
-		 * >«menovka1»</em><code> inak </code><em>«menovka2»</em></td><td
-		 * >–</td><td>podmienený skok s dekrementáciou premennej („cyklus“)
-		 * s alternatívou – najprv sa zníži hodnota premennej o 1 a ak je
-		 * výsledok výpočtu záporný, tak sa jej hodnota nastaví na nulu;
-		 * ak je konečná hodnota premennej kladná, tak vykonávanie skriptu
-		 * prejde (preskočí) na riadok označený menovkou <em>«menovka1»</em>,
-		 * inak na riadok označený menovkou <em>«menovka2»</em></td></tr>
-		 * <tr><td colspan="2"> </td>
-		 * <td>podmienené skoky s dekrementáciou premennej sú navrhnuté tak,
-		 * aby pomyselne predpokladali prítomnosť kladnej hodnoty v riadiacej
-		 * premennej a aby sa opakovanie ukončilo v okamihu dosiahnutia nuly
-		 * v riadiacej premennej (pričom nie je dovolené, aby sa v riadiacej
-		 * premennej vyskytla záporná hodnota – záporné hodnoty sú prepísané
-		 * nulou); to znamená, že všetky priebehy vykonania s hodnotou
-		 * riadiacej premennej menšej alebo rovnej jednej sú identické<!--
-		 * skrytá poznámka: dôvodom tohto návrhu bolo kladenie dôrazu na čo
-		 * najvyššiu jednoduchosť pri implementácii a bolo to inšpirované
-		 * jazykom symbolických inštrukcií --></td></tr>
-		 * </table>
+		 * <p class="remark"><b>Poznámka:</b> Informácie o pravidlách
+		 * vykonávania boli presunuté do opisu triedy {@link Skript
+		 * Skript}.</p>
 		 * 
 		 * @param riadky pole reťazcov reprezentujúcich riadky skriptu
 		 * @return riadok, na ktorom vznikla chyba (ak chyba nevznikla,
@@ -17307,7 +17662,9 @@ public final class Svet extends JFrame
 			return Skript.zoznamSkriptov.get(názov);
 		}
 
-			// TODO.
+			// Súčasť nedokonalého prototypu bezpečnostného mechanizmu
+			// ukončenia krížového spúšťania skriptov po dosiahnutí
+			// určitej hĺbky:
 			private static int hĺbkaVolania = 0;
 
 		/**
@@ -17450,7 +17807,7 @@ public final class Svet extends JFrame
 										{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#tmavooranžová tmavooranžová});
 										{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Vykonávanie bolo prerušené."});
 										{@code comm// Ďalšie podrobnosti by sme mohli vypísať}
-										{@code comm// napríklad pomocou nasledujúceho úryvku kódu:}
+										{@code comm// napríklad s pomocou nasledujúceho úryvku kódu:}
 										{@code comm//    "na riadku", riadok, ":", GRobot.}{@link Konštanty#riadok riadok}{@code comm,}
 										{@code comm//    príkaz}
 									}
@@ -17474,7 +17831,7 @@ public final class Svet extends JFrame
 									{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#červená červená});
 									{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(príkaz);
 										{@code comm// Ďalšie podrobnosti by sme mohli vypísať}
-										{@code comm// napríklad pomocou nasledujúcich úryvkov kódu:}
+										{@code comm// napríklad s pomocou nasledujúcich úryvkov kódu:}
 										{@code comm//    "Číslo chyby", Svet.}{@link Svet#kódPoslednejChyby() kódPoslednejChyby}{@code comm()}
 										{@code comm//    "Riadok chyby ", riadok}
 									{@code kwdreturn} {@code valfalse};
@@ -17871,11 +18228,11 @@ public final class Svet extends JFrame
 
 
 		/**
-		 * <p>Táto metóda je automaticky používaná {@linkplain 
-		 * Svet#interaktívnyRežim(boolean) interaktívnym režimom}
-		 * a umožňuje používať príkazy, ktoré sú dostupné v tomto režime
-		 * za hranicami {@linkplain Svet#interaktívnyRežim(boolean)
-		 * interaktívneho režimu} (t. j. bez nevyhnutnosti jeho aktivácie).</p>
+		 * <p>Táto metóda má rovnaké jadro ako mechanizmus vykonávania
+		 * príkazov v {@linkplain Svet#interaktívnyRežim(boolean)
+		 * interaktívnom režime} a umožňuje používať príkazy, ktoré sú
+		 * dostupné v tomto režime aj za jeho hranicami (t. j. bez
+		 * nevyhnutnosti jeho aktivácie).</p>
 		 * 
 		 * @param príkaz príkazový riadok spĺňajúci pravidlá uvedené
 		 *     v opise metódy {@link Svet#interaktívnyRežim(boolean)
@@ -17929,13 +18286,17 @@ public final class Svet extends JFrame
 		 * alebo
 		 * {@link Plátno#vykonajPríkaz(String) strop.vykonajPríkaz(príkaz)}.</p>
 		 * 
-		 * <p>Vykonávanie príkazov interaktívneho režimu nie je z pohľadu
-		 * spracovania príliš efektívne, ale je názorné. Začínajúci
-		 * študent/&#8203;programátor môže ľahko vidieť, ktorý zo základných
-		 * príkazov má aký efekt. Po zapnutí interaktívneho príkazového
-		 * režimu pre niektorého z robotov, svet a/alebo plátno je automaticky
-		 * zobrazený vstupný riadok, ktorý od tejto chvíle očakáva príkazy
-		 * zadané v špecifickom tvare opísanom nižšie.</p>
+		 * <p>Pôvodný úmysel pri implementácii tohto režimu (pred začatím
+		 * implementácie {@linkplain Skript skriptov}) bolo využitie vo
+		 * výučbe so zreteľom na to, že vykonávanie príkazov interaktívneho
+		 * režimu síce nie je z pohľadu spracovania príliš efektívne, ale je
+		 * názorné a začínajúci študent/&#8203;programátor môže ľahko a rýchlo
+		 * vidieť, ktorý zo základných príkazov (robota) má aký efekt (bez
+		 * nevyhnutnosti častej a opakovanej rekompilácie programu). Po
+		 * zapnutí interaktívneho príkazového režimu pre niektorého z robotov,
+		 * svet a/alebo plátno, je automaticky zobrazený vstupný riadok,
+		 * ktorý od tejto chvíle očakáva príkazy zadané v špecifickom tvare
+		 * opísanom nižšie.</p>
 		 * 
 		 * <p>Po potvrdení vstupu alebo {@linkplain #vykonajSkript(String[])
 		 * spustení skriptu} sú prehľadávané všetky inštancie robota
@@ -17958,7 +18319,8 @@ public final class Svet extends JFrame
 		 * prehľadá ďalšie triedy ({@link java.lang.Math Math}…).
 		 * Ak nezareaguje ani jedna súčasť prehľadávaná svetom, tak sú na
 		 * rade plátna. Ak majú interaktívny režim aktivované obe plátna,
-		 * im je príkaz poslaný obom, ak iba jedno, tak iba jednému z nich.</p>
+		 * tak je príkaz poslaný obom, ak iba jedno, tak iba jednému
+		 * z nich.</p>
 		 * 
 		 * <p>Ak je aktívna obsluha udalostí, tak je v prípade pozitívneho
 		 * výsledku spracovania príkazu potvrdeného v príkazovom riadku
@@ -17974,15 +18336,15 @@ public final class Svet extends JFrame
 		 * {@link ObsluhaUdalostí#potvrdenieVstupu() potvrdenieVstupu}).</p>
 		 * 
 		 * <p>Po deaktivovaní interaktívneho príkazového režimu všetkých
-		 * dotknutých entít (robotov a/alebo sveta), je vstupný riadok
+		 * dotknutých entít (robotov/sveta/plátien), je vstupný riadok
 		 * automaticky skrytý a to bez ohľadu na to, či bol pred aktiváciou
 		 * režimu zobrazený alebo nie.</p>
 		 * 
 		 * <p>Príkazy interaktívneho režimu <b>nie sú</b> zadávané
 		 * v syntakticky identickom tvare ako pri volaní metódy Javy.
 		 * Zápis príkazu musí byť ekvivalentný takej metóde robota (resp.
-		 * sveta alebo metódy triedy <code>Math</code>), ktorá spĺňa jednu
-		 * z nasledujúcich podmienok:</p>
+		 * sveta/plátna alebo metódy triedy <code>Math</code>), ktorá spĺňa
+		 * jednu z nasledujúcich podmienok:</p>
 		 * 
 		 * <ul>
 		 * <li>neprijíma žiadny argument,</li>
@@ -18013,12 +18375,23 @@ public final class Svet extends JFrame
 		 * byť buď úplne uvedená, alebo úplne vynechaná. Argumenty musia byť
 		 * od príkazu aj od seba navzájom oddelené medzerou alebo čiarkou.
 		 * Ich údajový typ musí byť v súlade s vyššie uvedenými bodmi.
-		 * Reťazcový argument musí byť vždy uvedený ako posledný (aj keď
-		 * ide o ekvivalent metódy, ktorá ho má v skutočnosti na začiatku)
-		 * a musí sa začínať strojopisnými úvodzovkami {@code "}. (Všetok
-		 * zvyšný obsah príkazového riadka nasledujúci za úvodzovkou je
-		 * považovaný za obsah reťazca vrátane prípadných ďalších
-		 * úvodzoviek a vrátane prípadnej úvodzovky na konci riadka.)</p>
+		 * Variant reťazcového argumentu s jednou úvodzovkou musí byť vždy
+		 * uvedený ako posledný (aj keď ide o ekvivalent metódy, ktorá ho má
+		 * v skutočnosti na začiatku). V tomto prípade je všetok zvyšný obsah
+		 * príkazového riadka (nasledujúci za strojopisnou úvodzovkou
+		 * {@code "}) považovaný za obsah reťazca. Ak sa na príkazovom riadku
+		 * nachádza viacero úvodzoviek, tak je do úvahy vzatá prvá a posledná,
+		 * obsah medzi nimi je považovaný za reťazec a zvyšok riadka je
+		 * spracovaný tak, ako keby bol celý reťazec uvedený na konci (t. j.
+		 * ako pri variante s jednou úvodzovkou).</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Interaktívny režim
+		 * (a skriptovanie) programovacieho rámca GRobot využíva mechanizmus
+		 * reflexie Javy. Vďaka tomu sa všetky verejné metódy tried
+		 * odvodených od triedy {@link GRobot GRobot}, ktoré spĺňajú
+		 * podmienky uvedené vyššie, automaticky stávajú dostupnými
+		 * na použitie v interaktívnom režime aj skriptoch ako platné
+		 * príkazy.</p>
 		 * 
 		 * <p>Interaktívny režim umožňuje pracovať s vnútornými premennými.
 		 * Premenná vzniká pri prvom vložení hodnoty do nej. Na to slúži
@@ -18032,9 +18405,9 @@ public final class Svet extends JFrame
 		 * súčet, tak výsledok v premennej bude nula v prípade, že je hodnota
 		 * premennej aj výrazu napravo boli nulové a jedna v opačnom prípade
 		 * atď. Návratová hodnota príkazu (originálnej metódy programovacieho
-		 * rámca) musí byť číslo (prípadne logická hodnota), farba, poloha alebo
-		 * reťazec. Ak sa pracuje s číslami, tak operátor môže byť jedným
-		 * z nasledujúceho zoznamu:</p>
+		 * rámca) musí byť číslo (prípadne logická hodnota), farba, poloha
+		 * alebo reťazec. Ak sa pracuje s číslami, tak operátor môže byť
+		 * jedným z nasledujúceho zoznamu:</p>
 		 * 
 		 * <table>
 		 * <tr><td rowspan="17"> </td>
@@ -18044,17 +18417,22 @@ public final class Svet extends JFrame
 		 * <tr><td><code>*</code></td><td>–</td><td>násobenie</td></tr>
 		 * <tr><td><code>/</code></td><td>–</td><td>delenie</td></tr>
 		 * <tr><td><code>%</code></td><td>–</td><td>zvyšok po delení</td></tr>
-		 * <tr><td><code>_</code></td><td>–</td><td>odseknutie – odstránenie desatinnej časti</td></tr>
-		 * <tr><td><code>~</code></td><td>–</td><td>zmena znamienka (z kladného na záporné alebo naopak)</td></tr>
+		 * <tr><td><code>_</code></td><td>–</td><td>odseknutie – odstránenie
+		 * desatinnej časti</td></tr>
+		 * <tr><td><code>~</code></td><td>–</td><td>zmena znamienka
+		 * (z kladného na záporné alebo naopak)</td></tr>
 		 * <tr><td><code>==</code></td><td>–</td><td>zhoda</td></tr>
 		 * <tr><td><code>!=</code></td><td>–</td><td>nezhoda</td></tr>
 		 * <tr><td><code>!</code></td><td>–</td><td>logická negácia</td></tr>
-		 * <tr><td><code>&amp;&amp;</code></td><td>–</td><td>logické a súčasne</td></tr>
+		 * <tr><td><code>&amp;&amp;</code></td><td>–</td><td>logické
+		 * a súčasne</td></tr>
 		 * <tr><td><code>||</code></td><td>–</td><td>logické alebo</td></tr>
 		 * <tr><td><code>&gt;</code></td><td>–</td><td>väčší než</td></tr>
 		 * <tr><td><code>&lt;</code></td><td>–</td><td>menší než</td></tr>
-		 * <tr><td><code>&gt;=</code></td><td>–</td><td>väčší alebo rovný než</td></tr>
-		 * <tr><td><code>&lt;=</code></td><td>–</td><td>menší alebo rovný než</td></tr>
+		 * <tr><td><code>&gt;=</code></td><td>–</td><td>väčší alebo rovný
+		 * než</td></tr>
+		 * <tr><td><code>&lt;=</code></td><td>–</td><td>menší alebo rovný
+		 * než</td></tr>
 		 * </table>
 		 * 
 		 * <p><b>Napríklad:</b></p>
@@ -18062,6 +18440,36 @@ public final class Svet extends JFrame
 		 * <p>    nech a = 10.0<br />
 		 *     nech a + 2.0<br />
 		 *     nech f = farba<br /></p>
+		 * 
+		 * <p>Takýto spôsob výpočtov je nepraktický – aj pomerne jednoduchý
+		 * výpočet by vyžadoval viacero riadkov skriptu, preto bol ku
+		 * skriptovaciemu stroju pridružený rozpoznávač jednoduchých
+		 * matematických výrazov (s programátorskou syntaxou a s bežne
+		 * dostupnými operáciami; angl. expression parser). Na jeho aktiváciu
+		 * slúži rezervovaný znak mriežky {@code #}. Všetko, čo na príkazovom
+		 * riadku nasleduje za znakom mriežky (ak to nebolo súčasťou reťazca)
+		 * je poslané do rozpoznávača výrazov a vyhodnotené pred spracovaním
+		 * príkazu. Rozpoznávač je prepojený s rámcom a dokáže identifikovať
+		 * viaceré metódy s číselnou návratovou hodnotou.</p>
+		 * 
+		 * <p><b>Napríklad:</b></p>
+		 * 
+		 * <p>    nech v = #veľkosť * 2.5 + 1<br />
+		 *     opakuj i 5<br />
+		 *         nech x = #(i - 3) * veľkosť<br /></p>
+		 * 
+		 * <p>Je dovolené pracovať aj s reťazcami a vyhodnocovať výrazy
+		 * v rámci podmieneného spracovania (aj číselné, nielen reťazcové).
+		 * Príklad:</p>
+		 * 
+		 * <p>    nech x = "Reťazec"<br />
+		 *  <br />
+		 *     ak #x == "Reťazec"<br />
+		 *         vypíš riadok "áno"<br />
+		 *     inak<br />
+		 *         vypíš riadok "nie"<br /></p>
+		 * 
+		 * <p> </p>
 		 * 
 		 * <p>Príkazy sveta {@link Svet#vypíš(Object[]) vypíš} a {@link 
 		 * Svet#vypíšRiadok(Object[]) vypíšRiadok} sú sprístupnené nad rámec
@@ -18570,7 +18978,7 @@ public final class Svet extends JFrame
 		 * Plátno#vypíšAktívneSlovo(String, Object[])
 		 * strop.vypíšAktívneSlovo(String, Object...)}.</p>
 		 * 
-		 * @param identifikátor identifikátor aktívneho slova, pomocou
+		 * @param identifikátor identifikátor aktívneho slova, s pomocou
 		 *     ktorého bude toto slovo odlišované od ostatných aktívnych slov
 		 * @param argumenty zoznam argumentov rôzneho údajového typu
 		 *     oddelený čiarkami
@@ -18851,6 +19259,555 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #náhodnéReálneČíslo(double, double) náhodnéReálneČíslo}.</p> */
 		public static double nahodneRealneCislo(double min, double max)
 		{ return náhodnéReálneČíslo(min, max); }
+
+
+		// Inštancia generátora Perlinovho šumu.
+		private final static PerlinNoise perlin = new PerlinNoise();
+
+		/**
+		 * <p>Vráti hodnotu 3D Perlinovho šumu z rozsahu ⟨−1; 1⟩ v bode so
+		 * zadanými súradnicami.</p>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b> Generátor funguje
+		 * korektne najmä v kladnej podmnožine všetkých troch hodnôt
+		 * súradníc 3D priestoru. Keďže sa však dajú využiť aj hodnoty
+		 * generované v zápornej (t. j. pre aspoň jednu zo súradníc zápornú)
+		 * časti 3D priestoru (hoci neštandardným spôsobom a pri troche
+		 * experimentovania), nebol vstup súradníc nijako ošetrovaný.</p>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b> Ak sú vstupom generátora
+		 * výhradne (tri) celé čísla, výsledkom je nula. Ak chcete získať
+		 * „pestrý“ rad hodnôt zariaďte, aby vstupom neboli samé celé čísla.
+		 * Čím „menej celočíselné“ budú vstupy generátora, tým rôznorodejšie
+		 * výsledky bude poskytovať.</p>
+		 * 
+		 * <p> </p>
+		 * 
+		 * <p><b>Podrobnosti o Perlinovom šume:</b></p>
+		 * 
+		 * <p>Perlinov šum je druh gradientového generátora šumu, ktorý
+		 * vyvinul Ken Perlin v rokoch 1982 – 1983. Generátor vznikol
+		 * dôsledkom autorovej frustrácie z toho, že vtedajšie počítačom
+		 * generované obrazy (CGI) vyzerali príliš „strojovo.“ Práca bola
+		 * zároveň dôsledkom autorovej účasti na vývoji efektov v pracovnej
+		 * skupine MAGI, ktorá pracovala pre Disneyho štúdium v kontexte
+		 * produkcie sci-fi filmu Tron (1982). V roku 1997 (15 rokov po
+		 * vydaní filmu Tron) získal Ken Perlin za svoj technický prínos,
+		 * ktorý vznikol vytvorením tohto algoritmu <a target="_blank"
+		 * href="https://www.mrl.nyu.edu/~perlin/doc/oscar.html#noise">cenu
+		 * filmovej akadémie</a>
+		 * (Academy Awards u nás známej pod ľudovým pomenovaním Oskar).</p>
+		 * 
+		 * <p>Dobrý generátor (pseudo)náhodných čísel generuje také hodnoty,
+		 * ktoré nevykazujú známky rozpoznateľného vzoru (čiže naoko
+		 * vzájomne nesúvisia). Takáto náhodnosť však nemusí pôsobiť
+		 * prirodzene, najmä keď potrebujeme generovať prírodne pôsobiaci
+		 * vzhľad ako sú oblaky, krajinné reliéfy alebo textúry povrchov
+		 * ako je mramor a podobne. Perlinov generátor dokáže generovať
+		 * hodnoty ústiace do organickejšieho vzhľadu, pretože generovaná
+		 * sekvencia pseudonáhodných čísel je „hladšia“ než sekvencie, ktoré
+		 * generuje „bežný“ generátor.</p>
+		 * 
+		 * <p>Algoritmus použitý v tomto rámci generuje hodnoty šumu
+		 * v trojrozmernom priestore. Perlinov šum však nemusí byť len
+		 * troj- alebo dvojrozmerný. Vo všeobecnosti môže byť použitý na
+		 * <em>n</em> rozmerov. Aj keď je programovací rámec zameraný na
+		 * dvojrozmernú grafiku, bolo výhodnejšie použiť trojrozmerný
+		 * priestor, aby bol generátor širšie využiteľný, napríklad na
+		 * mapovanie hodnôt v trojsúradnicovom farebnom priestore RGB.</p>
+		 * 
+		 * <p>Táto metóda generuje predvolené hodnoty šumu podľa zadaných
+		 * súradníc. Jemnejšie výsledky sa dajú dosiahnuť použitím metódy
+		 * {@link #perlin(double, double, double, int) perlin(x, y, z,
+		 * početOktáv)} (alebo jej klonu), treba však upozorniť na to, že
+		 * so zvyšujúcim počtom oktáv sa činnosť generátora výrazne
+		 * spomaľuje. Generátor preto nie je vhodný na generovanie textúr
+		 * v reálnom čase.</p>
+		 * 
+		 * <p> </p>
+		 * 
+		 * <p><b>Zdroje:</b></p>
+		 * 
+		 * <ul>
+		 * <li><a
+		 * href="https://www.khanacademy.org/computing/computer-programming/programming-natural-simulations/programming-noise/a/perlin-noise"
+		 * target="_blank">Shiffman, Daniel: <em>Perlin noise.</em></a> Khan
+		 * Academy. 2012. Citované: 18. januára 2020.</li>
+		 * 
+		 * <li><a href="https://gist.github.com/Flafla2"
+		 * target="_blank">Biagioli, Adrian:</a> <a
+		 * href="https://gist.github.com/Flafla2/f0260a861be0ebdeef76"
+		 * target="_blank"><em>A slightly modified implementation of Ken
+		 * Perlin’s improved noise that allows for tiling the noise
+		 * arbitrarily.</em></a> 9. august 2014. Citované: 10. marca
+		 * 2019.</li>
+		 * 
+		 * <li><a
+		 * href="https://mzucker.github.io/html/perlin-noise-math-faq.html"
+		 * target="_blank">Zucker, Matt: <em>The Perlin noise math FAQ
+		 * (glaringly outdated).</em></a> 2001. Citované: 24. januára
+		 * 2020.</li>
+		 * 
+		 * <li><a
+		 * href="http://www.iquilezles.org/www/articles/gradientnoise/gradientnoise.htm"
+		 * target="_blank">Quilez, Inigo: <em>Gradient noise
+		 * derivatives.</em></a> At its home page about fractals, computer
+		 * graphics, mathematics, shaders, demoscene and more. 2017. Citované:
+		 * 24. januára 2020.</li>
+		 * 
+		 * <li><a href="https://www.shadertoy.com/view/4dffRH"
+		 * target="_blank">Quilez, Inigo: <em>Noise – Gradient – 3D –
+		 * Deriv.</em></a> At Shadertoy. 14. máj 2017. Citované: 24. januára
+		 * 2020.</li>
+		 * 
+		 * <li><a href="https://mrl.nyu.edu/~perlin/" target="_blank">Ken
+		 * Perlin’s homepage.</a> Citované: 10. marca 2019.</li>
+		 * </ul>
+		 * 
+		 * <p> </p>
+		 * 
+		 * <p><b>Príklad:</b></p>
+		 * 
+		 * <pre CLASS="example">
+			{@code kwdimport} knižnica.*;
+
+			{@code kwdpublic} {@code typeclass} PerlinovŠum {@code kwdextends} {@link GRobot GRobot}
+			{
+				{@code comm// Inštancia obrázka, ktorá bude slúžiť na uchovanie aktuálne}
+				{@code comm// vygenerovanej verzie šumu  (pozri súkromnú metódu prekresliŠum nižšie).}
+				{@code kwdprivate} {@link Obrázok Obrázok} o = {@code kwdnew} {@link Obrázok#Obrázok(int, int) Obrázok}({@code num600}, {@code num600});
+
+				{@code comm// Parametre generátora (pozri súkromnú metódu prekresliŠum nižšie):}
+				{@code comm//      k – počet (index) generovaných oktáv šumu;}
+				{@code comm//      l – prepínanie štyroch rôznych verzií generovania:}
+				{@code comm//          1 – použije sa len premenná dr a to ako úroveň šedej;}
+				{@code comm//          2 – to isté ako 1, ale použije sa premenná dg;}
+				{@code comm//          3 – to isté ako 1, ale použije sa premenná db;}
+				{@code comm//          … – premenné dr, dg, db budú použité na určenie farebných}
+				{@code comm//              zložiek r, g, b každého bodu generovaného šumu.}
+				{@code kwdprivate} {@code typeint} k = {@code num0}, l = {@code num0};
+
+				{@code comm// Aktuálne posunutie generovaného šumu.}
+				{@code kwdprivate} {@code typedouble} Δx = {@code num0}, Δy = {@code num0};
+
+
+				{@code comm// Konštruktor.}
+				{@code kwdprivate} PerlinovŠum()
+				{
+					{@code valsuper}({@code num602}, {@code num602}); {@code comm// (rozmer plátna 602 × 602 bodov)}
+
+					{@code comm// Nastavenia sveta:}
+					{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@link Farebnosť#snehová snehová});
+					{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#biela biela});
+					{@link Svet Svet}.{@link Svet#nekresli() nekresli}();
+
+					{@code comm// Nastavenie kreslenia vypĺňaných tvarov na strop žltou farbou}
+					{@code comm// (to sa použije na kreslenie orientačného prvku znázorňujúceho}
+					{@code comm// aktuálne posunutie generátora Δx, Δy):}
+					{@link GRobot#kresliNaStrop() kresliNaStrop}();
+					{@link GRobot#vypĺňajTvary() vypĺňajTvary}();
+					{@link GRobot#farba(Color) farba}(žltá);
+
+					{@code comm// Prekreslenie šumu a zbalenie okna:}
+					prekresliŠum();
+					{@link Svet Svet}.{@link Svet#zbaľ() zbaľ}();
+				}
+
+
+				{@code comm// Súkromná metóda na prekreslenie generovaného šumu:}
+				{@code kwdprivate} {@code typevoid} prekresliŠum()
+				{
+					{@link Svet Svet}.{@link Svet#vymažTexty() vymažTexty}();
+					{@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}(k, l, {@code srg'['}, Δx, {@code srg','}, Δy, {@code srg']'});
+
+					{@code comm// V tomto cykle sa generuje šum vo štvorci 600 × 600 do obrázka}
+					{@code comm// „o“ (čiže o jeden bod menej z každého okraja plátna) podľa}
+					{@code comm// parametrov „k“ a „l“ (pozri vyššie).}
+
+					{@code kwdfor} ({@code typeint} j = -{@code num300}; j &lt;= {@code num300}; ++j) {@code kwdfor} ({@code typeint} i = -{@code num300}; i &lt;= {@code num300}; ++i)
+					{
+						{@code comm// Najprv sa do premenných „a“ a „b“ prepočítajú súradnice}
+						{@code comm// použité na získanie hodnoty šumu v určitom bode (treba si}
+						{@code comm// uvedomiť, že každý generátor pseudonáhodných čísiel je}
+						{@code comm// v skutočnosti funkcia so stálym tvarom – preto „pseudo-“}
+						{@code comm// náhodné čísla; ibaže to obvykle nevidíme, pretože používame}
+						{@code comm// premenlivé semienko na „zamiešanie“ generátora; obvykle}
+						{@code comm// systémový čas).}
+						{@code typedouble} a = (Δx + i + {@code num300.0}) / {@code num100.0};
+						{@code typedouble} b = (Δy + j + {@code num300.0}) / {@code num100.0};
+
+						{@code comm// Potom vygenerujeme tri rôzne hodnoty šumu. Keďže v tomto}
+						{@code comm// programovacom rámci je použitý trojrozmerný Perlinov šum,}
+						{@code comm// vygenerujeme každú z troch hodnôt z rôznej plochy 3D priestoru.}
+						{@code comm// Na zjednodušenie zoberieme kolmé plochy – parametre „a“ a „b“}
+						{@code comm// jednoducho vložíme vždy do inej kombinácie súradníc „perlina.“}
+
+						{@code comm// V našom prípade by sme výsledok generátora museli upravovať}
+						{@code comm// na polovičný rozsah napríklad takto:}
+						{@code comm// double dr = (1.0 + Svet.perlin(b, 0, a, 1 + k)) / 2.0;}
+						{@code comm// double dg = (1.0 + Svet.perlin(0, a, b, 1 + k)) / 2.0;}
+						{@code comm// double db = (1.0 + Svet.perlin(a, b, 0, 1 + k)) / 2.0;}
+
+						{@code comm// Namiesto toho použijeme verziu metódy polPerlina:}
+						{@code typedouble} dr = {@link Svet Svet}.{@link Svet#polPerlina(double, double, double, int) polPerlina}(b, {@code num0}, a, {@code num1} + k);
+						{@code typedouble} dg = {@link Svet Svet}.{@link Svet#polPerlina(double, double, double, int) polPerlina}({@code num0}, a, b, {@code num1} + k);
+						{@code typedouble} db = {@link Svet Svet}.{@link Svet#polPerlina(double, double, double, int) polPerlina}(a, b, {@code num0}, {@code num1} + k);
+
+						{@code comm// *** Kópia informácií o význame atribútov „k“ a „l.“ ***}
+						{@code comm// }
+						{@code comm// k – počet (index) generovaných oktáv šumu;}
+						{@code comm// l – prepínanie štyroch rôznych verzií generovania:}
+						{@code comm//     1 – použije sa len premenná dr a to ako úroveň šedej;}
+						{@code comm//     2 – to isté ako 1, ale použije sa premenná dg;}
+						{@code comm//     3 – to isté ako 1, ale použije sa premenná db;}
+						{@code comm//     … – premenné dr, dg, db budú použité na určenie farebných}
+						{@code comm//         zložiek r, g, b každého bodu generovaného šumu.}
+						{@code comm// }
+						{@code comm// *** Kópia informácií o význame atribútov „k“ a „l.“ ***}
+
+						{@code typeint} rgb; {@code kwdswitch} (l)
+						{
+						{@code kwdcase} {@code num1}:
+							rgb = {@code num0xff000000} | (({@code typeint})(dr * {@code num255}) &lt;&lt; {@code num16}) |
+								(({@code typeint})(dr * {@code num255}) &lt;&lt; {@code num8}) | ({@code typeint})(dr * {@code num255});
+							{@code kwdbreak};
+
+						{@code kwdcase} {@code num2}:
+							rgb = {@code num0xff000000} | (({@code typeint})(dg * {@code num255}) &lt;&lt; {@code num16}) |
+								(({@code typeint})(dg * {@code num255}) &lt;&lt; {@code num8}) | ({@code typeint})(dg * {@code num255});
+							{@code kwdbreak};
+
+						{@code kwdcase} {@code num3}:
+							rgb = {@code num0xff000000} | (({@code typeint})(db * {@code num255}) &lt;&lt; {@code num16}) |
+								(({@code typeint})(db * {@code num255}) &lt;&lt; {@code num8}) | ({@code typeint})(db * {@code num255});
+							{@code kwdbreak};
+
+						{@code kwddefault}:
+							rgb = {@code num0xff000000} | (({@code typeint})(dr * {@code num255}) &lt;&lt; {@code num16}) |
+								(({@code typeint})(dg * {@code num255}) &lt;&lt; {@code num8}) | ({@code typeint})(db * {@code num255});
+							{@code kwdbreak};
+						}
+
+						o.{@link Obrázok#prepíšBod(double, double, Color) prepíšBod}(i, j, rgb);
+					}
+
+					{@code comm// Nakoniec nakreslíme orientačný prvok na znázornenie aktuálnej}
+					{@code comm// polohy posunutia generátora (parametre kreslenia sú nastavené}
+					{@code comm// v konštruktore):}
+					{@link Svet Svet}.{@link Svet#vymažGrafiku() vymažGrafiku}();
+					{@link Plátno podlaha}.{@link Plátno#obrázok(Image) obrázok}(o);
+					{@link GRobot#skočNa(double, double) skočNa}(Δx / {@code num10}, Δy / {@code num10});
+					{@link GRobot#krúžok() krúžok}();
+					{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
+				}
+
+
+				{@code comm// Reakcia na kliknutie ľubovoľným tlačidlom myši.}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#klik() klik}()
+				{
+					{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#ĽAVÉ ĽAVÉ}))
+					{
+						{@code comm// Ak bolo kliknuté ľavým, tak upravíme parameter „k“ tak,}
+						{@code comm// aby sa jeho hodnota pohybovala (cyklicky – po}
+						{@code comm// každom kliku) v rozmedzí 0 – 6:}
+						++k;
+						k %= {@code num7};
+					}
+					{@code kwdelse}
+					{
+						{@code comm// Ak bolo kliknuté ľubovoľným iným tlačidlom, tak upravíme}
+						{@code comm// parameter „l“ tak, aby sa jeho hodnota pohybovala}
+						{@code comm// (cyklicky – po každom kliku) v rozmedzí 0 – 3:}
+						++l;
+						l %= {@code num4};
+					}
+
+					{@code comm// Prekreslíme šum:}
+					prekresliŠum();
+				}
+
+
+				{@code comm// Počiatočná poloha myši používaná na vypočítanie rozdielu určujúceho}
+				{@code comm// mieru posunutia generovaného šumu.}
+				{@code kwdprivate} {@link Bod Bod} poloha1 = {@code valnull};
+
+				{@code comm// Reakcia na stlačenie ľubovoľného tlačidla myši.}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#stlačenieTlačidlaMyši() stlačenieTlačidlaMyši}()
+				{
+					{@code comm// Uloženie počiatočnej polohy.}
+					poloha1 = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyši() polohaMyši}();
+				}
+
+				{@code comm// Reakcia na pohyb kurzora myši počas držania}
+				{@code comm// ľubovoľného tlačidla myši (ťahania).}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#ťahanieMyšou() ťahanieMyšou}()
+				{
+					{@code comm// Ak je počiatočná poloha neprázdna, […]}
+					{@code kwdif} ({@code valnull} != poloha1)
+					{
+						{@code comm// […] tak prevezmeme aktuálnu polohu (pre nás koncovú), […]}
+						{@link Bod Bod} poloha2 = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyši() polohaMyši}();
+
+						{@code comm// […] vypočítame z oboch polôh rozdiel,}
+						{@code comm// o ktorý sa šum posunie, […]}
+						Δx += poloha2.{@link Poloha#polohaX() polohaX}() &#45; poloha1.{@link Poloha#polohaX() polohaX}();
+						Δy += poloha2.{@link Poloha#polohaY() polohaY}() &#45; poloha1.{@link Poloha#polohaY() polohaY}();
+
+						{@code comm// […] uložíme aktuálnu polohu ako novú počiatočnú polohu […]}
+						poloha1 = poloha2;
+
+						{@code comm// […] a prekreslíme šum.}
+						prekresliŠum();
+					}
+				}
+
+				{@code comm// Reakcia na uvoľnenie ľubovoľného tlačidla myši.}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#uvoľnenieTlačidlaMyši() uvoľnenieTlačidlaMyši}()
+				{
+					{@code comm// Vyprázdnenie počiatočnej polohy.}
+					poloha1 = {@code valnull};
+				}
+
+
+				{@code comm// Hlavná metóda.}
+				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
+				{
+					{@code kwdnew} PerlinovŠum();
+				}
+			}
+			</pre>
+		 * 
+		 * <p><b>Výsledok:</b></p>
+		 * 
+		 * <table class="centered">
+		 * <tr><td
+		 * style="vertical-align:top"><p><image>perlinov-sum-0.png<alt/></image>Jedna
+		 * oktáva farebnej verzie generovaného šumu.</p></td><td> </td>
+		 * <td
+		 * style="vertical-align:top"><p><image>perlinov-sum-6.png<alt/></image>Sedem
+		 * oktáv farebnej verzie generovaného šumu.</p></td></tr>
+		 * </table>
+		 * 
+		 * @param x x-ová súradnica priestoru šumu
+		 * @param y y-ová súradnica priestoru šumu
+		 * @param z z-ová súradnica priestoru šumu
+		 * @return hodnota Perlinovho šumu (v rozsahu ⟨−1; 1⟩) v zadanom bode
+		 * 
+		 * @see #perlin(double, double, double, int)
+		 * @see #perlin(double, double, double, int, double)
+		 * @see #polPerlina(double, double, double)
+		 * @see #polPerlina(double, double, double, int)
+		 * @see #polPerlina(double, double, double, int, double)
+		 * @see #opakovaniePerlina()
+		 * @see #opakovaniePerlina(int)
+		 */
+		public static double perlin(double x, double y, double z)
+		{ return perlin.perlin(x, y, z); }
+
+		/**
+		 * <p>Vráti hodnotu 3D Perlinovho šumu z rozsahu ⟨−1; 1⟩ v bode so
+		 * zadanými súradnicami a so zadaným počtom obsiahnutých oktáv.
+		 * (Metóda používa predvolenú hodnotu stability {@code num0.5}.)</p>
+		 * 
+		 * <p>Podrobnosti o Perlinovom šume nájdete v opise metódy {@link 
+		 * #perlin(double, double, double) perlin(x, y, z)}.</p>
+		 * 
+		 * <p>Táto metóda umožňuje generovať jemnejšie výsledky pre hodnoty
+		 * Perlinovho šumu, treba však upozorniť na to, že so zvyšujúcim
+		 * počtom oktáv sa činnosť generátora výrazne spomaľuje. Generátor
+		 * preto nie je vhodný na generovanie textúr v reálnom čase.</p>
+		 * 
+		 * @param x x-ová súradnica priestoru šumu
+		 * @param y y-ová súradnica priestoru šumu
+		 * @param z z-ová súradnica priestoru šumu
+		 * @param početOktáv počet generovaných oktáv šumu – vyššia hodnota
+		 *     generuje „jemnejšie“ hodnoty (akoby výsledky s vyšším
+		 *     rozlíšením)
+		 * @return hodnota Perlinovho šumu (v rozsahu ⟨−1; 1⟩) v zadanom bode
+		 * 
+		 * @see #perlin(double, double, double)
+		 * @see #perlin(double, double, double, int, double)
+		 * @see #polPerlina(double, double, double)
+		 * @see #polPerlina(double, double, double, int)
+		 * @see #polPerlina(double, double, double, int, double)
+		 * @see #opakovaniePerlina()
+		 * @see #opakovaniePerlina(int)
+		 */
+		public static double perlin(double x, double y, double z,
+			int početOktáv)
+		{ return perlin.octavePerlin(x, y, z, početOktáv, 0.5); }
+
+		/**
+		 * <p>Vráti hodnotu 3D Perlinovho šumu z rozsahu ⟨−1; 1⟩ v bode so
+		 * zadanými súradnicami a so zadaným počtom obsiahnutých oktáv.
+		 * (Metóda používa predvolenú hodnotu stability {@code num0.5}.)</p>
+		 * 
+		 * <p>Podrobnosti o Perlinovom šume nájdete v opise metódy {@link 
+		 * #perlin(double, double, double) perlin(x, y, z)}.</p>
+		 * 
+		 * <p>Táto metóda umožňuje generovať jemnejšie výsledky pre hodnoty
+		 * Perlinovho šumu, treba však upozorniť na to, že so zvyšujúcim
+		 * počtom oktáv sa činnosť generátora výrazne spomaľuje. Generátor
+		 * preto nie je vhodný na generovanie textúr v reálnom čase.</p>
+		 * 
+		 * @param x x-ová súradnica priestoru šumu
+		 * @param y y-ová súradnica priestoru šumu
+		 * @param z z-ová súradnica priestoru šumu
+		 * @param početOktáv počet generovaných oktáv šumu – vyššia hodnota
+		 *     generuje „jemnejšie“ hodnoty (akoby výsledky s vyšším
+		 *     rozlíšením)
+		 * @param stabilita hodnota vzťahujúca sa k rozbiehavosti generátora
+		 *     počas generovania vyšších oktáv
+		 * @return hodnota Perlinovho šumu (v rozsahu ⟨−1; 1⟩) v zadanom bode
+		 * 
+		 * @see #perlin(double, double, double)
+		 * @see #perlin(double, double, double, int)
+		 * @see #polPerlina(double, double, double)
+		 * @see #polPerlina(double, double, double, int)
+		 * @see #polPerlina(double, double, double, int, double)
+		 * @see #opakovaniePerlina()
+		 * @see #opakovaniePerlina(int)
+		 */
+		public static double perlin(double x, double y, double z,
+			int početOktáv, double stabilita)
+		{ return perlin.octavePerlin(x, y, z, početOktáv, stabilita); }
+
+		/**
+		 * <p>Vráti hodnotu polovičného 3D Perlinovho šumu z rozsahu ⟨0; 1⟩
+		 * v bode so zadanými súradnicami.</p>
+		 * 
+		 * <p>Podrobnosti o Perlinovom šume nájdete v opise metódy {@link 
+		 * #perlin(double, double, double) perlin(x, y, z)}.</p>
+		 * 
+		 * @param x x-ová súradnica priestoru šumu
+		 * @param y y-ová súradnica priestoru šumu
+		 * @param z z-ová súradnica priestoru šumu
+		 * @return hodnota polovičného Perlinovho šumu (v rozsahu ⟨0; 1⟩)
+		 *     v zadanom bode
+		 * 
+		 * @see #perlin(double, double, double)
+		 * @see #perlin(double, double, double, int)
+		 * @see #perlin(double, double, double, int, double)
+		 * @see #polPerlina(double, double, double, int)
+		 * @see #polPerlina(double, double, double, int, double)
+		 * @see #opakovaniePerlina()
+		 * @see #opakovaniePerlina(int)
+		 */
+		public static double polPerlina(double x, double y, double z)
+		{ return perlin.perlinHalf(x, y, z); }
+
+		/**
+		 * <p>Vráti hodnotu polovičného 3D Perlinovho šumu z rozsahu ⟨0; 1⟩
+		 * v bode so zadanými súradnicami a so zadaným počtom obsiahnutých
+		 * oktáv.
+		 * (Metóda používa predvolenú hodnotu stability {@code num0.5}.)</p>
+		 * 
+		 * <p>Podrobnosti o Perlinovom šume nájdete v opise metódy {@link 
+		 * #perlin(double, double, double) perlin(x, y, z)}.</p>
+		 * 
+		 * <p>Táto metóda umožňuje generovať jemnejšie výsledky pre hodnoty
+		 * Perlinovho šumu, treba však upozorniť na to, že so zvyšujúcim
+		 * počtom oktáv sa činnosť generátora výrazne spomaľuje. Generátor
+		 * preto nie je vhodný na generovanie textúr v reálnom čase.</p>
+		 * 
+		 * @param x x-ová súradnica priestoru šumu
+		 * @param y y-ová súradnica priestoru šumu
+		 * @param z z-ová súradnica priestoru šumu
+		 * @param početOktáv počet generovaných oktáv šumu – vyššia hodnota
+		 *     generuje „jemnejšie“ hodnoty (akoby výsledky s vyšším
+		 *     rozlíšením)
+		 * @return hodnota polovičného Perlinovho šumu (v rozsahu ⟨0; 1⟩)
+		 *     v zadanom bode
+		 * 
+		 * @see #perlin(double, double, double)
+		 * @see #perlin(double, double, double, int)
+		 * @see #perlin(double, double, double, int, double)
+		 * @see #polPerlina(double, double, double)
+		 * @see #polPerlina(double, double, double, int, double)
+		 * @see #opakovaniePerlina()
+		 * @see #opakovaniePerlina(int)
+		 */
+		public static double polPerlina(double x, double y, double z,
+			int početOktáv)
+		{ return perlin.octavePerlinHalf(x, y, z, početOktáv, 0.5); }
+
+		/**
+		 * <p>Vráti hodnotu polovičného 3D Perlinovho šumu z rozsahu ⟨0; 1⟩
+		 * v bode so zadanými súradnicami a so zadaným počtom obsiahnutých
+		 * oktáv.
+		 * (Metóda používa predvolenú hodnotu stability {@code num0.5}.)</p>
+		 * 
+		 * <p>Podrobnosti o Perlinovom šume nájdete v opise metódy {@link 
+		 * #perlin(double, double, double) perlin(x, y, z)}.</p>
+		 * 
+		 * <p>Táto metóda umožňuje generovať jemnejšie výsledky pre hodnoty
+		 * Perlinovho šumu, treba však upozorniť na to, že so zvyšujúcim
+		 * počtom oktáv sa činnosť generátora výrazne spomaľuje. Generátor
+		 * preto nie je vhodný na generovanie textúr v reálnom čase.</p>
+		 * 
+		 * @param x x-ová súradnica priestoru šumu
+		 * @param y y-ová súradnica priestoru šumu
+		 * @param z z-ová súradnica priestoru šumu
+		 * @param početOktáv počet generovaných oktáv šumu – vyššia hodnota
+		 *     generuje „jemnejšie“ hodnoty (akoby výsledky s vyšším
+		 *     rozlíšením)
+		 * @param stabilita hodnota vzťahujúca sa k rozbiehavosti generátora
+		 *     počas generovania vyšších oktáv
+		 * @return hodnota polovičného Perlinovho šumu (v rozsahu ⟨0; 1⟩)
+		 *     v zadanom bode
+		 * 
+		 * @see #perlin(double, double, double)
+		 * @see #perlin(double, double, double, int)
+		 * @see #perlin(double, double, double, int, double)
+		 * @see #polPerlina(double, double, double)
+		 * @see #polPerlina(double, double, double, int)
+		 * @see #opakovaniePerlina()
+		 * @see #opakovaniePerlina(int)
+		 */
+		public static double polPerlina(double x, double y, double z,
+			int početOktáv, double stabilita)
+		{ return perlin.octavePerlinHalf(x, y, z, početOktáv, stabilita); }
+
+		/**
+		 * <p>Vráti hodnotu opakovania vzoru generátora Perlinovho šumu.
+		 * Hodnoty menšie od 1 znamenajú nekonečný vzor, čo je predvolený
+		 * stav.</p>
+		 * 
+		 * <p>Podrobnosti o Perlinovom šume nájdete v opise metódy {@link 
+		 * #perlin(double, double, double) perlin(x, y, z)}.</p>
+		 * 
+		 * @return hodnota opakovania vzoru generátora Perlinovho šumu
+		 * 
+		 * @see #perlin(double, double, double)
+		 * @see #perlin(double, double, double, int)
+		 * @see #perlin(double, double, double, int, double)
+		 * @see #polPerlina(double, double, double)
+		 * @see #polPerlina(double, double, double, int)
+		 * @see #polPerlina(double, double, double, int, double)
+		 * @see #opakovaniePerlina(int)
+		 */
+		public static int opakovaniePerlina() { return perlin.repeat; }
+
+		/**
+		 * <p>Nastaví novú hodnotu opakovania vzoru generátora Perlinovho
+		 * šumu. Hodnoty menšie od 1 znamenajú nekonečný vzor.</p>
+		 * 
+		 * <p>Podrobnosti o Perlinovom šume nájdete v opise metódy {@link 
+		 * #perlin(double, double, double) perlin(x, y, z)}.</p>
+		 * 
+		 * @param opakovanie nová hodnota opakovania vzoru generátora
+		 *     Perlinovho šumu
+		 * 
+		 * @see #perlin(double, double, double)
+		 * @see #perlin(double, double, double, int)
+		 * @see #perlin(double, double, double, int, double)
+		 * @see #polPerlina(double, double, double)
+		 * @see #polPerlina(double, double, double, int)
+		 * @see #polPerlina(double, double, double, int, double)
+		 * @see #opakovaniePerlina()
+		 */
+		public static void opakovaniePerlina(int opakovanie)
+		{ perlin.repeat = opakovanie; }
 
 
 		// Schránka
@@ -19193,7 +20150,7 @@ public final class Svet extends JFrame
 		 * <p>Prečíta do vnútornej pamäte sveta zadaný obrázok zo súboru a vráti
 		 * ho v objekte typu {@link Image Image}. Obrázok nie je zobrazený.
 		 * Podobnú úlohu plní metóda {@link #čítajObrázky(Object[])
-		 * Svet.čítajObrázky(Object... súbory)}, ale pomocou nej nie je
+		 * Svet.čítajObrázky(Object... súbory)}, ale s pomocou nej nie je
 		 * možné získať objekt typu {@link Image Image} na ďalšie
 		 * spracovanie. Obrázok môže byť v prípade potreby (napríklad ak sa
 		 * obsah súboru na disku zmenil) z vnútornej pamäte odstránený
@@ -19728,7 +20685,6 @@ public final class Svet extends JFrame
 		 * základného komponentu okna aplikácie, na ktorom je umiestnené
 		 * plátno a prípadne ďalšie komponenty.</p>
 		 * 
-		 * <!-- TODO – overiť vzhľad ukážky -->
 		 * <p><image>farba-plochy-small.png<alt/>Ukážka farieb
 		 * plochy.</image>Ukážka troch farieb plochy. Zľava doprava:
 		 * systémom predvolená, {@link Farebnosť#papierová papierová}
@@ -19821,7 +20777,7 @@ public final class Svet extends JFrame
 		 * inštancia farebnosti {@link Farebnosť#žiadna žiadna}. So získanou
 		 * farbou môžeme ďalej pracovať – napríklad ju upravovať alebo
 		 * zisťovať jej vlastnosti (farebné zložky…). Testovať, či má bod
-		 * konkrétnu farbu, môžeme napríklad pomocou metódy
+		 * konkrétnu farbu, môžeme napríklad s pomocou metódy
 		 * {@link #farbaBodu(double, double, Color)
 		 * farbaBodu(x, y, farba)}.</p>
 		 * 
@@ -19846,7 +20802,7 @@ public final class Svet extends JFrame
 		 * farebnosti {@link Farebnosť#žiadna žiadna} farba. So získanou farbou
 		 * môžeme ďalej pracovať – napríklad ju upravovať alebo zisťovať jej
 		 * vlastnosti (farebné zložky…). Testovať, či má bod konkrétnu farbu
-		 * môžeme napríklad pomocou metódy
+		 * môžeme napríklad s pomocou metódy
 		 * {@link #farbaBodu(Poloha, Color)
 		 * farbaBodu(objekt, farba)}.</p>
 		 * 
@@ -19868,7 +20824,7 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Zistí, či sa farba bodu (jedného pixela) na zadaných súradniciach
 		 * zhoduje so zadanou farbou. Ak sú zadané súradnice mimo plochy
-		 * sveta, je vrátená hodnota {@code valfalse}. Testovať farbu pomocou
+		 * sveta, je vrátená hodnota {@code valfalse}. Testovať farbu s pomocou
 		 * tejto metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
@@ -19898,7 +20854,7 @@ public final class Svet extends JFrame
 		 * <p>Zistí, či sa farba bodu (jedného pixela) na súradniciach zadaného
 		 * objektu zhoduje so zadanou farbou. Ak sú súradnice zadaného objektu
 		 * mimo plochy sveta, je vrátená hodnota {@code valfalse}. Testovať
-		 * farbu pomocou tejto metódy môžeme napríklad takto:</p>
+		 * farbu s pomocou tejto metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
 			{@code kwdif} ({@link Svet Svet}.{@code currfarbaBodu}({@code valthis}, {@link Farebnosť#modrá modrá})) …
@@ -20099,7 +21055,7 @@ public final class Svet extends JFrame
 		 * <p>Zistí farbu bodu (jedného pixela) na súradniciach myši. So získanou
 		 * farbou môžeme ďalej pracovať – napríklad ju upravovať alebo
 		 * zisťovať jej vlastnosti (farebné zložky…). Testovať, či má bod
-		 * konkrétnu farbu, môžeme napríklad pomocou metódy {@link 
+		 * konkrétnu farbu, môžeme napríklad s pomocou metódy {@link 
 		 * #farbaNaMyši(Color) farbaNaMyši(farba)}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Ak by súradnice myši boli náhodou
@@ -20188,7 +21144,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Zistí, či sa farba bodu (jedného pixela) na súradniciach myši
-		 * zhoduje so zadanou farbou. Testovať farbu pomocou tejto
+		 * zhoduje so zadanou farbou. Testovať farbu s pomocou tejto
 		 * metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
@@ -20219,7 +21175,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Zistí, či sa farba bodu (jedného pixela) na súradniciach myši
-		 * zhoduje so zadanou farbou. Testovať farbu pomocou tejto
+		 * zhoduje so zadanou farbou. Testovať farbu s pomocou tejto
 		 * metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
@@ -20607,7 +21563,7 @@ public final class Svet extends JFrame
 		 * ho v objekte typu {@link Zvuk Zvuk}. Zvuk nie je prehraný. Podobnú
 		 * úlohu plní metóda {@link #čítajZvuky(Object[])
 		 * Svet.čítajZvuky(Object... súbory)} (pozri pre viac informácií),
-		 * ale pomocou nej nie je možné získať objekt typu {@link Zvuk Zvuk}
+		 * ale s pomocou nej nie je možné získať objekt typu {@link Zvuk Zvuk}
 		 * na prípadné ďalšie spracovanie. Zvuk môže byť v prípade potreby
 		 * (napríklad ak sa obsah súboru na disku zmenil) z vnútornej pamäte
 		 * odstránený metódou {@link Svet#uvoľni(String)
@@ -21215,6 +22171,7 @@ public final class Svet extends JFrame
 		 * @see #otvorSúborNaUloženieTónu(String, boolean)
 		 * @see #zavriSúborNaUloženieTónu()
 		 * @see #generátorTónov()
+		 * @see Zvuk
 		 */
 		public static double frekvenciaNoty(int nota, int oktáva)
 		{
@@ -21266,6 +22223,7 @@ public final class Svet extends JFrame
 		 * @see #otvorSúborNaUloženieTónu(String, boolean)
 		 * @see #zavriSúborNaUloženieTónu()
 		 * @see #generátorTónov()
+		 * @see Zvuk
 		 */
 		public static void hrajTón(double frekvencia)
 		{
@@ -21302,6 +22260,7 @@ public final class Svet extends JFrame
 		 * @see #otvorSúborNaUloženieTónu(String, boolean)
 		 * @see #zavriSúborNaUloženieTónu()
 		 * @see #generátorTónov()
+		 * @see Zvuk
 		 */
 		public static void hrajTón(double frekvencia, double hlasitosť)
 		{
@@ -21394,6 +22353,7 @@ public final class Svet extends JFrame
 		 * @see #otvorSúborNaUloženieTónu(String, boolean)
 		 * @see #zavriSúborNaUloženieTónu()
 		 * @see #generátorTónov()
+		 * @see Zvuk
 		 */
 		public static void hrajTón(double frekvencia, double hlasitosť,
 			double trvanie)
@@ -21426,6 +22386,7 @@ public final class Svet extends JFrame
 		 * @see #otvorSúborNaUloženieTónu(String, boolean)
 		 * @see #zavriSúborNaUloženieTónu()
 		 * @see #generátorTónov()
+		 * @see Zvuk
 		 */
 		public static void zastavTón()
 		{
@@ -21452,7 +22413,7 @@ public final class Svet extends JFrame
 		 * pozri opis triedy {@link GRobotException GRobotException}).
 		 * Príklad použitia nájdete v opise metódy
 		 * {@link #otvorSúborNaUloženieTónu(String, boolean)
-		 * #otvorSúborNaUloženieTónu(názov, prepísať)}.</p>
+		 * otvorSúborNaUloženieTónu(názov, prepísať)}.</p>
 		 * 
 		 * @param názov názov súboru na uloženie generovaného tónu
 		 * @return ak bolo všetko vykonané bezchybne, tak je návratová hodnota
@@ -21466,6 +22427,7 @@ public final class Svet extends JFrame
 		 * @see #otvorSúborNaUloženieTónu(String, boolean)
 		 * @see #zavriSúborNaUloženieTónu()
 		 * @see #generátorTónov()
+		 * @see Zvuk
 		 */
 		public static boolean otvorSúborNaUloženieTónu(String názov)
 		{
@@ -21550,6 +22512,7 @@ public final class Svet extends JFrame
 		 * @see #otvorSúborNaUloženieTónu(String)
 		 * @see #zavriSúborNaUloženieTónu()
 		 * @see #generátorTónov()
+		 * @see Zvuk
 		 */
 		public static boolean otvorSúborNaUloženieTónu(String názov,
 			boolean prepísať)
@@ -21570,7 +22533,7 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Ukončí záznam generovaných tónov, ktorý bol začatý volaním
 		 * niektorej verzie metódy {@link #otvorSúborNaUloženieTónu(String,
-		 * boolean) #otvorSúborNaUloženieTónu}.</p>
+		 * boolean) otvorSúborNaUloženieTónu}.</p>
 		 * 
 		 * @return ak bolo všetko vykonané bezchybne, tak je návratová hodnota
 		 *     {@code valtrue}
@@ -21583,6 +22546,7 @@ public final class Svet extends JFrame
 		 * @see #otvorSúborNaUloženieTónu(String)
 		 * @see #otvorSúborNaUloženieTónu(String, boolean)
 		 * @see #generátorTónov()
+		 * @see Zvuk
 		 */
 		public static boolean zavriSúborNaUloženieTónu()
 		{
@@ -21689,6 +22653,7 @@ public final class Svet extends JFrame
 		 * @see #otvorSúborNaUloženieTónu(String)
 		 * @see #otvorSúborNaUloženieTónu(String, boolean)
 		 * @see #zavriSúborNaUloženieTónu()
+		 * @see Zvuk
 		 */
 		public static BeepChannel generátorTónov()
 		{
@@ -21935,7 +22900,7 @@ public final class Svet extends JFrame
 	// --- Interpolácie a ďalšia geometria
 
 		/**
-		 * <p>Pomocou lineárnej interpolácie je možné získať ľubovoľnú
+		 * <p>S pomocou lineárnej interpolácie je možné získať ľubovoľnú
 		 * „priamočiaru“ hodnotu ležiacu medzi hodnotami {@code a}
 		 * a {@code b} a to s pomocou parametra {@code t}. Parameter
 		 * {@code t} by mal nadobúdať hodnoty medzi {@code num0.0}
@@ -21949,7 +22914,7 @@ public final class Svet extends JFrame
 		 * na úsečke medzi určenými súradnicami bodov.</p>
 		 * 
 		 * <p><image>linearnaInterpolacia.png<alt/>Body vypočítané
-		 * s použitím lineárnej interpolácie.</image>Body vypočítané pomocou
+		 * s použitím lineárnej interpolácie.</image>Body vypočítané s pomocou
 		 * lineárnej interpolácie ležiace na nakreslenej úsečke.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Podmieňovací spôsob („by mali“)
@@ -21965,7 +22930,7 @@ public final class Svet extends JFrame
 		 * <p><b>Príklad:</b></p>
 		 * 
 		 * <p>Nasledujúci príklad nakreslí body ležiace na úsečke vypočítané
-		 * pomocou lineárnej interpolácie.</p>
+		 * s pomocou lineárnej interpolácie.</p>
 		 * 
 		 * <pre CLASS="example">
 			{@code kwdfinal} {@link Bod Bod}[] body = {@code kwdnew} {@link Bod Bod}[{@code num2}];
@@ -22020,9 +22985,13 @@ public final class Svet extends JFrame
 		 * 
 		 * <pre CLASS="example">
 			<!-- TODO dokončiť príklad -->
-			x = kvadratickáInterpolácia(x1, x2, x3, 0.5);
-			y = kvadratickáInterpolácia(y1, y2, y3, 0.5);
+			x = {@code currkvadratickáInterpolácia}(x1, x2, x3, {@code num0.5});
+			y = {@code currkvadratickáInterpolácia}(y1, y2, y3, {@code num0.5});
 			</pre>
+		 * 
+		 * <p><b>Ukážky možných výsledkov:</b></p>
+		 * 
+		 * <p><image>«názov».png<alt/></image>«Popis…»<!-- TODO -->.</p>
 		 * 
 		 * @param a prvá hodnota určujúca kvadratickú interpoláciu
 		 * @param b druhá hodnota určujúca kvadratickú interpoláciu
@@ -22049,7 +23018,7 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Kubická interpolácia je počítaná zo štyroch hodnôt. Význam
 		 * parametrov sa lepšie vysvetľuje na príklade kreslenia krivky
-		 * pomocou tohto druhu interpolácie. Interpolujme dvojice súradníc
+		 * s pomocou tohto druhu interpolácie. Interpolujme dvojice súradníc
 		 * štyroch kľúčových bodov ({@code [x0, y0]} až {@code [x3, y3]}).
 		 * V takom prípade prvá a posledná dvojica súradníc určujú „smer“
 		 * kubickej krivky a prostredné dve určujú počiatočný a koncový
@@ -22057,7 +23026,7 @@ public final class Svet extends JFrame
 		 * kubickej krivke.</p>
 		 * 
 		 * <p><image>kubickaInterpolacia.png<alt/>Body vypočítané s použitím
-		 * kubickej interpolácie.</image>Body vypočítané pomocou kubickej
+		 * kubickej interpolácie.</image>Body vypočítané s pomocou kubickej
 		 * interpolácie zo štyroch označených<br />kľúčových bodov –
 		 * vypočítané body ležia na kubickej krivke.</p>
 		 * 
@@ -22739,13 +23708,58 @@ public final class Svet extends JFrame
 		 * <p><b>Príklad:</b></p>
 		 * 
 		 * <pre CLASS="example">
-			«príklad – ospravedlňujeme sa, pracujeme na doplnení…»
-			<!-- TODO – nájdenie a grafické znázornenie priesečníkov… -->
+			{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num1.5});
+			{@link GRobot#skry() skry}();
+
+			{@code kwdfor} ({@code typeint} i = {@code num0}; i &lt; {@code num7}; ++i)
+			{
+				{@code comm// Vygenerovanie súradníc:}
+				{@code typedouble} x1 = {@link Svet Svet}.{@link Svet#náhodnéCeléČíslo(long, long) náhodnéCeléČíslo}(&#45;{@code num150}, {@code num150});
+				{@code typedouble} y1 = {@link Svet Svet}.{@link Svet#náhodnéCeléČíslo(long, long) náhodnéCeléČíslo}(&#45;{@code num150}, {@code num150});
+				{@code typedouble} x2 = {@link Svet Svet}.{@link Svet#náhodnéCeléČíslo(long, long) náhodnéCeléČíslo}(&#45;{@code num150}, {@code num150});
+				{@code typedouble} y2 = {@link Svet Svet}.{@link Svet#náhodnéCeléČíslo(long, long) náhodnéCeléČíslo}(&#45;{@code num150}, {@code num150});
+				{@code typedouble} x3 = {@link Svet Svet}.{@link Svet#náhodnéCeléČíslo(long, long) náhodnéCeléČíslo}(&#45;{@code num150}, {@code num150});
+				{@code typedouble} y3 = {@link Svet Svet}.{@link Svet#náhodnéCeléČíslo(long, long) náhodnéCeléČíslo}(&#45;{@code num150}, {@code num150});
+				{@code typedouble} r = {@link Svet Svet}.{@link Svet#náhodnéCeléČíslo(long, long) náhodnéCeléČíslo}({@code num30}, {@code num120});
+
+				{@code comm// Nakreslenie situácie:}
+				{@link GRobot#farba(Color) farba}({@link Farebnosť#preddefinovanéFarby preddefinovanéFarby}[
+					{@link Farebnosť#preddefinovanéFarby preddefinovanéFarby}.length &#45; {@code num1} &#45; {@code num4} * i]);
+				{@link GRobot#skočNa(double, double) skočNa}(x1, y1);
+				{@link GRobot#choďNa(double, double) choďNa}(x2, y2);
+				{@link GRobot#skočNa(double, double) skočNa}(x3, y3);
+				{@link GRobot#kružnica(double) kružnica}(r);
+
+				{@code comm// Výpočet priesečníkov:}
+				{@link Bod Bod}[] pries = {@link Svet Svet}.{@link Svet#priesečníkyPriamkyAKružnice(double, double, double, double, double, double, double) priesečníkyPriamkyAKružnice}(
+					x1, y1, x2, y2, x3, y3, r);
+
+				{@code comm// Vyznačenie priesečníkov (ak jestvujú):}
+				{@code kwdif} ({@code valnull} != pries)
+				{
+					{@code kwdif} ({@code num1} &lt;= pries.length)
+					{
+						{@link GRobot#skočNa(double, double) skočNa}(pries[{@code num0}]);
+						{@link GRobot#kruh(double) kruh}({@code num3});
+					}
+
+					{@code kwdif} ({@code num2} &lt;= pries.length)
+					{
+						{@link GRobot#skočNa(double, double) skočNa}(pries[{@code num1}]);
+						{@link GRobot#kruh(double) kruh}({@code num3});
+					}
+				}
+			}
 			</pre>
 		 * 
 		 * <p><b>Výsledok:</b></p>
 		 * 
-		 * <p><image>«názov».png<alt/></image>«Popis…»<!-- TODO -->.</p>
+		 * <p><image>priesecniky-priamok-a-kruznic.png<alt/></image>Ukážky
+		 * výsledkov.</p>
+		 * 
+		 * <p>Príklad je naprogramovaný tak, aby z priamok kreslil len
+		 * úsečky medzi ich určujúcimi bodmi, ale na výsledku vidno, že
+		 * priesečníky s kružnicami sú nájdené pre celé priamy.</p>
 		 * 
 		 * <p><b>Užitočné zdroje:</b></p>
 		 * 
@@ -22780,10 +23794,11 @@ public final class Svet extends JFrame
 			double x1, double y1, double x2, double y2,
 			double x3, double y3, double r)
 		{
-			double Δxa = x2 - x1;
-			double Δya = y2 - y1;
-			double Δxb = x3 - x1;
-			double Δyb = y3 - y1;
+			// Poznámka: Archív tejto metódy je v súbore
+			// @Robot/Vývoj/zálohy/TestPriesPriamKruž.java
+
+			double Δxa = x2 - x1, Δya = y2 - y1;
+			double Δxb = x3 - x1, Δyb = y3 - y1;
 
 			double a = Δxa * Δxa + Δya * Δya;
 			double b = Δxa * Δxb + Δya * Δyb;
@@ -22794,24 +23809,14 @@ public final class Svet extends JFrame
 
 			double disc = p * p - q;
 			if (disc < 0.0) return null;
-			// Situáciu, keď „disc“ je rovný nule riešime neskôr.
-
-			// Zoznam<Poloha> priesečníky = new Zoznam<>();
 
 			double d = Math.sqrt(disc);
-			double s = -p + d;
-			double t = -p - d;
+			double s = p - d;
+			double t = p + d;
 
-			// priesečníky.pridaj(
-				Bod bod1 = new Bod(x1 - Δxa * s, y1 - Δya * s);
-
-			if (disc == 0.0) // s == t
-				// return priesečníky;
-				return new Bod[] {bod1};
-
-			// priesečníky.pridaj(
-				return new Bod[] {bod1, new Bod(x1 - Δxa * t, y1 - Δya * t)};
-			// return priesečníky;
+			Bod bod1 = new Bod(x1 + Δxa * s, y1 + Δya * s);
+			if (disc == 0.0) return new Bod[] {bod1}; // s == t
+			return new Bod[] { bod1, new Bod(x1 + Δxa * t, y1 + Δya * t) };
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #priesečníkyPriamkyAKružnice(double, double, double, double, double, double, double) priesečníkyPriamkyAKružnice}.</p> */
@@ -22922,7 +23927,7 @@ public final class Svet extends JFrame
 				double u = -b / (2.0 * a);
 				if (u >= 0.0 && u <= 1.0)
 					// priesečníky.pridaj(
-					return new Bod[] {new Bod(x1 + Δx * u, y1 + Δy * u)};
+					return new Bod[] { new Bod(x1 + Δx * u, y1 + Δy * u) };
 			}
 			else
 			{
@@ -23788,7 +24793,7 @@ public final class Svet extends JFrame
 		{ return vzdialenosťKružníc(poleBodov, polomer1, polomer2); }
 
 
-		// TODO – správne zaradiť:
+		// TODO – správne zaradiť zdroj (k správnemu opisu):
 		// Zdroj: http://www.vb-helper.com/howto_distance_segment_to_segment.html
 		// Pozri tiež: http://www.geometrictools.com/Documentation/DistanceLine3Line3.pdf
 		//     Uložené do: DistanceLine3Line3.pdf (TODO: dať kópiu k dispozícii)
@@ -24683,6 +25688,10 @@ public final class Svet extends JFrame
 		 * pridajKlávesovúSkratku(príkaz, kódKlávesu, modifikátor)}
 		 * s hodnotou modifikátora {@code num0}.</p>
 		 * 
+		 * <p class="remark"><b>Poznámka:</b> Príklad použitia nájdete
+		 * napríklad v opise vnorenej triedy {@link Svet.PríkazovýRiadok
+		 * Svet.PríkazovýRiadok}.</p>
+		 * 
 		 * @param príkaz príkaz, ktorý bude previazaný s touto klávesovou
 		 *     skratkou
 		 * @param kódKlávesu kód klávesu, ktorý má byť použitý ako klávesová
@@ -24714,6 +25723,10 @@ public final class Svet extends JFrame
 		 * ObsluhaUdalostí#klávesováSkratka ObsluhaUdalostí.klávesováSkratka},
 		 * ktorá používa metódu {@link ÚdajeUdalostí#príkazSkratky()
 		 * ÚdajeUdalostí.príkazSkratky()} na identifikáciu príkazu.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Príklad použitia nájdete
+		 * napríklad v opise vnorenej triedy {@link Svet.PríkazovýRiadok
+		 * Svet.PríkazovýRiadok}.</p>
 		 * 
 		 * @param príkaz príkaz, ktorý bude previazaný s touto klávesovou
 		 *     skratkou
@@ -24764,6 +25777,10 @@ public final class Svet extends JFrame
 		 * samostatná metóda
 		 * {@link #pridajKlávesovúSkratkuVstupnéhoRiadka(String, int, int)
 		 * pridajKlávesovúSkratkuVstupnéhoRiadka}.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Príklad použitia nájdete
+		 * napríklad v opise vnorenej triedy {@link Svet.PríkazovýRiadok
+		 * Svet.PríkazovýRiadok}.</p>
 		 * 
 		 * @param príkaz príkaz, ktorý bude previazaný s touto klávesovou
 		 *     skratkou
@@ -25115,7 +26132,7 @@ public final class Svet extends JFrame
 		 * {@linkplain Svet#spustiČasovač() časovač}, tak by vlnenie nemohlo
 		 * fungovať, preto je časovač touto metódou spúšťaný automaticky.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
@@ -25178,7 +26195,7 @@ public final class Svet extends JFrame
 		 * byť časovač spustený automaticky. Umožňuje to parameter
 		 * {@code ajČasovač}.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
@@ -25244,7 +26261,7 @@ public final class Svet extends JFrame
 		 * {@linkplain Svet#spustiČasovač() časovač}, tak by vlnenie nemohlo
 		 * fungovať, preto je časovač touto metódou spúšťaný automaticky.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
@@ -25312,7 +26329,7 @@ public final class Svet extends JFrame
 		 * byť časovač spustený automaticky. Umožňuje to parameter
 		 * {@code ajČasovač}.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 

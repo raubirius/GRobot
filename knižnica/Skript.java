@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
 /**
  * <p>Táto abstraktná trieda vnútorne implementuje celý mechanizmus
  * interpretácie skriptov programovacieho rámca GRobot. Jej použitie
- * je automatické. Verejné statické metódy poskytujú základné
+ * je automatické. <small>Verejné statické metódy poskytujú základné
  * rozhranie na prácu so skriptovacím strojom, napríklad:
  * {@link #vyrob(String[]) vyrob}, {@link #ladenie(boolean) ladenie},
  * {@link #čítajPremennú(String, Class) čítajPremennú},
@@ -92,36 +92,212 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
  * {@link #kódPoslednejChyby() kódPoslednejChyby}, {@link #vyrob(String[])
  * vyrob} a podobne. Dve inštančné metódy komunikujú s konkrétnymi
  * inštanciami skriptov: {@link #vykonaj() vykonaj} a {@link #vypíš()
- * vypíš}.</p>
+ * vypíš}. Tie sú užitočné v prípade, že pracujeme s vyrobenou inštanciou
+ * tejto triedy.</small></p>
  * 
- * <p>Vývoj skriptovacieho stroja nebol úplne priamočiary a informácie,
- * ktoré s ním úzko súvisia sú rozmiestnené na viacerých miestach
- * dokumentácie. Užitočné príklady použitia nájdete napríklad tu:</p>
+ * <p><b>Na prácu so skriptami sú určené tieto metódy triedy {@link Svet
+ * Svet} (a ich klony):</b></p>
  * 
  * <ul>
- * <ol>{@linkplain ObsluhaUdalostí#ladenie(int, String, int)
- * opis metódy <code>ObsluhaUdalostí.ladenie(…)</code>},</ol>
- * <ol>{@linkplain Svet#vykonajSkript(String[])
- * opis metódy <code>Svet.vykonajSkript(…)</code>}</ol>
- * <ol>a {@linkplain Svet#spustiSkript(String[])
- * opis metódy <code>Svet.spustiSkript(…)</code>}.</ol>
+ * <li>{@link Svet#vykonajSkript(String[] riadky) vykonajSkript(riadky)},</li>
+ * <li>{@link Svet#nahrajSkript(String názov, String súbor)
+ * nahrajSkript(názov, súbor)},</li>
+ * <li>{@link Svet#vyrobSkript(String skript, boolean zoSúboru)
+ * vyrobSkript(skript, zoSúboru)},</li>
+ * <li>{@link Svet#registrujSkript(String názov, String[] skript)
+ * registrujSkript(názov, skript)},</li>
+ * <li>{@link Svet#dajSkript(String názov) dajSkript(názov)}</li>
+ * <li>a {@link Svet#volajSkript(String názov) volajSkript(názov)}.</li>
  * </ul>
  * 
- * <p>Ďalšie užitočné informácie sú napríklad v opise triedy
- * {@link GRobotException GRobotException} (zoznam a opis chybových kódov)
- * alebo pri viacerých konštantách definovaných v triede {@link Konštanty
- * Konštanty} (stručný opis správ a oznamov používaných skriptovacím
- * strojom, napríklad {@link Konštanty#ČAKAŤ ČAKAŤ}, {@link Konštanty#PRERUŠIŤ
- * PRERUŠIŤ}, {@link Konštanty#VYPÍSAŤ_SKRIPT VYPÍSAŤ_SKRIPT},
+ * <p>Užitočná je tiež táto metóda (a jej klony):</p>
+ * 
+ * <ul>
+ * <li>{@link Svet#formulujChybuSkriptu(int kódSkriptu, String titulokChyby,
+ * int šírkaRiadka) formulujChybuSkriptu(kódSkriptu, titulokChyby,
+ * šírkaRiadka)}</li>
+ * </ul>
+ * 
+ * <p><b>Na ladenie skriptov sú určené nasledujúce metódy (</b>vrátane
+ * ich rôznych variánt a príbuzných metód<b>):</b></p>
+ * 
+ * <ul>
+ * <li>{@link Svet#režimLadenia(boolean) režimLadenia(zapniLadenie)},</li>
+ * <li>{@link Svet#premennáJestvuje(String, Class) premennáJestvuje(názov,
+ * typ)},</li>
+ * <li>{@link Svet#čítajPremennú(String, Class) čítajPremennú(názov,
+ * typ)},</li>
+ * <li>{@link Svet#zapíšPremennú(String, Object) zapíšPremennú(názov,
+ * hodnota)},</li>
+ * <li>{@link Svet#vymažPremennú(String, Class) vymažPremennú(názov,
+ * typ)};</li>
+ * <li>a špeciálne vyhradená reakcia {@linkplain ObsluhaUdalostí obsluhy
+ * udalostí}:</li>
+ * <li>{@link ObsluhaUdalostí#ladenie(int, String, int) ladenie(riadok,
+ * príkaz, správa)} (jej opis obsahuje komplexný príklad ladenia).</li>
+ * </ul>
+ * 
+ * <p>Pričom opis chybových stavov je v opise triedy {@link GRobotException
+ * GRobotException} a tiež pri viacerých konštantách definovaných v triede
+ * {@link Konštanty Konštanty} (v ktorej sú zároveň zhromaždené konštanty
+ * reprezentujúce kódy správ, oznamov a iných informácií používaných
+ * skriptovacím strojom, napríklad {@link Konštanty#ČAKAŤ ČAKAŤ},
+ * {@link Konštanty#PRERUŠIŤ PRERUŠIŤ},
+ * {@link Konštanty#VYPÍSAŤ_SKRIPT VYPÍSAŤ_SKRIPT},
  * {@link Konštanty#VYPÍSAŤ_RIADOK VYPÍSAŤ_RIADOK},
  * {@link Konštanty#VYPÍSAŤ_PRÍKAZ VYPÍSAŤ_PRÍKAZ},
  * {@link Konštanty#VYKONAŤ_PRÍKAZ VYKONAŤ_PRÍKAZ},
  * {@link Konštanty#VYPÍSAŤ_PREMENNÉ VYPÍSAŤ_PREMENNÉ} a podobne).</p>
  * 
+ * <p> </p>
+ * 
+ * <p><b>Pravidlá vykonávania</b></p>
+ * 
+ * <p>Vykonávanie skriptu úzko súvisí s interaktívnou inštanciou a tým
+ * aj s {@linkplain Svet#interaktívnyRežim(boolean) interaktívnym režimom.}
+ * Na korektné vykonanie príkazu, ktorý nie je riadiacim príkazom (riadiacou
+ * štruktúrou) skriptu, musí byť aktívna tzv. interaktívna inštancia robota,
+ * plátna alebo sveta, bez ktorej by nebolo možné príkaz správne vyhodnotiť,
+ * pretože by nebolo jasné, metódu ktorej inštancie je treba vykonať:</p>
+ * 
+ * <ul>
+ * <li>{@link GRobot#interaktívnyRežim(boolean)
+ * GRobot.interaktívnyRežim(zapni)} (v skriptoch je možné robotov odlíšiť
+ * ich {@linkplain GRobot#meno(String) menami});</li>
+ * <li>{@link Plátno#interaktívnyRežim(boolean)
+ * Plátno.interaktívnyRežim(zapni)} (v skriptoch sa plátno rozlišuje buď
+ * ako podlaha, alebo ako strop);</li>
+ * <li>{@link Svet#interaktívnyRežim(boolean) Svet.interaktívnyRežim(zapni)}
+ * (opis metódy sveta obsahuje ďalšie podrobnejšie informácie).</li>
+ * </ul>
+ * 
+ * <p>Ak v čase vykonania tzv. platného príkazu skriptu (pozri nižšie) nie
+ * je určená aktívna interaktívna inštancia (dá sa určiť aj priamo v skripte
+ * špeciálnym „príkazom“ {@code @} – pozri nižšie), tak sa vykonávanie
+ * skriptu skončí chybou.</p>
+ * 
+ * <p>Každý neprázdny riadok skriptu smie obsahovať niektorú
+ * z nasledujúcich položiek:</p>
+ * 
+ * <ul>
+ * <li>platný príkaz – <small>taký, ktorý je zároveň použiteľný s metódami
+ * na vykonávanie príkazov robota ({@link GRobot#vykonajPríkaz(String)
+ * GRobot.vykonajPríkaz}), plátna ({@link Plátno#vykonajPríkaz(String)
+ * Plátno.vykonajPríkaz}) alebo sveta ({@link Svet#vykonajPríkaz(String)
+ * Svet.vykonajPríkaz}), respektíve príkazy platné pre aktívnu interaktívnu
+ * inštanciu (pozri opis <b>{@linkplain Svet#interaktívnyRežim(boolean)
+ * interaktívneho režimu tu}</b>; obsahuje ďalšie dôležité informácie,
+ * najmä o príkaze <code>nech</code>)</small>,</li>
+ * <li>komentár (pozri nižšie),</li>
+ * <li>definíciu menovky (pozri nižšie),</li>
+ * <li>aktivovanie alebo deaktivovanie {@linkplain 
+ * Svet#interaktívnaInštancia(String) interaktívnej inštancie} (pozri
+ * nižšie),</li>
+ * <li>alebo jeden z rezervovaných príkazov skriptu (podrobnosti
+ * sú opäť nižšie):
+ *   <ul>
+ *   <li>nepodmienený skok (<code>na</code>),</li>
+ *   <li>podmienený skok (<code>ak</code>),</li>
+ *   <li>podmienený skok s alternatívou (<code>ak-inak</code>),</li>
+ *   <li>podmienený skok s dekrementáciou premennej („cyklus“ –
+ *   <code>dokedy</code>),</li>
+ *   <li>podmienený skok s dekrementáciou premennej a alternatívou
+ *   („cyklus s alternatívou“ – <code>dokedy-inak</code>),</li>
+ *   <li>cyklus s inkrementáciou premennej v rozsahu od 1 po zadanú
+ *   hodnotu (<code>opakuj</code>),</li>
+ *   <li>určenie obzoru premenných (<code>obzor</code>).</li>
+ *   </ul>
+ * </li>
+ * </ul>
+ * 
+ * <p> </p>
+ * 
+ * <table class="commands">
+ * <tr><td><code>; </code><em>«text»</em></td><td>–</td><td
+ * >komentár – tento riadok bude ignorovaný</td></tr>
+ * <tr><td><code>:</code><em>«názov»</em></td><td>–</td><td>definícia
+ * menovky, ktorá je používaná na skoky (podmienené a nepodmienené –
+ * pozri nižšie)</td></tr>
+ * <tr><td><code>@</code><em
+ * >«názov inštancie»</em></td><td
+ * >–</td><td>aktivovanie {@linkplain Svet#interaktívnaInštancia(String)
+ * interaktívnej inštancie}</td></tr>
+ * <tr><td><code>@</code></td><td>–</td><td>zrušenie aktivácie
+ * {@linkplain Svet#interaktívnaInštancia(String) interaktívnej
+ * inštancie}</td></tr>
+ * <tr><td><code>na </code> <em>«menovka»</em></td><td>–</td>
+ * <td>nepodmienený skok – vykonávanie skriptu prejde (preskočí) na
+ * riadok označený menovkou (pozri vyššie)</td></tr>
+ * <tr><td><code>ak </code><em
+ * >«premenná alebo hodnota»</em> <em
+ * >«menovka»</em></td><td>–</td>
+ * <td>podmienený skok – ak je <em>«premenná alebo hodnota»</em>
+ * nenulová, tak vykonávanie skriptu prejde (preskočí) na riadok
+ * označený menovkou</td></tr>
+ * <tr><td><code>ak </code><em
+ * >«premenná alebo hodnota»</em> <em
+ * >«menovka1»</em><code> inak </code><em
+ * >«menovka2»</em></td><td>–</td><td>podmienený
+ * skok s alternatívou – ak je <em>«premenná alebo hodnota»</em>
+ * nenulová, tak vykonávanie skriptu prejde (preskočí) na riadok
+ * označený menovkou <em>«menovka1»</em>, inak na riadok označený
+ * menovkou <em>«menovka2»</em></td></tr>
+ * <tr><td><code>dokedy </code><em>«premenná»</em> <em
+ * >«menovka»</em></td><td>–</td><td>podmienený
+ * skok s dekrementáciou premennej („cyklus“) – najprv sa zníži
+ * hodnota premennej o 1 a ak je výsledok výpočtu záporný, tak sa
+ * jej hodnota nastaví na nulu; ak je konečná hodnota premennej
+ * kladná, tak vykonávanie skriptu prejde (preskočí) na riadok
+ * označený menovkou</td></tr>
+ * <tr><td><code>dokedy </code><em>«premenná»</em> <em
+ * >«menovka1»</em><code> inak </code><em>«menovka2»</em></td><td
+ * >–</td><td>podmienený skok s dekrementáciou premennej („cyklus“)
+ * s alternatívou – najprv sa zníži hodnota premennej o 1 a ak je
+ * výsledok výpočtu záporný, tak sa jej hodnota nastaví na nulu;
+ * ak je konečná hodnota premennej kladná, tak vykonávanie skriptu
+ * prejde (preskočí) na riadok označený menovkou <em>«menovka1»</em>,
+ * inak na riadok označený menovkou <em>«menovka2»</em></td></tr>
+ * <tr><td colspan="2"> </td>
+ * <td>podmienené skoky s dekrementáciou premennej sú navrhnuté tak,
+ * aby pomyselne predpokladali prítomnosť kladnej hodnoty v riadiacej
+ * premennej a aby sa opakovanie ukončilo v okamihu dosiahnutia nuly
+ * v riadiacej premennej (pričom nie je dovolené, aby sa v riadiacej
+ * premennej vyskytla záporná hodnota – záporné hodnoty sú prepísané
+ * nulou); to znamená, že všetky priebehy vykonania s hodnotou
+ * riadiacej premennej menšej alebo rovnej jednej sú identické<!--
+ * skrytá poznámka: dôvodom tohto návrhu bolo kladenie dôrazu na čo
+ * najvyššiu jednoduchosť pri implementácii a bolo to inšpirované
+ * jazykom symbolických inštrukcií --></td></tr>
+
+ * <tr><td><code>opakuj </code><em>«názov premennej»</em><code> </code><em
+ * >«horná hranica»</em></td><td>–</td><td>horná hranica je vlastne počet
+ * opakovaní, keďže spodná hranica je stanovená napevno na hodnotu 1;
+ * <em>«bude doplnené neskôr»</em><!-- TODO --></td></tr>
+
+ * <tr><td><code>obzor </code><em>«názov obzoru»</em></td><td
+ * >–</td><td><em>«bude doplnené neskôr»</em><!-- TODO --></td></tr>
+
+ * </table>
+ * 
+ * <p> </p>
+ * 
+ * <p><b>Ďalšie využitie skriptov</b></p>
+ * 
+ * <p>Skripty sa dajú použiť aj na oživenie ovládacích prvkov rozhrania
+ * programovacieho rámca. Pozri napríklad:
+ * 
+ * {@link Tlačidlo#skript(String[]) Tlačidlo.skript(riadky)},
+ * {@link PoložkaPonuky#skript(String[]) PoložkaPonuky.skript(riadky)},
+ * {@link KontextováPoložka#skript(String[])
+ * KontextováPoložka.skript(riadky)}.</p>
+ * 
+ * <!-- p>Vývoj skriptovacieho stroja nebol úplne priamočiary a informácie,
+ * ktoré s ním úzko súvisia sú rozmiestnené na viacerých miestach
+ * dokumentácie. Užitočné príklady použitia nájdete napríklad […]</p -->
+ * 
  * <!-- TODO: Buď vyrobiť nejaký komplexný príklad použitia, alebo sa
  * aspoň podrobne odkázať na rôzne príklady použitia v rámci celej
- * dokumentácie. (To posledné by mala automaticky zabezpečiť nová trieda
- * generujúca dokumentáciu: Fragcumentation.) -->
+ * dokumentácie. -->
  * 
 <!--
 Všetky kľúčové slová:

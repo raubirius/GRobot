@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -244,7 +244,7 @@ public class Plátno implements Priehľadnosť
 	private int[] zálohaPlátna;
 
 	// Vnútorné pole na operácie s plátnom (podlahou alebo stropom)
-	private int[] operáciePlátna;
+	// private int[] operáciePlátna;
 
 	// Priehľadnosť plátna
 	private float priehľadnosť = 1.0f;
@@ -513,6 +513,9 @@ public class Plátno implements Priehľadnosť
 		{
 			// Písmo
 			/*packagePrivate*/ Písmo aktuálnePísmo = predvolenéPísmoKonzoly;
+
+			// Synchronizačný zámok obsahu konzoly
+			private final Object zámokKonzoly = new Object();
 
 			// Obsah vnútornej konzoly
 			private final Vector<RiadokKonzoly> riadky = new Vector<>();
@@ -1146,6 +1149,8 @@ public class Plátno implements Priehľadnosť
 
 			private void prekresli(Graphics2D grafika)
 			{
+				synchronized (zámokKonzoly) {
+
 				grafikaKonzoly = grafika;
 				inicializuj();
 
@@ -1531,7 +1536,7 @@ public class Plátno implements Priehľadnosť
 
 				aktualizujLišty();
 
-				} finally { if (orezať) grafikaKonzoly.setClip(clip); }
+				} finally { if (orezať) grafikaKonzoly.setClip(clip); } }
 			}
 
 
@@ -1650,6 +1655,8 @@ public class Plátno implements Priehľadnosť
 
 			public void vypíš(Object... argumenty)
 			{
+				synchronized (zámokKonzoly) {
+
 				if (0 == riadky.size()) novýRiadok();
 
 				if (!konzolaPoužitá)
@@ -1988,7 +1995,7 @@ public class Plátno implements Priehľadnosť
 					}
 				}
 
-				if (null != obsah) riadok.add(obsah);
+				if (null != obsah) riadok.add(obsah); }
 			}
 
 			public void novýRiadok()
@@ -2356,7 +2363,9 @@ public class Plátno implements Priehľadnosť
 		obrázokPlátna = new BufferedImage(
 			šírkaPlátna, výškaPlátna, BufferedImage.TYPE_INT_ARGB);
 		grafikaPlátna = obrázokPlátna.createGraphics();
-		originálPlátna = zálohaPlátna = operáciePlátna = null;
+		originálPlátna = zálohaPlátna =
+			// operáciePlátna =
+			null;
 	}
 
 	// Vytvorenie nového plátna (pre konštruktory hlavného robota)
@@ -2366,7 +2375,9 @@ public class Plátno implements Priehľadnosť
 		obrázokPlátna = new BufferedImage(
 			šírkaPlátna, výškaPlátna, BufferedImage.TYPE_INT_ARGB);
 		grafikaPlátna = obrázokPlátna.createGraphics();
-		originálPlátna = zálohaPlátna = operáciePlátna = null;
+		originálPlátna = zálohaPlátna =
+			// operáciePlátna =
+			null;
 	}
 
 	// Prekreslenie plátna
@@ -2799,7 +2810,8 @@ public class Plátno implements Priehľadnosť
 			if (null == zálohaPlátna || null == originálPlátna) return;
 			System.arraycopy(zálohaPlátna, 0,
 				originálPlátna, 0, originálPlátna.length);
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/**
@@ -2844,7 +2856,8 @@ public class Plátno implements Priehľadnosť
 				{
 					System.arraycopy(obnova, 0,
 						originálPlátna, 0, originálPlátna.length);
-					Svet.automatickéPrekreslenie();
+					if (!Svet.právePrekresľujem)
+						Svet.automatickéPrekreslenie();
 				}
 			}
 		}
@@ -2884,7 +2897,8 @@ public class Plátno implements Priehľadnosť
 		{
 			if (null == ktorý.obrázokZálohyPlátna) return;
 			grafikaPlátna.drawImage(ktorý.obrázokZálohyPlátna, 0, 0, null);
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 
@@ -2993,7 +3007,8 @@ public class Plátno implements Priehľadnosť
 			{
 				vnútornáKonzola.riadky.clear();
 				vnútornáKonzola.riadky.addAll(vnútornáKonzola.záloha.záloha);
-				Svet.automatickéPrekreslenie(); // noInvokeLater
+				if (!Svet.právePrekresľujem)
+					Svet.automatickéPrekreslenie(); // noInvokeLater
 			}
 		}
 
@@ -3037,7 +3052,8 @@ public class Plátno implements Priehľadnosť
 			{
 				vnútornáKonzola.riadky.clear();
 				vnútornáKonzola.riadky.addAll(obnova.záloha);
-				Svet.automatickéPrekreslenie(); // noInvokeLater
+				if (!Svet.právePrekresľujem)
+					Svet.automatickéPrekreslenie(); // noInvokeLater
 			}
 		}
 
@@ -3080,7 +3096,8 @@ public class Plátno implements Priehľadnosť
 			if (null != obnova)
 			{
 				vnútornáKonzola.riadky.addAll(obnova.záloha);
-				Svet.automatickéPrekreslenie(); // noInvokeLater
+				if (!Svet.právePrekresľujem)
+					Svet.automatickéPrekreslenie(); // noInvokeLater
 			}
 		}
 
@@ -3117,7 +3134,8 @@ public class Plátno implements Priehľadnosť
 			grafikaPlátna.setStroke(kreslič.čiara);
 			grafikaPlátna.draw(tvar);
 
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/**
@@ -3148,7 +3166,8 @@ public class Plátno implements Priehľadnosť
 			kreslič.nastavFarbuAleboVýplňPodľaRobota(grafikaPlátna);
 			grafikaPlátna.fill(tvar);
 
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #vyplň(Shape, GRobot) vyplň}.</p> */
@@ -3176,7 +3195,8 @@ public class Plátno implements Priehľadnosť
 			grafikaPlátna.setStroke(Svet.hlavnýRobot.čiara);
 			grafikaPlátna.draw(tvar);
 
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/**
@@ -3199,7 +3219,8 @@ public class Plátno implements Priehľadnosť
 			Svet.hlavnýRobot.nastavFarbuAleboVýplňPodľaRobota(grafikaPlátna);
 			grafikaPlátna.fill(tvar);
 
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #vyplň(Shape) vyplň}.</p> */
@@ -3486,7 +3507,7 @@ public class Plátno implements Priehľadnosť
 		 * inštancia farebnosti {@link Farebnosť#žiadna žiadna}. So získanou
 		 * farbou môžeme ďalej pracovať – napríklad ju upravovať alebo
 		 * zisťovať jej vlastnosti (farebné zložky…). Testovať, či má bod
-		 * konkrétnu farbu, môžeme napríklad pomocou metódy
+		 * konkrétnu farbu, môžeme napríklad s pomocou metódy
 		 * {@link #farbaBodu(double, double,
 		 * Color) farbaBodu(x, y, farba)}.</p>
 		 * 
@@ -3512,7 +3533,7 @@ public class Plátno implements Priehľadnosť
 		 * inštancia farebnosti {@link Farebnosť#žiadna žiadna}. So získanou
 		 * farbou môžeme ďalej pracovať – napríklad ju upravovať alebo
 		 * zisťovať jej vlastnosti (farebné zložky…). Testovať, či má bod
-		 * konkrétnu farbu, môžeme napríklad pomocou metódy
+		 * konkrétnu farbu, môžeme napríklad s pomocou metódy
 		 * {@link #farbaBodu(Poloha, Color)
 		 * farbaBodu(objekt, farba)}.</p>
 		 * 
@@ -3535,7 +3556,7 @@ public class Plátno implements Priehľadnosť
 		 * <p>Zistí, či sa farba bodu (jedného pixela) na zadaných súradniciach
 		 * zhoduje so zadanou farbou. Ak sú zadané súradnice mimo plochy
 		 * plátna, je vrátená hodnota {@code valfalse}. Testovať farbu
-		 * pomocou tejto metódy môžeme napríklad takto:</p>
+		 * s pomocou tejto metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
 			{@code kwdif} ({@code currfarbaBodu}({@code num3.0}, {@code num5.0}, {@link Farebnosť#modrá modrá})) …
@@ -3565,7 +3586,7 @@ public class Plátno implements Priehľadnosť
 		 * <p>Zistí, či sa farba bodu (jedného pixela) na súradniciach zadaného
 		 * objektu zhoduje so zadanou farbou. Ak sú zadané súradnice mimo plochy
 		 * plátna, je vrátená hodnota {@code valfalse}. Testovať farbu
-		 * pomocou tejto metódy môžeme napríklad takto:</p>
+		 * s pomocou tejto metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
 			{@code kwdif} ({@code currfarbaBodu}({@code valthis}, {@link Farebnosť#modrá modrá})) …
@@ -3773,7 +3794,7 @@ public class Plátno implements Priehľadnosť
 		 * <p>Zistí farbu bodu (jedného pixela) na súradniciach myši. So
 		 * získanou farbou môžeme ďalej pracovať – napríklad ju upravovať
 		 * alebo zisťovať jej vlastnosti (farebné zložky…). Testovať, či má
-		 * bod konkrétnu farbu, môžeme napríklad pomocou metódy {@link 
+		 * bod konkrétnu farbu, môžeme napríklad s pomocou metódy {@link 
 		 * #farbaNaMyši(Color) farbaNaMyši(farba)}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Ak by súradnice myši boli náhodou
@@ -3798,7 +3819,7 @@ public class Plátno implements Priehľadnosť
 
 		/**
 		 * <p>Zistí, či sa farba bodu (jedného pixela) na súradniciach myši
-		 * zhoduje so zadanou farbou. Testovať farbu pomocou tejto
+		 * zhoduje so zadanou farbou. Testovať farbu s pomocou tejto
 		 * metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
@@ -4240,7 +4261,8 @@ public class Plátno implements Priehľadnosť
 			else
 				vnútornáKonzola.predvolenáFarbaOznačenia = new Farba(nováFarba);
 
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #predvolenáFarbaPozadiaOznačenia(Color) predvolenáFarbaPozadiaOznačenia}.</p> */
@@ -4324,7 +4346,7 @@ public class Plátno implements Priehľadnosť
 		public Farba predvolenáFarbaPozadiaOznačenia(int r, int g, int b)
 		{
 			vnútornáKonzola.predvolenáFarbaOznačenia = new Farba(r, g, b);
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem) Svet.automatickéPrekreslenie();
 			return vnútornáKonzola.predvolenáFarbaOznačenia;
 		}
 
@@ -4365,7 +4387,7 @@ public class Plátno implements Priehľadnosť
 		public Farba predvolenáFarbaPozadiaOznačenia(int r, int g, int b, int a)
 		{
 			vnútornáKonzola.predvolenáFarbaOznačenia = new Farba(r, g, b, a);
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem) Svet.automatickéPrekreslenie();
 			return vnútornáKonzola.predvolenáFarbaOznačenia;
 		}
 
@@ -4459,7 +4481,8 @@ public class Plátno implements Priehľadnosť
 				vnútornáKonzola.predvolenáFarbaTextuOznačenia =
 					new Farba(nováFarba);
 
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #predvolenáFarbaTextuOznačenia(Color) predvolenáFarbaTextuOznačenia}.</p> */
@@ -4538,7 +4561,7 @@ public class Plátno implements Priehľadnosť
 		public Farba predvolenáFarbaTextuOznačenia(int r, int g, int b)
 		{
 			vnútornáKonzola.predvolenáFarbaTextuOznačenia = new Farba(r, g, b);
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem) Svet.automatickéPrekreslenie();
 			return vnútornáKonzola.predvolenáFarbaTextuOznačenia;
 		}
 
@@ -4578,7 +4601,7 @@ public class Plátno implements Priehľadnosť
 		public Farba predvolenáFarbaTextuOznačenia(int r, int g, int b, int a)
 		{
 			vnútornáKonzola.predvolenáFarbaTextuOznačenia = new Farba(r, g, b, a);
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem) Svet.automatickéPrekreslenie();
 			return vnútornáKonzola.predvolenáFarbaTextuOznačenia;
 		}
 
@@ -4756,7 +4779,9 @@ public class Plátno implements Priehľadnosť
 				vnútornáKonzola.aktuálnePísmo = (Písmo)novéPísmo;
 			else
 				vnútornáKonzola.aktuálnePísmo = new Písmo(novéPísmo);
-			Svet.automatickéPrekreslenie(); // noInvokeLater
+
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie(); // noInvokeLater
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #písmo(Font) písmo}.</p> */
@@ -4788,7 +4813,7 @@ public class Plátno implements Priehľadnosť
 		{
 			vnútornáKonzola.aktuálnePísmo =
 				new Písmo(názov, Písmo.PLAIN, veľkosť);
-			Svet.automatickéPrekreslenie(); // noInvokeLater
+			if (!Svet.právePrekresľujem) Svet.automatickéPrekreslenie(); // noInvokeLater
 			return vnútornáKonzola.aktuálnePísmo;
 		}
 
@@ -4897,7 +4922,8 @@ public class Plátno implements Priehľadnosť
 				++početBlokov;
 			}
 
-			if (0 != početBlokov) Svet.automatickéPrekreslenie();
+			if (0 != početBlokov && !Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 			return početBlokov;
 		}
 
@@ -4954,7 +4980,8 @@ public class Plátno implements Priehľadnosť
 				if (index == počítadlo)
 				{
 					obsah.zafarbiAOznač(farby);
-					Svet.automatickéPrekreslenie();
+					if (!Svet.právePrekresľujem)
+						Svet.automatickéPrekreslenie();
 					return 1;
 				}
 				++počítadlo;
@@ -5667,7 +5694,8 @@ public class Plátno implements Priehľadnosť
 					if (obsah.označený)
 					{
 						obsah.označený = false;
-						Svet.automatickéPrekreslenie();
+						if (!Svet.právePrekresľujem)
+							Svet.automatickéPrekreslenie();
 						return 1;
 					}
 					return 0;
@@ -6039,15 +6067,19 @@ public class Plátno implements Priehľadnosť
 
 		/**
 		 * <p><a class="getter"></a> Zistí (dočasnú) hodnotu požiadavky na
-		 * zmenu odsadenia prvého riadka odseku konzolového textu plátna
-		 * (podlahy alebo stropu). Odsek je jeden dlhý zalamovaný riadok
-		 * konzoly. Hodnota požiadavky na zmeny odsadenia je platná vždy
-		 * do najbližšieho použitia príkazov určených na vypísanie textu
-		 * na vnútornú konzolu (napríklad {@link #vypíš(Object[]) vypíš}
-		 * alebo {@link #vypíšRiadok(Object[]) vypíšRiadok}).
-		 * V okamihu ich použitia sa hodnota aplikuje a spotrebuje. Ak nie je
-		 * aktívna žiadna požiadavka na zmenu odsadenia, tak táto metóda vráti
-		 * hodnotu {@code valnull}.</p>
+		 * nastavenie odsadenia prvého riadka najbližšie vypísaného odseku
+		 * konzolového textu plátna (podlahy alebo stropu). Odsek je jeden
+		 * dlhý zalamovaný riadok konzoly. Hodnota požiadavky na nastavenie
+		 * odsadenia (prvého riadka) je platná vždy do najbližšieho použitia
+		 * príkazov určených na vypísanie textu na vnútornú konzolu
+		 * (napríklad {@link #vypíš(Object[]) vypíš} alebo {@link 
+		 * #vypíšRiadok(Object[]) vypíšRiadok}). V okamihu jej použitia sa
+		 * hodnota aplikuje a spotrebuje. (Ďalší odsek už nebude mať odsadený
+		 * prvý riadok. To je rozdiel pri porovnaní požiadaviek na zmenu
+		 * odsadzovania celých odsekov {@linkplain #zmeňOdsadenieZľava()
+		 * zľava} alebo {@linkplain #zmeňOdsadenieSprava() sprava}.) Ak nie
+		 * je aktívna žiadna požiadavka na zmenu odsadenia, tak táto metóda
+		 * vráti hodnotu {@code valnull}.</p>
 		 * 
 		 * @return aktuálna hodnota požiadavky na zmenu odsadenia prvého
 		 *     riadka textov plátna zľava alebo {@code valnull}
@@ -6095,15 +6127,18 @@ public class Plátno implements Priehľadnosť
 		{ vnútornáKonzola.odsadeniePrvéhoRiadka = novéOdsadenie; }
 
 		/**
-		 * <p><a class="getter"></a> Zistí (dočasnú) hodnotu požiadavky na
-		 * zmenu odsadenia konzolových textov plátna (podlahy alebo stropu)
-		 * zľava. Hodnota požiadavky na zmeny odsadenia je platná vždy
-		 * do najbližšieho použitia príkazov určených na vypísanie textu
-		 * na vnútornú konzolu (napríklad {@link #vypíš(Object[]) vypíš}
-		 * alebo {@link #vypíšRiadok(Object[]) vypíšRiadok}).
-		 * V okamihu ich použitia sa hodnota aplikuje a spotrebuje. Ak nie je
-		 * aktívna žiadna požiadavka na zmenu odsadenia, tak táto metóda vráti
-		 * hodnotu {@code valnull}.</p>
+		 * <p><a class="getter"></a> Zistí (dočasnú) hodnotu <b>požiadavky na
+		 * zmenu</b> odsadenia konzolových textov plátna (podlahy alebo
+		 * stropu) zľava. Hodnota <b>požiadavky na zmenu</b> odsadenia je
+		 * platná vždy do najbližšieho použitia príkazov určených na vypísanie
+		 * textu na vnútornú konzolu (napríklad {@link #vypíš(Object[]) vypíš}
+		 * alebo {@link #vypíšRiadok(Object[]) vypíšRiadok}). V okamihu jej
+		 * použitia sa hodnota aplikuje a spotrebuje. To, že sa spotrebuje
+		 * hodnota <b>požiadavky na zmenu</b> znamená, že už nebude
+		 * zistiteľná (merateľná) touto metódou, samotné odsadenie však
+		 * zostáva aktívne pre všetky ďalšie výpisy textov na konzolu. Ak
+		 * nie je aktívna žiadna <b>požiadavka na zmenu</b> odsadenia, tak
+		 * táto metóda vráti hodnotu {@code valnull}.</p>
 		 * 
 		 * @return aktuálna hodnota požiadavky na zmenu odsadenia textov
 		 *     plátna zľava alebo {@code valnull}
@@ -6150,15 +6185,18 @@ public class Plátno implements Priehľadnosť
 		{ vnútornáKonzola.zmenaOdsadeniaZľava = novéOdsadenie; }
 
 		/**
-		 * <p><a class="getter"></a> Zistí (dočasnú) hodnotu požiadavky na
-		 * zmenu odsadenia konzolových textov plátna (podlahy alebo stropu)
-		 * sprava. Hodnota požiadavky na zmeny odsadenia je platná vždy
-		 * do najbližšieho použitia príkazov určených na vypísanie textu
-		 * na vnútornú konzolu (napríklad {@link #vypíš(Object[]) vypíš}
-		 * alebo {@link #vypíšRiadok(Object[]) vypíšRiadok}).
-		 * V okamihu ich použitia sa hodnota aplikuje a spotrebuje. Ak nie je
-		 * aktívna žiadna požiadavka na zmenu odsadenia, tak táto metóda vráti
-		 * hodnotu {@code valnull}.</p>
+		 * <p><a class="getter"></a> Zistí (dočasnú) hodnotu <b>požiadavky na
+		 * zmenu</b> odsadenia konzolových textov plátna (podlahy alebo
+		 * stropu) sprava. Hodnota <b>požiadavky na zmenu</b> odsadenia je
+		 * platná vždy do najbližšieho použitia príkazov určených na vypísanie
+		 * textu na vnútornú konzolu (napríklad {@link #vypíš(Object[]) vypíš}
+		 * alebo {@link #vypíšRiadok(Object[]) vypíšRiadok}). V okamihu jej
+		 * použitia sa hodnota aplikuje a spotrebuje. To, že sa spotrebuje
+		 * hodnota <b>požiadavky na zmenu</b> znamená, že už nebude
+		 * zistiteľná (merateľná) touto metódou, samotné odsadenie však
+		 * zostáva aktívne pre všetky ďalšie výpisy textov na konzolu. Ak
+		 * nie je aktívna žiadna <b>požiadavka na zmenu</b> odsadenia, tak
+		 * táto metóda vráti hodnotu {@code valnull}.</p>
 		 * 
 		 * @return aktuálna hodnota požiadavky na zmenu odsadenia textov
 		 *     plátna sprava alebo {@code valnull}
@@ -6311,7 +6349,8 @@ public class Plátno implements Priehľadnosť
 				Svet.hlavnýPanel.doLayout();
 			}
 
-			Svet.automatickéPrekreslenie(); // noInvokeLater
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie(); // noInvokeLater
 		}
 
 		/**
@@ -6359,7 +6398,7 @@ public class Plátno implements Priehľadnosť
 		public void automatickéZobrazovanieLíšt(boolean zapnúť)
 		{
 			vnútornáKonzola.automatickéZobrazovanie(zapnúť);
-			Svet.automatickéPrekreslenie(); // noInvokeLater
+			if (!Svet.právePrekresľujem) Svet.automatickéPrekreslenie(); // noInvokeLater
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #automatickéZobrazovanieLíšt(boolean) automatickéZobrazovanieLíšt}.</p> */
@@ -6411,7 +6450,7 @@ public class Plátno implements Priehľadnosť
 		{
 			vnútornáKonzola.zobrazZvislúLištu(zvislá);
 			vnútornáKonzola.zobrazVodorovnúLištu(vodorovná);
-			Svet.automatickéPrekreslenie(); // noInvokeLater
+			if (!Svet.právePrekresľujem) Svet.automatickéPrekreslenie(); // noInvokeLater
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #zobrazLištyKonzoly(boolean, boolean) zobrazLištyKonzoly}.</p> */
@@ -6539,7 +6578,7 @@ public class Plátno implements Priehľadnosť
 		public void priehľadnosť(double priehľadnosť)
 		{
 			this.priehľadnosť = (float)priehľadnosť;
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem) Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #priehľadnosť(double) priehľadnosť}.</p> */
@@ -6559,7 +6598,7 @@ public class Plátno implements Priehľadnosť
 		public void priehľadnosť(Priehľadnosť objekt)
 		{
 			this.priehľadnosť = (float)objekt.priehľadnosť();
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem) Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #priehľadnosť(Priehľadnosť) priehľadnosť}.</p> */
@@ -6583,7 +6622,7 @@ public class Plátno implements Priehľadnosť
 		{
 			if (0 == priehľadnosť) priehľadnosť = 0.1f;
 			else priehľadnosť *= (float)zmena;
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem) Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #upravPriehľadnosť(double) upravPriehľadnosť}.</p> */
@@ -6782,7 +6821,7 @@ public class Plátno implements Priehľadnosť
 		public void zalamujTexty(boolean zalamuj)
 		{
 			vnútornáKonzola.zalamujTexty = zalamuj;
-			Svet.automatickéPrekreslenie(); // noInvokeLater
+			if (!Svet.právePrekresľujem) Svet.automatickéPrekreslenie(); // noInvokeLater
 		}
 
 		/**
@@ -6949,7 +6988,7 @@ public class Plátno implements Priehľadnosť
 		 * {@link #bodVAktívnomSlove(double, double) bodVAktívnomSlove}
 		 * (s variantom na overenie polohy myši v niektorom slove: {@link 
 		 * #myšVAktívnomSlove() myšVAktívnomSlove}).
-		 * Pomocou aktívnych slov je možné naprogramovať podobné správanie
+		 * S pomocou aktívnych slov je možné naprogramovať podobné správanie
 		 * aké majú hypertextové odkazy webových stránok.</p>
 		 * 
 		 * <p><b>Príklad:</b></p>
@@ -6963,7 +7002,7 @@ public class Plátno implements Priehľadnosť
 		 * 
 		 * <p><image>«názov».png<alt/></image>«Popis…»<!-- TODO -->.</p>
 		 * 
-		 * @param identifikátor identifikátor aktívneho slova, pomocou
+		 * @param identifikátor identifikátor aktívneho slova, s pomocou
 		 *     ktorého bude toto slovo odlišované od ostatných aktívnych slov
 		 * @param argumenty zoznam argumentov rôzneho údajového typu
 		 *     oddelený čiarkami (ako pri metóde {@link #vypíš(Object[])
@@ -7418,7 +7457,7 @@ public class Plátno implements Priehľadnosť
 		public void vypíš(Object... argumenty)
 		{
 			vnútornáKonzola.vypíš(argumenty);
-			Svet.automatickéPrekreslenie(); // noInvokeLater
+			if (!Svet.právePrekresľujem) Svet.automatickéPrekreslenie(); // noInvokeLater
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #vypíš(Object[]) vypíš}.</p> */
@@ -7449,7 +7488,7 @@ public class Plátno implements Priehľadnosť
 		{
 			vypíš(argumenty);
 			vnútornáKonzola.novýRiadok();
-			Svet.automatickéPrekreslenie(); // noInvokeLater
+			if (!Svet.právePrekresľujem) Svet.automatickéPrekreslenie(); // noInvokeLater
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #vypíšRiadok(Object[]) vypíšRiadok}.</p> */
@@ -7612,6 +7651,12 @@ public class Plátno implements Priehľadnosť
 		 * konzole tohto plátna. Záporné hodnoty parametra určujú index
 		 * od konca. Ak je index riadka mimo rozsahu, tak
 		 * metóda vráti hodnotu {@code valnull}.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda (a jej podobné)
+		 * sú vhodné na prevzatie jedného konkrétneho bloku textu. Na
+		 * prevzatie série textov je vhodnejšie použiť označenie a prevziať
+		 * označený text. (Pozrite príklad vo vnorenej triede {@link 
+		 * Svet.PríkazovýRiadok Svet.PríkazovýRiadok}.)</p>
 		 * 
 		 * @param index index riadka, ktorého obsah má byť prevzatý
 		 * @return obsah určeného riadka alebo {@code valnull}
@@ -7898,6 +7943,12 @@ public class Plátno implements Priehľadnosť
 		 * Ak zadané indexy nie sú platné, tak metóda vráti hodnotu
 		 * {@code valnull}.</p>
 		 * 
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda (a jej podobné)
+		 * sú vhodné na prevzatie jedného konkrétneho bloku textu. Na
+		 * prevzatie série textov je vhodnejšie použiť označenie a prevziať
+		 * označený text. (Pozrite príklad vo vnorenej triede {@link 
+		 * Svet.PríkazovýRiadok Svet.PríkazovýRiadok}.)</p>
+		 * 
 		 * @param riadok index riadka, z ktorého má byť prevzatý text
 		 * @param index index výpisu v rámci riadka, ktorý má byť prevzatý
 		 * @return text určeného výpisu z určeného riadka alebo {@code valnull}
@@ -8064,7 +8115,8 @@ public class Plátno implements Priehľadnosť
 				(int)(prepočítanéX - (šírkaObrázka / 2.0)),
 				(int)(prepočítanéY - (výškaObrázka / 2.0)), null);
 
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #obrázok(String) obrázok}.</p> */
@@ -8119,7 +8171,8 @@ public class Plátno implements Priehľadnosť
 			grafikaPlátna.drawImage(obrázok,
 				(int)prepočítanéX, (int)prepočítanéY, null);
 
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #obrázok(double, double, String) obrázok}.</p> */
@@ -8173,7 +8226,8 @@ public class Plátno implements Priehľadnosť
 			grafikaPlátna.drawImage(obrázok,
 				(int)prepočítanéX, (int)prepočítanéY, null);
 
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #obrázok(Poloha, String) obrázok}.</p> */
@@ -8208,7 +8262,8 @@ public class Plátno implements Priehľadnosť
 					(int)(prepočítanéX - (šírkaObrázka / 2.0)),
 					(int)(prepočítanéY - (výškaObrázka / 2.0)), null);
 
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #obrázok(Image) obrázok}.</p> */
@@ -8251,7 +8306,8 @@ public class Plátno implements Priehľadnosť
 				grafikaPlátna.drawImage(relevantný,
 				(int)prepočítanéX, (int)prepočítanéY, null);
 
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #obrázok(double, double, Image) obrázok}.</p> */
@@ -8293,7 +8349,8 @@ public class Plátno implements Priehľadnosť
 				grafikaPlátna.drawImage(relevantný,
 				(int)prepočítanéX, (int)prepočítanéY, null);
 
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #obrázok(Poloha, Image) obrázok}.</p> */
@@ -8461,7 +8518,8 @@ public class Plátno implements Priehľadnosť
 					}
 				}
 
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #vymaž() vymaž}.</p> */
@@ -8502,7 +8560,8 @@ public class Plátno implements Priehľadnosť
 		public void vymažTexty()
 		{
 			vnútornáKonzola.vymaž();
-			Svet.automatickéPrekreslenie(); // noInvokeLater
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie(); // noInvokeLater
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #vymažTexty() vymažTexty}.</p> */
@@ -8548,7 +8607,7 @@ public class Plátno implements Priehľadnosť
 				}
 			}
 
-			if (0 != početVymazaných)
+			if (0 != početVymazaných && !Svet.právePrekresľujem)
 				Svet.automatickéPrekreslenie();
 			return početVymazaných;
 		}
@@ -8611,7 +8670,8 @@ public class Plátno implements Priehľadnosť
 					}
 				}
 
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #vymažGrafiku() vymažGrafiku}.</p> */
@@ -9116,34 +9176,89 @@ public class Plátno implements Priehľadnosť
 	// Maska
 
 		/**
-		 * <p>Zruší priehľadnosť všetkých bodov na plátne.</p>
-		 * 
-		 * <!-- TODO – urob príklad, ktorý ukáže, čo presne sa stane,
-		 * keď zrušíme priehľadnosť stropu. -->
+		 * <p>Zruší priehľadnosť všetkých bodov na plátne. Predvolene sú
+		 * všetky body plátna priehľadné. Aj priehľadné body však môžu mať
+		 * svoje hodnoty farebnosti. Ukazuje to príklad nižšie. Keby sme
+		 * použili túto metódu na plátno v predvolenom stave, zostalo by
+		 * celé čierne.</p>
 		 * 
 		 * <p class="caution"><b>Pozor!</b> Volanie tejto metódy neovplyvní
 		 * celkovú priehľadnosť plátna ovplyvňovanú metódami
-		 * {@link #priehľadnosť(double) #priehľadnosť(priehľadnosť)},
-		 * {@link #priehľadnosť(Priehľadnosť) #priehľadnosť(objekt)}
-		 * a {@link #upravPriehľadnosť(double) #upravPriehľadnosť(zmena)}.</p>
+		 * {@link #priehľadnosť(double) priehľadnosť(priehľadnosť)},
+		 * {@link #priehľadnosť(Priehľadnosť) priehľadnosť(objekt)}
+		 * a {@link #upravPriehľadnosť(double) upravPriehľadnosť(zmena)}.</p>
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
+		 * <p>Nasledujúci fragment kódu (určený priamo na vloženie do
+		 * konštruktora triedy odvodenej od robota) ukazuje ako funguje
+		 * zrušenie priehľadnosti:</p>
+		 * 
 		 * <pre CLASS="example">
-			«príklad – ospravedlňujeme sa, pracujeme na doplnení…»
-			<!-- TODO -->
+			{@code valsuper}({@code num200}, {@code num200});
+
+			{@code comm// Vypnutie automatického prekresľovania:}
+			{@link Svet Svet}.{@link Svet#nekresli() nekresli}();
+
+			{@code comm// Kreslenie šumu:}
+			{@code kwdfor} ({@code typedouble} y = {@link Svet Svet}.{@link Svet#najmenšieY() najmenšieY}(); y &lt;= {@link Svet Svet}.{@link Svet#najväčšieY() najväčšieY}(); ++y)
+				{@code kwdfor} ({@code typedouble} x = {@link Svet Svet}.{@link Svet#najmenšieX() najmenšieX}(); x &lt;= {@link Svet Svet}.{@link Svet#najväčšieX() najväčšieX}(); ++x)
+				{
+					{@link GRobot#skočNa(double, double) skočNa}(x, y);
+
+					{@link GRobot#kresliNaStrop() kresliNaStrop}();
+					{@link GRobot#náhodnáFarba() náhodnáFarba}();
+					{@link GRobot#bod() bod}();
+
+					{@link GRobot#kresliNaPodlahu() kresliNaPodlahu}();
+					{@link GRobot#náhodnáFarba() náhodnáFarba}();
+					{@link GRobot#bod() bod}();
+				}
+
+			{@code comm// Rozmazanie šumu na podlahe (na lepšie rozlíšenie):}
+			{@link Plátno podlaha}.{@link Plátno#rozmaž(int, int) rozmaž}({@code num1}, {@code num5});
+
+			{@code comm// Vymazanie kruhovej oblasti zo stropu (vo vytvorenej diere sa}
+			{@code comm// bude zobrazovať rozmazaný šum podlahy):}
+			{@code kwdfinal} {@link Obrázok Obrázok} vymaž = {@code kwdnew} {@link Obrázok Obrázok}();
+			{@link GRobot#kresliDoObrázka(Obrázok) kresliDoObrázka}(vymaž);
+			{@link GRobot#skočNa(Poloha) skočNa}({@link Poloha#stred stred});
+			{@link GRobot#farba(Color) farba}({@link Farebnosť#biela biela});
+			{@link GRobot#kruh(double) kruh}({@code num80});
+			{@link Plátno strop}.{@link Plátno#vymažKresbu(Image) vymažKresbu}(vymaž);
+				{@code comm// (Poznámka: Vymazanie je v skutočnosti skôr nastavenie}
+				{@code comm// priehľadnosti bodov. Hodnoty farebných zložiek zostávajú}
+				{@code comm// nezmenené, čo sa prejaví po obnovení nepriehľadnosti stropu.)}
+
+			{@code comm// Dokončenie (skrytie robota a obnovenie automatického prekresľovania):}
+			{@link GRobot#skry() skry}();
+			{@link Svet Svet}.{@link Svet#kresli() kresli}();
+
+			{@code comm// Čakanie na stlačenie klávesu:}
+			{@link Svet Svet}.{@link Svet#čakajNaKláves() čakajNaKláves}();
+			{@link Svet Svet}.{@link Svet#pípni() pípni}();
+
+			{@code comm// Zrušenie priehľadnosti (spôsobí zmiznutie rozmazanej oblasti}
+			{@code comm// šumu podlahy, pretože sa obnoví nepriehľadnosť diery v strope,}
+			{@code comm// namiesto ktorej sa ukáže pôvodný šum nakreslený na strope pred}
+			{@code comm// „vymazaním“):}
+			{@link Plátno strop}.{@link Plátno#zrušPriehľadnosť() zrušPriehľadnosť}();
 			</pre>
 		 * 
 		 * <p><b>Výsledok:</b></p>
 		 * 
-		 * <p><image>«názov».png<alt/></image>«Popis…»<!-- TODO -->.</p>
+		 * <p><image>zrus-priehladnost.gif<alt/></image>Ukážka vzhľadu
+		 * príkladu (animácia strieda vzhľad tesne po spustení a po stlačení
+		 * klávesu).</p>
 		 */
 		public void zrušPriehľadnosť()
-		{ Obrázok.VykonajVObrázku.zrušPriehľadnosť(obrázokPlátna); }
+		{
+			Obrázok.VykonajVObrázku.zrušPriehľadnosť(obrázokPlátna);
+			if (!Svet.právePrekresľujem) Svet.automatickéPrekreslenie();
+		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #zrušPriehľadnosť() zrušPriehľadnosť}.</p> */
-		public void zrusPriehladnost()
-		{ Obrázok.VykonajVObrázku.zrušPriehľadnosť(obrázokPlátna); }
+		public void zrusPriehladnost() { zrušPriehľadnosť(); }
 
 
 		/**
@@ -9164,11 +9279,17 @@ public class Plátno implements Priehľadnosť
 		 * @return {@code valtrue} ak bola operácia úspešná
 		 */
 		public boolean použiMasku(BufferedImage maska)
-		{ return Obrázok.VykonajVObrázku.použiMasku(obrázokPlátna, maska); }
+		{
+			boolean úspech = Obrázok.VykonajVObrázku.
+				použiMasku(obrázokPlátna, maska);
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
+			return úspech;
+		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #použiMasku(BufferedImage) použiMasku}.</p> */
 		public boolean pouziMasku(BufferedImage maska)
-		{ return Obrázok.VykonajVObrázku.použiMasku(obrázokPlátna, maska); }
+		{ return použiMasku(maska); }
 
 
 		/**
@@ -9184,7 +9305,14 @@ public class Plátno implements Priehľadnosť
 		 * @return {@code valtrue} ak bola operácia úspešná
 		 */
 		public boolean vyrobMasku(BufferedImage nováMaska)
-		{ return null != Obrázok.VykonajVObrázku.vyrobMasku(obrázokPlátna, nováMaska); }
+		{
+			// boolean úspech =
+			return null != Obrázok.VykonajVObrázku.
+				vyrobMasku(obrázokPlátna, nováMaska);
+			// if (!Svet.právePrekresľujem)
+			// 	Svet.automatickéPrekreslenie();
+			// return úspech;
+		}
 
 		/**
 		 * <p>Vyrobí z obsahu tohto plátna masku priehľadnosti. Metóda vytvorí
@@ -9224,7 +9352,8 @@ public class Plátno implements Priehľadnosť
 		{
 			Obrázok.VykonajVObrázku.rozmaž(obrázokPlátna,
 				grafikaPlátna, opakovanie, rozsah, pozadie);
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #rozmaž(int, int, Color) rozmaž}.</p> */
@@ -9283,7 +9412,8 @@ public class Plátno implements Priehľadnosť
 		{
 			Obrázok.VykonajVObrázku.rozmaž(obrázokPlátna,
 				grafikaPlátna, opakovanie, rozsah, pozadie.farba());
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #rozmaž(int, int, Color) rozmaž}.</p> */
@@ -9600,9 +9730,8 @@ public class Plátno implements Priehľadnosť
 		 * úvahy. Hodnoty farebných zložiek úplne priehľadných (neviditeľných)
 		 * bodov sú nepredvídateľné, preto by mal byť obrázok predlohy filtra
 		 * úplne pokrytý nepriehľadnou kresbou. Svetlé/biele body na obrázku
-		 * predlohy spôsobia vymazanie bodov na plátne (nastavenie hodnôt
-		 * všetkých ich farebných zložiek a priehľadnosti na nulu).
-		 * Tmavé/čierne body na predloženom
+		 * predlohy spôsobia „vymazanie“ bodov na plátne (nastavenie hodnôt
+		 * ich priehľadnosti na nulu). Tmavé/čierne body na predloženom
 		 * obrázku nespôsobia na plátne žiadnu zmenu priehľadnosti.
 		 * (Ostatné odtiene šedej a farebné body vo filtri spôsobia nastavenie
 		 * úrovne priehľadnosti bodov plátna na hodnotu jasu vypočítanú
@@ -9610,13 +9739,16 @@ public class Plátno implements Priehľadnosť
 		 * Obrázok s predlohou musí mať rovnaký rozmer ako plátno, inak
 		 * operácia zlyhá.</p>
 		 * 
-		 * @param kresba obrázok, ktorý bude použitý ako predloha pre filter
+		 * @param kresba obrázok, ktorý bude použitý ako predloha na filter
 		 * @return {@code valtrue} ak bola operácia úspešná
 		 */
 		public boolean vymažKresbu(Image kresba)
 		{
-			return Obrázok.VykonajVObrázku.vymažKresbu(
+			boolean úspech = Obrázok.VykonajVObrázku.vymažKresbu(
 				obrázokPlátna, Obrázok.preveďNaBufferedImage(kresba));
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie();
+			return úspech;
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #vymažKresbu(Image) vymažKresbu}.</p> */
@@ -9641,7 +9773,7 @@ public class Plátno implements Priehľadnosť
 		public void roluj(double Δx, double Δy)
 		{
 			Obrázok.VykonajVObrázku.roluj(obrázokPlátna, (int)Δx, (int)Δy);
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem) Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #roluj(double, double) roluj}.</p> */
@@ -9658,17 +9790,93 @@ public class Plátno implements Priehľadnosť
 		 * skutočne prázdne (pripravené na ďalšie kreslenie), musíme použiť
 		 * metódu {@link #roluj(double, double) roluj}.</p>
 		 * 
-		 * <!-- TODO – dopracovať ukážku použitia; vyrobiť bezšvový vzor -->
 		 * <p><b>Príklad:</b></p>
 		 * 
 		 * <pre CLASS="example">
-			«príklad – ospravedlňujeme sa, pracujeme na doplnení…»
-			<!-- TODO -->
+			{@code kwdimport} knižnica.*;
+
+			{@code kwdpublic} {@code typeclass} PretočeniePlátna {@code kwdextends} {@link GRobot GRobot}
+			{
+				{@code comm// Konštruktor.}
+				{@code kwdprivate} PretočeniePlátna()
+				{
+					{@code valsuper}({@code num300}, {@code num300});
+
+					{@code comm// Krátky inicializačný kód na nakreslenie pečiatkového farebného}
+					{@code comm// vzoru na plátno. (Aby bolo čo pretáčať.)}
+			 
+					{@link GRobot#skoč(double) skoč}({@code num10});
+					{@link GRobot#vpravo(double) vpravo}({@code num30});
+					{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num3});
+
+					{@code kwdfor} ({@code typeint} i = {@code num150}, f = -{@code num5}; i &gt;= {@code num25}; i -= {@code num25})
+					{
+						{@link GRobot#veľkosť(double) veľkosť}(i);
+						{@link GRobot#vypĺňajTvary() vypĺňajTvary}();
+						{@link GRobot#farba(Color) farba}({@link Farebnosť#preddefinovanéFarby preddefinovanéFarby}[f += {@code num7}]);
+						{@link GRobot#pečiatka() pečiatka}();
+						{@link GRobot#nevypĺňajTvary() nevypĺňajTvary}();
+						{@link GRobot#farba(Color) farba}({@link Farebnosť#čierna čierna});
+						{@link GRobot#pečiatka() pečiatka}();
+						{@link GRobot#odskoč(double) odskoč}({@code num13});
+					}
+
+					{@link GRobot#skry() skry}();
+				}
+
+				{@code comm// Počiatočná poloha myši používaná na vypočítanie rozdielu určujúceho}
+				{@code comm// mieru pretáčania plátna.}
+				{@code kwdprivate} {@link Bod Bod} poloha1 = {@code valnull};
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#stlačenieTlačidlaMyši() stlačenieTlačidlaMyši}()
+				{
+					{@code comm// Uloženie počiatočnej polohy.}
+					poloha1 = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyši() polohaMyši}();
+				}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#ťahanieMyšou() ťahanieMyšou}()
+				{
+					{@code comm// Ak je počiatočná poloha neprázdna, […]}
+					{@code kwdif} ({@code valnull} != poloha1)
+					{
+						{@code comm// […] tak prevezmeme aktuálnu polohu (pre nás koncovú), […]}
+						{@link Bod Bod} poloha2 = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyši() polohaMyši}();
+
+						{@code comm// […] vypočítame z oboch polôh rozdiel, o ktorý sa plátno}
+						{@code comm// pretočí […]}
+						{@link Plátno podlaha}.{@link Plátno#pretoč(double, double) pretoč}(
+							poloha2.{@link Poloha#polohaX() polohaX}() - poloha1.{@link Poloha#polohaX() polohaX}(),
+							poloha2.{@link Poloha#polohaY() polohaY}() - poloha1.{@link Poloha#polohaY() polohaY}());
+
+						{@code comm// […] a uložíme aktuálnu polohu ako novú počiatočnú polohu.}
+						poloha1 = poloha2;
+					}
+				}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#uvoľnenieTlačidlaMyši() uvoľnenieTlačidlaMyši}()
+				{
+					{@code comm// Vyprázdnenie počiatočnej polohy.}
+					poloha1 = {@code valnull};
+				}
+
+				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
+				{
+					{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"PretočeniePlátna.cfg"});
+					{@code kwdnew} PretočeniePlátna();
+				}
+			}
 			</pre>
 		 * 
 		 * <p><b>Výsledok:</b></p>
 		 * 
-		 * <p><image>«názov».png<alt/></image>«Popis…»<!-- TODO -->.</p>
+		 * <table class="centered"><tr>
+		 * <td><image>pretoc-podlahu-01.png<alt/></image></td>
+		 * <td><image>pretoc-podlahu-02.png<alt/></image></td>
+		 * </tr><tr><td colspan="2"><p class="image">Ukážka obsahu plátna
+		 * tesne po spustení a po chvíli pretáčania.</p></td></tr></table>
+		 * 
+		 * <!-- TODO: Dopracovať inú ukážku použitia, ktorá predvedie spôsob
+		 * výroby bezšvového vzoru. -->
 		 * 
 		 * @param Δx posun v horizontálnom (vodorovnom) smere
 		 * @param Δy posun vo vertikálnom (zvislom) smere
@@ -9676,7 +9884,7 @@ public class Plátno implements Priehľadnosť
 		public void pretoč(double Δx, double Δy)
 		{
 			Obrázok.VykonajVObrázku.pretoč(obrázokPlátna, (int)Δx, (int)Δy);
-			Svet.automatickéPrekreslenie();
+			if (!Svet.právePrekresľujem) Svet.automatickéPrekreslenie();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #pretoč(double, double) pretoč}.</p> */
@@ -10014,7 +10222,7 @@ public class Plátno implements Priehľadnosť
 		 * okna sveta, je obrázok zo schránky odstránený.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Zvlnenú verziu obrázka
-		 * plátna je možné vložiť do schránky pomocou metódy
+		 * plátna je možné vložiť do schránky s pomocou metódy
 		 * {@link Schránka#obrázok(Image) Schránka.obrázok(obrázok)}
 		 * a inštancie zvlneného obrázka, ktorá sa dá získať volaním metódy
 		 * {@link Vlnenie#zvlnenýRaster() Vlnenie.zvlnenýRaster()}.</p>
@@ -10039,10 +10247,11 @@ public class Plátno implements Priehľadnosť
 	// Interaktívny režim
 
 		/**
-		 * <p>Táto metóda je automaticky používaná {@linkplain 
-		 * Svet#interaktívnyRežim(boolean) interaktívnym režimom},
-		 * ale umožňuje používať príkazy dostupné v interaktívnom
-		 * režime aj za hranicami tohto režimu.</p>
+		 * <p>Táto metóda má rovnaké jadro ako mechanizmus vykonávania
+		 * príkazov v {@linkplain Svet#interaktívnyRežim(boolean)
+		 * interaktívnom režime} a umožňuje používať príkazy, ktoré sú
+		 * dostupné v tomto režime aj za jeho hranicami (t. j. bez
+		 * nevyhnutnosti jeho aktivácie).</p>
 		 * 
 		 * @param príkaz príkazový riadok spĺňajúci pravidlá uvedené
 		 *     v opise metódy {@link Svet#interaktívnyRežim(boolean)
@@ -10254,7 +10463,7 @@ public class Plátno implements Priehľadnosť
 		 * {@linkplain Svet#spustiČasovač() časovač}, tak by vlnenie nemohlo
 		 * fungovať, preto je časovač touto metódou spúšťaný automaticky.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
@@ -10316,7 +10525,7 @@ public class Plátno implements Priehľadnosť
 		 * byť časovač spustený automaticky. Umožňuje to parameter
 		 * {@code ajČasovač}.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
@@ -10381,7 +10590,7 @@ public class Plátno implements Priehľadnosť
 		 * {@linkplain Svet#spustiČasovač() časovač}, tak by vlnenie nemohlo
 		 * fungovať, preto je časovač touto metódou spúšťaný automaticky.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
@@ -10448,7 +10657,7 @@ public class Plátno implements Priehľadnosť
 		 * byť časovač spustený automaticky. Umožňuje to parameter
 		 * {@code ajČasovač}.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 

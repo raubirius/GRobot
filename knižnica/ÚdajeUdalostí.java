@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -319,6 +319,15 @@ public class ÚdajeUdalostí
 	 * ObsluhaUdalostí#stlačenieKlávesu() stlačenieKlávesu} alebo {@link 
 	 * ObsluhaUdalostí#uvoľnenieKlávesu() uvoľnenieKlávesu}.</p>
 	 * 
+	 * <p class="remark"><b>Poznámka:</b> Objekty udalostí klávesnice
+	 * (a myši) umožňujú prístup k ďalším užitočným informáciám o konkrétnej
+	 * udalosti. Jednými z najviac užitočných sú informácie o stlačení
+	 * modifikačných klávesov (alt, ctrl/control, graph alt,
+	 * meta/windows/command, shift) v čase vzniku udalosti. Jednu z možností
+	 * využitia príznakov udalosti myši ponúka príklad v opise metódy {@link 
+	 * ObsluhaUdalostí#pustenieSúboru(String) pustenieSúboru}. Podobne sa dá
+	 * pracovať aj s príznakmi klávesnice.</p>
+	 * 
 	 * @return objekt typu {@link KeyEvent KeyEvent}
 	 *     s informáciami o poslednej udalosti klávesnice
 	 * 
@@ -402,6 +411,10 @@ public class ÚdajeUdalostí
 	 * Využiteľné v metóde {@link ObsluhaUdalostí#klávesováSkratka()
 	 * klávesováSkratka}.</p>
 	 * 
+	 * <p class="remark"><b>Poznámka:</b> Príklad použitia nájdete
+	 * napríklad v opise vnorenej triedy {@link Svet.PríkazovýRiadok
+	 * Svet.PríkazovýRiadok}.</p>
+	 * 
 	 * @return príkaz poslednej udalosti klávesovej skratky
 	 */
 	public static String príkazSkratky() { return poslednýPríkazSkratky; }
@@ -435,6 +448,15 @@ public class ÚdajeUdalostí
 	 * {@link ObsluhaUdalostí#pohybMyši() pohybMyši}
 	 * a {@link ObsluhaUdalostí#ťahanieMyšou() ťahanieMyšou}.</p>
 	 * 
+	 * <p class="remark"><b>Poznámka:</b> Objekty udalostí myši
+	 * (a klávesnice) umožňujú prístup k ďalším užitočným informáciám
+	 * o konkrétnej udalosti. Jednými z najviac užitočných sú informácie
+	 * o stlačení modifikačných klávesov (alt, ctrl/control, graph alt,
+	 * meta/windows/command, shift) v čase vzniku udalosti. Jednu z možností
+	 * využitia príznakov udalosti myši ponúka príklad v opise metódy {@link 
+	 * ObsluhaUdalostí#pustenieSúboru(String) pustenieSúboru}. (Podobne sa dá
+	 * pracovať aj s príznakmi klávesnice.)</p>
+	 * 
 	 * @return objekt typu {@link MouseEvent MouseEvent}
 	 *     s informáciami o poslednej udalosti myši
 	 * 
@@ -462,12 +484,23 @@ public class ÚdajeUdalostí
 	 * v metóde {@link ObsluhaUdalostí#rolovanieKolieskomMyši()
 	 * rolovanieKolieskomMyši}.</p>
 	 * 
-	 * <p>Nasledujúci príklad ukazuje, ako sa dajú na rozhýbanie robota
-	 * použiť metódy {@link #rolovanieKolieskomMyšiX()
-	 * rolovanieKolieskomMyšiX} a {@link #rolovanieKolieskomMyšiY()
-	 * rolovanieKolieskomMyšiY} (ak nemáte horizontálne koliesko alebo
-	 * zariadenie, ktoré umožňuje horizontálne rolovanie, skúste použiť
-	 * s vertikálnym kolieskom kláves {@code Shift}):</p>
+	 * <p class="remark"><b>Poznámka:</b> Objekty udalostí myši
+	 * (a klávesnice) umožňujú prístup k ďalším užitočným informáciám
+	 * o konkrétnej udalosti. Jednými z najviac užitočných sú informácie
+	 * o stlačení modifikačných klávesov (alt, ctrl/control, graph alt,
+	 * meta/windows/command, shift) v čase vzniku udalosti. Jednu z možností
+	 * využitia príznakov udalosti myši ponúka príklad v opise metódy {@link 
+	 * ObsluhaUdalostí#pustenieSúboru(String) pustenieSúboru}. (Podobne sa dá
+	 * pracovať aj s príznakmi klávesnice.)</p>
+	 * 
+	 * <p>Nasledujúci príklad sa <em>nevenuje využitiu tejto metódy.</em>
+	 * Namiesto toho ukazuje spôsob použitia metód {@link 
+	 * #rolovanieKolieskomMyšiX() rolovanieKolieskomMyšiX} a {@link 
+	 * #rolovanieKolieskomMyšiY() rolovanieKolieskomMyšiY} (ak nemáte
+	 * horizontálne koliesko (pohybujúce sa v osi x) alebo zariadenie,
+	 * ktoré umožňuje horizontálne rolovanie, skúste použiť súčasne
+	 * s rolovaním vertikálneho kolieska kláves {@code Shift}). Príklad
+	 * demonštruje, ako sa dajú tieto metódy využiť na rozhýbanie robota:</p>
 	 * 
 	 * <pre CLASS="example">
 		{@code kwdimport} knižnica.*;
@@ -493,9 +526,8 @@ public class ÚdajeUdalostí
 						Δx += {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#rolovanieKolieskomMyšiX() rolovanieKolieskomMyšiX}();
 						Δy += {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#rolovanieKolieskomMyšiY() rolovanieKolieskomMyšiY}();
 					}
-				};
+				};<!--predvolenýTvar(false);//už netreba-->
 
-				<!-- TODO overiť, či tento príklad funguje ako má – s dutým tvarom – niekde bol aj príklad, kde dutý tvar znamenal zmenu režimu… nájsť a overiť, či je správny… {@link GRobot#predvolenýTvar(boolean) predvolenýTvar}({@code valfalse});-->
 				{@link Svet Svet}.{@link Svet#spustiČasovač() spustiČasovač}();
 			}
 
@@ -546,7 +578,7 @@ public class ÚdajeUdalostí
 	 * ObsluhaUdalostí#rolovanieKolieskomMyši() rolovanieKolieskomMyši}
 	 * obsluhy udalostí. Kladná hodnota znamená doprava, záporná doľava.</p>
 	 * 
-	 * <p>Príklad použitia tejto metódy sa nachádza pri opise metódy
+	 * <p><b>Príklad použitia</b> tejto metódy sa nachádza v opise metódy
 	 * {@link #kolieskoMyši()}.</p>
 	 * 
 	 * @return počet jednotiek rolovania kolieskom myši v smere x;
@@ -576,7 +608,7 @@ public class ÚdajeUdalostí
 	 * ÚdajeUdalostí#kolieskoMyši() kolieskoMyši()}{@code .}{@link 
 	 * MouseWheelEvent#getWheelRotation() getWheelRotation()}).</p>
 	 * 
-	 * <p>Príklad použitia tejto metódy sa nachádza pri opise metódy
+	 * <p><b>Príklad použitia</b> tejto metódy sa nachádza v opise metódy
 	 * {@link #kolieskoMyši()}.</p>
 	 * 
 	 * @return počet jednotiek rolovania kolieskom myši v smere y;

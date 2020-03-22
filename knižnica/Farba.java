@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ import static knižnica.Farebnosť.*;
  * o farebné zložky (červenej, zelenej a modrej) na namiešanie
  * výslednej farby a zložku (ne)priehľadnosti (0 znamená neviditeľná
  * farba, 255 znamená úplne nepriehľadná farba). Táto trieda umožňuje
- * definovať farby aj pomocou neceločíselných rozsahov – od 0.0 po 1.0,
+ * definovať farby aj s pomocou neceločíselných rozsahov – od 0.0 po 1.0,
  * ktoré sú zase používané napríklad v metódach pracujúcich
  * s {@linkplain Plátno#priehľadnosť(double) (ne)priehľadnosťou plátna}.</p>
  * 
@@ -94,7 +94,7 @@ import static knižnica.Farebnosť.*;
  * 
  * <p>Rovnako ako originálna trieda {@link Color Color} i trieda
  * {@code currFarba} pracuje buď v predvolenom sRGB farebnom priestore,
- * alebo vo farebnom priestore definovanom pomocou triedy {@link 
+ * alebo vo farebnom priestore definovanom s pomocou triedy {@link 
  * ColorSpace ColorSpace}. Každá farba má vlastnú úroveň
  * (ne)priehľadnosti, ktorá je predvolene nastavená na «nepriehľadnú»
  * alebo môže byť určená v rámci povoleného rozsahu (pozri konštruktory
@@ -431,19 +431,24 @@ public class Farba extends Color implements Comparable<Color>
 	// a nepriehľadnejšia()
 	private final static double faktor = 0.7;
 
-	// Metódy svetlejšia() a tmavšia() fungujú podobne ako originálne
-	// metódy triedy Color brighter() a darker(), ale berú do úvahy aj
-	// priehľadnosť pôvodnej farby (zachovávajú ju).
-
 	/**
 	 * <p>Vytvorí novú bledšiu verziu tejto farby. Metóda použije na každú
 	 * farebnú zložku (RGB) vlastnú mierku (faktor) na zosvetlenie tejto
 	 * farby.</p>
 	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda funguje podobne ako
+	 * originálna metóda triedy {@link Color Color}{@code .}{@link 
+	 * Color#brighter() brighter}{@code ()}, len berie do úvahy aj
+	 * priehľadnosť pôvodnej farby a zachováva ju.</p>
+	 * 
 	 * <p class="attention"><b>Upozornenie:</b> I keď sú operácie
 	 * {@code currsvetlejšia} a {@link #tmavšia() tmavšia} opačné (myslené
 	 * logicky), ich niekoľkonásobné striedavé použitie bude v dôsledku
 	 * zaokrúhlení viesť k získaniu úplne inej farby.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda používa predvolenú
+	 * hodnotu faktoru zosvetlenia {@code num0.7}. Pozri aj {@link 
+	 * #svetlejšia(double) svetlejšia(faktor)}.</p>
 	 * 
 	 * @return nová inštancia triedy {@link Farba Farba} s bledšou
 	 *     verziou tejto farby
@@ -492,10 +497,19 @@ public class Farba extends Color implements Comparable<Color>
 	 * farebnú zložku (RGB) vlastnú mierku (faktor) na stmavenie tejto
 	 * farby.</p>
 	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda funguje podobne ako
+	 * originálna metóda triedy {@link Color Color}{@code .}{@link 
+	 * Color#darker() darker}{@code ()}, len berie do úvahy aj
+	 * priehľadnosť pôvodnej farby a zachováva ju.</p>
+	 * 
 	 * <p class="attention"><b>Upozornenie:</b> I keď sú operácie
 	 * {@link #svetlejšia() svetlejšia} a tmavšia opačné (myslené logicky),
 	 * ich niekoľkonásobné striedavé použitie bude v dôsledku zaokrúhlení
 	 * viesť k získaniu úplne inej farby.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda používa predvolenú
+	 * hodnotu faktoru stmavenia {@code num0.7}. Pozri aj {@link 
+	 * #tmavšia(double) tmavšia(faktor)}.</p>
 	 * 
 	 * @return nová inštancia triedy {@link Farba Farba} s tmavšou
 	 *     verziou tejto farby
@@ -513,6 +527,10 @@ public class Farba extends Color implements Comparable<Color>
 	/**
 	 * <p>Vytvorí priehľadnejšiu verziu tejto farby.</p>
 	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda používa predvolenú
+	 * hodnotu faktoru spriehľadnenia {@code num0.7}. Pozri aj {@link 
+	 * #priehľadnejšia(double) priehľadnejšia(faktor)}.</p>
+	 * 
 	 * @return nová inštancia triedy {@link Farba Farba} s priehľadnejšou
 	 *     verziou tejto farby
 	 */
@@ -527,6 +545,10 @@ public class Farba extends Color implements Comparable<Color>
 
 	/**
 	 * <p>Vytvorí menej priehľadnú verziu tejto farby.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda používa predvolenú
+	 * hodnotu faktoru znepriehľadnenia {@code num0.7}. Pozri aj {@link 
+	 * #nepriehľadnejšia(double) nepriehľadnejšia(faktor)}.</p>
 	 * 
 	 * @return nová inštancia triedy {@link Farba Farba} s menej
 	 *     priehľadnou verziou tejto farby
@@ -566,6 +588,8 @@ public class Farba extends Color implements Comparable<Color>
 	 *     hodnota faktora nižšia, tým je zmena svetlosti výraznejšia
 	 * @return nová inštancia triedy {@link Farba Farba} s bledšou
 	 *     verziou tejto farby
+	 * 
+	 * @see #tmavšia(double)
 	 */
 	public Farba svetlejšia(double faktor)
 	{
@@ -1655,6 +1679,14 @@ public class Farba extends Color implements Comparable<Color>
 	 * v novom objekte typu {@link Farba Farba}. Ak používateľ dialóg
 	 * zruší, tak metóda vráti hodnotu {@code valnull}.</p>
 	 * 
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na reset
+	 * a miešanie farieb sú upraviteľné volaním metódy {@link 
+	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link Svet
+	 * Svet}.</p>
+	 * 
+	 * <p><image>dialog-volby-farby.png<alt/>Dialóg na výber
+	 * farby.</image>Dialóg na výber farby.</p>
+	 * 
 	 * @return zvolená farba alebo {@code valnull}
 	 */
 	public static Farba vyberFarbu()
@@ -1683,6 +1715,14 @@ public class Farba extends Color implements Comparable<Color>
 	 * zvolení želanej farby používateľom, vráti metóda zvolenú farbu
 	 * v novom objekte typu {@link Farba Farba}. Ak používateľ dialóg
 	 * zruší, tak metóda vráti hodnotu {@code valnull}.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na reset
+	 * a miešanie farieb sú upraviteľné volaním metódy {@link 
+	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link Svet
+	 * Svet}.</p>
+	 * 
+	 * <p><image>dialog-volby-farby.png<alt/>Dialóg na výber
+	 * farby.</image>Dialóg na výber farby.</p>
 	 * 
 	 * @return zvolená farba alebo {@code valnull}
 	 */
@@ -1716,6 +1756,14 @@ public class Farba extends Color implements Comparable<Color>
 	 * v novom objekte typu {@link Farba Farba}. Ak používateľ dialóg
 	 * zruší, tak metóda vráti hodnotu {@code valnull}.</p>
 	 * 
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na reset
+	 * a miešanie farieb sú upraviteľné volaním metódy {@link 
+	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link Svet
+	 * Svet}.</p>
+	 * 
+	 * <p><image>dialog-volby-farby.png<alt/>Dialóg na výber
+	 * farby.</image>Dialóg na výber farby.</p>
+	 * 
 	 * @param počiatočnáFarba predvolená farba v novo otvorenom dialógu
 	 * @return zvolená farba alebo {@code valnull}
 	 */
@@ -1745,6 +1793,14 @@ public class Farba extends Color implements Comparable<Color>
 	 * zvolení želanej farby používateľom, vráti metóda zvolenú farbu
 	 * v novom objekte typu {@link Farba Farba}. Ak používateľ dialóg
 	 * zruší, tak metóda vráti hodnotu {@code valnull}.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na reset
+	 * a miešanie farieb sú upraviteľné volaním metódy {@link 
+	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link Svet
+	 * Svet}.</p>
+	 * 
+	 * <p><image>dialog-volby-farby.png<alt/>Dialóg na výber
+	 * farby.</image>Dialóg na výber farby.</p>
 	 * 
 	 * @param počiatočnáFarba predvolená farba v novo otvorenom dialógu
 	 * @return zvolená farba alebo {@code valnull}
@@ -1785,6 +1841,9 @@ public class Farba extends Color implements Comparable<Color>
 	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link Svet
 	 * Svet}.</p>
 	 * 
+	 * <p><image>dialog-volby-farby.png<alt/>Dialóg na výber
+	 * farby.</image>Dialóg na výber farby.</p>
+	 * 
 	 * @param titulok vlastný titulok dialógu
 	 * @return zvolená farba alebo {@code valnull}
 	 */
@@ -1820,6 +1879,9 @@ public class Farba extends Color implements Comparable<Color>
 	 * a miešanie farieb sú upraviteľné volaním metódy {@link 
 	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link Svet
 	 * Svet}.</p>
+	 * 
+	 * <p><image>dialog-volby-farby.png<alt/>Dialóg na výber
+	 * farby.</image>Dialóg na výber farby.</p>
 	 * 
 	 * @param titulok vlastný titulok dialógu
 	 * @return zvolená farba alebo {@code valnull}
@@ -1860,6 +1922,9 @@ public class Farba extends Color implements Comparable<Color>
 	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link Svet
 	 * Svet}.</p>
 	 * 
+	 * <p><image>dialog-volby-farby.png<alt/>Dialóg na výber
+	 * farby.</image>Dialóg na výber farby.</p>
+	 * 
 	 * @param titulok vlastný titulok dialógu
 	 * @param počiatočnáFarba predvolená farba v novo otvorenom dialógu
 	 * @return zvolená farba alebo {@code valnull}
@@ -1896,6 +1961,9 @@ public class Farba extends Color implements Comparable<Color>
 	 * a miešanie farieb sú upraviteľné volaním metódy {@link 
 	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link Svet
 	 * Svet}.</p>
+	 * 
+	 * <p><image>dialog-volby-farby.png<alt/>Dialóg na výber
+	 * farby.</image>Dialóg na výber farby.</p>
 	 * 
 	 * @param titulok vlastný titulok dialógu
 	 * @param počiatočnáFarba predvolená farba v novo otvorenom dialógu

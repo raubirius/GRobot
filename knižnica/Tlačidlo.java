@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -1589,7 +1589,7 @@ public class Tlačidlo extends JButton implements Poloha
 	 * význam. Síce toto nastavenie môžete bez negatívnych následkov
 	 * vykonať aj bez toho, ale prejaví sa až po nastavení základného
 	 * obrázka. Tu je príklad rozdielu obrázkov normálneho (základného)
-	 * a označeného tlačidla (oba boli nakreslené a uložené pomocou
+	 * a označeného tlačidla (oba boli nakreslené a uložené s pomocou
 	 * robota):</p>
 	 * 
 	 * <table class="centered"><tr>

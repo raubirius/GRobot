@@ -1,11 +1,10 @@
-
  /////////////////////////////////////////////////////////////////////////////
  // This source code is part of the graphical framework called “Programovací
  // rámec GRobot”. (The name is Slovak like the vast majority of own
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -395,7 +394,7 @@ import javax.swing.SwingUtilities;
  * getter a <a class="setter"></a> na setter. Funkčnosť metód sa tým,
  * samozrejme, nemení, ibaže bez explicitného uvedenia „get“ a „set“ v názve
  * ich nie je možné na prvý pohľad (podľa názvu) rozoznať, preto sa to
- * usilujeme kompenzovať aspoň v dokumentácii pomocou ikon. Jestvujú
+ * usilujeme kompenzovať aspoň v dokumentácii s pomocou ikon. Jestvujú
  * vlastnosti, ktoré nemajú žiadny setter. Z toho vyplýva, že sú určené len na
  * čítanie. Výskyt opačného typu vlastností (len na zápis) je v praxi veľmi
  * zriedkavý. Obvykle by každá vlastnosť mala mať možnosť čítania hodnoty.
@@ -9906,7 +9905,7 @@ TODO: na úvodnú stránku
 				/**
 				 * <p><a class="setter"></a> Pomenuje alebo zruší meno tohto
 				 * robota. Meno robota je používané pri zápise a obnove
-				 * vlastností robota pomocou {@linkplain 
+				 * vlastností robota s pomocou {@linkplain 
 				 * Svet#použiKonfiguráciu(String) konfiguračného súboru}
 				 * a {@linkplain Svet#interaktívnyRežim(boolean)
 				 * interaktívnym režimom}.</p>
@@ -12230,7 +12229,7 @@ TODO: na úvodnú stránku
 
 
 				/**
-				 * <p>Zistí smer k bodu zadanému pomocou odchýlok súradníc
+				 * <p>Zistí smer k bodu zadanému s pomocou odchýlok súradníc
 				 * v horizontálnom a vertikáklom smere [Δx, Δy]. Ak sú zadané
 				 * súradnice [0, 0], metóda vráti hodnotu 360. Efekt je
 				 * rovnaký, ako keby robot stál v bode [0, 0] a použili by sme
@@ -12691,7 +12690,7 @@ TODO: na úvodnú stránku
 
 
 				/**
-				 * <p>Nasmeruje robota smerom zadaným pomocou súradníc [Δx, Δy].
+				 * <p>Nasmeruje robota smerom zadaným s pomocou súradníc [Δx, Δy].
 				 * Ak je zadané [0, 0], smer robota sa nezmení. Inak je
 				 * vypočítaný uhol smeru medzi aktuálnou polohou robota
 				 * a súradnicami zmenenými o hodnoty [Δx, Δy]. Efekt je
@@ -14111,7 +14110,7 @@ TODO: na úvodnú stránku
 					// skomplikovalo výpočty, tak sme to zjednodušili
 					// a rozdelili na dve vetvy…
 
-					// Keďže oblúk je teraz kreslený pomocou tvaru Javy, bolo
+					// Keďže oblúk je teraz kreslený s pomocou tvaru Javy, bolo
 					// treba vyriešiť presunutie robota na novú pozíciu. Je
 					// riešené tromi jednoduchými krokmi: posunom robota do
 					// stredu otáčania, pootočením o uhol otáčania a posunom
@@ -14323,7 +14322,7 @@ TODO: na úvodnú stránku
 					// skomplikovalo výpočty, tak sme to zjednodušili
 					// a rozdelili na dve vetvy…
 
-					// Keďže oblúk je teraz kreslený pomocou tvaru Javy, bolo
+					// Keďže oblúk je teraz kreslený s pomocou tvaru Javy, bolo
 					// treba vyriešiť presunutie robota na novú pozíciu. Je
 					// riešené tromi jednoduchými krokmi: posunom robota do
 					// stredu otáčania, pootočením o uhol otáčania a posunom
@@ -14626,20 +14625,23 @@ TODO: na úvodnú stránku
 				 * používajúceho tento programovací rámec.</p>
 				 * 
 				 * <p><b>Príklad:</b></p>
-				 * <!-- TODO dokončiť príklad -->
+				 * 
 				 * <pre CLASS="example">
-					for (int i = 0; i < 360; i += 2.5)
+					{@code kwdfor} ({@code typeint} i = {@code num0}; i &lt; {@code num360}; i += {@code num2.5})
 					{
-						uhol(i);
-						skočNa(-100, 0);
-						if (i != 180)
-							choďNaPoOblúku(100, 0);
+						{@link #uhol(double) uhol}(i);
+						{@link #skočNa(double, double) skočNa}(-{@code num100}, {@code num0});
+						{@code kwdif} (i != {@code num180})
+							{@code currchoďNaPoOblúku}({@code num100}, {@code num0});
 					}
 					</pre>
 				 * 
 				 * <p><b>Výsledok:</b></p>
-				 * <!-- TODO generuj obrázok – pozri
-				 * Testy/GrafickáKonzola/ChoďNaPoOblúku.java -->
+				 * 
+				 * <p><image>chod-na-po-obluku.png<alt/>Použitie metódy
+				 * choďNaPoOblúku.</image>Vzor pripomínajúci siločiary
+				 * nakreslený s pomocou metódy
+				 * {@code currchoďNaPoOblúku}.</p>
 				 * 
 				 * @param x x-ová súradnica cieľového bodu
 				 * @param y y-ová súradnica cieľového bodu
@@ -20389,7 +20391,7 @@ TODO: na úvodnú stránku
 				 * <p class="remark"><b>Poznámka:</b> Mechanizmus výziev nie
 				 * je taký efektívny ako definícia vlastného {@linkplain Zoznam
 				 * zoznamu robotov} (prípadne inštancií odvodených tried)
-				 * a vykonanie hromadnej akcie pomocou tohto zoznamu. Slúži
+				 * a vykonanie hromadnej akcie s pomocou tohto zoznamu. Slúži
 				 * predovšedkým na umožnenie hromadného spracovania bez
 				 * nevyhnutnosti vytvárania takého zoznamu (napríklad pri
 				 * malom počte robotov alebo predtým, než sa programátor
@@ -20440,7 +20442,7 @@ TODO: na úvodnú stránku
 				 * <p>Spustením tejto metódy sa pre každého robota (podľa ich
 				 * aktuálneho poradia) vykoná reakcia {@link 
 				 * GRobot#prijatieVýzvy(GRobot, int) prijatieVýzvy}, pričom
-				 * autorom výzvy bude tento robot. Pomocou argumentu
+				 * autorom výzvy bude tento robot. S pomocou argumentu
 				 * {@code kľúč} môžeme odlišovať rôzne druhy výziev
 				 * a ovplyvňovať tým správanie reakcie {@link 
 				 * GRobot#prijatieVýzvy(GRobot, int) prijatieVýzvy}. Prvotné
@@ -20468,7 +20470,7 @@ TODO: na úvodnú stránku
 				 * <p class="remark"><b>Poznámka:</b> Mechanizmus výziev nie
 				 * je taký efektívny ako definícia vlastného {@linkplain Zoznam
 				 * zoznamu robotov} (prípadne inštancií odvodených tried)
-				 * a vykonanie hromadnej akcie pomocou tohto zoznamu. Slúži
+				 * a vykonanie hromadnej akcie s pomocou tohto zoznamu. Slúži
 				 * predovšedkým na umožnenie hromadného spracovania bez
 				 * nevyhnutnosti vytvárania takého zoznamu (napríklad pri
 				 * malom počte robotov alebo predtým, než sa programátor
@@ -20526,7 +20528,7 @@ TODO: na úvodnú stránku
 				 * <p>Spustením tejto metódy sa pre každého robota (podľa ich
 				 * aktuálneho poradia) vykoná reakcia {@link 
 				 * GRobot#prijatieVýzvy(GRobot, int) prijatieVýzvy}, pričom
-				 * autorom výzvy bude tento robot. Pomocou argumentu
+				 * autorom výzvy bude tento robot. S pomocou argumentu
 				 * {@code kľúč} môžeme odlišovať rôzne druhy výziev
 				 * a ovplyvňovať tým správanie reakcie {@link 
 				 * GRobot#prijatieVýzvy(GRobot, int) prijatieVýzvy}. Argument
@@ -20557,7 +20559,7 @@ TODO: na úvodnú stránku
 				 * <p class="remark"><b>Poznámka:</b> Mechanizmus výziev nie
 				 * je taký efektívny ako definícia vlastného {@linkplain Zoznam
 				 * zoznamu robotov} (prípadne inštancií odvodených tried)
-				 * a vykonanie hromadnej akcie pomocou tohto zoznamu. Slúži
+				 * a vykonanie hromadnej akcie s pomocou tohto zoznamu. Slúži
 				 * predovšedkým na umožnenie hromadného spracovania bez
 				 * nevyhnutnosti vytvárania takého zoznamu (napríklad pri
 				 * malom počte robotov alebo predtým, než sa programátor
@@ -20757,6 +20759,12 @@ TODO: na úvodnú stránku
 						}
 					}
 					</pre>
+				 * 
+				 * <p><b>Výsledok:</b></p>
+				 * 
+				 * <p><image>blikaj-oranzovy.gif<alt/>Oranžový blikajúci
+				 * robot</image>Výrez plochy s blikajúcim oranžovým
+				 * robotom.</p>
 				 * 
 				 * @see #aktivita()
 				 * @see #aktivácia()
@@ -21058,7 +21066,7 @@ TODO: na úvodnú stránku
 				 * Svet.vyzviRobotov(kľúč)} alebo {@link 
 				 * GRobot#vyzviRobotov(int) GRobot.vyzviRobotov(kľúč)}.
 				 * Rozhodovanie o účele aktuálnej výzvy v tele tejto reakcie
-				 * je možné určiť pomocou hodnoty kľúča, ktorého hodnotu
+				 * je možné určiť s pomocou hodnoty kľúča, ktorého hodnotu
 				 * zadávame pri volaní metód {@link Svet#vyzviRobotov(int)
 				 * Svet.vyzviRobotov(kľúč)}, {@link GRobot#vyzviRobotov(int)
 				 * GRobot.vyzviRobotov(kľúč)}.</p>
@@ -21069,7 +21077,7 @@ TODO: na úvodnú stránku
 				 * uvedomiť, že to nemusí byť nevyhnutne objekt typu
 				 * {@link GRobot GRobot}, ale aj ľubovoľný objekt odvodeného
 				 * údajového typu, ktorý môže obsahovať množstvo doplnkových
-				 * údajov. Autora môžeme vždy spracovať pomocou mechanizmu
+				 * údajov. Autora môžeme vždy spracovať s pomocou mechanizmu
 				 * pretypovania. <b>Pozri nasledujúci kód.</b></p>
 				 * 
 				 * <pre CLASS="example">
@@ -22900,7 +22908,7 @@ TODO: na úvodnú stránku
 			 * farebnosti {@link Farebnosť#žiadna žiadna}. So získanou farbou
 			 * môžeme ďalej pracovať – napríklad ju upravovať alebo zisťovať
 			 * jej vlastnosti (farebné zložky, priehľadnosť…). Testovať, či má
-			 * bod konkrétnu farbu, môžeme napríklad pomocou metódy {@link 
+			 * bod konkrétnu farbu, môžeme napríklad s pomocou metódy {@link 
 			 * #farbaBodu(Color) farbaBodu(farba)}.</p>
 			 * 
 			 * @return farba bodu (objekt typu {@link Farba Farba}) na
@@ -22941,7 +22949,7 @@ TODO: na úvodnú stránku
 			 * (podlahy alebo stropu) v mieste, kde robot práve stojí je
 			 * zhodná so zadanou farbou. Ak sa robot nachádza mimo
 			 * kresliaceho plátna, je vrátená hodnota {@code valfalse}.
-			 * Testovať farbu pomocou tejto metódy môžeme napríklad takto:</p>
+			 * Testovať farbu s pomocou tejto metódy môžeme napríklad takto:</p>
 			 * 
 			 * <pre CLASS="example">
 				{@code kwdif} ({@code currfarbaBodu}({@link Farebnosť#modrá modrá})) …
@@ -22981,7 +22989,7 @@ TODO: na úvodnú stránku
 			 * (podlahy alebo stropu) v mieste, kde robot práve stojí je
 			 * zhodná s farbou zadaného objektu. Ak sa robot nachádza mimo
 			 * kresliaceho plátna, je vrátená hodnota {@code valfalse}.
-			 * Testovať farbu pomocou tejto metódy môžeme napríklad takto:</p>
+			 * Testovať farbu s pomocou tejto metódy môžeme napríklad takto:</p>
 			 * 
 			 * <pre CLASS="example">
 				{@code kwdif} ({@code currfarbaBodu}({@link Farebnosť#modrá modrá})) …
@@ -23089,7 +23097,7 @@ TODO: na úvodnú stránku
 			 * farbou môžeme ďalej pracovať – napríklad ju upravovať alebo
 			 * zisťovať jej vlastnosti (farebné zložky, priehľadnosť…).
 			 * Testovať, či má bod konkrétnu farbu môžeme napríklad
-			 * pomocou metódy {@link #farbaNaMyši(Color)
+			 * s pomocou metódy {@link #farbaNaMyši(Color)
 			 * farbaNaMyši(farba)}.</p>
 			 * 
 			 * <p class="remark"><b>Poznámka:</b> Ak by súradnice myši boli náhodou
@@ -23135,7 +23143,7 @@ TODO: na úvodnú stránku
 			/**
 			 * <p>Zistí, či je farba bodu (jedného pixela) aktívneho plátna
 			 * robota (podlahy alebo stropu) na súradniciach myši zhodná so
-			 * zadanou farbou. Testovať farbu pomocou tejto metódy môžeme
+			 * zadanou farbou. Testovať farbu s pomocou tejto metódy môžeme
 			 * napríklad takto:</p>
 			 * 
 			 * <pre CLASS="example">
@@ -30735,7 +30743,7 @@ TODO: na úvodnú stránku
 			 * <p><b>Príklad:</b></p>
 			 * 
 			 * <p>Nasledujúci príklad ukazuje možnosti transformácie obrázkov
-			 * pomocou programovacieho rámca GRobot. Príklad je interaktívny.
+			 * s pomocou programovacieho rámca GRobot. Príklad je interaktívny.
 			 * Po preložení a spustení sú na obrazovke zobrazené informácie
 			 * o tom, ako je možné zobrazený obrázok transformovať, pričom
 			 * používateľ rýchlo zistí, že obrázkom (a jeho transformáciami)
@@ -32733,6 +32741,8 @@ TODO: na úvodnú stránku
 			 * uvoľni}{@code (}{@link GRobot GRobot}{@code )},
 			 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.Class)
 			 * uvoľni}{@code (}{@link java.lang.Class Class}{@code )},
+			 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Plazma)
+			 * uvoľni}{@code (}{@link Plazma Plazma}{@code )}
 			 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Obrázok)
 			 * uvoľni}{@code (}{@link Obrázok Obrázok}{@code )}
 			 * a {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.String)
@@ -32786,6 +32796,8 @@ TODO: na úvodnú stránku
 			 * uvoľni}{@code (}{@link GRobot GRobot}{@code )},
 			 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.Class)
 			 * uvoľni}{@code (}{@link java.lang.Class Class}{@code )},
+			 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Plazma)
+			 * uvoľni}{@code (}{@link Plazma Plazma}{@code )}
 			 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Obrázok)
 			 * uvoľni}{@code (}{@link Obrázok Obrázok}{@code )}
 			 * a {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.String)
@@ -33435,7 +33447,7 @@ TODO: na úvodnú stránku
 			 * umiestnený na koniec vnútorného zoznamu robotov. Poradie
 			 * umiestnenia robotov v tomto zozname ovplyvňuje poradie kreslenia
 			 * robotov nachádzajúcich sa v spoločnej vrstve. Pri štandardnom
-			 * spracovaní pomocou {@linkplain #vyzviRobotov(int) výzvy} treba
+			 * spracovaní s pomocou {@linkplain #vyzviRobotov(int) výzvy} treba
 			 * počítať s tým, že tento robot bude odteraz vyzývaný ako posledný
 			 * (bez ohľadu na umiestnenie do vrstiev).</p>
 			 * 
@@ -33468,7 +33480,7 @@ TODO: na úvodnú stránku
 			 * umiestnený na začiatok vnútorného zoznamu robotov. Poradie
 			 * umiestnenia robotov v tomto zozname ovplyvňuje poradie kreslenia
 			 * robotov nachádzajúcich sa v spoločnej vrstve. Pri štandardnom
-			 * spracovaní pomocou {@linkplain #vyzviRobotov(int) výzvy} treba
+			 * spracovaní s pomocou {@linkplain #vyzviRobotov(int) výzvy} treba
 			 * počítať s tým, že tento robot bude odteraz vyzývaný ako prvý
 			 * (bez ohľadu na umiestnenie do vrstiev).</p>
 			 * 
@@ -33502,7 +33514,7 @@ TODO: na úvodnú stránku
 			 * v rámci vnútorného zoznamu robotov. Poradie umiestnenia robotov
 			 * v tomto zozname ovplyvňuje poradie kreslenia robotov
 			 * nachádzajúcich sa v spoločnej vrstve. Pri štandardnom spracovaní
-			 * pomocou {@linkplain #vyzviRobotov(int) výzvy} to bude znamenať,
+			 * s pomocou {@linkplain #vyzviRobotov(int) výzvy} to bude znamenať,
 			 * že tento robot bude odteraz vyzývaný o niečo neskôr
 			 * (poradie vyzývania nesúvisí s umiestnením robotov do vrstiev).</p>
 			 * 
@@ -33543,7 +33555,7 @@ TODO: na úvodnú stránku
 			 * v rámci vnútorného zoznamu robotov. Poradie umiestnenia robotov
 			 * v tomto zozname ovplyvňuje poradie kreslenia robotov
 			 * nachádzajúcich sa v spoločnej vrstve. Pri štandardnom spracovaní
-			 * pomocou {@linkplain #vyzviRobotov(int) výzvy} to bude znamenať,
+			 * s pomocou {@linkplain #vyzviRobotov(int) výzvy} to bude znamenať,
 			 * že tento robot bude odteraz vyzývaný o niečo skôr
 			 * (poradie vyzývania nesúvisí s umiestnením robotov do vrstiev).</p>
 			 * 
@@ -33587,7 +33599,7 @@ TODO: na úvodnú stránku
 			 * poradie kreslenia robotov nachádzajúcich sa v spoločnej vrstve,
 			 * pričom roboty s nižším poradovým číslom sú kreslené skôr, preto
 			 * sú v rámci jednej vrstvy zobrazené pod svojími rovesníkmi.
-			 * Pri štandardnom spracovaní pomocou {@linkplain 
+			 * Pri štandardnom spracovaní s pomocou {@linkplain 
 			 * #vyzviRobotov(int) výzvy} bude tento robot odteraz vyzývaný
 			 * tesne po zadanom robotovi
 			 * (poradie vyzývania nesúvisí s umiestnením robotov do vrstiev).</p>
@@ -33638,7 +33650,7 @@ TODO: na úvodnú stránku
 			 * kreslenia robotov nachádzajúcich sa v spoločnej vrstve, pričom
 			 * roboty s nižším poradovým číslom sú kreslené skôr, preto sú
 			 * v rámci jednej vrstvy zobrazené pod svojími rovesníkmi. Pri
-			 * štandardnom spracovaní pomocou {@linkplain #vyzviRobotov(int)
+			 * štandardnom spracovaní s pomocou {@linkplain #vyzviRobotov(int)
 			 * výzvy} bude tento robot odteraz vyzývaný skôr, než zadaný robot
 			 * (poradie vyzývania nesúvisí s umiestnením robotov do vrstiev).</p>
 			 * 
@@ -35833,7 +35845,7 @@ TODO: na úvodnú stránku
 			/* cancelled – zbytočné po zovšeobecnení; Area je tiež Shape… *
 			 * 
 			 * <p><a class="setter"></a> Definuje kolíznu oblasť, ktorú bude od tohto okamihu
-			 * využívať robot na detekciu kolízií pomocou metódy {@link 
+			 * využívať robot na detekciu kolízií s pomocou metódy {@link 
 			 * #koliduje(GRobot) koliduje}. Použitie kolíznej oblasti je
 			 * v rozpoznávaní kolízií presnejšie, ale značne pomalšie než
 			 * predvolený spôsob detekcie kolízií (kružnicami; pozri metódu
@@ -35882,10 +35894,10 @@ TODO: na úvodnú stránku
 
 
 			/**
-			 * <p><a class="setter"></a> Pomocou zadaného tvaru definuje novú
-			 * kolíznu oblasť, ktorú bude od tohto okamihu využívať robot na
-			 * detekciu kolízií s pomocou metódy {@link #koliduje(GRobot)
-			 * koliduje}.
+			 * <p><a class="setter"></a> S pomocou zadaného tvaru definuje
+			 * novú kolíznu oblasť, ktorú bude od tohto okamihu využívať
+			 * robot na detekciu kolízií s pomocou metódy {@link 
+			 * #koliduje(GRobot) koliduje}.
 			 * Použitie kolíznej oblasti je v rozpoznávaní kolízií presnejšie,
 			 * ale značne pomalšie než predvolený spôsob detekcie kolízií
 			 * (kružnicami; pozri metódu {@link #koliduje(GRobot) koliduje}).
@@ -36009,7 +36021,7 @@ TODO: na úvodnú stránku
 			 * <p>Tento základný prístup však nemusí vždy vyhovovať. Ak chceme
 			 * dosiahnuť presné zistenie kolízie, musíme zvoliť iný spôsob.
 			 * Roboty podporujú určenie {@linkplain #kolíznaOblasť(Shape)
-			 * kolíznej oblasti}. Zistenie stretu dvoch robotov pomocou
+			 * kolíznej oblasti}. Zistenie stretu dvoch robotov s pomocou
 			 * {@linkplain Oblasť oblastí} je <em>presné, ale náročnejšie na
 			 * výpočet</em>, takže je zároveň aj pomalšie. Použitie kolíznych
 			 * oblastí je potrebné vopred dobre zvážiť. Odporúčame ich
@@ -37068,10 +37080,11 @@ TODO: na úvodnú stránku
 		// Interaktívny režim
 
 			/**
-			 * <p>Táto metóda je automaticky používaná {@linkplain 
-			 * Svet#interaktívnyRežim(boolean) interaktívnym režimom},
-			 * ale umožňuje používať príkazy dostupné v interaktívnom
-			 * režime aj za hranicami tohto režimu.</p>
+			 * <p>Táto metóda má rovnaké jadro ako mechanizmus vykonávania
+			 * príkazov v {@linkplain Svet#interaktívnyRežim(boolean)
+			 * interaktívnom režime} a umožňuje používať príkazy, ktoré sú
+			 * dostupné v tomto režime aj za jeho hranicami (t. j. bez
+			 * nevyhnutnosti jeho aktivácie).</p>
 			 * 
 			 * @param príkaz príkazový riadok spĺňajúci pravidlá uvedené
 			 *     v opise metódy {@link Svet#interaktívnyRežim(boolean)

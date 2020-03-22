@@ -178,7 +178,7 @@ abstract public class ExecuteShellCommand
 	 * applyLocalizedPattern to adjust the format.</p>
 	 */
 	public final static SimpleDateFormat timeFormat =
-		new SimpleDateFormat("hh:mm:ss");
+		new SimpleDateFormat("HH:mm:ss");
 
 
 	// Local map of environment variables.

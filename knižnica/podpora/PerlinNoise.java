@@ -173,7 +173,7 @@ public class PerlinNoise
 
 		for (int i = 0; i < octaves; ++i)
 		{
-			total += perlin(x * frequency, y * frequency,
+			total += perlinHalf(x * frequency, y * frequency,
 				z * frequency) * amplitude;
 
 			maxValue += amplitude;

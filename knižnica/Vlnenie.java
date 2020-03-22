@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -390,7 +390,7 @@ import knižnica.Poloha;
 
 			{@code kwdelse} {@code kwdif} ({@link GRobot.ÚdajeUdalostí ÚdajeUdalostí}.{@link GRobot.ÚdajeUdalostí#kláves(int) kláves}({@link GRobot.Kláves Kláves}.{@link GRobot.Kláves#VK_E VK_E}))
 			{
-				{@code comm// Intenzívne, búrlivé, rozvlnenie obrazu pomocou samého seba}
+				{@code comm// Intenzívne, búrlivé, rozvlnenie obrazu s pomocou samého seba}
 				{@code comm// zadaného ako mapy vlnenia:}
 				vlnenie.{@link #pridajVzruch(Image) pridajVzruch}(predloha);
 			}
@@ -4369,8 +4369,8 @@ public class Vlnenie
 
 
 	// Poznámka: Nasledujúce dve metódy sú upravenými prispôsobenými verziami
-		//       rovnakých metód z vnorenej súkromnej triedy VykonajVObrázku
-		//       v ústrednej triede GRobot. Komentár nižšie vychádza
+		//       rovnakých metód z vnorenej balíčkovo súkromnej triedy
+		//       VykonajVObrázku v triede Obrázok. Komentár nižšie vychádza
 		//       z komentára z uvedenej triedy.
 		// 
 		// Metódy „rolujMasku“ a „pretočMasku“ sa usilujú o podobnú vec, ibaže
@@ -4751,11 +4751,11 @@ public class Vlnenie
 
 
 						// Teraz je potrebné zdeformovať pôvodný obrázok na
-						// základe výšky/amplitúdy vĺn. To sa dosahuje pomocou
-						// výpočtu vysunutia bodu zobrazovaného z pôvodného
-						// obrázka na aktuálnej pozícii. Presne ako pri
-						// reálnej vodnej hladine – lúče prenikajúce cez
-						// vodnú hladinu sú lámané. Výpočet vysunutia je
+						// základe výšky/amplitúdy vĺn. To sa dosahuje
+						// s pomocou výpočtu vysunutia bodu zobrazovaného
+						// z pôvodného obrázka na aktuálnej pozícii. Presne
+						// ako pri reálnej vodnej hladine – lúče prenikajúce
+						// cez vodnú hladinu sú lámané. Výpočet vysunutia je
 						// založený na aktuálnej vzdialenosti od stredu mapy
 						// vlnenia a mohutnosti vlny na aktuálnej pozícii.
 

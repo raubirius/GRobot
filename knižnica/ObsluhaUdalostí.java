@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -191,26 +191,30 @@ import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
 	};
 	</pre>
  * 
- * <p><b>Ďalšie udalosti</b></p>
+ * <p>&nbsp;</p>
  * 
- * <p>Udalosti zverejnené vo vyššie uvedenom zozname môžeme považovať za
+ * <!-- p><b>Ďalšie udalosti</b></p -->
+ * <p><b>Rozšírená konfigurácia</b></p>
+ * 
+ * <!-- Udalosti zverejnené vo vyššie uvedenom zozname môžeme považovať za
  * „štandardné“. (Z pohľadu programovacieho rámca GRobot.) Obsluha
  * udalostí podporuje ešte tri ďalšie udalosti, s pomocou ktorých je možné
  * využiť automaticky vytváraný konfiguračný súbor programovacieho rámca
- * GRobot. Sú to: {@link ObsluhaUdalostí#konfiguráciaZmenená()
- * konfiguráciaZmenená()},
- * {@link ObsluhaUdalostí#zapíšKonfiguráciu(Súbor)
- * zapíšKonfiguráciu(súbor)}
- * a {@link ObsluhaUdalostí#čítajKonfiguráciu(Súbor)
- * čítajKonfiguráciu(súbor)}. Ich význam je podrobnejšie opísaný
- * v komentároch v príklade nižšie.</p>
+ * GRobot.</p -->
  * 
  * <p>Automatická konfigurácia sa spúšťa príkazom
  * {@link Svet Svet}.{@link Svet#použiKonfiguráciu() použiKonfiguráciu}
  * pred vytvorením sveta. Predvolene je v konfigurácii uložená len
  * informácia o veľkosti a polohe hlavného okna aplikácie. K týmto údajom
- * je možné pridať skupinu vlastných konfiguračných údajov a to
- * nasledujúcim spôsobom:</p>
+ * je možné pridať skupinu vlastných konfiguračných údajov a to s využitím
+ * troch na to rezervovaných reakcií
+ * ({@link ObsluhaUdalostí#konfiguráciaZmenená()
+ * konfiguráciaZmenená()},
+ * {@link ObsluhaUdalostí#zapíšKonfiguráciu(Súbor)
+ * zapíšKonfiguráciu(súbor)}
+ * a {@link ObsluhaUdalostí#čítajKonfiguráciu(Súbor)
+ * čítajKonfiguráciu(súbor)} – ich význam je podrobnejšie opísaný
+ * v komentároch v príklade nižšie) nasledujúcim spôsobom:</p>
  * 
  * <pre CLASS="example">
 	{@code kwdimport} knižnica.*;
@@ -328,7 +332,7 @@ import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
  * #zapíšKonfiguráciu(Súbor) zapíšKonfiguráciu} a {@link 
  * #čítajKonfiguráciu(Súbor) čítajKonfiguráciu}. Syntax pri
  * prekrývaní je potrebné detailne dodržať, to znamená, že pri tých
- * reakciách, pri ktorých je to vyžadované, je nunté uviesť parameter
+ * reakciách, pri ktorých je to vyžadované, je nevyhnutné uviesť parameter
  * {@code Súbor} aj klauzulu {@code kwdthrows}.
  * 
  * <p><b>Výnimka z pravidla jedinej obsluhy udalostí</b></p>
@@ -348,7 +352,7 @@ import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
  */
 public class ObsluhaUdalostí
 {
-	// TODO:
+	// TODO? (predbežne zavrhnuté)
 	/*
 		Definovať alternatívne obsluhy udalostí ku všetkým jestvujúcim
 		reakciám:
@@ -436,7 +440,7 @@ public class ObsluhaUdalostí
 	 * odštartovať metódou {@link Svet#spustiČasovač(double)
 	 * spustiČasovač} a zastaviť metódou {@link Svet#zastavČasovač()
 	 * zastavČasovač}. Informácie o poslednej udalosti časovača sa dajú
-	 * získať pomocou metódy {@link ÚdajeUdalostí#tik()
+	 * získať s pomocou metódy {@link ÚdajeUdalostí#tik()
 	 * ÚdajeUdalostí.tik()}.</p>
 	 * 
 	 * <p>Časovač pre všetkých robotov automaticky spúšta metódu {@link 
@@ -602,9 +606,9 @@ public class ObsluhaUdalostí
 	 * potrebujete využívať metódy (nástroje) triedy {@link Graphics2D
 	 * Graphics2D}, použite metódu {@link Plátno#grafika()
 	 * podlaha.grafika()} (resp. {@link Plátno#grafika()
-	 * strop.grafika()}) na prevzatie grafického objektu, pomocou
+	 * strop.grafika()}) na prevzatie grafického objektu, s pomocou
 	 * ktorého môžete tiež dokresľovať obsah plátien (v podstate
-	 * rovnocenne ako pri kreslení pomocou robota, avšak treba mať na
+	 * rovnocenne ako pri kreslení s pomocou robota, avšak treba mať na
 	 * pamäti, že grafika plátna pracuje s odlišným súradnicovým
 	 * priestorom, než grafický programovací rámec).</p>
 	 * 
@@ -624,7 +628,7 @@ public class ObsluhaUdalostí
 	 * objekt sveta (získaný metódou {@link Svet#grafika()
 	 * Svet.grafika()}) na dokreslenie (krátkodobého) grafického obsahu.
 	 * Treba podotknúť že spomenutý objekt {@code grafika} pracuje
-	 * v súradnicovom priestore Javy a všetko, čo pomocou neho
+	 * v súradnicovom priestore Javy a všetko, čo s pomocou neho
 	 * nakreslíte, bude na obrazovke zobrazené len do najbližšieho
 	 * prekreslenia.
 	 * (O súradnicových priestoroch sa podrobnejšie píše napríklad
@@ -794,7 +798,7 @@ public class ObsluhaUdalostí
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda nepracuje
 	 * so štandardným vstupom údajov, ktorý je schopný prijímať údaje
 	 * z iného procesu. Pozri reakciu {@link #spracujRiadokVstupu(String)
-	 * #spracujRiadokVstupu}.</p>
+	 * spracujRiadokVstupu}.</p>
 	 * 
 	 * @see GRobot#potvrdenieÚdajov()
 	 */
@@ -846,7 +850,7 @@ public class ObsluhaUdalostí
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda nepracuje
 	 * so zabudovaným vstupným riadkom programovacieho rámca. Pozri reakciu
-	 * {@link #potvrdenieÚdajov() #potvrdenieÚdajov}.</p>
+	 * {@link #potvrdenieÚdajov() potvrdenieÚdajov}.</p>
 	 * 
 	 * @param riadokVstupu riadok údajov prijatý zo štandardného vstupu
 	 * 
@@ -1054,6 +1058,10 @@ public class ObsluhaUdalostí
 	 * ÚdajeUdalostí.udalosťSkratky()} na získanie doplňujúcich údajov
 	 * o tejto udalosti.</p>
 	 * 
+	 * <p class="remark"><b>Poznámka:</b> Príklad použitia nájdete
+	 * napríklad v opise vnorenej triedy {@link Svet.PríkazovýRiadok
+	 * Svet.PríkazovýRiadok}.</p>
+	 * 
 	 * @see ÚdajeUdalostí#príkazSkratky()
 	 * @see ÚdajeUdalostí#udalosťSkratky()
 	 * @see GRobot#klávesováSkratka()
@@ -1118,6 +1126,157 @@ public class ObsluhaUdalostí
 		}
 		</pre>
 	 * 
+	 * <p><b>Príklad:</b></p>
+	 * 
+	 * <p>Tento príklad je o poznanie zložitejší. Umožňuje vykonávať
+	 * základné transformácie obrázka (posunutie, otočenie, mierka)
+	 * prostredníctvom aktuálneho robota. Tiež spravuje vnútornú pamäť
+	 * rámca, čo umožňuje príkladu fungovať kontinuálne/dlhodobo (bez
+	 * nevyhnutnosti reštartovania aplikácie) aj po vystriedaní väčšieho
+	 * množstva obrázkov.</p>
+	 * 
+	 * <p>Tento príklad sa spomína aj v opisoch metód {@link 
+	 * ÚdajeUdalostí#klávesnica() klávesnica}, {@link ÚdajeUdalostí#myš()
+	 * myš} a {@link ÚdajeUdalostí#kolieskoMyši() kolieskoMyši}.
+	 * V súvislosti s tým upriamujeme pozornosť na metódu {@code 
+	 * príznakyMyši} (v tomto príklade), ktorá ukazuje možný spôsob
+	 * spracovania príznakov udalostí myši. Zaujímavá je implementácia
+	 * príkazu {@code skratkaPonuky} (v tomto príklade „vypnutá“ –
+	 * umiestnená v komentároch), ktorá je spracovaná platformovo závisle
+	 * (z dôvodu zvýšenia komfortu používateľov v súvislosti s obvyklými
+	 * postupmi na rôznych platformách).</p>
+	 * 
+	 * <pre CLASS="example">
+		{@code kwdimport} knižnica.*;
+
+		{@code kwdpublic} {@code typeclass} TransformácieObrázka {@code kwdextends} {@link GRobot GRobot}
+		{
+			{@code kwdprivate} TransformácieObrázka()
+			{
+				{@code valsuper}({@code srg"Transformácie obrázka"});
+				{@link GRobot#skry() skry}();
+				{@code kwdif} ({@link Svet Svet}.{@link Svet#prvéSpustenie() prvéSpustenie}()) {@link Svet Svet}.{@link Svet#zbaľ() zbaľ}();
+				{@link Svet Svet}.{@link Svet#vystreď() vystreď}();
+				{@link Svet Svet}.{@link Svet#nekresli() nekresli}();
+				{@link GRobot#veľkosťDoma(Double) veľkosťDoma}({@link GRobot#veľkosť() veľkosť}());
+			}
+
+
+			{@code kwdprivate} {@link String String} názov = {@code valnull};
+			{@code kwdprivate} {@link Obrázok Obrázok} obrázok = {@code valnull};
+
+			{@code kwdprivate} {@code typevoid} obnov()
+			{
+				{@link Svet Svet}.{@link Svet#vymaž() vymaž}();
+				{@link obrázok obrázok}(obrázok);
+				{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
+			}
+
+			{@code kwdprivate} {@code typevoid} otvor({@link String String} súbor)
+			{
+				{@code kwdif} ({@link Súbor Súbor}.{@link Súbor#jestvuje(String) jestvuje}(súbor))
+				{
+					{@code kwdif} ({@code valnull} != názov)
+					{
+						{@link Svet Svet}.{@link Svet#uvoľni(String) uvoľni}(názov);
+						názov = {@code valnull};
+					}
+
+					{@code kwdif} ({@code valnull} != obrázok)
+					{
+						{@link Svet Svet}.{@link Svet#uvoľni(Obrázok) uvoľni}(obrázok);
+						obrázok = {@code valnull};
+					}
+
+					obrázok = {@link Obrázok Obrázok}.{@link Obrázok#čítaj(String) čítaj}(súbor);
+					názov = súbor;
+					{@link GRobot#domov() domov}();
+					obnov();
+				}
+				{@code kwdelse}
+					{@link Svet Svet}.{@link Svet#chyba(String) chyba}({@code srg"Súbor nejestvuje."});
+			}
+
+			{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@code currpustenieSúboru}({@link String String} súbor)
+			{
+				otvor(súbor);
+			}
+
+
+			{@code kwdprivate} {@link Bod Bod} myš1 = {@code valnull};
+			{@code comm// private boolean skratkaPonuky = false;}
+			{@code comm// private boolean alt = false;}
+			{@code comm// private boolean shift = false;}
+			{@code kwdprivate} {@code typeboolean} ľavé = {@code valfalse};
+			{@code comm// private boolean pravé = false;}
+			{@code comm// private boolean stredné = false;}
+
+			{@code kwdprivate} {@code typevoid} príznakyMyši()
+			{
+				{@code comm// skratkaPonuky =}
+				{@code comm// 	Kláves.SKRATKA_PONUKY == Kláves.CTRL_MASK ?}
+				{@code comm// 	ÚdajeUdalostí.myš().isControlDown() :}
+				{@code comm// 	ÚdajeUdalostí.myš().isMetaDown();}
+				{@code comm// alt = ÚdajeUdalostí.myš().isAltDown();}
+				{@code comm// shift = ÚdajeUdalostí.myš().isShiftDown();}
+				ľavé = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#ĽAVÉ ĽAVÉ});
+				{@code comm// pravé = ÚdajeUdalostí.tlačidloMyši(PRAVÉ);}
+				{@code comm// stredné = ÚdajeUdalostí.tlačidloMyši(STREDNÉ);}
+			}
+
+			{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#stlačenieTlačidlaMyši() stlačenieTlačidlaMyši}()
+			{
+				myš1 = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyši() polohaMyši}();
+			}
+
+			{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#ťahanieMyšou() ťahanieMyšou}()
+			{
+				príznakyMyši();
+				{@link Bod Bod} myš2 = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyši() polohaMyši}();
+
+				{@code kwdif} ({@code valnull} != myš1)
+				{
+					{@code kwdif} (ľavé)
+					{
+						{@link GRobot#skoč(double, double) skoč}(myš2.{@link Poloha#polohaX() polohaX}() &#45; myš1.{@link Poloha#polohaX() polohaX}(),
+							myš2.{@link Poloha#polohaY() polohaY}() &#45; myš1.{@link Poloha#polohaY() polohaY}());
+					}
+					{@code kwdelse} {@code comm// if (pravé)}
+					{
+						{@code typedouble} uhol1 = {@link GRobot#smerNa(Poloha) smerNa}(myš1);
+						{@code typedouble} uhol2 = {@link GRobot#smerNa(Poloha) smerNa}(myš2);
+						{@link GRobot#vľavo(double) vľavo}(uhol2 &#45; uhol1);
+					}
+
+					obnov();
+				}
+
+				myš1 = myš2;
+			}
+
+			{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#rolovanieKolieskomMyši() rolovanieKolieskomMyši}()
+			{
+				{@code comm// int Δx = ÚdajeUdalostí.rolovanieKolieskomMyšiX();}
+				{@code typeint} Δy = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#rolovanieKolieskomMyšiY() rolovanieKolieskomMyšiY}();
+
+				{@code typedouble} zmena = {@link GRobot#veľkosť() veľkosť}() + Δy;
+				{@code kwdif} (zmena &gt; {@code num100}) zmena = {@code num100};
+				{@code kwdelse} {@code kwdif} (zmena &lt; {@code num1}) zmena = {@code num1};
+				{@link GRobot#veľkosť(double) veľkosť}(zmena);
+				obnov();
+			}
+
+
+			{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
+			{
+				{@link Svet Svet}.{@link Svet#skry() skry}();
+				{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"TransformácieObrázka.cfg"});
+				{@code kwdnew} TransformácieObrázka();
+				{@link Svet Svet}.{@link Svet#zobraz() zobraz}();
+			}
+		}
+		</pre>
+	 * 
 	 * @param súbor úplná cesta a meno súboru
 	 * 
 	 * @see GRobot#pustenieSúboru(String)
@@ -1130,7 +1289,7 @@ public class ObsluhaUdalostí
 
 	/**
 	 * <p>Spustená pri overovaní zmeny farby, ktorou má byť vypísané určité
-	 * (zadané) aktívne slovo vnútornej konzoly. Pomocou tejto reakcie je
+	 * (zadané) aktívne slovo vnútornej konzoly. S pomocou tejto reakcie je
 	 * možné paušálne meniť farbu všetkých aktívnych slov, odlišovať farby
 	 * takých slov, ktoré už boli používateľom zvolené od takých, ktoré
 	 * doteraz používateľ ani raz nezvolil a podobne. Ak si farbu aktívneho
@@ -1165,7 +1324,6 @@ public class ObsluhaUdalostí
 	 * upraviteľný}, {@link PoznámkovýBlok#upravuj() upravuj} a {@link 
 	 * PoznámkovýBlok#neupravuj() neupravuj}.</p>
 	 * 
-	 * <!-- TODO skontrolovať vzhľad a funkčnosť odkazov príkladu použitia -->
 	 * <p><b>Príklad:</b></p>
 	 * 
 	 * <p>Tento príklad ukazuje minimálne požiadavky, ktoré musia byť
@@ -1177,11 +1335,6 @@ public class ObsluhaUdalostí
 	 * prípadne aj skrytie hlavného robota (podľa toho, za akú veľkú
 	 * prekážku považujeme jeho vizuálna prítomnosť na plátne).
 	 * Ostatné časti príkladu sú nevyhnutné.</p>
-	 * 
-	 * <!-- TODO Overiť, či je v reťazci srg" správne zobrazený HTML kód,
-	 * lebo keď som tam použil HTML entity v dobrej viere, že to bude
-	 * v poriadku, tak to zobrazilo zle. Overiť podobné veci v celej
-	 * dokumentácii (ak sa bude dať). TODO -->
 	 * 
 	 * <pre CLASS="example">
 		{@code kwdimport} knižnica.*;

@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -738,7 +738,7 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 					uprav.addChangeListener(e -> aktualizujPodľaSpinera(e));
 
 					JPanel panel = new JPanel();
-					panel.add(new JLabel("∠:")); // TODO: check
+					panel.add(new JLabel("∠:"));
 					panel.add(uprav);
 					panel.setBorder(BorderFactory.
 						createEmptyBorder(0, 10, 0, 10));
@@ -831,7 +831,6 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 
 			// Zaokrúhli zadané číslo na počet desatinných miest. (Záporný
 			// počet miest zaokrúhľuje na miesta pred desatinnou čiarkou.)
-			// TODO: Pridať do matematiky sveta.
 			private static double round(double value, int places)
 			{
 				// if (places < 0) throw new IllegalArgumentException();

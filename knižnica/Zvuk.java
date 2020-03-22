@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ import knižnica.podpora.BeepChannel;
 
 /**
  * <p>Táto trieda dovoľuje programátorovi podrobnejšie pracovať so zvukom,
- * ktorý prečítal pomocou metódy {@link Svet#čítajZvuk(String)
+ * ktorý prečítal s pomocou metódy {@link Svet#čítajZvuk(String)
  * čítajZvuk}.</p>
  * 
  * <p><b>Príklad:</b></p>
@@ -79,6 +79,16 @@ import knižnica.podpora.BeepChannel;
  * <p style="text-align: center;"><audio controls><source
  * src="resources/zvuk.wav" type="audio/wav">Váš prehliadač
  * neumožňuje prehratie zvuku.</audio></p>
+ * 
+ * <p class="remark"><b>Poznámka:</b> Programovací rámec obsahuje aj
+ * nástroje na generovanie zvukov (resp. tónov). Ich implementácia je
+ * realizovaná v rámci skupiny podporných tried rámca, ku ktorým nie je
+ * priamo vyhotovená dokumentácia, ale základ je sprístupnený
+ * prostredníctvom skupiny metód v triede {@link Svet Svet}. Príklady na
+ * generovanie zvukov (resp. tónov) sa nachádzajú v opisoch metód {@link 
+ * Svet#otvorSúborNaUloženieTónu(String, boolean)
+ * Svet.otvorSúborNaUloženieTónu(názov, prepísať)} a {@link 
+ * Svet#generátorTónov() Svet.generátorTónov()}.</p>
  * 
  * @see Svet#priečinokZvukov(String)
  * @see Svet#priečinokZvukov()

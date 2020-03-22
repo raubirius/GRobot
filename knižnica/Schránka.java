@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ import java.io.IOException;
  * (prilepenie, „vloženie“) informácie zo schránky (terminológia v tejto
  * oblasti sa v súčasnosti, žiaľ, značne rôzni). Vo svete robota tieto
  * skratky nefungujú automaticky. Ak chceme, aby aplikácia vytvorená
- * pomocou robota používala schránku, musíme prepojiť náležité
+ * s pomocou robota používala schránku, musíme prepojiť náležité
  * {@linkplain PoložkaPonuky položky ponuky} (ktoré musíme vytvoriť)
  * a prepojiť s funkcionalitou (volaním metód a prípadným
  * doprogramovaním) tejto statickej triedy. Ako bolo práve čiastočne

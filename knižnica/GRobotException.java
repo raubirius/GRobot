@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -227,6 +227,12 @@ import java.util.Vector;
  * nebol nájdený.</td><td>Znamená, že pokus o prečítanie súboru s obrázkom
  * (<em>«súbor»</em>) zlyhal z dôvodu nenájdenia súboru. Názov súboru je
  * zistiteľný metódou {@link #getParameter() getParameter}.</td></tr>
+ * 
+ * <tr><td><code>imageSizeMismatch</code></td><td>Rozmery obrázokov
+ * svetelnej operácie sa nezhodujú.</td><td>Vzniká pri pokuse o vykonanie
+ * svetelnej operácie (pozri {@link Obrázok#svetlo(Obrázok, Obrázok)
+ * svetlo(grafika, svetlo)} alebo {@link Obrázok#svetlo(Obrázok)
+ * svetlo(svetlo)}) s rozdielnymi rozmermi.</td></tr>
  * 
  * <tr><td><code>invalidDomain</code></td><td>Neplatná doména:
  * <em>«doména»</em></td><td>Zlyhal pokus o zostavenie koreňa cieľa

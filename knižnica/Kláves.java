@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -157,6 +157,15 @@ public class Kláves extends KeyEvent
 
 	/** <p>Kód klávesu Delete ({@link KeyEvent#VK_DELETE}).</p> */
 	public final static int DELETE = KeyEvent.VK_DELETE;
+
+	/** <p>Kód klávesu Insert (vložiť) ({@link KeyEvent#VK_INSERT}).</p> */
+	public final static int INSERT = KeyEvent.VK_INSERT;
+
+	/** <p>Kód klávesu Insert (vložiť) ({@link KeyEvent#VK_INSERT}).</p> */
+	public final static int VLOŽIŤ = KeyEvent.VK_INSERT;
+
+	/** <p>Kód klávesu Insert (vložiť) ({@link KeyEvent#VK_INSERT}).</p> */
+	public final static int VLOZIT = KeyEvent.VK_INSERT;
 
 	/**
 	 * <p>Kombinačný kód klávesových skratiek ponuky, čo je na niektorých

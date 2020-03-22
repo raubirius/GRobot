@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -1265,7 +1265,7 @@ public class Zoznam<Typ> extends Vector<Typ>
 	 * 
 	 * <p>bude vykonaný pre každý prvok zoznamu začnúc od posledného
 	 * a končiac prvým. Jednoduchšie je použitie metódy
-	 * {@link #odzadu() #odzadu}{@code ()}, ale tá je použiteľná len
+	 * {@link #odzadu() odzadu}{@code ()}, ale tá je použiteľná len
 	 * pre inštancie triedy {@link Zoznam Zoznam}. Táto metóda je
 	 * použiteľná pre ľubovoľný zoznam, ktorý je implementáciou
 	 * rozhrania {@link java.util.List List}.</p>
@@ -1307,7 +1307,7 @@ public class Zoznam<Typ> extends Vector<Typ>
 	 * 
 	 * <p>bude vykonaný pre každý prvok zoznamu začnúc od posledného
 	 * a končiac prvým. Jednoduchšie je použitie metódy
-	 * {@link #naopak() #naopak}{@code ()}, ale tá je použiteľná len
+	 * {@link #naopak() naopak}{@code ()}, ale tá je použiteľná len
 	 * pre inštancie triedy {@link Zoznam Zoznam}. Táto metóda je
 	 * použiteľná pre ľubovoľný zoznam, ktorý je implementáciou
 	 * rozhrania {@link java.util.List List}.</p>

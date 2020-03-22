@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -261,9 +261,8 @@ import static knižnica.Konštanty.PRIPÁJANIE_SÚBOROV;
  * dokumentácie zostavoval a analyzoval asi päťdesiat rôzne veľkých
  * konfiguračných súborov – od kilobajtov po megabajty; procesy zostavenia
  * so zápisom a čítania s analýzou trvali niekoľko minút – experiment bol
- * vykonaný v roku 2018 na prenosnom počítači so štandardným výkonom<!--;
- * TODO: jeho opakovanie na stolnom počítači a ďalšom prenosnom počítači…
- * ???TODO???-->).</p>
+ * vykonaný v roku 2018 na prenosnom počítači so štandardným výkonom<!--
+ * Opakovanie na stolnom počítači a ďalšom prenosnom počítači? TODO? -->).</p>
  * 
  * <pre CLASS="example">
 	{@code kwdtry}
@@ -4401,6 +4400,12 @@ public class Súbor implements Closeable
 		 * tak to znamená, že dialógy nemajú žiadnu predvolenú cestu a budú
 		 * otvorené na umiestnení, ktoré určí operačný systém.</p>
 		 * 
+		 * <p class="tip"><b>Tip:</b> Neoficiálnym trikom na voľbu
+		 * priečinka aktuálneho pri spustení aplikácie (ktorý nie je
+		 * podpoprovaný všetkými operačnými systémami) je zadanie reťazca
+		 * {@code srg"."} (ktorý má v podporovaných OS presne význam
+		 * aktuálneho priečinka).</p>
+		 * 
 		 * @param cesta nová predvolená cesta dialógov na
 		 *     {@linkplain #dialógOtvoriť(String) otvorenie}
 		 *     a {@linkplain #dialógUložiť(String) uloženie} súborov
@@ -4765,7 +4770,7 @@ public class Súbor implements Closeable
 
 		/**
 		 * <p>Priradí k tomuto súboru zadanú inštanciu {@linkplain Archív
-		 * archívu}. Metódy TODO…
+		 * archívu}. Metódy…
 
 		 TODO
 

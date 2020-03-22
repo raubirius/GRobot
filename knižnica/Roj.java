@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -2189,7 +2189,7 @@ public class Roj
 
 
 	// Atribúty súvisiace s orientáciou celého roja (ktorá sa dá vnímať aj
-	// ako orientácia kamery) a príznak nevyhnuntosti prepočítania hodnôt
+	// ako orientácia kamery) a príznak nevyhnutnosti prepočítania hodnôt
 	// konečných súradníc bodov roja (x2, y2, z2). Konkrétne: xs, ys a zs
 	// určujú stred otáčania roja (kamery) a α, β a γ sú uhly pootočenia
 	// roja (kamery).

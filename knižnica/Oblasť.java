@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ import java.awt.geom.Rectangle2D;
  * ľubovoľná plocha, ktorá môže byť napríklad obkreslená čiarou,
  * vyplnená farbou, použitá na {@linkplain GRobot#nekresliDo(Shape)
  * obmedzenie kreslenia}, prípadne na ďalšie účely. Na tvorbe oblasti sa
- * môže podieľať zvolený robot alebo ju môžeme vytvoriť pomocou útvarov
+ * môže podieľať zvolený robot alebo ju môžeme vytvoriť s pomocou útvarov
  * ({@link Shape Shape}) Javy. Každý robot je schopný produkovať útvary,
  * ktoré môžu byť využité na vytvorenie oblasti. Filozofia je taká, že
  * zavoláme metódu robota na nakreslenie útvaru alebo výpis textu (ktoré
@@ -699,7 +699,7 @@ public class Oblasť extends Area implements Poloha
 	 * <p>Zamestná zadaného robota na účely tvorby tejto oblasti. Oblasť
 	 * môže byť vytvorená aj bez pomoci robota (prostriedkami Javy),
 	 * avšak na využitie možností robota, je jednoduchšie zamestnať
-	 * robota, ktorý pomôže vytvoriť oblasť pomocou svojich prostriedkov
+	 * robota, ktorý pomôže vytvoriť oblasť s pomocou svojich prostriedkov
 	 * na kreslenie útvarov a písanie textov (resp. „kreslenie“ textov).
 	 * Každý robot stráca súčasne so zamestnaním schopnosť kreslenia
 	 * a vypĺňania útvarov (okrem kreslenia a vypĺňania cesty) a písania
@@ -776,6 +776,8 @@ public class Oblasť extends Area implements Poloha
 	 * uvoľni}{@code (}{@link GRobot GRobot}{@code )},
 	 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.Class)
 	 * uvoľni}{@code (}{@link java.lang.Class Class}{@code )},
+	 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Plazma)
+	 * uvoľni}{@code (}{@link Plazma Plazma}{@code )}
 	 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Obrázok)
 	 * uvoľni}{@code (}{@link Obrázok Obrázok}{@code )}
 	 * a {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.String)
@@ -832,6 +834,8 @@ public class Oblasť extends Area implements Poloha
 	 * uvoľni}{@code (}{@link GRobot GRobot}{@code )},
 	 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.Class)
 	 * uvoľni}{@code (}{@link java.lang.Class Class}{@code )},
+	 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Plazma)
+	 * uvoľni}{@code (}{@link Plazma Plazma}{@code )}
 	 * {@link Svet Svet}{@code .}{@link Svet#uvoľni(Obrázok)
 	 * uvoľni}{@code (}{@link Obrázok Obrázok}{@code )}
 	 * a {@link Svet Svet}{@code .}{@link Svet#uvoľni(java.lang.String)

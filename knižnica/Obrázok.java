@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2019 by Roman Horváth
+ // Copyright © 2010 – 2020 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -461,7 +461,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 		// Pri vypĺňaní farbou „z plechovky“ (semienkové vypĺňanie)
 		// vznikali na okrajoch vypĺňanej oblasti aliasy, ktoré rieši
-		// táto metóda pomocou miešania farieb
+		// táto metóda s pomocou miešania farieb
 		private static void riešAlias()
 		{
 			///////////////////////////////////////////////////////////////
@@ -614,13 +614,20 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 				A = R + G + B; A /= 3; A = 255 - A;
 				int a = (údajeObrázka[i] >> 24) & 0xff;
 
-				if (A == 0 || a == 0) aktuálnaFarba = 0; else
+				if (A == 0 || a == 0) aktuálnaFarba = 0;
+				else if (A == 255 && a == 255) aktuálnaFarba = 255;
+				else
 				{
-					R = (aktuálnaFarba >> 16) & 0xff;
-					G = (aktuálnaFarba >>  8) & 0xff;
-					B =  aktuálnaFarba        & 0xff;
-					aktuálnaFarba = ((765 - R - G - B) * A * a) / 0x2fa03;
-					//	0x2fa03 = 195075 = 765 * 255	// 765
+					// Toto vzniklo asi dôsledkom kopírovania z inej metódy,
+					// pričom dôležitosť tohto fragmentu v čase kopírovania
+					// kódu bola iba zdanlivá; zbytočne znižovala efektívnosť
+					// algoritmu:
+					// R = (aktuálnaFarba >> 16) & 0xff;
+					// G = (aktuálnaFarba >>  8) & 0xff;
+					// B =  aktuálnaFarba        & 0xff;
+					// aktuálnaFarba = ((765 - R - G - B) * A * a) / 0x2fa03;
+					// //	0x2fa03 = 195075 = 765 * 255	// 765
+					aktuálnaFarba = (A * a) / 255;
 				}
 
 				údajeObrázka[i] = (údajeObrázka[i] & 0x00ffffff) |
@@ -1290,7 +1297,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 	/*packagePrivate*/ double posunX, posunY;
 
 	// Nevyhnutné na vymazanie a používané pri niektorých operáciách
-	private int[] údajeObrázka;
+	/*packagePrivate*/ int[] údajeObrázka;
 	private int[] údajeOperácie;
 
 	// Faktor pre potreby metód bledší(), tmavší()…
@@ -3880,6 +3887,10 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * <p class="remark"><b>Poznámka:</b> Metóda
 		 * zachováva aj kanál priehľadnosti obrázka.</p>
 		 * 
+		 * <p class="remark"><b>Poznámka:</b> Metóda používa predvolenú
+		 * hodnotu faktoru zosvetlenia {@code num0.7}. Pozri aj {@link 
+		 * #bledší(double) bledší(faktor)}.</p>
+		 * 
 		 * @see #tmavší()
 		 */
 		public void bledší() { bledší(faktor); }
@@ -3899,6 +3910,10 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Metóda
 		 * zachováva aj kanál priehľadnosti obrázka.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Metóda používa predvolenú
+		 * hodnotu faktoru stmavenia {@code num0.7}. Pozri aj {@link 
+		 * #tmavší(double) tmavší(faktor)}.</p>
 		 * 
 		 * @see #bledší()
 		 */
@@ -4396,24 +4411,16 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		/**
 		 * <p>Zruší priehľadnosť všetkých bodov v obrázku.</p>
 		 * 
-		 * <!-- TODO – urob príklad, ktorý ukáže ako to funguje. -->
-		 * 
 		 * <p class="caution"><b>Pozor!</b> Volanie tejto metódy neovplyvní
 		 * celkovú priehľadnosť obrázka ovplyvňovanú metódami
 		 * {@link #priehľadnosť(double) priehľadnosť(priehľadnosť)},
 		 * {@link #priehľadnosť(Priehľadnosť) priehľadnosť(objekt)}
 		 * a {@link #upravPriehľadnosť(double) upravPriehľadnosť(zmena)}.</p>
 		 * 
-		 * <p><b>Príklad:</b></p>
-		 * 
-		 * <pre CLASS="example">
-			«príklad – ospravedlňujeme sa, pracujeme na doplnení…»
-			<!-- TODO -->
-			</pre>
-		 * 
-		 * <p><b>Výsledok:</b></p>
-		 * 
-		 * <p><image>«názov».png<alt/></image>«Popis…»<!-- TODO -->.</p>
+		 * <p class="remark"><b>Poznámka:</b> Princíp toho, ako funguje
+		 * zrušenie priehľadnosti, je ukázaný v opise rovnomennej metódy
+		 * triedy {@link Plátno Plátno} – {@link Plátno#zrušPriehľadnosť()
+		 * zrušPriehľadnosť}.</p>
 		 */
 		public void zrušPriehľadnosť() { VykonajVObrázku.zrušPriehľadnosť(this); }
 
@@ -5088,12 +5095,20 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * posterizáciou sa rozumie nastavenie všetkých farieb na najbližšiu
 		 * farbu v palete.</p>
 		 * 
-		 * <p>Táto metóda zruší priehľadnosť bodov pôvodného obrázka. Ak ju
-		 * chcete zachovať, musíte {@linkplain #vyrobMasku() vytvoriť}
-		 * a {@linkplain  #použiMasku(BufferedImage) použiť} masku.</p>
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda zruší priehľadnosť
+		 * bodov pôvodného obrázka. Ak ju chcete zachovať, musíte
+		 * {@linkplain #vyrobMasku() vytvoriť} a {@linkplain 
+		 * #použiMasku(BufferedImage) použiť} masku.</p>
+		 * 
+		 * <table class="centered">
+		 * <tr><td><image>posterizuj.jpeg<alt/></image></td>
+		 * <td><image>posterizuj--.jpeg<alt/></image></td></tr></table>
+		 * 
+		 * <p class="image">Vľavo je verzia obrázka pred a vpravo po úprave
+		 * touto metódou.</p>
 		 * 
 		 * <p>Porovnanie rôznych efektov použitých na rovnaký obrázok je
-		 * v opise metódy {@link #farebnéTienidlo(Color)
+		 * aj v opise metódy {@link #farebnéTienidlo(Color)
 		 * farebnéTienidlo(farba)}.</p>
 		 * 
 		 * @see #posterizuj(Color, Color...)
@@ -5112,12 +5127,25 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * farbu v palete. Ak je zadaná len jedna farba palety, tak ňou bude
 		 * obrázok jednoducho vyplnený.</p>
 		 * 
-		 * <p>Táto metóda zruší priehľadnosť bodov pôvodného obrázka. Ak ju
-		 * chcete zachovať, musíte {@linkplain #vyrobMasku() vytvoriť}
-		 * a {@linkplain  #použiMasku(BufferedImage) použiť} masku.</p>
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda zruší priehľadnosť
+		 * bodov pôvodného obrázka. Ak ju chcete zachovať, musíte
+		 * {@linkplain #vyrobMasku() vytvoriť} a {@linkplain 
+		 * #použiMasku(BufferedImage) použiť} masku.</p>
+		 * 
+		 * <table class="centered">
+		 * <tr><td><image>posterizuj.jpeg<alt/></image></td>
+		 * <td><image>posterizuj-RGB-etc-.jpeg<alt/></image></td></tr></table>
+		 * 
+		 * <p class="image">Vľavo je verzia obrázka pred a vpravo po úprave
+		 * touto metódou s parametrami: {@link Farebnosť#červená červená},
+		 * {@link Farebnosť#zelená zelená}, {@link Farebnosť#modrá modrá},
+		 * {@link Farebnosť#čierna čierna}, {@link Farebnosť#biela biela},
+		 * {@link Farebnosť#šedá šedá}, {@link Farebnosť#žltá žltá}, {@link 
+		 * Farebnosť#tyrkysová tyrkysová}, {@link Farebnosť#purpurová
+		 * purpurová}.</p>
 		 * 
 		 * <p>Porovnanie rôznych efektov použitých na rovnaký obrázok je
-		 * v opise metódy {@link #farebnéTienidlo(Color)
+		 * aj v opise metódy {@link #farebnéTienidlo(Color)
 		 * farebnéTienidlo(farba)}.</p>
 		 * 
 		 * @param prváFarba prvá farba palety na posterizáciu
@@ -5151,12 +5179,22 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * najbližšiu farbu v palete. Ak paleta obsahuje len jednu farbu,
 		 * tak ňou bude obrázok jednoducho vyplnený.</p>
 		 * 
-		 * <p>Táto metóda zruší priehľadnosť bodov pôvodného obrázka. Ak ju
-		 * chcete zachovať, musíte {@linkplain #vyrobMasku() vytvoriť}
-		 * a {@linkplain  #použiMasku(BufferedImage) použiť} masku.</p>
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda zruší priehľadnosť
+		 * bodov pôvodného obrázka. Ak ju chcete zachovať, musíte
+		 * {@linkplain #vyrobMasku() vytvoriť} a {@linkplain 
+		 * #použiMasku(BufferedImage) použiť} masku.</p>
+		 * 
+		 * <table class="centered">
+		 * <tr><td><image>posterizuj.jpeg<alt/></image></td>
+		 * <td><image>posterizuj-pal32-.jpeg<alt/></image></td></tr></table>
+		 * 
+		 * <p class="image">Vľavo je verzia obrázka pred a vpravo po úprave
+		 * touto metódou s parametrom:
+		 * <em>«inštancia»</em><code>.</code>{@link Obrázok#paleta(int)
+		 * paleta}({@code num32}).</p>
 		 * 
 		 * <p>Porovnanie rôznych efektov použitých na rovnaký obrázok je
-		 * v opise metódy {@link #farebnéTienidlo(Color)
+		 * aj v opise metódy {@link #farebnéTienidlo(Color)
 		 * farebnéTienidlo(farba)}.</p>
 		 * 
 		 * <p><b>Použitý zdroj:</b></p>
@@ -5243,8 +5281,20 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * v skutočnosti viac farieb, než obsahovala paleta použitá pri
 		 * posterizácii (čo nie je pravda).</p>
 		 * 
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda zruší priehľadnosť
+		 * bodov pôvodného obrázka. Ak ju chcete zachovať, musíte
+		 * {@linkplain #vyrobMasku() vytvoriť} a {@linkplain 
+		 * #použiMasku(BufferedImage) použiť} masku.</p>
+		 * 
+		 * <table class="centered">
+		 * <tr><td><image>posterizuj.jpeg<alt/></image></td>
+		 * <td><image>posterizuj-T-.jpeg<alt/></image></td></tr></table>
+		 * 
+		 * <p class="image">Vľavo je verzia obrázka pred a vpravo po úprave
+		 * touto metódou s parametrom: {@code valtrue}.</p>
+		 * 
 		 * <p>Porovnanie rôznych efektov použitých na rovnaký obrázok je
-		 * v opise metódy {@link #farebnéTienidlo(Color)
+		 * aj v opise metódy {@link #farebnéTienidlo(Color)
 		 * farebnéTienidlo(farba)}.</p>
 		 * 
 		 * @param difúziaChyby pravdivostná hodnota určujúca, či má byť pri
@@ -5270,10 +5320,25 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * optický klam – dojem, že posterizovaný obrázok má v skutočnosti
 		 * viac farieb, než obsahovala zadaná paleta (čo nie je pravda).</p>
 		 * 
-		 * <!-- TODO – spracuj príklad použitia -->
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda zruší priehľadnosť
+		 * bodov pôvodného obrázka. Ak ju chcete zachovať, musíte
+		 * {@linkplain #vyrobMasku() vytvoriť} a {@linkplain 
+		 * #použiMasku(BufferedImage) použiť} masku.</p>
+		 * 
+		 * <table class="centered">
+		 * <tr><td><image>posterizuj.jpeg<alt/></image></td>
+		 * <td><image>posterizuj-T-RGB-etc-.jpeg<alt/></image></td></tr></table>
+		 * 
+		 * <p class="image">Vľavo je verzia obrázka pred a vpravo po úprave
+		 * touto metódou s parametrami: {@code valtrue}, {@link 
+		 * Farebnosť#červená červená}, {@link Farebnosť#zelená zelená},
+		 * {@link Farebnosť#modrá modrá}, {@link Farebnosť#čierna čierna},
+		 * {@link Farebnosť#biela biela}, {@link Farebnosť#šedá šedá},
+		 * {@link Farebnosť#žltá žltá}, {@link Farebnosť#tyrkysová
+		 * tyrkysová}, {@link Farebnosť#purpurová purpurová}.</p>
 		 * 
 		 * <p>Porovnanie rôznych efektov použitých na rovnaký obrázok je
-		 * v opise metódy {@link #farebnéTienidlo(Color)
+		 * aj v opise metódy {@link #farebnéTienidlo(Color)
 		 * farebnéTienidlo(farba)}.</p>
 		 * 
 		 * @param difúziaChyby pravdivostná hodnota určujúca, či má byť pri
@@ -5333,8 +5398,22 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * obrázok má v skutočnosti viac farieb, než obsahovala zadaná paleta
 		 * (čo nie je pravda).</p>
 		 * 
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda zruší priehľadnosť
+		 * bodov pôvodného obrázka. Ak ju chcete zachovať, musíte
+		 * {@linkplain #vyrobMasku() vytvoriť} a {@linkplain 
+		 * #použiMasku(BufferedImage) použiť} masku.</p>
+		 * 
+		 * <table class="centered">
+		 * <tr><td><image>posterizuj.jpeg<alt/></image></td>
+		 * <td><image>posterizuj-T-pal32-.jpeg<alt/></image></td></tr></table>
+		 * 
+		 * <p class="image">Vľavo je verzia obrázka pred a vpravo po úprave
+		 * touto metódou s parametrami: {@code valtrue},
+		 * <em>«inštancia»</em><code>.</code>{@link 
+		 * Obrázok#paleta(int) paleta}({@code num32}).</p>
+		 * 
 		 * <p>Porovnanie rôznych efektov použitých na rovnaký obrázok je
-		 * v opise metódy {@link #farebnéTienidlo(Color)
+		 * aj v opise metódy {@link #farebnéTienidlo(Color)
 		 * farebnéTienidlo(farba)}.</p>
 		 * 
 		 * <p><b>Použité zdroje:</b></p>
@@ -5707,6 +5786,198 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 			return farby;*/
 		}
 
+		/**
+		 * <p>Táto metóda použije na tento obrázok zadanú svetelnú masku.
+		 * Táto operácia nahradí pôvodný obsah obrázka. Správanie tejto
+		 * metódy je podobné ako správanie metódy {@link #svetlo(Obrázok,
+		 * Obrázok)} (pozrite si aj jej opis).</p>
+		 * 
+		 * @param osvetlenie iný obrázok, ktorého obsah bude použitý
+		 *     na svetelnú úpravu bodov tohto obrázka
+		 * 
+		 * @see #svetlo(Obrázok, Obrázok)
+		 */
+		public void svetlo(Obrázok osvetlenie)
+		{
+			if (šírka != osvetlenie.šírka || výška != osvetlenie.výška)
+				throw new GRobotException(
+					"Rozmery obrázokov svetelnej operácie sa nezhodujú.",
+						"imageSizeMismatch");
+
+			if (null == údajeObrázka)
+				údajeObrázka = ((DataBufferInt)getRaster().
+					getDataBuffer()).getData();
+
+			if (null == osvetlenie.údajeObrázka)
+				osvetlenie.údajeObrázka = ((DataBufferInt)osvetlenie.getRaster().
+					getDataBuffer()).getData();
+
+			for (int i = 0; i < údajeObrázka.length; ++i)
+			{
+				int a = údajeObrázka[i] & 0xff000000;
+				int r = ((údajeObrázka[i] >> 16) & 0xff) *
+					((osvetlenie.údajeObrázka[i] >> 16) & 0xff) / 0x80;
+				int g = ((údajeObrázka[i] >>  8) & 0xff) *
+					((osvetlenie.údajeObrázka[i] >>  8) & 0xff) / 0x80;
+				int b = ( údajeObrázka[i]        & 0xff) *
+					( osvetlenie.údajeObrázka[i]        & 0xff) / 0x80;
+
+				if (r > 0xff) r = 0xff;
+				if (g > 0xff) g = 0xff;
+				if (b > 0xff) b = 0xff;
+
+				// a je už „prepočítané“/má správnu hodnotu (a << 24):
+				údajeObrázka[i] = a | (r << 16) | (g << 8) | b;
+			}
+		}
+
+		/**
+		 * <p>Táto metóda použije na obrázok zadaný v prvom parametri
+		 * ({@code grafika}) svetelnú masku zadanú v druhom parametri
+		 * ({@code osvetlenie}) a výsledok zlúči do tenjo ({@code valthis})
+		 * inštancie obrázka. Svetelný filter môže obsahovať ľubovoľné
+		 * farby. Pravidlom je, že zložka s hodnotou {@code num0x80} je
+		 * neutrálna, hodnoty zložiek pod touto hranicou výsledný obrázok
+		 * stmavujú a nad touto hranicou zase zosvetľujú.</p>
+		 * 
+		 * <p><b>Príklad:</b></p>
+		 * 
+		 * <p>Tento príklad prečíta obrázok fotografie, upraví parametre
+		 * robota tak, aby mohol rýchlo a ľahko vytvárať svetelnú masku so
+		 * zeleným kruhovým osvetlením (ktoré je premiestňované podľa polohy
+		 * myši) a masku použije na fotografiu.</p>
+		 * 
+		 * <pre CLASS="example">
+			{@code kwdimport} knižnica.*;
+
+			{@code kwdpublic} {@code typeclass} SvetloObrázka {@code kwdextends} {@link GRobot GRobot}
+			{
+				{@code comm// Čítanie obrázka a vytvorenie jeho kópií}
+				{@code comm// (len z dôvodu rýchleho získania obrázkov rovnakých rozmerov)…}
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link Obrázok Obrázok} zdroj = {@link Obrázok Obrázok}.{@link Obrázok#čítaj(String) čítaj}({@code srg"vuje-01.jpeg"});
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link Obrázok Obrázok} svetlo = {@code kwdnew} {@link Obrázok#Obrázok(Obrázok) Obrázok}(zdroj);
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link Obrázok Obrázok} výsledok = {@code kwdnew} {@link Obrázok#Obrázok(Obrázok) Obrázok}(zdroj);
+
+				{@code kwdprivate} SvetloObrázka()
+				{
+					{@code comm// Úprava rozmerov a polohy okna (aj plátna):}
+					{@code valsuper}(zdroj.{@link Obrázok#šírka šírka}, zdroj.{@link Obrázok#výška výška});
+					{@link Svet Svet}.{@link Svet#zbaľ() zbaľ}();
+					{@link Svet Svet}.{@link Svet#vystreď() vystreď}();
+
+					{@code comm// Prispôsobenie vlastností robota:}
+					{@link GRobot#veľkosť(double) veľkosť}({@code num150});
+					{@link GRobot#farba(Color) farba}({@code kwdnew} {@link Farba#Farba(int) Farba}({@code num0x80FF80}));
+					{@link GRobot#cieľováFarba(Color) cieľováFarba}({@code kwdnew} {@link Farba#Farba(int) Farba}({@code num0x0080FF80}, {@code valtrue}));
+					{@link GRobot#kresliDoObrázka(Obrázok) kresliDoObrázka}(svetlo);
+					{@link GRobot#použiKruhovýNáter() použiKruhovýNáter}();
+					{@link GRobot#skry() skry}();
+
+					{@code comm// Prvé prekreslenie:}
+					{@link GRobot#pohybMyši() pohybMyši}();
+				}
+
+				{@code comm// Keby sme chceli zachovať svetlosť zvyšku obrázka, museli by sme}
+				{@code comm// použiť na výplň svetelnej masky túto farbu:}
+				{@code comm// ## private final static Farba neutrálna = new Farba(0x808080);}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#pohybMyši() pohybMyši}()
+				{
+					{@code comm// Vytvorenie svetelnej masky:}
+					svetlo.{@link Obrázok#vyplň(Color) vyplň}({@link Farebnosť#tmavošedá tmavošedá});
+					{@code comm// ## svetlo.vyplň(neutrálna);}
+					{@link GRobot#skočNaMyš() skočNaMyš}();
+					{@link GRobot#kruh() kruh}();
+
+					{@code comm// Použitie masky:}
+					výsledok.{@link Obrázok#svetlo(Obrázok, Obrázok) svetlo}(zdroj, svetlo);
+
+					{@code comm// Nakreslenie výsledku:}
+					{@link Plátno podlaha}.{@link Plátno#obrázok(Image) obrázok}(výsledok);
+
+					{@code comm// Keby sme chceli zobraziť len svetelnú masku:}
+					{@code comm// ## podlaha.obrázok(svetlo);}
+				}
+
+				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
+				{
+					{@code kwdnew} SvetloObrázka();
+				}
+			}
+			</pre>
+		 * 
+		 * <p>Pôvodné obrázky na prevzatie: <a href="resources/vuje-01.jpeg"
+		 * target="_blank">vuje-01.jpeg</a>, <a href="resources/vuje-02.jpeg"
+		 * target="_blank">vuje-02.jpeg</a></p>
+		 * 
+		 * <p><b>Výsledok:</b></p>
+		 * 
+		 * <table class="centered">
+		 * <tr><td><image>vuje-01-small.jpeg<alt/></image></td>
+		 * <td><image>vuje-01-svetlo.jpeg<alt/></image></td>
+		 * <td><image>vuje-01-vysledok.jpeg<alt/></image></td></tr></table>
+		 * 
+		 * <p class="image">Úprava obrázka <a href="resources/vuje-01.jpeg"
+		 * target="_blank">vuje-01.jpeg</a> – zľava doprava: pôvodný obrázok,
+		 * svetelná maska, výsledok.</p>
+		 * 
+		 * <table class="centered">
+		 * <tr><td><image>vuje-02-small.jpeg<alt/></image></td>
+		 * <td><image>vuje-02-svetlo.jpeg<alt/></image></td>
+		 * <td><image>vuje-02-vysledok.jpeg<alt/></image></td></tr></table>
+		 * 
+		 * <p class="image">Úprava obrázka <a href="resources/vuje-02.jpeg"
+		 * target="_blank">vuje-02.jpeg</a> – zľava doprava: pôvodný obrázok,
+		 * svetelná maska, výsledok.</p>
+		 * 
+		 * @param grafika iný obrázok, ktorého obsah bude slúžiť ako predloha
+		 *     osvetleného výsledku uloženého do tohto ({@code valthis})
+		 *     obrázka
+		 * @param osvetlenie iný obrázok, ktorého obsah bude použitý
+		 *     na svetelnú úpravu bodov výsledku
+		 * 
+		 * @see #svetlo(Obrázok)
+		 */
+		public void svetlo(Obrázok grafika, Obrázok osvetlenie)
+		{
+			if (šírka != grafika.šírka || šírka != osvetlenie.šírka ||
+				výška != grafika.výška || výška != osvetlenie.výška)
+				throw new GRobotException(
+					"Rozmery obrázokov svetelnej operácie sa nezhodujú.",
+						"imageSizeMismatch");
+
+			if (null == údajeObrázka)
+				údajeObrázka = ((DataBufferInt)getRaster().
+					getDataBuffer()).getData();
+
+			if (null == grafika.údajeObrázka)
+				grafika.údajeObrázka = ((DataBufferInt)grafika.getRaster().
+					getDataBuffer()).getData();
+
+			if (null == osvetlenie.údajeObrázka)
+				osvetlenie.údajeObrázka = ((DataBufferInt)osvetlenie.getRaster().
+					getDataBuffer()).getData();
+
+			for (int i = 0; i < údajeObrázka.length; ++i)
+			{
+				int a = grafika.údajeObrázka[i] & 0xff000000;
+				int r = ((grafika.údajeObrázka[i] >> 16) & 0xff) *
+					((osvetlenie.údajeObrázka[i] >> 16) & 0xff) / 0x80;
+				int g = ((grafika.údajeObrázka[i] >>  8) & 0xff) *
+					((osvetlenie.údajeObrázka[i] >>  8) & 0xff) / 0x80;
+				int b = ( grafika.údajeObrázka[i]        & 0xff) *
+					( osvetlenie.údajeObrázka[i]        & 0xff) / 0x80;
+
+				if (r > 0xff) r = 0xff;
+				if (g > 0xff) g = 0xff;
+				if (b > 0xff) b = 0xff;
+
+				// a je už „prepočítané“/má správnu hodnotu (a << 24):
+				údajeObrázka[i] = a | (r << 16) | (g << 8) | b;
+			}
+		}
+
+
 	// Zrkadlenie, rolovanie a pretáčanie
 
 		/**
@@ -5815,6 +6086,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * vzniknuté prázdne časti plochy dokreslené. Ak chceme pretočiť
 		 * obrázok dookola (t. j. bez straty obsahu), musíme použiť metódu
 		 * {@link #pretoč(double, double) pretoč}.</p>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b>
+		 * Je dôležité si uvedomiť, že pri pripojení plazmy k obrázku nemá
+		 * rolovanie alebo pretáčanie samotného obrázka zmysel, pretože jeho
+		 * obsah je vždy úplne nahradený generátorom plazmy. Na pretáčanie
+		 * obsahu takého obrázka má zmysel použiť iba metódy plazmy.</p>
 		 * 
 		 * @param Δx posun v horizontálnom (vodorovnom) smere
 		 * @param Δy posun vo vertikálnom (zvislom) smere
@@ -5957,6 +6234,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * prázdne časti zostali skutočne prázdne (pripravené na ďalšie
 		 * kreslenie), musíme použiť metódu {@link #roluj(double, double)
 		 * roluj}.</p>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b>
+		 * Je dôležité si uvedomiť, že pri pripojení plazmy k obrázku nemá
+		 * rolovanie alebo pretáčanie samotného obrázka zmysel, pretože jeho
+		 * obsah je vždy úplne nahradený generátorom plazmy. Na pretáčanie
+		 * obsahu takého obrázka má zmysel použiť iba metódy plazmy.</p>
 		 * 
 		 * @param Δx posun v horizontálnom (vodorovnom) smere
 		 * @param Δy posun vo vertikálnom (zvislom) smere
@@ -7667,7 +7950,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * {@linkplain Svet#spustiČasovač() časovač}, tak by vlnenie nemohlo
 		 * fungovať, preto je časovač touto metódou spúšťaný automaticky.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
@@ -7730,7 +8013,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * byť časovač spustený automaticky. Umožňuje to parameter
 		 * {@code ajČasovač}.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
@@ -7796,7 +8079,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * {@linkplain Svet#spustiČasovač() časovač}, tak by vlnenie nemohlo
 		 * fungovať, preto je časovač touto metódou spúšťaný automaticky.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
@@ -7864,7 +8147,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * byť časovač spustený automaticky. Umožňuje to parameter
 		 * {@code ajČasovač}.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
@@ -8350,6 +8633,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		{
 			if (!snímky.isEmpty())
 			{
+				// uložGrafikuSnímky(snímka);
 				snímky.remove(snímka);
 				if (snímky.isEmpty())
 				{
@@ -8386,6 +8670,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		{
 			if (!snímky.isEmpty())
 			{
+				// uložGrafikuSnímky(snímka);
 				indexSnímky = overIndexSnímky(indexSnímky);
 				snímky.remove(indexSnímky);
 
@@ -8442,7 +8727,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 			if (!snímky.isEmpty())
 			{
 				uložGrafikuSnímky(snímka);
-				if (--snímka <= 0) snímka = snímky.size() - 1;
+				if (--snímka < 0) snímka = snímky.size() - 1;
 				dajGrafikuSnímky(snímka);
 				nastavČas();
 			}
