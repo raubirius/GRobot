@@ -70,7 +70,7 @@ public interface Konštanty
 		/** <p>Konštanta minoritnej verzie tohto robota.</p> */
 		public final static int minorVersion = 00;
 		/** <p>Konštanta poznámky verzie tohto robota.</p> */
-		public final static String versionNote = " (2020-04-21)";
+		public final static String versionNote = " (2020-04-28)";
 		/** <p>Konštanta rozpätia rokov vývoja tejto verzie…
 			(v podstate na účel výpisu copyrightu…)</p> */
 		public final static String years = "2010 – 2020";

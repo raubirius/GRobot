@@ -5856,8 +5856,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 				{@code comm// Čítanie obrázka a vytvorenie jeho kópií}
 				{@code comm// (len z dôvodu rýchleho získania obrázkov rovnakých rozmerov)…}
 				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link Obrázok Obrázok} zdroj = {@link Obrázok Obrázok}.{@link Obrázok#čítaj(String) čítaj}({@code srg"vuje-01.jpeg"});
-				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link Obrázok Obrázok} svetlo = {@code kwdnew} {@link Obrázok#Obrázok(Obrázok) Obrázok}(zdroj);
-				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link Obrázok Obrázok} výsledok = {@code kwdnew} {@link Obrázok#Obrázok(Obrázok) Obrázok}(zdroj);
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link Obrázok Obrázok} svetlo = {@code kwdnew} {@link Obrázok#Obrázok(java.awt.Image) Obrázok}(zdroj);
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link Obrázok Obrázok} výsledok = {@code kwdnew} {@link Obrázok#Obrázok(java.awt.Image) Obrázok}(zdroj);
 
 				{@code kwdprivate} SvetloObrázka()
 				{
