@@ -560,6 +560,43 @@ public class Tlačidlo extends JButton implements Poloha
 
 
 	/**
+	 * <p>Overí, či sa poloha tohto tlačidla dokonale zhoduje so zadanými
+	 * súradnicami. Ak je zistená zhoda, tak metóda vráti hodnotu {@code 
+	 * valtrue}, v opačnom prípade hodnotu {@code valfalse}.</p>
+	 * 
+	 * @param x x-ová súradnica, s ktorou má byť porovnaná poloha tohto
+	 *     tlačidla
+	 * @param y y-ová súradnica, s ktorou má byť porovnaná poloha tohto
+	 *     tlačidla
+	 * @return {@code valtrue} ak sa poloha tohto tlačidla zhoduje
+	 *     so zadanými súradnicami, {@code valfalse} v opačnom prípade
+	 */
+	public boolean jeNa(double x, double y)
+	{
+		double ox = this.x - ((Plátno.šírkaPlátna - šírka) / 2.0);
+		double oy = -this.y + ((Plátno.výškaPlátna - výška) / 2.0);
+		return ox == x && oy == y;
+	}
+
+	/**
+	 * <p>Overí, či sa poloha tohto tlačidla a poloha zadaného objektu
+	 * dokonale zhodujú. Ak je zistená zhoda, tak metóda vráti hodnotu
+	 * {@code valtrue}, v opačnom prípade hodnotu {@code valfalse}.</p>
+	 * 
+	 * @param poloha objekt, ktorého poloha má byť porovnaná s polohou tohto
+	 *     tlačidla
+	 * @return {@code valtrue} ak sa poloha tohto tlačidla zhoduje s polohou
+	 *     zadaného objektu, {@code valfalse} v opačnom prípade
+	 */
+	public boolean jeNa(Poloha poloha)
+	{
+		double ox = this.x - ((Plátno.šírkaPlátna - šírka) / 2.0);
+		double oy = -this.y + ((Plátno.výškaPlátna - výška) / 2.0);
+		return poloha.polohaX() == ox && poloha.polohaY() == oy;
+	}
+
+
+	/**
 	 * <p>Prilepí tlačidlo k ľavému okraju. Táto akcia zruší prípadné
 	 * predchádzajúce prilepenie k pravému okraju. Každé prilepenie upravuje
 	 * súradnicový systém tlačidla presunutím čo najbližšie

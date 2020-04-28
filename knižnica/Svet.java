@@ -13211,10 +13211,10 @@ public final class Svet extends JFrame
 		{ return dialóg(popisy, údaje, predvolenýTitulokDialógu); }
 
 		/**
-		 * <p>Vytvorí a otvorí prispôsobiteľný dialóg s prvkami vytvorenými podľa
-		 * obsahu poľa {@code údaje}. Metóda akceptuje v poli prvkov
-		 * {@code údaje} tri údajové typy (resp. v poslednom prípade špeciálnu
-		 * hodnotu) prvkov tohto poľa:</p>
+		 * <p>Vytvorí a otvorí prispôsobiteľný dialóg s prvkami vytvorenými
+		 * podľa obsahu poľa {@code údaje}. Metóda akceptuje v poli prvkov
+		 * {@code údaje} osem údajových typov (resp. v poslednom prípade
+		 * špeciálnu hodnotu {@code valnull}) prvkov tohto poľa:</p>
 		 * 
 		 * <ol>
 		 * <li>hodnota údajového typu {@link String String}, ktorá
@@ -17768,7 +17768,7 @@ public final class Svet extends JFrame
 		 * <pre CLASS="example">
 			{@code kwdimport} knižnica.*;
 
-			{@code kwdpublic} {@code typeclass} TestLadenieSkriptu {@code kwdextends} {@link GRobot GRobot}
+			{@code kwdpublic} {@code typeclass} TestLadeniaSkriptu {@code kwdextends} {@link GRobot GRobot}
 			{
 				{@code comm// Nasledujúce premenné sú „semafory“ používané počas procesu ladenia:}
 				{@code comm// }
@@ -17779,7 +17779,7 @@ public final class Svet extends JFrame
 				{@code kwdprivate} {@code typeboolean} krok = {@code valfalse}, prerušiť = {@code valfalse};
 
 				{@code comm// Konštruktor.}
-				{@code kwdprivate} TestLadenieSkriptu()
+				{@code kwdprivate} TestLadeniaSkriptu()
 				{
 					{@code comm// Definovanie obsluhy udalostí…}
 					{@code kwdnew} {@link ObsluhaUdalostí#ObsluhaUdalostí() ObsluhaUdalostí}()
@@ -17928,7 +17928,7 @@ public final class Svet extends JFrame
 				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 				{
 					{@link Svet Svet}.{@link Svet#použiKonfiguráciu() použiKonfiguráciu}();
-					{@code kwdnew} TestLadenieSkriptu();
+					{@code kwdnew} TestLadeniaSkriptu();
 				}
 			}
 			</pre>

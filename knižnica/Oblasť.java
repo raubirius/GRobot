@@ -1251,9 +1251,9 @@ public class Oblasť extends Area implements Poloha
 	public double polohaX()
 	{
 		Rectangle2D hranice = getBounds2D();
-		double Δx = (Svet.prepočítajSpäťX(hranice.getX()) +
-			hranice.getWidth() / 2);
-		return Δx;
+		double ox = Svet.prepočítajSpäťX(hranice.getX()) +
+			hranice.getWidth() / 2;
+		return ox;
 	}
 
 	/**
@@ -1264,9 +1264,9 @@ public class Oblasť extends Area implements Poloha
 	public double polohaY()
 	{
 		Rectangle2D hranice = getBounds2D();
-		double Δy = (Svet.prepočítajSpäťY(hranice.getY()) -
-			hranice.getHeight() / 2);
-		return Δy;
+		double oy = Svet.prepočítajSpäťY(hranice.getY()) -
+			hranice.getHeight() / 2;
+		return oy;
 	}
 
 	/**
@@ -1309,12 +1309,56 @@ public class Oblasť extends Area implements Poloha
 	public Bod poloha()
 	{
 		Rectangle2D hranice = getBounds2D();
-		double Δx = (Svet.prepočítajSpäťX(hranice.getX()) +
-			hranice.getWidth() / 2);
-		double Δy = (Svet.prepočítajSpäťY(hranice.getY()) -
-			hranice.getHeight() / 2);
-		return new Bod(Δx, Δy);
+		double ox = Svet.prepočítajSpäťX(hranice.getX()) +
+			hranice.getWidth() / 2;
+		double oy = Svet.prepočítajSpäťY(hranice.getY()) -
+			hranice.getHeight() / 2;
+		return new Bod(ox, oy);
 	}
+
+
+	/**
+	 * <p>Overí, či sa poloha tejto oblasti (t. j. súradníc jej stredu)
+	 * dokonale zhoduje so zadanými súradnicami. Ak je zistená zhoda, tak
+	 * metóda vráti hodnotu {@code valtrue}, v opačnom prípade hodnotu
+	 * {@code valfalse}.</p>
+	 * 
+	 * @param x x-ová súradnica, s ktorou má byť porovnaná poloha tejto oblasti
+	 * @param y y-ová súradnica, s ktorou má byť porovnaná poloha tejto oblasti
+	 * @return {@code valtrue} ak sa poloha tejto oblasti zhoduje so zadanými
+	 *     súradnicami, {@code valfalse} v opačnom prípade
+	 */
+	public boolean jeNa(double x, double y)
+	{
+		Rectangle2D hranice = getBounds2D();
+		double ox = Svet.prepočítajSpäťX(hranice.getX()) +
+			hranice.getWidth() / 2;
+		double oy = Svet.prepočítajSpäťY(hranice.getY()) -
+			hranice.getHeight() / 2;
+		return ox == x && oy == y;
+	}
+
+	/**
+	 * <p>Overí, či sa poloha tejto oblasti (t. j. súradníc jej stredu)
+	 * a poloha zadaného objektu dokonale zhodujú. Ak je zistená zhoda,
+	 * tak metóda vráti hodnotu {@code valtrue}, v opačnom prípade hodnotu
+	 * {@code valfalse}.</p>
+	 * 
+	 * @param poloha objekt, ktorého poloha má byť porovnaná s polohou tejto
+	 *     oblasti
+	 * @return {@code valtrue} ak sa poloha tejto oblasti zhoduje s polohou
+	 *     zadaného objektu, {@code valfalse} v opačnom prípade
+	 */
+	public boolean jeNa(Poloha poloha)
+	{
+		Rectangle2D hranice = getBounds2D();
+		double ox = Svet.prepočítajSpäťX(hranice.getX()) +
+			hranice.getWidth() / 2;
+		double oy = Svet.prepočítajSpäťY(hranice.getY()) -
+			hranice.getHeight() / 2;
+		return poloha.polohaX() == ox && poloha.polohaY() == oy;
+	}
+
 
 	/**
 	 * <p>Vráti šírku oblasti.</p>

@@ -360,6 +360,259 @@ public class Bod extends Point2D implements Poloha
 	// Pozor! Každý setter – treba preťažiť v inštancii Poloha.stred
 
 
+	// Pozor! Každý setter – treba preťažiť v inštancii Poloha.stred
+
+	/**
+	 * <p>Upraví mierku súradníc tohto bodu podľa zadanej hodnoty.</p>
+	 * 
+	 * <p class="tip"><b>Tip:</b> Pozrite si aj informácie v opise metódy
+	 * {@link #mierka(double, double) mierka(mx, my).}</p>
+	 * 
+	 * @param mierka miera zmeny mierky oboch súradníc tohto bodu
+	 * 
+	 * @see #mierka(double, double)
+	 * @see #mierka(Poloha)
+	 */
+	public void mierka(double mierka)
+	{
+		this.x *= mierka;
+		this.y *= mierka;
+	}
+
+	/**
+	 * <p>Upraví súradnice tohto bodu podľa zadaných hodnôt mierky
+	 * v horizontálnom (mx) a vertikálnom (my) smere. Metóda jednoducho
+	 * „prenásobí“ každú súradnicu zadanou súradnicou, avšak aj touto
+	 * jednoduchou transformáciou sa dajú dosiahnuť zaujímavé výsledky.
+	 * Napríklad vypočítať stred úsečky – nastavením súradníc tejto
+	 * inštancie na hodnotu prvého bodu úsečky (napr. metódou {@link 
+	 * #poloha(Poloha) poloha}), posunutím súradníc tejto inštancie
+	 * o hodnotu druhého bodu úsečky (napr. metódou {@link  #posuň(Poloha)
+	 * posuň}) a zmenou mierky tejto inštancie o hodnotu {@code num0.5}
+	 * (napr. metódou {@link  #mierka(double) mierka}). Tiež môžeme
+	 * zrkladliť body okolo osí (zápornými hodnotami mierok) a podobne.</p>
+	 * 
+	 * @param mx miera zmeny mierky v smere osi x
+	 * @param my miera zmeny mierky v smere osi y
+	 * 
+	 * @see #mierka(double)
+	 * @see #mierka(Poloha)
+	 */
+	public void mierka(double mx, double my)
+	{
+		this.x *= mx;
+		this.y *= my;
+	}
+
+	/**
+	 * <p>Upraví mierku súradníc tohto bodu podľa hodnôt súradníc zadanej
+	 * inštancie. Súradnica polohy x zadanej inštancie určí zmenu mierky
+	 * v horizontálnom smere a súradnica polohy y vo vertikálnom smere.</p>
+	 * 
+	 * <p class="tip"><b>Tip:</b> Pozrite si aj informácie v opise metódy
+	 * {@link #mierka(double, double) mierka(mx, my).}</p>
+	 * 
+	 * @param poloha inštancia určujúca mieru zmeny mierky tohto bodu
+	 *     podľa hodnôt súradníc zadaného bodu
+	 * 
+	 * @see #mierka(double)
+	 * @see #mierka(double, double)
+	 */
+	public void mierka(Poloha poloha)
+	{
+		this.x *= poloha.polohaX();
+		this.y *= poloha.polohaY();
+	}
+
+	// Pozor! Každý setter – treba preťažiť v inštancii Poloha.stred
+
+
+	// Pozor! Každý setter – treba preťažiť v inštancii Poloha.stred
+
+	/**
+	 * <p>Pootočí súradnice tohto bodu okolo stredu súradnicovej sústavy
+	 * s zadaný uhol.</p>
+	 * 
+	 * @param uhol uhol pootočenia
+	 * 
+	 * @see #otoč(double)
+	 * @see #otoč(double, double, double)
+	 * @see #otoč(Poloha, double)
+	 * @see #rotuj(double)
+	 * @see #rotuj(double, double, double)
+	 * @see #rotuj(Poloha, double)
+	 */
+	public void otoč(double uhol)
+	{
+		if (0 == uhol) return;
+		double α = Math.toRadians(uhol);
+		double x0 = this.x, y0 = this.y;
+		this.x = (x0 * Math.cos(α)) - (y0 * Math.sin(α));
+		this.y = (x0 * Math.sin(α)) + (y0 * Math.cos(α));
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #otoč(double) otoč}.</p> */
+	public void otoc(double uhol) { otoč(uhol); }
+
+	/**
+	 * <p>Pootočí súradnice tohto bodu okolo zadaného bodu o zadaný
+	 * uhol.</p>
+	 * 
+	 * @param xs x-ová súradnica stredu rotácie
+	 * @param ys y-ová súradnica stredu rotácie
+	 * @param uhol uhol pootočenia
+	 * 
+	 * @see #otoč(double)
+	 * @see #otoč(double, double, double)
+	 * @see #otoč(Poloha, double)
+	 * @see #rotuj(double)
+	 * @see #rotuj(double, double, double)
+	 * @see #rotuj(Poloha, double)
+	 */
+	public void otoč(double xs, double ys, double uhol)
+	{
+		if (0 == uhol) return;
+		double α = Math.toRadians(uhol);
+		double x0 = this.x - xs, y0 = this.y - ys;
+		this.x = (x0 * Math.cos(α)) - (y0 * Math.sin(α)) + xs;
+		this.y = (x0 * Math.sin(α)) + (y0 * Math.cos(α)) + ys;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #otoč(double, double, double) otoč}.</p> */
+	public void otoc(double xs, double ys, double uhol) { otoč(xs, ys, uhol); }
+
+	/**
+	 * <p>Pootočí súradnice tohto bodu okolo zadaného bodu o zadaný
+	 * uhol.</p>
+	 * 
+	 * @param stred stred rotácie
+	 * @param uhol uhol pootočenia
+	 * 
+	 * @see #otoč(double)
+	 * @see #otoč(double, double, double)
+	 * @see #otoč(Poloha, double)
+	 * @see #rotuj(double)
+	 * @see #rotuj(double, double, double)
+	 * @see #rotuj(Poloha, double)
+	 */
+	public void otoč(Poloha stred, double uhol)
+	{
+		if (0 == uhol) return;
+		double α = Math.toRadians(uhol);
+		double x0 = this.x - stred.polohaX(), y0 = this.y - stred.polohaY();
+		this.x = (x0 * Math.cos(α)) - (y0 * Math.sin(α)) + stred.polohaX();
+		this.y = (x0 * Math.sin(α)) + (y0 * Math.cos(α)) + stred.polohaY();
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #otoč(Poloha, double) otoč}.</p> */
+	public void otoc(Poloha stred, double uhol) { otoč(stred, uhol); }
+
+
+	/**
+	 * <p>Pootočí súradnice tohto bodu okolo stredu súradnicovej sústavy
+	 * s zadaný uhol.</p>
+	 * 
+	 * @param uhol uhol pootočenia
+	 * 
+	 * @see #otoč(double)
+	 * @see #otoč(double, double, double)
+	 * @see #otoč(Poloha, double)
+	 * @see #rotuj(double)
+	 * @see #rotuj(double, double, double)
+	 * @see #rotuj(Poloha, double)
+	 */
+	public void rotuj(double uhol)
+	{
+		if (0 == uhol) return;
+		double α = Math.toRadians(uhol);
+		double x0 = this.x, y0 = this.y;
+		this.x = (x0 * Math.cos(α)) - (y0 * Math.sin(α));
+		this.y = (x0 * Math.sin(α)) + (y0 * Math.cos(α));
+	}
+
+	/**
+	 * <p>Pootočí súradnice tohto bodu okolo zadaného bodu o zadaný
+	 * uhol.</p>
+	 * 
+	 * @param xs x-ová súradnica stredu rotácie
+	 * @param ys y-ová súradnica stredu rotácie
+	 * @param uhol uhol pootočenia
+	 * 
+	 * @see #otoč(double)
+	 * @see #otoč(double, double, double)
+	 * @see #otoč(Poloha, double)
+	 * @see #rotuj(double)
+	 * @see #rotuj(double, double, double)
+	 * @see #rotuj(Poloha, double)
+	 */
+	public void rotuj(double xs, double ys, double uhol)
+	{
+		if (0 == uhol) return;
+		double α = Math.toRadians(uhol);
+		double x0 = this.x - xs, y0 = this.y - ys;
+		this.x = (x0 * Math.cos(α)) - (y0 * Math.sin(α)) + xs;
+		this.y = (x0 * Math.sin(α)) + (y0 * Math.cos(α)) + ys;
+	}
+
+	/**
+	 * <p>Pootočí súradnice tohto bodu okolo zadaného bodu o zadaný
+	 * uhol.</p>
+	 * 
+	 * @param stred stred rotácie
+	 * @param uhol uhol pootočenia
+	 * 
+	 * @see #otoč(double)
+	 * @see #otoč(double, double, double)
+	 * @see #otoč(Poloha, double)
+	 * @see #rotuj(double)
+	 * @see #rotuj(double, double, double)
+	 * @see #rotuj(Poloha, double)
+	 */
+	public void rotuj(Poloha stred, double uhol)
+	{
+		if (0 == uhol) return;
+		double α = Math.toRadians(uhol);
+		double x0 = this.x - stred.polohaX(), y0 = this.y - stred.polohaY();
+		this.x = (x0 * Math.cos(α)) - (y0 * Math.sin(α)) + stred.polohaX();
+		this.y = (x0 * Math.sin(α)) + (y0 * Math.cos(α)) + stred.polohaY();
+	}
+
+	// Pozor! Každý setter – treba preťažiť v inštancii Poloha.stred
+
+
+	/**
+	 * <p>Overí, či sa poloha tohto bodu dokonale zhoduje so zadanými
+	 * súradnicami. Ak je zistená zhoda, tak metóda vráti hodnotu {@code 
+	 * valtrue}, v opačnom prípade hodnotu {@code valfalse}.</p>
+	 * 
+	 * @param x x-ová súradnica, s ktorou má byť porovnaná poloha tohto bodu
+	 * @param y y-ová súradnica, s ktorou má byť porovnaná poloha tohto bodu
+	 * @return {@code valtrue} ak sa poloha tohto bodu zhoduje so zadanými
+	 *     súradnicami, {@code valfalse} v opačnom prípade
+	 */
+	public boolean jeNa(double x, double y)
+	{
+		return this.x == x && this.y == y;
+	}
+
+	/**
+	 * <p>Overí, či sa poloha tohto bodu a poloha zadaného objektu dokonale
+	 * zhodujú. Ak je zistená zhoda, tak metóda vráti hodnotu {@code valtrue},
+	 * v opačnom prípade hodnotu {@code valfalse}.</p>
+	 * 
+	 * @param poloha objekt, ktorého poloha má byť porovnaná s polohou tohto
+	 *     bodu
+	 * @return {@code valtrue} ak sa poloha tohto bodu zhoduje s polohou
+	 *     zadaného objektu, {@code valfalse} v opačnom prípade
+	 */
+	public boolean jeNa(Poloha poloha)
+	{
+		if (poloha instanceof Bod)
+			return ((Bod)poloha).x == x && ((Bod)poloha).y == y;
+		return poloha.polohaX() == x && poloha.polohaY() == y;
+	}
+
+
 	/**
 	 * <p>Zistí vzdialenosť tohto bodu od bodu zadaného prostredníctvom
 	 * súradníc.</p>
@@ -577,8 +830,8 @@ public class Bod extends Point2D implements Poloha
 	{ return bodNaReťazec(bod); }
 
 	/**
-	 * <p>Prevedie zadanú implementáciu rozhrania {@link Poloha Poloha} (čiže
-	 * nielen bodu – vstupom môže byť napríklad {@link GRobot robot},
+	 * <p>Prevedie zadanú implementáciu rozhrania {@link Poloha Poloha}
+	 * (čiže nielen bodu – vstupom môže byť napríklad {@link GRobot robot},
 	 * {@link Oblasť oblasť}, {@link Tlačidlo tlačidlo}, {@link Častica
 	 * častica}…) do textovej podoby, ktorá bude reprezentovať polohu so
 	 * súradnicami x a y.
@@ -754,7 +1007,7 @@ public class Bod extends Point2D implements Poloha
 	 * #reťazecNaPolohu(String) reťazecNaPolohu}.</p>
 	 * 
 	 * @param text reťazec, ktorý má byť posúdený
-	 * @return {@code val true} ak je zadaný teťazec v rozpoznateľnom
+	 * @return {@code valtrue} ak je zadaný teťazec v rozpoznateľnom
 	 *     formáte
 	 * 
 	 * @see #polohaNaReťazec(double, double)

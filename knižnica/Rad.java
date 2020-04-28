@@ -532,7 +532,7 @@ public class Rad
 	public int hornaHranica() { return vrchnáHranica; }
 
 	/**
-	 * <p>>Upraví vrchnú hranicu tohto generátora pri zachovaní najmenej
+	 * <p>Upraví vrchnú hranicu tohto generátora pri zachovaní najmenej
 	 * jednotkového rozdielu medzi hranicami a zabezpečení hodnoty spodnej
 	 * hranice nižšej od vrchnej hranice.</p>
 	 * 

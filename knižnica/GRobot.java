@@ -5675,10 +5675,17 @@ TODO: na úvodnú stránku
 
 				/**
 				 * <p>Vráti objekt typu {@link Stroke Stroke} vyjadrujúci
-				 * vlastnosti aktuálnej čiary, ktorou robot kreslí.
-				 * (Predvolene ide o objekt typu {@link BasicStroke
-				 * BasicStroke}, ktorý definuje súvislú čiaru s hrúbkou pera
-				 * robota.)</p>
+				 * vlastnosti aktuálnej čiary, ktorou robot kreslí.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Predvolene ide o objekt
+				 * typu {@link BasicStroke BasicStroke}, ktorý definuje
+				 * súvislú čiaru s aktuálnou hrúbkou pera robota.</p>
+				 * 
+				 * <p class="caution"><b>Pozor!</b> Pri každej {@linkplain 
+				 * #hrúbkaPera(double) zmene hrúbky pera} je vytvorený
+				 * nový objekt {@link BasicStroke BasicStroke}, ktorý
+				 * nahradí prípadný objekt nastavený metódou {@link 
+				 * #čiara(Stroke) čiara(nováČiara)}.</p>
 				 * 
 				 * @return aktuálna čiara robota (objekt typu {@link 
 				 *     Stroke Stroke})
@@ -5698,11 +5705,59 @@ TODO: na úvodnú stránku
 
 				/**
 				 * <p>Podľa zadaného objekt typu {@link Stroke Stroke}
-				 * nastaví novú čiaru, ktorou bude robot kresliť.</p>
+				 * nastaví novú čiaru, ktorou bude robot kresliť. Ak je
+				 * zadaná hodnota {@code valnull}, tak je čiara resetovaná
+				 * podľa naposledny nastavenej {@linkplain 
+				 * #hrúbkaČiary(double) hrúbky čiary.}</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Nastavenie vlastnej
+				 * čiary prostredníctvom tejto metódy nie je súčasťou
+				 * {@linkplain Svet#použiKonfiguráciu(String) automatickej
+				 * konfigurácie}. (Pozri napríklad metódu {@link 
+				 * #registrujVKonfigurácii() registrujVKonfigurácii}.)</p>
+				 * 
+				 * <p class="caution"><b>Pozor!</b> Pri každej {@linkplain 
+				 * #hrúbkaPera(double) zmene hrúbky pera} je vytvorený
+				 * nový objekt {@link BasicStroke BasicStroke}, ktorý
+				 * nahradí objekt nastavený touto metódou.</p>
+				 * 
+				 * <p> </p>
+				 * 
+				 * <p><b>Užitočné zdroje:</b></p>
+				 * 
+				 * <ul>
+				 * <li><a
+				 * href="https://docs.oracle.com/javase/tutorial/2d/geometry/strokeandfill.html"
+				 * target="_blank"><em>Stroking and Filling Graphics
+				 * Primitives (The Java™ Tutorials – 2D Graphics – Working
+				 * with Geometry).</em></a> Copyright © 1995, 2019 Oracle
+				 * and/or its affiliates. Citované: 9. apríla 2020.</li>
+				 * 
+				 * <li><a
+				 * href="http://www.java2s.com/Tutorials/Java/Graphics/Graphics_Settings/Use_dashed_stroke_to_draw_dashed_line_in_Java.htm"
+				 * target="_blank"><em>Use dashed stroke to draw dashed line
+				 * in Java.</em></a> java2s.com – © Demo Source and Support.
+				 * Citované: 9. apríla 2020.</li>
+				 * 
+				 * <li><a
+				 * href="http://www.java2s.com/Code/Java/2D-Graphics-GUI/Dashedstroke.htm"
+				 * target="_blank"><em>Dashed stroke : Stroke – 2D Graphics
+				 * GUI – Java.</em></a> java2s.com – © Demo Source and
+				 * Support. Citované: 9. apríla 2020.</li>
+				 * 
+				 * <li><a
+				 * href="https://docstore.mik.ua/orelly/java-ent/jfc/ch04_05.htm"
+				 * target="_blank">Flanagan, David: <em>Stroking Lines (Java
+				 * Foundation Classes).</em></a> Copyright © 2001 O’Reilly
+				 * and Associates. ISBN 1-56592-488-6. Published September
+				 * 1999. Citované: 9. apríla 2020.</li>
+				 * </ul>
+				 * 
+				 * <p> </p>
 				 * 
 				 * @param nováČiara objekt typu {@link Stroke Stroke}
 				 *     vyjadrujúci vlastnosti novej čiary, ktorou bude robot
-				 *     kresliť
+				 *     kresliť alebo hodnota {@code valnull}
 				 * 
 				 * @see #hrúbkaPera()
 				 * @see #hrúbkaČiary()
@@ -5712,7 +5767,18 @@ TODO: na úvodnú stránku
 				 * @see #predvolenáHrúbkaČiary()
 				 * @see #čiara()
 				 */
-				public void čiara(Stroke nováČiara) { čiara = nováČiara; }
+				public void čiara(Stroke nováČiara)
+				{
+					if (null == nováČiara)
+						čiara = new BasicStroke((float)polomerPera,
+							BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+					else
+						čiara = nováČiara;
+
+					if (viditeľný && null == vlastnýTvarObrázok &&
+						(null != vlastnýTvarKreslenie || !vyplnený))
+						Svet.automatickéPrekreslenie();
+				}
 
 				/** <p><a class="alias"></a> Alias pre {@link #čiara(Stroke) čiara}.</p> */
 				public void ciara(Stroke nováČiara) { čiara = nováČiara; }
@@ -7189,6 +7255,48 @@ TODO: na úvodnú stránku
 
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
+
+
+				/**
+				 * <p>Overí, či sa poloha tohto robota dokonale zhoduje so
+				 * zadanými súradnicami. Ak je zistená zhoda, tak táto metóda
+				 * vráti hodnotu {@code valtrue}, v opačnom prípade vráti
+				 * hodnotu {@code valfalse}.</p>
+				 * 
+				 * @param x x-ová súradnica, s ktorou má byť porovnaná poloha
+				 *     tohto robota
+				 * @param y y-ová súradnica, s ktorou má byť porovnaná poloha
+				 *     tohto robota
+				 * @return {@code valtrue} ak sa poloha tohto robota zhoduje
+				 *     so zadanými súradnicami, {@code valfalse} v opačnom
+				 *     prípade
+				 */
+				public boolean jeNa(double x, double y)
+				{
+					return aktuálneX == x && aktuálneY == y;
+				}
+
+				/**
+				 * <p>Overí, či sa poloha tohto robota a poloha zadaného
+				 * objektu dokonale zhodujú. Ak je zistená zhoda, tak táto
+				 * metóda vráti hodnotu {@code valtrue}, v opačnom prípade
+				 * je vrátená hodnota {@code valfalse}.</p>
+				 * 
+				 * @param poloha objekt, ktorého poloha má byť porovnaná
+				 *     s polohou tohto robota
+				 * @return {@code valtrue} ak sa poloha tohto robota zhoduje
+				 *     s polohou zadaného objektu, {@code valfalse}
+				 *     v opačnom prípade
+				 */
+				public boolean jeNa(Poloha poloha)
+				{
+					if (poloha instanceof GRobot)
+						return ((GRobot)poloha).aktuálneX == aktuálneX &&
+							((GRobot)poloha).aktuálneY == aktuálneY;
+					return poloha.polohaX() == aktuálneX &&
+					poloha.polohaY() == aktuálneY;
+				}
+
 
 				/**
 				 * <p><a class="getter"></a> Zistí aktuálny uhol (smer) robota.</p>
@@ -28969,6 +29077,9 @@ TODO: na úvodnú stránku
 				return (Δx * Δx + Δy * Δy) <= veľkosť * veľkosť;
 			}
 
+			/** <p><a class="alias"></a> Alias pre {@link #bodVKruhu(double, double) bodVKruhu}.</p> */
+			public boolean bodV(double súradnicaBoduX, double súradnicaBoduY) { return bodVKruhu(súradnicaBoduX, súradnicaBoduY); }
+
 			// /**
 				//  * <p>Zistí, či sa súradnice zadaného bodu nachádzajú v kruhu
 				//  * s polomerom {@linkplain #veľkosť(double) veľkosti} robota
@@ -29026,6 +29137,9 @@ TODO: na úvodnú stránku
 				double Δy = objekt.polohaY() - aktuálneY;
 				return (Δx * Δx + Δy * Δy) <= veľkosť * veľkosť;
 			}
+
+			/** <p><a class="alias"></a> Alias pre {@link #bodVKruhu(Poloha) bodVKruhu}.</p> */
+			public boolean bodV(Poloha objekt) { return bodVKruhu(objekt); }
 
 			/**
 			 * <p>Zistí, či sa súradnice zadaného bodu nachádzajú v elipse

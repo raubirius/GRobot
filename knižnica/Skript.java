@@ -875,19 +875,20 @@ public abstract class Skript
 	// (zároveň je to programátorsky korektné), keby sa „náhodou“ vyčerpal
 	// zásobník lokálnych premenných. (Toto je niečo ako hlavný priestor
 	// premenných.)
-	private final static PremennéSkriptu globálnePremenné =
-		new PremennéSkriptu(
+	private final static PremenneSkriptu globálnePremenné =
+		new PremenneSkriptu(
 			new TreeMap<String, Double>(String.CASE_INSENSITIVE_ORDER),
 			new TreeMap<String, Color>(String.CASE_INSENSITIVE_ORDER),
 			new TreeMap<String, Poloha>(String.CASE_INSENSITIVE_ORDER),
 			new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER));
 
 	private final static PremenneSkriptu globalnePremenne =
-		new PremenneSkriptu(
+		globálnePremenné; /*new PremenneSkriptu(
 			globálnePremenné.premenné,
 			globálnePremenné.premennéFarby,
 			globálnePremenné.premennéPolohy,
-			globálnePremenné.premennéReťazce);
+			globálnePremenné.premennéReťazce);*/
+
 
 	// Trieda aritmetických operácií.
 	private final static class Operácie
@@ -2040,7 +2041,7 @@ public abstract class Skript
 		String poslednáInštancia = výraz.poslednáInštancia;
 		výraz.poslednáInštancia = aktuálnaInštancia;
 
-		// Menné priestory ExpressionParsera sú platné len pre premenné
+		// Menné priestory ExpressionProcessora sú platné len pre premenné
 		// (chcelo by to veľa prerábok, za ktoré to asi nestojí)…
 		// 
 		// if (-1 != príkaz.indexOf('.'))
@@ -2350,7 +2351,9 @@ public abstract class Skript
 		}
 
 		/**
-		 * <p>Vypíše obsah tejto inštancie na vnútornú konzolu sveta.</p>
+		 * <p>Vypíše obsah tejto inštancie na aktuálnu konzolu.
+		 * (Predvolene na {@linkplain GRobot#strop strop}. Pozri aj
+		 * {@link Skript#presmerujNaPodlahu() presmerujNaPodlahu}.)</p>
 		 */
 		public void vypíš()
 		{
@@ -2999,7 +3002,9 @@ public abstract class Skript
 		}
 
 		/**
-		 * <p>Vypíše obsah tejto inštancie na vnútornú konzolu sveta.</p>
+		 * <p>Vypíše obsah tejto inštancie na aktuálnu konzolu.
+		 * (Predvolene na {@linkplain GRobot#strop strop}. Pozri aj
+		 * {@link Skript#presmerujNaPodlahu() presmerujNaPodlahu}.)</p>
 		 */
 		public void vypíš()
 		{
@@ -3094,7 +3099,9 @@ public abstract class Skript
 		}
 
 		/**
-		 * <p>Vypíše obsah tejto inštancie na vnútornú konzolu sveta.</p>
+		 * <p>Vypíše obsah tejto inštancie na aktuálnu konzolu.
+		 * (Predvolene na {@linkplain GRobot#strop strop}. Pozri aj
+		 * {@link Skript#presmerujNaPodlahu() presmerujNaPodlahu}.)</p>
 		 */
 		public void vypíš()
 		{
@@ -3753,9 +3760,9 @@ public abstract class Skript
 		 * 
 		 * @return nový priestor premenných skriptov
 		 */
-		public static PremennéSkriptu novýPriestor()
+		public static PremenneSkriptu novýPriestor()
 		{
-			return new PremennéSkriptu(
+			return new PremenneSkriptu(
 				new TreeMap<String, Double>(
 					String.CASE_INSENSITIVE_ORDER),
 				new TreeMap<String, Color>(
@@ -3815,6 +3822,10 @@ public abstract class Skript
 		 * prípad nastáva pri zadaní prázdneho názvu obzoru. Vtedy metóda
 		 * vráti globálny priestor premenných…</p>
 		 * 
+		 * <p class="remark"><b>Poznámka:</b> Globálny priestor premenných
+		 * získame aj volaním metódy {@link Skript Skript}{@code .}{@link 
+		 * Skript#globálnePremenné() globálnePremenné}.</p>
+		 * 
 		 * @param názovObzoru identifikátor (meno) menného priestoru
 		 *     premenných skriptov
 		 * @return inštancia triedy premenných skriptov (pomenovaný
@@ -3867,9 +3878,10 @@ public abstract class Skript
 
 	/**
 	 * <p>Táto metóda je implementovaná v každej odvodenej triede a jej
-	 * účelom je zabezpečiť vypísanie skriptu na vnútornú konzolu sveta
-	 * (na {@linkplain GRobot#strop strop}). Výpis skriptu je využívaný
-	 * počas ladenia.</p>
+	 * účelom je zabezpečiť vypísanie skriptu na aktuálnu vnútornú konzolu
+	 * (predvolene na {@linkplain GRobot#strop strop}; pozri aj {@link 
+	 * #presmerujNaPodlahu() presmerujNaPodlahu}). Výpis skriptu je
+	 * využívaný počas ladenia.</p>
 	 */
 	abstract public void vypíš();
 
@@ -3914,9 +3926,11 @@ public abstract class Skript
 	 * 
 	 * <p>Ak je ladenie zapnuté, tak sú počas činnosti skriptov vypisované
 	 * rôzne informácie o vykonávaní príkazov skriptu na vnútornú konzolu
-	 * programovacieho rámca (na strop). Tiež je pravidelne spúšťaná
-	 * reakcia obsluhy udalostí {@link ObsluhaUdalostí#ladenie(int,
-	 * String, int) ladenie} (ak je obsluha udalostí definovaná).</p>
+	 * programovacieho rámca (predvolene na {@linkplain GRobot#strop strop};
+	 * pozri aj {@link Skript#presmerujNaPodlahu() presmerujNaPodlahu}).
+	 * Tiež je pravidelne spúšťaná reakcia obsluhy udalostí {@link 
+	 * ObsluhaUdalostí#ladenie(int, String, int) ladenie} (ak je obsluha
+	 * udalostí definovaná).</p>
 	 * 
 	 * @param zapniLadenie {@code valtrue} alebo {@code valfalse}
 	 * 
@@ -3938,10 +3952,79 @@ public abstract class Skript
 
 
 	/**
+	 * <p>Vráti globálny priestor premenných skriptov. Globálny priestor
+	 * premenných je spoločný pre všetky skripty. Lokálne priestory
+	 * premenných sú vytvárané a likvidované priebežne počas činnosti
+	 * skriptov (tento proces môže byť značne komplikovaný) a preto k nim
+	 * nie je možné získať prístup „zvonka.“ Podrobnosti o spôsobe práce
+	 * s priestrom premenných skriptov sú v dokumentácii triedy {@link 
+	 * PremennéSkriptu PremennéSkriptu}.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Ten istý výsledok dosiahneme
+	 * volaním metódy {@link Skript Skript}{@code .}{@link PremennéSkriptu
+	 * PremennéSkriptu}{@code .}{@link PremennéSkriptu#dajObzor(String)
+	 * dajObzor}{@code (}{@code valnull}{@code )} (resp. {@link Skript
+	 * Skript}{@code .}{@link PremennéSkriptu
+	 * PremennéSkriptu}{@code .}{@link PremennéSkriptu#dajObzor(String)
+	 * dajObzor}{@code (}{@code srg""}{@code )}.</p>
+	 */
+	public static PremenneSkriptu globálnePremenné()
+	{ return globalnePremenne; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #globálnePremenné() globálnePremenné}.</p> */
+	public static PremenneSkriptu globalnePremenne()
+	{ return globalnePremenne; }
+
+
+	/*<!-- TODO Dokončiť opis. -->
+	Vráti aktuálny objem vnútorného zásobníka priestorv premenných skriptu (čiže aktuálny počet položiek v zásobníku).
+	*/
+	public static int objemPriestorov()
+	{
+		return lokálnePremenné.size();
+	}
+
+	/*<!-- TODO Dokončiť opis. -->
+	Ak sa na vrchu zásobníka priestorov nenachádza ten priestor, ktorý by ste očakávali (ten, ktorý ste tam mali naposledy vložiť), tak to znamená, že sa niekde stala chyba a tento stav treba vhodne prehodnotiť (odladiť) a prípadne ohlásiť používateľovi aplikácie (chybovým hlásením; prípadne, ak si myslíte, že ide o vnútornú chybu rámca, tak aj autorovi rámca).
+	*/
+	public static PremennéSkriptu priestorNaVrchu()
+	{
+		if (lokálnePremenné.empty()) return null;
+		return lokálnePremenné.peek();
+	}
+
+	/*<!-- TODO Dokončiť opis. -->
+	Návratová hodnota {@code valnull} signalizuje chybu. Pri tejto metóde to znamená buď pokus o vloženie hodnoty {@code valnull} namiesto platného priestoru, alebo pokus o duplicitné vloženie priestoru, ktorý sa už nachádza vo vnútornom zásobníku
+	*/
+	public static PremennéSkriptu vnorPriestor(PremennéSkriptu priestor)
+	{
+		if (null == priestor || -1 != lokálnePremenné.search(priestor))
+			return null;
+		return lokálnePremenné.push(priestor);
+	}
+
+	/*
+	Návratová hodnota {@code valnull} signalizuje chybu. Pri tejto metóde to znamená, že zásobník priestorov je prázdny.
+	*/
+	public static PremennéSkriptu vynorPriestor()
+	{
+		if (lokálnePremenné.empty()) return null;
+		return lokálnePremenné.pop();
+	}
+
+
+	/**
 	 * <p>Vypíše všetky premenné dostupné v aktuálne vykonávanom bloku
-	 * (to jest prostredí). Totiž, vnorenie do každého bloku mení
-	 * prostredie premenných stroja skriptov – vždy ho prekryje novým
-	 * priestorom lokálnych premenných.</p>
+	 * (to jest prostredí) na konzolu aktuálneho plátna (predvolene na
+	 * {@linkplain GRobot#strop strop}; pozri aj {@link #presmerujNaPodlahu()
+	 * presmerujNaPodlahu}). Totiž, vnorenie do každého bloku mení prostredie
+	 * premenných stroja skriptov – vždy ho prekryje novým priestorom
+	 * lokálnych premenných.</p>
+	 * 
+	 * <p>Toto je príkaz ladenia. Má uľahčiť proces ladenia formátovaným
+	 * výpisom premenných na aktuálnu konzolu. (Informácie o globálnych
+	 * premenných sa dajú získať aj prostredníctvom inštancie, ktorú vracia
+	 * metóda {@link #globálnePremenné() globálnePremenné}.)</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> To znamená, že globálne premenné
 	 * by mohli byť v tomto vnorenom priestore prekryté lokálnymi (prípadne
@@ -4730,9 +4813,11 @@ public abstract class Skript
 	 * 
 	 * <ul>
 	 * <li>{@link Konštanty#ŽIADNA_CHYBA ŽIADNA_CHYBA},</li>
-	 * <li>{@link Konštanty#CHYBA_VYKONANIA_PRÍKAZU CHYBA_VYKONANIA_PRÍKAZU},</li>
+	 * <li>{@link Konštanty#CHYBA_VYKONANIA_PRÍKAZU
+	 * CHYBA_VYKONANIA_PRÍKAZU},</li>
 	 * <li>{@link Konštanty#CHYBA_DVOJITÁ_MENOVKA CHYBA_DVOJITÁ_MENOVKA},</li>
-	 * <li>{@link Konštanty#CHYBA_CHÝBAJÚCA_MENOVKA CHYBA_CHÝBAJÚCA_MENOVKA},</li>
+	 * <li>{@link Konštanty#CHYBA_CHÝBAJÚCA_MENOVKA
+	 * CHYBA_CHÝBAJÚCA_MENOVKA},</li>
 	 * <li>{@link Konštanty#CHYBA_NEZNÁMA_MENOVKA CHYBA_NEZNÁMA_MENOVKA},</li>
 	 * <li>{@link Konštanty#CHYBA_NEZNÁME_SLOVO CHYBA_NEZNÁME_SLOVO},</li>
 	 * <li>{@link Konštanty#CHYBA_CHYBNÁ_ŠTRUKTÚRA CHYBA_CHYBNÁ_ŠTRUKTÚRA},</li>

@@ -3334,8 +3334,9 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		}
 
 		// /**
-		//  * <p>Nakreslí do tohto obrázka obrázok zo zadaného súboru, ktorý bude
-		//  * posunutý o zadané súradnice v horizontálnom a vertikálnom smere.</p>
+		//  * <p>Nakreslí do tohto obrázka obrázok zo zadaného súboru, ktorý
+		//  * bude posunutý o zadané súradnice v horizontálnom a vertikálnom
+		//  * smere.</p>
 		//  * 
 		//  * @param bod súradnice, o ktoré má byť obrázok posunutý
 		//  * @param súbor názov súboru s obrázkom
@@ -5984,9 +5985,9 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * <p>Prevráti obrázok podľa vodorovnej osi – horná časť obrázka sa
 		 * ocitne dole a naopak.</p>
 		 * 
-		 * @see #prevráťZvislo()
+		 * @see #prevráťVodorovne()
 		 */
-		public void prevráťVodorovne()
+		public void prevráťZvislo()
 		{
 			if (null == údajeObrázka)
 				údajeObrázka = ((DataBufferInt)getRaster().
@@ -6013,28 +6014,28 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 			}
 		}
 
-		/** <p><a class="alias"></a> Alias pre {@link #prevráťVodorovne() prevráťVodorovne}.</p> */
-		public void prevratVodorovne() { prevráťVodorovne(); }
+		/** <p><a class="alias"></a> Alias pre {@link #prevráťZvislo() prevráťZvislo}.</p> */
+		public void prevratZvislo() { prevráťZvislo(); }
 
 		/**
 		 * <p><a class="alias"></a> Prevráti obrázok podľa vodorovnej osi –
 		 * horná časť obrázka sa ocitne dole a naopak. Metóda je zároveň
-		 * aliasom pre {@link #prevráťVodorovne() prevráťVodorovne}.</p>
+		 * aliasom pre {@link #prevráťZvislo() prevráťZvislo}.</p>
 		 * 
-		 * @see #prevráťVertikálne()
+		 * @see #prevráťHorizontálne()
 		 */
-		public void prevráťHorizontálne() { prevráťVodorovne(); }
+		public void prevráťVertikálne() { prevráťZvislo(); }
 
-		/** <p><a class="alias"></a> Alias pre {@link #prevráťVodorovne() prevráťVodorovne}.</p> */
-		public void prevratHorizontalne() { prevráťVodorovne(); }
+		/** <p><a class="alias"></a> Alias pre {@link #prevráťZvislo() prevráťZvislo}.</p> */
+		public void prevratVertikalne() { prevráťZvislo(); }
 
 		/**
 		 * <p>Prevráti obrázok podľa zvislej osi – pravá časť obrázka
 		 * sa ocitne vľavo a naopak.</p>
 		 * 
-		 * @see #prevráťVodorovne()
+		 * @see #prevráťZvislo()
 		 */
-		public void prevráťZvislo()
+		public void prevráťVodorovne()
 		{
 			if (null == údajeObrázka)
 				údajeObrázka = ((DataBufferInt)getRaster().
@@ -6061,20 +6062,20 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 			}
 		}
 
-		/** <p><a class="alias"></a> Alias pre {@link #prevráťZvislo() prevráťZvislo}.</p> */
-		public void prevratZvislo() { prevráťZvislo(); }
+		/** <p><a class="alias"></a> Alias pre {@link #prevráťVodorovne() prevráťVodorovne}.</p> */
+		public void prevratVodorovne() { prevráťVodorovne(); }
 
 		/**
 		 * <p><a class="alias"></a> Prevráti obrázok podľa zvislej osi –
 		 * pravá časť obrázka sa ocitne vľavo a naopak. Metóda je zároveň
-		 * aliasom pre {@link #prevráťZvislo() prevráťZvislo}.</p>
+		 * aliasom pre {@link #prevráťVodorovne() prevráťVodorovne}.</p>
 		 * 
-		 * @see #prevráťHorizontálne()
+		 * @see #prevráťVertikálne()
 		 */
-		public void prevráťVertikálne() { prevráťZvislo(); }
+		public void prevráťHorizontálne() { prevráťVodorovne(); }
 
-		/** <p><a class="alias"></a> Alias pre {@link #prevráťZvislo() prevráťZvislo}.</p> */
-		public void prevratVertikalne() { prevráťZvislo(); }
+		/** <p><a class="alias"></a> Alias pre {@link #prevráťVodorovne() prevráťVodorovne}.</p> */
+		public void prevratHorizontalne() { prevráťVodorovne(); }
 
 
 		/**

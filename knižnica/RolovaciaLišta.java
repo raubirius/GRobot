@@ -815,6 +815,43 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 
 
 	/**
+	 * <p>Overí, či sa poloha tejto rolovacej lišty dokonale zhoduje so
+	 * zadanými súradnicami. Ak je zistená zhoda, tak metóda vráti hodnotu
+	 * {@code valtrue}, v opačnom prípade hodnotu {@code valfalse}.</p>
+	 * 
+	 * @param x x-ová súradnica, s ktorou má byť porovnaná poloha tejto
+	 *     rolovacej lišty
+	 * @param y y-ová súradnica, s ktorou má byť porovnaná poloha tejto
+	 *     rolovacej lišty
+	 * @return {@code valtrue} ak sa poloha tejto rolovacej lišty zhoduje
+	 *     so zadanými súradnicami, {@code valfalse} v opačnom prípade
+	 */
+	public boolean jeNa(double x, double y)
+	{
+		double ox = this.x - ((Plátno.šírkaPlátna - šírka) / 2.0);
+		double oy = -this.y + ((Plátno.výškaPlátna - výška) / 2.0);
+		return ox == x && oy == y;
+	}
+
+	/**
+	 * <p>Overí, či sa poloha tejto rolovacej lišty a poloha zadaného
+	 * objektu dokonale zhodujú. Ak je zistená zhoda, tak metóda vráti
+	 * hodnotu {@code valtrue}, v opačnom prípade hodnotu {@code valfalse}.</p>
+	 * 
+	 * @param poloha objekt, ktorého poloha má byť porovnaná s polohou tejto
+	 *     rolovacej lišty
+	 * @return {@code valtrue} ak sa poloha tejto rolovacej lišty zhoduje
+	 *     s polohou zadaného objektu, {@code valfalse} v opačnom prípade
+	 */
+	public boolean jeNa(Poloha poloha)
+	{
+		double ox = this.x - ((Plátno.šírkaPlátna - šírka) / 2.0);
+		double oy = -this.y + ((Plátno.výškaPlátna - výška) / 2.0);
+		return poloha.polohaX() == ox && poloha.polohaY() == oy;
+	}
+
+
+	/**
 	 * <p>Prilepí rolovaciu lištu k ľavému okraju. Táto akcia zruší
 	 * prípadné predchádzajúce prilepenie k pravému okraju. Každé
 	 * prilepenie upravuje súradnicový systém rolovacej lišty

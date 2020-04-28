@@ -2424,16 +2424,20 @@ public class Súbor implements Closeable
 		{ return new File(názov).exists(); }
 
 		/**
-		 * <p>Overí, či súbor alebo priečinok so zadaným názvom jestvuje.
-		 * Metóda overuje len jestvovanie reálnych súborov na pevnom disku
-		 * a len v rámci aktuálneho umiestnenia – neprehľadáva cestu
-		 * <code>classpath</code> ani balíček {@code .jar}. V prípade
-		 * potreby môžete použiť metódu {@link #kdeJeSúbor(String)
-		 * kdeJeSúbor}, ktorá uvedené umiestnenia prehľadáva, a ktorá
-		 * v prípade nenájdenia súboru vráti hodnotu {@code valnull}.</p>
+		 * <p>Overí, či súbor alebo priečinok so zadaným názvom jestvuje.</p>
+		 * 
+		 * <p>Metóda overuje len jestvovanie reálnych súborov na pevnom
+		 * disku a len v rámci aktuálneho umiestnenia (resp. na presne
+		 * zadanej ceste) – neprehľadáva cestu <code>classpath</code> ani
+		 * balíček {@code .jar}. V prípade potreby môžete použiť metódu
+		 * {@link #kdeJeSúbor(String) kdeJeSúbor}, ktorá uvedené
+		 * umiestnenia prehľadáva, a ktorá v prípade nenájdenia súboru
+		 * vráti hodnotu {@code valnull}.</p>
 		 * 
 		 * @param názov názov súboru alebo priečinka
 		 * @return {@code valtrue} – áno; {@code valfalse} – nie
+		 * 
+		 * @see #kdeJeSúbor(String)
 		 */
 		public static boolean jestvuje(String názov)
 		{ return new File(názov).exists(); }
@@ -4422,11 +4426,11 @@ public class Súbor implements Closeable
 		}
 
 		/**
-		 * <p>Otvorí používateľský dialóg na otvorenie súboru, ktorý vráti reťazec
-		 * s úplnou cestou a názvom súboru zvoleného v dialógu používateľom.
-		 * Ak používateľ dialóg zruší, návratová hodnota je {@code valnull}.
-		 * Programátor zadáva titulok dialógu, s ktorým bude dialóg otvorený
-		 * používateľovi.</p>
+		 * <p>Otvorí používateľský dialóg na otvorenie súboru, ktorý vráti
+		 * reťazec s úplnou cestou a názvom súboru zvoleného v dialógu
+		 * používateľom. Ak používateľ dialóg zruší, návratová hodnota je
+		 * {@code valnull}. Programátor zadáva titulok dialógu, s ktorým
+		 * bude dialóg otvorený používateľovi.</p>
 		 * 
 		 * @param titulok titulok dialógu
 		 * @return úplná cesta a názov súboru alebo {@code valnull}
@@ -4588,11 +4592,11 @@ public class Súbor implements Closeable
 		}
 
 		/**
-		 * <p>Otvorí používateľský dialóg na uloženie súboru, ktorý vráti reťazec
-		 * s úplnou cestou a názvom súboru zvoleného v dialógu používateľom.
-		 * Ak používateľ dialóg zruší, návratová hodnota je {@code valnull}.
-		 * Programátor zadáva titulok dialógu, s ktorým bude dialóg otvorený
-		 * používateľovi.</p>
+		 * <p>Otvorí používateľský dialóg na uloženie súboru, ktorý vráti
+		 * reťazec s úplnou cestou a názvom súboru zvoleného v dialógu
+		 * používateľom. Ak používateľ dialóg zruší, návratová hodnota je
+		 * {@code valnull}. Programátor zadáva titulok dialógu, s ktorým
+		 * bude dialóg otvorený používateľovi.</p>
 		 * 
 		 * @param titulok titulok dialógu
 		 * @return úplná cesta a názov súboru alebo {@code valnull}
@@ -4614,17 +4618,17 @@ public class Súbor implements Closeable
 		public static String dialogUlozit(String titulok) { return dialógUložiť(titulok); }
 
 		/**
-		 * <p>Otvorí používateľský dialóg na uloženie súboru, ktorý vráti reťazec
-		 * s úplnou cestou a názvom súboru zvoleného v dialógu používateľom.
-		 * Ak používateľ dialóg zruší, návratová hodnota je {@code valnull}.
-		 * Programátor zadáva titulok dialógu, predvolený názov súboru,
-		 * s ktorými bude dialóg otvorený používateľovi a prípadne aj jeden
-		 * alebo viacero filtrov obsahujúcich šablóny masiek, ktoré určia
-		 * súbory, ktoré sú v dialógu buď viditeľné (v OS Windows), alebo
-		 * dovolené zvoliť (v macOS, predtým OS X a Mac OS – v tomto systéme
-		 * sú vždy viditeľné všetky bežne zobrazované súbory, ale tie, ktoré
-		 * nevyhovujú kritériám filtra sú „šedé“ – používateľovi nie je
-		 * umožnené ich zvoliť).
+		 * <p>Otvorí používateľský dialóg na uloženie súboru, ktorý vráti
+		 * reťazec s úplnou cestou a názvom súboru zvoleného v dialógu
+		 * používateľom. Ak používateľ dialóg zruší, návratová hodnota je
+		 * {@code valnull}. Programátor zadáva titulok dialógu, predvolený
+		 * názov súboru, s ktorými bude dialóg otvorený používateľovi
+		 * a prípadne aj jeden alebo viacero filtrov obsahujúcich šablóny
+		 * masiek, ktoré určia súbory, ktoré sú v dialógu buď viditeľné
+		 * (v OS Windows), alebo dovolené zvoliť (v macOS, predtým OS X
+		 * a Mac OS – v tomto systéme sú vždy viditeľné všetky bežne
+		 * zobrazované súbory, ale tie, ktoré nevyhovujú kritériám filtra
+		 * sú „šedé“ – používateľovi nie je umožnené ich zvoliť).
 		 * Filtre sú zadávané vo forme reťazca, ktorý bude k dispozícii na
 		 * výber v dialógu, a ktorý musí obsahovať aspoň jeden reťazec v tvare
 		 * <code>*.</code><em>«prípona»«oddeľovač»</em>, pričom platnými
@@ -4709,25 +4713,30 @@ public class Súbor implements Closeable
 		 * <p>Vyhľadá skutočné umiestnenie súboru určeného na čítanie alebo
 		 * vráti hodnotu {@code valnull}, ak súbor nebol nájdený. Súbor je
 		 * prednostne vyhľadaný v rámci aktuálneho umiestnenia (cesty)
-		 * určeného na čítanie a zápis súborov. Ak nie je nájdený, je
+		 * určeného na čítanie (a zápis) súborov. Ak nie je nájdený, tak je
 		 * prehľadaný zoznam ciest <code>classpath</code>. Ak i tak nie je
-		 * nájdený, je prehľadaný aktuálny balíček {@code .jar}. V prípade,
-		 * že sa súbor nachádza v {@code .jar} súbore, tak je cesta vrátená
-		 * v nasledujúcom tvare:</p>
+		 * nájdený, tak je nakoniec prehľadaný aktuálny balíček {@code .jar}.
+		 * Ak súbor nie je nájdený ani tam, tak je vrátená hodnota
+		 * {@code valnull}. V prípade, že sa súbor nachádza v {@code .jar}
+		 * súbore, tak je vrátená cesta v nasledujúcom tvare:</p>
 		 * 
 		 * <p><code>jar:file:</code><small><em>«úplná cesta k .jar
 		 * súboru»</em></small>!<small><em>«cesta a názov súboru v rámci
 		 * .jar súboru»</em></small></p>
 		 * 
-		 * <p>Pre používateľov OS Windows môže byť neštandardné, že obe cesty
-		 * budú obsahovať ako oddeľovače priečinkov lomky (<code>/</code>)
-		 * namiesto spätných lomiek (<code>\</code>) a zároveň sa budú lomkou
-		 * aj začínať (a to napriek tomu, že za prvou lomkou bude uvedená
-		 * jednotka, na ktorej je {@code .jar} súbor umiestnený).</p>
+		 * <p class="remark"><b>Poznámka:</b> Pre používateľov OS Windows
+		 * môže byť neštandardné, že obe cesty súvisiace s {@code .jar}
+		 * súborom budú v úlohe oddeľovačov priečinkov lomky (<code>/</code>)
+		 * obsahovať namiesto spätných lomiek (<code>\</code>) a zároveň
+		 * sa budú lomkou aj začínať (a to aj napriek tomu, že za touto
+		 * prvou lomkou bude uvedená jednotka, na ktorej je {@code .jar}
+		 * súbor umiestnený).</p>
 		 * 
 		 * @param názovSúboru názov súboru (určeného na čítanie)
 		 * @return skutočné umiestnenie súboru alebo {@code valnull}, ak
 		 *     súbor nebol nájdený na žiadnej z prehľadávaných lokalít
+		 * 
+		 * @see #jestvuje(String)
 		 */
 		public static String kdeJeSúbor(String názovSúboru)
 		{

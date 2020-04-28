@@ -294,6 +294,39 @@ public class Častica implements Poloha, Smer
 	}
 
 
+	/**
+	 * <p>Overí, či sa poloha tejto častice dokonale zhoduje so zadanými
+	 * súradnicami. Ak je zistená zhoda, tak metóda vráti hodnotu {@code 
+	 * valtrue}, v opačnom prípade hodnotu {@code valfalse}.</p>
+	 * 
+	 * @param x x-ová súradnica, s ktorou má byť porovnaná poloha tejto častice
+	 * @param y y-ová súradnica, s ktorou má byť porovnaná poloha tejto častice
+	 * @return {@code valtrue} ak sa poloha tejto častice zhoduje so zadanými
+	 *     súradnicami, {@code valfalse} v opačnom prípade
+	 */
+	public boolean jeNa(double x, double y)
+	{
+		return this.x == x && this.y == y;
+	}
+
+	/**
+	 * <p>Overí, či sa poloha tejto častice a poloha zadaného objektu dokonale
+	 * zhodujú. Ak je zistená zhoda, tak metóda vráti hodnotu {@code valtrue},
+	 * v opačnom prípade hodnotu {@code valfalse}.</p>
+	 * 
+	 * @param poloha objekt, ktorého poloha má byť porovnaná s polohou tejto
+	 *     častice
+	 * @return {@code valtrue} ak sa poloha tejto častice zhoduje s polohou
+	 *     zadaného objektu, {@code valfalse} v opačnom prípade
+	 */
+	public boolean jeNa(Poloha poloha)
+	{
+		if (poloha instanceof Častica)
+			return ((Častica)poloha).x == x && ((Častica)poloha).y == y;
+		return poloha.polohaX() == x && poloha.polohaY() == y;
+	}
+
+
 	/** <p><a class="getter"></a> Metóda vráti smer častice.</p> */
 	public double uhol() { return uhol; }
 
