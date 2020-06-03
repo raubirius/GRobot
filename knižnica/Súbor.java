@@ -239,8 +239,8 @@ import static knižnica.Konštanty.PRIPÁJANIE_SÚBOROV;
  * <p> </p>
  * 
  * <p>Okrem klasických metód na čítanie a zápis, obsahuje trieda {@code 
- * currSúbor} aj metódy na zápis a čítanie vlastností, ktoré
- * sú do textového súboru ukladané v tvare {@code názov=hodnota}.</p>
+ * currSúbor} aj metódy na zápis a čítanie vlastností, ktoré sú do textového
+ * súboru ukladané v tvare {@code názov=hodnota}.</p>
  * 
  * <p>Neodporúčame kombinovať použitie klasických metód na čítanie
  * a zápis s metódami na čítanie a zápis vlastností. Rozdiel medzi oboma
@@ -851,7 +851,11 @@ public class Súbor implements Closeable
 			this.haš = názov.hashCode();
 		}
 
-		/** <p>Vráti haš kód.</p> */
+		/**
+		 * <p>Vráti haš kód.</p>
+		 * @return haš kód
+		 * @see Object#hashCode()
+		 */
 		@Override public int hashCode()
 		{
 			return haš;
@@ -859,9 +863,13 @@ public class Súbor implements Closeable
 
 		/**
 		 * <p>Overí zhodu dvoch objektov, ak sú kompatibilné. Zhoda môže byť
-		 * vyhodnotená voči inej vlastnosti alebo názvu vlastnosti, čo môže
-		 * byť ľubovoľná sekvencia znakov (CharSequence, napríklad reťazec
-		 * String).</p>
+		 * vyhodnotená voči inej {@linkplain Vlastnosť vlastnosti} alebo
+		 * názvu vlastnosti, čo môže byť ľubovoľná sekvencia znakov
+		 * ({@link CharSequence}, napríklad reťazec {@link String}).</p>
+		 * @param obj objekt na vyhodnotenie zhody
+		 * @return {@code valtrue} v prípade zhody; {@code valfalse}
+		 *     v opačnom prípade
+		 * @see Object#equals(Object)
 		 */
 		@Override public boolean equals(Object obj)
 		{
@@ -1002,7 +1010,12 @@ public class Súbor implements Closeable
 		/**
 		 * <p>Nájde index určeného objektu v rámci tejto množiny vlastností,
 		 * ak je určený objekt kompatibilný so záznamom vlastnosti (môže to
-		 * byť iná vlastnosť alebo názov vlastnosti – reťazec).</p>
+		 * byť iná vlastnosť alebo názov vlastnosti – reťazec; pozri aj
+		 * {@link Vlastnosť#equals(Object)}).</p>
+		 * @param o objekt na porovnanie
+		 * @return index (pozícia) na ktorom bol objekt nájdený alebo
+		 *     {@code num-1} (v opačnom prípade)
+		 * @see Vector#indexOf(Object)
 		 */
 		@Override public int indexOf(Object o)
 		{
@@ -1015,7 +1028,13 @@ public class Súbor implements Closeable
 		 * <p>Nájde index určeného objektu v rámci tejto množiny vlastností
 		 * začnúc hľadanie na stanovenej pozícii, ak je určený objekt
 		 * kompatibilný so záznamom vlastnosti (môže to byť iná vlastnosť
-		 * alebo názov vlastnosti – reťazec).</p>
+		 * alebo názov vlastnosti – reťazec; pozri aj
+		 * {@link Vlastnosť#equals(Object)}).</p>
+		 * @param o objekt na porovnanie
+		 * @param index počiatočný index vyhľadávania
+		 * @return index (pozícia) na ktorom bol objekt nájdený alebo
+		 *     {@code num-1} (v opačnom prípade)
+		 * @see Vector#indexOf(Object, int)
 		 */
 		@Override public int indexOf(Object o, int index)
 		{
@@ -1054,7 +1073,11 @@ public class Súbor implements Closeable
 			this.haš = názov.hashCode();
 		}
 
-		/** <p>Vráti haš kód.</p> */
+		/**
+		 * <p>Vráti haš kód.</p>
+		 * @return haš kód
+		 * @see Object#hashCode()
+		 */
 		@Override public int hashCode()
 		{
 			return haš;
@@ -1062,9 +1085,13 @@ public class Súbor implements Closeable
 
 		/**
 		 * <p>Overí zhodu dvoch objektov, ak sú kompatibilné. Zhoda môže byť
-		 * vyhodnotená voči inej sekcii alebo názvu sekcie, čo môže byť
-		 * ľubovoľná sekvencia znakov (CharSequence, napríklad reťazec
-		 * String).</p>
+		 * vyhodnotená voči inej {@linkplain Sekcia sekcii} alebo názvu
+		 * sekcie, čo môže byť ľubovoľná sekvencia znakov
+		 * ({@link CharSequence}, napríklad reťazec {@link String}).</p>
+		 * @param obj objekt na vyhodnotenie zhody
+		 * @return {@code valtrue} v prípade zhody; {@code valfalse}
+		 *     v opačnom prípade
+		 * @see Object#equals(Object)
 		 */
 		@Override public boolean equals(Object obj)
 		{
@@ -1115,6 +1142,7 @@ public class Súbor implements Closeable
 	{
 		/**
 		 * <p>Vymaže všetky sekcie aj zoznam sekcií.</p>
+		 * @see Vector#clear()
 		 */
 		@Override public void clear()
 		{
@@ -1125,7 +1153,12 @@ public class Súbor implements Closeable
 		/**
 		 * <p>Nájde index určeného objektu v rámci množiny sekcií,
 		 * ak je určený objekt kompatibilný so sekciou (môže to
-		 * byť iná sekcia alebo názov sekcie – reťazec).</p>
+		 * byť iná sekcia alebo názov sekcie – reťazec; pozri aj
+		 * {@link Sekcia#equals(Object)}).</p>
+		 * @param o objekt na porovnanie
+		 * @return index (pozícia) na ktorom bol objekt nájdený alebo
+		 *     {@code num-1} (v opačnom prípade)
+		 * @see Vector#indexOf(Object)
 		 */
 		@Override public int indexOf(Object o)
 		{
@@ -1138,7 +1171,13 @@ public class Súbor implements Closeable
 		 * <p>Nájde index určeného objektu v rámci množiny sekcií
 		 * začnúc hľadanie na stanovenej pozícii, ak je určený objekt
 		 * kompatibilný so sekciou (môže to byť iná sekcia
-		 * alebo názov sekcie – reťazec).</p>
+		 * alebo názov sekcie – reťazec; pozri aj
+		 * {@link Sekcia#equals(Object)}).</p>
+		 * @param o objekt na porovnanie
+		 * @param index počiatočný index vyhľadávania
+		 * @return index (pozícia) na ktorom bol objekt nájdený alebo
+		 *     {@code num-1} (v opačnom prípade)
+		 * @see Vector#indexOf(Object, int)
 		 */
 		@Override public int indexOf(Object o, int index)
 		{
@@ -2542,7 +2581,7 @@ public class Súbor implements Closeable
 		 * <p>V rámci obsluhy udalostí je k dispozícii reakcia – {@link 
 		 * ObsluhaUdalostí#sekvencia(int, Object, Object, long, long)
 		 * sekvencia} (s prislúchajúcim {@linkplain GRobot#sekvencia(int,
-		 * Object, Object, long, long) variantom pre jednotlivých robotov}).
+		 * Object, Object, long, long) variantom pre jednotlivé roboty}).
 		 * Počas procesu porovnávania je uvedená reakcia spúšťaná (samozrejme
 		 * aj so všetkými jej variantmi) s kódom spracovania
 		 * {@link Konštanty#POROVNANIE_SÚBOROV POROVNANIE_SÚBOROV}.</p>
@@ -2778,7 +2817,7 @@ public class Súbor implements Closeable
 		 * <p>V rámci obsluhy udalostí je k dispozícii reakcia – {@link 
 		 * ObsluhaUdalostí#sekvencia(int, Object, Object, long, long)
 		 * sekvencia} (s prislúchajúcim {@linkplain GRobot#sekvencia(int,
-		 * Object, Object, long, long) variantom pre jednotlivých robotov}).
+		 * Object, Object, long, long) variantom pre jednotlivé roboty}).
 		 * Počas procesu kopírovania je uvedená reakcia spúšťaná (samozrejme
 		 * aj so všetkými jej variantmi) s kódom spracovania {@link 
 		 * Konštanty#KOPÍROVANIE_SÚBOROV KOPÍROVANIE_SÚBOROV}.</p>
@@ -2959,7 +2998,7 @@ public class Súbor implements Closeable
 		 * <p>V rámci obsluhy udalostí je k dispozícii reakcia – {@link 
 		 * ObsluhaUdalostí#sekvencia(int, Object, Object, long, long)
 		 * sekvencia} (s prislúchajúcim {@linkplain GRobot#sekvencia(int,
-		 * Object, Object, long, long) variantom pre jednotlivých robotov}).
+		 * Object, Object, long, long) variantom pre jednotlivé roboty}).
 		 * Počas procesu pripájania je uvedená reakcia spúšťaná (samozrejme
 		 * aj so všetkými jej variantmi) s kódom spracovania {@link 
 		 * Konštanty#PRIPÁJANIE_SÚBOROV PRIPÁJANIE_SÚBOROV}.</p>
@@ -3065,7 +3104,7 @@ public class Súbor implements Closeable
 
 			// Pri pripájaní ponecháme dátum poslednej úpravy tak, ako bol
 			// nastavený systémom. Nasledujúci kód je aktívny v metóde
-			// „kopíruj“, z ktorej bol prevzatý kód tejto metódy:
+			// „kopíruj,“ z ktorej bol prevzatý kód tejto metódy:
 			// if (null != súborZdroja && súborZdroja.exists())
 			//	súborCieľa.setLastModified(súborZdroja.lastModified());
 			// else
@@ -4240,7 +4279,7 @@ public class Súbor implements Closeable
 				}
 
 				{@code comm// Vstupný bod programu.}
-				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main(String[] args)
+				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 				{
 					{@code comm// (Poznámka: Okrem konštruktora príkladu sú všetky metódy}
 					{@code comm// v tomto bloku statickými metódami sveta – pozri upozornenie}
@@ -4263,7 +4302,7 @@ public class Súbor implements Closeable
 		 * <p><b>Ukážka aplikácie:</b></p>
 		 * 
 		 * <p><image>skicar-miestnosti.png<alt/>Skicár
-		 * miestností</image>Ukážka vzhľadu miniaplikácie „Skicár
+		 * miestností.</image>Ukážka vzhľadu miniaplikácie „Skicár
 		 * miestností.“</p>
 		 * 
 		 * @param vnorenýMennýPriestor názov vnoreného menného priestoru

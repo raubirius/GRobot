@@ -632,7 +632,7 @@ public abstract class Base64
 			int o0 = (b0 << 2) | (b1 >>> 4);
 			int o1 = ((b1 & 0xf) << 4) | (b2 >>> 2);
 			int o2 = ((b2 & 3) << 6) | b3;
-			out[op++] = (byte) o0;
+			out[op++] = (byte)o0;
 
 			if (op < oLen) out[op++] = (byte)o1;
 			if (op < oLen) out[op++] = (byte)o2;

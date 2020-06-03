@@ -6,7 +6,7 @@
  * (the “License”); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an “AS IS” BASIS,
@@ -17,7 +17,6 @@
 
 // package org.apache.tools.zip;
 package knižnica.apacheAntZIP;
-
 
 // import static org.apache.tools.zip.ZipConstants.BYTE_MASK;
 // import static org.apache.tools.zip.ZipConstants.WORD;
@@ -46,15 +45,15 @@ public final class ZipLong implements Cloneable {
 	private final long value;
 
 	/** Central File Header Signature */
-	public static final ZipLong CFH_SIG = new ZipLong(0X02014B50L);
+	public static final ZipLong CFH_SIG = new ZipLong(0x02014B50L);
 
 	/** Local File Header Signature */
-	public static final ZipLong LFH_SIG = new ZipLong(0X04034B50L);
+	public static final ZipLong LFH_SIG = new ZipLong(0x04034B50L);
 
 	/**
 	 * Data Descriptor signature
 	 */
-	public static final ZipLong DD_SIG = new ZipLong(0X08074B50L);
+	public static final ZipLong DD_SIG = new ZipLong(0x08074B50L);
 
 	/**
 	 * Value stored in size and similar fields if ZIP64 extensions are
@@ -124,8 +123,9 @@ public final class ZipLong implements Cloneable {
 	 * @param value the Java long to convert to bytes
 	 * @param buf the output buffer
 	 * @param offset
-	 *        The offset within the output buffer of the first byte to be written.
-	 *        must be non-negative and no larger than <tt>buf.length-4</tt>
+	 *        The offset within the output buffer of the first byte to be
+	 *        written. must be non-negative and no larger than
+	 *        <code>buf.length-4</code>
 	 */
 	public static void putLong(long value, byte[] buf, int offset) {
 		buf[offset++] = (byte) ((value & ZipConstants.BYTE_MASK));
@@ -169,8 +169,7 @@ public final class ZipLong implements Cloneable {
 	 */
 	@Override
 	public boolean equals(Object o) {
-		return (o != null) && (o instanceof ZipLong) &&
-			(value == ((ZipLong) o).getValue());
+		return o instanceof ZipLong && value == ((ZipLong)o).getValue();
 	}
 
 	/**
@@ -180,7 +179,7 @@ public final class ZipLong implements Cloneable {
 	 */
 	@Override
 	public int hashCode() {
-		return (int) value;
+		return (int)value;
 	}
 
 	@Override

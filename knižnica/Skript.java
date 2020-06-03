@@ -84,8 +84,10 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
 /**
  * <p>Táto abstraktná trieda vnútorne implementuje celý mechanizmus
  * interpretácie skriptov programovacieho rámca GRobot. Jej použitie
- * je automatické. <small>Verejné statické metódy poskytujú základné
- * rozhranie na prácu so skriptovacím strojom, napríklad:
+ * je automatické.</p>
+ * 
+ * <p class="remark"><b>Poznámka:</b>Verejné statické metódy poskytujú
+ * základné rozhranie na prácu so skriptovacím strojom, napríklad:
  * {@link #vyrob(String[]) vyrob}, {@link #ladenie(boolean) ladenie},
  * {@link #čítajPremennú(String, Class) čítajPremennú},
  * {@link #zapíšPremennú(String, Object) zapíšPremennú},
@@ -93,7 +95,7 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
  * vyrob} a podobne. Dve inštančné metódy komunikujú s konkrétnymi
  * inštanciami skriptov: {@link #vykonaj() vykonaj} a {@link #vypíš()
  * vypíš}. Tie sú užitočné v prípade, že pracujeme s vyrobenou inštanciou
- * tejto triedy.</small></p>
+ * tejto triedy.</p>
  * 
  * <p><b>Na prácu so skriptami sú určené tieto metódy triedy {@link Svet
  * Svet} (a ich klony):</b></p>
@@ -134,7 +136,9 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
  * <li>a špeciálne vyhradená reakcia {@linkplain ObsluhaUdalostí obsluhy
  * udalostí}:</li>
  * <li>{@link ObsluhaUdalostí#ladenie(int, String, int) ladenie(riadok,
- * príkaz, správa)} (jej opis obsahuje komplexný príklad ladenia).</li>
+ * príkaz, správa)} (jej opis obsahuje základný príklad ladenia;
+ * komplexnejší príklad ladenia je nižšie v sekcii Príklad ladenia
+ * skriptov).</li>
  * </ul>
  * 
  * <p>Pričom opis chybových stavov je v opise triedy {@link GRobotException
@@ -151,7 +155,7 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
  * 
  * <p> </p>
  * 
- * <p><b>Pravidlá vykonávania</b></p>
+ * <p><b>Vybrané pravidlá vykonávania</b></p>
  * 
  * <p>Vykonávanie skriptu úzko súvisí s interaktívnou inštanciou a tým
  * aj s {@linkplain Svet#interaktívnyRežim(boolean) interaktívnym režimom.}
@@ -162,7 +166,7 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
  * 
  * <ul>
  * <li>{@link GRobot#interaktívnyRežim(boolean)
- * GRobot.interaktívnyRežim(zapni)} (v skriptoch je možné robotov odlíšiť
+ * GRobot.interaktívnyRežim(zapni)} (v skriptoch je možné roboty odlíšiť
  * ich {@linkplain GRobot#meno(String) menami});</li>
  * <li>{@link Plátno#interaktívnyRežim(boolean)
  * Plátno.interaktívnyRežim(zapni)} (v skriptoch sa plátno rozlišuje buď
@@ -210,14 +214,38 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
  * </li>
  * </ul>
  * 
+ * <p>Skripty môžu byť rozdelené na <b>bloky,</b> ktoré môžu s výhodou
+ * využívať rezervované príkazy (kvázi riadiace štruktúry) skriptov,
+ * pretože rovnako ako pri iných programovacích jazykoch aj tu platí, že
+ * ak niektorý príkaz (riadiaca štruktúra) vyžaduje na svoje fungovanie
+ * ďalší príkaz (napríklad verzie pomieneného spracovania a opakovania bez
+ * využitia menoviek), tak tento príkaz môže byť nahradený blokom. <b>Bloky
+ * v skriptoch vymedzuje rovnaká veľkosť (úroveň) odsadenia riadkov
+ * tabulátormi (čiže úroveň opakujúca sa vo vymedzenej sérii riadkov).</b></p>
+ * 
  * <p> </p>
+ * 
+ * <style><!--
+ * 	.vl1
+ * 	{
+ * 		border-right: 1px solid silver;
+ * 		padding-left: 10px;
+ * 	}
+ * 
+ * 	.vl2
+ * 	{
+ * 		border-left: 1px solid gray;
+ * 		padding-right: 10px;
+ * 	}
+ * --></style>
  * 
  * <table class="commands">
  * <tr><td><code>; </code><em>«text»</em></td><td>–</td><td
  * >komentár – tento riadok bude ignorovaný</td></tr>
  * <tr><td><code>:</code><em>«názov»</em></td><td>–</td><td>definícia
  * menovky, ktorá je používaná na skoky (podmienené a nepodmienené –
- * pozri nižšie)</td></tr>
+ * pozri nižšie); názov menovky „koniec“ je rezervovaný (a označuje
+ * koniec skriptu)</td></tr>
  * <tr><td><code>@</code><em
  * >«názov inštancie»</em></td><td
  * >–</td><td>aktivovanie {@linkplain Svet#interaktívnaInštancia(String)
@@ -227,7 +255,8 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
  * inštancie}</td></tr>
  * <tr><td><code>na </code> <em>«menovka»</em></td><td>–</td>
  * <td>nepodmienený skok – vykonávanie skriptu prejde (preskočí) na
- * riadok označený menovkou (pozri vyššie)</td></tr>
+ * riadok označený menovkou (pozri vyššie); názov menovky „koniec“ označuje
+ * koniec skriptu</td></tr>
  * <tr><td><code>ak </code><em
  * >«premenná alebo hodnota»</em> <em
  * >«menovka»</em></td><td>–</td>
@@ -266,18 +295,542 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
  * nulou); to znamená, že všetky priebehy vykonania s hodnotou
  * riadiacej premennej menšej alebo rovnej jednej sú identické<!--
  * skrytá poznámka: dôvodom tohto návrhu bolo kladenie dôrazu na čo
- * najvyššiu jednoduchosť pri implementácii a bolo to inšpirované
- * jazykom symbolických inštrukcií --></td></tr>
-
- * <tr><td><code>opakuj </code><em>«názov premennej»</em><code> </code><em
- * >«horná hranica»</em></td><td>–</td><td>horná hranica je vlastne počet
- * opakovaní, keďže spodná hranica je stanovená napevno na hodnotu 1;
- * <em>«bude doplnené neskôr»</em><!-- TODO --></td></tr>
-
- * <tr><td><code>obzor </code><em>«názov obzoru»</em></td><td
- * >–</td><td><em>«bude doplnené neskôr»</em><!-- TODO --></td></tr>
-
+ * najvyššiu jednoduchosť pri implementácii; bolo to inšpirované
+ * jazykom symbolických inštrukcií; ďalší dôkaz toho, že (žiaľ) čím
+ * je niečo jednoduchšie na implementáciu, tým ťažšie sa to potom
+ * používa; je to vlastne prirodzené – čím je niečo bližšie „jazyku
+ * strojov“ (v skutočnosti „formálnemu zápisu,“ ktorý jestvuje aj bez
+ * kontextu strojov), tým je to vzdialenejšie prirodzenému („ľudskému“)
+ * jazyku (v skutočnosti to môže byť niečo ako „jazyk vedomia a myslenia,“
+ * ale tento filozofický kontext v tejto fáze nemám doštudovaný/domyslený)…
+ * --></td></tr>
+ * 
+ * 
+ * <tr><td colspan="3"><p> <br />Príkazy <code>ak</code> a <code>dokedy</code>
+ * sa dajú použiť aj v režime bez menovky, kedy menia svoje správanie – pozri
+ * nižšie.</p><p><b>Vysvetlivky:</b></p><p><em>«podmienka»</em> je slovná
+ * skratka, ktorá má v tomto prípade viacero významov – môže to byť premenná,
+ * hodnota alebo výraz za mriežkou (pozri poznámku nižšie);</p><p><em
+ * >«hranica»</em> môže byť literárna hodnota alebo názov premennej,
+ * z ktorej sa hodnota prevezme;</p><p><em
+ * >«príkaz/blok», «príkaz/blok 2»</em> môže byť jediný príkaz na samostatnom
+ * riadku alebo <b>blok</b> (pozri vyššie)</p><p class="remark"
+ * style="margin-bottom: 6px"><b>Poznámka:</b> Syntax s mriežkou je bližšie
+ * spomenutá napríklad v opise metódy {@link Svet#interaktívnyRežim(boolean)
+ * Svet.interaktívnyRežim}.</p></td></tr>
+ * 
+ * 
+ * <tr><td><!--#--><table><tr><td><code>ak </code><em>«podmienka»</em><br
+ * />    <em>«príkaz/blok»</em> </td><td class="vl1"></td><td
+ * class="vl2"></td><td><code>ak </code><em>«podmienka»</em><br />    <em
+ * >«príkaz/blok»</em> <br /><code>inak </code><br />    <em
+ * >«príkaz/blok 2»</em> </td></tr></table><!--#--></td><td>–</td><td
+ * >podmienené spracovanie (s alternatívou – <code>inak</code>);<br />ak je
+ * výsledok/hodnota <em>«podmienky»</em> nenulová, tak sa vykoná <em
+ * >«príkaz/blok»;</em><br />v opačnom prípade, ak je prítomná alternatíva,
+ * sa vykoná <em>«príkaz/blok 2»</em>;<br />(pozri príklad 1 nižšie)</td></tr>
+ * 
+ * <tr><td colspan="3"><hr /></td></tr>
+ * 
+ * <tr><td><code>opakuj </code>[<em>«názov premennej»</em>]<code> </code><em
+ * >«hranica»</em><br />    <em>«príkaz/blok»</em> </td><td rowspan="3"
+ * >–</td><td rowspan="3">opakovanie/cyklus (s alternatívou – <code
+ * >inak</code>);<br /><em>«názov premennej»</em> je nepovinný; určuje
+ * premennú, do ktorej sa bude ukladať „číslo iterácie“ (čo je stúpajúca
+ * hodnota meniaca sa podľa hodnoty <em>«hranice»</em>); v prípade
+ * jej neuvedenia je cyklus anonymný;<br />absolútna hodnota <em
+ * >«hranice»</em> určuje počet opakovaní; ak je nenulová, tak sa cyklicky
+ * vykonáva <em>«príkaz/blok»</em>;<br />ak je kladná, tak sa hodnota
+ * premennej (ak nie je cyklus anonymný) bude meniť od hodnoty 1 po hodnotu
+ * <em>«hranice»</em>; ak je záporná, tak sa bude meniť od jej hodnoty po
+ * hodnotu −1 (vďaka tomu sa dá s pomocou absolútnej hodnoty simulovať
+ * klesajúci cyklus, ale má to háčik pri niektorých algoritmoch, pretože
+ * nenulová hodnota hranice má pri tomto cykle vždy za následok nenulový
+ * počet opakovaní; prípadné zamedzenie vykonania cyklu pri zápornej hranici
+ * musí byť ošetrené dodatočnou podmienkou);<br />ak je (už pri prvom pokuse
+ * o vykonanie cyklu, to jest pred prvou iteráciou) <em>«hranica»</em>
+ * nulová, tak sa v prípade prítomnosti alternatívy (<code>inak</code>)
+ * vykoná <em>«príkaz/blok 2»</em> (v ostatných prípadoch je alternatíva
+ * ignorovaná, to jest, ak sa vykoná aspoň jedna iterácia cyklu,
+ * alternatíva nebude spustená);<br />ak je pri anonymnom cykle hranica
+ * určená hodnotou premennej, tak je jej hodnota prevzatá a premenná je
+ * použitá tak, ako keby cyklus nebol anonymný (alebo to môžeme chápať tak,
+ * že cyklus prestáva byť anonymným) – pozri príklad 2 nižšie</td></tr>
+ * 
+ * <tr><td><hr /></td></tr>
+ * 
+ * <tr><td><code>opakuj </code>[<em>«názov premennej»</em>]<code> </code><em
+ * >«hranica»</em><br />    <em>«príkaz/blok»</em> <br /><code>inak </code><br
+ * />    <em>«príkaz/blok 2»</em> </td></tr>
+ * 
+ * <tr><td colspan="3"><hr /></td></tr>
+ * 
+ * <tr><td>    <em>«príkaz/blok»</em> <br /><code>dokedy </code><em
+ * >«názov premennej»</em><code> </code></td><td rowspan="3">–</td><td
+ * rowspan="3">zopakovanie predchádzajúceho <em>«príkazu/bloku»</em>
+ * (s alternatívou – <code>inak</code>);<br /><em>«názov premennej»</em>
+ * je povinný a jej hodnota určuje počet opätovných zopakovaní
+ * predchádzajúceho <em>«príkazu/bloku»</em> (ten sa vždy vykoná najmenej
+ * raz – pred prvým vyhodnotením hodnoty <em>«premennej»</em>);<br />ak
+ * je hodnota <em>«premennej»</em> väčšia od jednej, tak sa <em
+ * >«príkaz/blok»</em> zopakuje a jej hodnota sa zníži o 1;<br />ak je
+ * hodnota <em>«premennej»</em> rovná jednej, tak sa vynuluje a prejde
+ * sa na vykonávanie príkazov za cyklom (pretože <em>«príkaz/blok»</em>
+ * sa už raz vykonal) – v tomto prípade sa nevykonáva <em
+ * >«príkaz/blok 2»</em> alternatívy (<code>inak</code>);<br />ak je hodnota
+ * <em>«premennej»</em> nulová alebo záporná, tak sa jej hodnota vynuluje
+ * (čo sa viditeľne prejaví len pri záporných hodnotách) a v prípade
+ * prítomnosti alternatívy (<code>inak</code>) sa vykoná <em
+ * >«príkaz/blok 2»</em>;<br />(pozri príklad 3 nižšie)</td></tr>
+ * 
+ * <tr><td><hr /></td></tr>
+ * 
+ * <tr><td>    <em>«príkaz/blok»</em> <br /><code>dokedy </code><em
+ * >«názov premennej»</em><code> </code><br /><code>inak </code><br
+ * />    <em>«príkaz/blok 2»</em> </td></tr>
+ * 
+ * <tr><td colspan="3"><hr /></td></tr>
+ * 
+ * 
+ * <tr><td><code>obzor </code><em>«názov obzoru»</em></td><td
+ * >–</td><td>nastaví obzor pre nasledujúci <b>blok</b> (pozri vyššie;
+ * uvedenie bloku za týmto príkazom je povinné);<br />obzory predstavujú
+ * „menné priestory“ premenných (dajú sa nimi celkom dobre simulovať
+ * objekty); „menný priestor,“ t. j. obzor, je od názvu premennej oddelený
+ * bodkou; obzory sa nedajú prostredníctvom príkazu <code>obzor</code>
+ * „skladať“ – aktívny obzor je platný ako celok a akákoľvek „časť“ mena
+ * obzoru uvedená pred názvom premennej ruší aktívny obzor a nastavuje pre
+ * túto premennú nový obzor (opäť ako celok)<!-- TODO? Treba ešte spresniť?
+ * Neviem. Možno… -->;<br />(pozri príklad 4 nižšie)</td></tr>
+ * 
  * </table>
+ * 
+ * <style><!--
+ * 	table.GRScript
+ * 	{
+ * 		margin-left: 2em;
+ * 		border-collapse: collapse;
+ * 	}
+ * 
+ * 	table.GRScript td.GRtab { width: 2em; }
+ * --></style>
+ * 
+ * <p><b>Príklad 1:</b></p>
+ * 
+ * <p>Prvý skript ukazuje využitie premenných, blokov a príkazu
+ * podmieneného spracovania s alternatívou.</p>
+ * 
+ * <table class="GRScript">
+ * <tr><td colspan="2">@svet</td></tr>
+ * <tr><td colspan="2">nech a = uprav číslo "Číslo A:", 5</td></tr>
+ * <tr><td colspan="2">nech b = uprav číslo "Číslo B:", 3</td></tr>
+ * <tr><td colspan="2">nech c = otázka "Sčítať = áno; násobiť = nie."</td></tr>
+ * <tr><td colspan="2">vypíš a</td></tr>
+ * <tr><td colspan="2">ak c</td></tr>
+ * <tr><td class="GRtab"> </td><td>; Pretože nie je 1.</td></tr>
+ * <tr><td class="GRtab"> </td><td>vypíš " × ", b</td></tr>
+ * <tr><td class="GRtab"> </td><td>nech c = b</td></tr>
+ * <tr><td class="GRtab"> </td><td>nech c * a</td></tr>
+ * <tr><td colspan="2">inak</td></tr>
+ * <tr><td class="GRtab"> </td><td>; Pretože áno je 0.</td></tr>
+ * <tr><td class="GRtab"> </td><td>vypíš " + ", b</td></tr>
+ * <tr><td class="GRtab"> </td><td>nech c = a</td></tr>
+ * <tr><td class="GRtab"> </td><td>nech c + b</td></tr>
+ * <tr><td colspan="2">vypíš riadok " = ", c</td></tr>
+ * </table>
+ * 
+ * <p><b>Výsledky:</b></p>
+ * 
+ * <p>Toto sú ukážky výsledných výpisov na obrazovke po potvrdení
+ * rôznych vstupných hodnôt.</p>
+ * 
+ * <table>
+ * <tr><td><b>Výsledok po potvrdení predvolených hodnôt a voľbe „Áno“:</b></td>
+ * <td rowspan="2" class="vl1"></td><td rowspan="2" class="vl2">
+ * <td><b>Výsledok po potvrdení predvolených hodnôt a voľbe „Nie“:</b></td>
+ * <td rowspan="2" class="vl1"></td><td rowspan="2" class="vl2">
+ * <td><b>Výsledok po potvrdení hodnôt −5, 3 a voľbe „Áno“:</b></td></tr>
+ * 
+ * <tr><td>5 + 3 = 8</td>
+ * <td>5 × 3 = 15</td>
+ * <td>−5 + 3 = −2</td></tr>
+ * </table>
+ * 
+ * <p><b>Príklad 2:</b></p>
+ * 
+ * <p>Ďalší skript je jednoduchou ukážkou príkazu (resp. riadiacej štruktúry)
+ * opakovania s vopred zadaným počtom opakovaní (iterácií), pričom počiatočná
+ * hodnota premennej zároveň určuje počet opakovaní (hranicu).</p>
+ * 
+ * <table class="GRScript">
+ * <tr><td colspan="2">@svet</td></tr>
+ * <tr><td colspan="2">nech i = uprav číslo "Počet opakovaní:", 1</td></tr>
+ * <tr><td colspan="2">opakuj i</td></tr>
+ * <tr><td class="GRtab"> </td><td>vypíš " ", i</td></tr>
+ * <tr><td colspan="2">inak</td></tr>
+ * <tr><td colspan="2">vypíš "Žiadne opakovanie."</td></tr>
+ * <tr><td colspan="2">vypíš riadok</td></tr>
+ * </table>
+ * 
+ * <p><b>Výsledky:</b></p>
+ * 
+ * <p>Nasledujúce tri výpisy ukazujú, aké budú výsledky (výpisy na
+ * obrazovke) po potvrdení troch rôznych hodnôt.</p>
+ * 
+ * <table>
+ * <tr><td><b>Výsledok po potvrdení hodnoty −5:</b></td>
+ * <td rowspan="2" class="vl1"></td><td rowspan="2" class="vl2">
+ * <td><b>Výsledok po potvrdení hodnoty 0:</b></td>
+ * <td rowspan="2" class="vl1"></td><td rowspan="2" class="vl2">
+ * <td><b>Výsledok po potvrdení hodnoty 5:</b></td></tr>
+ * <tr><td> −5 −4 −3 −2 −1</td>
+ * <td>Žiadne opakovanie.</td>
+ * <td> 1 2 3 4 5</td></tr>
+ * </table>
+ * 
+ * <p><b>Príklad 3:</b></p>
+ * 
+ * <p>Tento skript ukazuje správanie skriptu, ktorý používa zopakovanie
+ * predchádzajúceho príkazu/bloku s alternatívou. Skript, aby ho nebolo
+ * potrebné zakaždým manuálne upravovať, si na začiatku vyžiada potvrdenie
+ * hodnoty počtu zopakovaní.</p>
+ * 
+ * <table class="GRScript">
+ * <tr><td colspan="2">@svet</td></tr>
+ * <tr><td colspan="2">nech i = uprav číslo "Počet zopakovaní:", 3</td></tr>
+ * <tr><td class="GRtab"> </td><td>vypíš "Vykonanie s hodnotou i = ",
+ * i</td></tr>
+ * <tr><td class="GRtab"> </td><td>vypíš riadok "."</td></tr>
+ * <tr><td colspan="2">dokedy i</td></tr>
+ * <tr><td colspan="2">inak</td></tr>
+ * <tr><td colspan="2">vypíš riadok "(Nemalo sa zopakovať.)"</td></tr>
+ * <tr><td colspan="2">vypíš "Po opakovaniach (i = ", i</td></tr>
+ * <tr><td colspan="2">vypíš riadok ")."</td></tr>
+ * </table>
+ * 
+ * <p><b>Výsledky:</b></p>
+ * 
+ * <p>Nasledujúce štyri výpisy ukazujú, aké budú výsledky (výpisy na
+ * obrazovke) po potvrdení štyroch rôznych hodnôt.</p>
+ * 
+ * <table>
+ * <tr><td><b>Výsledok po vykonaní s predvolenou hodnotou 3:</b></td>
+ * <td rowspan="2" class="vl1"></td><td rowspan="2" class="vl2">
+ * <td><b>Výsledok po potvrdení hodnoty 1:</b></td>
+ * <td rowspan="2" class="vl1"></td><td rowspan="2" class="vl2">
+ * <td><b>Výsledok po potvrdení hodnoty 0:</b></td>
+ * <td rowspan="2" class="vl1"></td><td rowspan="2" class="vl2">
+ * <td><b>Výsledok po potvrdení hodnoty −2:</b></td></tr>
+ * <tr><td>Vykonanie s hodnotou i = 3.<br
+ * />Vykonanie s hodnotou i = 2.<br
+ * />Vykonanie s hodnotou i = 1.<br
+ * />Po opakovaniach (i = 0).</td>
+ * <td>Vykonanie s hodnotou i = 1.<br
+ * />Po opakovaniach (i = 0).</td>
+ * <td>Vykonanie s hodnotou i = 0.<br
+ * />(Nemalo sa zopakovať.)<br
+ * />Po opakovaniach (i = 0).</td>
+ * <td>Vykonanie s hodnotou i = −2.<br
+ * />(Nemalo sa zopakovať.)<br
+ * />Po opakovaniach (i = 0).</td></tr>
+ * </table>
+ * 
+ * <p><b>Príklad 4:</b></p>
+ * 
+ * <p>Tento skript využíva prácu s obzormi. Umiestňuje premennú x do troch
+ * rôznych obzorov a ukazuje „neskladateľnosť“ obzorov pri vzájomnom vnorení
+ * dvoch príkazov <code>obzor</code> (raz pre obzor a, potom pre obzor b,
+ * pričom napriek vnoreniu nevzniká odkazovanie sa na obzor a.b).</p>
+ * 
+ * <table class="GRScript">
+ * <tr><td colspan="3">@svet</td></tr>
+ * <tr><td colspan="3">nech x = -2</td></tr>
+ * <tr><td colspan="3">nech a.x = 3</td></tr>
+ * <tr><td colspan="3">nech b.x = 12</td></tr>
+ * <tr><td colspan="3">nech a.b.x = 8</td></tr>
+ * <tr><td colspan="3"> </td></tr>
+ * <tr><td colspan="3">vypíš "Hodnoty pred obzorom: x = ", x</td></tr>
+ * <tr><td colspan="3">vypíš "; a.x = ", a.x</td></tr>
+ * <tr><td colspan="3">vypíš "; b.x = ", b.x</td></tr>
+ * <tr><td colspan="3">vypíš riadok "; a.b.x = ", a.b.x</td></tr>
+ * <tr><td colspan="3"> </td></tr>
+ * <tr><td colspan="3">obzor a</td></tr>
+ * <tr><td class="GRtab"> </td><td colspan="2">vypíš
+ * "Hodnoty v obzore a: x = ", x</td></tr>
+ * <tr><td class="GRtab"> </td><td colspan="2">vypíš "; a.x = ", a.x</td></tr>
+ * <tr><td class="GRtab"> </td><td colspan="2">vypíš "; b.x = ", b.x</td></tr>
+ * <tr><td class="GRtab"> </td><td colspan="2">vypíš riadok "; a.b.x = ",
+ * a.b.x</td></tr>
+ * <tr><td class="GRtab"> </td><td colspan="2">obzor b</td></tr>
+ * <tr><td class="GRtab"> </td><td class="GRtab"> </td><td>vypíš "Hodnoty
+ * v obzore b: x = ", x</td></tr>
+ * <tr><td class="GRtab"> </td><td class="GRtab"> </td><td>vypíš "; a.x = ",
+ * a.x</td></tr>
+ * <tr><td class="GRtab"> </td><td class="GRtab"> </td><td>vypíš "; b.x = ",
+ * b.x</td></tr>
+ * <tr><td class="GRtab"> </td><td class="GRtab"> </td><td>vypíš riadok
+ * "; a.b.x = ", a.b.x</td></tr>
+ * </table>
+ * 
+ * <p><b>Výsledný výpis na obrazovke bude vyzerať takto:</b></p>
+ * 
+ * <p>Hodnoty pred obzorom: x = −2; a.x = 3; b.x = 12; a.b.x = 8<br />
+ * Hodnoty v obzore a: x = 3; a.x = 3; b.x = 12; a.b.x = 8<br />
+ * Hodnoty v obzore b: x = 12; a.x = 3; b.x = 12; a.b.x = 8</p>
+ * 
+ * <p> </p>
+ * 
+ * <p><b>Príklad ladenia skriptov</b></p>
+ * 
+ * <p>Tento príklad predstavuje jednoduchý nástroj na ladenie skriptov.
+ * Dá sa ovládať klávesnicou a myšou. Klávesové skratky na posúvanie
+ * (krokovanie), zastavenie a štart nového skriptu (zoznam názvov je
+ * prebraný z príkazového riadka operačného systému) sú medzerník,
+ * {@code Escape} a {@code Enter}, ale keďže popri {@linkplain 
+ * Svet#interaktívnyRežim(boolean) interaktívnom režime} je aktivovaný
+ * {@linkplain Svet#neskrývajVstupnýRiadok() vstupný riadok,} ktorý v tomto
+ * prípade slúži ako {@linkplain Svet#interaktívnaInštancia(String) príkazový
+ * riadok interaktívneho režimu,} je treba stlačiť kláves tabulátor,
+ * prípadne kliknúť na plochu, aby riadok stratil smerovanie vstupu (fokus).
+ * (Prípadne môžete v príkazovom riadku zadať a potvrdiť príkaz: skrývaj
+ * vstupný riadok, ale príklad neimplementuje žiadnu možnosť opätovného
+ * zobrazenia príkazového riadka, takže ak ho neobnoví niektorý zo skriptov,
+ * tak ho až do nasledujúceho spustenia aplikácie neuvidíte.)</p>
+ * 
+ * <pre CLASS="example">
+	{@code kwdimport} knižnica.*;
+
+	{@code kwdpublic} {@code typeclass} TestLadeniaSkriptu {@code kwdextends} {@link GRobot GRobot}
+	{
+		{@code comm// Nasledujúce premenné sú „semafory“ používané počas procesu ladenia:}
+		{@code comm// }
+		{@code comm//   – krok:     hodnota tejto premennej riadi krokovanie; hodnota true}
+		{@code comm//               znamená posunutie programu o krok ďalej (na ďalší príkaz)}
+		{@code comm//   – prerušiť: nastavením hodnoty tejto premennej na true je možné}
+		{@code comm//               ladenie programu predčasne ukončiť}
+		{@code kwdprivate} {@code typeboolean} krok = {@code valfalse}, prerušiť = {@code valfalse};
+
+		{@code comm// V tomto súkromnom poli sú uchovávané mená skriptov na cyklické}
+		{@code comm// spúšťanie:}
+		{@code kwdprivate} {@code kwdfinal} {@link String String}[] zoznamSkriptov;
+
+		{@code comm// Táto premenná slúži na počítanie spúšťania skriptov (a zároveň}
+		{@code comm// pomáha pri ich cyklickom spúšťaní):}
+		{@code kwdprivate} {@code typeint} počítadloSkriptov = {@code num0};
+
+		{@code comm// Konštruktor.}
+		{@code kwdprivate} TestLadeniaSkriptu({@link String String}[] zoznamSkriptov)
+		{
+			{@code comm// Uchovanie zoznamu s menami skriptov.}
+			{@code valthis}.zoznamSkriptov = zoznamSkriptov;
+
+			{@code comm// Presmerovanie výpisov skriptov na podlahu.}
+			{@link Skript Skript}.{@link Skript#presmerujNaPodlahu() presmerujNaPodlahu}();
+
+			{@code comm// Definovanie obsluhy udalostí…}
+			{@code kwdnew} {@link ObsluhaUdalostí#ObsluhaUdalostí() ObsluhaUdalostí}()
+			{
+				{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@link ObsluhaUdalostí#ladenie(int, String, int) ladenie}(
+					{@code typeint} riadok, {@link String String} príkaz, {@code typeint} správa)
+				{
+					{@code comm// Nasledujúce vetvenie zabezpečuje spracovanie rôznych}
+					{@code comm// situácií počas ladenia:}
+					{@code kwdswitch} (správa)
+					{
+						{@code kwdcase} {@link Konštanty#ČAKAŤ ČAKAŤ}:
+							{@code comm// Čakanie počas krokovania:}
+							{@code kwdif} (krok)
+							{
+								krok = {@code valfalse};
+								{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
+								{@code kwdreturn} {@code valfalse};
+							}
+							{@code kwdreturn} {@code valtrue};
+
+						{@code kwdcase} {@link Konštanty#PRERUŠIŤ PRERUŠIŤ}:
+							{@code comm// Predčasné ukončenie vykonávania skriptu:}
+							{@code kwdif} (prerušiť)
+							{
+								{@link Svet Svet}.{@link Svet#farbaTextu(Farebnosť) farbaTextu}({@link Farebnosť#tmavooranžová tmavooranžová});
+								{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Vykonávanie bolo prerušené."});
+								{@link Svet Svet}.{@link Svet#predvolenáFarbaTextu() predvolenáFarbaTextu}();
+								{@code comm// Ďalšie podrobnosti by sme mohli vypísať}
+								{@code comm// napríklad pomocou nasledujúceho úryvku kódu:}
+								{@code comm//    "na riadku", riadok, ":", GRobot.riadok,}
+								{@code comm//    príkaz}
+							}
+							{@code kwdreturn} prerušiť;
+
+						{@code comm// Výpis definovaných menoviek skriptu odfiltrujeme:}
+						{@code kwdcase} {@link Konštanty#VYPÍSAŤ_MENOVKY VYPÍSAŤ_MENOVKY}: {@code kwdreturn} {@code valfalse};
+
+						{@code kwdcase} {@link Konštanty#UKONČENIE_SKRIPTU UKONČENIE_SKRIPTU}:
+							{@code kwdif} (!prerušiť)
+							{
+								{@code comm// Informáciu o ukončení vypíšeme len v prípade,}
+								{@code comm// že program nebol prerušený:}
+								{@link Svet Svet}.{@link Svet#farbaTextu(Farebnosť) farbaTextu}({@link Farebnosť#tmavotyrkysová tmavotyrkysová});
+								{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Vykonávanie bolo dokončené."});
+								{@link Svet Svet}.{@link Svet#predvolenáFarbaTextu() predvolenáFarbaTextu}();
+							}
+							{@code kwdreturn} {@code valfalse};
+
+						{@code kwdcase} {@link Konštanty#UKONČENIE_CHYBOU UKONČENIE_CHYBOU}:
+							{@code comm// Vypíšeme len text chyby…}
+							{@link Svet Svet}.{@link Svet#farbaTextu(Farebnosť) farbaTextu}({@link Farebnosť#červená červená});
+							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(príkaz);
+							{@link Svet Svet}.{@link Svet#predvolenáFarbaTextu() predvolenáFarbaTextu}();
+								{@code comm// Ďalšie podrobnosti by sme mohli vypísať}
+								{@code comm// napríklad pomocou nasledujúcich úryvkov kódu:}
+								{@code comm//    "Číslo chyby", Svet.kódPoslednejChyby()}
+								{@code comm//    "Riadok chyby ", riadok}
+							{@code kwdreturn} {@code valfalse};
+
+						{@code comm// Nefiltrujeme žiadne príkazy,}
+						{@code comm// vykonávame všetko bez rozdielu:}
+						{@code kwdcase} {@link Konštanty#ZABRÁNIŤ_VYKONANIU ZABRÁNIŤ_VYKONANIU}: {@code kwdreturn} {@code valfalse};
+					}
+
+					{@code comm// Na všetky ostatné otázky režimu ladenia (VYPÍSAŤ_PREMENNÉ,}
+					{@code comm// VYPÍSAŤ_RIADOK, VYPÍSAŤ_PRÍKAZ, VYKONAŤ_PRÍKAZ,}
+					{@code comm// VYPÍSAŤ_SKRIPT) odpovedáme kladne:}
+					{@code kwdreturn} {@code valtrue};
+				}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#klik() klik}()
+				{
+					{@code comm// Ak bolo stlačené pravé tlačidlo myši, zistíme hodnotu}
+					{@code comm// číselnej premennej (toto je tu uvedené na demonštračné}
+					{@code comm// účely, dalo by sa to rozpracovať tak, aby si používateľ}
+					{@code comm// mohol zvoliť typ premennej).}
+					{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#PRAVÉ PRAVÉ}))
+					{
+						{@link String String} názov = {@link Svet Svet}.{@link Svet#zadajReťazec(String) zadajReťazec}(
+							{@code srg"Názov číselnej premennej:"});
+						{@code kwdif} ({@code valnull} != názov)
+						{
+							{@code kwdif} ({@link Svet Svet}.{@link Svet#premennáJestvuje(String, Class) premennáJestvuje}(názov, {@link Double Double}.{@code typeclass}))
+							{
+								{@link Svet Svet}.{@link Svet#farbaTextu(Farebnosť) farbaTextu}({@link Farebnosť#tyrkysová tyrkysová});
+								{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"     "}, názov, {@code srg" = "},
+									{@link Svet Svet}.{@link Svet#čítajPremennú(String, Class) čítajPremennú}(názov, {@link Double Double}.{@code typeclass}));
+								{@link Svet Svet}.{@link Svet#predvolenáFarbaTextu() predvolenáFarbaTextu}();
+							}
+							{@code kwdelse}
+							{
+								{@link Svet Svet}.{@link Svet#farbaTextu(Farebnosť) farbaTextu}({@link Farebnosť#červená červená});
+								{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"     Premenná "},
+									názov, {@code srg"nejestvuje."});
+								{@link Svet Svet}.{@link Svet#predvolenáFarbaTextu() predvolenáFarbaTextu}();
+							}
+						}
+					}
+					{@code comm// Inak (t. j. ak boli stlačené ostatné tlačidlá myši):}
+					{@code comm//   Ak prebieha vykonávanie skriptu, tak prejdeme na}
+					{@code comm//   ďalší krok, inak začneme vykonávanie nového skriptu.}
+					{@code kwdelse} {@code kwdif} ({@link Svet Svet}.{@link Svet#skriptJeSpustený() skriptJeSpustený}()) krok = {@code valtrue}; {@code kwdelse} spusti();
+				}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#stlačenieKlávesu() stlačenieKlávesu}()
+				{
+					{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#kláves(int) kláves}({@link Kláves Kláves}.{@link Kláves#ESCAPE ESCAPE}))
+					{
+						{@code comm// Klávesom ESC prerušíme ladenie…}
+						prerušiť = {@code valtrue};
+						krok = {@code valtrue};
+					}
+					{@code kwdelse} {@code kwdif} ({@link Svet Svet}.{@link Svet#skriptJeSpustený() skriptJeSpustený}())
+					{
+						{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#kláves(int) kláves}({@link Kláves Kláves}.{@link Kláves#MEDZERA MEDZERA}))
+						{
+							{@code comm// Klávesom medzera krokujeme…}
+							krok = {@code valtrue};
+						}
+					}
+					{@code kwdelse}
+					{
+						{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#kláves(int) kláves}({@link Kláves Kláves}.{@link Kláves#ENTER ENTER}))
+						{
+							{@code comm// Klávesom ENTER opätovne spúšťame skript…}
+							spusti();
+						}
+					}
+				}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#tik() tik}()
+				{
+					{@code kwdif} ({@link Svet Svet}.{@link Svet#neboloPrekreslené() neboloPrekreslené}()) {@link Svet Svet}.{@link Svet#prekresli() prekresli}();
+				}
+			};
+
+			{@code comm// Musíme zapnúť režim interaktívny režim (zapneme len Svet a robot),}
+			{@code comm// režim ladenia a zabezpečíme, aby nebol robot automaticky skrytý po}
+			{@code comm// prvom výpise na vnútornú konzolu programovacieho rámca (pozri}
+			{@code comm// poznámku na konci opisu metódy Plátno.vypíš).}
+			{@link Svet Svet}.{@link Svet#režimLadenia(boolean) režimLadenia}({@code valtrue});
+			{@link Svet Svet}.{@link Svet#interaktívnyRežim(boolean) interaktívnyRežim}({@code valtrue});
+			{@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code valthis});
+			{@link GRobot#interaktívnyRežim(boolean) interaktívnyRežim}({@code valtrue});
+
+			spusti();
+			{@link Svet Svet}.{@link Svet#spustiČasovač() spustiČasovač}();
+		}
+
+		{@code comm// Touto metódou sa spúšťa ladenie ďalšieho skriptu. Logicky, pokus}
+		{@code comm// o spustenie nového ladenia bude vykonaný len v takom prípade,}
+		{@code comm// keď nie je v činnosti iné ladenie. (Volanie metódy spustiSkript}
+		{@code comm// by v opačnom prípade i tak nemalo žiadny efekt.)}
+		{@code kwdpublic} {@code typevoid} spusti()
+		{
+			{@code kwdif} (!{@link Svet Svet}.{@link Svet#skriptJeSpustený() skriptJeSpustený}())
+			{
+				{@code comm// Nastavenie predvolených parametrov robota, rôznych vizuálnych}
+				{@code comm// parametrov plátien sveta atď., aby malo každé ladenie čo}
+				{@code comm// najviac podobné podmienky…}
+
+				{@link Skript Skript}.{@link Skript#globálnePremenné() globálnePremenné}().{@link PremenneSkriptu#vymaž() vymaž}();
+				{@code kwdwhile} ({@code valnull} != {@link Skript Skript}.{@link Skript#priestorNaVrchu() priestorNaVrchu}())
+					{@link Skript Skript}.{@link Skript#vynorPriestor() vynorPriestor}();
+				krok = {@code valfalse};
+				prerušiť = {@code valfalse};
+				{@link GRobot#domov() domov}();
+
+				{@link GRobot#predvolenáHrúbkaPera() predvolenáHrúbkaPera}();
+				{@link GRobot#predvolenáFarba() predvolenáFarba}();
+				{@link GRobot#predvolenéPísmo() predvolenéPísmo}();
+				{@link GRobot#predvolenýTvar() predvolenýTvar}();
+
+				{@link Plátno podlaha}.{@link Plátno#predvolenáFarbaPozadiaTextu() predvolenáFarbaPozadiaTextu}();
+				{@link Plátno strop}.{@link Plátno#farbaPozadiaTextu(Farebnosť) farbaPozadiaTextu}({@link Farebnosť#snehová snehová});
+				{@link Plátno strop}.{@link Plátno#písmo(String, double) písmo}({@code srg"Cambria"}, {@code num16});
+				{@link Plátno podlaha}.{@link Plátno#písmo(String, double) písmo}({@code srg"Consolas"}, {@code num11});
+				{@link Svet Svet}.{@link Svet#predvolenáFarbaPlochy() predvolenáFarbaPlochy}();
+				{@link Svet Svet}.{@link Svet#predvolenáFarbaPozadia() predvolenáFarbaPozadia}();
+
+				{@link Svet Svet}.{@link Svet#vymaž() vymaž}();
+				{@link Svet Svet}.{@link Svet#titulok(String) titulok}(zoznamSkriptov[
+					počítadloSkriptov % zoznamSkriptov.length]);
+				{@link Svet Svet}.{@link Svet#spustiSkript(String, boolean) spustiSkript}(zoznamSkriptov[
+					počítadloSkriptov % zoznamSkriptov.length], {@code valtrue});
+				++počítadloSkriptov;
+			}
+		}
+
+		{@code comm// Hlavná metóda.}
+		{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
+		{
+			{@code kwdif} ({@code num0} == args.length)
+			{
+				{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"Zadajte mená skriptov ako argumenty!"});
+			}
+			{@code kwdelse}
+			{
+				{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"TestLadeniaSkriptu.cfg"});
+				{@code kwdnew} TestLadeniaSkriptu(args);
+			}
+		}
+	}
+	</pre>
  * 
  * <p> </p>
  * 
@@ -344,7 +897,7 @@ public abstract class Skript
 		// Vďaka obzorom vznikol priestor na implementáciu krásneho spôsobu
 		// definovania kvázi „inštančných“ premenných (zjednodušene len
 		// menných priestorov premenných) skriptov. Obzory sa dajú ovládať
-		// riadiacim príkazom „obzor“ ekvivalentnou Pascalovskému „with-do“.
+		// riadiacim príkazom „obzor“ ekvivalentnou Pascalovskému „with-do.“
 		// Funguje principiálne jednoducho: Jej blok netvára anonymný
 		// priestor premenných skriptov, namiesto toho čerpá (alebo vytvára
 		// nový) pomenovaný obzor, čiže menný priestor premenných skriptov.
@@ -370,7 +923,9 @@ public abstract class Skript
 
 		/**
 		 * <p>Prekrytá metóda, ktorá má na starosti spracovanie zákazníckych
-		 * funkcií triedy {@code ExpressionProcessor}.</p>
+		 * funkcií triedy <a 
+		 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java"
+		 * target="_blank"><code>ExpressionProcessor</code></a>.</p>
 		 * 
 		 * @param funcID identifikátor zákazníckej funkcie
 		 * @param params hodnoty vstupných parametrov funkcie – trieda Value
@@ -462,7 +1017,9 @@ public abstract class Skript
 
 		/**
 		 * <p>Prekrytá metóda, ktorá má na starosti spracovanie zákazníckych
-		 * premenných triedy {@code ExpressionProcessor}.</p>
+		 * premenných triedy <a 
+		 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java"
+		 * target="_blank"><code>ExpressionProcessor</code></a>.</p>
 		 * 
 		 * @param varID identifikátor zákazníckej premennej
 		 * @param write hodnota na zápis, pričom ak je {@code valnull}, tak
@@ -1057,8 +1614,7 @@ public abstract class Skript
 			// Správanie metódy bolo upravené tak, aby sa záznamy o výpisoch
 			// premenných najskôr ukladali do zásobníka a potom sa vypísali
 			// naraz pred vykonaním ďalšieho príkazu.
-			zásobníkPremenných.add(new ZáznamPremennej(
-				riadok, názov, typ));
+			zásobníkPremenných.add(new ZáznamPremennej(riadok, názov, typ));
 		}
 	}
 
@@ -2246,9 +2802,8 @@ public abstract class Skript
 						}
 					}
 					else if (';' != riadok.charAt(0))
-						aktívny.obsah.add(new Riadok(
-							aktívny, 1 + číslovanie,
-							riadok.toString()));
+						aktívny.obsah.add(new Riadok(aktívny,
+							1 + číslovanie, riadok.toString()));
 				}
 			}
 		}
@@ -2257,8 +2812,7 @@ public abstract class Skript
 		private static void vytiahniMenovku(StringBuffer riadok)
 		{
 			int i = 1;
-			for (;i < riadok.length() &&
-				riadok.charAt(0) <= ' '; ++i);
+			for (;i < riadok.length() && riadok.charAt(0) <= ' '; ++i);
 			riadok.delete(0, i);
 
 			i = 0;
@@ -2327,8 +2881,6 @@ public abstract class Skript
 				int kód = hlavný.vykonaj();
 				if (CHYBA_NEZNÁMA_MENOVKA == (poslednáChyba % 100) &&
 					null != hľadajMenovku &&
-					// TODO: Do dokumentácie, že menovka „koniec“ je
-					// rezervovaná.
 					"koniec".equalsIgnoreCase(hľadajMenovku))
 				{
 					poslednáChyba = ŽIADNA_CHYBA;
@@ -2407,7 +2959,7 @@ public abstract class Skript
 		}
 
 		// Súčasť mechanizmu hľadania menoviek v nadradených blokoch
-		// príkazom „na «menovka»“. (Pozri aj premenné koreňa: hľadajMenovku
+		// príkazom „na «menovka».“ (Pozri aj premenné koreňa: hľadajMenovku
 		// a skočNa.)
 		private boolean hľadajMenovku(int kód)
 		{
@@ -2436,8 +2988,7 @@ public abstract class Skript
 
 			try
 			{
-				for (int i = 0; neprerušené &&
-					i < obsah.size(); ++i)
+				for (int i = 0; neprerušené && i < obsah.size(); ++i)
 				{
 					Skript časť = obsah.get(i);
 					if (časť instanceof Riadok)
@@ -2482,9 +3033,8 @@ public abstract class Skript
 						else if (riadok.riadok.regionMatches(
 							true, 0, "na ", 0, 3))
 						{
-							String[] slová =
-								vykonajPríkazTokenizer.
-									split(riadok.riadok);
+							String[] slová = vykonajPríkazTokenizer.
+								split(riadok.riadok);
 
 							if (slová.length < 2)
 							{
@@ -2505,8 +3055,7 @@ public abstract class Skript
 							i = skočNa - 1;
 							continue;
 						}
-						else if (riadok.riadok.
-							equalsIgnoreCase("inak"))
+						else if (riadok.riadok.equalsIgnoreCase("inak"))
 						{
 							++i;
 							continue;
@@ -2514,12 +3063,10 @@ public abstract class Skript
 						else if (riadok.riadok.regionMatches(
 							true, 0, "obzor ", 0, 6))
 						{
-							String[] slová =
-								vykonajPríkazTokenizer.
-									split(riadok.riadok);
+							String[] slová = vykonajPríkazTokenizer.
+								split(riadok.riadok);
 
-							if (slová.length < 2 ||
-								(i + 1) >= obsah.size())
+							if (slová.length < 2 || (i + 1) >= obsah.size())
 							{
 								poslednáChyba = CHYBA_CHYBNÁ_ŠTRUKTÚRA +
 									100 * riadok.číslo;
@@ -2542,12 +3089,10 @@ public abstract class Skript
 						else if (riadok.riadok.regionMatches(
 							true, 0, "opakuj ", 0, 7))
 						{
-							String[] slová =
-								vykonajPríkazTokenizer.
-									split(riadok.riadok);
+							String[] slová = vykonajPríkazTokenizer.
+								split(riadok.riadok);
 
-							if (slová.length < 2 ||
-								++i >= obsah.size())
+							if (slová.length < 2 || ++i >= obsah.size())
 							{
 								poslednáChyba = CHYBA_CHYBNÁ_ŠTRUKTÚRA +
 									100 * riadok.číslo;
@@ -2556,8 +3101,7 @@ public abstract class Skript
 
 							String premenná = slová[1];
 
-							if (!premennáJestvuje(
-								premenná, Double.class))
+							if (!premennáJestvuje(premenná, Double.class))
 							{
 								if (slová.length >= 3)
 								{
@@ -2614,8 +3158,7 @@ public abstract class Skript
 									if (0 > opakovania)
 									{
 										for (int j = opakovania;
-											neprerušené &&
-											j <= -1; ++j)
+											neprerušené && j <= -1; ++j)
 										{
 											if (null != premenná)
 											{
@@ -2637,8 +3180,7 @@ public abstract class Skript
 									}
 									else
 									{
-										for (int j = 1;
-											neprerušené &&
+										for (int j = 1; neprerušené &&
 											j <= opakovania; ++j)
 										{
 											if (null != premenná)
@@ -2665,14 +3207,132 @@ public abstract class Skript
 									lokálnePremenné.pop();
 								}
 							}
-							else
+							else if (telo instanceof Riadok)
 							{
+								Riadok riadok1 = (Riadok)telo;
+
 								// Riadok opakovania…
 								if (0 > opakovania)
 								{
 									for (int j = opakovania;
-										neprerušené &&
-										j <= -1; ++j)
+										neprerušené && j <= -1; ++j)
+									{
+										if (ladenie)
+										{
+											if (null != ObsluhaUdalostí.
+												počúvadlo)
+											{
+												if (ObsluhaUdalostí.
+													počúvadlo.ladenie(
+													riadok1.číslo,
+													riadok1.riadok,
+													VYPÍSAŤ_SKRIPT))
+												{
+													koreň.prekresli(
+														riadok1.číslo);
+													plátno.vypíšRiadok();
+													vyprázdniZásobníkPremenných();
+												}
+												else if (ObsluhaUdalostí.
+													počúvadlo.ladenie(
+													riadok1.číslo,
+													riadok1.riadok,
+													VYPÍSAŤ_RIADOK))
+												{
+													vyprázdniZásobníkPremenných();
+													riadok1.vypíš();
+												}
+												else
+													vyprázdniZásobníkPremenných();
+											}
+
+											if (prerušiťLadenie(riadok1.číslo,
+												riadok1.riadok)) break;
+										}
+
+										if (null != premenná)
+										{
+											zapíšPremennú(premenná,
+												new Double(j));
+											vypíšPremennú(riadok.číslo,
+												premenná, ČÍSELNÁ_PREMENNÁ);
+										}
+
+										int kód = telo.vykonaj();
+										if (hľadajMenovku(kód))
+										{
+											i = koreň.skočNa;
+											koreň.skočNa = null;
+											continue;
+										}
+										if (0 != kód) return kód;
+									}
+								}
+								else
+								{
+									for (int j = 1; neprerušené &&
+										j <= opakovania; ++j)
+									{
+										if (ladenie)
+										{
+											if (null != ObsluhaUdalostí.
+												počúvadlo)
+											{
+												if (ObsluhaUdalostí.
+													počúvadlo.ladenie(
+													riadok1.číslo,
+													riadok1.riadok,
+													VYPÍSAŤ_SKRIPT))
+												{
+													koreň.prekresli(
+														riadok1.číslo);
+													plátno.vypíšRiadok();
+													vyprázdniZásobníkPremenných();
+												}
+												else if (ObsluhaUdalostí.
+													počúvadlo.ladenie(
+													riadok1.číslo,
+													riadok1.riadok,
+													VYPÍSAŤ_RIADOK))
+												{
+													vyprázdniZásobníkPremenných();
+													riadok1.vypíš();
+												}
+												else
+													vyprázdniZásobníkPremenných();
+											}
+
+											if (prerušiťLadenie(riadok1.číslo,
+												riadok1.riadok)) break;
+										}
+
+										if (null != premenná)
+										{
+											zapíšPremennú(premenná,
+												new Double(j));
+											vypíšPremennú(riadok.číslo,
+												premenná, ČÍSELNÁ_PREMENNÁ);
+										}
+
+										int kód = telo.vykonaj();
+										if (hľadajMenovku(kód))
+										{
+											i = koreň.skočNa;
+											koreň.skočNa = null;
+											continue;
+										}
+										if (0 != kód) return kód;
+									}
+								}
+							}
+							else
+							{
+								// Poistka – ak by to nebol (z hocijakého
+								// dôvodu) ani riadok, ani blok opakovania…
+								if (0 > opakovania)
+								{
+									for (int j = opakovania;
+										neprerušené && j <= -1; ++j)
 									{
 										if (null != premenná)
 										{
@@ -2694,8 +3354,7 @@ public abstract class Skript
 								}
 								else
 								{
-									for (int j = 1;
-										neprerušené &&
+									for (int j = 1; neprerušené &&
 										j <= opakovania; ++j)
 									{
 										if (null != premenná)
@@ -2802,6 +3461,7 @@ public abstract class Skript
 										if (i + 1 < obsah.size())
 										{
 											Skript časť1 = obsah.get(i + 1);
+
 											if (časť1 instanceof Riadok)
 											{
 												Riadok riadok1 = (Riadok)časť1;
@@ -2880,62 +3540,47 @@ public abstract class Skript
 
 							if (slová[0].equalsIgnoreCase("ak"))
 							{
-								podmienka =
-									vyhodnoťLogickýVýraz(
-									slová[1]);
+								podmienka =vyhodnoťLogickýVýraz(slová[1]);
 
 								if (podmienka) i = skoč1 - 1;
-								else if (null != skoč2)
-									i = skoč2 - 1;
+								else if (null != skoč2) i = skoč2 - 1;
 								else ++i;
 								continue;
 							}
-							else if (slová[0].
-								equalsIgnoreCase("dokedy"))
+							else if (slová[0].equalsIgnoreCase("dokedy"))
 							{
-								if (premennáJestvuje(slová[1],
-										Double.class))
+								if (premennáJestvuje(slová[1], Double.class))
 								{
-									// Ak je výsledok výpočtu
-									// záporný, tak sa hodnota
-									// premennej nastaví na nulu,
-									// aby mohla byť podmienka
-									// v nasledujúcom kroku
-									// (vyhodnoťLogickýVýraz)
+									// Ak je výsledok výpočtu záporný, tak
+									// sa hodnota premennej nastaví na nulu,
+									// aby mohla byť podmienka v nasledujúcom
+									// kroku (vyhodnoťLogickýVýraz)
 									// vyhodnotená ako nepravdivá.
-									// Zároveň, ak je hodnota
-									// premennej ešte pred výpočtom
-									// menšia alebo rovná nule,
-									// tak sa vezme do úvahy
-									// prípadná hodnota skoku
-									// „inak“, inak sa ignoruje.
-									// (Totiž, nulová hodnota pred
-									// výpočtom naznačuje, že
-									// cyklus by sa nemal ani raz
-									// zopakovať. To by malo dávať
-									// právo na vykonanie toho, čo
-									// nasleduje za „inak“.)
+									// 
+									// Zároveň, ak je hodnota premennej ešte
+									// pred výpočtom menšia alebo rovná nule,
+									// tak sa vezme do úvahy prípadná hodnota
+									// skoku „inak,“ inak sa ignoruje.
+									// 
+									// (Totiž, nulová hodnota pred výpočtom
+									// naznačuje, že cyklus by sa nemal ani
+									// raz zopakovať. To by malo dávať právo
+									// na vykonanie toho, čo nasleduje za
+									// „inak.“)
 
-									Double hodnota = (Double)
-										čítajPremennú(slová[1],
-											Double.class);
+									Double hodnota = (Double)čítajPremennú(
+										slová[1], Double.class);
 									if (0.0 < hodnota) skoč2 = null;
 
-									// TODO: Test‼ — záporný štart, kladný
-									// štart, nulový štart a (ne)vykonanie
-									// bloku „inak“…
 									zapíšPremennú(slová[1], new Double(Math.
 										max(Math.rint(hodnota - 1.0), 0.0)));
 
 									vypíšPremennú(riadok.číslo,
 										slová[1], ČÍSELNÁ_PREMENNÁ);
 
-									podmienka = vyhodnoťLogickýVýraz(
-										slová[1]);
-
+									podmienka = vyhodnoťLogickýVýraz(slová[1]);
 									if (podmienka) i = skoč1 - 1;
-									else if (null != skoč2)
-										i = skoč2 - 1;
+									else if (null != skoč2) i = skoč2 - 1;
 									continue;
 								}
 							}
@@ -2961,8 +3606,7 @@ public abstract class Skript
 							((Blok)časť).premennéBloku =
 								PremennéSkriptu.novyPriestor();
 
-						lokálnePremenné.push(
-							((Blok)časť).premennéBloku);
+						lokálnePremenné.push(((Blok)časť).premennéBloku);
 						try
 						{
 							int kód = časť.vykonaj();
@@ -2981,6 +3625,9 @@ public abstract class Skript
 					}
 					else
 					{
+						// Iný typ ako Blok alebo Riadok by sa v podstate
+						// nemal vyskytnúť, ale ak by sa to z ľubovoľného
+						// dôvodu stalo, toto zabezpečí jeho vykonanie:
 						int kód = časť.vykonaj();
 						if (hľadajMenovku(kód))
 						{
@@ -2996,8 +3643,7 @@ public abstract class Skript
 			}
 			finally
 			{
-				koreň.aktuálnaInštancia =
-					koreň.zásobníkInštancií.pop();
+				koreň.aktuálnaInštancia = koreň.zásobníkInštancií.pop();
 			}
 		}
 
@@ -3127,12 +3773,9 @@ public abstract class Skript
 			{
 				// nič
 			}
-			else if (this.riadok.regionMatches(
-				true, 0, "na ", 0, 3))
+			else if (this.riadok.regionMatches(true, 0, "na ", 0, 3))
 			{
-				String[] slová =
-					vykonajPríkazTokenizer.
-						split(this.riadok);
+				String[] slová = vykonajPríkazTokenizer.split(this.riadok);
 
 				vypíšRiadokLadenia(
 					farbyLadenia[FARBA_LADENIA_RIADIACI_PRÍKAZ],
@@ -3145,12 +3788,9 @@ public abstract class Skript
 					farbyLadenia[FARBA_LADENIA_RIADIACI_PRÍKAZ],
 					this.riadok);
 			}
-			else if (this.riadok.regionMatches(
-				true, 0, "opakuj ", 0, 7))
+			else if (this.riadok.regionMatches(true, 0, "opakuj ", 0, 7))
 			{
-				String[] slová =
-					vykonajPríkazTokenizer.
-						split(this.riadok);
+				String[] slová = vykonajPríkazTokenizer.split(this.riadok);
 
 				vypíšÚdajLadenia(
 					farbyLadenia[FARBA_LADENIA_RIADIACI_PRÍKAZ],
@@ -3173,14 +3813,10 @@ public abstract class Skript
 
 				plátno.vypíšRiadok();
 			}
-			else if (this.riadok.regionMatches(
-					true, 0, "ak ", 0, 3) ||
-				this.riadok.regionMatches(
-					true, 0, "dokedy ", 0, 7))
+			else if (this.riadok.regionMatches(true, 0, "ak ", 0, 3) ||
+				this.riadok.regionMatches(true, 0, "dokedy ", 0, 7))
 			{
-				String[] slová =
-					vykonajPríkazTokenizer.
-						split(this.riadok);
+				String[] slová = vykonajPríkazTokenizer.split(this.riadok);
 
 				int mriežka = this.riadok.indexOf('#');
 
@@ -3287,12 +3923,9 @@ public abstract class Skript
 
 				plátno.vypíšRiadok();
 			}
-			else if (this.riadok.regionMatches(
-				true, 0, "obzor ", 0, 6))
+			else if (this.riadok.regionMatches(true, 0, "obzor ", 0, 6))
 			{
-				String[] slová =
-					vykonajPríkazTokenizer.
-						split(this.riadok);
+				String[] slová = vykonajPríkazTokenizer.split(this.riadok);
 
 				if (slová.length > 1)
 				{
@@ -3531,17 +4164,14 @@ public abstract class Skript
 		 * tak to znamená, že v tomto priestore premenných nie je
 		 * definovaná žiadna premenná so zadaným údajovým typom.</p>
 		 * 
-		 * <!-- p class="attention"><b>Upozornenie:</b> Názvy premenných
-		 * sú vnútorne vždy prevedené na malé písmená, čo má zaručiť
-		 * ich necitlivosť na veľkosť písmen. Ak chcete pracovať
-		 * s týmto zoznamom korektne, prevádzajte všetky ostatné názvy
-		 * na malé písmená alebo pracujte s metódami, ktoré neberú
-		 * do úvahy veľkosť písmen.</p TODO: overiť, či platí a korigovať -->
+		 * <p class="remark"><b>Poznámka:</b> Názvy premenných nie sú
+		 * citlivé na veľkosť písmen. Ich zoznamy sú konštruované
+		 * s pomocou parametra {@link String String}<code>.</code>{@link 
+		 * String#CASE_INSENSITIVE_ORDER}.</p>
 		 * 
 		 * @param typ typ premenných zoznamu – povolené sú len:
 		 *     {@link Double Double.class}, {@link Color Color.class},
-		 *     {@link Poloha Poloha.class} a {@link String
-		 *     String.class}
+		 *     {@link Poloha Poloha.class} a {@link String String.class}
 		 * @return zoznam definovaných premenných podľa zadaného
 		 *     údajového typu alebo hodnota {@code valnull}
 		 */
@@ -3583,7 +4213,7 @@ public abstract class Skript
 		}
 
 		/**
-		 * <p>Zistí, či je premená so zadaným názvom a typom
+		 * <p>Zistí, či je premenná so zadaným názvom a typom
 		 * definovaná v tomto priestore premenných skriptu.</p>
 		 * 
 		 * @param názov názov premennej
@@ -3817,7 +4447,7 @@ public abstract class Skript
 
 		/**
 		 * <p>Vráti pomenovaný priestor premenných skriptov, ktorý je
-		 * v tomto programovacom rámci označovaný termínom „obzor“. Ak
+		 * v tomto programovacom rámci označovaný termínom „obzor.“ Ak
 		 * priestor nejestvuje, tak je automaticky vytvorený. Špeciálny
 		 * prípad nastáva pri zadaní prázdneho názvu obzoru. Vtedy metóda
 		 * vráti globálny priestor premenných…</p>
@@ -3898,10 +4528,10 @@ public abstract class Skript
 	 * <ul>
 	 * <li>{@link Svet#vyrobSkript(String, boolean) vyrobSkript(skript,
 	 * zoSúboru)},</li>
-	 * <li>{@link Svet#vyrobSkript(String[]) vyrobSkript(skript},</li>
+	 * <li>{@link Svet#vyrobSkript(String[]) vyrobSkript(skript)},</li>
 	 * <li>{@link Svet#nahrajSkript(String, String) nahrajSkript(názov,
 	 * súbor)},</li>
-	 * <li>{@link Svet#vykonajSkript(String[]) vykonajSkript(riadky}</li>
+	 * <li>{@link Svet#vykonajSkript(String[]) vykonajSkript(riadky)}</li>
 	 * <li>a podobne.</li>
 	 * </ul>
 	 * 
@@ -3914,7 +4544,7 @@ public abstract class Skript
 	 */
 	public static Skript vyrob(String[] skript)
 	{
-		Skript novýSkript = new Koreň(skript);
+		Skript novýSkript = new Koreň(skript); // resetuje poslednú chybu
 		if (ŽIADNA_CHYBA != poslednáChyba) return null;
 		return novýSkript;
 	}
@@ -3955,10 +4585,11 @@ public abstract class Skript
 	 * <p>Vráti globálny priestor premenných skriptov. Globálny priestor
 	 * premenných je spoločný pre všetky skripty. Lokálne priestory
 	 * premenných sú vytvárané a likvidované priebežne počas činnosti
-	 * skriptov (tento proces môže byť značne komplikovaný) a preto k nim
-	 * nie je možné získať prístup „zvonka.“ Podrobnosti o spôsobe práce
-	 * s priestrom premenných skriptov sú v dokumentácii triedy {@link 
-	 * PremennéSkriptu PremennéSkriptu}.</p>
+	 * skriptov a preto k nim nie je možné získať prístup „zvonka.“ (Pozri
+	 * opis metódy {@link #objemPriestorov() objemPriestorov}.)</p>
+	 * 
+	 * <p>Podrobnosti o spôsobe práce s priestorom premenných skriptov sú
+	 * v dokumentácii triedy {@link PremennéSkriptu PremennéSkriptu}.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Ten istý výsledok dosiahneme
 	 * volaním metódy {@link Skript Skript}{@code .}{@link PremennéSkriptu
@@ -3966,7 +4597,7 @@ public abstract class Skript
 	 * dajObzor}{@code (}{@code valnull}{@code )} (resp. {@link Skript
 	 * Skript}{@code .}{@link PremennéSkriptu
 	 * PremennéSkriptu}{@code .}{@link PremennéSkriptu#dajObzor(String)
-	 * dajObzor}{@code (}{@code srg""}{@code )}.</p>
+	 * dajObzor}{@code (}{@code srg""}{@code )}).</p>
 	 */
 	public static PremenneSkriptu globálnePremenné()
 	{ return globalnePremenne; }
@@ -3976,26 +4607,85 @@ public abstract class Skript
 	{ return globalnePremenne; }
 
 
-	/*<!-- TODO Dokončiť opis. -->
-	Vráti aktuálny objem vnútorného zásobníka priestorv premenných skriptu (čiže aktuálny počet položiek v zásobníku).
-	*/
+	/**
+	 * <p>Vráti aktuálny objem vnútorného zásobníka vnorených priestorov
+	 * premenných skriptov. Ide o aktuálny počet položiek v zásobníku.
+	 * Zásobník, o ktorom je reč, uchováva priestory lokálnych premenných
+	 * spustených skriptov a premenných definovaných vo vnorených blokoch
+	 * skriptov. Ak nie je spustený žiadny skript, mal by byť jeho objem
+	 * nulový. V opačnom prípade sa môže hodnota objemu rýchlo meniť.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> V opise metódy {@link 
+	 * #globálnePremenné() globálnePremenné} je spomenutý proces
+	 * dynamického vytvárania a likvidácie priestorov lokálnych premenných.
+	 * Nejde len o lokálne premenné v zmysle individuálnych premenných
+	 * skriptu, ale aj o premenné platné len v rámci konkrétneho bloku.
+	 * Priestory ich existencie su spravované prostredníctvom vnútorného
+	 * zásobníka (tzv. „zásobníka priestorov“), ktorý je sprístupnený
+	 * prostredníctvom skupiny metód, do ktorej patrí aj táto metóda.
+	 * (Proces dynamického vytvárania a likvidácie lokálnych priestorov môže
+	 * byť značne komplikovaný.)</p>
+	 * 
+	 * @return počet položiek (priestorov premenných) v zásobníku
+	 * 
+	 * @see #priestorNaVrchu()
+	 * @see #vnorPriestor(PremennéSkriptu)
+	 * @see #vynorPriestor()
+	 */
 	public static int objemPriestorov()
 	{
 		return lokálnePremenné.size();
 	}
 
-	/*<!-- TODO Dokončiť opis. -->
-	Ak sa na vrchu zásobníka priestorov nenachádza ten priestor, ktorý by ste očakávali (ten, ktorý ste tam mali naposledy vložiť), tak to znamená, že sa niekde stala chyba a tento stav treba vhodne prehodnotiť (odladiť) a prípadne ohlásiť používateľovi aplikácie (chybovým hlásením; prípadne, ak si myslíte, že ide o vnútornú chybu rámca, tak aj autorovi rámca).
-	*/
+	/**
+	 * <p>Vráti najvrchnejší priestor vnútorného zásobníka vnorených
+	 * priestorov premenných skriptov. (Pozri aj opis metódy {@link 
+	 * #objemPriestorov() objemPriestorov}.) Ak je zásobník prázdny, tak
+	 * táto metóda vráti hodnotu {@code valnull}.</p>
+	 * 
+	 * <p>Ak sa na vrchu zásobníka priestorov nenachádza ten priestor, ktorý
+	 * by ste očakávali (ten, ktorý ste tam mali naposledy vložiť), tak to
+	 * znamená, že sa niekde stala chyba a tento stav treba vhodne
+	 * prehodnotiť (odladiť) a prípadne ohlásiť používateľovi aplikácie
+	 * (chybovým hlásením; prípadne, ak si myslíte, že ide o vnútornú chybu
+	 * rámca, tak aj autorovi rámca).</p>
+	 * 
+	 * @return najvrchnejší (aktuálny) priestor premenných skriptov
+	 *     v zásobníku alebo {@code valnull} (pri chybe)
+	 * 
+	 * @see #objemPriestorov()
+	 * @see #vnorPriestor(PremennéSkriptu)
+	 * @see #vynorPriestor()
+	 */
 	public static PremennéSkriptu priestorNaVrchu()
 	{
 		if (lokálnePremenné.empty()) return null;
 		return lokálnePremenné.peek();
 	}
 
-	/*<!-- TODO Dokončiť opis. -->
-	Návratová hodnota {@code valnull} signalizuje chybu. Pri tejto metóde to znamená buď pokus o vloženie hodnoty {@code valnull} namiesto platného priestoru, alebo pokus o duplicitné vloženie priestoru, ktorý sa už nachádza vo vnútornom zásobníku
-	*/
+	/**
+	 * <p>Vloží do vnútorného zásobníka vnorených priestorov premenných
+	 * skriptov novú položku – nový priestor. (Pozri aj opis metódy {@link 
+	 * #objemPriestorov() objemPriestorov}.) Tento zásobník je bežne
+	 * spravovaný automaticky, čiže sa nepredpokladá aktívne využívanie
+	 * tejto metódy, avšak môže byť užitočná napríklad pri simulácii práce
+	 * s objektmi a ich vnútornými premennými (atribútmi).</p>
+	 * 
+	 * <p>Návratová hodnota {@code valnull} signalizuje chybu. Pri tejto
+	 * metóde to znamená buď pokus o vloženie hodnoty {@code valnull}
+	 * namiesto platného priestoru, alebo pokus o duplicitné vloženie
+	 * priestoru, čiže takého, ktorý sa už vo vnútornom zásobníku priestorov
+	 * nachádza.</p>
+	 * 
+	 * @param priestor priestor premenných na vloženie do zásobníka; nesmie
+	 *     byť {@code valnull}
+	 * @return práve vložený priestor do zásobníka alebo {@code valnull}
+	 *     (pri chybe)
+	 * 
+	 * @see #objemPriestorov()
+	 * @see #priestorNaVrchu()
+	 * @see #vynorPriestor()
+	 */
 	public static PremennéSkriptu vnorPriestor(PremennéSkriptu priestor)
 	{
 		if (null == priestor || -1 != lokálnePremenné.search(priestor))
@@ -4003,9 +4693,22 @@ public abstract class Skript
 		return lokálnePremenné.push(priestor);
 	}
 
-	/*
-	Návratová hodnota {@code valnull} signalizuje chybu. Pri tejto metóde to znamená, že zásobník priestorov je prázdny.
-	*/
+	/**
+	 * <p>Vyberie (a vráti) najvrchnejšiu položku zo zásobníka vnorených
+	 * priestorov premenných skriptov. (Pozri aj opis metódy {@link 
+	 * #objemPriestorov() objemPriestorov}.) Táto metóda je doplnkom k metóde
+	 * {@link #vnorPriestor(PremennéSkriptu) vnorPriestor}.</p>
+	 * 
+	 * <p>Návratová hodnota {@code valnull} signalizuje chybu. Pri tejto
+	 * metóde to znamená, že zásobník priestorov je prázdny.</p>
+	 * 
+	 * @return najvrchnejší (práve vybraný) priestor premenných skriptov
+	 *     v zásobníku alebo {@code valnull} (pri chybe)
+	 * 
+	 * @see #objemPriestorov()
+	 * @see #priestorNaVrchu()
+	 * @see #vnorPriestor(PremennéSkriptu)
+	 */
 	public static PremennéSkriptu vynorPriestor()
 	{
 		if (lokálnePremenné.empty()) return null;
@@ -4031,7 +4734,7 @@ public abstract class Skript
 	 * tzv. obzorovými) premennými, ale v skutočnosti je vznik takejto
 	 * situácie veľmi nepravdepodobný, keďže pri zápise (to jest aj
 	 * definícii) premenných sa vždy najskôr kontroluje dostupnosť premennej
-	 * vo vyšších priestoroch premenných…)</p>
+	 * vo vyšších priestoroch premenných…</p>
 	 * 
 	 * <p>Na výpis je použitý aktuálny štýl (farebná schéma). Pozri aj:
 	 * {@link #farbaLadenia(String) farbaLadenia}.</p>
@@ -4153,7 +4856,7 @@ public abstract class Skript
 
 
 	/**
-	 * <p>Zistí, či jestvuje (je definovaná) premená so zadaným názvom
+	 * <p>Zistí, či jestvuje (je definovaná) premenná so zadaným názvom
 	 * a typom.</p>
 	 * 
 	 * @param názov názov premennej
@@ -4441,6 +5144,15 @@ public abstract class Skript
 	 * nastavenia hodnoty premennej potvrdzuje návratová hodnota tejto
 	 * metódy – {@code valtrue} (úspech) / {@code valfalse} (neúspech).</p>
 	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Nová premenná je prednostne
+	 * vytvorená v aktuálnom lokálnom priestore premenných (pozri napríklad
+	 * opis metódy {@link #objemPriestorov() objemPriestorov}). Iba
+	 * v prípade, že nie je aktívny žiadny lokálny priestor, sa premenná
+	 * vytvorí v globálnom priestore. Na zápis premennej do konkrétneho
+	 * priestoru premenných (vrátane {@linkplain #globálnePremenné()
+	 * globálneho}) slúži metóda {@link PremennéSkriptu#zapíš(String,
+	 * Object) PremennéSkriptu.zapíš}.</p>
+	 * 
 	 * @param názov názov premennej
 	 * @param hodnota hodnota premennej povoleného údajového typu –
 	 *     povolené sú: {@link Double Double},
@@ -4496,8 +5208,8 @@ public abstract class Skript
 		}
 
 		// Ďalší zápis je mierne komplikovanejší. Premenná sa musí najskôr
-		// skúsiť nájsť vo všetkých priestoroch a až keď sa nenájde, sa
-		// zapíše do prvého dostupného priestoru.
+		// skúsiť nájsť vo všetkých priestoroch a až keď sa nenájde, zapíše
+		// sa do prvého dostupného priestoru.
 		if (hodnota instanceof Double)
 		{
 			if (!lokálnePremenné.empty())
@@ -4649,6 +5361,15 @@ public abstract class Skript
 	/**
 	 * <p>Vymaže definíciu premennej zadaného údajového typu.
 	 * (Ak jestvuje.)</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Premenná je prednostne
+	 * vymazaná z aktuálneho lokálneho priestoru premenných (pozri napríklad
+	 * opis metódy {@link #objemPriestorov() objemPriestorov}). V prípade,
+	 * že nie je aktívny žiadny lokálny priestor, sa premenná vymaže
+	 * z globálneho priestoru. Na vymazanie premennej z konkrétneho priestoru
+	 * premenných (vrátane {@linkplain #globálnePremenné() globálneho}) slúži
+	 * metóda {@link PremennéSkriptu#vymaž(String, Class)
+	 * PremennéSkriptu.vymaž}.</p>
 	 * 
 	 * @param názov názov premennej
 	 * @param typ typ premennej – povolené sú: {@link Double Double.class},
@@ -4829,9 +5550,23 @@ public abstract class Skript
 	 * </ul>
 	 * 
 	 * <p>alebo o kód s celočíselnou hodnotou väčšou alebo rovnou
-	 * {@code num50}, kedy ide o chybu spôsobenú pri vyhodnotení vnútorného
-	 * výrazu nasledujúceho za znakom mriežky.<!-- TODO lepšie zdokumentovať
-	 * na iných miestach --></p>
+	 * {@code num50}, kedy ide o chybu spôsobenú pri spracovaní
+	 * (matematického) výrazu vyhodnoteného prostredníctvom vnútorného
+	 * vyhodnocovača výrazov (pozri
+	 * <a 
+	 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java"
+	 * target="_blank"><code>ExpressionProcessor</code></a>), ktorý
+	 * (syntakticky) nasleduje za znakom mriežky (chybové kódy vnútorného
+	 * vyhodnocovača (matematických) výrazov nie sú uvedené v tejto
+	 * dokumentácii, ale syntax s mriežkou je bližšie spomenutá napríklad
+	 * v opise metódy {@link Svet#interaktívnyRežim(boolean)
+	 * Svet.interaktívnyRežim}; chybové kódy vyhodnocovača sú uvedené v <a
+	 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java#L278"
+	 * target="_blank">jeho zdrojovom kóde</a>).<!-- TODO možno ešte lepšie
+	 * zdokumentovať, ale na iných miestach --></p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Tabuľka chýb je v opise
+	 * metódy {@link #textChyby(int) textChyby}.</p>
 	 * 
 	 * @return kód chyby – ďalšie podrobnosti môžete získať kliknutím
 	 *     na kód chyby v zozname vyššie
@@ -4864,6 +5599,9 @@ public abstract class Skript
 	 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}
 	 * alebo skriptu.</p>
 	 * 
+	 * <p class="remark"><b>Poznámka:</b> Tabuľka chýb je v opise
+	 * metódy {@link #textChyby(int) textChyby}.</p>
+	 * 
 	 * @return text ku kódu chyby
 	 * 
 	 * @see #kódPoslednejChyby()
@@ -4880,10 +5618,103 @@ public abstract class Skript
 	 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}
 	 * alebo skriptu.</p>
 	 * 
-	 * <!-- TODO – Uviesť zoznam chýb (podobne ako pri chybách
-	 * GRobotException) s ich úplným znením (kódmi a krátkym vysvetlením)
-	 * a odkázať sa na neho všade, kde treba (Svet.textPoslednejChyby,
-	 * Skript.textPoslednejChyby…) -->
+	 * <p><b>Tabuľka chýb</b></p>
+	 * 
+	 * <p>V tabuľke sú zosumarizované všetky konštanty reprezentujúce kódy
+	 * chýb skriptov programovacieho rámca a prislúchajúce textové znenia
+	 * patriace k týmto kódom. Kliknutím na kód prejdete na ďalšie
+	 * podrobnosti.</p>
+	 * 
+	 * <p>Výnimku tvoria kódy s hodnotou rovnou alebo vyššou než
+	 * {@code num50}, ktoré sú rezervované pre chyby spôsobené pri
+	 * spracovaní výrazu vyhodnoteného prostredníctvom vnútorného
+	 * vyhodnocovača výrazov – pozri opis metódy {@link #kódPoslednejChyby()
+	 * kódPoslednejChyby}.</p>
+	 * 
+	 * <table class="langIDTable">
+	 * <tr><th>Kód chyby</th><th>Textové znenie chyby</th></tr>
+	 * 
+	 * <tr><td>{@link Konštanty#CHYBA_VOLANIA_SKRIPTU
+	 * CHYBA_VOLANIA_SKRIPTU}</td><td>Vznikla chyba pri volaní vnoreného
+	 * skriptu. (Bola zaznamenaná príliš veľká hĺbka volaní vnorených
+	 * skriptov.)</td></tr>
+	 * 
+	 * <tr><td>{@link Konštanty#CHYBA_ČÍTANIA_SKRIPTU
+	 * CHYBA_ČÍTANIA_SKRIPTU}</td><td>Vznikla chyba pri čítaní skriptu.
+	 * (Súbor alebo zdroj s obsahom skriptu nemusel byť nájdený alebo mohla
+	 * vzniknúť chyba pri čítaní údajov.)</td></tr>
+	 * 
+	 * <tr><td>{@link Konštanty#ŽIADNA_CHYBA ŽIADNA_CHYBA}</td><td>Nenastala
+	 * žiadna chyba. (Prípadne mohla nastať neznáma
+	 * chyba.)</td></tr>
+	 * 
+	 * <tr><td>{@link Konštanty#CHYBA_VYKONANIA_PRÍKAZU
+	 * CHYBA_VYKONANIA_PRÍKAZU}</td><td>Nastala chyba počas vykonávania
+	 * posledného príkazu. (Mohlo ísť napríklad o zadanie nesprávneho
+	 * argumentu a pod.)</td></tr>
+	 * 
+	 * <tr><td>{@link Konštanty#CHYBA_DVOJITÁ_MENOVKA
+	 * CHYBA_DVOJITÁ_MENOVKA}</td><td>V skripte sa vyskytla dvojnásobná
+	 * definícia menovky. (Vykonávanie skriptu nie je bezpečné, pretože
+	 * skript pri vykonávaní riadiacich príkazov („na,“ „ak,“ „dokedy“
+	 * s prípadnou alternatívou „inak“ pri posledných dvoch) nemusí správne
+	 * identifikovať, ktorým riadkom má jeho vykonávanie
+	 * pokračovať.)</td></tr>
+	 * 
+	 * <tr><td>{@link Konštanty#CHYBA_CHÝBAJÚCA_MENOVKA
+	 * CHYBA_CHÝBAJÚCA_MENOVKA}</td><td>Za riadiacim príkazom „na,“ „ak,“
+	 * „dokedy“ alebo za alternatívou „inak“ chýba zadanie menovky. (Za
+	 * uvedenými riadiacimi príkazmi nie je zadaná menovka, prípadne nie je
+	 * k dispozícii žiadna náhrada za chýbajúcu menovku, ako napríklad blok
+	 * príkazov na vykonanie.)</td></tr>
+	 * 
+	 * <tr><td>{@link Konštanty#CHYBA_NEZNÁMA_MENOVKA
+	 * CHYBA_NEZNÁMA_MENOVKA}</td><td>Menovka za riadiacim príkazom „na,“
+	 * „ak,“ „dokedy“ alebo za alternatívou „inak“ je neznáma. (Nie je
+	 * definovaná v rámci aktuálneho bloku skriptu alebo pri príkaze „na“
+	 * ani v niektorom z nadradených blokov skriptu.)</td></tr>
+	 * 
+	 * <tr><td>{@link Konštanty#CHYBA_NEZNÁME_SLOVO
+	 * CHYBA_NEZNÁME_SLOVO}</td><td>Za menovkou riadiaceho príkazu „ak“
+	 * alebo „dokedy“ sa vyskytlo neznáme slovo. (Za zadaním prvej menovky
+	 * môže nasledovať ďalšia menovka a to buď bezprostredne, alebo za slovom
+	 * určujúcim alternatívu – „inak.“ Ostatné slová sú považované za
+	 * neznáme.)</td></tr>
+	 * 
+	 * <tr><td>{@link Konštanty#CHYBA_CHYBNÁ_ŠTRUKTÚRA
+	 * CHYBA_CHYBNÁ_ŠTRUKTÚRA}</td><td>Pokus o korektné rozpoznanie
+	 * riadiaceho príkazu „obzor,“ „ak,“ „opakuj“ alebo „dokedy“ zlyhal.
+	 * (Chyba vzniká napríklad, ak riadiaci príkaz nenašiel ďalší príkaz
+	 * alebo blok na vykonanie/opakovanie. Pri opakovaniach vzniká chyba
+	 * aj vtedy, ak nie je definovaná riadiaca premenná, ktorú sa riadiaci
+	 * príkaz pokúša použiť na svoju činnosť.)</td></tr>
+	 * 
+	 * <tr><td>{@link Konštanty#CHYBA_NEZNÁME_MENO
+	 * CHYBA_NEZNÁME_MENO}</td><td>Naposledy aktivovaná inštancia už alebo
+	 * ešte nejestvuje. (Zadané meno inštancie je neznáme.)</td></tr>
+	 * 
+	 * <tr><td>{@link Konštanty#CHYBA_NEZNÁMY_PRÍKAZ
+	 * CHYBA_NEZNÁMY_PRÍKAZ}</td><td>Zadaný príkaz nebol rozpoznaný.
+	 * (Najčastejšími príčinami sú syntaktické chyby alebo neaktivovanie
+	 * správnej (prípadne žiadnej) inštancie, to jest takej, ktorá skutočne
+	 * obsahuje definíciu metódy zodpovedajúcej príkazu
+	 * skriptu.)</td></tr>
+	 * 
+	 * <tr><td>{@code num50}</td><td>Nepodarilo sa priradiť reťazec
+	 * vyhodnocovaču výrazov. (Vnútorný vyhodnocovač (matematických) výrazov
+	 * z určitého dôvodu neprijal reťazec na spracovanie.)</td></tr>
+	 * 
+	 * <tr><td><code>&gt; </code>{@code num50}</td><td>Vznikla chyba pri
+	 * vyhodnocovaní výrazu. (Vnútorný vyhodnocovač (matematických) výrazov
+	 * ohlásil chybu pri spracovaní reťazca, ktorý pravdepodobne nie je
+	 * korektným (matematickým) výrazom. Text chyby: <em>«pôvodný text chyby
+	 * v angličtine»</em>.)</td></tr>
+	 * 
+	 * </table>
+	 * 
+	 * <p>Texty chýb vyhodnocovača (matematických) výrazov sú uvedené v <a
+	 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java#L278"
+	 * target="_blank">jeho zdrojovom kóde</a>.</p>
 	 * 
 	 * @return text ku kódu chyby
 	 * 
@@ -4928,20 +5759,20 @@ public abstract class Skript
 			case CHYBA_DVOJITÁ_MENOVKA: return "V skripte sa vyskytla " +
 				"dvojnásobná definícia menovky. (Vykonávanie skriptu " +
 				"nie je bezpečné, pretože skript pri vykonávaní " +
-				"riadiacich príkazov („na“, „ak“, „dokedy“ s prípadnou " +
+				"riadiacich príkazov („na,“ „ak,“ „dokedy“ s prípadnou " +
 				"alternatívou „inak“ pri posledných dvoch) nemusí " +
 				"správne identifikovať, ktorým riadkom má jeho " +
 				"vykonávanie pokračovať.)";
 
 			case CHYBA_CHÝBAJÚCA_MENOVKA: return "Za riadiacim " +
-				"príkazom „na“, „ak“, „dokedy“ alebo za alternatívou " +
+				"príkazom „na,“ „ak,“ „dokedy“ alebo za alternatívou " +
 				"„inak“ chýba zadanie menovky. (Za uvedenými riadiacimi " +
 				"príkazmi nie je zadaná menovka, prípadne nie je " +
 				"k dispozícii žiadna náhrada za chýbajúcu menovku, ako " +
 				"napríklad blok príkazov na vykonanie.)";
 
 			case CHYBA_NEZNÁMA_MENOVKA: return "Menovka za riadiacim " +
-				"príkazom „na“, „ak“, „dokedy“ alebo za alternatívou " +
+				"príkazom „na,“ „ak,“ „dokedy“ alebo za alternatívou " +
 				"„inak“ je neznáma. (Nie je definovaná v rámci " +
 				"aktuálneho bloku skriptu alebo pri príkaze „na“ ani " +
 				"v niektorom z nadradených blokov skriptu.)";
@@ -4950,11 +5781,11 @@ public abstract class Skript
 				"príkazu „ak“ alebo „dokedy“ sa vyskytlo neznáme slovo. " +
 				"(Za zadaním prvej menovky môže nasledovať ďalšia " +
 				"menovka a to buď bezprostredne, alebo za slovom " +
-				"určujúcim alternatívu – „inak“. Ostatné slová sú " +
+				"určujúcim alternatívu – „inak.“ Ostatné slová sú " +
 				"považované za neznáme.)";
 
 			case CHYBA_CHYBNÁ_ŠTRUKTÚRA: return "Pokus o korektné " +
-				"rozpoznanie riadiaceho príkazu „obzor“, „ak“, „opakuj“ " +
+				"rozpoznanie riadiaceho príkazu „obzor,“ „ak,“ „opakuj“ " +
 				"alebo „dokedy“ zlyhal. (Chyba vzniká napríklad, ak " +
 				"riadiaci príkaz nenašiel ďalší príkaz alebo blok na " +
 				"vykonanie/opakovanie. Pri opakovaniach vzniká chyba aj " +
@@ -5129,7 +5960,7 @@ public abstract class Skript
 	 * <p>Určuje novú farbu určeného prvku syntaxe používanej pri zobrazovaní
 	 * zdrojového kódu v {@linkplain Svet#režimLadenia(boolean) režime
 	 * ladenia}. Hodnota {@code valnull} nie je povolená a je ignorovaná.
-	 * Farba ktorého prvku má byť nastavená, je určené názvom prvku vo forme
+	 * Farba prvku na nastavenie, je cielená názvom prvku vo forme
 	 * reťazca. Ak zadaný názov nekorešponduje ani s jedným z povolených
 	 * názvov, tak je zadaná hodnota farby ignorovaná.</p>
 	 * 
@@ -5162,7 +5993,7 @@ public abstract class Skript
 	 * režime ladenia}. Farba je určená prostredníctvom objektu, ktorý
 	 * implementuje rozhranie {@link Farebnosť Farebnosť}. Hodnota
 	 * {@code valnull} nie je povolená a je ignorovaná.
-	 * Farba ktorého prvku má byť nastavená, je určené názvom prvku vo forme
+	 * Farba prvku na nastavenie, je cielená názvom prvku vo forme
 	 * reťazca. Ak zadaný názov nekorešponduje ani s jedným z povolených
 	 * názvov, tak nie je vykonaná žiadna akcia.</p>
 	 * 

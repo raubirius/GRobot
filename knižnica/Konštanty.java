@@ -70,13 +70,13 @@ public interface Konštanty
 		/** <p>Konštanta minoritnej verzie tohto robota.</p> */
 		public final static int minorVersion = 00;
 		/** <p>Konštanta poznámky verzie tohto robota.</p> */
-		public final static String versionNote = " (2020-04-28)";
+		public final static String versionNote = " (2020-06-03)";
 		/** <p>Konštanta rozpätia rokov vývoja tejto verzie…
 			(v podstate na účel výpisu copyrightu…)</p> */
 		public final static String years = "2010 – 2020";
 		/** <p>Konštanta rozpätia rokov a mesiacov vývoja tejto verzie…
 			(na účely automatického spracovania dokumentácie…)</p> */
-		public final static String yearsMonths = "august 2010 – apríl 2020";
+		public final static String yearsMonths = "august 2010 – jún 2020";
 		/** <p>Konštanta s menom hlavného (zatiaľ jediného) vývojára tejto
 			verzie… (v podstate na účel výpisu copyrightu… kto vie, či časom
 			pribudnú aj nejakí ďalší…)</p> */
@@ -232,7 +232,7 @@ public interface Konštanty
 
 		/**
 		 * <p>Spôsob {@linkplain GRbobot#ukončenieÚpravyTextu(String, int)
-		 * ukončenia úprav textu} klávesom {@code ESCAPE}.</p>
+		 * ukončenia úprav textu} klávesom {@code ESC}.</p>
 		 * 
 		 * @see GRobot#upravText(String)
 		 * @see GRobot#upravText(String, double)
@@ -559,7 +559,7 @@ public interface Konštanty
 
 		/**
 		 * <p>Hodnota, ktorú vráti metóda v prípade, že používateľ zvolil
-		 * z predvolených odpovedí „áno“.
+		 * z predvolených odpovedí „áno.“
 		 * (Použiteľné napríklad pri metóde {@link Svet#otázka(String)
 		 * otázka}.)</p>
 		 */
@@ -570,7 +570,7 @@ public interface Konštanty
 
 		/**
 		 * <p>Hodnota, ktorú vráti metóda v prípade, že používateľ zvolil
-		 * z predvolených odpovedí „nie“.
+		 * z predvolených odpovedí „nie.“
 		 * (Použiteľné napríklad pri metóde {@link Svet#otázka(String)
 		 * otázka}.)</p>
 		 */
@@ -846,14 +846,15 @@ public interface Konštanty
 		 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}
 		 * alebo {@linkplain Svet#vykonajSkript(String[]) vykonávania skriptu},
 		 * ktorý signalizuje, že<!-- koniec spoločnej časti opisu chyby -->
-		 * v skripte sa vyskytla dvojnásobná definícia menovky.
-		 * Táto chyba nastáva pri konštrukcii skriptu, ktorá síce
-		 * pokračuje aj po jej vzniku, ale vykonávanie takéhoto skriptu nie
-		 * je bezpečné, pretože spript pri riadiacich príkazoch {@code na}
-		 * {@code ak}, {@code dokedy} (s prípadnou alternatívou {@code inak}
-		 * pri posledných dvoch) nemusí správne identifikovať (a pravdepodobne
-		 * ani neidentifikuje) tú menovku, ktorou mal autor skriptu v úmysle
-		 * pokračovať.</p>
+		 * v skripte sa vyskytla dvojnásobná definícia menovky. Táto chyba
+		 * nastáva pri konštrukcii skriptu. Konštrukcia síce (vnútorne)
+		 * pokračuje aj po jej vzniku, ale vykonávanie takéhoto skriptu by
+		 * nebolo bezpečné, pretože skript by pri riadiacich príkazoch
+		 * {@code na}, {@code ak}, {@code dokedy} (s prípadnou alternatívou
+		 * {@code inak} pri posledných dvoch) nemusel správne identifikovať
+		 * (a pravdepodobne ani neidentifikoval) tú menovku, ktorou mal
+		 * autor skriptu v úmysle pokračovať, preto metódy produkujúce
+		 * skripty takéto chybné inštancie „skartujú.“</p>
 		 */
 		public final static int CHYBA_DVOJITÁ_MENOVKA = 2;
 

@@ -73,7 +73,7 @@ import knižnica.podpora.BeepChannel;
  * 
  * <p class="image"><a href="resources/zvuk.wav"
  * target="_blank"><image>zvuk-small.png<alt/>Grafické znázornenie
- * obsahu zvukového súboru „zvuk.wav“.</image>Zvuk
+ * obsahu zvukového súboru „zvuk.wav.“</image>Zvuk
  * „zvuk.wav“ na prevzatie.</a></p>
  * 
  * <p style="text-align: center;"><audio controls><source
@@ -402,7 +402,7 @@ public class Zvuk
 	 * by možné prehrať sériu rovnakých zvukov, ktoré sa časovo
 	 * prekrývajú (hoci niekedy len mierne). To by pôsobilo neprirodzene –
 	 * každé reštartovanie zvuku by bolo počuteľné tak, ako keby sa zo
-	 * zvuku zrazu časť „odsekla“.)</p>
+	 * zvuku zrazu časť „odsekla.“)</p>
 	 * 
 	 * @param súbor názov súboru so zvukom
 	 * @return zvuk v objekte typu {@link Zvuk Zvuk}
@@ -734,7 +734,7 @@ public class Zvuk
 	 * 
 	 * <p class="image"><a href="resources/zvuk.wav"
 	 * target="_blank"><image>zvuk-small.png<alt/>Grafické znázornenie
-	 * obsahu zvukového súboru „zvuk.wav“.</image>Zvuk
+	 * obsahu zvukového súboru „zvuk.wav.“</image>Zvuk
 	 * „zvuk.wav“ na prevzatie.</a></p>
 	 * 
 	 * <p style="text-align: center;"><audio controls><source
@@ -789,7 +789,7 @@ public class Zvuk
 	 * 
 	 * <p class="image"><a href="resources/zvuk.wav"
 	 * target="_blank"><image>zvuk-small.png<alt/>Grafické znázornenie
-	 * obsahu zvukového súboru „zvuk.wav“.</image>Zvuk
+	 * obsahu zvukového súboru „zvuk.wav.“</image>Zvuk
 	 * „zvuk.wav“ na prevzatie.</a></p>
 	 * 
 	 * <p style="text-align: center;"><audio controls><source
@@ -926,7 +926,7 @@ public class Zvuk
 	 * 
 	 * <p class="image"><a href="resources/zvuk.wav"
 	 * target="_blank"><image>zvuk-small.png<alt/>Grafické znázornenie
-	 * obsahu zvukového súboru „zvuk.wav“.</image>Zvuk
+	 * obsahu zvukového súboru „zvuk.wav.“</image>Zvuk
 	 * „zvuk.wav“ na prevzatie.</a></p>
 	 * 
 	 * <p style="text-align: center;"><audio controls><source

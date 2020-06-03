@@ -173,7 +173,7 @@ import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
  * už bola definovaná.</p>
  * 
  * <p>Nasledujúci príklad demonštruje vytvorenie obsluhy udalostí na
- * {@linkplain #klik() klik myšou}. Robotovi najskôr nastavuje
+ * {@linkplain #klik() klik myšou}. Robotu najskôr nastavuje
  * {@linkplain GRobot#rýchlosť(double, boolean) rýchlosť}, inak by sa
  * nehýbal, a vzápätí je v obsluhe udalostí definované, aby sa robot po
  * {@linkplain #klik() kliknutí myšou} na plátno rozbehol smerom
@@ -197,17 +197,17 @@ import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
  * <p><b>Rozšírená konfigurácia</b></p>
  * 
  * <!-- Udalosti zverejnené vo vyššie uvedenom zozname môžeme považovať za
- * „štandardné“. (Z pohľadu programovacieho rámca GRobot.) Obsluha
+ * „štandardné.“ (Z pohľadu programovacieho rámca GRobot.) Obsluha
  * udalostí podporuje ešte tri ďalšie udalosti, s pomocou ktorých je možné
  * využiť automaticky vytváraný konfiguračný súbor programovacieho rámca
  * GRobot.</p -->
  * 
  * <p>Automatická konfigurácia sa spúšťa príkazom
- * {@link Svet Svet}.{@link Svet#použiKonfiguráciu() použiKonfiguráciu}
- * pred vytvorením sveta. Predvolene je v konfigurácii uložená len
- * informácia o veľkosti a polohe hlavného okna aplikácie. K týmto údajom
- * je možné pridať skupinu vlastných konfiguračných údajov a to s využitím
- * troch na to rezervovaných reakcií
+ * {@link Svet Svet}<code>.</code>{@link Svet#použiKonfiguráciu()
+ * použiKonfiguráciu} pred vytvorením sveta. Predvolene je v konfigurácii
+ * uložená len informácia o veľkosti a polohe hlavného okna aplikácie.
+ * K týmto údajom je možné pridať skupinu vlastných konfiguračných údajov
+ * a to s využitím troch na to rezervovaných reakcií
  * ({@link ObsluhaUdalostí#konfiguráciaZmenená()
  * konfiguráciaZmenená()},
  * {@link ObsluhaUdalostí#zapíšKonfiguráciu(Súbor)
@@ -443,7 +443,7 @@ public class ObsluhaUdalostí
 	 * získať s pomocou metódy {@link ÚdajeUdalostí#tik()
 	 * ÚdajeUdalostí.tik()}.</p>
 	 * 
-	 * <p>Časovač pre všetkých robotov automaticky spúšta metódu {@link 
+	 * <p>Časovač pre všetky roboty automaticky spúšta metódu {@link 
 	 * GRobot#pracuj() pracuj} a časovač môže byť niektorými metódami
 	 * spustený automaticky. Pozri napríklad: {@link GRobot#rýchlosť(double)
 	 * rýchlosť}, {@link GRobot#uhlováRýchlosť(double) uhlováRýchlosť}…</p>
@@ -773,9 +773,9 @@ public class ObsluhaUdalostí
 	 * aplikácie a podobne.</p>
 	 * 
 	 * <p>Priorita spúšťania tejto obsluhy udalosti prekrytej v niektorom
-	 * robotovi a v obsluhe udalostí je upravená tak, že udalosť v obsluhe
+	 * robote a v obsluhe udalostí je upravená tak, že udalosť v obsluhe
 	 * udalostí je spustená pred automatickým uložením konfigurácie a udalosť
-	 * v robotovi (prípadne vo viacerých robotoch) po ňom.</p>
+	 * v robote (prípadne vo viacerých robotoch) po ňom.</p>
 	 * 
 	 * @see GRobot#ukončenie()
 	 */
@@ -1579,7 +1579,7 @@ public class ObsluhaUdalostí
 	 * <tr><td>{@link Konštanty#VYPÍSAŤ_RIADOK VYPÍSAŤ_RIADOK}</td><td>–</td><td>Má
 	 * režim ladenia vypísať aktuálny riadok skriptu?</td></tr>
 	 * <tr><td>{@link Konštanty#ČAKAŤ ČAKAŤ}</td><td>–</td><td>Má režim ladenia
-	 * čakať pred vykonaním riadka skriptu? Ak je odpoveď „áno“,
+	 * čakať pred vykonaním riadka skriptu? Ak je odpoveď „áno,“
 	 * tak je táto správa posielaná opakovane (každých 350 ms).</td></tr>
 	 * <tr><td>{@link Konštanty#PRERUŠIŤ PRERUŠIŤ}</td><td>–</td><td>Má režim
 	 * prerušiť vykonávanie skriptu?</td></tr>
@@ -1647,7 +1647,7 @@ public class ObsluhaUdalostí
 					}
 
 					{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@code currladenie}(
-						{@code typeint} riadok, String príkaz, {@code typeint} správa)
+						{@code typeint} riadok, {@link String String} príkaz, {@code typeint} správa)
 					{
 						{@code kwdswitch} (správa)
 						{
@@ -1666,7 +1666,7 @@ public class ObsluhaUdalostí
 					}
 				};
 
-				{@link Svet Svet}.{@link Svet#registrujRobota() registrujRobota}();
+				{@link Svet Svet}.{@link Svet#registrujRobot() registrujRobot}();
 				{@link Svet Svet}.{@link Svet#čítajKonfiguráciuSveta() čítajKonfiguráciuSveta}();
 			}
 
@@ -1680,6 +1680,10 @@ public class ObsluhaUdalostí
 			}
 		}
 		</pre>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Komplexnejší príklad ladenia je
+	 * v opise triedy {@link Skript Skript} v sekcii Príklad ladenia
+	 * skriptov.</p>
 	 * 
 	 * @param riadok poradové číslo riadka skriptu alebo hodnota −1
 	 *     (ktorá signalizuje, že číslo riadka nie je známe)

@@ -40,21 +40,914 @@ import java.util.TreeMap;
 import static java.lang.Math.*;
 
 /**
- * <p>Táto trieda umožňuje definovať a pracovať so sériou bodov
- * v trojrozmernom priestore. Body môžu byť prepojené spojmi a v každom bode
- * môže byť definovaný objekt na nakreslenie.</p>
+ * <p>Táto trieda umožňuje definovať a pracovať so sériou bodov (zvaných roj)
+ * umiestnených v trojrozmernom priestore. Na zobrazenie scény roja je
+ * použitá bodová projekcia. Body môžu byť prepojené {@linkplain Bod#spoj
+ * spojmi}, čím môžu byť vytvárané drôtené modely a v každom bode môže byť
+ * definovaný objekt na {@linkplain Bod#kreslenie nakreslenie,} čím sa dajú
+ * vytvárať jednoduché 3D scény zložené z 2D kulís (pozri príklad kolotoča
+ * nižšie).</p>
  * 
- * <!-- TODO -->
+ * <p>Súradnicový systém roja je orientovaný ľavotočivo, čiže keď sa pozrieme
+ * na plochu xy zvrchu tak, že y-ová os smeruje doprava (rastom kladných
+ * hodnôt), tak x-ová os smeruje hore (pozri obrázok nižšie). Alebo keď sa
+ * pozeráme na počiatok súradnicovej sústavy z oktetu všetkých troch kladných
+ * súradníc tak, že z-ová súradnica smeruje hore, tak x-ovú os máme po pravej
+ * ruke a y-ovú po ľavej (pozri obrázok nižšie).</p>
  * 
- * <p>Súradnicový systém roja je orientovaný pravotočivo.
- * <!-- TODO – overiť, doplniť obrázok a opis. -->…</p>
+ * <!--
+ * Poznámka pre programátora: Pozri metódu roja transformuj(Bod bod) a v nej
+ * komentár s „pravorukým“ (right-handed) t. j. pravotočivým systémom.
+ * -->
  * 
- * <p class="remark"><b>Poznámka:</b> Pracujeme na spresnení opisu.</p>
- * <!-- TODO -->
+ * <p>Každý {@linkplain Bod bod roja} má definované množstvo atribútov, ktoré
+ * majú poskytovať čo najväčšiu flexibilitu. Väčšina z nich slúži na
+ * umiestnenie bodu do priestoru. Základná trojica atribútov sú pôvodné
+ * súradnice bodu v priestore [{@linkplain Bod#x0 x0}, {@linkplain Bod#y0
+ * y0}, {@linkplain Bod#z0 z0}]. Z nich sú s pomocou atribútov posunutia
+ * [{@linkplain Bod#dx dx}, {@linkplain Bod#dy dy}, {@linkplain Bod#dz dz}],
+ * stredu rotácie [{@linkplain Bod#xs xs}, {@linkplain Bod#ys ys},
+ * {@linkplain Bod#zs zs}] a uhlov rotácie ({@linkplain Bod#alfa alfa},
+ * {@linkplain Bod#beta beta}, {@linkplain Bod#gama gama}) vypočítané
+ * takzvané lokálne transformované súradnice v priestore [{@linkplain Bod#x1
+ * x1}, {@linkplain Bod#y1 y1}, {@linkplain Bod#z1 z1}]. Ďalším krokom je
+ * výpočet takzvaných konečných súradníc [{@linkplain Bod#x2 x2},
+ * {@linkplain Bod#y2 y2}, {@linkplain Bod#z2 z2}], čo sú globálne
+ * transformované súradnice, to jest riadia sa hodnotou aktuálnej
+ * transformačnej matice roja, ktorá je prepočítavaná z polohy a orientácie
+ * kamery (pozri napríklad: {@link #nastavUhly(double, double, double)
+ * nastavUhly}, {@link #nastavStredOtáčania(double, double, double)
+ * nastavStredOtáčania}, {@link #nastavKameru(double, double, double)
+ * nastavKameru}), {@linkplain #mierka() mierky}, prípadne ďalších
+ * (automaticky zisťovaných) hodnôt. Posledným krokom je výpočet polohy bodu
+ * premietnutej na plátno [{@linkplain Bod#x3 x3}, {@linkplain Bod#y3 y3}]
+ * a korešpondujúceho faktora rozmeru objektu kresleného v konkrétnom bode
+ * {@linkplain Bod#z3 z3}.</p>
+ * 
+ * <table class="centered">
+ * <tr><td
+ * style="vertical-align:middle"><p><image>suradnicovy-system-roja-01.png<alt/>Súradnicový systém roja „zvrchu.“</image>Ľavotočivý súradnicový systém pri pohľade
+ * „zvrchu.“</p></td><td> </td>
+ * <td
+ * style="vertical-align:middle"><p><image>suradnicovy-system-roja-02.png<alt/>Súradnicový systém roja „spredu.“" height="75%</image>Ľavotočivý súradnicový systém pri
+ * pohľade „spredu.“</p></td></tr>
+ * </table>
+ * 
+ * <p>V <a href="resources/test-roja.7z" target="_blank">tomto balíčku
+ * (7z)</a> je dostupný na prevzatie miniprojekt obsahujúci ovládač roja
+ * a od neho odvodenú jednoduchú triedu testu roja s niekoľkými príkladmi
+ * použitia roja.</p>
+ * 
+ * <p><image>test-roja.png<alt/>Ukážka výstupu testu roja.</image>Ukážka
+ * možného výstupu príkladu testu roja s implementáciou ovládača roja.</p>
+ * 
+ * <p>Na jeho základe je postavený nasledujúci príklad s kolotočom.</p>
+ * 
+ * <p><b>Príklad:</b></p>
+ * 
+ * <p>Tento príklad implementuje trojrozmernú kolotočovú ponuku zloženú
+ * z čiarových ikon vo formáte SVG.</p>
+ * 
+ * <pre CLASS="example">
+	{@code kwdimport} knižnica.*;
+	{@code kwdimport} {@link java.awt.Shape java.awt.Shape};
+
+	{@code comm// SVG ikonky boli vyrobené (s pomocou vektorového grafického editora}
+	{@code comm// Inkscape) z bitmapovej verzie ikon voľne dostupných na webovej stránke:}
+	{@code comm// https://icon-library.net/icon/menu-icon-png-3-lines-20.html.}
+	{@code comm// }
+	{@code comm// Ďalšie odporúčané zdroje:}
+	{@code comm// }
+	{@code comm// • Výborný SVG tester: https://codepen.io/AmeliaBR/pen/JoYNEZ?editors=1000}
+	{@code comm// • Coyier, Chris. 2018. The SVG ‘path’ Syntax : An Illustrated Guide.}
+	{@code comm//   ⟨https://css-tricks.com/svg-path-syntax-illustrated-guide/⟩.}
+	{@code comm// • https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths}
+	{@code comm// • https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d}
+
+	{@code kwdpublic} {@code typeclass} Kolotoč {@code kwdextends} {@link GRobot GRobot}
+	{
+		{@code comm// Roj a príznak potreby jeho prekreslenia (po zmene parametrov):}
+		{@code kwdprivate} {@link Roj Roj} roj = {@code kwdnew} {@link Roj Roj}({@code valthis});
+		{@code kwdprivate} {@code typeboolean} prekresliRoj = {@code valtrue};
+
+		{@code comm// Uhol jednotkového pootočenia kolotoča a aktuálne želaný uhol:}
+		{@code kwdprivate} {@code typedouble} Δu, želanýUhol = {@code num90.0};
+
+		{@code comm// Zoznam SVG súborov obsahujúcich SVG tvary ikoniek:}
+		{@code kwdprivate} {@link String String}[] mená = {@code kwdnew} {@link String String}[]
+		{
+			{@code srg"ramcek.svg"}, {@code srg"spendlik.svg"}, {@code srg"hudba.svg"}, {@code srg"kompas.svg"}, {@code srg"film.svg"},
+			{@code srg"obrazok.svg"}, {@code srg"kalkulacka.svg"}, {@code srg"kava.svg"}, {@code srg"papiere.svg"},
+			{@code srg"zakladac.svg"}, {@code srg"mobilna-siet.svg"}, {@code srg"smernik.svg"}, {@code srg"kvapka.svg"},
+			{@code srg"sluchadlo.svg"}, {@code comm// …}
+		};
+
+		{@code comm// Statická trieda zoskupujúca funkcionalitu prevodu čiarovej ikonky}
+		{@code comm// vo formáte SVG do tvarov Javy.}
+		{@code kwdpublic} {@code kwdstatic} {@code typeclass} Ikonka implements {@link KreslenieTvaru KreslenieTvaru}
+		{
+			{@code comm// Atribút na prepínanie zobrazenia ladiacich informácií:}
+			{@code kwdprivate} {@code kwdstatic} {@code typeboolean} info = {@code valfalse};
+
+			{@code comm// Vnútorné atribúty kreslenia ikonky:}
+			{@code kwdprivate} {@link java.lang.String String} meno;
+			{@code kwdprivate} {@link java.awt.Shape Shape}[] tvary;
+			{@code kwdprivate} {@link Farba Farba}[] výplne;
+			{@code kwdprivate} {@link Farba Farba}[] čiary;
+
+			{@code comm// Konštruktor ikonky.}
+			{@code kwdpublic} Ikonka({@link String String} meno)
+			{
+				{@code valthis}.meno = meno;
+				SVGnaTvary(meno);
+			}
+
+
+			{@code comm// Metóda prevádzajúca tvary zo zadaného SVG súboru na tvary Javy.}
+			{@code kwdprivate} {@code typevoid} SVGnaTvary({@link String String} meno)
+			{
+				{@code kwdtry}
+				{
+					{@code comm// Vyčistenie inštancie svgPodpora od predchádzajúceho}
+					{@code comm// čítania:}
+					{@link GRobot#svgPodpora svgPodpora}.{@link SVGPodpora#vymaž() vymaž}();
+
+					{@code comm// Overenie, či bol súbor korektne prečítaný:}
+					{@code kwdif} (-{@code num1} == {@link GRobot#svgPodpora svgPodpora}.{@link SVGPodpora#čítaj(String) čítaj}(meno))
+					{
+						{@code comm// Predvolený tvar kružnice v prípade zlyhania čítania}
+						{@code comm// súboru:}
+						tvary = {@code kwdnew} {@link Shape Shape}[] {{@code kwdnew} {@link java.awt.geom.Ellipse2D.Double#Ellipse2D.Double(double, double, double, double) java.awt.geom.Ellipse2D.Double}(
+							{@link Svet Svet}.{@link Svet#prepočítajX(double) prepočítajX}(-{@code num10}), {@link Svet Svet}.{@link Svet#prepočítajY(double) prepočítajY}({@code num10}), {@code num20}, {@code num20})};
+						výplne = {@code kwdnew} {@link Farba Farba}[] {{@link Farebnosť#biela biela}.{@link Farba#priehľadnejšia(double) priehľadnejšia}({@code num0.6})};
+						čiary = {@code kwdnew} {@link Farba Farba}[] {{@link Farebnosť#ružová ružová}};
+					}
+					{@code kwdelse}
+					{
+						{@code comm// Získanie súradnice stredu:}
+						{@link knižnica.Bod Bod} stred = {@link GRobot#svgPodpora svgPodpora}.{@link SVGPodpora#stredKresby() stredKresby}();
+
+						{@code comm// Výroba transformácie posunutia v súradnicovom}
+						{@code comm// priestore Javy (tá sa nižšie použije na posunutie}
+						{@code comm// všetkých tvarov):}
+						{@link SVGPodpora SVGPodpora}.{@link SVGPodpora.Transformácia Transformácia} posunTam =
+							{@code kwdnew} {@link SVGPodpora SVGPodpora}.{@link SVGPodpora.Transformácia#SVGPodpora.Transformácia(int, Double[]) Transformácia}(
+								{@link SVGPodpora SVGPodpora}.{@link SVGPodpora.Transformácia Transformácia}.{@link SVGPodpora.Transformácia#POSUN POSUN},
+								-{@link Poloha#stred stred}.{@link knižnica.Bod#polohaX() polohaX}(), {@link Poloha#stred stred}.{@link knižnica.Bod#polohaY() polohaY}());
+
+						{@code comm// Uloženie počtu tvarov kresby do pomocnej premennej:}
+						{@code typeint} počet = {@link GRobot#svgPodpora svgPodpora}.{@link SVGPodpora#počet() počet}();
+
+						{@code comm// Vytvorenie polí s prislúchajúcimi počtami prvkov:}
+						tvary = {@code kwdnew} {@link Shape Shape}[počet];
+						výplne = {@code kwdnew} {@link Farba Farba}[počet];
+						čiary = {@code kwdnew} {@link Farba Farba}[počet];
+
+						{@code comm// Pridanie transformácie ku každému tvaru a zároveň}
+						{@code comm// overenie toho, či má byť tento tvar vypĺňaný, kreslený}
+						{@code comm// (alebo oboje):}
+						{@code kwdfor} ({@code typeint} i = {@code num0}; i &lt; počet; ++i)
+						{
+							{@link GRobot#svgPodpora svgPodpora}.{@link SVGPodpora#pridajTransformácie(int, SVGPodpora.Transformácia[]) pridajTransformácie}(i, posunTam);
+							tvary[i] = {@link GRobot#svgPodpora svgPodpora}.{@link SVGPodpora#dajVýsledný(int) dajVýsledný}(i);
+							výplne[i] = {@link GRobot#svgPodpora svgPodpora}.{@link SVGPodpora#farbaVýplne(int) farbaVýplne}(i);
+							čiary[i] = {@link GRobot#svgPodpora svgPodpora}.{@link SVGPodpora#farbaČiary(int) farbaČiary}(i);
+						}
+					}
+				}
+				{@code kwdcatch} (Exception e)
+				{
+					{@code comm// (Toto nastane len výnimočne. Aj neprítomný alebo chybný}
+					{@code comm// SVG súbor je signalizovaný inak: návratovou hodnotou}
+					{@code comm// metódy čítaj.)}
+					e.{@link Exception#printStackTrace() printStackTrace}();
+				}
+			}
+
+			{@code comm// Kreslenie ikonky.}
+			{@code kwdpublic} {@code typevoid} kresli({@link GRobot GRobot} r)
+			{
+				{@code comm// Všetky ikonky budú kreslené zvislo s hrúbkou čiary určenou}
+				{@code comm// aktuálnou mierkou robota:}
+				r.{@link GRobot#uhol(double) uhol}({@code num90});
+				r.{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}(r.{@link GRobot#mierka() mierka}());
+
+
+				{@code comm// Poznámka: Prispôsobenie (zmena) niektorých programátorom}
+				{@code comm//  vybraných farieb počas kreslenia ikoniek kolotoča je vhodné}
+				{@code comm//  potvrdiť práve na tomto mieste tak, že si farbu (alebo farby)}
+				{@code comm//  vopred zapamätáme do premennej a potom ňou (nimi) nahradíme}
+				{@code comm//  zvolenú kľúčovú farba (resp. farby) v kresbe. V tejto ukážke}
+				{@code comm//  (iba na ukážku) nahrádzame ružovú farbu robotom vopred}
+				{@code comm//  vygenerovanou náhodnou farbou. V dodaných SVG súboroch je}
+				{@code comm//  táto farba (opäť len na ukážku) použitá iba raz – v „bodke“}
+				{@code comm//  na obrázku mobilna-siet.svg. Môže však ísť o nahradenie}
+				{@code comm//  ľubovoľnej farby ľubovoľnou farbou. Môžu byť tiež využité}
+				{@code comm//  verejné atribúty farba a farbaSpoja aktuálne kresleného bodu}
+				{@code comm//  roja (pozri atribút Roj.bod). (Spoje i tak v tomto príklade}
+				{@code comm//  nevyužívame, tak môžeme využiť atribút rezervovaný na ich}
+				{@code comm//  zafarbovanie na vlastné účely.)}
+
+				r.{@link GRobot#náhodnáFarba() náhodnáFarba}();
+				{@link Farba Farba} f = r.{@link GRobot#farba() farba}();
+
+
+				{@code typeint} i = {@code num0};
+				{@code kwdfor} ({@link Shape Shape} tvar : tvary)
+				{
+					{@code kwdif} ({@code valnull} != výplne[i])
+					{
+						{@code kwdif} ({@link Farebnosť#ružová ružová}.{@link Farba#equals(Object) equals}(výplne[i]))
+							r.{@link GRobot#farba(Color) farba}(f);
+						{@code kwdelse}
+							r.{@link GRobot#farba(Color) farba}(výplne[i]);
+						r.{@link GRobot#vyplňTvar(Shape, boolean) vyplňTvar}(tvar, {@code valtrue});
+					}
+
+					{@code kwdif} ({@code valnull} != čiary[i])
+					{
+						{@code kwdif} ({@link Farebnosť#ružová ružová}.{@link Farba#equals(Object) equals}(čiary[i]))
+							r.{@link GRobot#farba(Color) farba}(f);
+						{@code kwdelse}
+							r.{@link GRobot#farba(Color) farba}(čiary[i]);
+						r.{@link GRobot#kresliTvar(Shape, boolean) kresliTvar}(tvar, {@code valtrue});
+					}
+					++i;
+				}
+
+				{@code comm// Ladiace informácie ikoniek (meno súboru nad ňou a mierka}
+				{@code comm// pod ňou):}
+				{@code kwdif} (info)
+				{
+					r.{@link GRobot#skoč(double) skoč}(r.{@link GRobot#veľkosť() veľkosť}() * {@code num1.5});
+					r.{@link GRobot#text(String) text}(meno);
+					r.{@link GRobot#odskoč(double) odskoč}(r.{@link GRobot#veľkosť() veľkosť}() * {@code num2.75});
+					r.{@link GRobot#text(String) text}(r.{@link GRobot#F(double, int) F}(r.{@link GRobot#mierka() mierka}(), {@code num2}));
+				}
+			}
+		}
+
+
+		{@code comm// Konštruktor celého kolotoča.}
+		{@code kwdprivate} Kolotoč()
+		{
+			{@code comm// Keby sme chceli mať predvolene zobrazené osi súradnicovej}
+			{@code comm// sústavy (ktoré sú dobrou pomôckou pri ladení), volali by sme}
+			{@code comm// na tomto mieste tento príkaz: osi();}
+
+			{@code comm// Nastavenie predvolených vlastností roja (pri každom počte}
+			{@code comm// bodov je potrebné tieto parametre „doladiť“ – najmä mierku):}
+			resetujRoj();
+				{@code comm// Poznámka: Rôzne hodnoty od predvolených majú len:}
+				{@code comm//  roj.mierka(500);}
+				{@code comm//  roj.nastavKameru(0, 50, 30);}
+
+			{@code comm// Výpočet pomocných parametrov, s pomocou ktorých vložíme}
+			{@code comm// niekoľko bodov do roja:}
+			{@code typeint} n = mená.length; {@code comm// počet bodov}
+			{@code typedouble} r = {@code num15};       {@code comm// polomer kružnice, na ktorej budú umestnené}
+			Δu = {@code num360.0} / n;      {@code comm// uhol otáčania smerníka (*)}
+			{@code typedouble} d = ({@code num2} * {@link Math Math}.{@link Math#PI PI} * r) / n; {@code comm// dĺžka posunu smerníka (*)}
+
+			{@code comm// (*) Smerník slúži na zjednodušenie vkladania bodov do roja.}
+
+			{@code comm// Vypneme predvolené vkladanie spojov smerníkom:}
+			roj.{@link Roj#smerník smerník}.{@link Roj.Smerník#vkladajSpoje vkladajSpoje} = {@code valfalse};
+
+			{@code comm// Uloženie jedného smeru (vektora osi otáčania) do zásobníka, aby}
+			{@code comm// sa dal použiť jednoduchší tvar volania metódy „otoč“ smerníka}
+			{@code comm// (je to jednotkový vektor v smere osi z):}
+			roj.{@link Roj#smerník smerník}.{@link Roj.Smerník#smerNa(double, double, double) smerNa}({@code num0}, {@code num0}, {@code num1});
+			roj.{@link Roj#smerník smerník}.{@link Roj.Smerník#zálohujSmer() zálohujSmer}();
+
+			{@code comm// Počiatočné nastavenie smerníka (smer je súhlasný so smerom}
+			{@code comm// osi y a smerník je vysunutý o polomer otáčania v smere osi x):}
+			roj.{@link Roj#smerník smerník}.{@link Roj.Smerník#smerNa(double, double, double) smerNa}({@code num0}, {@code num1}, {@code num0});
+			roj.{@link Roj#smerník smerník}.{@link Roj.Smerník#posuň(double, double, double) posuň}(-r, {@code num0}, {@code num0});
+
+			{@code comm// Prvé pootočenie smerníka o polovicu uhla (voláme zjednodušený tvar}
+			{@code comm// metódy „otoč,“ pretože smer osi otáčania určuje vektor uložený}
+			{@code comm// v zásobníku; vyššie):}
+			roj.{@link Roj#smerník smerník}.{@link Roj.Smerník#otoč(double) otoč}(Δu / {@code num2.0});
+				{@code comm// Inak by bolo treba používať tento tvar volania metódy:}
+				{@code comm//  roj.smerník.otoč(0, 0, 1, -Δu / 2.0);}
+
+			{@code comm// Cyklus vkladania bodov:}
+			{@code kwdfor} ({@code typeint} i = {@code num0}; i &lt; n; ++i)
+			{
+				{@code comm// Pred každým vložením bodu potočíme smerník:}
+				roj.{@link Roj#smerník smerník}.{@link Roj.Smerník#otoč(double) otoč}(-Δu);
+					{@code comm// Alternatívne (bez vektora v zásobníku spomínaného vyššie)}
+					{@code comm// by bolo treba použiť tento tvar príkazu:}
+					{@code comm//  roj.smerník.otoč(0, 0, 1, Δu);}
+
+				{@code comm// Vložíme bod do roja a posunieme smerník:}
+				{@link Roj.Bod Roj.Bod} bod = roj.{@link Roj#smerník smerník}.{@link Roj.Smerník#pridajBod() pridajBod}();
+				bod.{@link Roj.Bod#kreslenie kreslenie} = {@code kwdnew} Ikonka(mená[i]);
+				roj.{@link Roj#smerník smerník}.{@link Roj.Smerník#posuň(double) posuň}(d);
+			}
+
+			{@link GRobot#skry() skry}(); {@code comm// (Skrytie hlavného robota.)}
+
+			{@code comm// Keby bolo predvolene zapnuté zobrazenie ladiacich informácií}
+			{@code comm// o roji (čo v tomto príklade nie je), tak by sme tu museli vykonať}
+			{@code comm// prvé volanie (inak by boli po štarte skryté a zobrazili by sa až}
+			{@code comm// po ľubovoľnej zmene zobrazenia roja): infoORoji();}
+
+			{@code comm// Vypnutie automatického prekresľovania a zapnutie časovača:}
+			{@link Svet Svet}.{@link Svet#nekresli() nekresli}();
+			{@link Svet Svet}.{@link Svet#spustiČasovač() spustiČasovač}();
+		}
+
+
+		{@code comm// Pomocné nástroje na definíciu a kreslenie (resp. skrývanie}
+		{@code comm// a zobrazovanie) osí.}
+		{@code comm// &#123;&#123;&#123;}
+			{@code comm// Koncové body osí:}
+			{@code kwdprivate} {@link Roj.Bod Roj.Bod} osX = {@code valnull};
+			{@code kwdprivate} {@link Roj.Bod Roj.Bod} osY = {@code valnull};
+			{@code kwdprivate} {@link Roj.Bod Roj.Bod} osZ = {@code valnull};
+
+			{@code comm// Vlastný tvar na kreslenie šípky na konci osi.}
+			{@code kwdpublic} {@link KreslenieTvaru KreslenieTvaru} šípka = r -&gt;
+			{
+				r.{@link GRobot#vpravo(double) vpravo}({@code num18});
+				r.{@link GRobot#vzad(double) vzad}({@code num14});
+				r.{@link GRobot#zdvihniPero() zdvihniPero}();
+				r.{@link GRobot#vpred(double) vpred}({@code num14});
+				r.{@link GRobot#vľavo(double) vľavo}({@code num36});
+				r.{@link GRobot#položPero() položPero}();
+				r.{@link GRobot#vzad(double) vzad}({@code num14});
+			};
+
+			{@code comm// Definovanie alebo úprava dĺžky osi x.}
+			{@code kwdpublic} {@code typevoid} osX({@code typedouble} dĺžka)
+			{
+				{@code kwdif} ({@code valnull} == osX)
+				{
+					{@link Roj.Bod Roj.Bod} bod = roj.{@link Roj#pridajBod() pridajBod}();
+					bod.{@link Roj.Bod#zobraz zobraz} = bod.{@link Roj.Bod#spoj spoj} = {@code valfalse};
+					bod.{@link Roj.Bod#x0 x0} = -{@code num2};
+					bod.{@link Roj.Bod#skupina skupina} = {@code num1};
+
+					osX = roj.{@link Roj#pridajBod() pridajBod}();
+					osX.{@link Roj.Bod#farba farba} = osX.{@link Roj.Bod#farbaSpoja farbaSpoja} = {@link Farebnosť#červená červená};
+					osX.{@link Roj.Bod#x0 x0} = dĺžka;
+					osX.{@link Roj.Bod#skupina skupina} = {@code num1};
+					osX.{@link Roj.Bod#kreslenie kreslenie} = šípka;
+				}
+				{@code kwdelse} osX.{@link Roj.Bod#x0 x0} = dĺžka;
+				prekresliRoj = {@code valtrue};
+			}
+
+			{@code comm// Zobrazenie/skrytie osi x.}
+			{@code kwdpublic} {@code typevoid} osX({@code typeboolean} zobraz)
+			{
+				{@code kwdif} ({@code valnull} == osX)
+				{
+					{@code kwdif} (zobraz) osX({@code num30});
+					{@code kwdelse} {@code kwdreturn};
+				}
+				osX.{@link Roj.Bod#zobraz zobraz} = osX.{@link Roj.Bod#spoj spoj} = zobraz;
+				prekresliRoj = {@code valtrue};
+			}
+
+			{@code comm// Overenie, či je os x zobrazená.}
+			{@code kwdpublic} {@code typeboolean} osX()
+			{
+				{@code kwdif} ({@code valnull} == osX) {@code kwdreturn} {@code valfalse};
+				{@code kwdreturn} osX.{@link Roj.Bod#spoj spoj};
+			}
+
+			{@code comm// Definovanie alebo úprava dĺžky osi y.}
+			{@code kwdpublic} {@code typevoid} osY({@code typedouble} dĺžka)
+			{
+				{@code kwdif} ({@code valnull} == osZ)
+				{
+					{@link Roj.Bod Roj.Bod} bod = roj.{@link Roj#pridajBod() pridajBod}();
+					bod.{@link Roj.Bod#zobraz zobraz} = bod.{@link Roj.Bod#spoj spoj} = {@code valfalse};
+					bod.{@link Roj.Bod#y0 y0} = -{@code num2};
+					bod.{@link Roj.Bod#skupina skupina} = {@code num2};
+
+					osY = roj.{@link Roj#pridajBod() pridajBod}();
+					osY.{@link Roj.Bod#farba farba} = osY.{@link Roj.Bod#farbaSpoja farbaSpoja} = {@link Farebnosť#zelená zelená};
+					osY.{@link Roj.Bod#y0 y0} = dĺžka;
+					osY.{@link Roj.Bod#skupina skupina} = {@code num2};
+					osY.{@link Roj.Bod#kreslenie kreslenie} = šípka;
+				}
+				{@code kwdelse} osY.{@link Roj.Bod#y0 y0} = dĺžka;
+				prekresliRoj = {@code valtrue};
+			}
+
+			{@code comm// Zobrazenie/skrytie osi y.}
+			{@code kwdpublic} {@code typevoid} osY({@code typeboolean} zobraz)
+			{
+				{@code kwdif} ({@code valnull} == osY)
+				{
+					{@code kwdif} (zobraz) osY({@code num30});
+					{@code kwdelse} {@code kwdreturn};
+				}
+				osY.{@link Roj.Bod#zobraz zobraz} = osY.{@link Roj.Bod#spoj spoj} = zobraz;
+				prekresliRoj = {@code valtrue};
+			}
+
+			{@code comm// Overenie, či je os y zobrazená.}
+			{@code kwdpublic} {@code typeboolean} osY()
+			{
+				{@code kwdif} ({@code valnull} == osY) {@code kwdreturn} {@code valfalse};
+				{@code kwdreturn} osY.{@link Roj.Bod#spoj spoj};
+			}
+
+			{@code comm// Definovanie alebo úprava dĺžky osi z.}
+			{@code kwdpublic} {@code typevoid} osZ({@code typedouble} dĺžka)
+			{
+				{@code kwdif} ({@code valnull} == osZ)
+				{
+					{@link Roj.Bod Roj.Bod} bod = roj.{@link Roj#pridajBod() pridajBod}();
+					bod.{@link Roj.Bod#zobraz zobraz} = bod.{@link Roj.Bod#spoj spoj} = {@code valfalse};
+					bod.{@link Roj.Bod#z0 z0} = -{@code num2};
+					bod.{@link Roj.Bod#skupina skupina} = {@code num3};
+
+					osZ = roj.{@link Roj#pridajBod() pridajBod}();
+					osZ.{@link Roj.Bod#farba farba} = osZ.{@link Roj.Bod#farbaSpoja farbaSpoja} = {@link Farebnosť#modrá modrá};
+					osZ.{@link Roj.Bod#z0 z0} = dĺžka;
+					osZ.{@link Roj.Bod#skupina skupina} = {@code num3};
+					osZ.{@link Roj.Bod#kreslenie kreslenie} = šípka;
+				}
+				{@code kwdelse} osZ.{@link Roj.Bod#z0 z0} = dĺžka;
+				prekresliRoj = {@code valtrue};
+			}
+
+			{@code comm// Zobrazenie/skrytie osi z.}
+			{@code kwdpublic} {@code typevoid} osZ({@code typeboolean} zobraz)
+			{
+				{@code kwdif} ({@code valnull} == osZ)
+				{
+					{@code kwdif} (zobraz) osZ({@code num10});
+					{@code kwdelse} {@code kwdreturn};
+				}
+				osZ.{@link Roj.Bod#zobraz zobraz} = osZ.{@link Roj.Bod#spoj spoj} = zobraz;
+				prekresliRoj = {@code valtrue};
+			}
+
+			{@code comm// Overenie, či je os z zobrazená.}
+			{@code kwdpublic} {@code typeboolean} osZ()
+			{
+				{@code kwdif} ({@code valnull} == osZ) {@code kwdreturn} {@code valfalse};
+				{@code kwdreturn} osZ.{@link Roj.Bod#spoj spoj};
+			}
+
+			{@code comm// Definovanie alebo úprava dĺžky všetkých troch osí naraz.}
+			{@code kwdpublic} {@code typevoid} osi({@code typedouble} dĺžkaX, {@code typedouble} dĺžkaY, {@code typedouble} dĺžkaZ)
+			{
+				osX(dĺžkaX);
+				osY(dĺžkaY);
+				osZ(dĺžkaZ);
+			}
+
+			{@code comm// Zobrazenie/skrytie troch osí naraz.}
+			{@code kwdpublic} {@code typevoid} osi({@code typeboolean} zobraz)
+			{
+				osX(zobraz);
+				osY(zobraz);
+				osZ(zobraz);
+			}
+
+			{@code comm// Zobrazenie (definovanie) všetkých troch osí s predvolenými}
+			{@code comm// hodnotami dĺžok.}
+			{@code kwdpublic} {@code typevoid} osi() { osi({@code num30}, {@code num30}, {@code num10}); }
+		{@code comm// &#125;&#125;&#125;}
+
+
+		{@code comm// Hromadné úpravy roja a jeho bodov. (Reset a hromadné transformácie}
+		{@code comm// používajúce vnútorné atribúty bodov, ktoré sú rezervované na tieto}
+		{@code comm// účely. Niektoré z týchto metód sú určené len pre pomocné režimy}
+		{@code comm// ladenia 5 a 6 tejto ukážky.)}
+		{@code comm// &#123;&#123;&#123;}
+			{@code comm// Táto metóda slúži na rýchle nastavenie predvolených vlastností roja.}
+			{@code comm// (Táto metóda je pravdepodobne jediná, ktorej obsahom sa treba}
+			{@code comm// zaoberať pri redukcii príkladu – t. j. pri odstraňovaní kreslenia}
+			{@code comm// osí a iných ladiacich informácií.)}
+			{@code kwdpublic} {@code typevoid} resetujRoj()
+			{
+				{@code comm// Toto sú síce predvolené vlastnosti roja, ale pri každom resete}
+				{@code comm// ich potrebujeme vrátiť späť:}
+				roj.{@link Roj#nastavUhly(double, double, double) nastavUhly}(-{@code num110}, -{@code num360}, {@code num45});
+				roj.{@link Roj#nastavStredOtáčania(double, double, double) nastavStredOtáčania}({@code num0}, {@code num0}, {@code num0});
+
+				{@code comm// Nasledujúce dve vlastnosti upravujeme z predvolených hodnôt}
+				{@code comm// (ktoré by boli: mierka = 1000; kamera = [0, -125, 200]) na také,}
+				{@code comm// aké potrebujeme v našej ukážke:}
+				roj.{@link Roj#mierka(double) mierka}({@code num500});
+				roj.{@link Roj#nastavKameru(double, double, double) nastavKameru}({@code num0}, {@code num50}, {@code num30});
+
+				{@code comm// Nastavenie príznaku potrebnosti prekreslenia roja:}
+				prekresliRoj = {@code valtrue};
+
+				{@code comm// Predvolená hodnota želaného uhla:}
+				želanýUhol = {@code num270.0};
+			}
+
+			{@code comm// Reset vnútorných individuálnych vlastností posunutia (dx až dz)}
+			{@code comm// a pootočenia (alfa až gama) jednotlivých bodov roja.}
+			{@code kwdpublic} {@code typevoid} resetujBody()
+			{
+				{@code kwdfor} ({@link Roj.Bod Roj.Bod} bod : roj.{@link Roj#body() body}())
+					{@code kwdif} ({@code num1} &gt; bod.{@link Roj.Bod#skupina skupina} || {@code num3} &lt; bod.{@link Roj.Bod#skupina skupina})
+					{
+						bod.{@link Roj.Bod#dx dx} = bod.{@link Roj.Bod#dy dy} = bod.{@link Roj.Bod#dz dz} =
+							{@code comm// bod.xs = bod.ys = bod.zs =}
+							bod.{@link Roj.Bod#alfa alfa} = bod.{@link Roj.Bod#beta beta} = bod.{@link Roj.Bod#gama gama} = {@code num0.0};
+						bod.{@link Roj.Bod#transformuj transformuj} = {@code valtrue};
+					}
+
+				roj.{@link Roj#transformovať() transformovať}();
+				prekresliRoj = {@code valtrue};
+			}
+
+			{@code comm// Posunutie s pomocou vnútorných vlastností dx až dz bodov roja.}
+			{@code kwdpublic} {@code typevoid} posuňBody({@code typedouble} Δx, {@code typedouble} Δy, {@code typedouble} Δz)
+			{
+				{@code kwdfor} ({@link Roj.Bod Roj.Bod} bod : roj.{@link Roj#body() body}())
+					{@code kwdif} ({@code num1} &gt; bod.{@link Roj.Bod#skupina skupina} || {@code num3} &lt; bod.{@link Roj.Bod#skupina skupina})
+					{
+						bod.{@link Roj.Bod#dx dx} += Δx;
+						bod.{@link Roj.Bod#dy dy} += Δy;
+						bod.{@link Roj.Bod#dz dz} += Δz;
+						bod.{@link Roj.Bod#transformuj transformuj} = {@code valtrue};
+					}
+
+				roj.{@link Roj#transformovať() transformovať}();
+				prekresliRoj = {@code valtrue};
+			}
+
+			{@code comm// Pootočenie s pomocou vnútorných vlastností alfa až gama bodov roja.}
+			{@code kwdpublic} {@code typevoid} pootočBody({@code typedouble} Δα, {@code typedouble} Δβ, {@code typedouble} Δγ)
+			{
+				{@code kwdfor} ({@link Roj.Bod Roj.Bod} bod : roj.{@link Roj#body() body}())
+					{@code kwdif} ({@code num1} &gt; bod.{@link Roj.Bod#skupina skupina} || {@code num3} &lt; bod.{@link Roj.Bod#skupina skupina})
+					{
+						bod.{@link Roj.Bod#alfa alfa} += Δα;
+						bod.{@link Roj.Bod#beta beta} += Δβ;
+						bod.{@link Roj.Bod#gama gama} += Δγ;
+						bod.{@link Roj.Bod#transformuj transformuj} = {@code valtrue};
+					}
+
+				roj.{@link Roj#transformovať() transformovať}();
+				prekresliRoj = {@code valtrue};
+			}
+		{@code comm// &#125;&#125;&#125;}
+
+
+		{@code comm// Ovládanie – režim ladenia.}
+		{@code comm// &#123;&#123;&#123;}
+			{@code comm// Atribúty súvisiace s režimom ladenia.}
+			{@code kwdprivate} {@code typeint} režim = {@code num3};
+			{@code kwdprivate} {@code kwdstatic} {@code typeboolean} infoORoji = {@code valfalse};
+			{@code kwdprivate} {@code typedouble} myšX = {@code num0};
+			{@code kwdprivate} {@code typedouble} myšY = {@code num0};
+
+			{@code comm// Výpis ladiacich informácií.}
+			{@code kwdpublic} {@code typevoid} infoORoji()
+			{
+				{@link Svet Svet}.{@link Svet#vymažTexty() vymažTexty}();
+
+				{@code kwdif} ({@code num0} != režim && infoORoji)
+				{
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"K[x, y, z]: "}, {@link GRobot#F(double, int) F}(roj.{@link Roj#kameraX() kameraX}(), {@code num2}), {@code srg"; "},
+						{@link GRobot#F(double, int) F}(roj.{@link Roj#kameraY() kameraY}(), {@code num2}), {@code srg"; "}, {@link GRobot#F(double, int) F}(roj.{@link Roj#kameraZ() kameraZ}(), {@code num2}));
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"SO[x, y, z]: "}, {@link GRobot#F(double, int) F}(roj.{@link Roj#stredOtáčaniaX() stredOtáčaniaX}(), {@code num2}),
+						{@code srg"; "}, {@link GRobot#F(double, int) F}(roj.{@link Roj#stredOtáčaniaY() stredOtáčaniaY}(), {@code num2}), {@code srg"; "},
+						{@link GRobot#F(double, int) F}(roj.{@link Roj#stredOtáčaniaZ() stredOtáčaniaZ}(), {@code num2}));
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"α, β, γ: "}, {@link GRobot#F(double, int) F}(roj.{@link Roj#uholAlfa() uholAlfa}(), {@code num2}) + {@code srg"°; "},
+						{@link GRobot#F(double, int) F}(roj.{@link Roj#uholBeta() uholBeta}(), {@code num2}) + {@code srg"°; "}, {@link GRobot#F(double, int) F}(roj.{@link Roj#uholGama() uholGama}(), {@code num2}) + {@code srg"°"});
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"M: "}, {@link GRobot#F(double, int) F}(roj.{@link Roj#mierka() mierka}(), {@code num2}));
+
+					{@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Režim myši: "});
+					{@code kwdswitch} (režim)
+					{
+					{@code kwdcase} {@code num1}: {@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"kamera"}); {@code kwdbreak};
+					{@code kwdcase} {@code num2}: {@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"stred otáčania"}); {@code kwdbreak};
+					{@code kwdcase} {@code num3}: {@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"uhly rotácie"}); {@code kwdbreak};
+					{@code kwdcase} {@code num4}: {@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"mierka"}); {@code kwdbreak};
+					{@code kwdcase} {@code num5}: {@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"posunutie bodov"}); {@code kwdbreak};
+					{@code kwdcase} {@code num6}: {@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"pootočenie bodov"}); {@code kwdbreak};
+					}
+
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@link Konštanty#riadok riadok}, {@code srg"Želaný uhol: "}, želanýUhol);
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Uhol pootočenia: "}, Δu);
+					{@code typeint} položka = čísloPoložky();
+					{@code kwdif} (položka &lt; {@code num0} || položka &gt;= mená.length)
+						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Neznáme číslo položky: "}, položka);
+					{@code kwdelse}
+						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Zvolená položka "}, položka,
+							{@code srg": "}, mená[položka]);
+				}
+			}
+
+			{@code comm// Rozšírenie ovládania klávesnicou pre režim ladenia.}
+			{@code kwdpublic} {@code typevoid} priUvoľneníKlávesu()
+			{
+				{@code kwdswitch} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#kláves() kláves}())
+				{
+				{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_0 VK_0}: režim = {@code num0}; {@code kwdbreak};
+				{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_1 VK_1}: režim = {@code num1}; {@code kwdbreak};
+				{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_2 VK_2}: režim = {@code num2}; {@code kwdbreak};
+				{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_3 VK_3}: režim = {@code num3}; {@code kwdbreak};
+				{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_4 VK_4}: režim = {@code num4}; {@code kwdbreak};
+				{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_5 VK_5}: režim = {@code num5}; {@code kwdbreak};
+				{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_6 VK_6}: režim = {@code num6}; {@code kwdbreak};
+
+				{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_I VK_I}: infoORoji = !infoORoji; {@code kwdbreak};
+				{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_O VK_O}: Ikonka.info = !Ikonka.info;
+					prekresliRoj = {@code valtrue}; {@code kwdbreak};
+				{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_S VK_S}: osi(!osX()); {@code kwdbreak};
+
+				{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#MEDZERA MEDZERA}: resetujRoj(); resetujBody(); {@code kwdbreak};
+				}
+
+				infoORoji();
+			}
+
+			{@code comm// Ovládanie myšou v režime ladenia – akcia vykonaná pri stlačení}
+			{@code comm// ľubovoľného tlačidla myši.}
+			{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#stlačenieTlačidlaMyši() stlačenieTlačidlaMyši}()
+			{
+				{@code comm// if (tlačidloMyši(ĽAVÉ)) {} else {}}
+				myšX = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}();
+				myšY = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}();
+			}
+
+			{@code comm// Ovládanie myšou v režime ladenia – akcia vykonaná pri ťahaní}
+			{@code comm// myšou (t. j. pohybe myšou počas držania ľubovoľného tlačidla).}
+			{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#ťahanieMyšou() ťahanieMyšou}()
+			{
+				{@code comm// (Rozlišuje sa akcia stlačenia ľavého a „iného“ tlačidla…)}
+				{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#ĽAVÉ ĽAVÉ}))
+				{
+					{@code kwdswitch} (režim)
+					{
+					{@code kwdcase} {@code num1}:
+						roj.{@link Roj#posuňKameru(double, double, double) posuňKameru}(
+							{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}() &#45; myšX,
+							{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}() &#45; myšY, {@code num0.0});
+						{@code kwdbreak};
+
+					{@code kwdcase} {@code num2}:
+						roj.{@link Roj#posuňStredOtáčania(double, double, double) posuňStredOtáčania}(
+							{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}() &#45; myšX,
+							{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}() &#45; myšY, {@code num0.0});
+						{@code kwdbreak};
+
+					{@code kwdcase} {@code num3}:
+						{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#myš() myš}().{@link java.awt.event.MouseEvent#isControlDown() isControlDown}())
+						{
+							{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#myš() myš}().{@link java.awt.event.MouseEvent#isShiftDown() isShiftDown}())
+								roj.{@link Roj#pootoč(double, double, double) pootoč}({@code num0.0}, (
+									{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}() &#45; myšX +
+									{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}() &#45; myšY) / {@code num10.0},
+									{@code num0.0});
+							{@code kwdelse}
+								roj.{@link Roj#pootoč(double, double, double) pootoč}((
+									{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}() &#45; myšX +
+									{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}() &#45; myšY) / {@code num10.0},
+									{@code num0.0}, {@code num0.0});
+						}
+						{@code kwdelse}
+							roj.{@link Roj#pootoč(double, double, double) pootoč}(
+								({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}() &#45; myšY) / {@code num10.0},
+								({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}() &#45; myšX) / {@code num10.0}, {@code num0.0});
+						{@code kwdbreak};
+
+					{@code kwdcase} {@code num4}:
+						roj.{@link Roj#zmeňMierku(double) zmeňMierku}(
+							(myšX &#45; {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}()) / {@code num10.0} +
+							(myšY &#45; {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}()) / {@code num1.0});
+						{@code kwdbreak};
+
+					{@code kwdcase} {@code num5}:
+						posuňBody(
+							({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}() &#45; myšX) / {@code num10.0},
+							(myšY &#45; {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}()) / {@code num10.0}, {@code num0});
+						{@code kwdbreak};
+
+					{@code kwdcase} {@code num6}:
+						pootočBody(
+							({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}() &#45; myšY) / {@code num10.0},
+							({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}() &#45; myšX) / {@code num10.0}, {@code num0});
+						{@code kwdbreak};
+					}
+				}
+				{@code kwdelse}
+				{
+					{@code kwdswitch} (režim)
+					{
+					{@code kwdcase} {@code num1}:
+						roj.{@link Roj#posuňKameru(double, double, double) posuňKameru}({@code num0.0}, {@code num0.0},
+							((myšX &#45; {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}()) / {@code num100.0}) +
+							((myšY &#45; {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}()) / {@code num10.0}));
+						{@code kwdbreak};
+
+					{@code kwdcase} {@code num2}:
+						roj.{@link Roj#posuňStredOtáčania(double, double, double) posuňStredOtáčania}({@code num0.0}, {@code num0.0},
+							myšY &#45; {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}());
+						{@code kwdbreak};
+
+					{@code kwdcase} {@code num3}:
+						roj.pootoč({@code num0.0}, {@code num0.0}, (
+							{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}() &#45; myšX +
+							{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}() &#45; myšY) / {@code num10.0});
+						{@code kwdbreak};
+
+					{@code kwdcase} {@code num4}:
+						roj.zmeňMierku(
+							(myšX &#45; {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}()) / {@code num1000.0} +
+							(myšY &#45; {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}()) / {@code num100.0});
+						{@code kwdbreak};
+
+					{@code kwdcase} {@code num5}:
+						posuňBody({@code num0}, {@code num0},
+							({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}() &#45; myšX) / {@code num100.0} +
+							({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}() &#45; myšY) / {@code num10.0});
+						{@code kwdbreak};
+
+					{@code kwdcase} {@code num6}:
+						pootočBody({@code num0}, {@code num0},(
+							{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}() &#45; myšX +
+							{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}() &#45; myšY) / {@code num10.0});
+						{@code kwdbreak};
+					}
+				}
+
+				myšX = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}();
+				myšY = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}();
+
+				prekresliRoj = {@code valtrue};
+				infoORoji();
+				{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
+			}
+
+			{@code comm// Kreslenie vlastného tvaru robota (ktoré by bolo predvoleným tvarom}
+			{@code comm// tých bodov roja, ktoré by nemali definovaný žiadny vlastný tvar).}
+			{@code comm// V tomto príklade je to zariadené tak, že volanie tejto metódy by}
+			{@code comm// nemalo nikdy nastať. Je definovaná v podstate len „pre istotu.“}
+			{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliTvar() kresliTvar}()
+			{
+				{@link GRobot#krúžok() krúžok}();
+			}
+
+
+			{@code comm// V tomto komentári sa nachádza krátka sekcia vytvorená na ladiace}
+			{@code comm// účely, ktorá pri pohybe kurzorom myši (výhradne pri pohybe kurzorom}
+			{@code comm// myši) overí prítomnosť kurzora nad niektorým bodom roja a v prípade}
+			{@code comm// nájdenia takéhoto bodu nad ním nachvíľu zobrazí červenú kružnicu}
+			{@code comm// (realizovanú prostredníctvom jednoúčelového robota uloženého}
+			{@code comm// v inštancii zvýrazniť).}
+			{@code comm// }
+			{@code comm// private GRobot zvýrazniť = null;}
+			{@code comm// @Override public void pohybMyši()}
+			{@code comm// &#123;}
+			{@code comm//     Roj.Bod bod = null == roj ? null : roj.dajBodNaMyši();}
+			{@code comm//     if (null == bod)}
+			{@code comm//     &#123;}
+			{@code comm//         if (null != zvýrazniť) zvýrazniť.skry();}
+			{@code comm//     &#125;}
+			{@code comm//     else}
+			{@code comm//     &#123;}
+			{@code comm//         if (null == zvýrazniť)}
+			{@code comm//         &#123;}
+			{@code comm//             zvýrazniť = new GRobot()}
+			{@code comm//             &#123;}
+			{@code comm//                 @Override public void deaktivácia() &#123; skry(); &#125;}
+			{@code comm//                 @Override public void aktivácia() &#123; zobraz(); &#125;}
+			{@code comm//             &#125;;}
+			{@code comm// }
+			{@code comm//             zvýrazniť.vlastnýTvar(r -> r.krúžok());}
+			{@code comm//             zvýrazniť.farba(červená);}
+			{@code comm//             zvýrazniť.hrúbkaČiary(3);}
+			{@code comm//             zvýrazniť.vrstva(1);}
+			{@code comm//         &#125;}
+			{@code comm// }
+			{@code comm//         zvýrazniť.skočNa(bod.x3, bod.y3);}
+			{@code comm//         zvýrazniť.veľkosť(bod.z3);}
+			{@code comm//         zvýrazniť.aktivuj(10);}
+			{@code comm//     &#125;}
+			{@code comm// &#125;}
+
+		{@code comm// &#125;&#125;&#125;}
+
+
+		{@code comm// Pomocná metóda zisťujúca, ktorá ikonka je v popredí (podľa želaného}
+		{@code comm// uhla pootočenia roja podľa osi z, ktorý je uložený v prislúchajúcom}
+		{@code comm// atribúte tejto triedy).}
+		{@code kwdprivate} {@code typeint} čísloPoložky()
+		{
+			{@code typedouble} uhol = (želanýUhol + {@code num90} + Δu / {@code num2}) % {@code num360.0};
+			{@code kwdif} (uhol &lt; {@code num0}) uhol += {@code num360.0};
+			{@code kwdreturn} ({@code typeint})(uhol / Δu);
+		}
+
+		{@code comm// Pomocná metóda určená na rozšírenie a na vykonanie prislúchajúcej}
+		{@code comm// akcie podľa „aktuálneho“ čísla položky (zisteného metódou vyššie).}
+		{@code kwdprivate} {@code typevoid} potvrdeniePoložky()
+		{
+			{@code typeint} položka = čísloPoložky();
+			{@code kwdif} (položka &lt; {@code num0} || položka &gt;= mená.length)
+				{@link Svet Svet}.{@link Svet#chyba(String) chyba}({@code srg"Neznáme číslo položky: "} + položka);
+			{@code kwdelse}
+				{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Zvolená položka "} + položka + {@code srg": "} + mená[položka]);
+		}
+
+		{@code comm// Ovládanie kolotoča klávesnicou.}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#uvoľnenieKlávesu() uvoľnenieKlávesu}()
+		{
+			{@code kwdswitch} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#kláves() kláves}())
+			{
+			{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VPRAVO VPRAVO}: želanýUhol += Δu; {@code kwdbreak};
+			{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VĽAVO VĽAVO}:  želanýUhol -= Δu; {@code kwdbreak};
+			{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#ENTER ENTER}:  potvrdeniePoložky(); {@code kwdbreak};
+			{@code kwddefault}: priUvoľneníKlávesu();
+			}
+		}
+
+		{@code comm// Alternatívny spôsob aktivovania položky – klikom myši.}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#klik() klik}()
+		{
+			{@code comm// Prevzatie bodu na myši.}
+			{@link Roj.Bod Roj.Bod} bod = {@code valnull} == roj ? {@code valnull} : roj.{@link Roj#dajBodNaMyši() dajBodNaMyši}();
+
+			{@code kwdif} ({@code valnull} != bod && {@code valnull} != bod.{@link Roj.Bod#kreslenie kreslenie} &&
+				bod.{@link Roj.Bod#kreslenie kreslenie} {@code kwdinstanceof} Ikonka)
+			{
+				{@code comm// Získanie „mena“ bodu (resp. názvu SVG súboru).}
+				{@link String String} meno = ((Ikonka)bod.{@link Roj.Bod#kreslenie kreslenie}).meno;
+
+				{@code comm// Zistenie indexu položky kolotoča podľa jej „mena.“}
+				{@code typeint} indexOf = -{@code num1};
+				{@code kwdfor} ({@code typeint} i = {@code num0}; i &lt; mená.length; ++i)
+					{@code kwdif} (mená[i].{@link String#equals(Object) equals}(meno))
+					{
+						indexOf = i;
+						{@code kwdbreak};
+					}
+
+				{@code kwdif} (-{@code num1} != indexOf)
+				{
+					{@code comm// „Aktivácia“ položky rolovaním na ňu.}
+					{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}() &gt;= {@code num0})
+						{@code kwdfor} ({@code typeint} i = {@code num0}; čísloPoložky() != indexOf &&
+							i &lt; mená.length; ++i) želanýUhol += Δu;
+					{@code kwdelse}
+						{@code kwdfor} ({@code typeint} i = {@code num0}; čísloPoložky() != indexOf &&
+							i &lt; mená.length; ++i) želanýUhol -= Δu;
+
+					{@code comm// Potvrdenie položky (rovnakým spôsobom ako pri klávesnici).}
+					{@code kwdif} (čísloPoložky() == indexOf) potvrdeniePoložky();
+				}
+			}
+		}
+
+		{@code comm// Animácia kolotoča v časovači.}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#tik() tik}()
+		{
+			{@code typedouble} Δγ = želanýUhol &#45; roj.{@link Roj#uholGama() uholGama}();
+			{@code kwdif} ({@link Math Math}.{@link Math#abs(double) abs}(Δγ) &gt;= {@code num1.0})
+			{
+				roj.{@link Roj#pootoč(double, double, double) pootoč}({@code num0.0}, {@code num0.0}, Δγ / {@code num10.0});
+				prekresliRoj = {@code valtrue};
+				infoORoji();
+			}
+
+			{@code kwdif} (prekresliRoj)
+			{
+				prekresliRoj = {@code valfalse};
+				{@link Svet Svet}.{@link Svet#vymažGrafiku() vymažGrafiku}();
+				roj.{@link Roj#kresli() kresli}();
+			}
+
+			{@code kwdif} ({@link Svet Svet}.{@link Svet#neboloPrekreslené() neboloPrekreslené}()) {@link Svet Svet}.{@link Svet#prekresli() prekresli}();
+		}
+
+
+		{@code comm// Hlavná metóda.}
+		{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
+		{
+			{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"Kolotoč.cfg"});
+			{@code kwdnew} Kolotoč();
+		}
+	}
+	</pre>
+ * 
+ * <p style="text-align: center;">Balíček SVG ikoniek na prevzatie: <a
+ * href="resources/kolotoc-ikonky.7z" target="_blank">kolotoc-ikonky.7z</a></p>
+ * 
+ * <p><b>Výsledok:</b></p>
+ * 
+ * <p><image>kolotoc.gif<alt/>Ukážka fungovania kolotoča.</image>Ukážka
+ * fungovania kolotoča so zapnutými ladiacimi informáciami a pootočením
+ * roviny otáčania.</p>
  * 
  * <p> </p>
- * 
- * <!-- TODO – download: ovladac-roja.java » OvládačRoja.java. -->
  * 
  * <p><b>Informačné zdroje, ktoré môžu pomôcť pri riešení matematických
  * problémov súvisiacich s touto kapitolou (triedou):</b></p>
@@ -140,6 +1033,10 @@ public class Roj
 		 * <p>Originálna súradnica polohy bodu. Atribúty {@code x0},
 		 * {@code y0} a {@code z0} určujú pôvodnú netransformovanú polohu
 		 * bodu v priestore.</p>
+		 * 
+		 * <p class="caution"><b>Upozornenie:</b> Po zmene hodnoty tohto
+		 * atribútu je nevyhnutné nastaviť príznak {@link #transformuj
+		 * transformuj} na {@code valtrue}.</p>
 		 */
 		public double x0 = 0.0, y0 = 0.0, z0 = 0.0;
 
@@ -150,6 +1047,10 @@ public class Roj
 		 * {@link #x0 x0}, {@link #y0 y0} alebo {@link #z0 z0}) v priestore.
 		 * Takto sa dá bod ľubovoľne posúvať v priestore bez toho, aby sme
 		 * stratili originálne hodnoty súradníc jeho polohy.</p>
+		 * 
+		 * <p class="caution"><b>Upozornenie:</b> Po zmene hodnoty tohto
+		 * atribútu je nevyhnutné nastaviť príznak {@link #transformuj
+		 * transformuj} na {@code valtrue}.</p>
 		 */
 		public double dx = 0.0, dy = 0.0, dz = 0.0;
 
@@ -158,6 +1059,10 @@ public class Roj
 		 * {@code zs} určujú polohu stredu otáčania bodu v priestore.
 		 * (Pozri aj {@link #alfa alfa}, {@link #beta beta} alebo
 		 * {@link #gama gama}.)</p>
+		 * 
+		 * <p class="caution"><b>Upozornenie:</b> Po zmene hodnoty tohto
+		 * atribútu je nevyhnutné nastaviť príznak {@link #transformuj
+		 * transformuj} na {@code valtrue}.</p>
 		 */
 		public double xs = 0.0, ys = 0.0, zs = 0.0;
 
@@ -166,6 +1071,10 @@ public class Roj
 		 * {@code alfa}, {@code beta} a {@code gama} určujú uhly pootočenia
 		 * (transformovania otáčaním) bodu v priestore okolo stredu otáčania
 		 * [{@link #xs xs}, {@link #ys ys}, {@link #zs zs}].</p>
+		 * 
+		 * <p class="caution"><b>Upozornenie:</b> Po zmene hodnoty tohto
+		 * atribútu je nevyhnutné nastaviť príznak {@link #transformuj
+		 * transformuj} na {@code valtrue}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Transformácia pootočenia je
 		 * zložená z troch samostatných transformácií rotácie okolo
@@ -188,22 +1097,23 @@ public class Roj
 		public boolean transformuj = true;
 
 		/**
-		 * <p>Prepočítaná (transformovaná) súradnica polohy bodu. Atribúty
-		 * {@code x1}, {@code y1} a {@code z1} určujú transformovanú polohu
-		 * bodu v priestore. Sú vypočítané z atribútov originálnych súradníc
-		 * bodu [{@link #x0 x0}, {@link #y0 y0}, {@link #z0 z0}], hodnôt
-		 * posunutia bodu v priestore [{@link #dx dx}, {@link #dy dy},
-		 * {@link #dz dz}] (transformácia posunutím) a hodnôt pootočenia bodu
-		 * v priestore (uhly {@link #alfa alfa}, {@link #beta beta}
-		 * a {@link #gama gama}) okolo stredu otáčania [{@link #xs xs},
-		 * {@link #ys ys}, {@link #zs zs}] (transformovania otáčaním).</p>
+		 * <p>Prepočítaná (lokálne transformovaná) súradnica polohy bodu.
+		 * Atribúty {@code x1}, {@code y1} a {@code z1} určujú lokálne
+		 * transformovanú polohu bodu v priestore. Sú vypočítané z atribútov
+		 * originálnych súradníc bodu [{@link #x0 x0}, {@link #y0 y0},
+		 * {@link #z0 z0}], hodnôt posunutia bodu v priestore
+		 * [{@link #dx dx}, {@link #dy dy}, {@link #dz dz}] (transformácia
+		 * posunutím) a hodnôt pootočenia bodu v priestore (uhly {@link #alfa
+		 * alfa}, {@link #beta beta} a {@link #gama gama}) okolo stredu
+		 * otáčania [{@link #xs xs}, {@link #ys ys}, {@link #zs zs}]
+		 * (transformovania otáčaním).</p>
 		 * 
 		 * <p class="caution"><b>Upozornenie:</b> Z uvedeného vyplýva, že ak
 		 * sa hodnota ktoréhokoľvek z vyššie spomenutých atribútov zmení, tak
 		 * súradnice {@code x1}, {@code y1} a {@code z1} musia byť opätovne
 		 * prepočítané. To znamená, že súčasne so zmenou hociktorého
-		 * z uvedených atribútov je nevyhnutné nastaviť príznak
-		 * {@link #transformuj transformuj} na {@code valtrue}.</p>
+		 * z atribútov spomenutých v opise vyššie je nevyhnutné nastaviť
+		 * príznak {@link #transformuj transformuj} na {@code valtrue}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Transformácia pootočenia je
 		 * zložená z troch samostatných transformácií rotácie okolo
@@ -236,11 +1146,12 @@ public class Roj
 		public double dho = 0.0;
 
 		/**
-		 * <p>Konečná súradnica polohy bodu. Atribúty {@code x2}, {@code y2}
-		 * a {@code z2} určujú konečnú polohu bodu v priestore, ktorá je
-		 * vypočítaná z hodnôt {@link #x1 x1}, {@link #y1 y1} a {@link #z1 z1}
-		 * a z atribútov transformácie roja (pootočenia a polohy kamery,
-		 * mierky…).</p>
+		 * <p>Konečná (globálne transformovaná) súradnica polohy bodu.
+		 * Atribúty {@code x2}, {@code y2} a {@code z2} určujú konečnú
+		 * polohu bodu v priestore, ktorá je vypočítaná z hodnôt
+		 * {@link #x1 x1}, {@link #y1 y1} a {@link #z1 z1} a z atribútov
+		 * transformácie roja (pootočenia a polohy kamery, mierky…; preto
+		 * ich môžeme označiť aj ako globálne transformované).</p>
 		 */
 		public double x2 = 0.0, y2 = 0.0, z2 = 0.0;
 
@@ -248,18 +1159,29 @@ public class Roj
 		 * <p>Tento atribút určuje, či bude medzi polohou predchádzajúceho
 		 * a tohto bodu roja kreslená spojovacia čiara. (Pri kreslení roja
 		 * ako celku je táto hodnota pre prvý bod roja irelevantná.)</p>
+		 * 
+		 * @see #farbaSpoja
+		 * @see #dh
 		 */
 		public boolean spoj = true;
 
 		/**
 		 * <p>Tento atribút určuje zmenu farby robota vykonanú pred
-		 * kreslením spoja smerujúceho do tohto bodu.</p>
+		 * kreslením spoja smerujúceho do tohto bodu. (Pri kreslení roja
+		 * ako celku je táto hodnota pre prvý bod roja irelevantná.)</p>
+		 * 
+		 * @see #spoj
+		 * @see #dh
 		 */
 		public Farba farbaSpoja = null;
 
 		/**
 		 * <p>Tento atribút určuje zmenu hrúbky čiary robota vykonanú pred
-		 * kreslením spoja smerujúceho do tohto bodu.</p>
+		 * kreslením spoja smerujúceho do tohto bodu. (Pri kreslení roja
+		 * ako celku je táto hodnota pre prvý bod roja irelevantná.)</p>
+		 * 
+		 * @see #spoj
+		 * @see #farbaSpoja
 		 */
 		public double dh = 0.0;
 
@@ -270,19 +1192,20 @@ public class Roj
 		 * plátno sveta. Atribút {@code z3} určuje prepočítaný rozmer objektu.
 		 * Hodnoty týchto atribútov sú vypočítané len v prípade, že je faktor
 		 * rozmeru a zobrazovanej polohy (atribút {@link #faktor faktor})
-		 * kladný. Počítajú sa z hodnôt súradníc konečnej polohy bodu
-		 * [{@link #x2 x2}, {@link #y2 y2}, {@link #z2 z2}], rozmeru objektu
-		 * kresleného na bode – {@link #rozmer rozmer}, faktora (deliteľa)
-		 * rozmeru a zobrazovanej polohy objektu na bode – {@link #faktor
-		 * faktor} a z atribútov pohľadu na roj.</p>
+		 * kladný. Počítajú sa z hodnôt súradníc konečnej (globálne
+		 * transformovanej) polohy bodu [{@link #x2 x2}, {@link #y2 y2},
+		 * {@link #z2 z2}], rozmeru objektu kresleného na bode –
+		 * {@link #rozmer rozmer}, faktora (deliteľa) rozmeru a zobrazovanej
+		 * polohy objektu na bode – {@link #faktor faktor} a z atribútov
+		 * pohľadu na roj.</p>
 		 */
 		public double x3 = 0.0, y3 = 0.0, z3 = 0.0;
 
 		/**
 		 * <p>Faktor (deliteľ) rozmeru a zobrazovanej polohy objektu na bode,
-		 * ktorý je prepočítavaný podľa konečných súradníc bodu ([{@link #x2
-		 * x2}, {@link #y2 y2}, {@link #z2 z2}]) a aktuálnej vzdialenosti
-		 * kamery od roja.</p>
+		 * ktorý je (automaticky) prepočítavaný podľa konečných (globálne
+		 * transformovaných) súradníc bodu ([{@link #x2 x2}, {@link #y2 y2},
+		 * {@link #z2 z2}]) a aktuálnej vzdialenosti kamery od roja.</p>
 		 * 
 		 * <p>Ak je faktor menší alebo rovný nule, tak je objekt
 		 * nepozorovateľný – nachádza sa za pozorovateľom alebo na jeho
@@ -442,18 +1365,23 @@ public class Roj
 
 		/**
 		 * <p>Táto metóda fyzicky presunie bod na jeho transformovanú polohu
-		 * a zruší transformácie posunutia a pootočenia bodu. To znamená, že
-		 * transformované súradnice [{@link #x1 x1}, {@link #y1 y1}, {@link 
-		 * #z1 z1}] budú skopírované do originálnych súradníc [{@link #x0
-		 * x0}, {@link #y0 y0}, {@link #z0 z0}] a hodnoty transformácií
-		 * posunutia ({@link #dx dx}, {@link #dy dy}, {@link #dz dz})
-		 * a pootočenia (uhly {@link #alfa alfa}, {@link #beta beta}
-		 * a {@link #gama gama}) bodu v priestore budú vynulované. (Hodnoty
-		 * súradníc stredu otáčania [{@link #xs xs}, {@link #ys ys},
-		 * {@link #zs zs}] táto metóda ponecháva v pôvodnom stave. Ak je
+		 * a zruší transformácie (inak dočasného) posunutia a pootočenia
+		 * bodu. Inak povedané – lokálne transformované súradnice sa stanú
+		 * originálnymi súradnicami a všetky relevantné atribúty lokálnych
+		 * transformácií budú zrušené:</p>
+		 * 
+		 * <p>To znamená, že transformované súradnice [{@link #x1 x1},
+		 * {@link #y1 y1}, {@link  #z1 z1}] budú skopírované do originálnych
+		 * súradníc [{@link #x0 x0}, {@link #y0 y0}, {@link #z0 z0}]
+		 * a hodnoty transformácií posunutia ({@link #dx dx}, {@link #dy dy},
+		 * {@link #dz dz}) a pootočenia (uhly {@link #alfa alfa}, {@link #beta
+		 * beta} a {@link #gama gama}) bodu v priestore budú vynulované.</p>
+		 * 
+		 * <p>Hodnoty súradníc stredu otáčania [{@link #xs xs}, {@link #ys ys},
+		 * {@link #zs zs}] ponecháva táto metóda v pôvodnom stave. Ak je
 		 * príznak {@link #transformuj transformuj} rovný {@code valtrue},
 		 * tak je pred upevnením automaticky spustená metóda {@link 
-		 * #transformuj() transformuj()}.)</p>
+		 * #transformuj() transformuj()}.</p>
 		 */
 		public void upevni()
 		{
@@ -464,11 +1392,23 @@ public class Roj
 		}
 
 		/**
-		 * <p>Táto metóda využije kresliaceho robota roja na nakreslenie spoja
+		 * <p>Táto metóda využije kresliaci robot roja na nakreslenie spoja
 		 * (čiary) smerujúceho z aktuálnej polohy robota do tohto bodu.
 		 * (<b style="color: red">Ak má robot položené pero!</b>) Predpokladá
 		 * sa, že aktuálna poloha robota je polohou predchádzajúceho bodu
 		 * roja.</p>
+		 * 
+		 * <p>Táto metóda využije atribút {@linkplain #farbaSpoja farby
+		 * spoja}, ak je nastavený (to jest, ak nemá hodnotu {@code valnull})
+		 * a atribút {@linkplain #dh zmeny hrúbky čiary spoja} (tiež, ak je
+		 * nenulový).</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Pred kreslením celého roja sú
+		 * zálohované dve vlastnosti kresliaceho robota – {@linkplain 
+		 * GRobot#farba(Color) farba} a {@linkplain GRobot#hrúbkaČiary(double)
+		 * hrúbka čiary}. Ich hodnoty sú však obnovené až po nakreslení
+		 * všetkých prvkov roja (spojov, telies/objektov) – pozri aj
+		 * {@linkplain #kresliTeleso() kreslenie telesa.}</p>
 		 */
 		public void kresliSpoj()
 		{
@@ -528,12 +1468,34 @@ public class Roj
 		}
 
 		/**
-		 * <p>Táto metóda využije kresliaceho robota roja na nakreslenie
+		 * <p>Táto metóda využije kresliaci robot roja na nakreslenie
 		 * objektu umiestneného na polohe tohto bodu (ak je viditeľný – pozri
 		 * atribút {@link #zobraz zobraz}). Ak je definované vlastné
 		 * {@link #kreslenie kreslenie}, tak je touto metódou využité, inak
 		 * je tvarom objektu pečiatka robota (čo môže byť ľubovoľný tvar,
-		 * pretože robot môže mať definované vlastné kreslenie).</p>
+		 * pretože robot môže mať definované vlastné kreslenie). Kreslenie
+		 * využije atribút {@linkplain #farba farby bodu} (resp. objektu
+		 * kresleného na pozícii bodu), ak je nastavený (to jest, ak nemá
+		 * hodnotu {@code valnull}) a atribút {@linkplain #dho zmeny hrúbky
+		 * čiary objektu} (tiež, ak je nenulový).</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Pred kreslením celého roja sú
+		 * zálohované dve vlastnosti kresliaceho robota – {@linkplain 
+		 * GRobot#farba(Color) farba} a {@linkplain GRobot#hrúbkaČiary(double)
+		 * hrúbka čiary}. Ich hodnoty sú však obnovené až po nakreslení
+		 * všetkých prvkov roja (spojov a objektov), čiže ak toto kreslenie
+		 * objektu/telesa tieto vlastnosti počas kreslenia zmení a neobnoví
+		 * (čo sa nevzťahuje na vlastnosti {@linkplain #farba vlastnej farby
+		 * bodu} a {@linkplain #dho zmeny hrúbky čiary} (kreslenia objektu),
+		 * ktorých použitie je manažované automaticky – pred a po kreslení
+		 * objektu bodu), tak sa zmeny prenesú do kreslenia ďalších prvkov
+		 * roja, čo môže byť nežiaduce, preto odporúčame po skončení
+		 * kreslenia telea <i>„všetko</i> (to jest nielen hrúbku čiary
+		 * a farbu) <i>vrátiť do pôvodného stavu.“</i></p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Vo vlastnom kreslení sa na
+		 * prístup k aktuálne kreslenému bodu dá s výhodou využiť atribút
+		 * {@link Roj#bod bod} roja.</p>
 		 */
 		public void kresliTeleso()
 		{
@@ -595,6 +1557,110 @@ public class Roj
 				}
 			}
 		}
+
+
+		/**
+		 * <p>Overí, či sa zadané súradnice nachádzajú v kruhu so zadaným
+		 * polomerom a stredom na aktuálnej pozícii projekcie bodu.</p>
+		 * 
+		 * @param súradnicaX x-ová súradnica bodu
+		 * @param súradnicaY y-ová súradnica bodu
+		 * @param polomer polomer vyšetrovaného kruhu
+		 * @return {@code valtrue} – áno; {@code valfalse} – nie
+		 */
+		public boolean bodV(double súradnicaX, double súradnicaY,
+			double polomer)
+		{
+			double Δx = súradnicaX - x3;
+			double Δy = súradnicaY - y3;
+			return (Δx * Δx + Δy * Δy) <= polomer * polomer;
+		}
+
+		/**
+		 * <p>Funguje rovnako ako metóda {@link #bodV(double, double,
+		 * double) bodV(x, y, polomer)}, len namiesto súradníc bodu
+		 * je použitá poloha zadaného objektu…</p>
+		 * 
+		 * @param objekt objekt, ktorého poloha je použitá namiesto
+		 *     súradníc bodu
+		 * @param polomer polomer vyšetrovaného kruhu
+		 * @return {@code valtrue}/&#8203;{@code valfalse}
+		 */
+		public boolean bodV(Poloha objekt, double polomer)
+		{
+			double Δx = objekt.polohaX() - x3;
+			double Δy = objekt.polohaY() - y3;
+			return (Δx * Δx + Δy * Δy) <= polomer * polomer;
+		}
+
+		/**
+		 * <p>Zistí, či sa súradnice zadaného bodu nachádzajú v kruhu
+		 * s veľkosťou polomeru úmernému vzdialenosti inštancie tohto bodu
+		 * od kamery (aktuálnej projekcie) a stredom na aktuálnej pozícii
+		 * jeho projekcie.</p>
+		 * 
+		 * @param súradnicaX x-ová súradnica bodu
+		 * @param súradnicaY y-ová súradnica bodu
+		 * @return {@code valtrue} – áno; {@code valfalse} – nie
+		 */
+		public boolean bodV(double súradnicaX, double súradnicaY)
+		{
+			double Δx = súradnicaX - x3;
+			double Δy = súradnicaY - y3;
+			return (Δx * Δx + Δy * Δy) <= z3 * z3;
+		}
+
+		/**
+		 * <p>Funguje rovnako ako metóda {@link #bodV(double, double)
+		 * bodV(x, y)}, len namiesto súradníc bodu je použitá poloha
+		 * zadaného objektu…</p>
+		 * 
+		 * @param objekt objekt, ktorého poloha je použitá namiesto
+		 *     súradníc bodu
+		 * @return {@code valtrue}/&#8203;{@code valfalse}
+		 */
+		public boolean bodV(Poloha objekt)
+		{
+			double Δx = objekt.polohaX() - x3;
+			double Δy = objekt.polohaY() - y3;
+			return (Δx * Δx + Δy * Δy) <= z3 * z3;
+		}
+
+
+		/**
+		 * <p>Overí, či sa súradnice myši nachádzajú v kruhu so zadaným
+		 * polomerom a stredom na aktuálnej pozícii projekcie bodu.</p>
+		 * 
+		 * @param polomer polomer vyšetrovaného kruhu
+		 * @return {@code valtrue} – áno; {@code valfalse} – nie
+		 */
+		public boolean myšV(double polomer)
+		{
+			double Δx = ÚdajeUdalostí.súradnicaMyšiX - x3;
+			double Δy = ÚdajeUdalostí.súradnicaMyšiY - y3;
+			return (Δx * Δx + Δy * Δy) <= polomer * polomer;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #myšV(double) myšV}.</p> */
+		public boolean mysV(double polomer) { return myšV(polomer); }
+
+		/**
+		 * <p>Zistí, či sa súradnice myši nachádzajú v kruhu s veľkosťou
+		 * polomeru úmernému vzdialenosti inštancie tohto bodu od kamery
+		 * (aktuálnej projekcie) a stredom na aktuálnej pozícii jeho
+		 * projekcie.</p>
+		 * 
+		 * @return {@code valtrue} – áno; {@code valfalse} – nie
+		 */
+		public boolean myšV()
+		{
+			double Δx = ÚdajeUdalostí.súradnicaMyšiX - x3;
+			double Δy = ÚdajeUdalostí.súradnicaMyšiY - y3;
+			return (Δx * Δx + Δy * Δy) <= z3 * z3;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #myšV() myšV}.</p> */
+		public boolean mysV() { return myšV(); }
 
 
 		/**
@@ -1410,7 +2476,8 @@ public class Roj
 			double Î = sqrt(u * u + v * v + w * w);
 			u /= Î; v /= Î; w /= Î;
 
-			double sinΘ = sin(Θ), cosΘ = cos(Θ);
+			double Θr = toRadians(Θ);
+			double sinΘ = sin(Θr), cosΘ = cos(Θr);
 			double cosΘ_1 = 1 - cosΘ;
 			double uΔx_vΔy_wΔz = u * Δx + v * Δy + w * Δz;
 
@@ -1507,7 +2574,8 @@ public class Roj
 			}
 
 			double u2 = u * u, v2 = v * v, w2 = w * w;
-			double sinΘ = sin(Θ), cosΘ = cos(Θ);
+			double Θr = toRadians(Θ);
+			double sinΘ = sin(Θr), cosΘ = cos(Θr);
 			double cosΘ_1 = 1 - cosΘ;
 
 			double au = a * u, bv = b * v;
@@ -2154,8 +3222,9 @@ public class Roj
 	 * byť kreslený a pri individuálnom pokuse o nakreslenie bodu roja nastane
 	 * chyba. Tvar tohto robota určuje predvolený tvar objektov na polohách
 	 * bodov roja. Vlastnosti pera ovplyvňujú kreslenie spojov medzi bodmi
-	 * roja – hrúbka určuje predvolenú hrúbku a poloha to, či budú všetky
-	 * spoje paušálne nakreslené alebo nie.</p>
+	 * roja – hrúbka určuje predvolenú hrúbku a poloha (poloha v zmysle stavu
+	 * zdvihnutia/ploženia pera) to, či budú všetky spoje paušálne nakreslené
+	 * alebo nie.</p>
 	 */
 	public GRobot kresli = null;
 
@@ -2325,24 +3394,23 @@ public class Roj
 	public void vymaz() { vymaž(); }
 
 	/**
-	 * <p>Vráti zoznam bodov roja. Zoznam je určený predovšetkým na
-	 * prechádzanie a úpravu vlastností jednotlivých bodov. Vymazaním
-	 * bodu z tohto zoznamu sa bod nevymaže, len sa stratí možnosť
-	 * prístupu k nemu cez tento zoznam a funkčnosť bodu bude výrazne
-	 * obmedzená. Na vymazanie bodu slúži metóda {@link #vymažBod(Roj.Bod)
+	 * <p>Vráti kópiu aktuálneho zoznamu bodov roja. Zoznam je určený
+	 * (predovšetkým) na prechádzanie a úpravu vlastností jednotlivých
+	 * bodov. Vymazaním bodu z tohto zoznamu sa bod z roja nevymaže. Na
+	 * vymazanie bodu slúži metóda roja {@link #vymažBod(Roj.Bod)
 	 * vymažBod}.</p>
 	 */
-	public Zoznam<Bod> body() { return body; }
+	public Zoznam<Bod> body() { return new Zoznam<Bod>(body); }
 
 	/**
-	 * <p>Vráti zoznam bodov roja zoradený podľa poradia kreslenia.
-	 * Zoznam je určený predovšetkým na prechádzanie na účely preslenia
-	 * objektov. Vymazaním bodu z tohto zoznamu sa bod nevymaže, len sa
-	 * stratí možnosť prístupu k nemu cez tento zoznam a funkčnosť bodu
-	 * bude obmedzená. Na vymazanie bodu z roja slúži metóda {@link 
-	 * #vymažBod(Roj.Bod) vymažBod}.</p>
+	 * <p>Vráti kópiu aktuálneho zoznamu bodov roja zoradeného podľa
+	 * poradia kreslenia. Zoznam je určený (predovšetkým) na prechádzanie
+	 * v súvislosti s prekresľovaním objektov. (Napríklad vymazaním bodu
+	 * z tohto zoznamu sa bod nevymaže. Na vymazanie bodu z roja slúži
+	 * metóda {@link #vymažBod(Roj.Bod) vymažBod}.)</p>
 	 */
-	public Zoznam<Bod> poradieKreslenia() { return poradieKreslenia; }
+	public Zoznam<Bod> poradieKreslenia()
+	{ return new Zoznam<Bod>(poradieKreslenia); }
 
 
 	/**
@@ -3250,7 +4318,7 @@ public class Roj
 	/**
 	 * <p>Vráti aktuálnu hodnotu mierky roja. Mierka vo veľkej miere
 	 * ovplyvňuje zobrazenie roja. Ak je nesprávne nastavená, výsledok
-	 * je skreslený.</p>
+	 * je skreslený. Dá sa prirovnať k ohniskovej vzdialenosti objektívu.</p>
 	 * 
 	 * @return aktuálna hodnota mierky zobrazenia roja
 	 * 
@@ -3298,12 +4366,12 @@ public class Roj
 
 
 	/**
-	 * <p>Táto metóda vynúti prepočet konečných súradníc {@code x2},
-	 * {@code y2}, {@code z2} všetkých bodov roja pri najbližšom kreslení
-	 * alebo pri volaní metódy {@link #transformuj() transformuj}. Volanie
-	 * tejto metódy zároveň nastaví príznak prepočítania atribútov použitých
-	 * pri kreslení (premietaní) bodov roja. (Pozri metódu: {@link 
-	 * #prepočítať() prepočítať}.)</p>
+	 * <p>Táto metóda vynúti prepočet konečných (globálne transformovaných)
+	 * súradníc {@code x2}, {@code y2}, {@code z2} všetkých bodov roja pri
+	 * najbližšom kreslení alebo pri volaní metódy {@link #transformuj()
+	 * transformuj}. Volanie tejto metódy zároveň nastaví príznak
+	 * prepočítania atribútov použitých pri kreslení (premietaní) bodov
+	 * roja. (Pozri metódu: {@link #prepočítať() prepočítať}.)</p>
 	 * 
 	 * @see #prepočítať()
 	 * @see #transformuj()
@@ -3318,11 +4386,12 @@ public class Roj
 	public void transformovat() { transformovať(); }
 
 	/**
-	 * <p>Táto metóda prepočíta hodnoty konečných súradníc {@link Roj.Bod#x2
-	 * x2}, {@link Roj.Bod#y2 y2}, {@link Roj.Bod#z2 z2} všetkých bodov roja.
-	 * Metóda používa vnútorný príznak na overenie toho, či je prepočítanie
-	 * potrebné. Ak chcete prepočítanie vynútiť, musíte pred volaním tejto
-	 * metódy zavolať metódu {@link #transformovať() transformovať}.</p>
+	 * <p>Táto metóda prepočíta hodnoty konečných (globálne transformovaných)
+	 * súradníc {@link Roj.Bod#x2 x2}, {@link Roj.Bod#y2 y2}, {@link 
+	 * Roj.Bod#z2 z2} všetkých bodov roja. Metóda používa vnútorný príznak
+	 * na overenie toho, či je prepočítanie potrebné. Ak chcete prepočítanie
+	 * vynútiť, musíte pred volaním tejto metódy zavolať metódu {@link 
+	 * #transformovať() transformovať}.</p>
 	 * 
 	 * @see #transformovať()
 	 * @see #prepočítaj()
@@ -3358,9 +4427,9 @@ public class Roj
 	}
 
 	/**
-	 * <p>Toto je metóda, ktorá prepočíta hodnoty konečných súradníc
-	 * {@link Roj.Bod#x2 x2}, {@link Roj.Bod#y2 y2}, {@link Roj.Bod#z2 z2}
-	 * zadaného bodu roja.</p>
+	 * <p>Toto je metóda, ktorá prepočíta hodnoty konečných (globálne
+	 * transformovaných) súradníc {@link Roj.Bod#x2 x2}, {@link 
+	 * Roj.Bod#y2 y2}, {@link Roj.Bod#z2 z2} zadaného bodu roja.</p>
 	 * 
 	 * @param bod inštancia bodu roja, ktorého atribúty majú byť prepočítané
 	 * 
@@ -3375,12 +4444,12 @@ public class Roj
 		double yy = bod.y1 - ys;
 		double zz = bod.z1 - zs;
 
-		// „Ľavoruký“ (left-handed) systém:
+		// „Ľavoruký“ (left-handed) t. j. ľavotočivý systém:
 		bod.x2 = xs + (xx * T00) + (yy * T01) + (zz * T02);
 		bod.y2 = ys + (xx * T10) + (yy * T11) + (zz * T12);
 		bod.z2 = zs + (xx * T20) + (yy * T21) + (zz * T22);
 
-		// „Pravoruký“ (right-handed) systém:
+		// „Pravoruký“ (right-handed) t. j. pravotočivý systém:
 		// bod.x2 = xs + (yy * T00) + (xx * T01) + (zz * T02);
 		// bod.y2 = ys + (yy * T10) + (xx * T11) + (zz * T12);
 		// bod.z2 = zs + (yy * T20) + (xx * T21) + (zz * T22);
@@ -3452,6 +4521,14 @@ public class Roj
 	/**
 	 * <p>Prekreslí roj s použitím {@linkplain #kresli kresliaceho robota
 	 * roja}.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Pred kreslením roja sú zálohované
+	 * iba dve vlastnosti: {@linkplain GRobot#farba(Color) farba}
+	 * a {@linkplain GRobot#hrúbkaČiary(double) hrúbka čiary} robota. Ich
+	 * hodnoty sú obnovené až po nakreslení všetkých prvkov roja, čiže ak
+	 * zákaznícke kreslenie objektu (telesa) v niektorom z bodov roja tieto
+	 * vlastnosti zmenilo (a neobnovilo), tak sa zmeny prenesú do kreslenia
+	 * ďalších prvkov roja…</p>
 	 */
 	public void kresli()
 	{
@@ -3652,6 +4729,121 @@ public class Roj
 				};
 		return null;
 	}
+
+
+	/**
+	 * <p>Zistí, či sa projekcia niektorého bodu roja nachádza na zadaných
+	 * súradniciach. Metóda využíva metódu bodu roja:
+	 * {@link Bod#bodV(double, double, double) bodV}. Bod, ktorý vyhovie
+	 * podmienke je vrátený. Ak nie je nájdený žiadny bod, tak metóda vráti
+	 * hodnotu {@code valnull}.</p>
+	 * 
+	 * @param súradnicaX x-ová súradnica bodu
+	 * @param súradnicaY y-ová súradnica bodu
+	 * @param polomer polomer vyšetrovaného kruhu (pozri {@link 
+	 *     Bod#bodV(double, double, double) bodV})
+	 * @return nájdený bod alebo {@code valnull}
+	 */
+	public Bod dajBodNa(double súradnicaX, double súradnicaY,
+		double polomer)
+	{
+		for (Bod bod : poradieKreslenia.odzadu())
+			if (bod.bodV(súradnicaX, súradnicaY, polomer)) return bod;
+		return null;
+	}
+
+	/**
+	 * <p>Zistí, či sa projekcia niektorého bodu roja nachádza na
+	 * súradniciach zadaného objektu. Metóda využíva metódu bodu roja:
+	 * {@link Bod#bodV(Poloha, double) bodV}. Bod, ktorý vyhovie
+	 * podmienke je vrátený. Ak nie je nájdený žiadny bod, tak metóda vráti
+	 * hodnotu {@code valnull}.</p>
+	 * 
+	 * @param objekt objekt, ktorého poloha je použitá na overenie bodov
+	 * @param polomer polomer vyšetrovaného kruhu (pozri {@link 
+	 *     Bod#bodV(Poloha, double) bodV})
+	 * @return nájdený bod alebo {@code valnull}
+	 */
+	public Bod dajBodNa(Poloha objekt, double polomer)
+	{
+		for (Bod bod : poradieKreslenia.odzadu())
+			if (bod.bodV(objekt, polomer)) return bod;
+		return null;
+	}
+
+	/**
+	 * <p>Zistí, či sa projekcia niektorého bodu roja nachádza na zadaných
+	 * súradniciach. Metóda využíva metódu bodu roja: {@link Bod#bodV(double,
+	 * double) bodV}. Bod, ktorý vyhovie podmienke je vrátený. Ak nie je
+	 * nájdený žiadny bod, tak metóda vráti hodnotu {@code valnull}.</p>
+	 * 
+	 * @param súradnicaX x-ová súradnica bodu
+	 * @param súradnicaY y-ová súradnica bodu
+	 * @return nájdený bod alebo {@code valnull}
+	 */
+	public Bod dajBodNa(double súradnicaX, double súradnicaY)
+	{
+		for (Bod bod : poradieKreslenia.odzadu())
+			if (bod.bodV(súradnicaX, súradnicaY)) return bod;
+		return null;
+	}
+
+	/**
+	 * <p>Zistí, či sa projekcia niektorého bodu roja nachádza na
+	 * súradniciach zadaného objektu. Metóda využíva metódu bodu roja:
+	 * {@link Bod#bodV(Poloha) bodV}. Bod, ktorý vyhovie
+	 * podmienke je vrátený. Ak nie je nájdený žiadny bod, tak metóda vráti
+	 * hodnotu {@code valnull}.</p>
+	 * 
+	 * @param objekt objekt, ktorého poloha je použitá na overenie bodov
+	 * @return nájdený bod alebo {@code valnull}
+	 */
+	public Bod dajBodNa(Poloha objekt)
+	{
+		for (Bod bod : poradieKreslenia.odzadu())
+			if (bod.bodV(objekt)) return bod;
+		return null;
+	}
+
+
+	/**
+	 * <p>Zistí, či sa projekcia niektorého bodu roja nachádza na
+	 * súradniciach myši. Metóda využíva metódu bodu roja: {@link 
+	 * Bod#myšV(double) myšV}. Bod, ktorý vyhovie podmienke je vrátený.
+	 * Ak nie je nájdený žiadny bod, tak metóda vráti hodnotu
+	 * {@code valnull}.</p>
+	 * 
+	 * @param polomer polomer vyšetrovaného kruhu (pozri {@link 
+	 *     Bod#myšV(double) myšV})
+	 * @return nájdený bod alebo {@code valnull}
+	 */
+	public Bod dajBodNaMyši(double polomer)
+	{
+		for (Bod bod : poradieKreslenia.odzadu())
+			if (bod.myšV(polomer)) return bod;
+		return null;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #dajBodNaMyši(double) dajBodNaMyši}.</p> */
+	public Bod dajBodNaMysi(double polomer) { return dajBodNaMyši(polomer); }
+
+	/**
+	 * <p>Zistí, či sa projekcia niektorého bodu roja nachádza na
+	 * súradniciach myši. Metóda využíva metódu bodu roja: {@link Bod#myšV()
+	 * myšV}. Bod, ktorý vyhovie podmienke je vrátený. Ak nie je nájdený
+	 * žiadny bod, tak metóda vráti hodnotu {@code valnull}.</p>
+	 * 
+	 * @return nájdený bod alebo {@code valnull}
+	 */
+	public Bod dajBodNaMyši()
+	{
+		for (Bod bod : poradieKreslenia.odzadu())
+			if (bod.myšV()) return bod;
+		return null;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #dajBodNaMyši() dajBodNaMyši}.</p> */
+	public Bod dajBodNaMysi() { return dajBodNaMyši(); }
 
 
 	/**

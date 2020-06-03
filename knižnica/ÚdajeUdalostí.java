@@ -632,8 +632,8 @@ public class ÚdajeUdalostí
 	/**
 	 * <p>Vráti hodnotu x-ovej súradnice myši prepočítanú do súradníc
 	 * plátna. Dáva presnejší výsledok ako súradnice získané cez metódy
-	 * {@link #myš() ÚdajeUdalostí.myš()}.{@link MouseEvent#getX()
-	 * getX()} a {@link #myš() ÚdajeUdalostí.myš()}.{@link 
+	 * {@link #myš() ÚdajeUdalostí.myš()}<code>.</code>{@link MouseEvent#getX()
+	 * getX()} a {@link #myš() ÚdajeUdalostí.myš()}<code>.</code>{@link 
 	 * MouseEvent#getY() getY()}.</p>
 	 * 
 	 * @return hodnota x-ovej súradnice myši
@@ -655,8 +655,8 @@ public class ÚdajeUdalostí
 	/**
 	 * <p>Vráti hodnotu y-ovej súradnice myši prepočítanú do súradníc
 	 * plátna. Dáva presnejší výsledok ako súradnice získané cez metódy
-	 * {@link #myš() ÚdajeUdalostí.myš()}.{@link MouseEvent#getX()
-	 * getX()} a {@link #myš() ÚdajeUdalostí.myš()}.{@link 
+	 * {@link #myš() ÚdajeUdalostí.myš()}<code>.</code>{@link MouseEvent#getX()
+	 * getX()} a {@link #myš() ÚdajeUdalostí.myš()}<code>.</code>{@link 
 	 * MouseEvent#getY() getY()}.</p>
 	 * 
 	 * @return hodnota y-ovej súradnice myši

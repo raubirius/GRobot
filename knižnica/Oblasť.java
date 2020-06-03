@@ -380,7 +380,7 @@ import java.awt.geom.Rectangle2D;
 			{@link Bod Bod} vpravoDole = {@link GRobot#poloha() poloha}();
 
 			{@code comm// Teraz môžeme začať kresliť tvar kmeňa. Najprv sa presunieme}
-			{@code comm// do ľavého spodného rohu a pootočíme robota o 10° doprava vzhľadom}
+			{@code comm// do ľavého spodného rohu a pootočíme robot o 10° doprava vzhľadom}
 			{@code comm// na počiatočné pootočenie, čiže presne na uhol 80° + α:}
 			{@link GRobot#skočNa(double, double) skočNa}(vľavoDole);
 			{@link GRobot#smer(double) smer}({@code num80} + α);
@@ -699,7 +699,7 @@ public class Oblasť extends Area implements Poloha
 	 * <p>Zamestná zadaného robota na účely tvorby tejto oblasti. Oblasť
 	 * môže byť vytvorená aj bez pomoci robota (prostriedkami Javy),
 	 * avšak na využitie možností robota, je jednoduchšie zamestnať
-	 * robota, ktorý pomôže vytvoriť oblasť s pomocou svojich prostriedkov
+	 * robot, ktorý pomôže vytvoriť oblasť s pomocou svojich prostriedkov
 	 * na kreslenie útvarov a písanie textov (resp. „kreslenie“ textov).
 	 * Každý robot stráca súčasne so zamestnaním schopnosť kreslenia
 	 * a vypĺňania útvarov (okrem kreslenia a vypĺňania cesty) a písania
@@ -752,8 +752,8 @@ public class Oblasť extends Area implements Poloha
 	}
 
 	/**
-	 * <p>Automaticky uvoľní robota {@linkplain #zamestnaj(GRobot)
-	 * zamestnaného} na účely tvorby (prípadne kreslenia) tejto oblasti.
+	 * <p>Automaticky uvoľní robot {@linkplain #zamestnaj(GRobot)
+	 * zamestnaný} na účely tvorby (prípadne kreslenia) tejto oblasti.
 	 * Ak taký robot nejestvuje, volanie metódy nemá žiadny efekt.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Názov {@code curruvoľni} má
@@ -810,7 +810,7 @@ public class Oblasť extends Area implements Poloha
 	public void prepusti() { uvoľni(); }
 
 	/**
-	 * <p>Uvoľní robota {@linkplain #zamestnaj(GRobot) zamestnaného} na
+	 * <p>Uvoľní robot {@linkplain #zamestnaj(GRobot) zamestnaný} na
 	 * účely tvorenia tejto oblasti. Ak zadaný robot nebol zamestnaný
 	 * pre túto oblasť, volanie tejto metódy nemá žiadny efekt.</p>
 	 * 

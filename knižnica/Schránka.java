@@ -92,9 +92,19 @@ import java.io.IOException;
  */
 public class Schránka
 {
-	// TODO: zváž transfer vektorových tvarov. Pozri:
-	// http://comp.qenherkhopeshef.org/blog/jvectcutandpaste
-	// (ak ešte bude jestvovať).
+	// Zatiaľ sa z časových dôvodov nepodarilo doriešiť transfer vektorových
+	// tvarov cez schránku OS. *** Súčasný stav *** Stiahol som originál aj
+	// extrahovanú verziu schránky z knižnice JSesh: http://comp.
+	// qenherkhopeshef.org/blog/jvectcutandpaste, https://codeload.github.
+	// com/rosmord/jvectclipboard/zip/master, ale:
+	// 
+	// Bude treba odstrániť závislosť „lowagie,“ ktorá súvisí s prácou s PDF
+	// súbormi, pretože „lowagie classes have been deprecated in 2012 and
+	// should no longer be used both for technical as well as legal
+	// reasons“ (https://www.lowagie.com/iText, https://itextpdf.com/en/
+	// resources/faq/legal/itext-5-legacy/can-itext-217-itextsharp-416-or-
+	// earlier-be-used-commercially), ale myslím si, že sa vieme bez PDF
+	// transferu zaobísť. (TODO)
 
 	// Táto trieda uchováva obrazovú informáciu počas prítomnosti
 	// v schránke

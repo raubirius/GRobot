@@ -91,10 +91,12 @@ package knižnica;
 			gKruh2.{@link GRobot#náhodnáFarba() náhodnáFarba}();
 			gKruh3.{@link GRobot#náhodnáFarba() náhodnáFarba}();
 
-			{@code comm// A určíme mu náhodnú veľkosť v rozmedzí 10 – 30:}
-			gKruh1.{@link GRobot#veľkosť(double) veľkosť}({@link Svet Svet}.{@link Svet#náhodnéReálneČíslo(double, double) náhodnéReálneČíslo}({@code num10}, {@code num30}));
-			gKruh2.{@link GRobot#veľkosť(double) veľkosť}({@link Svet Svet}.{@link Svet#náhodnéReálneČíslo(double, double) náhodnéReálneČíslo}({@code num10}, {@code num30}));
-			gKruh3.{@link GRobot#veľkosť(double) veľkosť}({@link Svet Svet}.{@link Svet#náhodnéReálneČíslo(double, double) náhodnéReálneČíslo}({@code num10}, {@code num30}));
+			{@code comm// A určíme mu náhodnú veľkosť v rozmedzí 10}
+			{@code comm// (čo je aktuálna veľkosť pri jednotkovej mierke) až 30}
+			{@code comm// (čo je trojnásobok tejto hodnoty):}
+			gKruh1.{@link GRobot#náhodnáVeľkosť(double) náhodnáVeľkosť}({@code num3}));
+			gKruh2.{@link GRobot#náhodnáVeľkosť(double) náhodnáVeľkosť}({@code num3}));
+			gKruh3.{@link GRobot#náhodnáVeľkosť(double) náhodnáVeľkosť}({@code num3}));
 		}
 	}
 	</pre>
@@ -109,7 +111,7 @@ package knižnica;
  * <p> </p>
  * 
  * <p>Použitie rozhrania môže vyzerať komplikovane, preto bolo
- * robotovi umožnené zmeniť tvar aj (z hľadiska začínajúceho
+ * robotu umožnené zmeniť tvar aj (z hľadiska začínajúceho
  * programátora) jednoduchším spôsobom. Metódou {@link GRobot
  * GRobot}{@code .}{@link GRobot#kresliTvar() kresliTvar}{@code ()}
  * (myslíme tým jej prekrytím). Z vnútorného (technického)
@@ -199,17 +201,22 @@ public interface KreslenieTvaru
 		{
 			{@code kwdpublic} {@code typevoid} {@code currkresli}({@link GRobot GRobot} r)
 			{
-				{@code comm// Kružnica s „nosom“}
-				r.{@link GRobot#farba(Color) farba}(r.modrá);
-				r.{@link GRobot#kružnica(double) kružnica}({@code num10});
-				r.{@link GRobot#dopredu(double) dopredu}({@code num20});
+				{@code comm// Vždy modrá kružnica s „nosom“}
+				r.{@link GRobot#farba(Color) farba}({@link Farebnosť#modrá modrá});
+				r.{@link GRobot#kružnica(double) kružnica}();
+				r.{@link GRobot#dopredu(double) dopredu}({@code num2} * r.{@link GRobot#veľkosť() veľkosť}());
 			}
 		});
 		</pre>
 	 * 
+	 * <p class="image"><img src="resources/kruznica-s-nosom.svg"
+	 * alt="Výsledok ukážky kreslenia vlasntého tvaru."
+	 * onerror="this.onerror=null; this.src='resources/kruznica-s-nosom.png';"
+	 * /><br />Ukážka vzhľadu.</p>
+	 * 
 	 * <p class="remark"><b>Poznámky:</b> Niektoré metódy upravujú
 	 * v rámci kreslenia vlastného tvaru svoje správanie. Napríklad
-	 * skupina metód {@link GRobot#domov() domov} vráti a otočí robota
+	 * skupina metód {@link GRobot#domov() domov} vráti a otočí robot
 	 * do aktuálnej pozície a smeru – to jest do polohy a smeru v čase
 	 * začatia vlastného kreslenia a to bez ohľadu na to, ako je
 	 * v skutočnosti definovaný aktuálny domov robota. Metódy {@link 
@@ -218,12 +225,18 @@ public interface KreslenieTvaru
 	 * vracajú hodnotu upravenú o aktuálne pootočenie tvaru (pozri metódu
 	 * {@link GRobot#pootočenieTvaru(double) pootočenieTvaru}).<br />
 	 *  <br />
-	 * Dôležitou informáciou je tiež to, že hodnoty kľúčových vlastností
-	 * ako poloha, smer, stav pera a pod. sú pred začatím kreslenia
-	 * vlastného tvaru robota zálohované a po dokončení tejto činnosti
-	 * sú opätovne vrátené do pôvodného stavu. Pero robota je pri
-	 * začatí kreslenia vlastného tvaru vždy položené bez ohľadu na
-	 * jeho skutočný stav.</p>
+	 * Dôležitou informáciou je tiež to, že hodnoty takmer všetkých
+	 * (dostatočne elementárnych) vlastností ako poloha, smer, stav pera
+	 * (a mnoho iných) sú pred začatím kreslenia vlastného tvaru robota
+	 * zálohované a po dokončení tejto činnosti sú opätovne vrátené do
+	 * pôvodného stavu. Pero robota je pri začatí kreslenia vlastného tvaru
+	 * vždy {@linkplain GRobot#položPero() položené} bez ohľadu na jeho
+	 * skutočný stav a tiež je (bez ohľadu na skutočný stav) zapnuté
+	 * {@linkplain GRobot#kresliTvary() kreslenie tvarov} robotom.<br />
+	 *  <br />
+	 * Zálohovanie sa nevzťahuje na iné použitia tohto rozhrania (napríklad
+	 * kreslenie roja kresliacim robotom). Každé iné použitie tohto rozhrania
+	 * má svoje vlastné pravidlá.</p>
 	 * 
 	 * @param r inštancia robota použitý na vykonanie určenej činnosti
 	 *     alebo jej podporu (nakreslenie vlastného tvaru a pod.);

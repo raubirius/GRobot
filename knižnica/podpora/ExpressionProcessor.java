@@ -43,19 +43,25 @@ import static java.lang.Math.*;
  * possibility to delay the processing  of variable names after the expression
  * parsing (that means during the evaluation process) was added.</p>
  * 
- * <p>On August 2nd 2018 this class became the part of supporting package of
- * the GRobot framework. Several  unfinished features (including the claimed
- * customFunction) were  completed and  new were add.  The steps made should
- * make the class more compatible with the framework.</p>
+ * <p>On August 2nd 2018, this class became  the part of supporting  package
+ * of  the GRobot  framework.  Several  unfinished features  (including  the
+ * claimed customFunction) were completed and  new were add.  The steps made
+ * should make the class more compatible with the framework.</p>
  * 
- * <p>On  April 26th 2019 another  feature was  implemented.  The ability
+ * <p>On April 26th 2019, another  feature was  implemented.  The ability
  * to  join  the  identifiers  to  make  the  processor  compatible  with
  * the GRobot’s scripting engine. (See the methods joinsTheIdentifiers(),
  * joinTheIdentifiers(join), and joinIdentifiers(id1, id2).)</p>
  * 
- * <p>(Notice:  The author  did not fix  the bug(s)  in original C++ class
- * because he had no C++ compiler installed and it would be time-consuming
- * to get one, install it, set up it, and fix the bug(s).)</p>
+ * <p>On June 1st 2020, the class was extended with thirteen new static
+ * methods (from advancedOr to advancedPow). The purpose of the methods
+ * is to extend the class by new features in connection to some special
+ * operations, like “multiplying/dividing the strings (or other types)”
+ * (methods: advancedMul, advancedDiv) and similarly.</p>
+ * 
+ * <p>(Notice: The author did not fix the bug(s) in the original C++ class
+ * because he  had no C++ compiler  installed at the time  and it would be
+ * time-consuming to get one, install it, set up it, and fix the bug(s).)</p>
  * 
  * <p><b>Example:</b></p>
  * 
@@ -121,8 +127,8 @@ import static java.lang.Math.*;
 	+(1.0, /(*(2.0, 12.0), 3.0)) : 9.0
 </pre>
  * 
- * <p>Full list of operators and functions is in the introduction of an
- * appropriate enumeration class.</p>
+ * <p>Full list of operators and functions is in the introduction
+ * (in the source code) of an appropriate enumeration class.</p>
  * 
  * @author Roman Horváth
  * @version 26. 4. 2019
@@ -2103,8 +2109,9 @@ public class ExpressionProcessor implements ValueProvider
 		 * (unary plus is ignored).
 		 * Operators LEFPAR and RIGPAR are not a real operators, just special
 		 * states used by the parser. There is no ternary operator
-		 * implemented. Full list of operators and functions is in the
-		 * introduction of appropriate enumeration class.
+		 * implemented.
+		 * Full list of operators and functions is in the introduction
+		 * (in the source code) of appropriate enumeration class.
 		 */
 		public static enum Operator
 		{
@@ -2192,8 +2199,7 @@ public class ExpressionProcessor implements ValueProvider
 						return new Value(0 != a.get() ||
 							0 != b.get() ? 1.0 : 0.0);
 
-					return new Value(Value.TypeOrError.
-						UNSUPPORTED_OPERATION);
+					return advancedOr(a, b); // UNSUPPORTED_OPERATION
 				}
 			},
 
@@ -2212,8 +2218,7 @@ public class ExpressionProcessor implements ValueProvider
 						return new Value(0 != a.get() &&
 							0 != b.get() ? 1.0 : 0.0);
 
-					return new Value(Value.TypeOrError.
-						UNSUPPORTED_OPERATION);
+					return advancedAnd(a, b); // UNSUPPORTED_OPERATION
 				}
 			},
 
@@ -2297,8 +2302,7 @@ public class ExpressionProcessor implements ValueProvider
 					if (a.isNumber() && b.isNumber())
 						return new Value(a.get() >= b.get() ? 1.0 : 0.0);
 
-					return new Value(Value.TypeOrError.
-						UNSUPPORTED_OPERATION);
+					return advancedGtEq(a, b); // UNSUPPORTED_OPERATION
 				}
 			},
 
@@ -2324,8 +2328,7 @@ public class ExpressionProcessor implements ValueProvider
 					if (a.isNumber() && b.isNumber())
 						return new Value(a.get() > b.get() ? 1.0 : 0.0);
 
-					return new Value(Value.TypeOrError.
-						UNSUPPORTED_OPERATION);
+					return advancedGt(a, b); // UNSUPPORTED_OPERATION
 				}
 			},
 
@@ -2351,8 +2354,7 @@ public class ExpressionProcessor implements ValueProvider
 					if (a.isNumber() && b.isNumber())
 						return new Value(a.get() <= b.get() ? 1.0 : 0.0);
 
-					return new Value(Value.TypeOrError.
-						UNSUPPORTED_OPERATION);
+					return advancedLtEq(a, b); // UNSUPPORTED_OPERATION
 				}
 			},
 
@@ -2378,8 +2380,7 @@ public class ExpressionProcessor implements ValueProvider
 					if (a.isNumber() && b.isNumber())
 						return new Value(a.get() < b.get() ? 1.0 : 0.0);
 
-					return new Value(Value.TypeOrError.
-						UNSUPPORTED_OPERATION);
+					return advancedLt(a, b); // UNSUPPORTED_OPERATION
 				}
 			},
 
@@ -2407,8 +2408,7 @@ public class ExpressionProcessor implements ValueProvider
 					if (a.isNumber() && b.isNumber())
 						return new Value(min(a.get(), b.get()));
 
-					return new Value(Value.TypeOrError.
-						UNSUPPORTED_OPERATION);
+					return advancedMin(a, b); // UNSUPPORTED_OPERATION
 				}
 			},
 
@@ -2436,8 +2436,7 @@ public class ExpressionProcessor implements ValueProvider
 					if (a.isNumber() && b.isNumber())
 						return new Value(max(a.get(), b.get()));
 
-					return new Value(Value.TypeOrError.
-						UNSUPPORTED_OPERATION);
+					return advancedMax(a, b); // UNSUPPORTED_OPERATION
 				}
 			},
 
@@ -2455,8 +2454,7 @@ public class ExpressionProcessor implements ValueProvider
 					if (a.isNumber() && b.isNumber())
 						return new Value(a.get() - b.get());
 
-					return new Value(Value.TypeOrError.
-						UNSUPPORTED_OPERATION);
+					return advancedSub(a, b); // UNSUPPORTED_OPERATION
 				}
 			},
 
@@ -2509,13 +2507,12 @@ public class ExpressionProcessor implements ValueProvider
 					if (a.isNumber() && b.isNumber())
 						return new Value(a.get() % b.get());
 
-					return new Value(Value.TypeOrError.
-						UNSUPPORTED_OPERATION);
+					return advancedMod(a, b); // UNSUPPORTED_OPERATION
 				}
 			},
 
 			// Division
-			DIV((byte)11, "/")
+			DIV((byte)12, "/") // Fix: was previously 11: less than the MUL…
 			{
 				public Value getValue(Node node)
 				{
@@ -2533,8 +2530,7 @@ public class ExpressionProcessor implements ValueProvider
 						return new Value(a.get() / b.get());
 					}
 
-					return new Value(Value.TypeOrError.
-						UNSUPPORTED_OPERATION);
+					return advancedDiv(a, b); // UNSUPPORTED_OPERATION
 				}
 			},
 
@@ -2552,8 +2548,7 @@ public class ExpressionProcessor implements ValueProvider
 					if (a.isNumber() && b.isNumber())
 						return new Value(a.get() * b.get());
 
-					return new Value(Value.TypeOrError.
-						UNSUPPORTED_OPERATION);
+					return advancedMul(a, b); // UNSUPPORTED_OPERATION
 				}
 			},
 
@@ -2571,8 +2566,7 @@ public class ExpressionProcessor implements ValueProvider
 					if (a.isNumber() && b.isNumber())
 						return new Value(pow(a.get(), b.get()));
 
-					return new Value(Value.TypeOrError.
-						UNSUPPORTED_OPERATION);
+					return advancedPow(a, b); // UNSUPPORTED_OPERATION
 				}
 			},
 
@@ -2777,8 +2771,9 @@ public class ExpressionProcessor implements ValueProvider
 		 * operator is not integer division like in Pascal programming
 		 * language. It is an alias for / operator.
 		 * In addition, several default functions have one or more aliases
-		 * defined. Full list of operators and functions can be found in the
-		 * introduction of appropriate enumeration class.
+		 * defined.
+		 * Full list of operators and functions is in the introduction
+		 * (in the source code) of appropriate enumeration class.
 		 */
 		public static enum Function
 		{
@@ -6170,6 +6165,121 @@ public class ExpressionProcessor implements ValueProvider
 
 		// Helper method decreasing the indentation of next dump lines.
 		private void unindentDump() { if (dumpIndent > 0) --dumpIndent; }
+	// }
+
+
+	//////////////////////////////////////////////////////////////////////
+	// Static extensions to some operators
+	//////////////////////////////////////////////////////////////////////
+
+	// {
+
+		/**
+		 * This static method serves to extend the standard OR (||)
+		 * operator functionality. You can overload it to enhance the
+		 * standard “numeric” (in fact logical) operation.
+		 */
+		public static Value advancedOr(Value a, Value b)
+		{ return new Value(Value.TypeOrError.UNSUPPORTED_OPERATION); }
+
+		/**
+		 * This static method serves to extend the standard AND (&&)
+		 * operator functionality. You can overload it to enhance the
+		 * standard “numeric” (in fact logical) operation.
+		 */
+		public static Value advancedAnd(Value a, Value b)
+		{ return new Value(Value.TypeOrError.UNSUPPORTED_OPERATION); }
+
+		/**
+		 * This static method serves to extend the standard GTEQ (>=)
+		 * operator functionality. You can overload it to enhance the
+		 * standard “numeric” (in fact relational) operation.
+		 */
+		public static Value advancedGtEq(Value a, Value b)
+		{ return new Value(Value.TypeOrError.UNSUPPORTED_OPERATION); }
+
+		/**
+		 * This static method serves to extend the standard GT (>)
+		 * operator functionality. You can overload it to enhance the
+		 * standard “numeric” (in fact relational) operation.
+		 */
+		public static Value advancedGt(Value a, Value b)
+		{ return new Value(Value.TypeOrError.UNSUPPORTED_OPERATION); }
+
+		/**
+		 * This static method serves to extend the standard LTEQ (<=)
+		 * operator functionality. You can overload it to enhance the
+		 * standard “numeric” (in fact relational) operation.
+		 */
+		public static Value advancedLtEq(Value a, Value b)
+		{ return new Value(Value.TypeOrError.UNSUPPORTED_OPERATION); }
+
+		/**
+		 * This static method serves to extend the standard LT (&lt;)
+		 * operator functionality. You can overload it to enhance the
+		 * standard “numeric” (in fact relational) operation.
+		 */
+		public static Value advancedLt(Value a, Value b)
+		{ return new Value(Value.TypeOrError.UNSUPPORTED_OPERATION); }
+
+		/**
+		 * This static method serves to extend the standard MIN (min)
+		 * operator functionality. You can overload it to enhance the
+		 * standard numeric operation (or better said a selector function
+		 * implemented as binary operation).
+		 */
+		public static Value advancedMin(Value a, Value b)
+		{ return new Value(Value.TypeOrError.UNSUPPORTED_OPERATION); }
+
+		/**
+		 * This static method serves to extend the standard MAX (max)
+		 * operator functionality. You can overload it to enhance the
+		 * standard numeric operation (or better said a selector function
+		 * implemented as binary operation).
+		 */
+		public static Value advancedMax(Value a, Value b)
+		{ return new Value(Value.TypeOrError.UNSUPPORTED_OPERATION); }
+
+		/**
+		 * This static method serves to extend the standard SUB (-)
+		 * operator functionality. You can overload it to enhance this
+		 * standard numeric operation.
+		 */
+		public static Value advancedSub(Value a, Value b)
+		{ return new Value(Value.TypeOrError.UNSUPPORTED_OPERATION); }
+
+		/**
+		 * This static method serves to extend the standard MOD (%)
+		 * operator functionality. You can overload it to enhance this
+		 * standard numeric operation.
+		 */
+		public static Value advancedMod(Value a, Value b)
+		{ return new Value(Value.TypeOrError.UNSUPPORTED_OPERATION); }
+
+		/**
+		 * This static method serves to extend the standard DIV (/)
+		 * operator functionality. You can overload it to enhance this
+		 * standard numeric operation.
+		 */
+		public static Value advancedDiv(Value a, Value b)
+		{ return new Value(Value.TypeOrError.UNSUPPORTED_OPERATION); }
+
+		/**
+		 * This static method serves to extend the standard MUL (*)
+		 * operator functionality. You can overload it to enhance this
+		 * standard numeric operation.
+		 */
+		public static Value advancedMul(Value a, Value b)
+		{ return new Value(Value.TypeOrError.UNSUPPORTED_OPERATION); }
+
+		/**
+		 * This static method serves to extend the standard POW (^)
+		 * operator functionality. You can overload it to enhance this
+		 * standard numeric operation.
+		 */
+		public static Value advancedPow(Value a, Value b)
+		{ return new Value(Value.TypeOrError.UNSUPPORTED_OPERATION); }
+
 	// }
 
 

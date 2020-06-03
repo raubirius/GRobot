@@ -6,7 +6,7 @@
  * (the “License”); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an “AS IS” BASIS,
@@ -18,14 +18,14 @@
 // package org.apache.tools.zip;
 package knižnica.apacheAntZIP;
 
-
 /**
  * Wrapper for extra field data that doesn’t conform to the recommended
  * format of header-tag + size + data.
  * 
  * <p>The header-id is artificial (and not listed as a known ID in
- * {@link "http://www.pkware.com/documents/casestudies/APPNOTE.TXT
- * APPNOTE.TXT"}). Since it isn’t used anywhere except to satisfy the
+ * {@link http://www.pkware.com/documents/casestudies/APPNOTE.TXT
+ * APPNOTE.TXT}).
+ * Since it isn’t used anywhere except to satisfy the
  * ZipExtraField contract it shouldn’t matter anyway.</p>
  * 
  * @since Ant 1.8.1
@@ -105,8 +105,9 @@ public final class UnparseableExtraFieldData
 	 * @param offset offset into buffer to read data
 	 * @param length the length of data
 	 */
-	public void parseFromCentralDirectoryData(byte[] buffer, int offset,
-											int length) {
+	public void parseFromCentralDirectoryData(
+		byte[] buffer, int offset, int length)
+	{
 		centralDirectoryData = new byte[length];
 		System.arraycopy(buffer, offset, centralDirectoryData, 0, length);
 		if (localFileData == null) {

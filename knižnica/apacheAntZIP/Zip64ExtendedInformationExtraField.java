@@ -6,7 +6,7 @@
  * (the “License”); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an “AS IS” BASIS,
@@ -18,7 +18,6 @@
 // package org.apache.tools.zip;
 package knižnica.apacheAntZIP;
 
-
 // import static org.apache.tools.zip.ZipConstants.DWORD;
 // import static org.apache.tools.zip.ZipConstants.WORD;
 
@@ -28,8 +27,8 @@ import java.util.zip.ZipException;
  * Holds size and other extended information for entries that use Zip64
  * features.
  * 
- * <p>See {@link "http://www.pkware.com/documents/casestudies/APPNOTE.TXT
- * PKWARE’s APPNOTE.TXT, section 4.5.3"}.</p>
+ * <p>See {@link http://www.pkware.com/documents/casestudies/APPNOTE.TXT
+ * PKWARE’s APPNOTE.TXT, section 4.5.3}.</p>
  * 
  * <p>Currently Ant doesn’t support encrypting the
  * central directory so the note about masking doesn’t apply.</p>
@@ -76,8 +75,9 @@ public class Zip64ExtendedInformationExtraField
 	 * 
 	 * @throws IllegalArgumentException if size or compressedSize is null
 	 */
-	public Zip64ExtendedInformationExtraField(ZipEightByteInteger size,
-											ZipEightByteInteger compressedSize) {
+	public Zip64ExtendedInformationExtraField(
+		ZipEightByteInteger size, ZipEightByteInteger compressedSize)
+	{
 		this(size, compressedSize, null, null);
 	}
 
@@ -91,10 +91,10 @@ public class Zip64ExtendedInformationExtraField
 	 * 
 	 * @throws IllegalArgumentException if size or compressedSize is null
 	 */
-	public Zip64ExtendedInformationExtraField(ZipEightByteInteger size,
-											ZipEightByteInteger compressedSize,
-											ZipEightByteInteger relativeHeaderOffset,
-											ZipLong diskStart) {
+	public Zip64ExtendedInformationExtraField(
+		ZipEightByteInteger size, ZipEightByteInteger compressedSize,
+		ZipEightByteInteger relativeHeaderOffset, ZipLong diskStart)
+	{
 		this.size = size;
 		this.compressedSize = compressedSize;
 		this.relativeHeaderOffset = relativeHeaderOffset;
@@ -114,16 +114,17 @@ public class Zip64ExtendedInformationExtraField
 	/** {@inheritDoc} */
 	public ZipShort getCentralDirectoryLength() {
 		return new ZipShort((size != null ? ZipConstants.DWORD : 0)
-							+ (compressedSize != null ? ZipConstants.DWORD : 0)
-							+ (relativeHeaderOffset != null ? ZipConstants.DWORD : 0)
-							+ (diskStart != null ? ZipConstants.WORD : 0));
+			+ (compressedSize != null ? ZipConstants.DWORD : 0)
+			+ (relativeHeaderOffset != null ? ZipConstants.DWORD : 0)
+			+ (diskStart != null ? ZipConstants.WORD : 0));
 	}
 
 	/** {@inheritDoc} */
 	public byte[] getLocalFileDataData() {
 		if (size != null || compressedSize != null) {
 			if (size == null || compressedSize == null) {
-				throw new IllegalArgumentException(LFH_MUST_HAVE_BOTH_SIZES_MSG);
+				throw new IllegalArgumentException(
+					LFH_MUST_HAVE_BOTH_SIZES_MSG);
 			}
 			byte[] data = new byte[2 * ZipConstants.DWORD];
 			addSizes(data);
@@ -137,11 +138,13 @@ public class Zip64ExtendedInformationExtraField
 		byte[] data = new byte[getCentralDirectoryLength().getValue()];
 		int off = addSizes(data);
 		if (relativeHeaderOffset != null) {
-			System.arraycopy(relativeHeaderOffset.getBytes(), 0, data, off, ZipConstants.DWORD);
+			System.arraycopy(relativeHeaderOffset.getBytes(), 0,
+				data, off, ZipConstants.DWORD);
 			off += ZipConstants.DWORD;
 		}
 		if (diskStart != null) {
-			System.arraycopy(diskStart.getBytes(), 0, data, off, ZipConstants.WORD);
+			System.arraycopy(diskStart.getBytes(), 0, data, off,
+				ZipConstants.WORD);
 			off += ZipConstants.WORD;
 		}
 		return data;
@@ -178,9 +181,10 @@ public class Zip64ExtendedInformationExtraField
 	}
 
 	/** {@inheritDoc} */
-	public void parseFromCentralDirectoryData(byte[] buffer, int offset,
-											int length)
-		throws ZipException {
+	public void parseFromCentralDirectoryData(
+		byte[] buffer, int offset, int length)
+		throws ZipException
+	{
 		// store for processing in reparseCentralDirectoryData
 		rawCentralDirectoryData = new byte[length];
 		System.arraycopy(buffer, offset, rawCentralDirectoryData, 0, length);
@@ -200,7 +204,8 @@ public class Zip64ExtendedInformationExtraField
 			offset += ZipConstants.DWORD;
 			relativeHeaderOffset = new ZipEightByteInteger(buffer, offset);
 		} else if (length % ZipConstants.DWORD == ZipConstants.WORD) {
-			diskStart = new ZipLong(buffer, offset + length - ZipConstants.WORD);
+			diskStart = new ZipLong(buffer,
+				offset + length - ZipConstants.WORD);
 		}
 	}
 
@@ -219,11 +224,11 @@ public class Zip64ExtendedInformationExtraField
 	 * @param hasDiskStart boolean
 	 * @throws ZipException if expected length of central directory data is incorrect
 	 */
-	public void reparseCentralDirectoryData(boolean hasUncompressedSize,
-											boolean hasCompressedSize,
-											boolean hasRelativeHeaderOffset,
-											boolean hasDiskStart)
-		throws ZipException {
+	public void reparseCentralDirectoryData(
+		boolean hasUncompressedSize, boolean hasCompressedSize,
+		boolean hasRelativeHeaderOffset, boolean hasDiskStart)
+		throws ZipException
+	{
 		if (rawCentralDirectoryData != null) {
 			int expectedLength = (hasUncompressedSize ? ZipConstants.DWORD : 0)
 				+ (hasCompressedSize ? ZipConstants.DWORD : 0)
@@ -231,11 +236,10 @@ public class Zip64ExtendedInformationExtraField
 				+ (hasDiskStart ? ZipConstants.WORD : 0);
 			if (rawCentralDirectoryData.length < expectedLength) {
 				throw new ZipException("central directory zip64 extended"
-									+ " information extra field's length"
-									+ " doesn't match central directory"
-									+ " data. Expected length "
-									+ expectedLength + " but is "
-									+ rawCentralDirectoryData.length);
+					+ " information extra field's length doesn't match"
+					+ " central directory data. Expected length "
+					+ expectedLength + " but is "
+					+ rawCentralDirectoryData.length);
 			}
 			int offset = 0;
 			if (hasUncompressedSize) {
@@ -243,8 +247,8 @@ public class Zip64ExtendedInformationExtraField
 				offset += ZipConstants.DWORD;
 			}
 			if (hasCompressedSize) {
-				compressedSize = new ZipEightByteInteger(rawCentralDirectoryData,
-														offset);
+				compressedSize = new ZipEightByteInteger(
+					rawCentralDirectoryData, offset);
 				offset += ZipConstants.DWORD;
 			}
 			if (hasRelativeHeaderOffset) {
@@ -338,7 +342,8 @@ public class Zip64ExtendedInformationExtraField
 			off += ZipConstants.DWORD;
 		}
 		if (compressedSize != null) {
-			System.arraycopy(compressedSize.getBytes(), 0, data, off, ZipConstants.DWORD);
+			System.arraycopy(compressedSize.getBytes(), 0,
+				data, off, ZipConstants.DWORD);
 			off += ZipConstants.DWORD;
 		}
 		return off;

@@ -6,7 +6,7 @@
  * (the “License”); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an “AS IS” BASIS,
@@ -17,7 +17,6 @@
 
 // package org.apache.tools.zip;
 package knižnica.apacheAntZIP;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,14 +60,17 @@ public class ExtraFieldUtils {
 	 */
 	public static void register(Class<?> c) {
 		try {
-			ZipExtraField ze = (ZipExtraField) c.newInstance();
+			ZipExtraField ze = (ZipExtraField)c.newInstance();
 			implementations.put(ze.getHeaderId(), c);
 		} catch (ClassCastException cc) {
-			throw new RuntimeException(c + " doesn\'t implement ZipExtraField"); //NOSONAR
+			throw new RuntimeException(
+				c + " doesn\'t implement ZipExtraField"); //NOSONAR
 		} catch (InstantiationException ie) {
-			throw new RuntimeException(c + " is not a concrete class"); //NOSONAR
+			throw new RuntimeException(
+				c + " is not a concrete class"); //NOSONAR
 		} catch (IllegalAccessException ie) {
-			throw new RuntimeException(c + "\'s no-arg constructor is not public"); //NOSONAR
+			throw new RuntimeException(
+				c + "\'s no-arg constructor is not public"); //NOSONAR
 		}
 	}
 
@@ -85,7 +87,7 @@ public class ExtraFieldUtils {
 		throws InstantiationException, IllegalAccessException {
 		Class<?> c = implementations.get(headerId);
 		if (c != null) {
-			return (ZipExtraField) c.newInstance();
+			return (ZipExtraField)c.newInstance();
 		}
 		UnrecognizedExtraField u = new UnrecognizedExtraField();
 		u.setHeaderId(headerId);
@@ -133,8 +135,8 @@ public class ExtraFieldUtils {
 	 */
 	@SuppressWarnings("fallthrough")
 	public static ZipExtraField[] parse(byte[] data, boolean local,
-										UnparseableExtraField onUnparseableData)
-		throws ZipException {
+		UnparseableExtraField onUnparseableData) throws ZipException
+	{
 		List<ZipExtraField> v = new ArrayList<ZipExtraField>();
 		int start = 0;
 		LOOP:
@@ -145,15 +147,15 @@ public class ExtraFieldUtils {
 				switch (onUnparseableData.getKey()) {
 					case UnparseableExtraField.THROW_KEY:
 						throw new ZipException("bad extra field starting at "
-								+ start + ".  Block length of " + length
-								+ " bytes exceeds remaining data of "
-								+ (data.length - start - WORD) + " bytes.");
+							+ start + ".  Block length of " + length
+							+ " bytes exceeds remaining data of "
+							+ (data.length - start - WORD) + " bytes.");
 					case UnparseableExtraField.READ_KEY:
 						UnparseableExtraFieldData field =
 							new UnparseableExtraFieldData();
 						if (local) {
-							field.parseFromLocalFileData(data, start,
-								data.length - start);
+							field.parseFromLocalFileData(
+								data, start, data.length - start);
 						} else {
 							field.parseFromCentralDirectoryData(
 								data, start, data.length - start);
@@ -166,7 +168,8 @@ public class ExtraFieldUtils {
 						// available data
 						break LOOP;
 					default:
-						throw new ZipException("unknown UnparseableExtraField key: "
+						throw new ZipException(
+							"unknown UnparseableExtraField key: "
 								+ onUnparseableData.getKey());
 				}
 			}
@@ -176,7 +179,7 @@ public class ExtraFieldUtils {
 					|| !(ze instanceof CentralDirectoryParsingZipExtraField)) {
 					ze.parseFromLocalFileData(data, start + WORD, length);
 				} else {
-					((CentralDirectoryParsingZipExtraField) ze)
+					((CentralDirectoryParsingZipExtraField)ze)
 						.parseFromCentralDirectoryData(
 							data, start + WORD, length);
 				}
@@ -212,9 +215,9 @@ public class ExtraFieldUtils {
 		int start = 0;
 		for (int i = 0; i < regularExtraFieldCount; i++) {
 			System.arraycopy(data[i].getHeaderId().getBytes(),
-					0, result, start, 2);
+				0, result, start, 2);
 			System.arraycopy(data[i].getLocalFileDataLength().getBytes(),
-					0, result, start + 2, 2);
+				0, result, start + 2, 2);
 			byte[] local = data[i].getLocalFileDataData();
 			System.arraycopy(local, 0, result, start + WORD, local.length);
 			start += (local.length + WORD);
@@ -246,9 +249,9 @@ public class ExtraFieldUtils {
 		int start = 0;
 		for (int i = 0; i < regularExtraFieldCount; i++) {
 			System.arraycopy(data[i].getHeaderId().getBytes(),
-							0, result, start, 2);
+				0, result, start, 2);
 			System.arraycopy(data[i].getCentralDirectoryLength().getBytes(),
-							0, result, start + 2, 2);
+				0, result, start + 2, 2);
 			byte[] local = data[i].getCentralDirectoryData();
 			System.arraycopy(local, 0, result, start + WORD, local.length);
 			start += (local.length + WORD);

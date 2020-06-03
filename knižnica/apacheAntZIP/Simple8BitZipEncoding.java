@@ -6,7 +6,7 @@
  * (the “License”); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an “AS IS” BASIS,
@@ -17,7 +17,6 @@
 
 // package org.apache.tools.zip;
 package knižnica.apacheAntZIP;
-
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -72,7 +71,7 @@ class Simple8BitZipEncoding implements ZipEncoding {
 		@Override
 		public boolean equals(final Object o) {
 			if (o instanceof Simple8BitChar) {
-				final Simple8BitChar other = (Simple8BitChar) o;
+				final Simple8BitChar other = (Simple8BitChar)o;
 				return unicode == other.unicode && code == other.code;
 			}
 			return false;
@@ -125,7 +124,7 @@ class Simple8BitZipEncoding implements ZipEncoding {
 	public char decodeByte(final byte b) {
 		// code 0-127
 		if (b >= 0) {
-			return (char) b;
+			return (char)b;
 		}
 
 		// byte is signed, so 128 == -128 and 255 == -1
@@ -158,7 +157,7 @@ class Simple8BitZipEncoding implements ZipEncoding {
 	public boolean pushEncodedChar(final ByteBuffer bb, final char c) {
 
 		if (c >= 0 && c < 128) {
-			bb.put((byte) c);
+			bb.put((byte)c);
 			return true;
 		}
 
@@ -250,8 +249,9 @@ class Simple8BitZipEncoding implements ZipEncoding {
 			}
 		}
 
-		out.limit(out.position());
-		out.rewind();
+		ZipEncodingHelper.prepareBufferForRead(out);
+		// out.limit(out.position()); out.rewind();
+
 		return out;
 	}
 

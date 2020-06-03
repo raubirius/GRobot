@@ -61,7 +61,7 @@ import static knižnica.Farebnosť.*;
 
 /**
  * <p>Trieda {@code currPoznámkovýBlok} dovoľuje vytvárať v aplikácii
- * používajúcej robota textové bloky, ktoré sú zobrazované nad plátnom
+ * používajúcej robot textové bloky, ktoré sú zobrazované nad plátnom
  * (t. j. nie sú jeho súčasťou) a dovoľujú zobraziť alebo upraviť väčšie
  * množstvo textu. Každý nový poznámkový blok je automaticky umiestnený
  * na súradnice stredu plátna s predvolenými rozmermi 400 × 300 bodov
@@ -972,9 +972,11 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	public void skry() { setVisible(false); }
 
 	/**
-	 * <p>Prekrytie originálnej metódy na zabezpečenie postúpenia vstupu
+	 * <p>Prekrytie originálnej metódy. (Na zabezpečenie postúpenia vstupu
 	 * klávesnice (fokusu) hlavnému panelu (pri skrytí poznámkového
-	 * bloku).</p>
+	 * bloku) a tiež na synchronizované zobrazenie/skrytie všetkých súčastí
+	 * poznámkového bloku – {@link JTextPane#setVisible(boolean)},
+	 * {@link JScrollPane#setVisible(boolean)}.)</p>
 	 */
 	@Override public void setVisible(boolean visible)
 	{
@@ -2122,6 +2124,12 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * označenia slúži metóda {@link #moveCaretPosition(int)
 	 * moveCaretPosition}.</p>
 	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda prekrýva originálnu
+	 * metódu {@link JTextPane#setCaretPosition(int)}. </p>
+	 * 
+	 * <!-- TODO – priebežne dopĺňať rovnaké poznámky ku všetkým prekrytým
+	 * metódam v programovacom rámci. -->
+	 * 
 	 * @param nováPozícia nová pozícia textového kurzora
 	 * 
 	 * @see #moveCaretPosition(int)
@@ -2189,6 +2197,9 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * 
 	 * <p>Na nastavenie novej polohy kurzora a zrušenie označenia
 	 * slúži metóda {@link #setCaretPosition(int) setCaretPosition}.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda prekrýva originálnu
+	 * metódu {@link JTextPane#moveCaretPosition(int)}. </p>
 	 * 
 	 * @param nováPozícia nová pozícia textového kurzora
 	 * 

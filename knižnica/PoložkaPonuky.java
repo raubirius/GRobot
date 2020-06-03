@@ -58,7 +58,7 @@ import javax.swing.KeyStroke;
  * ponuky aplikácie. Každá nová položka ponuky je automaticky zaradená do
  * ponuky aplikáce (hlavnej ponuky) na určitú pozíciu. Hlavná ponuka
  * obsahuje vo východiskovom stave jednu rolovaciu ponuku s prevolenou
- * položkou „Koniec“. Prvá položka je vložená pred ňu a je automaticky
+ * položkou „Koniec.“ Prvá položka je vložená pred ňu a je automaticky
  * oddelená oddeľovačom, ďalšie položky sú umiestňované systematicky za
  * ňou (každá za naposledy definovanou položkou, prípadne oddeľovačom).
  * Položky môžeme pridávať buď vytváraním nových inštancií tejto triedy,

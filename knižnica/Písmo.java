@@ -363,7 +363,7 @@ public class Písmo extends Font
 	 * 
 	 * <pre CLASS="example">
 		{@link GRobot#písmo(java.awt.Font) písmo}({@code kwdnew} {@code currPísmo}({@code srg"Názov"}, {@code srg"Times New Roman"}, {@code srg"Veľkosť"}, {@code srg"12"}, {@code srg"Dolný index"}));
-		{@link GRobot#text(String) text}({@code srg"Dolný index „Times New Roman“, 12 bodov."});
+		{@link GRobot#text(String) text}({@code srg"Dolný index „Times New Roman,“ 12 bodov."});
 		</pre>
 	 * 
 	 * <p><image>novyKonstruktorPisma2.png<alt/></image>Výsledok vyššieho
@@ -536,8 +536,8 @@ public class Písmo extends Font
 
 
 				// Od verzie 1.84 metóda „odrezáva“ reťazce „font “
-				// a „font“ zo začiatku atribútu a reťazce „ písma“,
-				// „písma“, „ pisma“ a „pisma“ z konca atribútu, čím
+				// a „font“ zo začiatku atribútu a reťazce „ písma,“
+				// „písma,“ „ pisma“ a „pisma“ z konca atribútu, čím
 				// mierne rozširuje rozsah akceptovaných atribútov.
 				if (atribút.startsWith("font "))
 					atribút = atribút.substring(5);

@@ -6,7 +6,7 @@
  * (the “License”); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an “AS IS” BASIS,
@@ -18,7 +18,7 @@
 // package org.apache.tools.zip;
 package knižnica.apacheAntZIP;
 
-
+import java.io.Serializable;
 import java.util.zip.ZipException;
 
 /**
@@ -38,10 +38,10 @@ public class UnsupportedZipFeatureException extends ZipException {
 	 * @param reason the feature that is not supported
 	 * @param entry the entry using the feature
 	 */
-	public UnsupportedZipFeatureException(Feature reason,
-										ZipEntry entry) {
-		super("unsupported feature " + reason + " used in entry "
-			+ entry.getName());
+	public UnsupportedZipFeatureException(Feature reason, ZipEntry entry)
+	{
+		super("unsupported feature " + reason +
+			" used in entry " + entry.getName());
 		this.reason = reason;
 		this.entry = entry;
 	}
@@ -68,7 +68,7 @@ public class UnsupportedZipFeatureException extends ZipException {
 	 * ZIP Features that may or may not be supported.
 	 */
 	@SuppressWarnings("serial")
-	public static class Feature implements java.io.Serializable {
+	public static class Feature implements Serializable {
 		/**
 		 * The entry is encrypted.
 		 */
@@ -80,17 +80,14 @@ public class UnsupportedZipFeatureException extends ZipException {
 		/**
 		 * The entry uses a data descriptor.
 		 */
-		public static final Feature DATA_DESCRIPTOR = new Feature("data descriptor");
+		public static final Feature DATA_DESCRIPTOR =
+			new Feature("data descriptor");
 
 		private final String name;
 
-		private Feature(String name) {
-			this.name = name;
-		}
+		private Feature(String name) { this.name = name; }
 
 		@Override
-		public String toString() {
-			return name;
-		}
+		public String toString() { return name; }
 	}
 }

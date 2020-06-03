@@ -6,7 +6,7 @@
  * (the “License”); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an “AS IS” BASIS,
@@ -17,7 +17,6 @@
 
 // package org.apache.tools.zip;
 package knižnica.apacheAntZIP;
-
 
 // import static org.apache.tools.zip.ZipConstants.BYTE_MASK;
 
@@ -76,8 +75,9 @@ public final class ZipShort implements Cloneable {
 	 * @param value the Java int to convert to bytes
 	 * @param buf the output buffer
 	 * @param offset
-	 *        The offset within the output buffer of the first byte to be written.
-	 *        must be non-negative and no larger than <tt>buf.length-2</tt>
+	 *        The offset within the output buffer of the first byte to be
+	 *        written. must be non-negative and no larger than
+	 *        <code>buf.length-2</code>
 	 */
 	public static void putShort(int value, byte[] buf, int offset) {
 		buf[offset] = (byte) (value & ZipConstants.BYTE_MASK);
@@ -134,8 +134,7 @@ public final class ZipShort implements Cloneable {
 	 */
 	@Override
 	public boolean equals(Object o) {
-		return (o != null) && (o instanceof ZipShort) &&
-			(value == ((ZipShort) o).getValue());
+		return o instanceof ZipShort && value == ((ZipShort)o).getValue();
 	}
 
 	/**

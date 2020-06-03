@@ -58,6 +58,9 @@ public interface Farebnosť
 	 * <p>Biela farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num255}{@code , }{@code num255}{@code , }
 	 * {@code num255}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- biela --><svg class="color-box"><rect
+	 * style="fill: #FFFFFF" /></svg></p>
 	 */
 	public final static Farba biela = new Farba(255, 255, 255);
 
@@ -65,6 +68,9 @@ public interface Farebnosť
 	 * <p>Svetlošedá farba (<small>{@link Farba#Farba(int, int,
 	 * int) Farba}{@code (}{@code num176}{@code , }{@code num176}{@code , }
 	 * {@code num176}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- svetlošedá --><svg class="color-box"><rect
+	 * style="fill: #B0B0B0" /></svg></p>
 	 */
 	public final static Farba svetlošedá = new Farba(176, 176, 176);
 
@@ -75,6 +81,9 @@ public interface Farebnosť
 	 * <p>Šedá farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num144}{@code , }{@code num144}{@code , }
 	 * {@code num144}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- šedá --><svg class="color-box"><rect
+	 * style="fill: #909090" /></svg></p>
 	 */
 	public final static Farba šedá = new Farba(144, 144, 144);
 
@@ -85,6 +94,9 @@ public interface Farebnosť
 	 * <p>Tmavošedá farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num96}{@code , }{@code num96}{@code , }
 	 * {@code num96}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- tmavošedá --><svg class="color-box"><rect
+	 * style="fill: #606060" /></svg></p>
 	 */
 	public final static Farba tmavošedá = new Farba(96, 96, 96);
 
@@ -92,10 +104,14 @@ public interface Farebnosť
 	public final static Farba tmavoseda = tmavošedá;
 
 	/**
-	 * <p>{@link #svetlošedá Svetlošedá} farba
-	 * (<small>{@link Farba#Farba(int, int,
+	 * <p>{@link #svetlošedá Svetlošedá} farba (čiže v podstate <a 
+	 * class="alias"></a>alias pre {@linkplain #svetlošedá svetlošedú} farbu;
+	 * <small>{@link Farba#Farba(int, int,
 	 * int) Farba}{@code (}{@code num176}{@code , }{@code num176}{@code , }
 	 * {@code num176}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- svetlošedá --><svg class="color-box"><rect
+	 * style="fill: #B0B0B0" /></svg></p>
 	 */
 	public final static Farba svetlosivá = svetlošedá;
 
@@ -103,10 +119,14 @@ public interface Farebnosť
 	public final static Farba svetlosiva = svetlošedá;
 
 	/**
-	 * <p>{@link #šedá Šedá} farba
-	 * (<small>{@link Farba#Farba(int, int, int)
+	 * <p>{@link #šedá Šedá} farba (čiže v podstate <a 
+	 * class="alias"></a>alias pre {@linkplain #šedá šedú} farbu;
+	 * <small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num144}{@code , }{@code num144}{@code , }
 	 * {@code num144}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- šedá --><svg class="color-box"><rect
+	 * style="fill: #909090" /></svg></p>
 	 */
 	public final static Farba sivá = šedá;
 
@@ -114,10 +134,14 @@ public interface Farebnosť
 	public final static Farba siva = šedá;
 
 	/**
-	 * <p>{@link #tmavošedá Tmavošedá} farba
-	 * (<small>{@link Farba#Farba(int, int, int)
+	 * <p>{@link #tmavošedá Tmavošedá} farba (čiže v podstate <a 
+	 * class="alias"></a>alias pre {@linkplain #tmavošedá tmavošedú} farbu;
+	 * <small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num96}{@code , }{@code num96}{@code , }
 	 * {@code num96}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- tmavošedá --><svg class="color-box"><rect
+	 * style="fill: #606060" /></svg></p>
 	 */
 	public final static Farba tmavosivá = tmavošedá;
 
@@ -128,6 +152,9 @@ public interface Farebnosť
 	 * <p>Čierna farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num0}{@code , }{@code num0}{@code , }
 	 * {@code num0}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- čierna --><svg class="color-box"><rect
+	 * style="fill: #000000" /></svg></p>
 	 */
 	public final static Farba čierna = new Farba(0, 0, 0);
 
@@ -139,6 +166,9 @@ public interface Farebnosť
 	 * <p>Svetločervená farba (<small>{@link Farba#Farba(int, int,
 	 * int) Farba}{@code (}{@code num224}{@code , }{@code num0}{@code , }
 	 * {@code num0}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- svetločervená --><svg class="color-box"><rect
+	 * style="fill: #E00000" /></svg></p>
 	 */
 	public final static Farba svetločervená = new Farba(224, 0, 0);
 
@@ -149,6 +179,9 @@ public interface Farebnosť
 	 * <p>Červená farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num176}{@code , }{@code num0}{@code , }
 	 * {@code num0}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- červená --><svg class="color-box"><rect
+	 * style="fill: #B00000" /></svg></p>
 	 */
 	public final static Farba červená = new Farba(176, 0, 0);
 
@@ -159,6 +192,9 @@ public interface Farebnosť
 	 * <p>Tmavočervená farba (<small>{@link Farba#Farba(int, int,
 	 * int) Farba}{@code (}{@code num144}{@code , }{@code num0}{@code , }
 	 * {@code num0}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- tmavočervená --><svg class="color-box"><rect
+	 * style="fill: #900000" /></svg></p>
 	 */
 	public final static Farba tmavočervená = new Farba(144, 0, 0);
 
@@ -170,6 +206,9 @@ public interface Farebnosť
 	 * <p>Svetlozelená farba (<small>{@link Farba#Farba(int, int,
 	 * int) Farba}{@code (}{@code num0}{@code , }{@code num224}{@code , }
 	 * {@code num0}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- svetlozelená --><svg class="color-box"><rect
+	 * style="fill: #00E000" /></svg></p>
 	 */
 	public final static Farba svetlozelená = new Farba(0, 224, 0);
 
@@ -180,6 +219,9 @@ public interface Farebnosť
 	 * <p>Zelená farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num0}{@code , }{@code num176}{@code , }
 	 * {@code num0}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- zelená --><svg class="color-box"><rect
+	 * style="fill: #00B000" /></svg></p>
 	 */
 	public final static Farba zelená = new Farba(0, 176, 0);
 
@@ -190,6 +232,9 @@ public interface Farebnosť
 	 * <p>Tmavozelená farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num0}{@code , }{@code num144}{@code , }
 	 * {@code num0}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- tmavozelená --><svg class="color-box"><rect
+	 * style="fill: #009000" /></svg></p>
 	 */
 	public final static Farba tmavozelená = new Farba(0, 144, 0);
 
@@ -201,6 +246,9 @@ public interface Farebnosť
 	 * <p>Svetlomodrá farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num0}{@code , }{@code num224}{@code , }
 	 * {@code num0}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- svetlomodrá --><svg class="color-box"><rect
+	 * style="fill: #0000E0" /></svg></p>
 	 */
 	public final static Farba svetlomodrá = new Farba(0, 0, 224);
 
@@ -211,6 +259,9 @@ public interface Farebnosť
 	 * <p>Modrá farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num0}{@code , }{@code num0}{@code , }
 	 * {@code num176}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- modrá --><svg class="color-box"><rect
+	 * style="fill: #0000B0" /></svg></p>
 	 */
 	public final static Farba modrá = new Farba(0, 0, 176);
 
@@ -221,6 +272,9 @@ public interface Farebnosť
 	 * <p>Tmavomodrá farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num0}{@code , }{@code num0}{@code , }
 	 * {@code num144}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- tmavomodrá --><svg class="color-box"><rect
+	 * style="fill: #000090" /></svg></p>
 	 */
 	public final static Farba tmavomodrá = new Farba(0, 0, 144);
 
@@ -232,6 +286,9 @@ public interface Farebnosť
 	 * <p>Svetlotyrkysová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num0}{@code , }{@code num224}{@code , }
 	 * {@code num224}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- svetlotyrkysová --><svg class="color-box"><rect
+	 * style="fill: #00E0E0" /></svg></p>
 	 */
 	public final static Farba svetlotyrkysová = new Farba(0, 224, 224);
 
@@ -242,6 +299,9 @@ public interface Farebnosť
 	 * <p>Tyrkysová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num0}{@code , }{@code num176}{@code , }
 	 * {@code num176}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- tyrkysová --><svg class="color-box"><rect
+	 * style="fill: #00B0B0" /></svg></p>
 	 */
 	public final static Farba tyrkysová = new Farba(0, 176, 176);
 
@@ -252,6 +312,9 @@ public interface Farebnosť
 	 * <p>Tmavotyrkysová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num0}{@code , }{@code num144}{@code , }
 	 * {@code num144}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- tmavotyrkysová --><svg class="color-box"><rect
+	 * style="fill: #009090" /></svg></p>
 	 */
 	public final static Farba tmavotyrkysová = new Farba(0, 144, 144);
 
@@ -263,6 +326,9 @@ public interface Farebnosť
 	 * <p>Svetlopurpurová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num224}{@code , }{@code num0}{@code , }
 	 * {@code num224}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- svetlopurpurová --><svg class="color-box"><rect
+	 * style="fill: #E000E0" /></svg></p>
 	 */
 	public final static Farba svetlopurpurová = new Farba(224, 0, 224);
 
@@ -273,6 +339,9 @@ public interface Farebnosť
 	 * <p>Purpurová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num176}{@code , }{@code num0}{@code , }
 	 * {@code num176}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- purpurová --><svg class="color-box"><rect
+	 * style="fill: #B000B0" /></svg></p>
 	 */
 	public final static Farba purpurová = new Farba(176, 0, 176);
 
@@ -283,6 +352,9 @@ public interface Farebnosť
 	 * <p>Tmavopurpurová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num144}{@code , }{@code num0}{@code , }
 	 * {@code num144}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- tmavopurpurová --><svg class="color-box"><rect
+	 * style="fill: #900090" /></svg></p>
 	 */
 	public final static Farba tmavopurpurová = new Farba(144, 0, 144);
 
@@ -294,6 +366,9 @@ public interface Farebnosť
 	 * <p>Svetložltá farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num240}{@code , }{@code num240}{@code , }
 	 * {@code num0}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- svetložltá --><svg class="color-box"><rect
+	 * style="fill: #F0F000" /></svg></p>
 	 */
 	public final static Farba svetložltá = new Farba(240, 240, 0);
 
@@ -309,7 +384,7 @@ public interface Farebnosť
 	 * odtiene žltej sú definované z iných pomerov zložiek r, g, b, než
 	 * odtiene iných základných farieb (červenej, zelenej, modrej…).
 	 * Jednoduchým experimentom sa nám podarilo ukázať, že vnímanie „žltej“
-	 * je natoľko špecifické, že na to, aby bola vnímaná ako skutočne „žltá“,
+	 * je natoľko špecifické, že na to, aby bola vnímaná ako skutočne „žltá,“
 	 * musí byť veľmi jasná. Preto pôvodná jasnožltá je teraz definovaná ako
 	 * žltá a jej odtiene k nej majú veľmi blízko. Sami sa môžete presvedčiť,
 	 * že na monitore pôsobia tmavšie odtiene „žltej“ ako žltozelená, olivová,
@@ -317,6 +392,9 @@ public interface Farebnosť
 	 * môže mať aj to, že vo farebnom priestore sRGB farba „žltá“ ako taká
 	 * nejestvuje – je miešaná zo zložiek červenej a zelenej. „Technická“ žltá
 	 * nie je taká žltá, aká je vnímaná ľuďmi.</p>
+	 * 
+	 * <p><!-- žltá --><svg class="color-box"><rect
+	 * style="fill: #E0E000" /></svg></p>
 	 */
 	public final static Farba žltá = new Farba(224, 224, 0);
 
@@ -327,6 +405,9 @@ public interface Farebnosť
 	 * <p>Tmavožltá farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num208}{@code , }{@code num208}{@code , }
 	 * {@code num0}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- tmavožltá --><svg class="color-box"><rect
+	 * style="fill: #D0D000" /></svg></p>
 	 */
 	public final static Farba tmavožltá = new Farba(208, 208, 0);
 
@@ -338,6 +419,9 @@ public interface Farebnosť
 	 * <p>Svetlohnedá farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num180}{@code , }{@code num96}{@code , }
 	 * {@code num0}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- svetlohnedá --><svg class="color-box"><rect
+	 * style="fill: #B46000" /></svg></p>
 	 */
 	public final static Farba svetlohnedá = new Farba(180, 96, 0); // b46000
 
@@ -348,6 +432,9 @@ public interface Farebnosť
 	 * <p>Hnedá farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num160}{@code , }{@code num80}{@code , }
 	 * {@code num0}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- hnedá --><svg class="color-box"><rect
+	 * style="fill: #A05000" /></svg></p>
 	 */
 	public final static Farba hnedá = new Farba(160, 80, 0); // a05000
 
@@ -358,6 +445,9 @@ public interface Farebnosť
 	 * <p>Tmavohnedá farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num140}{@code , }{@code num64}{@code , }
 	 * {@code num0}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- tmavohnedá --><svg class="color-box"><rect
+	 * style="fill: #8C4000" /></svg></p>
 	 */
 	public final static Farba tmavohnedá = new Farba(140, 64, 0); // 8c4000
 
@@ -369,6 +459,9 @@ public interface Farebnosť
 	 * <p>Svetlooranžová farba (<small>{@link Farba#Farba(int,
 	 * int, int) Farba}{@code (}{@code num240}{@code , }{@code num180}{@code , }
 	 * {@code num0}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- svetlooranžová --><svg class="color-box"><rect
+	 * style="fill: #F0B400" /></svg></p>
 	 */
 	public final static Farba svetlooranžová = new Farba(240, 180, 0); // f0b400
 
@@ -379,6 +472,9 @@ public interface Farebnosť
 	 * <p>Oranžová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num220}{@code , }{@code num150}{@code , }
 	 * {@code num0}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- oranžová --><svg class="color-box"><rect
+	 * style="fill: #DC9600" /></svg></p>
 	 */
 	public final static Farba oranžová = new Farba(220, 150, 0); // dc9600
 
@@ -389,6 +485,9 @@ public interface Farebnosť
 	 * <p>Tmavooranžová farba (<small>{@link Farba#Farba(int, int,
 	 * int) Farba}{@code (}{@code num200}{@code , }{@code num120}{@code , }
 	 * {@code num0}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- tmavooranžová --><svg class="color-box"><rect
+	 * style="fill: #C87800" /></svg></p>
 	 */
 	public final static Farba tmavooranžová = new Farba(200, 120, 0); // c87800
 
@@ -400,6 +499,9 @@ public interface Farebnosť
 	 * <p>Svetloružová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num255}{@code , }{@code num217}{@code , }
 	 * {@code num217}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- svetloružová --><svg class="color-box"><rect
+	 * style="fill: #FFD9D9" /></svg></p>
 	 */
 	public final static Farba svetloružová = new Farba(255, 217, 217); // ffd9d9
 
@@ -410,6 +512,9 @@ public interface Farebnosť
 	 * <p>Ružová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num255}{@code , }{@code num179}{@code , }
 	 * {@code num179}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- ružová --><svg class="color-box"><rect
+	 * style="fill: #FFB3B3" /></svg></p>
 	 */
 	public final static Farba ružová = new Farba(255, 179, 179); // ffb3b3
 
@@ -420,6 +525,9 @@ public interface Farebnosť
 	 * <p>Tmavoružová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num255}{@code , }{@code num140}{@code , }
 	 * {@code num140}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- tmavoružová --><svg class="color-box"><rect
+	 * style="fill: #FF8C8C" /></svg></p>
 	 */
 	public final static Farba tmavoružová = new Farba(255, 140, 140); // ff8c8c
 
@@ -431,6 +539,9 @@ public interface Farebnosť
 	 * <p>Uhlíková farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num16}{@code , }{@code num16}{@code , }
 	 * {@code num16}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- uhlíková --><svg class="color-box"><rect
+	 * style="fill: #303030" /></svg></p>
 	 */
 	// public final static Farba uhlíková = new Farba(16, 16, 16); // 101010
 	public final static Farba uhlíková = new Farba(48, 48, 48); // 303030
@@ -442,6 +553,9 @@ public interface Farebnosť
 	 * <p>Antracitová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num32}{@code , }{@code num32}{@code , }
 	 * {@code num32}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- antracitová --><svg class="color-box"><rect
+	 * style="fill: #404040" /></svg></p>
 	 */
 	// public final static Farba antracitová = new Farba(32, 32, 32); // 202020
 	public final static Farba antracitová = new Farba(64, 64, 64); // 404040
@@ -453,6 +567,9 @@ public interface Farebnosť
 	 * <p>Papierová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num224}{@code , }{@code num224}{@code , }
 	 * {@code num224}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- papierová --><svg class="color-box"><rect
+	 * style="fill: #E0E0E0" /></svg></p>
 	 */
 	public final static Farba papierová = new Farba(224, 224, 224); // E0E0E0
 
@@ -463,6 +580,9 @@ public interface Farebnosť
 	 * <p>Snehová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num240}{@code , }{@code num240}{@code , }
 	 * {@code num240}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- snehová --><svg class="color-box"><rect
+	 * style="fill: #F0F0F0" /></svg></p>
 	 */
 	public final static Farba snehová = new Farba(240, 240, 240); // F0F0F0
 
@@ -473,6 +593,9 @@ public interface Farebnosť
 	 * <p>Tmavofialová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num144}{@code , }{@code num48}{@code , }
 	 * {@code num144}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- tmavofialová --><svg class="color-box"><rect
+	 * style="fill: #903090" /></svg></p>
 	 */
 	public final static Farba tmavofialová = new Farba(144, 48, 144); // 903090
 
@@ -483,6 +606,9 @@ public interface Farebnosť
 	 * <p>Fialová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num176}{@code , }{@code num80}{@code , }
 	 * {@code num176}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- fialová --><svg class="color-box"><rect
+	 * style="fill: #B050B0" /></svg></p>
 	 */
 	public final static Farba fialová = new Farba(176, 80, 176); // B050B0
 
@@ -493,6 +619,9 @@ public interface Farebnosť
 	 * <p>Svetlofialová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num224}{@code , }{@code num112}{@code , }
 	 * {@code num224}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- svetlofialová --><svg class="color-box"><rect
+	 * style="fill: #E070E0" /></svg></p>
 	 */
 	public final static Farba svetlofialová = new Farba(224, 112, 224); // E070E0
 
@@ -501,8 +630,11 @@ public interface Farebnosť
 
 	/**
 	 * <p>Tmavoatramentová farba (<small>{@link Farba#Farba(int, int, int)
-	 * Farba}{@code (}{@code num0}{@code , }{@code num45,255}{@code , }
-	 * {@code num002DFF}{@code )}</small>).</p>
+	 * Farba}{@code (}{@code num0}{@code , }{@code num45}{@code , }
+	 * {@code num255}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- tmavoatramentová --><svg class="color-box"><rect
+	 * style="fill: #002DFF" /></svg></p>
 	 */
 	public final static Farba tmavoatramentová = new Farba(0, 45, 255); // 002DFF
 
@@ -513,6 +645,9 @@ public interface Farebnosť
 	 * <p>Atramentová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num15}{@code , }{@code num75}{@code , }
 	 * {@code num255}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- atramentová --><svg class="color-box"><rect
+	 * style="fill: #0F4BFF" /></svg></p>
 	 */
 	public final static Farba atramentová = new Farba(15, 75, 255); // 0F4BFF
 
@@ -523,6 +658,9 @@ public interface Farebnosť
 	 * <p>Svetloatramentová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num35}{@code , }{@code num105}{@code , }
 	 * {@code num255}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- svetloatramentová --><svg class="color-box"><rect
+	 * style="fill: #2369FF" /></svg></p>
 	 */
 	public final static Farba svetloatramentová = new Farba(35, 105, 255); // 2369FF
 
@@ -533,6 +671,9 @@ public interface Farebnosť
 	 * <p>Tmavoakvamarínová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num0}{@code , }{@code num205}{@code , }
 	 * {@code num255}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- tmavoakvamarínová --><svg class="color-box"><rect
+	 * style="fill: #00CDFF" /></svg></p>
 	 */
 	public final static Farba tmavoakvamarínová = new Farba(0, 205, 255); // 00CDFF
 
@@ -543,6 +684,9 @@ public interface Farebnosť
 	 * <p>Akvamarínová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num0}{@code , }{@code num225}{@code , }
 	 * {@code num255}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- akvamarínová --><svg class="color-box"><rect
+	 * style="fill: #00E1FF" /></svg></p>
 	 */
 	public final static Farba akvamarínová = new Farba(0, 225, 255); // 00E1FF
 
@@ -553,6 +697,9 @@ public interface Farebnosť
 	 * <p>Svetloakvamarínová farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num20}{@code , }{@code num245}{@code , }
 	 * {@code num255}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- svetloakvamarínová --><svg class="color-box"><rect
+	 * style="fill: #14F5FF" /></svg></p>
 	 */
 	public final static Farba svetloakvamarínová = new Farba(20, 245, 255); // 14F5FF
 
@@ -563,6 +710,9 @@ public interface Farebnosť
 	 * <p>Tmavá nebeská farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num140}{@code , }{@code num255}{@code , }
 	 * {@code num255}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- tmaváNebeská --><svg class="color-box"><rect
+	 * style="fill: #8CFFFF" /></svg></p>
 	 */
 	public final static Farba tmaváNebeská = new Farba(140, 255, 255); // 8CFFFF
 
@@ -573,6 +723,9 @@ public interface Farebnosť
 	 * <p>Nebeská farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num179}{@code , }{@code num255}{@code , }
 	 * {@code num255}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- nebeská --><svg class="color-box"><rect
+	 * style="fill: #B3FFFF" /></svg></p>
 	 */
 	public final static Farba nebeská = new Farba(179, 255, 255); // B3FFFF
 
@@ -583,6 +736,9 @@ public interface Farebnosť
 	 * <p>Svetlá nebeská farba (<small>{@link Farba#Farba(int, int, int)
 	 * Farba}{@code (}{@code num217}{@code , }{@code num255}{@code , }
 	 * {@code num255}{@code )}</small>).</p>
+	 * 
+	 * <p><!-- svetláNebeská --><svg class="color-box"><rect
+	 * style="fill: #D9FFFF" /></svg></p>
 	 */
 	public final static Farba svetláNebeská = new Farba(217, 255, 255); // D9FFFF
 

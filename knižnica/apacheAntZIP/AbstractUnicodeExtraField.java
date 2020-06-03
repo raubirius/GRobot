@@ -6,7 +6,7 @@
  * (the “License”); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an “AS IS” BASIS,
@@ -17,7 +17,6 @@
 
 // package org.apache.tools.zip;
 package knižnica.apacheAntZIP;
-
 
 import java.io.UnsupportedEncodingException;
 import java.util.zip.CRC32;
@@ -46,8 +45,9 @@ public abstract class AbstractUnicodeExtraField implements ZipExtraField {
 	 * @param len The length of the encoded filename or comment in
 	 * <code>bytes</code>.
 	 */
-	protected AbstractUnicodeExtraField(final String text, final byte[] bytes, final int off,
-										final int len) {
+	protected AbstractUnicodeExtraField(final String text,
+		final byte[] bytes, final int off, final int len)
+	{
 		final CRC32 crc32 = new CRC32();
 		crc32.update(bytes, off, len);
 		nameCRC32 = crc32.getValue();
@@ -55,8 +55,9 @@ public abstract class AbstractUnicodeExtraField implements ZipExtraField {
 		try {
 			unicodeName = text.getBytes("UTF-8");
 		} catch (final UnsupportedEncodingException e) {
-			throw new RuntimeException("FATAL: UTF-8 encoding not supported.", //NOSONAR
-									e);
+			throw new RuntimeException(
+				"FATAL: UTF-8 encoding not supported.", //NOSONAR
+				e);
 		}
 	}
 
@@ -121,7 +122,7 @@ public abstract class AbstractUnicodeExtraField implements ZipExtraField {
 		if (unicodeName != null) {
 			this.unicodeName = new byte[unicodeName.length];
 			System.arraycopy(unicodeName, 0, this.unicodeName, 0,
-							unicodeName.length);
+				unicodeName.length);
 		} else {
 			this.unicodeName = null;
 		}
@@ -169,15 +170,15 @@ public abstract class AbstractUnicodeExtraField implements ZipExtraField {
 		throws ZipException {
 
 		if (length < 5) {
-			throw new ZipException("UniCode path extra data must have at least"
-								+ " 5 bytes.");
+			throw new ZipException(
+				"UniCode path extra data must have at least 5 bytes.");
 		}
 
 		final int version = buffer[offset];
 
 		if (version != 0x01) {
-			throw new ZipException("Unsupported version [" + version
-								+ "] for UniCode path extra data.");
+			throw new ZipException("Unsupported version [" + version +
+				"] for UniCode path extra data.");
 		}
 
 		nameCRC32 = ZipLong.getValue(buffer, offset + 1);

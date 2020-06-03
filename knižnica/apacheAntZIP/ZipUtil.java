@@ -6,7 +6,7 @@
  * (the “License”); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an “AS IS” BASIS,
@@ -17,7 +17,6 @@
 
 // package org.apache.tools.zip;
 package knižnica.apacheAntZIP;
-
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -66,8 +65,9 @@ public abstract class ZipUtil {
 	 * @param t number of milliseconds since the epoch
 	 * @param buf the output buffer
 	 * @param offset
-	 *        The offset within the output buffer of the first byte to be written.
-	 *        must be non-negative and no larger than <tt>buf.length-4</tt>
+	 *        The offset within the output buffer of the first byte to be
+	 *        written. must be non-negative and no larger than
+	 *        <code>buf.length-4</code>
 	 */
 	public static void toDosTime(long t, byte[] buf, int offset) {
 		toDosTime(Calendar.getInstance(), t, buf, offset);
@@ -78,10 +78,8 @@ public abstract class ZipUtil {
 
 		int year = c.get(Calendar.YEAR);
 		if (year < 1980) {
-			// This? System.arraycopy(DOS_TIME_MIN,
-			// 	0, buf, offset, DOS_TIME_MIN.length);
-			// Or This?
-			copy(DOS_TIME_MIN);
+			System.arraycopy(DOS_TIME_MIN,
+				0, buf, offset, DOS_TIME_MIN.length);
 				// stop callers from changing the array
 			return;
 		}
@@ -106,7 +104,7 @@ public abstract class ZipUtil {
 	 */
 	public static long adjustToLong(int i) {
 		if (i < 0) {
-			return 2 * ((long) Integer.MAX_VALUE) + 2 + i;
+			return 2 * ((long)Integer.MAX_VALUE) + 2 + i;
 		} else {
 			return i;
 		}
@@ -153,14 +151,14 @@ public abstract class ZipUtil {
 	 * @param originalNameBytes byte[]
 	 * @param commentBytes byte[]
 	 */
-	static void setNameAndCommentFromExtraFields(ZipEntry ze,
-												byte[] originalNameBytes,
-												byte[] commentBytes) {
+	static void setNameAndCommentFromExtraFields(
+		ZipEntry ze, byte[] originalNameBytes, byte[] commentBytes)
+	{
 		UnicodePathExtraField name = (UnicodePathExtraField)
 			ze.getExtraField(UnicodePathExtraField.UPATH_ID);
 		String originalName = ze.getName();
-		String newName = getUnicodeStringIfOriginalMatches(name,
-														originalNameBytes);
+		String newName = getUnicodeStringIfOriginalMatches(
+			name, originalNameBytes);
 		if (newName != null && !originalName.equals(newName)) {
 			ze.setName(newName);
 		}
@@ -186,9 +184,9 @@ public abstract class ZipUtil {
 	 * @param f AbstractUnicodeExtraField
 	 * @param orig byte[]
 	 */
-	private static
-		String getUnicodeStringIfOriginalMatches(AbstractUnicodeExtraField f,
-												byte[] orig) {
+	private static String getUnicodeStringIfOriginalMatches(
+		AbstractUnicodeExtraField f, byte[] orig)
+	{
 		if (f != null) {
 			CRC32 crc32 = new CRC32();
 			crc32.update(orig);
@@ -263,14 +261,12 @@ public abstract class ZipUtil {
 	static void checkRequestedFeatures(ZipEntry ze)
 		throws UnsupportedZipFeatureException {
 		if (!supportsEncryptionOf(ze)) {
-			throw
-				new UnsupportedZipFeatureException(UnsupportedZipFeatureException
-												.Feature.ENCRYPTION, ze);
+			throw new UnsupportedZipFeatureException(
+				UnsupportedZipFeatureException.Feature.ENCRYPTION, ze);
 		}
 		if (!supportsMethodOf(ze)) {
-			throw
-				new UnsupportedZipFeatureException(UnsupportedZipFeatureException
-												.Feature.METHOD, ze);
+			throw new UnsupportedZipFeatureException(
+				UnsupportedZipFeatureException.Feature.METHOD, ze);
 		}
 	}
 }

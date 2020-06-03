@@ -193,8 +193,8 @@ import static knižnica.Konštanty.ODOVZDANIE_ÚDAJOV;
  * bude zhodovať s nasledujúcou šablónou vyjadrenou s pomocou regulárneho
  * výrazu:<br />
  *  <br /><code>ERR[+\-]{0,1}[0-9]+: «správa»</code><br /> <br />
- * Napríklad: {@code ERR0: OK}, {@code ERR-1: No error.},
- * {@code ERR+100: „Nejaká správa“}…</p>
+ * Príklady:<br />  {@code ERR0: OK}<br />  {@code ERR-1: No error.}<br
+ * />  {@code ERR+100: „Nejaká správa“}<br />  a podobne.</p>
  * 
  * <!-- TODO – overiť vzhľad a funkčnosť príkladu, pridať výsledok… -->
  * 
@@ -203,7 +203,7 @@ import static knižnica.Konštanty.ODOVZDANIE_ÚDAJOV;
 
 	{@code kwdpublic} {@code typeint} prevezmiChybovýKód()
 	{
-		String odpoveď = spojenie.{@link Spojenie#dajOdpoveď() dajOdpoveď}();
+		{@link String String} odpoveď = spojenie.{@link Spojenie#dajOdpoveď() dajOdpoveď}();
 
 		{@code kwdif} ({@code valnull} != odpoveď && odpoveď.{@link String#startsWith(String) startsWith}({@code srg"ERR"}))
 		{
@@ -661,8 +661,7 @@ public class Spojenie
 										"koncov riadkov. Očakávaný počet " +
 										"bajtov: " + veľkosťOdpovede +
 										"; počet bajtov v zostavenej " +
-										"odpovedi: " + odpoveď.length() +
-										".", false);
+										"odpovedi: " + odpoveď.length() + ".");
 								veľkosťOdpovede = odpoveď.length();
 							}
 
@@ -836,8 +835,7 @@ public class Spojenie
 									"koncov riadkov. Očakávaný počet " +
 									"bajtov: " + veľkosťOdpovede +
 									"; počet bajtov v zostavenej " +
-									"odpovedi: " + odpoveď.length() +
-									".", false);
+									"odpovedi: " + odpoveď.length() + ".");
 							veľkosťOdpovede = odpoveď.length();
 						}
 
@@ -2113,7 +2111,7 @@ public class Spojenie
 	 * <p>V prípade okamžitého preberania údajov bude metóda spúšťať reakciu
 	 * {@link ObsluhaUdalostí#sekvencia(int, Object, Object, long, long)
 	 * sekvencia} (s prislúchajúcim {@linkplain GRobot#sekvencia(int,
-	 * Object, Object, long, long) variantom pre jednotlivých robotov})
+	 * Object, Object, long, long) variantom pre jednotlivé roboty})
 	 * s kódom spracovania {@link Konštanty#PREVZATIE_ÚDAJOV
 	 * PREVZATIE_ÚDAJOV}.</p>
 	 * 

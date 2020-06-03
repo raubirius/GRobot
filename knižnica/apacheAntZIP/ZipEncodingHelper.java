@@ -6,7 +6,7 @@
  * (the “License”); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an “AS IS” BASIS,
@@ -18,7 +18,7 @@
 // package org.apache.tools.zip;
 package knižnica.apacheAntZIP;
 
-
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
@@ -143,20 +143,32 @@ public abstract class ZipEncodingHelper {
 	 * @param b The original buffer.
 	 * @param newCapacity The minimal requested new capacity.
 	 * @return A byte buffer <code>r</code> with
-	 *         <code>r.capacity() = max(b.capacity() * 2, newCapacity)</code> and
-	 *         all the data contained in <code>b</code> copied to the beginning
-	 *         of <code>r</code>.
+	 *         <code>r.capacity() = max(b.capacity() * 2, newCapacity)</code>
+	 *         and all the data contained in <code>b</code> copied to the
+	 *         beginning of <code>r</code>.
 	 * 
 	 */
 	static ByteBuffer growBuffer(final ByteBuffer b, final int newCapacity) {
-		b.limit(b.position());
-		b.rewind();
+		prepareBufferForRead(b);
 
 		final int c2 = b.capacity() * 2;
-		final ByteBuffer on = ByteBuffer.allocate(c2 < newCapacity ? newCapacity : c2);
+		final ByteBuffer on = ByteBuffer.allocate(
+			c2 < newCapacity ? newCapacity : c2);
 
 		on.put(b);
 		return on;
+	}
+
+	/**
+	 * Prepares a buffer to be read after writing.
+	 * 
+	 * @param b The buffer
+	 */
+	static void prepareBufferForRead(final Buffer b) {
+		// ByteBuffer has overridden methods in java 11 but not in java 8
+		// so the Buffer is significant to get java 8 compatible classes
+		b.limit(b.position());
+		b.rewind();
 	}
 
 

@@ -50,8 +50,8 @@ import javax.swing.JButton;
 // ------------------------- //
 
 /**
- * <p>Trieda {@code currTlačidlo} dovoľuje vytvárať v aplikácii
- * používajúcej robota tlačidlá, ktoré sú zobrazované nad plátnom (avšak
+ * <p>Trieda {@code currTlačidlo} dovoľuje vytvárať v aplikácii používajúcej
+ * programovací rámec robota tlačidlá, ktoré sú zobrazované nad plátnom (avšak
  * nie sú jeho súčasťou). Každé nové tlačidlo je automaticky umiestnené
  * na súradnice stredu plátna s predvolenými rozmermi 108 × 32 bodov
  * (šírka × výška).</p>
@@ -70,7 +70,7 @@ import javax.swing.JButton;
  * voľbaTlačidla}. Jej využitie ukazuje nasledujúci príklad:</p>
  * 
  * <pre CLASS="example">
-	{@code comm// Vytvoríme tlačidlá, ktorými budeme ovládať robota}
+	{@code comm// Vytvoríme tlačidlá, ktorými budeme ovládať robot}
 	{@code comm// (Poznámka: Predpokladáme, že tento kód je umiestnený}
 	{@code comm// v konštruktore hlavného robota…)}
 
@@ -756,7 +756,7 @@ public class Tlačidlo extends JButton implements Poloha
 	public void vyska(int nováVýška) { výška(nováVýška); }
 
 
-	// Keďže sme ani pri robotovi neboli zvyknutí na túto verziu metódy,
+	// Keďže sme ani pri robote neboli zvyknutí na túto verziu metódy,
 	// nedávame ju ani do tlačidla:
 	// public void aktivuj(boolean áno) { setEnabled(b); }
 
@@ -935,8 +935,13 @@ public class Tlačidlo extends JButton implements Poloha
 	public void skry() { setVisible(false); }
 
 	/**
-	 * <p>Prekrytie originálnej metódy na zabezpečenie postúpenia vstupu
-	 * klávesnice (fokusu) hlavnému panelu (pri skrytí tlačidla).</p>
+	 * <p>Prekrytie originálnej metódy. Slúži predovšetkým na zabezpečenie
+	 * postúpenia vstupu klávesnice (fokusu) hlavnému panelu (pri skrytí
+	 * tlačidla).</p>
+	 * 
+	 * @param visible {@code valtrue} alebo {@code valfalse} podľa toho, či
+	 *     má byť tlačidlo zobrazené alebo skryté
+	 * @see JButton#setVisible(boolean)
 	 */
 	@Override public void setVisible(boolean visible)
 	{

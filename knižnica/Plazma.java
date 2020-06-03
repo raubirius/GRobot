@@ -666,7 +666,7 @@ public class Plazma
 	 * červenej farby do úplne priehľadnej čiernej farby.</p>
 	 * 
 	 * <p><image>paleta-plazmy-predvolena.png<alt/>Predvolená paleta
-	 * plazmy</image>Predvolená paleta plazmy (pričom biela farba vľavo
+	 * plazmy.</image>Predvolená paleta plazmy (pričom biela farba vľavo
 	 * vznikla nakreslením úplne priehľadnej čiernej farby na biele
 	 * pozadie).</p>
 	 * 
@@ -699,7 +699,7 @@ public class Plazma
 		</pre>
 	 * 
 	 * <p><image>paleta-plazmy-duha.png<alt/>Dúhová paleta
-	 * plazmy</image>Dúhová paleta plazmy (pričom priehľadnosť farieb
+	 * plazmy.</image>Dúhová paleta plazmy (pričom priehľadnosť farieb
 	 * klesá smerom sprava doľava).</p>
 	 * 
 	 * @param farby pole farieb, ktoré majú byť použité vo výslednej palete

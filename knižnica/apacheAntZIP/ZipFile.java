@@ -6,7 +6,7 @@
  * (the “License”); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an “AS IS” BASIS,
@@ -17,7 +17,6 @@
 
 // package org.apache.tools.zip;
 package knižnica.apacheAntZIP;
-
 
 // import static org.apache.tools.zip.ZipConstants.DWORD;
 // import static org.apache.tools.zip.ZipConstants.SHORT;
@@ -105,7 +104,8 @@ public class ZipFile implements Closeable {
 	 * The encoding to use for filenames and the file comment.
 	 * 
 	 * <p>For a list of possible values see <a
-	 * href="http://java.sun.com/j2se/1.5.0/docs/guide/intl/encoding.doc.html">http://java.sun.com/j2se/1.5.0/docs/guide/intl/encoding.doc.html</a>.
+	 * href="https://docs.oracle.com/javase/8/docs/technotes/guides/intl/encoding.doc.html">
+	 * https://docs.oracle.com/javase/8/docs/technotes/guides/intl/encoding.doc.html</a>.
 	 * Defaults to the platform’s default character encoding.</p>
 	 */
 	private final String encoding;
@@ -119,6 +119,11 @@ public class ZipFile implements Closeable {
 	 * File name of actual source.
 	 */
 	private final String archiveName;
+
+	/**
+	 * File (the overall archive) comment.
+	 */
+	private String comment = null; // AbRH20 – Add by Roman Horváth (2020, May)
 
 	/**
 	 * The actual data source.
@@ -175,7 +180,8 @@ public class ZipFile implements Closeable {
 	 * 
 	 * @throws IOException if an error occurs while reading the file.
 	 */
-	public ZipFile(final String name, final String encoding) throws IOException {
+	public ZipFile(final String name, final String encoding) throws IOException
+	{
 		this(new File(name), encoding, true);
 	}
 
@@ -205,14 +211,17 @@ public class ZipFile implements Closeable {
 	 * 
 	 * @throws IOException if an error occurs while reading the file.
 	 */
-	public ZipFile(final File f, final String encoding, final boolean useUnicodeExtraFields)
-		throws IOException {
+	public ZipFile(final File f, final String encoding,
+		final boolean useUnicodeExtraFields) throws IOException
+	{
 		this.archiveName = f.getAbsolutePath();
 		this.encoding = encoding;
 		this.zipEncoding = ZipEncodingHelper.getZipEncoding(encoding);
 		this.useUnicodeExtraFields = useUnicodeExtraFields;
+
 		archive = new RandomAccessFile(f, "r");
 		boolean success = false;
+
 		try {
 			final Map<ZipEntry, NameAndComment> entriesWithoutUTF8Flag =
 				populateFromCentralDirectory();
@@ -291,6 +300,7 @@ public class ZipFile implements Closeable {
 	 * @since Ant 1.9.0
 	 */
 	public Enumeration<ZipEntry> getEntriesInPhysicalOrder() {
+		// (Some archived code…)
 		// ZipEntry[] allEntries = entries.toArray(new ZipEntry[0]);
 		// Arrays.sort(allEntries, OFFSET_COMPARATOR);
 		// return Collections.enumeration(Arrays.asList(allEntries));
@@ -341,6 +351,7 @@ public class ZipFile implements Closeable {
 	 * @since 1.9.2
 	 */
 	public Iterable<ZipEntry> getEntriesInPhysicalOrder(final String name) {
+		// (Some archived code…)
 		// ZipEntry[] entriesOfThatName = new ZipEntry[0];
 		// if (nameMap.containsKey(name)) {
 		// 	entriesOfThatName = nameMap.get(name).toArray(entriesOfThatName);
@@ -381,7 +392,7 @@ public class ZipFile implements Closeable {
 			return null;
 		}
 		// cast validity is checked just above
-		final OffsetEntry offsetEntry = ((Entry) ze).getOffsetEntry();
+		final OffsetEntry offsetEntry = ((Entry)ze).getOffsetEntry();
 		ZipUtil.checkRequestedFeatures(ze);
 		final long start = offsetEntry.dataOffset;
 		// doesn’t get closed if the method is not supported, but
@@ -402,9 +413,28 @@ public class ZipFile implements Closeable {
 					}
 				};
 			default:
-				throw new ZipException("Found unsupported compression method "
-									+ ze.getMethod());
+				throw new ZipException(
+					"Found unsupported compression method " + ze.getMethod());
 		}
+	}
+
+	/**
+	 * Gets the archive name.
+	 * 
+	 * @return current archive name.
+	 * @since 1.10.7
+	 */
+	public String getName() {
+		return archiveName;
+	}
+
+	/**
+	 * Returns the file comment, or null (if there is no file comment
+	 * or the file comment has been ignored intentionally).
+	 * @see ZipOutputStream#setComment(String)
+	 */
+	public String getComment() { // AbRH20
+		return comment;
 	}
 
 	/**
@@ -429,26 +459,28 @@ public class ZipFile implements Closeable {
 	 * Length of a “central directory” entry structure without file
 	 * name, extra fields or comment.
 	 */
-	private static final int CFH_LEN =
-		/* version made by                 */ ZipConstants.SHORT
-		/* version needed to extract       */ + ZipConstants.SHORT
-		/* general purpose bit flag        */ + ZipConstants.SHORT
-		/* compression method              */ + ZipConstants.SHORT
-		/* last mod file time              */ + ZipConstants.SHORT
-		/* last mod file date              */ + ZipConstants.SHORT
-		/* crc-32                          */ + ZipConstants.WORD
-		/* compressed size                 */ + ZipConstants.WORD
-		/* uncompressed size               */ + ZipConstants.WORD
-		/* filename length                 */ + ZipConstants.SHORT
-		/* extra field length              */ + ZipConstants.SHORT
-		/* file comment length             */ + ZipConstants.SHORT
-		/* disk number start               */ + ZipConstants.SHORT
-		/* internal file attributes        */ + ZipConstants.SHORT
-		/* external file attributes        */ + ZipConstants.WORD
-		/* relative offset of local header */ + ZipConstants.WORD;
+	private static final int CFH_LEN = // 42
+		/* version made by                 */   ZipConstants.SHORT // 2
+		/* version needed to extract       */ + ZipConstants.SHORT // 2
+		/* general purpose bit flag        */ + ZipConstants.SHORT // 2
+		/* compression method              */ + ZipConstants.SHORT // 2
+		/* last mod file time              */ + ZipConstants.SHORT // 2
+		/* last mod file date              */ + ZipConstants.SHORT // 2
+		/* crc-32                          */ + ZipConstants.WORD  // 4
+		/* compressed size                 */ + ZipConstants.WORD  // 4
+		/* uncompressed size               */ + ZipConstants.WORD  // 4
+		/* filename length                 */ + ZipConstants.SHORT // 2
+		/* extra field length              */ + ZipConstants.SHORT // 2
+		/* file comment length             */ + ZipConstants.SHORT // 2
+		/* disk number start               */ + ZipConstants.SHORT // 2
+		/* internal file attributes        */ + ZipConstants.SHORT // 2
+		/* external file attributes        */ + ZipConstants.WORD  // 4
+		/* relative offset of local header */ + ZipConstants.WORD; // 4
 
 	private static final long CFH_SIG =
-		ZipLong.getValue(ZipOutputStream.CFH_SIG);
+		ZipLong.getValue(ZipOutputStream.CFH_SIG); // 0x02014B50L
+
+	private static final long EOCD_SIG = 0x06054B50L; // AbRH20
 
 	/**
 	 * Reads the central directory of the given archive and populates
@@ -462,7 +494,8 @@ public class ZipFile implements Closeable {
 	 * encoding flag set when read.
 	 */
 	private Map<ZipEntry, NameAndComment> populateFromCentralDirectory()
-		throws IOException {
+		throws IOException
+	{
 		final HashMap<ZipEntry, NameAndComment> noUTF8Flag =
 			new HashMap<ZipEntry, NameAndComment>();
 
@@ -471,12 +504,12 @@ public class ZipFile implements Closeable {
 		archive.readFully(WORD_BUF);
 		long sig = ZipLong.getValue(WORD_BUF);
 
-		if (sig != CFH_SIG && startsWithLocalFileHeader()) {
+		if (sig != CFH_SIG && startsWithLocalFileHeader()) // LFH_SIG
 			throw new IOException(
 				"central directory is empty, can't expand corrupt archive.");
-		}
 
-		while (sig == CFH_SIG) {
+		while (sig == CFH_SIG)
+		{
 			readCentralDirectoryEntry(noUTF8Flag);
 			archive.readFully(WORD_BUF);
 			sig = ZipLong.getValue(WORD_BUF);
@@ -493,9 +526,9 @@ public class ZipFile implements Closeable {
 	 * from the local file header later. The current entry may be
 	 * added to this map.
 	 */
-	private void
-		readCentralDirectoryEntry(final Map<ZipEntry, NameAndComment> noUTF8Flag)
-		throws IOException {
+	private void readCentralDirectoryEntry(final Map<ZipEntry,
+		NameAndComment> noUTF8Flag) throws IOException
+	{
 		archive.readFully(CFH_BUF);
 		int off = 0;
 		final OffsetEntry offset = new OffsetEntry();
@@ -568,9 +601,8 @@ public class ZipFile implements Closeable {
 		archive.readFully(comment);
 		ze.setComment(entryEncoding.decode(comment));
 
-		if (!hasUTF8Flag && useUnicodeExtraFields) {
+		if (!hasUTF8Flag && useUnicodeExtraFields)
 			noUTF8Flag.put(ze, new NameAndComment(fileName, comment));
-		}
 	}
 
 	/**
@@ -585,22 +617,23 @@ public class ZipFile implements Closeable {
 	 * even if they are never used - and here a field with only one
 	 * size would be invalid.</p>
 	 */
-	private void setSizesAndOffsetFromZip64Extra(final ZipEntry ze,
-												final OffsetEntry offset,
-												final int diskStart)
-		throws IOException {
+	private void setSizesAndOffsetFromZip64Extra(
+		final ZipEntry ze, final OffsetEntry offset, final int diskStart)
+		throws IOException
+	{
 		final Zip64ExtendedInformationExtraField z64 =
 			(Zip64ExtendedInformationExtraField)
 			ze.getExtraField(Zip64ExtendedInformationExtraField.HEADER_ID);
 		if (z64 != null) {
-			final boolean hasUncompressedSize = ze.getSize() == ZipConstants.ZIP64_MAGIC;
-			final boolean hasCompressedSize = ze.getCompressedSize() == ZipConstants.ZIP64_MAGIC;
+			final boolean hasUncompressedSize = ze.getSize() ==
+				ZipConstants.ZIP64_MAGIC;
+			final boolean hasCompressedSize = ze.getCompressedSize() ==
+				ZipConstants.ZIP64_MAGIC;
 			final boolean hasRelativeHeaderOffset =
 				offset.headerOffset == ZipConstants.ZIP64_MAGIC;
 			z64.reparseCentralDirectoryData(hasUncompressedSize,
-											hasCompressedSize,
-											hasRelativeHeaderOffset,
-											diskStart == ZipConstants.ZIP64_MAGIC_SHORT);
+				hasCompressedSize, hasRelativeHeaderOffset,
+				diskStart == ZipConstants.ZIP64_MAGIC_SHORT);
 
 			if (hasUncompressedSize) {
 				ze.setSize(z64.getSize().getLongValue());
@@ -611,7 +644,8 @@ public class ZipFile implements Closeable {
 			if (hasCompressedSize) {
 				ze.setCompressedSize(z64.getCompressedSize().getLongValue());
 			} else if (hasUncompressedSize) {
-				z64.setCompressedSize(new ZipEightByteInteger(ze.getCompressedSize()));
+				z64.setCompressedSize(
+					new ZipEightByteInteger(ze.getCompressedSize()));
 			}
 
 			if (hasRelativeHeaderOffset) {
@@ -626,27 +660,28 @@ public class ZipFile implements Closeable {
 	 * supposed to be the last structure of the archive - without file
 	 * comment.
 	 */
-	private static final int MIN_EOCD_SIZE =
-		/* end of central dir signature    */ ZipConstants.WORD
-		/* number of this disk             */ + ZipConstants.SHORT
+	private static final int MIN_EOCD_SIZE = // 22
+		/* end of central dir signature    */   ZipConstants.WORD  // 4
+		/* number of this disk             */ + ZipConstants.SHORT // 2
 		/* number of the disk with the     */
-		/* start of the central directory  */ + ZipConstants.SHORT
+		/* start of the central directory  */ + ZipConstants.SHORT // 2
 		/* total number of entries in      */
-		/* the central dir on this disk    */ + ZipConstants.SHORT
+		/* the central dir on this disk    */ + ZipConstants.SHORT // 2
 		/* total number of entries in      */
-		/* the central dir                 */ + ZipConstants.SHORT
-		/* size of the central directory   */ + ZipConstants.WORD
+		/* the central dir                 */ + ZipConstants.SHORT // 2
+		/* size of the central directory   */ + ZipConstants.WORD  // 4
 		/* offset of start of central      */
 		/* directory with respect to       */
-		/* the starting disk number        */ + ZipConstants.WORD
-		/* zipfile comment length          */ + ZipConstants.SHORT;
+		/* the starting disk number        */ + ZipConstants.WORD  // 4
+		/* zipfile comment length          */ + ZipConstants.SHORT;// 2
 
 	/**
 	 * Maximum length of the “End of central directory record” with a
 	 * file comment.
 	 */
 	private static final int MAX_EOCD_SIZE = MIN_EOCD_SIZE
-		/* maximum length of zipfile comment */ + ZipConstants.ZIP64_MAGIC_SHORT;
+		/* maximum length of zipfile comment */ +
+			ZipConstants.ZIP64_MAGIC_SHORT;
 
 	/**
 	 * Offset of the field that holds the location of the first
@@ -654,30 +689,30 @@ public class ZipFile implements Closeable {
 	 * record” relative to the start of the “End of central directory
 	 * record”.
 	 */
-	private static final int CFD_LOCATOR_OFFSET =
-		/* end of central dir signature    */ ZipConstants.WORD
-		/* number of this disk             */ + ZipConstants.SHORT
+	private static final int CFD_LOCATOR_OFFSET = // 16
+		/* end of central dir signature    */   ZipConstants.WORD  // 4
+		/* number of this disk             */ + ZipConstants.SHORT // 2
 		/* number of the disk with the     */
-		/* start of the central directory  */ + ZipConstants.SHORT
+		/* start of the central directory  */ + ZipConstants.SHORT // 2
 		/* total number of entries in      */
-		/* the central dir on this disk    */ + ZipConstants.SHORT
+		/* the central dir on this disk    */ + ZipConstants.SHORT // 2
 		/* total number of entries in      */
-		/* the central dir                 */ + ZipConstants.SHORT
-		/* size of the central directory   */ + ZipConstants.WORD;
+		/* the central dir                 */ + ZipConstants.SHORT // 2
+		/* size of the central directory   */ + ZipConstants.WORD; // 4
 
 	/**
 	 * Length of the “Zip64 end of central directory locator” - which
 	 * should be right in front of the “end of central directory
 	 * record” if one is present at all.
 	 */
-	private static final int ZIP64_EOCDL_LENGTH =
-		/* zip64 end of central dir locator sig */ ZipConstants.WORD
+	private static final int ZIP64_EOCDL_LENGTH = // 20
+		/* zip64 end of central dir locator sig */   ZipConstants.WORD  // 4
 		/* number of the disk with the start    */
 		/* start of the zip64 end of            */
-		/* central directory                    */ + ZipConstants.WORD
+		/* central directory                    */ + ZipConstants.WORD  // 4
 		/* relative offset of the zip64         */
-		/* end of central directory record      */ + ZipConstants.DWORD
-		/* total number of disks                */ + ZipConstants.WORD;
+		/* end of central directory record      */ + ZipConstants.DWORD // 8
+		/* total number of disks                */ + ZipConstants.WORD; // 4
 
 	/**
 	 * Offset of the field that holds the location of the “Zip64 end
@@ -685,11 +720,11 @@ public class ZipFile implements Closeable {
 	 * directory locator” relative to the start of the “Zip64 end of
 	 * central directory locator”.
 	 */
-	private static final int ZIP64_EOCDL_LOCATOR_OFFSET =
-		/* zip64 end of central dir locator sig */ ZipConstants.WORD
+	private static final int ZIP64_EOCDL_LOCATOR_OFFSET = // 8
+		/* zip64 end of central dir locator sig */   ZipConstants.WORD  // 4
 		/* number of the disk with the start    */
 		/* start of the zip64 end of            */
-		/* central directory                    */ + ZipConstants.WORD;
+		/* central directory                    */ + ZipConstants.WORD; // 4
 
 	/**
 	 * Offset of the field that holds the location of the first
@@ -697,80 +732,121 @@ public class ZipFile implements Closeable {
 	 * directory record” relative to the start of the “Zip64 end of
 	 * central directory record”.
 	 */
-	private static final int ZIP64_EOCD_CFD_LOCATOR_OFFSET =
+	private static final int ZIP64_EOCD_CFD_LOCATOR_OFFSET = // 48
 		/* zip64 end of central dir        */
-		/* signature                       */ ZipConstants.WORD
+		/* signature                       */   ZipConstants.WORD  // 4
 		/* size of zip64 end of central    */
-		/* directory record                */ + ZipConstants.DWORD
-		/* version made by                 */ + ZipConstants.SHORT
-		/* version needed to extract       */ + ZipConstants.SHORT
-		/* number of this disk             */ + ZipConstants.WORD
+		/* directory record                */ + ZipConstants.DWORD // 8
+		/* version made by                 */ + ZipConstants.SHORT // 2
+		/* version needed to extract       */ + ZipConstants.SHORT // 2
+		/* number of this disk             */ + ZipConstants.WORD  // 4
 		/* number of the disk with the     */
-		/* start of the central directory  */ + ZipConstants.WORD
+		/* start of the central directory  */ + ZipConstants.WORD  // 4
 		/* total number of entries in the  */
-		/* central directory on this disk  */ + ZipConstants.DWORD
+		/* central directory on this disk  */ + ZipConstants.DWORD // 8
 		/* total number of entries in the  */
-		/* central directory               */ + ZipConstants.DWORD
-		/* size of the central directory   */ + ZipConstants.DWORD;
+		/* central directory               */ + ZipConstants.DWORD // 8
+		/* size of the central directory   */ + ZipConstants.DWORD;// 8
 
 	/**
-	 * Searches for either the &quot;Zip64 end of central directory
-	 * locator&quot; or the &quot;End of central dir record&quot;, parses
+	 * Searches for either the “Zip64 end of central directory
+	 * locator” or the “End of central dir record”, parses
 	 * it and positions the stream at the first central directory
 	 * record.
 	 */
-	private void positionAtCentralDirectory()
-		throws IOException {
+	private void positionAtCentralDirectory() throws IOException
+	{
 		positionAtEndOfCentralDirectoryRecord();
+
+
+		// Read the file comment – AbRH20
+		long archivePos = archive.getFilePointer();
+		try
+		{
+			if (archivePos + 22 <= archive.length())
+			{
+				// Read the comment length only:
+				archive.skipBytes(20);
+				archive.readFully(SHORT_BUF);
+				int commentLen = ZipShort.getValue(SHORT_BUF);
+
+				if (0 != commentLen)
+				{
+					// Cropping:
+					if (archive.getFilePointer() + commentLen >=
+						archive.length()) commentLen = (int)(archive.length()
+							- archive.getFilePointer());
+
+					// Reading and decoding the file comment:
+					final byte[] comment = new byte[commentLen];
+					archive.readFully(comment);
+					this.comment = zipEncoding.decode(comment);
+				}
+			}
+		}
+		catch (Throwable t)
+		{
+			// Swallow, if anything goes wrong, the comment just stays as is.
+		}
+		finally
+		{
+			// Return to the last active position:
+			archive.seek(archivePos);
+		}
+
+
 		boolean found = false;
+
 		final boolean searchedForZip64EOCD =
 			archive.getFilePointer() > ZIP64_EOCDL_LENGTH;
-		if (searchedForZip64EOCD) {
+
+		if (searchedForZip64EOCD)
+		{
 			archive.seek(archive.getFilePointer() - ZIP64_EOCDL_LENGTH);
 			archive.readFully(WORD_BUF);
 			found = Arrays.equals(ZipOutputStream.ZIP64_EOCD_LOC_SIG, WORD_BUF);
 		}
-		if (!found) {
+
+		if (!found)
+		{
 			// not a ZIP64 archive
-			if (searchedForZip64EOCD) {
+			if (searchedForZip64EOCD)
 				skipBytes(ZIP64_EOCDL_LENGTH - ZipConstants.WORD);
-			}
 			positionAtCentralDirectory32();
-		} else {
-			positionAtCentralDirectory64();
 		}
+		else
+			positionAtCentralDirectory64();
 	}
 
 	/**
-	 * Parses the &quot;Zip64 end of central directory locator&quot;,
-	 * finds the &quot;Zip64 end of central directory record&quot; using the
-	 * parsed information, parses that and positions the stream at the
-	 * first central directory record.
+	 * Parses the “Zip64 end of central directory locator”, finds the “Zip64
+	 * end of central directory record” using the parsed information, parses
+	 * that and positions the stream at the first central directory record.
 	 */
-	private void positionAtCentralDirectory64()
-		throws IOException {
-		skipBytes(ZIP64_EOCDL_LOCATOR_OFFSET
-				- ZipConstants.WORD /* signature has already been read */);
+	private void positionAtCentralDirectory64() throws IOException
+	{
+		skipBytes(ZIP64_EOCDL_LOCATOR_OFFSET - ZipConstants.WORD
+			/* signature has already been read */);
 		archive.readFully(DWORD_BUF);
 		archive.seek(ZipEightByteInteger.getLongValue(DWORD_BUF));
 		archive.readFully(WORD_BUF);
-		if (!Arrays.equals(WORD_BUF, ZipOutputStream.ZIP64_EOCD_SIG)) {
+
+		if (!Arrays.equals(WORD_BUF, ZipOutputStream.ZIP64_EOCD_SIG))
 			throw new ZipException(
 				"archive's ZIP64 end of central directory locator is corrupt.");
-		}
-		skipBytes(ZIP64_EOCD_CFD_LOCATOR_OFFSET
-				- ZipConstants.WORD /* signature has already been read */);
+
+		skipBytes(ZIP64_EOCD_CFD_LOCATOR_OFFSET - ZipConstants.WORD
+			/* signature has already been read */);
 		archive.readFully(DWORD_BUF);
 		archive.seek(ZipEightByteInteger.getLongValue(DWORD_BUF));
 	}
 
 	/**
-	 * Searches for the &quot;End of central dir record&quot;, parses
-	 * it and positions the stream at the first central directory
-	 * record.
+	 * Searches for the “End of central dir record”, parses it and positions
+	 * the stream at the first central directory record.
 	 */
-	private void positionAtCentralDirectory32()
-		throws IOException {
+	private void positionAtCentralDirectory32() throws IOException
+	{
 		skipBytes(CFD_LOCATOR_OFFSET);
 		archive.readFully(WORD_BUF);
 		archive.seek(ZipLong.getValue(WORD_BUF));
@@ -778,15 +854,13 @@ public class ZipFile implements Closeable {
 
 	/**
 	 * Searches for the and positions the stream at the start of the
-	 * &quot;End of central dir record&quot;.
+	 * “End of central dir record”.
 	 */
-	private void positionAtEndOfCentralDirectoryRecord()
-		throws IOException {
-		final boolean found = tryToLocateSignature(MIN_EOCD_SIZE, MAX_EOCD_SIZE,
-											ZipOutputStream.EOCD_SIG);
-		if (!found) {
-			throw new ZipException("archive is not a ZIP archive");
-		}
+	private void positionAtEndOfCentralDirectoryRecord() throws IOException
+	{
+		final boolean found = tryToLocateSignature(MIN_EOCD_SIZE,
+			MAX_EOCD_SIZE, ZipOutputStream.EOCD_SIG);
+		if (!found) throw new ZipException("archive is not a ZIP archive");
 	}
 
 	/**
@@ -795,26 +869,36 @@ public class ZipFile implements Closeable {
 	 * at the signature if it has been found.
 	 */
 	private boolean tryToLocateSignature(final long minDistanceFromEnd,
-										final long maxDistanceFromEnd,
-										final byte[] sig) throws IOException {
+		final long maxDistanceFromEnd, final byte[] sig) throws IOException
+	{
 		boolean found = false;
+
 		long off = archive.length() - minDistanceFromEnd;
 		final long stopSearching =
 			Math.max(0L, archive.length() - maxDistanceFromEnd);
-		if (off >= 0) {
-			for (; off >= stopSearching; off--) {
+
+		if (off >= 0)
+		{
+			for (; off >= stopSearching; off--)
+			{
 				archive.seek(off);
 				int curr = archive.read();
-				if (curr == -1) {
-					break;
-				}
-				if (curr == sig[POS_0]) {
+				if (curr == -1) break;
+
+				if (curr == sig[POS_0]) // Search EOCD_SIG
+				{
 					curr = archive.read();
-					if (curr == sig[POS_1]) {
+
+					if (curr == sig[POS_1])
+					{
 						curr = archive.read();
-						if (curr == sig[POS_2]) {
+
+						if (curr == sig[POS_2])
+						{
 							curr = archive.read();
-							if (curr == sig[POS_3]) {
+
+							if (curr == sig[POS_3])
+							{
 								found = true;
 								break;
 							}
@@ -823,9 +907,8 @@ public class ZipFile implements Closeable {
 				}
 			}
 		}
-		if (found) {
-			archive.seek(off);
-		}
+
+		if (found) archive.seek(off);
 		return found;
 	}
 
@@ -845,19 +928,19 @@ public class ZipFile implements Closeable {
 	}
 
 	/**
-	 * Number of bytes in local file header up to the &quot;length of
-	 * filename&quot; entry.
+	 * Number of bytes in local file header up to the “length of
+	 * filename” entry.
 	 */
-	private static final long LFH_OFFSET_FOR_FILENAME_LENGTH =
-		/* local file header signature     */ ZipConstants.WORD
-		/* version needed to extract       */ + ZipConstants.SHORT
-		/* general purpose bit flag        */ + ZipConstants.SHORT
-		/* compression method              */ + ZipConstants.SHORT
-		/* last mod file time              */ + ZipConstants.SHORT
-		/* last mod file date              */ + ZipConstants.SHORT
-		/* crc-32                          */ + ZipConstants.WORD
-		/* compressed size                 */ + ZipConstants.WORD
-		/* uncompressed size               */ + ZipConstants.WORD;
+	private static final long LFH_OFFSET_FOR_FILENAME_LENGTH = // 26
+		/* local file header signature     */   ZipConstants.WORD  // 4
+		/* version needed to extract       */ + ZipConstants.SHORT // 2
+		/* general purpose bit flag        */ + ZipConstants.SHORT // 2
+		/* compression method              */ + ZipConstants.SHORT // 2
+		/* last mod file time              */ + ZipConstants.SHORT // 2
+		/* last mod file date              */ + ZipConstants.SHORT // 2
+		/* crc-32                          */ + ZipConstants.WORD  // 4
+		/* compressed size                 */ + ZipConstants.WORD  // 4
+		/* uncompressed size               */ + ZipConstants.WORD; // 4
 
 	/**
 	 * Walks through all recorded entries and adds the data available
@@ -895,19 +978,19 @@ public class ZipFile implements Closeable {
 			archive.readFully(localExtraData);
 			ze.setExtra(localExtraData);
 			offsetEntry.dataOffset = offset + LFH_OFFSET_FOR_FILENAME_LENGTH
-				+ ZipConstants.SHORT + ZipConstants.SHORT + fileNameLen + extraFieldLen;
+				+ ZipConstants.SHORT + ZipConstants.SHORT
+				+ fileNameLen + extraFieldLen;
 
 			if (entriesWithoutUTF8Flag.containsKey(ze)) {
 				final NameAndComment nc = entriesWithoutUTF8Flag.get(ze);
 				ZipUtil.setNameAndCommentFromExtraFields(ze, nc.name,
-														nc.comment);
+					nc.comment);
 			}
 
 			final String name = ze.getName();
 			LinkedList<ZipEntry> entriesOfThatName =
 				// nameMap.get(name);
-				nameMap.computeIfAbsent(name,
-					k -> new LinkedList<ZipEntry>());
+				nameMap.computeIfAbsent(name, k -> new LinkedList<ZipEntry>());
 			// if (entriesOfThatName == null) {
 			// 	entriesOfThatName = new LinkedList<ZipEntry>();
 			// 	nameMap.put(name, entriesOfThatName);
@@ -920,10 +1003,11 @@ public class ZipFile implements Closeable {
 	 * Checks whether the archive starts with a LFH. If it doesn’t,
 	 * it may be an empty archive.
 	 */
-	private boolean startsWithLocalFileHeader() throws IOException {
+	private boolean startsWithLocalFileHeader() throws IOException
+	{
 		archive.seek(0);
 		archive.readFully(WORD_BUF);
-		return Arrays.equals(WORD_BUF, ZipOutputStream.LFH_SIG);
+		return Arrays.equals(WORD_BUF, ZipOutputStream.LFH_SIG); // 4034B50
 	}
 
 	/**
@@ -972,17 +1056,20 @@ public class ZipFile implements Closeable {
 			}
 
 			if (len > remaining) {
-				len = (int) remaining;
+				len = (int)remaining;
 			}
+
 			int ret = -1;
 			synchronized (archive) {
 				archive.seek(loc);
 				ret = archive.read(b, off, len);
 			}
+
 			if (ret > 0) {
 				loc += ret;
 				remaining -= ret;
 			}
+
 			return ret;
 		}
 
@@ -1017,8 +1104,8 @@ public class ZipFile implements Closeable {
 			return 0;
 		}
 
-		final Entry ent1 = e1 instanceof Entry ? (Entry) e1 : null;
-		final Entry ent2 = e2 instanceof Entry ? (Entry) e2 : null;
+		final Entry ent1 = e1 instanceof Entry ? (Entry)e1 : null;
+		final Entry ent2 = e2 instanceof Entry ? (Entry)e2 : null;
 		if (ent1 == null) {
 			return 1;
 		}
@@ -1026,7 +1113,7 @@ public class ZipFile implements Closeable {
 			return -1;
 		}
 		final long val = (ent1.getOffsetEntry().headerOffset
-					- ent2.getOffsetEntry().headerOffset);
+			- ent2.getOffsetEntry().headerOffset);
 		return val == 0 ? 0 : val < 0 ? -1 : +1;
 	};
 
@@ -1054,8 +1141,9 @@ public class ZipFile implements Closeable {
 		@Override
 		public boolean equals(final Object other) {
 			if (super.equals(other)) {
-				// super.equals would return false if other were null or not an Entry
-				final Entry otherEntry = (Entry) other;
+				// super.equals would return false if other were null
+				// or not an Entry
+				final Entry otherEntry = (Entry)other;
 				return offsetEntry.headerOffset
 						== otherEntry.offsetEntry.headerOffset //NOSONAR
 					&& offsetEntry.dataOffset

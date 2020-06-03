@@ -106,7 +106,7 @@ package knižnica;
 			{@link GRobot#rýchlosť(double) rýchlosť}(y.{@link Rad#daj() daj}() / {@code num1000.0});
 		}
 
-		{@code kwdpublic} {@code kwdstatic} {@code typevoid} main(String[] args)
+		{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 		{
 			{@code kwdnew} PríkladPoužitiaRadu();
 			{@link Svet Svet}.{@link Svet#zbaľ() zbaľ}();

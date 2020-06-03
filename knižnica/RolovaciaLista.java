@@ -43,5 +43,5 @@ public class RolovaciaLista extends RolovaciaLišta
 	public RolovaciaLista(int orientácia, int poloha,
 		int veľkosťOblasti, int spodnáHranica, int hornáHranica)
 	{ super(orientácia, poloha, veľkosťOblasti,
-			spodnáHranica, hornáHranica); }
+		spodnáHranica, hornáHranica); }
 }

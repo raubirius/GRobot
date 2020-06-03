@@ -109,6 +109,7 @@ import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URLEncoder;
 
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -174,7 +175,7 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
 
 		vlastnosti sveta a funkcie sveta
 			verzia
-			hlavný robot a všetci roboti
+			hlavný robot a všetky roboty
 			rozmery
 			rozmery a poloha hlavného okna
 			titulok
@@ -471,6 +472,7 @@ public final class Svet extends JFrame
 
 			/*packagePrivate*/ static GRobot hlavnýRobot;
 			/*packagePrivate*/ static boolean inicializované = false;
+			/*packagePrivate*/ static Calendar časŠtartu = null;
 
 		// Prvky a údaje rozloženia hlavného okna
 
@@ -1328,6 +1330,8 @@ public final class Svet extends JFrame
 			/*packagePrivate*/ static void inicializujGrafiku()
 			{
 				if (inicializované) return;
+
+				časŠtartu = Calendar.getInstance();
 
 				// Poznámka: Kedysi malo nesprávne kódovanie za následok
 				//           zastavenie činnosti aplikácie s pokusom o jej
@@ -2689,10 +2693,10 @@ public final class Svet extends JFrame
 		}
 
 
-		// Hlavný robot a všetci roboti
+		// Hlavný robot a všetky roboty
 
 		/**
-		 * <p><a class="getter"></a> Vráti hlavného robota. Hlavný robot je
+		 * <p><a class="getter"></a> Vráti hlavný robot. Hlavný robot je
 		 * predvolene prvý vytvorený robot. Tento robot je považovaný za
 		 * vlastníka sveta. On asistuje pri vytvorení okna aplikácie,
 		 * s pomocou neho sú spracované niektoré úlohy… O svoje privilégium
@@ -2711,7 +2715,7 @@ public final class Svet extends JFrame
 
 
 		/**
-		 * <p>Spustením tejto metódy sa pre každého robota (podľa ich
+		 * <p>Spustením tejto metódy sa pre každý robot (podľa ich
 		 * aktuálneho poradia) vykoná reakcia {@link 
 		 * GRobot#prijatieVýzvy(GRobot, int) prijatieVýzvy} bez určenia
 		 * autora výzvy (autor je rovný {@code valnull}) a s hodnotou
@@ -2729,7 +2733,7 @@ public final class Svet extends JFrame
 		 * počas {@linkplain GRobot#prijatieVýzvy(GRobot, int) spracovania
 		 * výzviev}, dôjde z technických príčin k opätovnému spusteniu
 		 * posielania výziev (inak povedané – posielanie výziev sa
-		 * „reštartuje“). To znamená, že niektorí roboti budú vyzvaní dva
+		 * „reštartuje“). To znamená, že niektoré roboty budú vyzvaní dva
 		 * alebo viac ráz. Buďte preto opatrní so zmenami poradia v rámci
 		 * spracovania výziev, aby ste nespôsobili vznik nekonečného
 		 * cyklu… (Rovnaký efekt má prípadné vytvorenie nového robota,
@@ -2748,11 +2752,11 @@ public final class Svet extends JFrame
 		 * mimoHraníc}.</p>
 		 * 
 		 * @see GRobot#prijatieVýzvy(GRobot, int)
-		 * @see #vyzviRobotov(int)
-		 * @see #vyzviRobotov(int, boolean)
-		 * @see GRobot#vyzviRobotov()
+		 * @see #vyzviRoboty(int)
+		 * @see #vyzviRoboty(int, boolean)
+		 * @see GRobot#vyzviRoboty()
 		 */
-		public static void vyzviRobotov()
+		public static void vyzviRoboty()
 		{
 			if (GRobot.zámokZoznamuRobotov2)
 			{
@@ -2784,8 +2788,11 @@ public final class Svet extends JFrame
 			}
 		}
 
+		/** <p><a class="alias"></a> Alias pre {@link #vyzviRoboty() vyzviRoboty}.</p> */
+		public static void vyzviRobotov() { vyzviRoboty(); }
+
 		/**
-		 * <p>Spustením tejto metódy sa pre každého robota (podľa ich
+		 * <p>Spustením tejto metódy sa pre každý robot (podľa ich
 		 * aktuálneho poradia) vykoná reakcia {@link 
 		 * GRobot#prijatieVýzvy(GRobot, int) prijatieVýzvy} bez určenia
 		 * autora výzvy (autor je rovný {@code valnull}). S pomocou argumentu
@@ -2805,7 +2812,7 @@ public final class Svet extends JFrame
 		 * počas {@linkplain GRobot#prijatieVýzvy(GRobot, int) spracovania
 		 * výzviev}, dôjde z technických príčin k opätovnému spusteniu
 		 * posielania výziev (inak povedané – posielanie výziev sa
-		 * „reštartuje“). To znamená, že niektorí roboti budú vyzvaní dva
+		 * „reštartuje“). To znamená, že niektoré roboty budú vyzvaní dva
 		 * alebo viac ráz. Buďte preto opatrní so zmenami poradia v rámci
 		 * spracovania výziev, aby ste nespôsobili vznik nekonečného
 		 * cyklu… (Rovnaký efekt má prípadné vytvorenie nového robota,
@@ -2830,11 +2837,11 @@ public final class Svet extends JFrame
 		 *     GRobot#prijatieVýzvy(GRobot, int) prijatieVýzvy}
 		 * 
 		 * @see GRobot#prijatieVýzvy(GRobot, int)
-		 * @see #vyzviRobotov()
-		 * @see #vyzviRobotov(int, boolean)
-		 * @see GRobot#vyzviRobotov(int)
+		 * @see #vyzviRoboty()
+		 * @see #vyzviRoboty(int, boolean)
+		 * @see GRobot#vyzviRoboty(int)
 		 */
-		public static void vyzviRobotov(int kľúč)
+		public static void vyzviRoboty(int kľúč)
 		{
 			if (GRobot.zámokZoznamuRobotov2)
 			{
@@ -2866,8 +2873,11 @@ public final class Svet extends JFrame
 			}
 		}
 
+		/** <p><a class="alias"></a> Alias pre {@link #vyzviRoboty(int) vyzviRoboty}.</p> */
+		public static void vyzviRobotov(int kľúč) { vyzviRoboty(kľúč); }
+
 		/**
-		 * <p>Spustením tejto metódy sa pre každého robota (podľa ich
+		 * <p>Spustením tejto metódy sa pre každý robot (podľa ich
 		 * aktuálneho poradia) vykoná reakcia {@link 
 		 * GRobot#prijatieVýzvy(GRobot, int) prijatieVýzvy} bez určenia
 		 * autora výzvy (autor je rovný {@code valnull}). S pomocou argumentu
@@ -2883,13 +2893,13 @@ public final class Svet extends JFrame
 		 * {@link GRobot#vyššie() vyššie}, {@link GRobot#nižšie() nižšie},
 		 * {@link GRobot#pred(GRobot) pred} a {@link GRobot#za(GRobot) za}.
 		 * Ak je hodnota argumentu {@code obrátene} rovná {@code valfalse},
-		 * metóda sa správa rovnako ako {@link #vyzviRobotov(int)}.</p>
+		 * metóda sa správa rovnako ako {@link #vyzviRoboty(int)}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Ak je poradie robotov zmenené
 		 * počas {@linkplain GRobot#prijatieVýzvy(GRobot, int) spracovania
 		 * výzviev}, dôjde z technických príčin k opätovnému spusteniu
 		 * posielania výziev (inak povedané – posielanie výziev sa
-		 * „reštartuje“). To znamená, že niektorí roboti budú vyzvaní dva
+		 * „reštartuje“). To znamená, že niektoré roboty budú vyzvaní dva
 		 * alebo viac ráz. Buďte preto opatrní so zmenami poradia v rámci
 		 * spracovania výziev, aby ste nespôsobili vznik nekonečného
 		 * cyklu… (Rovnaký efekt má prípadné vytvorenie nového robota,
@@ -2918,14 +2928,14 @@ public final class Svet extends JFrame
 		 *     spracovania;
 		 *     {@code valtrue} znamená spracovanie vnútorného zoznamu
 		 *     robotov od konca; {@code valfalse} znamená rovnaký spôsob
-		 *     spracovania ako pri metóde {@link #vyzviRobotov(int)}
+		 *     spracovania ako pri metóde {@link #vyzviRoboty(int)}
 		 * 
 		 * @see GRobot#prijatieVýzvy(GRobot, int)
-		 * @see #vyzviRobotov()
-		 * @see #vyzviRobotov(int)
-		 * @see GRobot#vyzviRobotov(int, boolean)
+		 * @see #vyzviRoboty()
+		 * @see #vyzviRoboty(int)
+		 * @see GRobot#vyzviRoboty(int, boolean)
 		 */
-		public static void vyzviRobotov(int kľúč, boolean obrátene)
+		public static void vyzviRoboty(int kľúč, boolean obrátene)
 		{
 			if (GRobot.zámokZoznamuRobotov2)
 			{
@@ -2979,6 +2989,9 @@ public final class Svet extends JFrame
 			}
 		}
 
+		/** <p><a class="alias"></a> Alias pre {@link #vyzviRoboty(int, boolean) vyzviRoboty}.</p> */
+		public static void vyzviRobotov(int kľúč, boolean obrátene)
+		{ vyzviRoboty(kľúč, obrátene); }
 
 		// Rozmery
 
@@ -3550,7 +3563,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Umiestni okno sveta na určené zobrazovacie zariadenie.
-		 * Zariadenie je určené jeho poradovým číslom (indexom; čiže
+		 * Zariadenie je určené jeho „poradovým číslom“ (indexom; čiže
 		 * nula označuje prvé zariadenie). Okno je umiestnené tak, aby
 		 * bola na určenom zariadení viditeľná celá jeho plocha, ak to
 		 * rozmery okna dovoľujú. Ak je okno väčšie, než sú rozmery
@@ -3558,7 +3571,7 @@ public final class Svet extends JFrame
 		 * zariadenia. Ak zariadenie so zadaným indexom nejestvuje,
 		 * tak nie je vykonaná žiadna operácia.</p>
 		 * 
-		 * @param zariadenie poradové číslo zariadenia, na ktoré má byť
+		 * @param zariadenie číslo zariadenia, na ktoré má byť
 		 *     okno umiestnené
 		 * 
 		 * @see #početZariadení()
@@ -6992,7 +7005,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Táto metóda slúži na kreslenie obrysov zadaného tvaru na podlahu.
-		 * Metóda potrebuje na svoje správne fungovanie robota „kresliča“,
+		 * Metóda potrebuje na svoje správne fungovanie robota „kresliča,“
 		 * ktorého farbu a štýl čiary použije na kreslenie. Ak je do metódy
 		 * namiesto konkrétneho kresliča zadaná hodnota {@code valnull}, tak
 		 * je na získanie parametrov kreslenia použitý {@linkplain 
@@ -7016,7 +7029,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Táto metóda slúži na kreslenie vyplnených tvarov na podlahu.
-		 * Metóda potrebuje na svoje správne fungovanie robota „kresliča“,
+		 * Metóda potrebuje na svoje správne fungovanie robota „kresliča,“
 		 * ktorého farbu použije na vyplnenie zadaného tvaru. Ak je do metódy
 		 * namiesto konkrétneho kresliča zadaná hodnota {@code valnull}, tak
 		 * je na získanie parametrov kreslenia použitý {@linkplain 
@@ -7560,7 +7573,7 @@ public final class Svet extends JFrame
 			// prekresľovaniu, alebo aby bol mechanizmus automatického
 			// prekresľovania s pomocou časovača predvolene implicitne
 			// implementovaný. Žiadny spôsob by nebol ideálny alebo
-			// dostatočne „efektívny“. Keby sa zabraňovalo „príliš častému
+			// dostatočne „efektívny.“ Keby sa zabraňovalo „príliš častému
 			// automatickému prekresľovaniu,“ tak by buď vznikali situácie,
 			// kedy by posledné prekreslenie vôbec nenastalo, alebo by sa
 			// niekde hromadili správy požadujúce neskoršie prekreslenie.
@@ -7613,7 +7626,7 @@ public final class Svet extends JFrame
 					{
 						GRobot tento = záznamRobota.getValue();
 						if (tento.viditeľný)
-							tento.kresliRobota(obrázokSveta2,
+							tento.kresliRobot(obrázokSveta2,
 								grafikaSveta2);
 					}
 				}
@@ -7769,7 +7782,7 @@ public final class Svet extends JFrame
 			// z optimalizačných dôvodov skryté. (Toto je aj naďalej
 			// odporúčaný postup, no i napriek tomu sem bola pridaná
 			// nasledujúca záplata, pretože sa tým zabráni zbytočnému
-			// prekresľovaniu a prípadnému „blikaniu“.)
+			// prekresľovaniu a prípadnému „blikaniu.“)
 			if (zobrazený()) hlavnáPonuka.updateUI();
 		}
 
@@ -7796,7 +7809,8 @@ public final class Svet extends JFrame
 		 * @see #pridajPoložkuPonuky(String, int)
 		 * @see #pridajOddeľovačPonuky()
 		 */
-		public static void pridajPoložkuHlavnejPonuky(String text, int mnemonickáSkratka)
+		public static void pridajPoložkuHlavnejPonuky(String text,
+			int mnemonickáSkratka)
 		{
 			if (!inicializované) return;
 
@@ -7826,7 +7840,7 @@ public final class Svet extends JFrame
 			// z optimalizačných dôvodov skryté. (Toto je aj naďalej
 			// odporúčaný postup, no i napriek tomu sem bola pridaná
 			// nasledujúca záplata, pretože sa tým zabráni zbytočnému
-			// prekresľovaniu a prípadnému „blikaniu“.)
+			// prekresľovaniu a prípadnému „blikaniu.“)
 			if (zobrazený()) hlavnáPonuka.updateUI();
 		}
 
@@ -7876,14 +7890,14 @@ public final class Svet extends JFrame
 		}
 
 		/**
-		 * <p>Funguje rovnako ako {@link #pridajPoložkuPonuky(String)} s tým, že
-		 * definuje novej položke mnemonickú skratku (skratky, ktoré sú
-		 * v položkách ponuky znázorňované podčiarknutým písmenom). Skratku je
-		 * možné najjednoduchšie určiť konštantou triedy {@link 
-		 * KeyEvent KeyEvent}.{@code VK_XXX} (tá je v robotovi na
-		 * zjednodušenie prekrytá triedou {@link Kláves Kláves}, takže môžeme
-		 * použiť napríklad {@code Kláves.VK_A}, {@code Kláves.VK_B}, {@code 
-		 * Kláves.VK_C}…).</p>
+		 * <p>Funguje rovnako ako {@link #pridajPoložkuPonuky(String)} s tým,
+		 * že definuje novej položke mnemonickú skratku (skratky, ktoré sú
+		 * v položkách ponuky znázorňované podčiarknutým písmenom). Skratku
+		 * je možné najjednoduchšie určiť konštantou triedy {@link 
+		 * KeyEvent KeyEvent}<code>.</code>{@code VK_XXX} (tá je
+		 * v programovacom rámci na zjednodušenie prístupu prekrytá triedou
+		 * {@link Kláves Kláves}, takže môžeme použiť napríklad konštanty
+		 * {@code Kláves.VK_A}, {@code Kláves.VK_B}, {@code Kláves.VK_C}…).</p>
 		 * 
 		 * @param text reťazec textu pridávanej položky ponuky
 		 * @param mnemonickáSkratka kód mnemonickej skratky (príklad:
@@ -7922,10 +7936,10 @@ public final class Svet extends JFrame
 		 * skratku (skratky, ktoré pri v položkách ponuky znázorňované
 		 * v pravej časti textom Ctrl + písmeno). Skratky je možné
 		 * najjednoduchšie určiť konštantou triedy {@link KeyEvent
-		 * KeyEvent}.{@code VK_XXX} (tá je v robotovi na zjednodušenie
-		 * prekrytá triedou {@link Kláves Kláves}, takže môžeme použiť
-		 * napríklad {@code Kláves.VK_A}, {@code Kláves.VK_B}, {@code 
-		 * Kláves.VK_C}…).</p>
+		 * KeyEvent}<code>.</code>{@code VK_XXX} (tá je v programovacom rámci
+		 * na zjednodušenie prístupu prekrytá triedou {@link Kláves Kláves},
+		 * takže môžeme použiť napríklad konštanty {@code Kláves.VK_A},
+		 * {@code Kláves.VK_B}, {@code Kláves.VK_C}…).</p>
 		 * 
 		 * @param text reťazec textu pridávanej položky ponuky
 		 * @param mnemonickáSkratka kód mnemonickej skratky (príklad: {@code 
@@ -7991,7 +8005,7 @@ public final class Svet extends JFrame
 		public static void pridajOddelovacPonuky() { pridajOddeľovačPonuky(); }
 
 		/**
-		 * <p>Pridá do ponuky položku „Vymazať“. Položka je jednou
+		 * <p>Pridá do ponuky položku „Vymazať.“ Položka je jednou
 		 * z preddefinovaných položiek, ktoré majú vopred definovanú
 		 * funkcionalitu. Táto po zvolení vymaže a prekreslí svet.</p>
 		 * 
@@ -8025,7 +8039,7 @@ public final class Svet extends JFrame
 		{ pridajPoložkuPonukyVymazať(); }
 
 		/**
-		 * <p>Pridá do ponuky položku „Prekresliť“. Položka je jednou
+		 * <p>Pridá do ponuky položku „Prekresliť.“ Položka je jednou
 		 * z preddefinovaných položiek, ktoré majú vopred definovanú
 		 * funkcionalitu. Táto vynúti prekreslenie sveta.</p>
 		 * 
@@ -8059,7 +8073,7 @@ public final class Svet extends JFrame
 		{ pridajPoložkuPonukyPrekresliť(); }
 
 		/**
-		 * <p>Pridá do ponuky preddefinovanú položku „Koniec“. Toto je
+		 * <p>Pridá do ponuky preddefinovanú položku „Koniec.“ Toto je
 		 * využiteľné keď sme ponuku {@linkplain #vymažPonuku() vymazali}
 		 * a chceme do nej pridať túto položku, ktorej funkcionalita je
 		 * vopred naprogramovaná.</p>
@@ -8760,7 +8774,7 @@ public final class Svet extends JFrame
 		 * Tvar kurzora určí aktuálna grafika zadaného obrázka (môže byť
 		 * použitý aj objekt typu {@link Obrázok Obrázok}). Súradnice {@code 
 		 * x} a {@code x} určujú aktívny bod kurzora (<em>hot spot</em>),
-		 * t. j. bod, ktorý bude považovaný za „špičku“, či „stred“ kurzora
+		 * t. j. bod, ktorý bude považovaný za „špičku,“ či „stred“ kurzora
 		 * (záleží na tvare kurzora). Súradnice [0, 0] sú považované za
 		 * stred kurzora. Rozsah súradníc je určený rozmermi obrázka.
 		 * Odporúčame zvoliť také rozmery obrázka, ktoré sú štandardné pre
@@ -9068,7 +9082,7 @@ public final class Svet extends JFrame
 						{@link GRobot#text(String) text}({@code srg"Systémová ikona nie je podporovaná."});
 					}
 
-					{@code comm// Skryjeme robota a vystredíme okno aplikácie.}
+					{@code comm// Skryjeme robot a vystredíme okno aplikácie.}
 					{@link GRobot#skry() skry}();
 					{@link Svet Svet}.{@link Svet#vystreď() vystreď}();
 				}
@@ -9737,7 +9751,7 @@ public final class Svet extends JFrame
 		 * aplikácia zabezpečí aj vynulovanie všetkých ostatných premenných,
 		 * v ktorých je stanovená inštancia uložená, objekt by mal byť (resp.
 		 * bude, aj keď možno nie hneď) uvoľnený z pamäte počítača zberačom
-		 * odpadkov Javy. <b>Uvoľneného robota už nie je možné do sveta
+		 * odpadkov Javy. <b>Uvoľnený robot už nie je možné do sveta
 		 * vrátiť!</b> V prípade, že je uvoľnený {@linkplain #hlavnýRobot()
 		 * hlavný robot}, nastúpi na jeho miesto najbližší jestvujúci robot.
 		 * Problém by mohol nastať, keby nie je k dispozícii žiadny ďalší
@@ -10167,7 +10181,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu(int, int, int, int)
 		 * @see #použiKonfiguráciu(String)
 		 * @see #použiKonfiguráciu()
-		 * @see #registrujRobota(GRobot, String)
+		 * @see #registrujRobot(GRobot, String)
 		 * @see #čítajKonfiguráciuSveta()
 		 */
 		public static String predvolenáSekciaKonfigurácie()
@@ -10197,7 +10211,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu(int, int, int, int)
 		 * @see #použiKonfiguráciu(String)
 		 * @see #použiKonfiguráciu()
-		 * @see #registrujRobota(GRobot, String)
+		 * @see #registrujRobot(GRobot, String)
 		 * @see #čítajKonfiguráciuSveta()
 		 */
 		public static void predvolenáSekciaKonfigurácie(String názov)
@@ -10240,7 +10254,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu(int, int, int, int)
 		 * @see #použiKonfiguráciu(String)
 		 * @see #použiKonfiguráciu()
-		 * @see #registrujRobota(GRobot, String)
+		 * @see #registrujRobot(GRobot, String)
 		 * @see #čítajKonfiguráciuSveta()
 		 */
 		public static void použiKonfiguráciu(String názovSúboru,
@@ -10268,7 +10282,7 @@ public final class Svet extends JFrame
 			//     veľa nestratil, ak mal zdrojový kód zálohovaný, tiež asi
 			//     veľa nestratil, ale ak my zabezpečíme, pridanie korektnej
 			//     prípony, tak strata ani nenastane.
-			// TODO – poznač medzi „postrehy programátora“.
+			// TODO – poznač medzi „postrehy programátora.“
 			if (!názovSúboru.endsWith(".cfg")) názovSúboru += ".cfg";
 
 			Súbor.Sekcia pôvodnáSekcia = konfiguračnýSúbor.aktívnaSekcia;
@@ -10402,7 +10416,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu(String, int, int, int, int)
 		 * @see #použiKonfiguráciu(String)
 		 * @see #použiKonfiguráciu()
-		 * @see #registrujRobota(GRobot, String)
+		 * @see #registrujRobot(GRobot, String)
 		 * @see #čítajKonfiguráciuSveta()
 		 */
 		public static void použiKonfiguráciu(
@@ -10454,7 +10468,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu(String, int, int, int, int)
 		 * @see #použiKonfiguráciu(int, int, int, int)
 		 * @see #použiKonfiguráciu()
-		 * @see #registrujRobota(GRobot, String)
+		 * @see #registrujRobot(GRobot, String)
 		 * @see #čítajKonfiguráciuSveta()
 		 */
 		public static void použiKonfiguráciu(String názovSúboru)
@@ -10503,7 +10517,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu(String, int, int, int, int)
 		 * @see #použiKonfiguráciu(int, int, int, int)
 		 * @see #použiKonfiguráciu(String)
-		 * @see #registrujRobota(GRobot, String)
+		 * @see #registrujRobot(GRobot, String)
 		 * @see #čítajKonfiguráciuSveta()
 		 */
 		public static void použiKonfiguráciu()
@@ -10532,11 +10546,11 @@ public final class Svet extends JFrame
 		public static boolean prveSpustenie() { return prvéSpustenie; }
 
 		/**
-		 * <p>Registruje {@linkplain #hlavnýRobot() hlavného robota}
+		 * <p>Registruje {@linkplain #hlavnýRobot() hlavný robot}
 		 * v {@linkplain #použiKonfiguráciu(String) konfigurácii} sveta.
-		 * Rezervované meno pre hlavného robota je {@code robot}.
-		 * Pozri aj informácie pri metóde {@link #registrujRobota(GRobot)
-		 * registrujRobota(robot)}.</p>
+		 * Rezervované meno pre hlavný robot je {@code robot}.
+		 * Pozri aj informácie pri metóde {@link #registrujRobot(GRobot)
+		 * registrujRobot(robot)}.</p>
 		 * 
 		 * @param meno meno robota
 		 * 
@@ -10545,24 +10559,27 @@ public final class Svet extends JFrame
 		 * @see GRobot#čítajZoSúboru(Súbor)
 		 * @see Písmo#uložDoSúboru(Súbor)
 		 * @see Písmo#čítajZoSúboru(Súbor)
-		 * @see #registrujRobota(String)
-		 * @see #registrujRobota(GRobot)
-		 * @see #registrujRobota(GRobot, String)
+		 * @see #registrujRobot(String)
+		 * @see #registrujRobot(GRobot)
+		 * @see #registrujRobot(GRobot, String)
 		 * @see #použiKonfiguráciu()
 		 * @see #použiKonfiguráciu(String)
 		 * @see #použiKonfiguráciu(String, int, int, int, int)
 		 * @see #použiKonfiguráciu(int, int, int, int)
 		 * @see #čítajKonfiguráciuSveta()
 		 */
-		public static void registrujRobota() { registrujRobota(hlavnýRobot); }
+		public static void registrujRobot() { registrujRobot(hlavnýRobot); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #registrujRobot() registrujRobot}.</p> */
+		public static void registrujRobota() { registrujRobot(hlavnýRobot); }
 
 		/**
-		 * <p>Registruje robota v {@linkplain #použiKonfiguráciu(String)
+		 * <p>Registruje robot v {@linkplain #použiKonfiguráciu(String)
 		 * konfigurácii} podľa jeho (vopred priradeného)
 		 * {@linkplain GRobot#meno(String) mena}.
 		 * Ak nejestvuje žiadny robot so zadaným menom, tak vznikne výnimka.
-		 * Pozri aj informácie pri metóde {@link #registrujRobota(GRobot)
-		 * registrujRobota(robot)}.</p>
+		 * Pozri aj informácie pri metóde {@link #registrujRobot(GRobot)
+		 * registrujRobot(robot)}.</p>
 		 * 
 		 * @param meno meno robota
 		 * 
@@ -10573,32 +10590,36 @@ public final class Svet extends JFrame
 		 * @see GRobot#čítajZoSúboru(Súbor)
 		 * @see Písmo#uložDoSúboru(Súbor)
 		 * @see Písmo#čítajZoSúboru(Súbor)
-		 * @see #registrujRobota()
-		 * @see #registrujRobota(GRobot)
-		 * @see #registrujRobota(GRobot, String)
+		 * @see #registrujRobot()
+		 * @see #registrujRobot(GRobot)
+		 * @see #registrujRobot(GRobot, String)
 		 * @see #použiKonfiguráciu()
 		 * @see #použiKonfiguráciu(String)
 		 * @see #použiKonfiguráciu(String, int, int, int, int)
 		 * @see #použiKonfiguráciu(int, int, int, int)
 		 * @see #čítajKonfiguráciuSveta()
 		 */
-		public static void registrujRobota(String meno)
+		public static void registrujRobot(String meno)
 		{
 			GRobot robot = GRobot.menáRobotov.get(meno);
 			if (null == robot) throw new GRobotException(
 				"Robot so zadaným menom (" + meno + ") nejestvuje.",
 				"noRobotWithSuchName", meno, new IllegalArgumentException());
-			registrujRobota(robot);
+			registrujRobot(robot);
 		}
 
+		/** <p><a class="alias"></a> Alias pre {@link #registrujRobot(String) registrujRobot}.</p> */
+		public static void registrujRobota(String meno)
+		{ registrujRobot(meno); }
+
 		/**
-		 * <p>Registruje robota v {@linkplain #použiKonfiguráciu(String)
+		 * <p>Registruje robot v {@linkplain #použiKonfiguráciu(String)
 		 * konfigurácii}. Registrácia je vykonaná podľa jeho
 		 * {@linkplain GRobot#meno(String) mena}. To znamená, že údaje
-		 * o robotovi (poloha, smer, veľkosť, farba pera a tak ďalej) budú
+		 * o robote (poloha, smer, veľkosť, farba pera a tak ďalej) budú
 		 * automaticky ukladané do a čítané z konfiguračného súboru.
 		 * Ak robot nie je pomenovaný a nejde o {@linkplain #hlavnýRobot()
-		 * hlavného robota}, tak vznikne výnimka.</p>
+		 * hlavný robot}, tak vznikne výnimka.</p>
 		 * 
 		 * <p>Pred registráciou je vhodné vypnúť {@linkplain Svet#nekresli()
 		 * automatické prekresľovanie} a po dokončení registrácie ho opätovne
@@ -10618,7 +10639,7 @@ public final class Svet extends JFrame
 
 					{@link Svet Svet}.{@code currregistrujRobota}({@code valthis});
 					<code class="comment">// Prípadne sa dá použiť aj verzia metódy</code>
-					<code class="comment">// bez argumentu: Svet.{@link #registrujRobota() registrujRobota}();</code>
+					<code class="comment">// bez argumentu: Svet.{@link #registrujRobot() registrujRobot}();</code>
 				}
 
 				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
@@ -10631,7 +10652,7 @@ public final class Svet extends JFrame
 			}
 			</pre>
 		 * 
-		 * <p class="remark"><b>Poznámka:</b> Čítanie údajov o robotovi je
+		 * <p class="remark"><b>Poznámka:</b> Čítanie údajov o robote je
 		 * vykonané pri spustení tohto príkazu a zápis je vykonaný automaticky
 		 * pri ukončení aplikácie. V prípade kombinácie registrácie robota
 		 * s vlastnou konfiguráciou (pozri príklad {@code TestKonfigurácie}
@@ -10650,17 +10671,17 @@ public final class Svet extends JFrame
 		 * @see GRobot#registrujVKonfigurácii()
 		 * @see GRobot#registrujVKonfigurácii(String)
 		 * @see GRobot#jeRegistrovaný()
-		 * @see #registrujRobota()
-		 * @see #registrujRobota(String)
-		 * @see #registrujRobota(GRobot, String)
-		 * @see #dajRobota(String)
+		 * @see #registrujRobot()
+		 * @see #registrujRobot(String)
+		 * @see #registrujRobot(GRobot, String)
+		 * @see #dajRobot(String)
 		 * @see #použiKonfiguráciu()
 		 * @see #použiKonfiguráciu(String)
 		 * @see #použiKonfiguráciu(String, int, int, int, int)
 		 * @see #použiKonfiguráciu(int, int, int, int)
 		 * @see #čítajKonfiguráciuSveta()
 		 */
-		public static void registrujRobota(GRobot robot)
+		public static void registrujRobot(GRobot robot)
 		{
 			if (null == robot) return;
 
@@ -10681,45 +10702,53 @@ public final class Svet extends JFrame
 			// catch (Exception e) { GRobotException.vypíšChybovéHlásenia(e); }
 		}
 
+		/** <p><a class="alias"></a> Alias pre {@link #registrujRobot(GRobot) registrujRobot}.</p> */
+		public static void registrujRobota(GRobot robot)
+		{ registrujRobot(robot); }
+
 		/**
-		 * <p>Registruje robota v {@linkplain #použiKonfiguráciu(String)
+		 * <p>Registruje robot v {@linkplain #použiKonfiguráciu(String)
 		 * konfigurácii} podľa zadaného {@linkplain GRobot#meno(String) mena}.
-		 * Pozri aj informácie pri metóde {@link #registrujRobota(GRobot)
-		 * registrujRobota(robot)}.</p>
+		 * Pozri aj informácie pri metóde {@link #registrujRobot(GRobot)
+		 * registrujRobot(robot)}.</p>
 		 * 
 		 * @param meno meno robota
 		 * 
 		 * @see ObsluhaUdalostí#konfiguráciaZmenená()
 		 * @see GRobot#uložDoSúboru(Súbor)
 		 * @see GRobot#čítajZoSúboru(Súbor)
-		 * @see #registrujRobota()
-		 * @see #registrujRobota(String)
-		 * @see #registrujRobota(GRobot)
-		 * @see #dajRobota(String)
+		 * @see #registrujRobot()
+		 * @see #registrujRobot(String)
+		 * @see #registrujRobot(GRobot)
+		 * @see #dajRobot(String)
 		 * @see #použiKonfiguráciu()
 		 * @see #použiKonfiguráciu(String)
 		 * @see #použiKonfiguráciu(String, int, int, int, int)
 		 * @see #použiKonfiguráciu(int, int, int, int)
 		 */
-		public static void registrujRobota(GRobot robot, String meno)
+		public static void registrujRobot(GRobot robot, String meno)
 		{
 			robot.meno(meno);
-			registrujRobota(robot);
+			registrujRobot(robot);
 		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #registrujRobot(GRobot, String) registrujRobot}.</p> */
+		public static void registrujRobota(GRobot robot, String meno)
+		{ registrujRobot(robot, meno); }
 
 		/**
 		 * <p>Vráti inštanciu robota podľa jeho mena. Pomenovanie robotov
 		 * je nepovinné a dá sa vykonať rôznymi spôsobmi. Napríklad pri
-		 * {@linkplain #registrujRobota(GRobot, String) registrácii}
+		 * {@linkplain #registrujRobot(GRobot, String) registrácii}
 		 * robota v {@linkplain Svet#použiKonfiguráciu(String) konfigurácii
 		 * sveta} alebo priamo jeho {@linkplain GRobot#meno(String)
 		 * pomenovaním}.</p>
 		 * 
 		 * <p>Hodnota parametra {@code valnull} vráti {@linkplain 
-		 * #hlavnýRobot() hlavného robota} bez ohľadu na jeho aktuálne meno.
+		 * #hlavnýRobot() hlavný robot} bez ohľadu na jeho aktuálne meno.
 		 * V prípade, že hlavný robot nemá priradené špeciálne meno, je
 		 * táto hodnota ekvivalentá hodnote {@code srg"robot"}, ktorá vráti
-		 * hlavného robota len v prípade, že nemá špeciálne pomenovanie.</p>
+		 * hlavný robot len v prípade, že nemá špeciálne pomenovanie.</p>
 		 * 
 		 * @param meno meno robota, ktorého inštanciu chceme vrátiť alebo
 		 *     {@code valnull}
@@ -10727,15 +10756,19 @@ public final class Svet extends JFrame
 		 *     ak taký robot nejestvuje
 		 * 
 		 * @see GRobot#meno(String)
-		 * @see #registrujRobota(GRobot, String)
+		 * @see #registrujRobot(GRobot, String)
 		 */
-		public static GRobot dajRobota(String menoRobota)
+		public static GRobot dajRobot(String menoRobota)
 		{
 			if (null == menoRobota) return hlavnýRobot;
 			if (menoRobota.equals("robot") && null != hlavnýRobot &&
 				null == hlavnýRobot.menoRobota) return hlavnýRobot;
 			return GRobot.menáRobotov.get(menoRobota);
 		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #dajRobot(String) dajRobot}.</p> */
+		public static GRobot dajRobota(String menoRobota)
+		{ return dajRobot(menoRobota); }
 
 
 		/**
@@ -10762,7 +10795,7 @@ public final class Svet extends JFrame
 					{@code comm// Inicializácia}
 					{@code comm// ...}
 
-					{@link Svet Svet}.{@link #registrujRobota(GRobot, String) registrujRobota}({@code valthis}, {@code srg"robot"});
+					{@link Svet Svet}.{@link #registrujRobot(GRobot, String) registrujRobot}({@code valthis}, {@code srg"robot"});
 					{@link Svet Svet}.{@code currčítajKonfiguráciuSveta}();
 				}
 
@@ -10783,11 +10816,11 @@ public final class Svet extends JFrame
 		 * @see GRobot#čítajZoSúboru(Súbor)
 		 * @see Písmo#uložDoSúboru(Súbor)
 		 * @see Písmo#čítajZoSúboru(Súbor)
-		 * @see #registrujRobota()
-		 * @see #registrujRobota(String)
-		 * @see #registrujRobota(GRobot)
-		 * @see #registrujRobota(GRobot, String)
-		 * @see #dajRobota(String)
+		 * @see #registrujRobot()
+		 * @see #registrujRobot(String)
+		 * @see #registrujRobot(GRobot)
+		 * @see #registrujRobot(GRobot, String)
+		 * @see #dajRobot(String)
 		 * @see #použiKonfiguráciu()
 		 * @see #použiKonfiguráciu(String)
 		 * @see #použiKonfiguráciu(String, int, int, int, int)
@@ -13376,7 +13409,7 @@ public final class Svet extends JFrame
 				{@link Svet Svet}.{@link Svet#koniec() koniec}();
 				{@code kwdreturn}; {@code comm// (Volanie metódy „koniec“ nemusí znamenať okamžité}
 						{@code comm// ukončenie aplikácie, preto sem pridávame aj príkaz}
-						{@code comm// „return“.)}
+						{@code comm// „return.“)}
 			}
 
 			{@code comm// ...}
@@ -13910,7 +13943,7 @@ public final class Svet extends JFrame
 		 * <p>Zobrazí štandardný dialóg so zadanou textovou správou.</p>
 		 * 
 		 * <p><image>DialogSprava.png<alt/>Ukážka vzhľadu dialógu
-		 * s informačnou správou</image>Ukážka vzhľadu dialógu
+		 * s informačnou správou.</image>Ukážka vzhľadu dialógu
 		 * s informačnou správou.</p>
 		 * 
 		 * @param správa text správy
@@ -13953,7 +13986,7 @@ public final class Svet extends JFrame
 		 * <p>Zobrazí štandardný dialóg so zadanou textovou správou.</p>
 		 * 
 		 * <p><image>DialogSprava.png<alt/>Ukážka vzhľadu dialógu
-		 * s informačnou správou</image>Ukážka vzhľadu dialógu
+		 * s informačnou správou.</image>Ukážka vzhľadu dialógu
 		 * s informačnou správou.</p>
 		 * 
 		 * @param správa text správy
@@ -13984,7 +14017,7 @@ public final class Svet extends JFrame
 		 * varovania.</p>
 		 * 
 		 * <p><image>DialogVarovanie.png<alt/>Ukážka vzhľadu dialógu
-		 * s varovaním</image>Ukážka vzhľadu dialógu s varovaním.</p>
+		 * s varovaním.</image>Ukážka vzhľadu dialógu s varovaním.</p>
 		 * 
 		 * @param varovanie text s obsahom varovania
 		 * 
@@ -14003,7 +14036,7 @@ public final class Svet extends JFrame
 		 * varovania.</p>
 		 * 
 		 * <p><image>DialogVarovanie.png<alt/>Ukážka vzhľadu dialógu
-		 * s varovaním</image>Ukážka vzhľadu dialógu s varovaním.</p>
+		 * s varovaním.</image>Ukážka vzhľadu dialógu s varovaním.</p>
 		 * 
 		 * @param varovanie text s obsahom varovania
 		 * @param titulok text titulku dialógového okna varovania
@@ -14023,7 +14056,7 @@ public final class Svet extends JFrame
 		 * chyby.</p>
 		 * 
 		 * <p><image>DialogChyba.png<alt/>Ukážka vzhľadu dialógu
-		 * s chybovým hlásením</image>Ukážka vzhľadu dialógu s chybovým
+		 * s chybovým hlásením.</image>Ukážka vzhľadu dialógu s chybovým
 		 * hlásením.</p>
 		 * 
 		 * @param chyba text s obsahom chyby
@@ -14043,7 +14076,7 @@ public final class Svet extends JFrame
 		 * chyby.</p>
 		 * 
 		 * <p><image>DialogChyba.png<alt/>Ukážka vzhľadu dialógu
-		 * s chybovým hlásením</image>Ukážka vzhľadu dialógu s chybovým
+		 * s chybovým hlásením.</image>Ukážka vzhľadu dialógu s chybovým
 		 * hlásením.</p>
 		 * 
 		 * @param chyba text s obsahom chyby
@@ -14084,7 +14117,7 @@ public final class Svet extends JFrame
 		 * </table></td></tr></table>
 		 * 
 		 * @param otázka text otázky
-		 * @return celé číslo označujúce poradové číslo (index) tlačidla
+		 * @return celé číslo označujúce „poradové číslo“ (index) tlačidla
 		 *     zvoleného ako odpoveď alebo {@link GRobot#ZAVRETÉ ZAVRETÉ},
 		 *     keď používateľ zavrel dialóg
 		 * 
@@ -14133,7 +14166,7 @@ public final class Svet extends JFrame
 		 * 
 		 * @param otázka text otázky
 		 * @param titulok text titulku okna s otázkou
-		 * @return celé číslo označujúce poradové číslo (index) tlačidla
+		 * @return celé číslo označujúce „poradové číslo“ (index) tlačidla
 		 *     zvoleného ako odpoveď alebo {@link GRobot#ZAVRETÉ ZAVRETÉ},
 		 *     keď používateľ zavrel dialóg
 		 * 
@@ -14173,7 +14206,7 @@ public final class Svet extends JFrame
 		 * 
 		 * @param otázka text otázky
 		 * @param tlačidlá zoznam popisov tlačidiel
-		 * @return celé číslo označujúce poradové číslo (index) tlačidla
+		 * @return celé číslo označujúce „poradové číslo“ (index) tlačidla
 		 *     zvoleného ako odpoveď alebo {@link GRobot#ZAVRETÉ ZAVRETÉ},
 		 *     keď používateľ zavrel dialóg
 		 * 
@@ -14214,7 +14247,7 @@ public final class Svet extends JFrame
 		 * @param otázka text otázky
 		 * @param titulok text titulku okna s otázkou
 		 * @param tlačidlá zoznam popisov tlačidiel
-		 * @return celé číslo označujúce poradové číslo (index) tlačidla
+		 * @return celé číslo označujúce „poradové číslo“ (index) tlačidla
 		 *     zvoleného ako odpoveď alebo {@link GRobot#ZAVRETÉ ZAVRETÉ},
 		 *     keď používateľ zavrel dialóg
 		 * 
@@ -14255,9 +14288,9 @@ public final class Svet extends JFrame
 		 * 
 		 * @param otázka text otázky
 		 * @param tlačidlá zoznam popisov tlačidiel
-		 * @param predvolenéTlačidlo poradové číslo (index) predvoleného
+		 * @param predvolenéTlačidlo „poradové číslo“ (index) predvoleného
 		 *     tlačidla
-		 * @return celé číslo označujúce poradové číslo (index) tlačidla
+		 * @return celé číslo označujúce „poradové číslo“ (index) tlačidla
 		 *     zvoleného tlačidla ako odpoveď alebo {@link GRobot#ZAVRETÉ
 		 *     ZAVRETÉ}, keď používateľ zavrel dialóg
 		 * 
@@ -14309,9 +14342,9 @@ public final class Svet extends JFrame
 		 * @param otázka text otázky
 		 * @param titulok text titulku okna s otázkou
 		 * @param tlačidlá zoznam popisov tlačidiel
-		 * @param predvolenéTlačidlo poradové číslo (index) predvoleného
+		 * @param predvolenéTlačidlo „poradové číslo“ (index) predvoleného
 		 *     tlačidla
-		 * @return celé číslo označujúce poradové číslo (index) tlačidla
+		 * @return celé číslo označujúce „poradové číslo“ (index) tlačidla
 		 *     zvoleného ako odpoveď alebo {@link GRobot#ZAVRETÉ ZAVRETÉ},
 		 *     keď používateľ zavrel dialóg
 		 * 
@@ -14574,10 +14607,10 @@ public final class Svet extends JFrame
 			{@link Svet Svet}.{@link Svet#skryÚvodnúObrazovku() skryÚvodnúObrazovku}();
 
 			{@code comm// Ak by sme vo vedľajšej vetve vyššie uvedeného vetvenia neodstránili}
-			{@code comm// robota kresliča, tak pri prvom spustení (keby ešte nejestvoval}
+			{@code comm// robot (kresliča), tak pri prvom spustení (keby ešte nejestvoval}
 			{@code comm// obrázok) by sa nasledujúca kružnica nenakreslila a pod robotom}
-			{@code comm// inštancie HlavnáTrieda by bolo vidno (aspoň presvitajúc) ďalšieho}
-			{@code comm// červeného robota. Kružnica by sa v skutočnosti nakreslila –}
+			{@code comm// inštancie HlavnáTrieda by bolo vidno (aspoň presvitajúc) ďalší}
+			{@code comm// červený robot. Kružnica by sa v skutočnosti nakreslila –}
 			{@code comm// červenou farbou, ale do inštancie obrázok, do ktorej má kreslič}
 			{@code comm// presmerované kreslenie. (Obrázok je v tom čase už uložený, takže}
 			{@code comm// v ňom by ste ju nenašli.) Pri každom ďalšom spustení by sa}
@@ -14597,7 +14630,7 @@ public final class Svet extends JFrame
 		 * <p>Obrázok je pre demonštráciu polopriehľadný. Zobrazenie
 		 * priehľadnosti okna závisí od platformy a verzie Javy.</p>
 		 * 
-		 * <p class="attention"><b>Upozornenie:</b> Robota kresliča síce
+		 * <p class="attention"><b>Upozornenie:</b> Robot (kresliča) síce
 		 * odstránime z pamäti počítača, svet sa však už zrušiť nedá.
 		 * Rovnako platí, že svet je vytvorený i pri vykonaní príkazu
 		 * {@link Svet#zobrazÚvodnúObrazovku(String)
@@ -14729,7 +14762,7 @@ public final class Svet extends JFrame
 			// Výsledky pátrania:
 			// ------------------
 			//
-			//  1. Keď vynechám volanie „Svet.skry();“, tak to má za následok
+			//  1. Keď vynechám volanie „Svet.skry();,“ tak to má za následok
 			//     len to, že hlavné okno sa pred zobrazením úvodnej obrazovky
 			//     na chvíľu zobrazí. Už to dokáže rozhodiť kreslenie úvodnej
 			//     obrazovky natoľko, aby zlikvidovala priehľadnosť
@@ -15767,10 +15800,10 @@ public final class Svet extends JFrame
 				celé = -celé;
 			}
 
-			// Premennú parametra „celé“ si môžeme dovoliť „skartovať“.
+			// Premennú parametra „celé“ si môžeme dovoliť „skartovať.“
 			// Budeme z nej postupne odoberať hodnoty z poľa rímskeHodnoty
 			// a súčasne s tým pridávať ekvivalentné reťazce do zásobníka
-			// „rímske“.
+			// „rímske.“
 			for (int i = 0; i < rímskeHodnoty.length; ++i)
 			{
 				while (celé >= rímskeHodnoty[i])
@@ -15874,7 +15907,7 @@ public final class Svet extends JFrame
 			// Množina rôznych znakov, ktoré sa podobajú na znak mínus
 			// sú považované za znak negácie a ak sa nachádzajú na začiatku
 			// reťazca, tak sú vyhodnotené ako platné a sú z reťazca
-			// odstránené. (Informácia o tom sa uloží do príznaku „záporné“.)
+			// odstránené. (Informácia o tom sa uloží do príznaku „záporné.“)
 			boolean záporné;
 			if ('-' == rímske.charAt(0) || '–' == rímske.charAt(0) ||
 				'—' == rímske.charAt(0) || '−' == rímske.charAt(0) ||
@@ -16013,7 +16046,7 @@ public final class Svet extends JFrame
 					{@link Svet Svet}.{@link Svet#aktivujŠtandardnýVstup() aktivujŠtandardnýVstup}();
 				}
 
-				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#spracujRiadokVstupu(java.lang.String) spracujRiadokVstupu}(String riadokVstupu)
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#spracujRiadokVstupu(java.lang.String) spracujRiadokVstupu}({@link String String} riadokVstupu)
 				{
 					{@link Svet Svet}.{@link Svet#farbaTextu(java.awt.Color) farbaTextu}({@link Farebnosť#tmavohnedá tmavohnedá});
 					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object...) vypíšRiadok}(riadokVstupu);
@@ -16049,7 +16082,7 @@ public final class Svet extends JFrame
 			{
 				try { štandardnýVstup = new ŠtandardnýVstup(false); }
 				catch (UnsupportedEncodingException e)
-				{ GRobotException.vypíšChybovéHlásenia(e, false); }
+				{ GRobotException.vypíšChybovéHlásenia(e/*, false*/); }
 				return null != štandardnýVstup;
 			}
 			else return false;
@@ -16117,86 +16150,103 @@ public final class Svet extends JFrame
 		 * {@linkplain #štandardnýVstupAktívny() vstup aktívny}, tak ho
 		 * {@linkplain #aktivujŠtandardnýVstup() aktivuje} (s použitím
 		 * predvoleného kódovania UTF-8). Ak už nie je možné prijať žiadne
-		 * ďalšie údaje (vstupný prúd bol konečný a už sa skončil), tak
-		 * táto metóda bez ďalšieho čakania vráti hodnotu
-		 * {@code valnull}.</p>
+		 * ďalšie údaje (vstupný prúd bol konečný a už sa skončil – napríklad
+		 * keď prichádzal cez rúru (pipe) operačného systému), tak táto
+		 * metóda bez ďalšieho čakania vráti hodnotu {@code valnull}.</p>
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
-		 * <!-- TODO dokončiť vzhľad a výsledok príkladu použitia -->
 		 * <pre CLASS="example">
-			System.out.print("Zadaj svoje meno: ");
-			String meno = Svet.čakajNaVstup();
-			System.out.println("Ahoj, " + meno + "!");
+			{@link System System}.{@link System#out out}.{@link java.io.PrintStream#print(String) print}({@code srg"Zadaj svoje meno: "});
+			{@link String String} meno = {@link Svet Svet}.{@link Svet#čakajNaVstup() čakajNaVstup}();
+			{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"Ahoj, "} + meno + {@code srg"!"});
 			</pre>
 		 * 
 		 * <p><b>Výsledok:</b></p>
 		 * 
+		 * <pre CLASS="example">
+			Zadaj svoje meno: Adam
+			Ahoj, Adam!
+			</pre>
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
-		 * <!-- TODO dokončiť vzhľad a výsledok príkladu použitia -->
 		 * <pre CLASS="example">
-			import knižnica.*;
+			{@code kwdimport} knižnica.*;
 
-			public class ČakanieNaVstup extends GRobot
+			{@code kwdpublic} {@code typeclass} ČakanieNaVstup {@code kwdextends} {@link GRobot GRobot}
 			{
-				public static void main(String[] args)
+				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 				{
-					// Dôležitá poznámka:
-					// ------------------
-					// 
-					// Tento komentár obsahuje kód ukazujúci štandardný postup pri
-					// čítaní údajov zo štandardného vstupu, ktorý nefunguje v kombinácii
-					// so spôsobom čítania vstupu programovacím rámcom GRobot. Ak by sme
-					// sa pokúsili použiť oboje, vznikla by výnimka.
-					// 
-					// try (java.io.BufferedReader čítač = new java.io.BufferedReader(
-					// 	new java.io.InputStreamReader(System.in)))
-					// {
-					// 	String riadokVstupu = čítač.readLine();
-					// 	System.out.println("Riadok vstupu: " + riadokVstupu);
-					// }
-					// catch (java.io.IOException e)
-					// {
-					// 	e.printStackTrace();
-					// }
-					// System.out.println("Vstupný prúd bol automaticky zavretý.");
-					// 
-					// Nasleduje skutočný príklad použitia čítania štandardného vstupu
-					// s použitím programovacieho rámca GRobot…
+					{@code comm// Dôležitá poznámka:}
+					{@code comm// ------------------}
+					{@code comm// }
+					{@code comm// Tento komentár obsahuje Java kód ukazujúci štandardný postup pri}
+					{@code comm// čítaní údajov zo štandardného vstupu bez použitia programovacieho}
+					{@code comm// rámca GRobot:}
+					{@code comm// }
+					{@code comm// try (java.io.BufferedReader čítač = new java.io.BufferedReader(}
+					{@code comm// 	new java.io.InputStreamReader(System.in)))}
+					{@code comm// &#123;}
+					{@code comm// 	String riadokVstupu = čítač.readLine();}
+					{@code comm// 	System.out.println("Riadok vstupu: " + riadokVstupu);}
+					{@code comm// &#125;}
+					{@code comm// catch (java.io.IOException e)}
+					{@code comm// &#123;}
+					{@code comm// 	e.printStackTrace();}
+					{@code comm// &#125;}
+					{@code comm// System.out.println("Vstupný prúd bol automaticky zavretý.");}
+					{@code comm// }
+					{@code comm// Tento spôsob nie je kompatibilný so spôsobom čítania vstupu}
+					{@code comm// programovacím rámcom GRobot. Ak by sme sa pokúsili použiť oboje,}
+					{@code comm// vznikla by výnimka.}
+					{@code comm// }
+					{@code comm// Nasleduje príklad použitia čítania štandardného vstupu}
+					{@code comm// s použitím programovacieho rámca GRobot…}
 
 
-					// Počet určíme s pomocou reťazca zadaného do prvého argumentu
-					// aplikácie, pričom najmenší povolený počet je 1.
-					int počet = 1;
-					if (args.length > 0)
+					{@code comm// Počet určíme s pomocou reťazca zadaného do prvého argumentu}
+					{@code comm// aplikácie, pričom najmenší povolený počet je 1.}
+					{@code typeint} počet = {@code num1};
+					{@code kwdif} (args.length &gt; {@code num0})
 					{
-						Long číslo = Svet.reťazecNaCeléČíslo(args[0]);
-						if (null != číslo) počet = číslo.intValue();
+						{@link Long Long} číslo = {@link Svet Svet}.{@link Svet#reťazecNaCeléČíslo(String) reťazecNaCeléČíslo}(args[{@code num0}]);
+						{@code kwdif} ({@code valnull} != číslo) počet = číslo.{@link Long#intValue() intValue}();
 					}
-					if (počet <= 0) počet = 1;
-					System.out.println("(Počet reťazcov: " + počet + ")");
+					{@code kwdif} (počet <= {@code num0}) počet = {@code num1};
+					{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"(Počet reťazcov: "} + počet + {@code srg")"});
 
-					// Prečítame zo štandardného vstupu určený počet reťazcov.
-					for (int i = 1; i <= počet; ++i)
+					{@code comm// Prečítame zo štandardného vstupu určený počet reťazcov.}
+					{@code kwdfor} ({@code typeint} i = {@code num1}; i <= počet; ++i)
 					{
-						System.out.print("Zadaj reťazec " + i + ": ");
-						String vstup = Svet.čakajNaVstup();
-						System.out.println("> " + vstup);
+						{@link System System}.{@link System#out out}.{@link java.io.PrintStream#print(String) print}({@code srg"Zadaj reťazec "} + i + {@code srg": "});
+						{@link String String} vstup = {@link Svet Svet}.{@link Svet#čakajNaVstup() čakajNaVstup}();
+						{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"> "} + vstup);
 					}
 
-					// Aplikáciu musíme „násilne“ uzavrieť, pretože z dôvodu prítomnosti
-					// automaticky vytváraných objektov programovacieho rámca v pamäti,
-					// by sa nebola schopná ukončiť spontánne. Fungovala by naďalej
-					// na pozadí.
-					Svet.koniec(0);
+					{@code comm// Aplikáciu musíme „násilne“ uzavrieť, pretože z dôvodu prítomnosti}
+					{@code comm// automaticky vytváraných objektov programovacieho rámca v pamäti,}
+					{@code comm// by sa nebola schopná ukončiť spontánne. Fungovala by naďalej}
+					{@code comm// na pozadí.}
+					{@link Svet Svet}.{@link Svet#koniec(int) koniec}({@code num0});
 				}
 			}
 			</pre>
 		 * 
 		 * <p><b>Výsledok:</b></p>
 		 * 
+		 * <p>Ak neprijímame vstup zo systémovej rúry (pipe), aplikácia
+		 * prečíta len jeden riadok:</p>
+		 * 
+		 * <pre CLASS="example">
+			(Počet reťazcov: 1)
+			Zadaj reťazec 1: «niečo, čo som zadal a potvrdil na vstupe»
+			&gt; «niečo, čo som zadal a potvrdil na vstupe»
+			</pre>
+		 * 
+		 * <p><image>cakanie-na-vstup.png<alt/>Ukážka čítania vstupu
+		 * v režime príkazového riadka.</image>Ukážka čítania vstupu
+		 * v režime príkazového riadka operačného systému Windows.</p>
 		 * 
 		 * @return reťazec prečítaný zo štandardného vstupu alebo
 		 *     {@code valnull}
@@ -16211,7 +16261,7 @@ public final class Svet extends JFrame
 			{
 				try { štandardnýVstup = new ŠtandardnýVstup(true); }
 				catch (UnsupportedEncodingException e)
-				{ GRobotException.vypíšChybovéHlásenia(e, false); }
+				{ GRobotException.vypíšChybovéHlásenia(e/*, false*/); }
 			}
 			else if (null == štandardnýVstup.zásobník)
 				štandardnýVstup.zbierajVstup();
@@ -16548,7 +16598,7 @@ public final class Svet extends JFrame
 		public static boolean vypisChybovychHlaseni() { return výpisChybovýchHlásení(); }
 
 		/**
-		 * <p>Zistí, či premená {@linkplain Svet#interaktívnyRežim(boolean)
+		 * <p>Zistí, či premenná {@linkplain Svet#interaktívnyRežim(boolean)
 		 * interaktívneho režimu} so zadaným názvom a typom jestvuje (je
 		 * definovaná).</p>
 		 * 
@@ -16710,7 +16760,9 @@ public final class Svet extends JFrame
 		 */
 		public static int vykonajSkript(String[] riadky)
 		{
+			// Skript.poslednáChyba = ŽIADNA_CHYBA;
 			Skript skript = vyrobSkript(riadky);
+			if (null == skript) return Skript.poslednáChyba;
 			return skript.vykonaj();
 
 			/* DEPRECATED:
@@ -17201,7 +17253,7 @@ public final class Svet extends JFrame
 		 * <p><b>Program:</b></p>
 		 * 
 		 * <p>Ak predchádzajúci skript uložíme do súboru s názvom
-		 * „Skript.GRScript“, tak na jeho spustenie môžeme použiť
+		 * „Skript.GRScript,“ tak na jeho spustenie môžeme použiť
 		 * nasledujúci úryvok kódu:</p>
 		 * 
 		 * <pre CLASS="example">
@@ -17785,7 +17837,7 @@ public final class Svet extends JFrame
 					{@code kwdnew} {@link ObsluhaUdalostí#ObsluhaUdalostí() ObsluhaUdalostí}()
 					{
 						{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@link ObsluhaUdalostí#ladenie(int, String, int) ladenie}(
-							{@code typeint} riadok, String príkaz, {@code typeint} správa)
+							{@code typeint} riadok, {@link String String} príkaz, {@code typeint} správa)
 						{
 							{@code comm// Nasledujúce vetvenie zabezpečuje spracovanie rôznych}
 							{@code comm// situácií počas ladenia:}
@@ -17896,7 +17948,7 @@ public final class Svet extends JFrame
 						}
 					};
 
-					{@code comm// Musíme zapnúť režim interaktívny režim (zapneme len Svet a robota),}
+					{@code comm// Musíme zapnúť režim interaktívny režim (zapneme len Svet a robot),}
 					{@code comm// režim ladenia a zabezpečíme, aby sa robot automaticky neskryl po}
 					{@code comm// prvom výpise na vnútornú konzolu programovacieho rámca (pozri}
 					{@code comm// poznámku na konci opisu metódy Plátno.}{@link Plátno#vypíš(Object[]) vypíš}{@code comm)}.
@@ -18479,8 +18531,8 @@ public final class Svet extends JFrame
 		 * konzolu stropu). No ich správanie je mierne pozmenené.
 		 * Reťazcový argument je vždy vypísaný ako prvý a po ňom nasledujú
 		 * ďalšie argumenty (jeden až štyri číselné alebo farba).
-		 * V prípade potreby je možné želaný výsledok dosiahnuť viacnásobným
-		 * zadaním príkazu {@code vypíš} a {@code vypíš riadok}.</p>
+		 * V prípade potreby sa želaný výsledok dá dosiahnuť viacnásobným
+		 * zadaním príkazov <em>vypíš</em> a <em>vypíš riadok</em>.</p>
 		 * 
 		 * <p>Ak sa riadok skriptu začína znakom {@code @}, tak je neprázdny
 		 * zvyšok riadka považovaný za názov {@linkplain 
@@ -18488,9 +18540,9 @@ public final class Svet extends JFrame
 		 * zvyšok riadka prázdny, tak je {@linkplain 
 		 * #interaktívnaInštancia(String) interaktívna inštancia} zrušená.</p>
 		 * 
-		 * <p>Niekoľko ďalších príkazov bolo transformovaných tak, aby lepšie
-		 * zapadali do fungovania interaktívneho režimu, napríklad:
-		 * zadaj číslo, uprav číslo, náhodné číslo, zadaj reťazec…</p>
+		 * <p>Niekoľko ďalších príkazov bolo transformovaných tak, aby
+		 * lepšie zapadali do fungovania interaktívneho režimu, napríklad:
+		 * <em>zadaj číslo, uprav číslo, náhodné číslo, zadaj reťazec</em>…</p>
 		 * 
 		 * <p> </p>
 		 * 
@@ -18745,6 +18797,9 @@ public final class Svet extends JFrame
 		 * CHYBA_VOLANIA_SKRIPTU}.</li>
 		 * </ul>
 		 * 
+		 * <p class="remark"><b>Poznámka:</b> Tabuľka chýb je v opise
+		 * metódy {@link Skript#textChyby(int) Skript.textChyby}.</p>
+		 * 
 		 * @return kód chyby – na získanie podrobností klikni na meno chyby
 		 *     v zozname vyššie
 		 * 
@@ -18779,6 +18834,9 @@ public final class Svet extends JFrame
 		 * {@linkplain Svet#interaktívnyRežim(boolean) interaktívneho režimu}
 		 * alebo
 		 * {@linkplain Svet#vykonajSkript(String[]) skriptu}.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Tabuľka chýb je v opise
+		 * metódy {@link Skript#textChyby(int) Skript.textChyby}.</p>
 		 * 
 		 * @return text ku kódu chyby
 		 * 
@@ -21579,7 +21637,7 @@ public final class Svet extends JFrame
 		 * zvuk počas jeho prehrávania, by sa tento reštartoval. (Nebolo by
 		 * možné prehrať sériu rovnakých zvukov, ktoré sa časovo prekrývajú.
 		 * To by pôsobilo neprirodzene – každé reštartovanie zvuku by bolo
-		 * počuteľné tak, ako keby sa zo zvuku zrazu časť „odsekla“.)</p>
+		 * počuteľné tak, ako keby sa zo zvuku zrazu časť „odsekla.“)</p>
 		 * 
 		 * @param súbor názov súboru so zvukom
 		 * @return zvuk v objekte typu {@link Zvuk Zvuk}
@@ -21678,7 +21736,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <p class="image"><a href="resources/zvuk.wav"
 		 * target="_blank"><image>zvuk-small.png<alt/>Grafické znázornenie
-		 * obsahu zvukového súboru „zvuk.wav“.</image>Zvuk
+		 * obsahu zvukového súboru „zvuk.wav.“</image>Zvuk
 		 * „zvuk.wav“ na prevzatie.</a></p>
 		 * 
 		 * <p style="text-align: center;"><audio controls><source
@@ -22134,9 +22192,9 @@ public final class Svet extends JFrame
 		// Generovanie tónov
 
 		/**
-		 * <p>Vypočíta harmonickú frekvenciu tónu na základe zadaného poradového
-		 * čísla noty (odporúčané sú hodnoty 1 až 12) a oktávy (odporúčané sú
-		 * hodnoty −1 až 9).</p>
+		 * <p>Vypočíta harmonickú frekvenciu tónu na základe zadaného
+		 * poradového čísla noty (odporúčané sú hodnoty 1 až 12) a oktávy
+		 * (odporúčané sú hodnoty −1 až 9).</p>
 		 * 
 		 * <p style="text-align: center;">Poradové čísla nôt zodpovedajú
 		 * nasledujúcim tónom:</p>
@@ -22206,7 +22264,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <p class="image"><a href="resources/hvizd.wav"
 		 * target="_blank"><image>hvizd-small.png<alt/>Grafické znázornenie
-		 * obsahu zvukového súboru „hvizd.wav“.</image>Zvuk
+		 * obsahu zvukového súboru „hvizd.wav.“</image>Zvuk
 		 * „hvizd.wav“ na prevzatie.</a></p>
 		 * 
 		 * <p style="text-align: center;"><audio controls><source
@@ -22333,7 +22391,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <p class="image"><a href="resources/brum.wav"
 		 * target="_blank"><image>brum-small.png<alt/>Grafické znázornenie
-		 * obsahu zvukového súboru „brum.wav“.</image>Zvuk
+		 * obsahu zvukového súboru „brum.wav.“</image>Zvuk
 		 * „brum.wav“ na prevzatie.</a></p>
 		 * 
 		 * <p style="text-align: center;"><audio controls><source
@@ -22479,9 +22537,9 @@ public final class Svet extends JFrame
 				{@link Svet Svet}.{@link Svet#čakaj(double) čakaj}({@code num0.200});
 
 				{@code kwdif} (!{@link Svet Svet}.{@link Svet#zavriSúborNaUloženieTónu() zavriSúborNaUloženieTónu}())
-					{@link System System}.err.{@link java.io.PrintStream#println(String) println}({@code srg"Súbor zvuku sa nepodarilo zapísať."});
+					{@link System System}.{@link System#err err}.{@link java.io.PrintStream#println(String) println}({@code srg"Súbor zvuku sa nepodarilo zapísať."});
 			}
-			{@code kwdelse} {@link System System}.err.{@link java.io.PrintStream#println(String) println}({@code srg"Súbor na zápis zvuku sa nepodarilo otvoriť."});
+			{@code kwdelse} {@link System System}.{@link System#err err}.{@link java.io.PrintStream#println(String) println}({@code srg"Súbor na zápis zvuku sa nepodarilo otvoriť."});
 
 			{@code comm// Ak by sme nevykonali nasledujúci príkaz, inštancia sveta by}
 			{@code comm// zostala stále otvorená (bez okna umožňujúceho jej zavretie)…}
@@ -22492,7 +22550,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <p class="image"><a href="resources/gong.wav"
 		 * target="_blank"><image>gong-small.png<alt/>Grafické znázornenie
-		 * obsahu zvukového súboru „gong.wav“.</image>Zvuk
+		 * obsahu zvukového súboru „gong.wav.“</image>Zvuk
 		 * „gong.wav“ na prevzatie.</a></p>
 		 * 
 		 * <p style="text-align: center;"><audio controls><source
@@ -22627,7 +22685,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <td><p class="image"><a href="resources/nahoda-01.wav"
 		 * target="_blank"><image>nahoda-01-small.png<alt/>Grafické
-		 * znázornenie obsahu zvukového súboru „nahoda-01.wav“.</image>Zvuk
+		 * znázornenie obsahu zvukového súboru „nahoda-01.wav.“</image>Zvuk
 		 * „nahoda-01.wav“ na prevzatie.</a></p>
 		 * 
 		 * <p style="text-align: center;"><audio controls><source
@@ -22636,7 +22694,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <td><p class="image"><a href="resources/nahoda-02.wav"
 		 * target="_blank"><image>nahoda-02-small.png<alt/>Grafické
-		 * znázornenie obsahu zvukového súboru „nahoda-02.wav“.</image>Zvuk
+		 * znázornenie obsahu zvukového súboru „nahoda-02.wav.“</image>Zvuk
 		 * „nahoda-02.wav“ na prevzatie.</a></p>
 		 * 
 		 * <p style="text-align: center;"><audio controls><source
@@ -22673,15 +22731,13 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Spustí časovač so zadaným časovým intervalom v sekundách.
-		 * Časovač volá v zadanom intervale metódu {@link ObsluhaUdalostí
-		 * ObsluhaUdalostí}.{@link ObsluhaUdalostí#tik() tik()}, v ktorej
-		 * je možné získať objekt s informáciami o poslednej udalosti
-		 * časovača metódou {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link 
-		 * ÚdajeUdalostí#tik() tik()}. Pri viacnásobnom volaní tejto metódy
-		 * je predchádzajúci časovač vždy zastavený. Časovač môže byť
-		 * spustený niektorými metódami automaticky. Pozri napríklad:
-		 * {@link GRobot#rýchlosť(double) rýchlosť}, {@link 
-		 * GRobot#uhlováRýchlosť(double) uhlováRýchlosť}…</p>
+		 * Pri viacnásobnom volaní tejto metódy je predchádzajúci časovač
+		 * vždy zastavený (to aj vtedy, keď je zadaný rovnaký časový interval
+		 * ako naposledy) a je vytvorený nový časovač so zadaným časovým
+		 * intervalom.</p>
+		 * 
+		 * <p>Ďalšie podrobnosti o časovači sú uvedené v opise metódy
+		 * {@link #spustiČasovač() spustiČasovač()}.</p>
 		 * 
 		 * @param čas časový interval v sekundách; desatinná časť je
 		 *     zaokrúhlená na milisekundy
@@ -22701,17 +22757,31 @@ public final class Svet extends JFrame
 		 * <p>Spustí časovač s naposledy zadaným časovým intervalom
 		 * (v sekundách) alebo s predvoleným intervalom 40 milisekúnd (ak
 		 * nebol v činnosti). (Štyridsať milisekúnd zodpovedá snímkovacej
-		 * frekvencii 25 snímok za sekundu.) Časovač spúšťa v zadanom
-		 * časovom intervale metódu {@link ObsluhaUdalostí
-		 * ObsluhaUdalostí}.{@link ObsluhaUdalostí#tik() tik()}, v ktorej je
-		 * možné získať objekt s informáciami o poslednej udalosti časovača
-		 * metódou {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link 
-		 * ÚdajeUdalostí#tik() tik()}. Ak časovač nie je v činnosti, tak je
-		 * viacnásobné volanie tejto metódy (na rozdiel od {@link 
-		 * #spustiČasovač(double) spustiČasovač(čas)}) ignorované. Časovač
-		 * môže byť spustený niektorými metódami automaticky. Pozri
-		 * napríklad: {@link GRobot#rýchlosť(double) rýchlosť}, {@link 
-		 * GRobot#uhlováRýchlosť(double) uhlováRýchlosť}…</p>
+		 * frekvencii 25 snímok za sekundu.) Viacnásobné volanie tejto metódy
+		 * po spustení časovača je (na rozdiel od verzie {@link 
+		 * #spustiČasovač(double) spustiČasovač(čas)}) ignorované.</p>
+		 * 
+		 * <p>Časovač spúšťa v zadanom časovom intervale metódy (reakcie)
+		 * prislúchajúce udalostiam súvisiacim s časom, čo je reakcia
+		 * {@link ObsluhaUdalostí ObsluhaUdalostí}<code>.</code>{@link 
+		 * ObsluhaUdalostí#tik() tik()}, v ktorej je v prípade potreby možné
+		 * s výhodou získať objekt s informáciami o poslednej udalosti
+		 * časovača prostredníctvom metódy {@link ÚdajeUdalostí
+		 * ÚdajeUdalostí}<code>.</code>{@link ÚdajeUdalostí#tik() tik()}.
+		 * Ďalšími dvomi najčastejšie spúšťanými reakciami sú {@linkplain 
+		 * GRobot robotova} {@link GRobot#aktivita() aktivita}{@code ()}
+		 * a {@link GRobot#pasivita() pasivita}{@code ()}, podľa toho, či je
+		 * robot {@linkplain GRobot#aktivuj() aktívny} alebo {@linkplain 
+		 * GRobot#deaktivuj() pasívny}, ale okrem nich môžu byť spúšťané
+		 * rôzne ďalšie reakcie, ktoré v prostredí programovacieho rámca
+		 * vznikajú ako {@linkplain GRobot#zastavenie() zastavenie},
+		 * {@linkplain GRobot#dosiahnutieCieľa() dosiahnutie cieľa} a mnoho
+		 * iných, z ktorých žiadna bez aktívneho časovača nemôže fungovať.</p>
+		 * 
+		 * <p>Práve z toho dôvodu mnoho metód programovacieho rámca spúšťa
+		 * časovač automaticky, čo sa však vždy dá potlačiť. Pozri napríklad:
+		 * {@link GRobot#rýchlosť(double, boolean) rýchlosť}, {@link 
+		 * GRobot#uhlováRýchlosť(double, boolean) uhlováRýchlosť}…</p>
 		 * 
 		 * @see #spustiČasovač(double)
 		 * @see #odložČasovač(double)
@@ -25169,10 +25239,10 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Zistí šírku dostupného obrazovkového zariadenia.
-		 * Zariadenie je určené jeho poradovým číslom (indexom; čiže
+		 * Zariadenie je určené jeho „poradovým číslom“ (indexom; čiže
 		 * nula označuje prvé zariadenie).</p>
 		 * 
-		 * @param zariadenie poradové číslo zariadenia, ktorého šírka má byť
+		 * @param zariadenie číslo zariadenia, ktorého šírka má byť
 		 *     zistená
 		 * @return šírka obrazovkového zariadenia v pixeloch; hodnota
 		 *     {@code -}{@code num1} znamená chybu
@@ -25231,10 +25301,10 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Zistí výšku dostupného obrazovkového zariadenia.
-		 * Zariadenie je určené jeho poradovým číslom (indexom; čiže
+		 * Zariadenie je určené jeho „poradovým číslom“ (indexom; čiže
 		 * nula označuje prvé zariadenie).</p>
 		 * 
-		 * @param zariadenie poradové číslo zariadenia, ktorého výška má byť
+		 * @param zariadenie číslo zariadenia, ktorého výška má byť
 		 *     zistená
 		 * @return výška obrazovkového zariadenia v pixeloch; hodnota
 		 *     {@code -}{@code num1} znamená chybu
@@ -25295,7 +25365,7 @@ public final class Svet extends JFrame
 		 * <p>(Príklad použitia tejto metódy je pri opise metódy
 		 * {@link #celáObrazovka(int, boolean)}.)</p>
 		 * 
-		 * @param zariadenie poradové číslo zariadenia, ktoré má byť použité
+		 * @param zariadenie číslo zariadenia, ktoré má byť použité
 		 *     v režime celej obrazovky
 		 * @return informuje o úspešnosti operácie – hodnota {@code valtrue}
 		 *     znamená úspech a {@code valfalse} neúspech
@@ -25355,7 +25425,7 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Pokúsi sa prepnúť svet do režimu celej obrazovky alebo späť
 		 * na určenom zobrazovacom zariadení. Zariadenie je určené jeho
-		 * poradovým číslom (indexom; čiže nula označuje prvé
+		 * „poradovým číslom“ (indexom; čiže nula označuje prvé
 		 * zariadenie).</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> V režime celej obrazovky nie
@@ -25377,7 +25447,7 @@ public final class Svet extends JFrame
 		 * je možné nijakým spôsobom obnoviť. Pri prechode späť do
 		 * „normálneho“ režimu je viditeľnosť kurzora automaticky obnovená.
 		 * V prípade potreby je možné použiť na zobrazenie polohy kurzora
-		 * niektorého robota, ktorý bude sledovať polohu myši.</p>
+		 * niektorý robot, ktorý bude sledovať polohu myši.</p>
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
@@ -25419,7 +25489,7 @@ public final class Svet extends JFrame
 			}
 			</pre>
 		 * 
-		 * @param zariadenie poradové číslo zariadenia, ktoré má byť použité
+		 * @param zariadenie číslo zariadenia, ktoré má byť použité
 		 *     v režime celej obrazovky
 		 * @param celáObrazovka ak je {@code valtrue}, tak má byť režim celej
 		 *     obrazovky zapnutý, ak je {@code valfalse}, tak má byť režim celej
@@ -26046,8 +26116,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Aby mohlo byť vlnenie automaticky
 		 * vykonávané, tak v prípade vytvorenia novej inštancie ju táto
-		 * metóda automaticky registruje v prostredí grafického
-		 * robota.</p>
+		 * metóda automaticky registruje v prostredí grafického robota.</p>
 		 * 
 		 * <p class="attention"><b>Upozornenie:</b> Ak svet grafického
 		 * robota nemá aktívny {@linkplain Svet#spustiČasovač() časovač},
@@ -26125,8 +26194,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Aby mohlo byť vlnenie automaticky
 		 * vykonávané, tak v prípade vytvorenia novej inštancie ju táto
-		 * metóda automaticky registruje v prostredí grafického
-		 * robota.</p>
+		 * metóda automaticky registruje v prostredí grafického robota.</p>
 		 * 
 		 * <p>Ak by svet grafického robota nemal aktívny
 		 * {@linkplain Svet#spustiČasovač() časovač}, tak by vlnenie nemohlo
@@ -26186,8 +26254,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Aby mohlo byť vlnenie automaticky
 		 * vykonávané, tak v prípade vytvorenia novej inštancie ju táto
-		 * metóda automaticky registruje v prostredí grafického
-		 * robota.</p>
+		 * metóda automaticky registruje v prostredí grafického robota.</p>
 		 * 
 		 * <p class="caution"><b>Pozor!</b> Ak svet grafického robota nemá
 		 * aktívny {@linkplain Svet#spustiČasovač() časovač}, tak vlnenie
@@ -26254,8 +26321,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Aby mohlo byť vlnenie automaticky
 		 * vykonávané, tak v prípade vytvorenia novej inštancie ju táto
-		 * metóda automaticky registruje v prostredí grafického
-		 * robota.</p>
+		 * metóda automaticky registruje v prostredí grafického robota.</p>
 		 * 
 		 * <p>Ak by svet grafického robota nemal aktívny
 		 * {@linkplain Svet#spustiČasovač() časovač}, tak by vlnenie nemohlo
@@ -26320,8 +26386,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Aby mohlo byť vlnenie automaticky
 		 * vykonávané, tak v prípade vytvorenia novej inštancie ju táto
-		 * metóda automaticky registruje v prostredí grafického
-		 * robota.</p>
+		 * metóda automaticky registruje v prostredí grafického robota.</p>
 		 * 
 		 * <p class="caution"><b>Pozor!</b> Ak svet grafického robota nemá
 		 * aktívny {@linkplain Svet#spustiČasovač() časovač}, tak vlnenie

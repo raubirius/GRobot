@@ -6,7 +6,7 @@
  * (the “License”); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an “AS IS” BASIS,
@@ -17,7 +17,6 @@
 
 // package org.apache.tools.zip;
 package knižnica.apacheAntZIP;
-
 
 import java.util.zip.CRC32;
 import java.util.zip.ZipException;
@@ -39,7 +38,7 @@ import java.util.zip.ZipException;
  *         GID           Short           group ID
  *         (var.)        variable        symbolic link filename
  * </pre>
- * taken from appnote.iz (Info-ZIP note, 981119) found at <a
+ * <p>taken from appnote.iz (Info-ZIP note, 981119) found at <a
  * href="ftp://ftp.uu.net/pub/archiving/zip/doc/">ftp://ftp.uu.net/pub/archiving/zip/doc/</a></p>
 
  * 
@@ -110,17 +109,19 @@ public class AsiExtraField implements ZipExtraField, UnixStat, Cloneable {
 	/**
 	 * Length of the extra field in the local file data - without
 	 * Header-ID or length specifier.
-	 * @return a <code>ZipShort</code> for the length of the data of this extra field
+	 * @return a <code>ZipShort</code> for the length of the data of this
+	 * extra field
 	 * @since 1.1
 	 */
 	public ZipShort getLocalFileDataLength() {
-		return new ZipShort(WORD         // CRC
-						+ 2         // Mode
-						+ WORD         // SizDev
-						+ 2         // UID
-						+ 2         // GID
-						+ getLinkedFile().getBytes().length);
-						// Uses default charset - see class Javadoc
+		return new ZipShort(
+			  WORD      // CRC
+			+ 2         // Mode
+			+ WORD      // SizDev
+			+ 2         // UID
+			+ 2         // GID
+			+ getLinkedFile().getBytes().length);
+			// Uses default charset - see class Javadoc
 	}
 
 	/**
@@ -143,15 +144,13 @@ public class AsiExtraField implements ZipExtraField, UnixStat, Cloneable {
 		byte[] data = new byte[getLocalFileDataLength().getValue() - WORD];
 		System.arraycopy(ZipShort.getBytes(getMode()), 0, data, 0, 2);
 
-		byte[] linkArray = getLinkedFile().getBytes(); // Uses default charset - see class Javadoc
-		// CheckStyle:MagicNumber OFF
-		System.arraycopy(ZipLong.getBytes(linkArray.length),
-						0, data, 2, WORD);
+		byte[] linkArray = getLinkedFile().getBytes();
+			// Uses default charset - see class Javadoc
 
-		System.arraycopy(ZipShort.getBytes(getUserId()),
-						0, data, 6, 2);
-		System.arraycopy(ZipShort.getBytes(getGroupId()),
-						0, data, 8, 2);
+		// CheckStyle:MagicNumber OFF
+		System.arraycopy(ZipLong.getBytes(linkArray.length), 0, data, 2, WORD);
+		System.arraycopy(ZipShort.getBytes(getUserId()),  0, data, 6, 2);
+		System.arraycopy(ZipShort.getBytes(getGroupId()), 0, data, 8, 2);
 
 		System.arraycopy(linkArray, 0, data, 10, linkArray.length);
 		// CheckStyle:MagicNumber ON
@@ -291,24 +290,24 @@ public class AsiExtraField implements ZipExtraField, UnixStat, Cloneable {
 	 * @throws ZipException on error
 	 */
 	public void parseFromLocalFileData(byte[] data, int offset, int length)
-		throws ZipException {
-
+		throws ZipException
+	{
 		long givenChecksum = ZipLong.getValue(data, offset);
 		byte[] tmp = new byte[length - WORD];
 		System.arraycopy(data, offset + WORD, tmp, 0, length - WORD);
 		crc.reset();
 		crc.update(tmp);
+
 		long realChecksum = crc.getValue();
 		if (givenChecksum != realChecksum) {
-			throw new ZipException("bad CRC checksum "
-								+ Long.toHexString(givenChecksum)
-								+ " instead of "
-								+ Long.toHexString(realChecksum));
+			throw new ZipException(
+				"bad CRC checksum " + Long.toHexString(givenChecksum) +
+				" instead of " + Long.toHexString(realChecksum));
 		}
 
 		int newMode = ZipShort.getValue(tmp, 0);
 		// CheckStyle:MagicNumber OFF
-		byte[] linkArray = new byte[(int) ZipLong.getValue(tmp, 2)];
+		byte[] linkArray = new byte[(int)ZipLong.getValue(tmp, 2)];
 		uid = ZipShort.getValue(tmp, 6);
 		gid = ZipShort.getValue(tmp, 8);
 
@@ -342,7 +341,7 @@ public class AsiExtraField implements ZipExtraField, UnixStat, Cloneable {
 	@Override
 	public Object clone() {
 		try {
-			AsiExtraField cloned = (AsiExtraField) super.clone();
+			AsiExtraField cloned = (AsiExtraField)super.clone();
 			cloned.crc = new CRC32();
 			return cloned;
 		} catch (CloneNotSupportedException cnfe) {

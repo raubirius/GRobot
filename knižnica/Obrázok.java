@@ -307,7 +307,7 @@ import static knižnica.Konštanty.ZÁPIS_GIF_ANIMÁCIE;
  * 
  * <p><b>Výsledok:</b></p>
  * 
- * <p><image>hodinoviRoboti.png<alt/>Hodinoví roboti.</image>Na ploche
+ * <p><image>hodinoveRoboty.png<alt/>Hodinové roboty.</image>Na ploche
  * plátna sa bude pohybovať niekoľko „hodinových robotov.“</p>
  * 
  * @see Svet#priečinokObrázkov(String)
@@ -1715,7 +1715,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 					{@code comm// Zastavíme časomieru aj časovač a zobrazíme výsledok (na konzole):}
 					{@code typedouble} čas = {@link Svet Svet}.{@link Svet#zastavČasomieru() zastavČasomieru}();
 					{@link Svet Svet}.{@link Svet#zastavČasovač() zastavČasovač}();
-					{@link System System}.out.{@link java.io.PrintStream#println(String) println}({@code srg"Čítanie animácie trvalo: "} +
+					{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"Čítanie animácie trvalo: "} +
 						{@link Math Math}.{@link Math#round(double) round}(čas / {@code num60}) + {@code srg" min "} + {@link GRobot#F(double, int) F}(čas % {@code num60}, {@code num2}) + {@code srg" s"});
 
 					{@code comm// Prečítané – odteraz treba zobrazovať animáciu:}
@@ -1815,8 +1815,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * vhodné sa zaoberať najskôr ním).</p>
 		 * 
 		 * <table class="centered"><tr>
-		 * <td><image>sekvencia-png-1.gif<alt/>Sekvencia 1</image></td>
-		 * <td><image>sekvencia-png-2.gif<alt/>Sekvencia 2</image></td>
+		 * <td><image>sekvencia-png-1.gif<alt/>Sekvencia 1.</image></td>
+		 * <td><image>sekvencia-png-2.gif<alt/>Sekvencia 2.</image></td>
 		 * </tr><tr><td colspan="2"><p class="image">Ukážky možného vzhľadu
 		 * prečítanej animáce, ak bola sekvencia vygenerovaná príkladom
 		 * z opisu metódy {@link #ulož(String, boolean) ulož(súbor, prepísať)}
@@ -2361,14 +2361,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * obmedzení. Ak chceme vytvoriť obmedzenie tvaru, ktorý je
 		 * možné vytvoriť inou množinovou operáciou, môžeme na obmedzenie
 		 * kreslenia použiť aj {@link Oblasť Oblasť} (zadanú namiesto
-		 * parametra {@code tvar}). Obmedzenia sú platné pre všetkých
-		 * robotov a zrušíme ich volaním metódy {@link #kresliVšade()
+		 * parametra {@code tvar}). Obmedzenia sú platné pre všetky
+		 * roboty a zrušíme ich volaním metódy {@link #kresliVšade()
 		 * kresliVšade}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Pri takomto orezávaní nie
 		 * je na všetkých platformách a/alebo implementáciách virtuálneho
 		 * stroja Javy dostupná funkcia anti-aliasingu, čo zjednodušene
-		 * povedané znamená, že okraje orezanej kresby budú „zúbkaté“.
+		 * povedané znamená, že okraje orezanej kresby budú „zúbkaté.“
 		 * Ak sa chcete tejto nedokonalosti vyhnúť, použite radšej funkciu
 		 * {@linkplain Plátno#použiMasku masky}. Tá dovoľuje ovplyvňovať
 		 * úroveň priehľadnosti s jemnosťou na jednotlivé body rastra.</p>
@@ -2393,13 +2393,13 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * 
 		 * <p>Rovnako ako pri metóde {@link #kresliDo(Shape) kresliDo}, sa
 		 * aj toto obmedzenie kombinuje s aktuálnymi obmedzeniami kreslenia
-		 * a je platné pre všetkých robotov. Všetky ombedzenia zrušíme
+		 * a je platné pre všetky roboty. Všetky ombedzenia zrušíme
 		 * volaním metódy {@link #kresliVšade() kresliVšade}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Pri takomto orezávaní nie
 		 * je na všetkých platformách a/alebo implementáciách virtuálneho
 		 * stroja Javy dostupná funkcia anti-aliasingu, čo zjednodušene
-		 * povedané znamená, že okraje orezanej kresby budú „zúbkaté“.
+		 * povedané znamená, že okraje orezanej kresby budú „zúbkaté.“
 		 * Ak sa chcete tejto nedokonalosti vyhnúť, použite radšej funkciu
 		 * {@linkplain Plátno#použiMasku masky}. Tá dovoľuje ovplyvňovať
 		 * úroveň priehľadnosti s jemnosťou na jednotlivé body rastra.</p>
@@ -2824,8 +2824,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * Ak má tento objekt obrázka nastaveného takzvaného
 		 * {@linkplain #kreslič(GRobot) kresliča}, tak táto metóda použije na
 		 * nakreslenie jeho farbu alebo náter a štýl čiary.
-		 * V opačnom prípade použije {@linkplain Svet#hlavnýRobot() hlavného
-		 * robota}.</p>
+		 * V opačnom prípade použije {@linkplain Svet#hlavnýRobot() hlavný
+		 * robot}.</p>
 		 * 
 		 * <p>Zadaný tvar by mal byť vygenerovaný niektorým robotom (metódami
 		 * na kreslenie tvarov), pretože obrázky majú súradnicový priestor
@@ -2850,14 +2850,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * grafického robota vykoná metóda {@link #kreslič(GRobot) kreslič}
 		 * a to podľa toho, či je jej argumentom konkrétny robot – vtedy
 		 * mu kreslenie tvarov vypne, alebo hodnota {@code valnull} – vtedy
-		 * zapne kreslenie tvarov tomu robotovi, ktorý bol aktuálnym
+		 * zapne kreslenie tvarov tomu robotu, ktorý bol aktuálnym
 		 * kresličom konkrétneho obrázka. Metóda však nezaznamenáva počet
-		 * spustení pre robotov, takže v prípade jej náhodného spúšťania
+		 * spustení pre roboty, takže v prípade jej náhodného spúšťania
 		 * s rôznymi hodnotami argumentov – robotov alebo hodnôt
 		 * {@code valnull}, je výsledný stav kreslenia alebo nekreslenia
-		 * tvarov pre konkrétneho robota rovný tomu stavu, do ktorého ho
+		 * tvarov pre konkrétny robot rovný tomu stavu, do ktorého ho
 		 * preplo posledné spustenie dotknutej metódy. Treba si na to dať
-		 * pozor v prípade, že chceme toho istého robota použiť ako kresliča
+		 * pozor v prípade, že chceme ten istý robot použiť ako kresliča
 		 * viacerých obrázkov.</p>
 		 * 
 		 * <p>Na kreslenie robotom do obrázka je jednoduchšie je použiť
@@ -2896,7 +2896,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		/**
 		 * <p>Táto metóda slúži na kreslenie obrysov zadaného tvaru do
 		 * obrázka. Metóda potrebuje na svoje správne fungovanie zadanie
-		 * robota „kresliča“, ktorého farbu alebo náter a štýl čiary použije
+		 * robota „kresliča,“ ktorého farbu alebo náter a štýl čiary použije
 		 * na kreslenie. Ak je do metódy namiesto konkrétneho kresliča zadaná
 		 * hodnota {@code valnull}, tak je na získanie parametrov kreslenia
 		 * použitý {@linkplain Svet#hlavnýRobot() hlavný robot} (ak ten
@@ -2928,7 +2928,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * Ak má tento objekt obrázka nastaveného takzvaného
 		 * {@linkplain #kreslič(GRobot) kresliča}, tak táto metóda použije na
 		 * vyplnenie jeho farbu alebo náter. V opačnom
-		 * prípade použije {@linkplain Svet#hlavnýRobot() hlavného robota}
+		 * prípade použije {@linkplain Svet#hlavnýRobot() hlavný robot}
 		 * (ak ten nejestvuje, kreslenie nebude vykonané).</p>
 		 * 
 		 * <p>Zadaný tvar by mal byť vygenerovaný niektorým robotom (metódami
@@ -2954,14 +2954,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * grafického robota vykoná metóda {@link #kreslič(GRobot) kreslič}
 		 * a to podľa toho, či je jej argumentom konkrétny robot – vtedy
 		 * mu kreslenie tvarov vypne, alebo hodnota {@code valnull} – vtedy
-		 * zapne kreslenie tvarov tomu robotovi, ktorý bol aktuálnym
+		 * zapne kreslenie tvarov tomu robotu, ktorý bol aktuálnym
 		 * kresličom konkrétneho obrázka. Metóda však nezaznamenáva počet
-		 * spustení pre robotov, takže v prípade jej náhodného spúšťania
+		 * spustení pre roboty, takže v prípade jej náhodného spúšťania
 		 * s rôznymi hodnotami argumentov – robotov alebo hodnôt
 		 * {@code valnull}, je výsledný stav kreslenia alebo nekreslenia
-		 * tvarov pre konkrétneho robota rovný tomu stavu, do ktorého ho
+		 * tvarov pre konkrétny robot rovný tomu stavu, do ktorého ho
 		 * preplo posledné spustenie dotknutej metódy. Treba si na to dať
-		 * pozor v prípade, že chceme toho istého robota použiť ako kresliča
+		 * pozor v prípade, že chceme ten istý robot použiť ako kresliča
 		 * viacerých obrázkov.</p>
 		 * 
 		 * <p>Na kreslenie robotom do obrázka je jednoduchšie je použiť
@@ -3000,7 +3000,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		/**
 		 * <p>Táto metóda slúži na kreslenie vyplnených tvarov do obrázka.
 		 * Metóda potrebuje na svoje správne fungovanie zadanie robota
-		 * „kresliča“, ktorého farbu alebo náter použije na vyplnenie
+		 * „kresliča,“ ktorého farbu alebo náter použije na vyplnenie
 		 * zadaného tvaru. Ak je do metódy namiesto konkrétneho kresliča
 		 * zadaná hodnota {@code valnull}, tak je na získanie parametrov
 		 * kreslenia použitý {@linkplain Svet#hlavnýRobot() hlavný robot}
@@ -3990,7 +3990,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * čiernobiely(váhaČervenej, váhaZelenej, váhaModrej)}.</p>
 		 * 
 		 * <p><image>slnecnica-do-odtienov-sedej.jpeg<alt/>Porovnanie rôznych
-		 * metód prevodu do odtieňov šedej</image>Porovnanie rôznych metód
+		 * metód prevodu do odtieňov šedej.</image>Porovnanie rôznych metód
 		 * prevodu do odtieňov šedej.</p>
 		 * 
 		 * <p>Obrázok vyššie porovnáva rôzne metódy prevodu obrázka do
@@ -4630,8 +4630,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 		/**
 		 * <p>Rozmaže grafiku obrázka. Dosiahneme rovnaký efekt, ako keby sme
-		 * volali metódu: {@link #rozmaž(int, int, Color)
-		 * rozmaž}{@code (opakovanie, rozsah, }{@link Svet Svet}.{@link 
+		 * volali metódu: {@link #rozmaž(int, int, Color) rozmaž}{@code 
+		 * (opakovanie, rozsah, }{@link Svet Svet}<code>.</code>{@link 
 		 * Svet#farbaPozadia() farbaPozadia}{@code ());}
 		 * <!--   -->
 		 * To znamená, že pre priehľadné (neviditeľné) body je pri procese
@@ -4650,9 +4650,10 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 		/**
 		 * <p>Rozmaže grafiku obrázka. Dosiahneme rovnaký efekt, ako keby sme
-		 * volali metódu: {@link #rozmaž(int, int, Color)
-		 * rozmaž}{@code (opakovanie, }{@code num1}{@code , }{@link Svet
-		 * Svet}.{@link Svet#farbaPozadia() farbaPozadia}{@code ());}
+		 * volali metódu: {@link #rozmaž(int, int, Color) rozmaž}{@code 
+		 * (opakovanie, }{@code num1}{@code , }{@link Svet
+		 * Svet}<code>.</code>{@link Svet#farbaPozadia()
+		 * farbaPozadia}{@code ());}
 		 * <!--   -->
 		 * To znamená, že pre priehľadné (neviditeľné) body je pri procese
 		 * rozmazania použitá aktuálna farba pozadia sveta (pozri: {@link 
@@ -4669,9 +4670,10 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 		/**
 		 * <p>Rozmaže grafiku obrázka. Dosiahneme rovnaký efekt, ako keby sme
-		 * volali metódu: {@link #rozmaž(int, int, Color)
-		 * rozmaž}{@code (}{@code num1}{@code , }{@code num1}{@code , }{@link 
-		 * Svet Svet}.{@link Svet#farbaPozadia() farbaPozadia}{@code ());}
+		 * volali metódu: {@link #rozmaž(int, int, Color) rozmaž}{@code 
+		 * (}{@code num1}{@code , }{@code num1}{@code , }{@link 
+		 * Svet Svet}<code>.</code>{@link Svet#farbaPozadia()
+		 * farbaPozadia}{@code ());}
 		 * <!--   -->
 		 * To znamená, že pre priehľadné (neviditeľné) body je pri procese
 		 * rozmazania použitá aktuálna farba pozadia sveta (pozri: {@link 
@@ -6844,7 +6846,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 					{@link GRobot#zdvihniPero() zdvihniPero}();
 					{@link GRobot#skry() skry}();
 
-					{@code comm// Posunieme robota dozadu (nižšie na obrazovke) a začneme animáciu:}
+					{@code comm// Posunieme robot dozadu (nižšie na obrazovke) a začneme animáciu:}
 					{@link GRobot#dozadu(double) dozadu}({@code num52});
 
 					{@code comm// Prvá (päťsnímková) fáza animácie deformuje loptu pri dopade:}
@@ -6883,7 +6885,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 						animovanýObrázok.{@link Obrázok#pridajSnímku() pridajSnímku}();
 					}
 
-					{@code comm// Vrátime robota domov, obnovíme mu kreslenie na plátno}
+					{@code comm// Vrátime robot domov, obnovíme mu kreslenie na plátno}
 					{@code comm// a uložíme a spustíme animáciu:}
 					{@link GRobot#domov() domov}();
 					{@link GRobot#kresliNaPodlahu() kresliNaPodlahu}();
@@ -7143,7 +7145,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 									{@code comm// (Prípadné chyby ignorujeme…)}
 								}
 
-							{@code comm// Vrátime robota domov, obnovíme mu kreslenie na plátno}
+							{@code comm// Vrátime robot domov, obnovíme mu kreslenie na plátno}
 							{@code comm// podlahy:}
 							{@link GRobot#domov() domov}();
 							{@link GRobot#kresliNaPodlahu() kresliNaPodlahu}();
@@ -7173,7 +7175,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 					{@code comm// Upravíme rozmer plátna (ktorý zároveň určí rozmer obrázka):}
 					{@code valsuper}({@code num640}, {@code num480});
 
-					{@code comm// Skryjeme robota:}
+					{@code comm// Skryjeme robot:}
 					{@link GRobot#skry() skry}();
 
 					{@code comm// Vypneme automatické prekresľovanie:}
@@ -7206,7 +7208,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 					{@code comm// Zastavíme časomieru a necháme výsledok vypísať na konzolu}
 					{@code comm// (výpis sa zobrazí v okne terminálu BlueJa):}
 					{@code typedouble} čas = {@link Svet Svet}.{@link Svet#zastavČasomieru() zastavČasomieru}();
-					{@link System System}.out.{@link java.io.PrintStream#println(String) println}({@code srg"Tvorba animácie trvala: "} +
+					{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"Tvorba animácie trvala: "} +
 						{@link Math Math}.{@link Math#round(double) round}(čas / {@code num60}) + {@code srg" min "} + {@link GRobot#F(double, int) F}(čas % {@code num60}, {@code num2}) + {@code srg" s"});
 
 					{@code comm// Opäť spustíme časomieru, lebo sme zvedaví ako dlho bude trvať}
@@ -7222,7 +7224,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 					{@code comm// Opäť zastavíme časomieru a vypíšeme výsledok (tiež na konzolu):}
 					čas = {@link Svet Svet}.{@link Svet#zastavČasomieru() zastavČasomieru}();
-					{@link System System}.out.{@link java.io.PrintStream#println(String) println}({@code srg"Vytváranie sekvencie súborov trvalo: "} +
+					{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"Vytváranie sekvencie súborov trvalo: "} +
 						{@link Math Math}.{@link Math#round(double) round}(čas / {@code num60}) + {@code srg" min "} + {@link GRobot#F(double, int) F}(čas % {@code num60}, {@code num2}) + {@code srg" s"});
 
 					{@code comm// Možno je to pre niekoho zbytočné, ale nakoniec nakreslíme}
@@ -7232,7 +7234,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 					kresliIndikátor({@code num1.0});
 					{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
 
-					{@code comm// Vrátime robota domov, aby bola animácia kreslená korektne:}
+					{@code comm// Vrátime robot domov, aby bola animácia kreslená korektne:}
 					{@link GRobot#domov() domov}();
 
 					{@code comm// A spustíme animáciu aj časovač:}
@@ -7250,7 +7252,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 					{@link String String} cieľ, {@code typelong} stav, {@code typelong} celkovo)
 				{
 					{@code comm// Pred každým kreslení indikátora vymažeme grafiku podlahy}
-					{@code comm// a vrátime robota domov:}
+					{@code comm// a vrátime robot domov:}
 					{@link Plátno podlaha}.{@link Plátno#vymažGrafiku() vymažGrafiku}();
 					{@link GRobot#domov() domov}();
 
@@ -7316,8 +7318,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * <p>Po dokončení bude v okne aplikácie spustená vytvorená animácia.</p>
 		 * 
 		 * <table class="centered"><tr>
-		 * <td><image>sekvencia-png-1.gif<alt/>Sekvencia 1</image></td>
-		 * <td><image>sekvencia-png-2.gif<alt/>Sekvencia 2</image></td>
+		 * <td><image>sekvencia-png-1.gif<alt/>Sekvencia 1.</image></td>
+		 * <td><image>sekvencia-png-2.gif<alt/>Sekvencia 2.</image></td>
 		 * </tr><tr><td colspan="2"><p class="image">Ukážky možného vzhľadu
 		 * vytvorenej animáce – výsledok každého generovania je unikátny
 		 * <small>(plátno ukážok je úmyselne

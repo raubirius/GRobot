@@ -199,9 +199,9 @@ import knižnica.Poloha;
 			{@link Plátno podlaha}.{@link Plátno#obrázok(Image) obrázok}(predloha);
 
 			{@code comm// Aktivovanie vlnenia pre celý svet (ak by sme identifikátor „Svet“}
-			{@code comm// nahradili identifikátorom „podlaha“, vlnila by sa len podlaha,}
+			{@code comm// nahradili identifikátorom „podlaha,“ vlnila by sa len podlaha,}
 			{@code comm// robot by nebol ovlpyvnený; ak by sme ho nahradili identifikátorom}
-			{@code comm// „predloha“, vlnil by sa len obrázok predlohy, ktorý by sme museli}
+			{@code comm// „predloha,“ vlnil by sa len obrázok predlohy, ktorý by sme museli}
 			{@code comm// neustále kresliť na podlahu alebo strop, aby bolo jeho vlnenie}
 			{@code comm// viditeľné):}
 			{@link Svet Svet}.{@link Svet#pridajVlnenie() pridajVlnenie}();
@@ -427,13 +427,13 @@ import knižnica.Poloha;
 
 			{@code kwdelse} {@code kwdif} ({@link GRobot.ÚdajeUdalostí ÚdajeUdalostí}.{@link GRobot.ÚdajeUdalostí#kláves(int) kláves}({@link GRobot.Kláves Kláves}.{@link GRobot.Kláves#VK_U VK_U}))
 			{
-				{@code comm// Aktivuje robota prechádzajúceho zľava doprava simulujúceho}
+				{@code comm// Aktivuje robot prechádzajúci zľava doprava simulujúci}
 				{@code comm// vlnenie vlajky:}
 				{@code kwdif} (vlajka.{@link GRobot#aktívny() aktívny}()) vlajka.{@link GRobot#deaktivuj() deaktivuj}(); {@code kwdelse} vlajka.{@link GRobot#aktivuj() aktivuj}();
 			}
 			{@code kwdelse} {@code kwdif} ({@link GRobot.ÚdajeUdalostí ÚdajeUdalostí}.{@link GRobot.ÚdajeUdalostí#kláves(int) kláves}({@link GRobot.Kláves Kláves}.{@link GRobot.Kláves#VK_P VK_P}))
 			{
-				{@code comm// Aktivuje robota náhodne pridávajúceho vzruchy na hladinu, čím}
+				{@code comm// Aktivuje robot náhodne pridávajúci vzruchy na hladinu, čím}
 				{@code comm// simuluje kvapky dažďa (dopadajúce na hladinu z pohľadu}
 				{@code comm// pozorovateľa):}
 				{@code kwdif} (dážď.{@link GRobot#aktívny() aktívny}()) dážď.{@link GRobot#deaktivuj() deaktivuj}(); {@code kwdelse} dážď.{@link GRobot#aktivuj() aktivuj}();
@@ -495,7 +495,7 @@ import knižnica.Poloha;
 					{@code comm// SHIFT – pretáča rozvlnenú hladinu vpravo:}
 					vlnenie.{@link #pretoč(double, double) pretoč}({@code num10}, {@code num0});
 				{@code kwdelse}
-					{@code comm// Inak pootočí robota vpravo:}
+					{@code comm// Inak pootočí robot vpravo:}
 					{@link GRobot#vpravo() vpravo}();
 			}
 			{@code kwdelse} {@code kwdif} ({@link GRobot.ÚdajeUdalostí ÚdajeUdalostí}.{@link GRobot.ÚdajeUdalostí#kláves(int) kláves}({@link GRobot.Kláves Kláves}.{@link GRobot.Kláves#VĽAVO VĽAVO}))
@@ -509,7 +509,7 @@ import knižnica.Poloha;
 					{@code comm// SHIFT – pretáča rozvlnenú hladinu vľavo:}
 					vlnenie.{@link #pretoč(double, double) pretoč}(-{@code num10}, {@code num0});
 				{@code kwdelse}
-					{@code comm// Inak pootočí robota vľavo:}
+					{@code comm// Inak pootočí robot vľavo:}
 					{@link GRobot#vľavo() vľavo}();
 			}
 			{@code kwdelse} {@code kwdif} ({@link GRobot.ÚdajeUdalostí ÚdajeUdalostí}.{@link GRobot.ÚdajeUdalostí#kláves(int) kláves}({@link GRobot.Kláves Kláves}.{@link GRobot.Kláves#VK_J VK_J}))
@@ -540,7 +540,7 @@ import knižnica.Poloha;
 		{
 			{@code kwdif} ({@link GRobot.ÚdajeUdalostí ÚdajeUdalostí}.{@link GRobot.ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#ĽAVÉ ĽAVÉ}))
 			{
-				{@code comm// Ľavé tlačidlo určí robotovi nový cieľ:}
+				{@code comm// Ľavé tlačidlo určí robotu nový cieľ:}
 				{@link GRobot#cieľNaMyš() cieľNaMyš}();
 			}
 			{@code kwdelse}
@@ -3663,7 +3663,7 @@ public class Vlnenie
 	 * <p class="remark"><b>Poznámka:</b> Úbytok intenzity neznamená jej útlm,
 	 * ale odčítanie. To znamená, že efekt odčítania nejakej hodnoty od hladiny
 	 * s nulovou intenzitou má za následok vyvolanie vlnenia so zápornou
-	 * začiatočnou hodnotou „výšky“, resp. hĺbky vlny.</p>
+	 * začiatočnou hodnotou „výšky,“ resp. hĺbky vlny.</p>
 	 * 
 	 * @param obrázok obrázok, ktorého intenzita a priehľadnosť bodov budú
 	 *     použité na pridanie vzruchov k aktuálnej výškovej mape vlnenia
@@ -3702,7 +3702,7 @@ public class Vlnenie
 	 * <p class="remark"><b>Poznámka:</b> Úbytok intenzity neznamená jej útlm,
 	 * ale odčítanie. To znamená, že efekt odčítania nejakej hodnoty od hladiny
 	 * s nulovou intenzitou má za následok vyvolanie vlnenia so zápornou
-	 * začiatočnou hodnotou „výšky“, resp. hĺbky vlny.</p>
+	 * začiatočnou hodnotou „výšky,“ resp. hĺbky vlny.</p>
 	 * 
 	 * @param obrázok obrázok, ktorého intenzita a priehľadnosť bodov budú
 	 *     použité na odobratie vzruchov k aktuálnej výškovej mape vlnenia
@@ -3739,7 +3739,7 @@ public class Vlnenie
 	 * <p class="remark"><b>Poznámka:</b> Úbytok intenzity neznamená jej útlm,
 	 * ale odčítanie. To znamená, že efekt odčítania nejakej hodnoty od hladiny
 	 * s nulovou intenzitou má za následok vyvolanie vlnenia so zápornou
-	 * začiatočnou hodnotou „výšky“, resp. hĺbky vlny.</p>
+	 * začiatočnou hodnotou „výšky,“ resp. hĺbky vlny.</p>
 	 * 
 	 * @param tvar tvar, podľa ktorého bude ovplyvnená prislúchajúca časť
 	 *     hladiny
@@ -3775,7 +3775,7 @@ public class Vlnenie
 	 * <p class="remark"><b>Poznámka:</b> Úbytok intenzity neznamená jej útlm,
 	 * ale odčítanie. To znamená, že efekt odčítania nejakej hodnoty od hladiny
 	 * s nulovou intenzitou má za následok vyvolanie vlnenia so zápornou
-	 * začiatočnou hodnotou „výšky“, resp. hĺbky vlny.</p>
+	 * začiatočnou hodnotou „výšky,“ resp. hĺbky vlny.</p>
 	 * 
 	 * @param tvar tvar, podľa ktorého bude ovplyvnená prislúchajúca časť
 	 *     hladiny
@@ -3813,7 +3813,7 @@ public class Vlnenie
 	 * <p class="remark"><b>Poznámka:</b> Úbytok intenzity neznamená jej útlm,
 	 * ale odčítanie. To znamená, že efekt odčítania nejakej hodnoty od hladiny
 	 * s nulovou intenzitou má za následok vyvolanie vlnenia so zápornou
-	 * začiatočnou hodnotou „výšky“, resp. hĺbky vlny.</p>
+	 * začiatočnou hodnotou „výšky,“ resp. hĺbky vlny.</p>
 	 * 
 	 * @param tvar tvar, podľa ktorého bude ovplyvnená prislúchajúca časť
 	 *     hladiny
@@ -3857,7 +3857,7 @@ public class Vlnenie
 	 * <p class="remark"><b>Poznámka:</b> Úbytok intenzity neznamená jej útlm,
 	 * ale odčítanie. To znamená, že efekt odčítania nejakej hodnoty od hladiny
 	 * s nulovou intenzitou má za následok vyvolanie vlnenia so zápornou
-	 * začiatočnou hodnotou „výšky“, resp. hĺbky vlny.</p>
+	 * začiatočnou hodnotou „výšky,“ resp. hĺbky vlny.</p>
 	 * 
 	 * @param tvar tvar, podľa ktorého bude ovplyvnená prislúchajúca časť
 	 *     hladiny
@@ -3898,7 +3898,7 @@ public class Vlnenie
 	 * <p class="remark"><b>Poznámka:</b> Úbytok intenzity neznamená jej útlm,
 	 * ale odčítanie. To znamená, že efekt odčítania nejakej hodnoty od hladiny
 	 * s nulovou intenzitou má za následok vyvolanie vlnenia so zápornou
-	 * začiatočnou hodnotou „výšky“, resp. hĺbky vlny.</p>
+	 * začiatočnou hodnotou „výšky,“ resp. hĺbky vlny.</p>
 	 * 
 	 * @param tvar tvar, podľa ktorého bude ovplyvnená prislúchajúca časť
 	 *     hladiny
@@ -3946,7 +3946,7 @@ public class Vlnenie
 	 * <p class="remark"><b>Poznámka:</b> Úbytok intenzity neznamená jej útlm,
 	 * ale odčítanie. To znamená, že efekt odčítania nejakej hodnoty od hladiny
 	 * s nulovou intenzitou má za následok vyvolanie vlnenia so zápornou
-	 * začiatočnou hodnotou „výšky“, resp. hĺbky vlny.</p>
+	 * začiatočnou hodnotou „výšky,“ resp. hĺbky vlny.</p>
 	 * 
 	 * @param tvar tvar, podľa ktorého bude ovplyvnená prislúchajúca časť
 	 *     hladiny
@@ -4053,7 +4053,7 @@ public class Vlnenie
 	 * <p class="remark"><b>Poznámka:</b> Úbytok intenzity neznamená jej útlm,
 	 * ale odčítanie. To znamená, že efekt odčítania nejakej hodnoty od hladiny
 	 * s nulovou intenzitou má za následok vyvolanie vlnenia so zápornou
-	 * začiatočnou hodnotou „výšky“, resp. hĺbky vlny.</p>
+	 * začiatočnou hodnotou „výšky,“ resp. hĺbky vlny.</p>
 	 * 
 	 * @param obrázok obrázok, ktorého intenzita a priehľadnosť bodov budú
 	 *     použité na pridanie vzruchov k aktuálnej výškovej mape vlnenia
@@ -4092,7 +4092,7 @@ public class Vlnenie
 	 * <p class="remark"><b>Poznámka:</b> Úbytok intenzity neznamená jej útlm,
 	 * ale odčítanie. To znamená, že efekt odčítania nejakej hodnoty od hladiny
 	 * s nulovou intenzitou má za následok vyvolanie vlnenia so zápornou
-	 * začiatočnou hodnotou „výšky“, resp. hĺbky vlny.</p>
+	 * začiatočnou hodnotou „výšky,“ resp. hĺbky vlny.</p>
 	 * 
 	 * @param obrázok obrázok, ktorého intenzita a priehľadnosť bodov budú
 	 *     použité na odobratie vzruchov k aktuálnej výškovej mape vlnenia
@@ -4129,7 +4129,7 @@ public class Vlnenie
 	 * <p class="remark"><b>Poznámka:</b> Úbytok intenzity neznamená jej útlm,
 	 * ale odčítanie. To znamená, že efekt odčítania nejakej hodnoty od hladiny
 	 * s nulovou intenzitou má za následok vyvolanie vlnenia so zápornou
-	 * začiatočnou hodnotou „výšky“, resp. hĺbky vlny.</p>
+	 * začiatočnou hodnotou „výšky,“ resp. hĺbky vlny.</p>
 	 * 
 	 * @param tvar tvar, podľa ktorého bude ovplyvnená prislúchajúca časť
 	 *     hladiny
@@ -4166,7 +4166,7 @@ public class Vlnenie
 	 * <p class="remark"><b>Poznámka:</b> Úbytok intenzity neznamená jej útlm,
 	 * ale odčítanie. To znamená, že efekt odčítania nejakej hodnoty od hladiny
 	 * s nulovou intenzitou má za následok vyvolanie vlnenia so zápornou
-	 * začiatočnou hodnotou „výšky“, resp. hĺbky vlny.</p>
+	 * začiatočnou hodnotou „výšky,“ resp. hĺbky vlny.</p>
 	 * 
 	 * @param tvar tvar, podľa ktorého bude ovplyvnená prislúchajúca časť
 	 *     hladiny
@@ -4204,7 +4204,7 @@ public class Vlnenie
 	 * <p class="remark"><b>Poznámka:</b> Úbytok intenzity neznamená jej útlm,
 	 * ale odčítanie. To znamená, že efekt odčítania nejakej hodnoty od hladiny
 	 * s nulovou intenzitou má za následok vyvolanie vlnenia so zápornou
-	 * začiatočnou hodnotou „výšky“, resp. hĺbky vlny.</p>
+	 * začiatočnou hodnotou „výšky,“ resp. hĺbky vlny.</p>
 	 * 
 	 * @param tvar tvar, podľa ktorého bude ovplyvnená prislúchajúca časť
 	 *     hladiny
@@ -4248,7 +4248,7 @@ public class Vlnenie
 	 * <p class="remark"><b>Poznámka:</b> Úbytok intenzity neznamená jej útlm,
 	 * ale odčítanie. To znamená, že efekt odčítania nejakej hodnoty od hladiny
 	 * s nulovou intenzitou má za následok vyvolanie vlnenia so zápornou
-	 * začiatočnou hodnotou „výšky“, resp. hĺbky vlny.</p>
+	 * začiatočnou hodnotou „výšky,“ resp. hĺbky vlny.</p>
 	 * 
 	 * @param tvar tvar, podľa ktorého bude ovplyvnená prislúchajúca časť
 	 *     hladiny
@@ -4289,7 +4289,7 @@ public class Vlnenie
 	 * <p class="remark"><b>Poznámka:</b> Úbytok intenzity neznamená jej útlm,
 	 * ale odčítanie. To znamená, že efekt odčítania nejakej hodnoty od hladiny
 	 * s nulovou intenzitou má za následok vyvolanie vlnenia so zápornou
-	 * začiatočnou hodnotou „výšky“, resp. hĺbky vlny.</p>
+	 * začiatočnou hodnotou „výšky,“ resp. hĺbky vlny.</p>
 	 * 
 	 * @param tvar tvar, podľa ktorého bude ovplyvnená prislúchajúca časť
 	 *     hladiny
@@ -4337,7 +4337,7 @@ public class Vlnenie
 	 * <p class="remark"><b>Poznámka:</b> Úbytok intenzity neznamená jej útlm,
 	 * ale odčítanie. To znamená, že efekt odčítania nejakej hodnoty od hladiny
 	 * s nulovou intenzitou má za následok vyvolanie vlnenia so zápornou
-	 * začiatočnou hodnotou „výšky“, resp. hĺbky vlny.</p>
+	 * začiatočnou hodnotou „výšky,“ resp. hĺbky vlny.</p>
 	 * 
 	 * @param tvar tvar, podľa ktorého bude ovplyvnená prislúchajúca časť
 	 *     hladiny
@@ -4740,7 +4740,7 @@ public class Vlnenie
 						// hodnoty. (Ide vlastne o zníženie v percentách.) Aj
 						// na toto je použitý bitový posun. Táto hodnota je
 						// parametrizovateľná, pričom pôvodne zadávaný „útlm“
-						// musel byť prepočítaný na „mohutnosť“, pretože čím
+						// musel byť prepočítaný na „mohutnosť,“ pretože čím
 						// je hodnota/úroveň bitového posunu vyššia, tým je
 						// úbytok amplitúdy vĺn pomalší.
 						údaj -= údaj >> mohutnosť;

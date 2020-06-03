@@ -6,7 +6,7 @@
  * (the “License”); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an “AS IS” BASIS,
@@ -17,7 +17,6 @@
 
 // package org.apache.tools.zip;
 package knižnica.apacheAntZIP;
-
 
 /**
  * Simple placeholder for all those extra fields we don’t want to deal
@@ -142,8 +141,9 @@ public class UnrecognizedExtraField
 	 * @param offset the source location in the data array.
 	 * @param length the number of bytes to use in the data array.
 	 */
-	public void parseFromCentralDirectoryData(byte[] data, int offset,
-											int length) {
+	public void parseFromCentralDirectoryData(
+		byte[] data, int offset, int length)
+	{
 		byte[] tmp = new byte[length];
 		System.arraycopy(data, offset, tmp, 0, length);
 		setCentralDirectoryData(tmp);

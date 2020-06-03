@@ -6,7 +6,7 @@
  * (the “License”); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an “AS IS” BASIS,
@@ -17,7 +17,6 @@
 
 // package org.apache.tools.zip;
 package knižnica.apacheAntZIP;
-
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -73,8 +72,8 @@ class NioZipEncoding implements ZipEncoding {
 		enc.onUnmappableCharacter(CodingErrorAction.REPORT);
 
 		final CharBuffer cb = CharBuffer.wrap(name);
-		ByteBuffer out = ByteBuffer.allocate(name.length()
-											+ (name.length() + 1) / 2);
+		ByteBuffer out = ByteBuffer.allocate(
+			name.length() + (name.length() + 1) / 2);
 
 		while (cb.remaining() > 0) {
 			final CoderResult res = enc.encode(cb, out, true);
@@ -85,7 +84,7 @@ class NioZipEncoding implements ZipEncoding {
 				// pseudo-URL encoding style to ByteBuffer.
 				if (res.length() * 6 > out.remaining()) {
 					out = ZipEncodingHelper.growBuffer(out, out.position()
-													+ res.length() * 6);
+						+ res.length() * 6);
 				}
 
 				for (int i = 0; i < res.length(); ++i) {
@@ -104,8 +103,9 @@ class NioZipEncoding implements ZipEncoding {
 			}
 		}
 
-		out.limit(out.position());
-		out.rewind();
+		ZipEncodingHelper.prepareBufferForRead(out);
+		// out.limit(out.position()); out.rewind();
+
 		return out;
 	}
 

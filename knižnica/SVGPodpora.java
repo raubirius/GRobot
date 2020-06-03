@@ -196,7 +196,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 			{@link GRobot#klik() klik}();
 		}
 
-		{@code comm// Vlastný tvar robota bude kružnica so „zárezom“.}
+		{@code comm// Vlastný tvar robota bude kružnica so „zárezom.“}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliTvar() kresliTvar}()
 		{
 			{@link GRobot#kružnica() kružnica}();
@@ -243,7 +243,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 			{@code comm// Po dokončení každého kreslenia (prvé je vykonané pri spustení}
 			{@code comm// aplikácie a ďalšie pri kliknutí alebo ťahaní myšou) je opätovne}
 			{@code comm// nastavená hrúbka a farba čiary robota na 0.5 boda a červenú. To}
-			{@code comm// ovplyvní nakreslenie vlastného tvaru robota – kružnice so „zárezom“.}
+			{@code comm// ovplyvní nakreslenie vlastného tvaru robota – kružnice so „zárezom.“}
 			{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num.5});
 			{@link GRobot#farba(Color) farba}({@link Farebnosť#červená červená});
 		}
@@ -304,7 +304,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * GRobot#interaktívnyRežim(boolean) interaktívnym režimom robota}
  * a {@linkplain Svet#interaktívnyRežim(boolean) sveta} a používa tiež
  * štandardú konfiguráciu {@linkplain Svet#použiKonfiguráciu sveta} aj
- * {@linkplain Svet#registrujRobota(GRobot) robota}. Definuje aj dve tzv.
+ * {@linkplain Svet#registrujRobot(GRobot) robota}. Definuje aj dve tzv.
  * zákaznícke vlastnosti. To sú také vlastnosti, ktoré sú definované nad
  * rámec štandardnej konfigurácie (podrobnosti sú v komentároch). Zmenu
  * tvaru docieli používateľ po spustení aplikácie zadaním a potvrdením
@@ -452,7 +452,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 			{@code comm// v rámci konfigurácie:}
 			{@link Svet Svet}.{@link Svet#interaktívnyRežim(boolean) interaktívnyRežim}({@code valtrue});
 			{@link GRobot#interaktívnyRežim(boolean) interaktívnyRežim}({@code valtrue});
-			{@link Svet Svet}.{@link Svet#registrujRobota(GRobot) registrujRobota}({@code valthis});
+			{@link Svet Svet}.{@link Svet#registrujRobot(GRobot) registrujRobot}({@code valthis});
 
 			{@code comm// Čítanie naposledy čítaného súboru (počiatočná hodnota null má}
 			{@code comm// špeciálny význam – vtedy sa metóda pokúsi čítať súbor}
@@ -572,7 +572,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 		{@code comm// by bol vlastný tvar posunutý oproti skutočnej polohe robota. Tvar}
 		{@code comm// oblasti je vygenerovaný z SVG tvaru, ktorý je uložený vo vnútornom}
 		{@code comm// zásobníku inštancie svgPodpora pod poradovým číslom určeným parametrom}
-		{@code comm// „ktorý“. Metóda tiež zariadi, aby bola veľkosť tvaru oblasi prispôsobená}
+		{@code comm// „ktorý.“ Metóda tiež zariadi, aby bola veľkosť tvaru oblasi prispôsobená}
 		{@code comm// podľa aktuálnej veľkosti a mierky robota.}
 		{@code kwdpublic} {@code typevoid} nastavTvar({@code typeint} ktorý)
 		{
@@ -700,11 +700,11 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * je uložený do vektorového SVG súboru.</p>
  * 
  * <p>Budeme postupovať tak, že najskôr prečítame bitmapový obrázok
- * zo súboru s názvom „mola.jpeg“, obrázok virtuálne rozdelíme na bloky
+ * zo súboru s názvom „mola.jpeg,“ obrázok virtuálne rozdelíme na bloky
  * veľké 10 × 10 bodov (pixelov), vypočítame priemerný farebný jas
  * bodov v každom bloku a podľa týchto hodnôt vyrobíme kruhy tvoriace
  * mozaiku nového obrázka vo formáte SVG. (Viaceré hodnoty v príklade
- * sú zadané „napevno“, nie univerzálne. Dôvodom je úsilie
+ * sú zadané „napevno,“ nie univerzálne. Dôvodom je úsilie
  * o nezvyšovanie zložitosti príkladu.)</p>
  * 
  * <pre CLASS="example">
@@ -718,7 +718,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 			{@code comm// Úprava rozmerov plátna volaním nadradeného konštruktora.}
 			{@code valsuper}({@code num800}, {@code num600});
 
-			{@code comm// Skryje robota:}
+			{@code comm// Skryje robot:}
 			{@link GRobot#skry() skry}();
 
 			{@code comm// Vypnutie automatického prekresľovania.}
@@ -741,7 +741,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 			{@code comm// i tak):}
 			{@link GRobot#kresliNaStrop() kresliNaStrop}();
 
-			{@code comm// Umiestnime robota na počiatočnú pozíciu – do ľavého dolného rohu}
+			{@code comm// Umiestnime robot na počiatočnú pozíciu – do ľavého dolného rohu}
 			{@code comm// plátna. Poloha robota je dôležitá len pre výstupné SVG údaje.}
 			{@link GRobot#skočNa(double, double) skočNa}({@link Svet Svet}.{@link Svet#najmenšieX() najmenšieX}() + {@code num2.5}, {@link Svet Svet}.{@link Svet#najmenšieY() najmenšieY}() + {@code num2.5});
 
@@ -995,7 +995,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 			{@code comm//   ##  orientáciu a polohu ako mal pred jej vykonaním.  ##}
 			{@code comm//   #######################################################}
 
-			{@code comm// „Vypočítame“, respektíve náhodne vygenerujeme, dva uhly, o ktoré}
+			{@code comm// „Vypočítame,“ respektíve náhodne vygenerujeme, dva uhly, o ktoré}
 			{@code comm// sa bude robot otáčať pred prechodom do rekurzívnej vetvy. Uhly}
 			{@code comm// si musíme zapamätať v lokálnych premenných, aby sme boli schopní}
 			{@code comm// zabezpečiť dodržanie hlavnej zásady (vyššie).}
@@ -1025,7 +1025,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 			rastlinka(dĺžka &#45; {@link Svet Svet}.{@link Svet#náhodnéReálneČíslo(double, double) náhodnéReálneČíslo}({@code num5}, {@code num16}));
 
 			{@code comm// Toto pootočenie v kladnom smere vykompenzuje predchádzajúce}
-			{@code comm// prvé záporné pootočenie, no zároveň robota pootočí o ďalší úsek}
+			{@code comm// prvé záporné pootočenie, no zároveň robot pootočí o ďalší úsek}
 			{@code comm// v kladnom smere (doľava):}
 			{@link GRobot#vľavo(double) vľavo}(uhol1 + uhol2);
 
@@ -1144,13 +1144,13 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 				{@code kwdcatch} ({@link Throwable Throwable} t)
 				{
 					{@code comm// Oznámenie o chybe na chybovú konzolu.}
-					{@link System System}.err.{@link java.io.PrintStream#println(String) println}(t.{@link Throwable#getMessage() getMessage}());
+					{@link System System}.{@link System#err err}.{@link java.io.PrintStream#println(String) println}(t.{@link Throwable#getMessage() getMessage}());
 
 					{@code comm// Test uviaznutia pri jednotke chránenej na zápis.}
 					{@code kwdif} (!{@link Súbor Súbor}.{@link Súbor#jestvuje(String) jestvuje}(názov + {@code srg"-"} + n + {@code srg".png"}))
 					{
 						{@code comm// Oznámenie možnej príčiny a ukončenie.}
-						{@link System System}.err.{@link java.io.PrintStream#println(String) println}({@code srg"Disk je pravdepodobne "} +
+						{@link System System}.{@link System#err err}.{@link java.io.PrintStream#println(String) println}({@code srg"Disk je pravdepodobne "} +
 							{@code srg"chránený proti zápisu!"});
 						{@code kwdreturn};
 					}
@@ -1186,7 +1186,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 				{@code comm// Vypísanie výsledku merania (času) na konzolu sveta}
 				{@code comm// a systémovú konzolu:}
 				{@link Svet Svet}.{@link Svet#vypíšRiadok(Object...) vypíšRiadok}({@code srg"Kreslenie rastlinky trvalo: "}, čas, {@code srg"s"});
-				{@link System System}.out.{@link java.io.PrintStream#println(String) println}({@code srg"Kreslenie rastlinky trvalo: "} + čas + {@code srg" s"});
+				{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"Kreslenie rastlinky trvalo: "} + čas + {@code srg" s"});
 
 				{@code comm// Uloženie textov (momentálne jediného riadka) konzoly sveta}
 				{@code comm// do schránky operačného systému:}
@@ -2021,7 +2021,7 @@ public class SVGPodpora
 		@Override public String toString()
 		{
 			// (Pozor‼) Ani prehliadač, ani Inkscape v transformáciách
-			// vôbec neakceptujú jednotky (uhlové „deg“, ani rozmerové
+			// vôbec neakceptujú jednotky (uhlové „deg,“ ani rozmerové
 			// „px“)…
 
 			// Na to som prišiel pri testovaní novej metódy:
@@ -2309,7 +2309,7 @@ public class SVGPodpora
 			0 == hodnota[4] && 0 == hodnota[5])
 		{
 			// (Pozor‼) Ani prehliadač, ani Inkscape v transformáciách
-			// vôbec neakceptujú jednotky (uhlové „deg“, ani rozmerové
+			// vôbec neakceptujú jednotky (uhlové „deg,“ ani rozmerové
 			// „px“)…
 			if (0 == hodnota[3])
 				return "skewX(" + Math.toDegrees(
@@ -3103,9 +3103,9 @@ public class SVGPodpora
 	 * na zápis tvarov (vo formáte SVG).</p>
 	 * 
 	 * <p>Jeden prvok poľa je ekvivalentný jednému riadku SVG súboru.
-	 * Výnimku tvorí riadok obsahujúci rezervovaný reťazec {@code 
-	 * $TVARY} (resp. {@code $SHAPES}), pretože tento reťazec bude
-	 * nahradený SVG definíciami tvarov.</p>
+	 * Výnimku tvorí riadok obsahujúci rezervovaný reťazec {@code $TVARY}
+	 * (resp. {@code $SHAPES}), pretože tento reťazec bude nahradený SVG
+	 * definíciami tvarov.</p>
 	 * 
 	 * <p>V prípade potreby môžete obsah tejto šablóny nahradiť iným
 	 * požadovaným tvarom metódou {@link #svgŠablóna(String[])
@@ -3392,7 +3392,7 @@ public class SVGPodpora
 	 * 
 	 * <p>Navyše, ak by nejestvovala metóda {@link Bod#polohaTvaru(Shape)
 	 * polohaTvaru}, tak by bolo treba postupovať mierne odlišným spôsobom,
-	 * napríklad využiť niektorého robota ({@code r}):</p>
+	 * napríklad využiť niektorý robot ({@code r}):</p>
 	 * 
 	 * <pre CLASS="example">
 		{@code comm//  1. Najprv zálohovať jeho aktuálnu polohu (ak na nej záleží):}
@@ -3407,7 +3407,7 @@ public class SVGPodpora
 			{@code kwdnew} {@link SVGPodpora.Transformácia#SVGPodpora.Transformácia(int, Double[]) Transformácia}({@link SVGPodpora.Transformácia Transformácia}.{@link SVGPodpora.Transformácia#POSUN POSUN},
 				-r.{@link GRobot#polohaX() polohaX}(), r.{@link GRobot#polohaY() polohaY}()));
 
-		{@code comm//  4. Nakoniec vrátiť robota do pôvodnej polohy (zo zálohy):}
+		{@code comm//  4. Nakoniec vrátiť robot do pôvodnej polohy (zo zálohy):}
 		r.{@link GRobot#skočNa(Poloha) skočNa}(záloha);
 		</pre>
 	 * 
@@ -4587,9 +4587,10 @@ public class SVGPodpora
 	 *     valnull} a nie sú zadané nepovinné parametre {@code 
 	 *     transformácie}, tak je atribút tvaru ‚transform‘ odstránený
 	 * @param transformácie nepovinné transformácie (do tohto parametra
-	 *     môže byť zadaná aj pretypovaná hodnota {@code (}{@link AffineTransform
-	 *     AffineTransform}{@code [])}{@code valnull} – výsledok potom
-	 *     závisí od hodnoty povinného parametra {@code transformácia})
+	 *     môže byť zadaná aj pretypovaná hodnota {@code (}{@link 
+	 *     AffineTransform AffineTransform}{@code [])}{@code valnull} –
+	 *     výsledok potom závisí od hodnoty povinného parametra
+	 *     {@code transformácia})
 	 */
 	public void transformácie(int index, AffineTransform transformácia,
 		AffineTransform... transformácie)
@@ -5271,7 +5272,7 @@ public class SVGPodpora
 			(0 != (tvorca.spôsobKreslenia & KRESLI_ROTOVANÉ)))
 			zoznam.put("transform",
 				// (Pozor‼) Ani prehliadač, ani Inkscape v transformáciách
-				// vôbec neakceptujú jednotky (uhlové „deg“, ani rozmerové
+				// vôbec neakceptujú jednotky (uhlové „deg,“ ani rozmerové
 				// „px“)…
 
 				"rotate(" + (90 - tvorca.aktuálnyUhol) + ", " + // deg
@@ -5715,7 +5716,7 @@ public class SVGPodpora
 		{
 			throw new GRobotException(
 				"Chyba pri zápise SVG súboru „" +
-				meno + "“.", "svgWriteError", e);
+				meno + ".“", "svgWriteError", e);
 		}
 
 
@@ -5778,7 +5779,7 @@ public class SVGPodpora
 		{
 			throw new GRobotException(
 				"Chyba pri zápise SVG súboru „" +
-				meno + "“.", "svgWriteError", e);
+				meno + ".“", "svgWriteError", e);
 		}
 
 		// Bezpečné zavretie súboru
@@ -5791,7 +5792,7 @@ public class SVGPodpora
 		{
 			throw new GRobotException(
 				"Chyba pri zápise SVG súboru „" +
-				meno + "“.", "svgWriteError", e);
+				meno + ".“", "svgWriteError", e);
 		}
 
 		return početZapísaných;
@@ -6239,14 +6240,48 @@ public class SVGPodpora
 		// Overí, či bol dosiahnutý koniec série znakov
 		public boolean jeKoniec()
 		{
-			return null == údaje || poloha >= údaje.length;
+			if (null == údaje) return true;
+
+			// Musel som tu nasilu predtestovať, či sa ku koncu reťazca dá
+			// nájsť zmysluplný znak (napr. či už do konca nie sú samé
+			// oddeľovače), lebo to zlyhávalo (v iných častiach mechanizmu)…
+			for (int polohaNaKonci = poloha, údajeLength = údaje.length;
+				polohaNaKonci < údajeLength; ++polohaNaKonci)
+			{
+				char znak = údaje[polohaNaKonci];
+				if ('-' == znak || '+' == znak || '.' == znak ||
+					Character.isLetterOrDigit(znak)) return false;
+			}
+
+			// ‼‼‼ Ak predchádzajúci for cestou nenarazil na „zmysluplný“
+			// znak, tak je koniec…
+			return true;
+
+			// Pôvodný test bol jednoduchý, ale mal riziko zlyhania
+			// vo zvyšku rozpoznávacieho mechanizmu:
+			// 	return null == údaje || poloha >= údaje.length;
 		}
 
 		// Overí, či ešte nebol dosiahnutý koniec série znakov (to jest,
 		// či sú ešte nejaké znaky v zásobníku)
 		public boolean nieJeKoniec()
 		{
-			return null != údaje && poloha < údaje.length;
+			// Postup je inverzný k metóde jeKoniec… Deje sa presne to isté,
+			// len namiesto true sa vracia false a naopak:
+
+			if (null == údaje) return false;
+			for (int polohaNaKonci = poloha, údajeLength = údaje.length;
+				polohaNaKonci < údajeLength; ++polohaNaKonci)
+			{
+				char znak = údaje[polohaNaKonci];
+				if ('-' == znak || '+' == znak || '.' == znak ||
+					Character.isLetterOrDigit(znak)) return true;
+			}
+			return false;
+
+			// Pôvodný test bol jednoduchý, ale mal riziko zlyhania
+			// vo zvyšku rozpoznávacieho mechanizmu:
+			// 	return null != údaje && poloha < údaje.length;
 		}
 
 		// Preskočí všetky znaky, ktoré považuje za oddeľovače číselných
@@ -6364,8 +6399,8 @@ public class SVGPodpora
 		public boolean skrátene = false;
 		public boolean otáčaj = false;
 
-		public final double p[] = new double[8];
-		public final double lp[] = new double[6];
+		public final double p[] = new double[8];  // point
+		public final double lp[] = new double[6]; // last point
 		public int n = 0, ln = 0;
 
 		public Path2D.Double cesta;
@@ -6418,7 +6453,7 @@ public class SVGPodpora
 		{
 			switch (režim)
 			{
-			case 'm': pridajPosunutie(); break;
+			case 'm': pridajPresunutie(); break;
 			case 'l': pridajČiaru(); break;
 			case 'h': pridajHorizontálnuČiaru(); break;
 			case 'v': pridajVertikálnuČiaru(); break;
@@ -6436,7 +6471,69 @@ public class SVGPodpora
 		// segmentu
 		public void pridajPoslednýBodKrivky()
 		{
-			if (('c' == režim && 4 == n) ||
+
+			/*
+				https://www.w3.org/TR/SVG/paths.html#PathDataClosePathCommand
+
+				9.3.4. The “closepath” command
+				==============================
+
+				The “closepath” (Z or z) ends the current subpath by
+				connecting it back to its initial point. An automatic
+				straight line is drawn from the current point to the
+				initial point of the current subpath. This path segment
+				may be of zero length.
+
+				If a “closepath” is followed immediately by a “moveto,”
+				then the “moveto” identifies the start point of the next
+				subpath. If a “closepath” is followed immediately by any
+				other command, then the next subpath starts at the same
+				initial point as the current subpath.
+
+				When a subpath ends in a “closepath,” it differs in
+				behavior from what happens when “manually” closing
+				a subpath via a “lineto” command in how ‘stroke-linejoin’
+				and ‘stroke-linecap’ are implemented. With “closepath,”
+				the end of the final segment of the subpath is “joined”
+				with the start of the initial segment of the subpath
+				using the current value of ‘stroke-linejoin.’ If you
+				instead “manually” close the subpath via a “lineto”
+				command, the start of the first segment and the end of
+				the last segment are not joined but instead are each
+				capped using the current value of ‘stroke-linecap.’ At
+				the end of the command, the new current point is set to
+				the initial point of the current subpath.
+
+				Command:    Z or z
+				Name:       closepath
+				Parameters: (none)
+				Description:
+					Close the current subpath by connecting it back to
+					the current subpath's initial point (see prose above).
+					Since the Z and z commands take no parameters, they
+					have an identical effect.
+
+				A closed subpath must be closed with a “closepath”
+				command, this “joins” the first and last path segments.
+				Any other path is an open subpath.
+
+				A closed subpath differs in behavior from an open subpath
+				whose final coordinate is the initial point of the subpath.
+				The first and last path segments of an open subpath will
+				not be joined, even when the final coordinate of the last
+				path segment is the initial point of the subpath. This
+				will result in the first and last path segments being
+				capped using the current value of stroke-linecap rather
+				than joined using the current value of stroke-linejoin.
+
+				If a “closepath” is followed immediately by a “moveto,”
+				then the “moveto” identifies the start point of the next
+				subpath. If a “closepath” is followed immediately by any
+				other command, then the next subpath must start at the
+				same initial point as the current subpath.
+			*/
+
+			/*if (('c' == režim && 4 == n) ||
 				('s' == režim && 2 == n) ||
 				('q' == režim && 2 == n) ||
 				('t' == režim && 0 == n) ||
@@ -6472,8 +6569,20 @@ public class SVGPodpora
 				{
 					xx = x0;
 					yy = y0;
-				}
+				}*/
 
+			// Oprava:
+
+				lp[0] = xx = lp[4];
+				lp[1] = yy = lp[5];
+
+			// Podmienka bola zhora „presunutá“ sem:
+			if (('c' == režim && 4 == n) ||
+				('s' == režim && 2 == n) ||
+				('q' == režim && 2 == n) ||
+				('t' == režim && 0 == n) ||
+				('a' == režim && 5 == n))
+			{
 				p[n++] = xx;
 				p[n++] = yy;
 			}
@@ -6512,23 +6621,59 @@ public class SVGPodpora
 		// a výsledok uchová vo vnútorných premenných xx, yy.
 		private void dajSúradnice(double x0, double y0, int uložBod)
 		{
-			// System.out.print(x0 + ", " + y0 + " (" + uložBod + "): ");
+			// System.out.print((relatívne ? 'R' : 'A') + ":    " +
+			// 	Svet.F(x0, 10, 5) + "; " + Svet.F(y0, 10, 5) +
+			// 	" (" + uložBod + "): "); double lp0 = lp[0], lp1 = lp[1];
 
 			/*
-			‼TODO‼ Ach, je tu nejaká brutálna chyba v relatívnych
-			súradniciach. Treba to otestovať, len neviem ako, ani ako
-			to opraviť. Niekedy to vyzerá, ako keby x-ovú súradnicu
-			vypočítal dobre a y-ovú pokafral… Ale to je len jeden
-			z prípadov… Fuj, neprídem na to asi tak ľahko…
+				Problém, ktorý som si poznačil na tomto mieste (nižšie)
+				nakoniec vôbec nesúvisel s tým, čo som tam nižšie rozpísal.
+				Problém bol v tom, že pri nájdení „príkazu“ 'z'/'Z' (close
+				path) som neuložil nové súradnice ako aktuálne súradnice
+				a tiež v tom, že som rozlišoval medzi príkazom 'z' a 'Z'
+				(prepočítavajúc relatívne súradnice pri verzii 'z'), čo bolo
+				oboje nesprávne, takže pri výskyte tohto príkazu, po ktorom
+				nasledovali relatívne súradnice, nastal problém. Oprava bola
+				vykonaná v metóde pridajPoslednýBodKrivky, kde je zároveň
+				skopírovaný fragment SVG dokumentácie o príkaze close path
+				('z'/'Z'; v angličtine).
 
-			(S odstupom času som to skúšal opäť riešiť, ale už som ani
-			nedokázal nájsť na disku SVG súbory, ktoré by vykresľovalo
-			chybne. Viem, že sa také dávnejšie náhodne vyskytli pri hre
-			Asteroidy, ale to bola iná chyba a tú som opravil… Potom sa
-			zrazu vyskytlo niečo úplne iné, ale neuložil som si to a teraz
-			to neviem nájsť. Asi zostáva len čakať, kedy mi tento skrytý
-			problém opäť „vybuchne do tváre“.)
+				Prepis pôvodnej poznámky (upozorňujúcej na chybu):
+				--------------------------------------------------
+
+				Tu je (pozn.: čo nakoniec nebola pravda) nejaká „brutálna“
+				chyba v relatívnych súradniciach (pozn.: niekedy som váhal,
+				či nie práve naopak pri absolútnych, lebo chybu sa nedarilo
+				nájsť – hľadal som nesprávne, lebo príznaky som skrz sťaženú
+				identifiáciu neboli jednoznačné – to preto, lebo nemám Java
+				editor s režimom ladenia a navyše v grafickom editore
+				Inkscape sú zobrazované úplne iné súradnice bodov cesty,
+				než v zdrojovom kóde SVG a nedá sa to prepnúť – nakoniec
+				som však našiel spôsob ako to obísť). Treba to otestovať,
+				len neviem ako to opraviť (pozn.: po sérii neúspešných
+				pokusov). Niekedy to vyzerá, ako keby bola x-ová súradnicu
+				vypočítaná správne a y-ovú nie, ale to je len jeden
+				z príznakov. (Neprídem na to asi tak ľahko.)
+
+				S odstupom času (pozn.: ale ešte ďaleko od termínu
+				vyriešenia) som to skúšal opäť riešiť, ale už som ani
+				nedokázal nájsť na disku SVG súbory, ktoré by vykresľovalo
+				chybne. Viem, že sa také dávnejšie náhodne vyskytli pri hre
+				Asteroidy, ale to bola iná chyba a tú som opravil… Potom sa
+				zrazu vyskytlo niečo úplne iné, ale neuložil som si to
+				a terazto neviem nájsť. Asi zostáva len čakať, kedy mi tento
+				skrytý problém opäť „vybuchne do tváre.“
+
+				————————————————————————
+				To sa nakoniec stalo 28. 4. 2020. Problém s „príkazom“
+				'z'/'Z' však nevyplával na povrch okamžite. Ladenie bolo
+				rozkúskované v troch dňoch – do 30. 4. 2020. Mal som
+				šťastie, že sa mi podarilo vypracovať veľa vhodného
+				testovacieho materiálu k príkladu Kolotoč a tiež že som
+				našiel spôsob ako si zobraziť korešpondujúce súradnice
+				v Inkscape.
 			*/
+
 			if (relatívne)
 			{
 				if (otáčaj)
@@ -6591,7 +6736,8 @@ public class SVGPodpora
 
 			if (ln < uložBod) ln = uložBod;
 
-			// System.out.println(xx + ", " + yy);
+			// System.out.println(Svet.F(xx, 10, 5) + "; " + Svet.F(yy, 10, 5) +
+			// 	"\n  lp: " + Svet.F(lp0, 10, 5) + "; " + Svet.F(lp1, 10, 5));
 		}
 
 		// Vypočíta smer z rozdielu súradníc – používa sa na nastavenie
@@ -6605,7 +6751,7 @@ public class SVGPodpora
 		}
 
 		// Pridá do cesty príkaz posunutia (moveTo)
-		public void pridajPosunutie()
+		public void pridajPresunutie()
 		{
 			if (n >= 2)
 			{
@@ -6856,10 +7002,10 @@ public class SVGPodpora
 						Δt = -Δt;
 
 						Shape oblúk = AffineTransform.getRotateInstance(
-								Math.toRadians(ϕ), x0, y0).
-								createTransformedShape(new Arc2D.Double(
-									x0 - a, y0 - b, 2 * a, 2 * b, t1, Δt,
-									Arc2D.OPEN));
+							Math.toRadians(ϕ), x0, y0).
+							createTransformedShape(new Arc2D.Double(
+								x0 - a, y0 - b, 2 * a, 2 * b, t1, Δt,
+								Arc2D.OPEN));
 
 						cesta.append(oblúk, true);
 
@@ -7389,7 +7535,7 @@ public class SVGPodpora
 		{
 			throw new GRobotException(
 				"Chyba pri spracovaní SVG súboru „" +
-				meno + "“.", "svgReadError", e);
+				meno + ".“", "svgReadError", e);
 		}
 
 
@@ -7408,7 +7554,7 @@ public class SVGPodpora
 				// ‼ // iný prístup…
 				// ‼ throw new GRobotException(
 				// ‼ 	"Chyba pri spracovaní SVG súboru „" +
-				// ‼ 	meno + "“.", "svgReadError", e);
+				// ‼ 	meno + ".“", "svgReadError", e);
 				return početPridanýchTvarov;
 			}
 		}
@@ -7442,7 +7588,7 @@ public class SVGPodpora
 		{
 			throw new GRobotException(
 				"Chyba pri spracovaní SVG súboru „" +
-				meno + "“.", "svgReadError", e);
+				meno + ".“", "svgReadError", e);
 		}
 
 
@@ -7455,7 +7601,7 @@ public class SVGPodpora
 		{
 			throw new GRobotException(
 				"Chyba pri spracovaní SVG súboru „" +
-				meno + "“.", "svgReadError", e);
+				meno + ".“", "svgReadError", e);
 		}
 
 		// Likvidácia dočasnej inštancie čítania prúdu

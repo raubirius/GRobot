@@ -29,22 +29,15 @@
 
 package knižnica;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-// import java.io.UnsupportedEncodingException;
 
 import java.util.Calendar;
-// import java.util.Date;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Set;
@@ -110,7 +103,7 @@ import static java.util.Calendar.*;
 			};
 		}
 
-		{@code kwdpublic} {@code kwdstatic} {@code typevoid} main(String[] args)
+		{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 		{
 			{@code comm// Pripojenie archívu ku konfigurácii:}
 			{@link Svet Svet}.{@link Svet#konfiguračnýSúbor() konfiguračnýSúbor}().{@link Súbor#pripojArchív(Archív) pripojArchív}(
@@ -124,25 +117,12 @@ import static java.util.Calendar.*;
 		}
 	}
 	</pre>
-
+ * 
  * <p>Trieda je navrhnutá tak, aby sa dala používať aj bez nevyhnutnosti
  * obsluhy výnimiek.</p>
  */
 public class Archív implements Closeable
 {
-	// ‼TODO‼ Aliasy!
-
-	// TODO: Keď bude čas, implementovať mechanizmus (ne)ignorovania chýb.
-	// metódou ignorujChyby(boolean) sa to zapne/vypne, keď je to zapnuté,
-	// tak všetky metódy budú silou mocou obchádzať vrhanie výnimiek a ak
-	// to pre nich bude možné, tak sa budú usilovať indikovať chybový stav
-	// nejako inak (návratovou hodnotou, inak?; v každom prípade: denník
-	// funguje).
-	// Ak je to vypnuté, tak budú vrhať výnimky aj metódy ako veľkosťPoložky
-	// a pod.
-	// Lenže toto isté by sa hodilo implementovať aj do triedy Súbor.
-
-
 	// Príznak signalizujúci, či môžu inštancie iných tried používajúcich
 	// tento archív ho automaticky otvoriť v prípadoch, keď nebol otvorený.
 	/*packagePrivate*/ boolean umožniťAutomatickéOtvorenie;
@@ -188,6 +168,12 @@ public class Archív implements Closeable
 	 * hodnotu {@code valnull}), tak bude zároveň povolené {@linkplain 
 	 * #umožniťAutomatickéOtvorenie(boolean) automatické otvorenie}
 	 * archívu.</p>
+	 * 
+	 * <p class="tip"><b>Tip:</b> Názov archívu môže byť od cesty oddelený
+	 * s pomocou konštruktora, ktorý prijíma cestu a názov archívu zvlášť
+	 * {@link #Archív(String, String) Archív(cesta, názov)}, alebo s použitím
+	 * metódy {@link #cestaNaDisku(String) cestaNaDisku} na dodatočné
+	 * nastavenie cesty k archívu.</p>
 	 * 
 	 * @param názov meno archívu
 	 * 
@@ -249,6 +235,11 @@ public class Archív implements Closeable
 	 * <p>Nastaví alebo zruší názov tohto archívu. Táto metóda zavrie
 	 * prípadný otvorený archív. Hodnota {@code valnull} ruší nastavenie
 	 * názvu archívu.</p>
+	 * 
+	 * <p class="tip"><b>Tip:</b> Názov archívu môže byť od cesty oddelený
+	 * s pomocou použitia metódy {@link #cestaNaDisku(String) cestaNaDisku}
+	 * alebo konštruktorom, ktorý prijíma cestu a názov archívu zvlášť:
+	 * {@link #Archív(String, String) Archív(cesta, názov)}.</p>
 	 * 
 	 * @param názov nový názov archívu alebo {@code valnull}
 	 * 
@@ -342,7 +333,14 @@ public class Archív implements Closeable
 
 	/**
 	 * <p>Nastaví alebo zruší novú cestu v rámci obsahu archívu. Hodnota
-	 * {@code valnull} ruší nastavenie cesty.</p>
+	 * {@code valnull} ruší nastavenie cesty. Cesta v archíve zameriava
+	 * (presmerúva) všetky metódy pracujúce s položkami archívu do tohto
+	 * vnútorného umiestnenia. Jej použitie treba zvážiť. V mnohých
+	 * prípadoch môže byť výhodné (napríklad pri pridávaní viacerých
+	 * položiek do rovnakého podpriečinka v archíve) a naopak, sú prípady,
+	 * v ktorých by mohlo jej nastavenie prekážať (napríklad pri
+	 * automatickom spracúvaní názvov položiek, ktoré už cestu v archíve
+	 * obsahujú – na zamedzenie duplicít alebo nedorozumení).</p>
 	 * 
 	 * @param cesta nová cesta vo vnútri archívu alebo {@code valnull}
 	 * 
@@ -435,6 +433,8 @@ public class Archív implements Closeable
 	 * @see #otvorNaZápis()
 	 * @see #otvorNaČítanie(String)
 	 * @see #otvorNaZápis(String)
+	 * @see #otvorNaČítanie(String, String)
+	 * @see #otvorNaZápis(String, String)
 	 * @see #close()
 	 */
 	public void zavri() throws IOException
@@ -492,16 +492,21 @@ public class Archív implements Closeable
 	 * @see #otvorNaZápis()
 	 * @see #otvorNaČítanie(String)
 	 * @see #otvorNaZápis(String)
+	 * @see #otvorNaČítanie(String, String)
+	 * @see #otvorNaZápis(String, String)
 	 * @see #zavri()
 	 */
 	public void close() throws IOException { zavri(); }
 
 
 	/**
-	 * <p>Otvorí archív so zadaným menom na čítanie. Ak súbor s archívom
+	 * <p>Otvorí archív na čítanie. Archív musí mať vopred priradené meno
+	 * (buď priamo {@linkplain #Archív(String) konštruktorom}, alebo
+	 * metódou {@link #názov(String) názov}). Ak súbor s archívom
 	 * nejestvuje, tak vznikne výnimka. Musí ísť o fyzický súbor na pevnom
-	 * disku umiestnený na aktuálnej lokalite alebo na ceste určenej
-	 * vlastnosťou {@link #cestaNaDisku(String) cestaNaDisku}.</p>
+	 * disku umiestnený na aktuálnej lokalite, ceste určenej v názve archívu
+	 * alebo na ceste určenej vlastnosťou {@link #cestaNaDisku(String)
+	 * cestaNaDisku}.</p>
 	 * 
 	 * @return „vstupný archív“ knižnice <a href="https://ant.apache.org/"
 	 *     target="_blank">Apache Ant</a> {@link ZipFile ZipFile} na
@@ -514,7 +519,8 @@ public class Archív implements Closeable
 	 * @see #Archív(String)
 	 * @see #názov(String)
 	 * @see #otvorNaČítanie(String)
-	 * @see #otvorNaZápis(String)
+	 * @see #otvorNaČítanie(String, String)
+	 * @see #otvorNaZápis()
 	 * @see #zavri()
 	 * @see #close()
 	 * @see #cestaNaDisku()
@@ -543,7 +549,8 @@ public class Archív implements Closeable
 	 * <p>Otvorí archív so zadaným menom na zápis. Zapisovaný súbor bude
 	 * vytvorený alebo prepísaný buď na aktuálnom umiestnení, alebo na
 	 * ceste určenej vlastnosťou {@link #cestaNaDisku(String)
-	 * cestaNaDisku}.</p>
+	 * cestaNaDisku} (prípadne inak, napríklad cestou určenou priamo
+	 * v názve archívu).</p>
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Ak použijete objekt {@link 
 	 * ZipOutputStream ZipOutputStream}, ktorý je návratovou hodnotou tejto
@@ -565,7 +572,8 @@ public class Archív implements Closeable
 	 * @see #Archív(String)
 	 * @see #názov(String)
 	 * @see #otvorNaZápis(String)
-	 * @see #otvorNaČítanie(String)
+	 * @see #otvorNaZápis(String, String)
+	 * @see #otvorNaČítanie()
 	 * @see #zavri()
 	 * @see #close()
 	 * @see #cestaNaDisku()
@@ -596,8 +604,9 @@ public class Archív implements Closeable
 	/**
 	 * <p>Otvorí archív so zadaným menom na čítanie. Ak súbor s archívom
 	 * nejestvuje, tak vznikne výnimka. Musí ísť o fyzický súbor na pevnom
-	 * disku umiestnený na aktuálnej lokalite alebo na ceste určenej
-	 * vlastnosťou {@link #cestaNaDisku(String) cestaNaDisku}.</p>
+	 * disku umiestnený na aktuálnej lokalite, ceste určenej v názve archívu
+	 * alebo na ceste určenej vlastnosťou {@link #cestaNaDisku(String)
+	 * cestaNaDisku}.</p>
 	 * 
 	 * @param názov meno archívu
 	 * @return „vstupný archív“ knižnice <a href="https://ant.apache.org/"
@@ -609,6 +618,7 @@ public class Archív implements Closeable
 	 *     operácii
 	 * 
 	 * @see #otvorNaČítanie()
+	 * @see #otvorNaČítanie(String, String)
 	 * @see #otvorNaZápis(String)
 	 * @see #zavri()
 	 * @see #close()
@@ -639,8 +649,8 @@ public class Archív implements Closeable
 	/**
 	 * <p>Otvorí archív so zadaným menom na zápis. Zapisovaný súbor bude
 	 * vytvorený alebo prepísaný buď na aktuálnom umiestnení, alebo na
-	 * ceste určenej vlastnosťou {@link #cestaNaDisku(String)
-	 * cestaNaDisku}.</p>
+	 * ceste určenej vlastnosťou {@link #cestaNaDisku(String) cestaNaDisku}
+	 * (prípadne inak, napríklad cestou určenou priamo v názve archívu).</p>
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Ak použijete objekt {@link 
 	 * ZipOutputStream ZipOutputStream}, ktorý je návratovou hodnotou tejto
@@ -662,6 +672,7 @@ public class Archív implements Closeable
 	 * 
 	 * @see #otvorNaZápis()
 	 * @see #otvorNaČítanie(String)
+	 * @see #otvorNaZápis(String, String)
 	 * @see #zavri()
 	 * @see #close()
 	 * @see #cestaNaDisku()
@@ -691,6 +702,101 @@ public class Archív implements Closeable
 
 
 	/**
+	 * <p>Otvorí archív so zadaným menom na zadanej ceste na čítanie. Ďalšie
+	 * informácie sú v opisoch metód {@link #otvorNaČítanie(String)
+	 * otvorNaČítanie} a {@link #cestaNaDisku() cestaNaDisku}.</p>
+	 * 
+	 * @param cesta pracovná cesta (na pevnom disku)
+	 * @param názov meno archívu
+	 * @return „vstupný archív“ knižnice <a href="https://ant.apache.org/"
+	 *     target="_blank">Apache Ant</a> {@link ZipFile ZipFile} na
+	 *     vykonanie prípadných ďalších úprav (nastavenie komentára, úprava
+	 *     rôznych konfiguračných položiek podľa vlastných potrieb a podobne)
+	 * 
+	 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
+	 *     operácii
+	 * 
+	 * @see #otvorNaČítanie()
+	 * @see #otvorNaČítanie(String)
+	 * @see #otvorNaZápis(String, String)
+	 * @see #zavri()
+	 * @see #close()
+	 * @see #cestaNaDisku()
+	 */
+	public ZipFile otvorNaČítanie(String cesta, String názov)
+		throws IOException
+	{
+		if (null == názov)
+			throw new GRobotException(
+				"Názov archívu nesmie byť zamlčaný.",
+				"archiveNameOmitted", null, new NullPointerException());
+
+		zavri();
+		cestaNaDisku(cesta);
+		názov(názov);
+
+		vstup = null == cestaNaDisku ? new ZipFile(new File(
+			názov), "UTF-8") : new ZipFile(new File(cestaNaDisku,
+				názov), "UTF-8");
+
+		return vstup;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #otvorNaČítanie(String, String) otvorNaČítanie}.</p> */
+	public ZipFile otvorNaCitanie(String cesta, String názov)
+	throws IOException { return otvorNaČítanie(cesta, názov); }
+
+
+	/**
+	 * <p>Otvorí archív so zadaným menom na zadanej ceste na zápis. Ďalšie
+	 * informácie sú v opisoch metód {@link #otvorNaČítanie(String)
+	 * otvorNaČítanie} a {@link #cestaNaDisku() cestaNaDisku}.</p>
+	 * 
+	 * @param cesta pracovná cesta (na pevnom disku)
+	 * @param názov meno archívu
+	 * @return „výstupný archív“ (prúd) knižnice <a
+	 *     href="https://ant.apache.org/" target="_blank">Apache Ant</a>
+	 *     {@link ZipOutputStream ZipOutputStream} na vykonanie prípadných
+	 *     ďalších úprav (nastavenie komentára, úprava rôznych konfiguračných
+	 *     položiek podľa vlastných potrieb a podobne)
+	 * 
+	 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
+	 *     operácii
+	 * 
+	 * @see #otvorNaZápis()
+	 * @see #otvorNaZápis(String)
+	 * @see #otvorNaČítanie(String, String)
+	 * @see #zavri()
+	 * @see #close()
+	 * @see #cestaNaDisku()
+	 */
+	public ZipOutputStream otvorNaZápis(String cesta, String názov)
+		throws IOException
+	{
+		if (null == názov)
+			throw new GRobotException(
+				"Názov archívu nesmie byť zamlčaný.",
+				"archiveNameOmitted", null, new NullPointerException());
+
+		zavri();
+		cestaNaDisku(cesta);
+		názov(názov);
+
+		výstup = null == cestaNaDisku ? new ZipOutputStream(
+			new File(názov)) : new ZipOutputStream(new File(
+				cestaNaDisku, názov));
+
+		výstup.setEncoding("UTF-8");
+		položkyVýstupu.clear();
+		return výstup;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #otvorNaZápis(String, String) otvorNaZápis}.</p> */
+	public ZipOutputStream otvorNaZapis(String cesta, String názov)
+	throws IOException { return otvorNaZápis(cesta, názov); }
+
+
+	/**
 	 * <p>Vráti aktuálny počet položiek archívu.</p>
 	 * 
 	 * @return počet položiek uložených v archíve
@@ -703,11 +809,13 @@ public class Archív implements Closeable
 		if (null != vstup)
 		{
 			Enumeration<? extends ZipEntry> položky = vstup.getEntries();
-			int počet = 0; while (položky.hasMoreElements()) ++počet;
+			int počet = 0; while (položky.hasMoreElements())
+			{
+				++počet;
+				položky.nextElement();
+			}
 			return počet;
 		}
-
-		// TODO TEST
 
 		return -1;
 	}
@@ -745,8 +853,6 @@ public class Archív implements Closeable
 				new String[položkyVstupu.size()]);
 		}
 
-		// TODO TEST
-
 		return null;
 	}
 
@@ -763,7 +869,7 @@ public class Archív implements Closeable
 	 * <p>Predvolený formát má tvar:
 	 * <em>«deň»</em>. <em>«mesiac»</em>. <em>«rok»</em>,
 	 * <em>«hodina»</em>:<em>«minúta»</em>:<em>«sekunda»</em>,
-	 * pričom hodiny, minúty a sekundy sú nulou zarovnané zľava
+	 * pričom hodiny, minúty a sekundy sú zľava zarovnané nulou
 	 * na dva znaky.</p>
 	 * 
 	 * @param miliDátum dátum v milisekundách epochy
@@ -976,7 +1082,7 @@ public class Archív implements Closeable
 								"Príliš veľa (" + (údaj + 1) +
 								") číselných údajov v dátume – na znaku " +
 								(i + 1) + " (" + ch + ") v reťazci „" +
-								dátum + "“."/*, false*/);
+								dátum + ".“"/*, false*/);
 						}
 					}
 					catch (Exception e)
@@ -1018,7 +1124,7 @@ public class Archív implements Closeable
 					GRobotException.vypíšChybovéHlásenie(
 						"Príliš veľa (" + (údaj + 1) +
 						") číselných údajov v dátume – na poslednom " +
-						"znaku v reťazci „" + dátum + "“."/*, false*/);
+						"znaku v reťazci „" + dátum + ".“"/*, false*/);
 				}
 			}
 			catch (Exception e)
@@ -1136,7 +1242,7 @@ public class Archív implements Closeable
 								") číselných údajov v dátume – na znaku " +
 								(i + 1) + " (" + ch + ") v reťazci „" +
 								dátum + "“ rozpoznávaných podľa formátu „" +
-								formát + "“."/*, false*/);
+								formát + ".“"/*, false*/);
 					}
 					catch (Exception e)
 					{
@@ -1179,7 +1285,7 @@ public class Archív implements Closeable
 						"Príliš veľa (" + (údaj + 1) +
 						") číselných údajov v dátume – na poslednom " +
 						"znaku v reťazci „" + dátum + "“ rozpoznávaných " +
-						"podľa formátu „" + formát + "“."/*, false*/);
+						"podľa formátu „" + formát + ".“"/*, false*/);
 			}
 			catch (Exception e)
 			{
@@ -1197,8 +1303,8 @@ public class Archív implements Closeable
 	{ return reťazecNaDátum(dátum, formát); }
 
 
-	// Upraví názov položky podľa konfigurácie tohto archívu.
-	/*packagePrivate*/ String upravNázovPoložky(String názovPoložky)
+	// Overí a skoriguje názov položky podľa konfigurácie tohto archívu.
+	/*packagePrivate*/ String overAKorigujNázovPoložky(String názovPoložky)
 	{
 		if (null == názovPoložky)
 			throw new GRobotException(
@@ -1238,7 +1344,7 @@ public class Archív implements Closeable
 	 */
 	public String dátumPoložky(String názovPoložky)
 	{
-		názovPoložky = upravNázovPoložky(názovPoložky);
+		názovPoložky = overAKorigujNázovPoložky(názovPoložky);
 		return dátumNaReťazec(dátumPoložkyAkoČíslo(názovPoložky));
 	}
 
@@ -1259,7 +1365,7 @@ public class Archív implements Closeable
 	 * /
 	public String dátumPoložky(String názovPoložky, String formátDátumu)
 	{
-		názovPoložky = upravNázovPoložky(názovPoložky);
+		názovPoložky = overAKorigujNázovPoložky(názovPoložky);
 		return dátumNaReťazec(dátumPoložkyAkoČíslo(
 			názovPoložky), formátDátumu);
 	}*/
@@ -1284,17 +1390,27 @@ public class Archív implements Closeable
 	 * ({@code srg'#'}) je považovaný za jeden úplný prázdny číselný údaj,
 	 * to znamená, že reťazec {@code srg"###"} znamená prázdny deň, mesiac
 	 * a rok (hoci medzi znakmi nie sú oddeľovače). Pri výskyte tohto znaku
-	 * je prislúchajúcemu údaju ponechaná predvolená hodnota. Ostatné znaky
-	 * (samozrejme okrem číslic) sú považované za neplatné a sú ignorované
-	 * (opomenúc fakt, že sa zapisujú do {@linkplain GRobotException#denník
-	 * denníka chýb}).</p>
+	 * je prislúchajúcemu údaju ponechaná predvolená hodnota (podľa začiatku
+	 * epochy spomenutého vyššie). Ostatné znaky (samozrejme okrem číslic) sú
+	 * považované za neplatné a sú ignorované (opomenúc fakt, že sa zapisujú
+	 * do {@linkplain GRobotException#denník denníka chýb}).</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Ak je archív otvorený len na
 	 * čítanie, tak bude dátum zmenený len pre položku uloženú v pamäti.
 	 * Položka v archíve uloženom na pevnom disku sa nezmení.</p>
 	 * 
-	 * <p>Príklady platných dátumov: TODO</p>
+	 * <p>Príklady platných dátumov:</p>
 	 * 
+	 * <p><code>1 8 2001</code>: 1. 8. 2001, 01:00:00; <code>8.1.1999</code>:
+	 * 8. 1. 1999, 01:00:00; <code>11.12.#,13:0:5</code>: 11. 12. 1970,
+	 * 13:00:05; <code>11.#.1971,13:#</code>: 11. 1. 1971, 13:00:00.
+	 * Staršie dátumy však môžu v niektorých softvéroch spôsobiť chybné
+	 * zobrazenie.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Položka so zadaným názvom musí
+	 * byť v archíve definovaná. Najmä pri archívoch určených na zápis to
+	 * znamená, že najskôr musíme položku vytvoriť, až potom môžeme meniť
+	 * jej parametre.</p>
 	 * 
 	 * @param názovPoložky názov položky, ktorej dátum má byť nastavený
 	 * @param dátumPoložky reťazcový tvar dátumu položky
@@ -1311,7 +1427,7 @@ public class Archív implements Closeable
 	 */
 	public void dátumPoložky(String názovPoložky, String dátumPoložky)
 	{
-		názovPoložky = upravNázovPoložky(názovPoložky);
+		názovPoložky = overAKorigujNázovPoložky(názovPoložky);
 		long dátum = reťazecNaDátum(dátumPoložky);
 		dátumPoložkyAkoČíslo(názovPoložky, dátum);
 	}
@@ -1343,7 +1459,7 @@ public class Archív implements Closeable
 	 */
 	public long dátumPoložkyAkoČíslo(String názovPoložky)
 	{
-		názovPoložky = upravNázovPoložky(názovPoložky);
+		názovPoložky = overAKorigujNázovPoložky(názovPoložky);
 
 		if (null != vstup)
 		{
@@ -1364,8 +1480,6 @@ public class Archív implements Closeable
 					"entryNotFound", názovPoložky);
 			return položka.getTime();
 		}
-
-		// TODO TEST
 
 		throw new GRobotException(
 			"Archív nie je otvorený.",
@@ -1386,8 +1500,13 @@ public class Archív implements Closeable
 	 * čítanie, tak bude dátum zmenený len pre položku uloženú v pamäti.
 	 * Položka v archíve uloženom na pevnom disku sa nezmení.</p>
 	 * 
+	 * <p class="remark"><b>Poznámka:</b> Položka so zadaným názvom musí
+	 * byť v archíve definovaná. Najmä pri archívoch určených na zápis to
+	 * znamená, že najskôr musíme položku vytvoriť, až potom môžeme meniť
+	 * jej parametre.</p>
+	 * 
 	 * @param názovPoložky názov položky, ktorej dátum má byť nastavený
-	 * @param dátumPoložky číselný tvar dátumu položky (počet milisekúnd
+	 * @param dátum číselný tvar dátumu položky (počet milisekúnd
 	 *     od začiatku epochy)
 	 * 
 	 * @throws GRobotException ak archív nie je otvorený (na čítanie alebo
@@ -1404,7 +1523,7 @@ public class Archív implements Closeable
 	 */
 	public void dátumPoložkyAkoČíslo(String názovPoložky, long dátum)
 	{
-		názovPoložky = upravNázovPoložky(názovPoložky);
+		názovPoložky = overAKorigujNázovPoložky(názovPoložky);
 
 		if (null != vstup)
 		{
@@ -1427,8 +1546,6 @@ public class Archív implements Closeable
 			položka.setTime(dátum);
 			return;
 		}
-
-		// TODO TEST
 
 		throw new GRobotException(
 			"Archív nie je otvorený.",
@@ -1451,7 +1568,7 @@ public class Archív implements Closeable
 	 */
 	public long veľkosťPoložky(String názovPoložky)
 	{
-		názovPoložky = upravNázovPoložky(názovPoložky);
+		názovPoložky = overAKorigujNázovPoložky(názovPoložky);
 
 		if (null != vstup)
 		{
@@ -1474,8 +1591,6 @@ public class Archív implements Closeable
 				return -1;
 			return položka.getSize();
 		}
-
-		// TODO TEST
 
 		/*throw new GRobotException(
 			"Archív nie je otvorený.",
@@ -1498,7 +1613,7 @@ public class Archív implements Closeable
 	 */
 	public long komprimovanáVeľkosťPoložky(String názovPoložky)
 	{
-		názovPoložky = upravNázovPoložky(názovPoložky);
+		názovPoložky = overAKorigujNázovPoložky(názovPoložky);
 
 		if (null != vstup)
 		{
@@ -1522,8 +1637,6 @@ public class Archív implements Closeable
 			return položka.getCompressedSize();
 		}
 
-		// TODO
-
 		/*throw new GRobotException(
 			"Archív nie je otvorený.",
 			"archiveNotOpen");*/
@@ -1535,26 +1648,669 @@ public class Archív implements Closeable
 	{ return komprimovanáVeľkosťPoložky(názovPoložky); }
 
 
-	/*
-	TODO
-	public ZipEntry uložPoložku(String názovPoložky, String názovSúboru)
+	/**
+	 * <p>Vráti komentár zadanej položky.</p>
+	 * 
+	 * @param názovPoložky názov položky, ktorej komentár má byť vrátený
+	 * @return komentár položky
+	 * 
+	 * @throws GRobotException ak archív nie je otvorený (na čítanie alebo
+	 *     zápis) alebo zadaná položka nebola nájdená
+	 * 
+	 * @see #komentárPoložky(String, String)
+	 */
+	public String komentárPoložky(String názovPoložky)
 	{
-		sekvencia
-		return spracovaná (uložená?/prečítaná?) položka
-	}
-	*/
+		názovPoložky = overAKorigujNázovPoložky(názovPoložky);
 
-	/*
-	TODO
-	public int rozbaľArchív(String názovPodpriečinka)
-	{
-		sekvencia
-		return počet úspešne rozbalených položiek
+		if (null != vstup)
+		{
+			ZipEntry položka = vstup.getEntry(názovPoložky);
+			if (null == položka)
+				throw new GRobotException(
+					"Položka „" + názovPoložky + "“ nebola nájdená.",
+					"entryNotFound", názovPoložky);
+			return položka.getComment();
+		}
+
+		if (null != výstup)
+		{
+			ZipEntry položka = položkyVýstupu.get(názovPoložky);
+			if (null == položka)
+				throw new GRobotException(
+					"Položka „" + názovPoložky + "“ nebola nájdená.",
+					"entryNotFound", názovPoložky);
+			return položka.getComment();
+		}
+
+		throw new GRobotException(
+			"Archív nie je otvorený.",
+			"archiveNotOpen");
 	}
-	*/
+
+	/** <p><a class="alias"></a> Alias pre {@link #komentárPoložky(String) komentárPoložky}.</p> */
+	public String komentarPolozky(String názovPoložky)
+	{ return komentárPoložky(názovPoložky); }
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Nastaví zadanej položke nový komentár.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Ak je archív otvorený len na
+	 * čítanie, tak bude komentár zmenený len pre položku uloženú v pamäti.
+	 * Položka v archíve uloženom na pevnom disku sa nezmení.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Položka so zadaným názvom musí
+	 * byť v archíve definovaná. Najmä pri archívoch určených na zápis to
+	 * znamená, že najskôr musíme položku vytvoriť, až potom môžeme meniť
+	 * jej parametre.</p>
+	 * 
+	 * @param názovPoložky názov položky, ktorej komentár má byť nastavený
+	 * @param komentár nový komentár položky
+	 * 
+	 * @throws GRobotException ak archív nie je otvorený (na čítanie alebo
+	 *     zápis) alebo zadaná položka nebola nájdená
+	 * 
+	 * @see #komentárPoložky(String)
+	 */
+	public void komentárPoložky(String názovPoložky, String komentár)
+	{
+		názovPoložky = overAKorigujNázovPoložky(názovPoložky);
+
+		if (null != vstup)
+		{
+			ZipEntry položka = vstup.getEntry(názovPoložky);
+			if (null == položka)
+				throw new GRobotException(
+					"Položka „" + názovPoložky + "“ nebola nájdená.",
+					"entryNotFound", názovPoložky);
+			položka.setComment(komentár);
+			return;
+		}
+
+		if (null != výstup)
+		{
+			ZipEntry položka = položkyVýstupu.get(názovPoložky);
+			if (null == položka)
+				throw new GRobotException(
+					"Položka „" + názovPoložky + "“ nebola nájdená.",
+					"entryNotFound", názovPoložky);
+			položka.setComment(komentár);
+			return;
+		}
+
+		throw new GRobotException(
+			"Archív nie je otvorený.",
+			"archiveNotOpen");
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #komentárPoložky(String, String) komentárPoložky}.</p> */
+	public void komentarPolozky(String názovPoložky, String komentár)
+	{ komentárPoložky(názovPoložky, komentár); }
+
+
+	/**
+	 * <p>Vráti jestvujúcu položku archívu knižnice <a
+	 * href="https://ant.apache.org/" target="_blank">Apache Ant</a>
+	 * {@link ZipEntry ZipEntry} na prácu s ňou. Ak súbor nie je otvorený
+	 * na čítanie alebo zápis, alebo ak položka v archíve nejestvuje, tak
+	 * metóda vráti hodnotu {@code valnull}.</p>
+	 * 
+	 * @param názovPoložky názov položky, ktorá má byť vrátená
+	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
+	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry}
+	 */
+	public ZipEntry dajPoložku(String názovPoložky)
+	{
+		if (null == názovPoložky) return null;
+		názovPoložky = overAKorigujNázovPoložky(názovPoložky);
+		if (null != vstup) return vstup.getEntry(názovPoložky);
+		if (null != výstup) return položkyVýstupu.get(názovPoložky);
+		return null;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #dajPoložku(String) dajPoložku}.</p> */
+	public ZipEntry dajPolozku(String názovPoložky)
+	{ return dajPoložku(názovPoložky); }
+
+
+	/**
+	 * <p>Uloží položku so zadaným názvom z archívu do súboru so zadaným
+	 * názvom, pričom namiesto názvu súboru môže byť zadaná hodnota
+	 * {@code valnull}. V takom prípade bude ako názov súboru použitý názov
+	 * položky.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
+	 * použiteľná len v prípade, že je archív otvorený na
+	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> V špeciálom prípade, keď položka
+	 * archívu reprezentuje priečinok, sú parametre {@code prepísať}
+	 * a {@code vytvoriťCestu} ignorované a metóda sa správa tak, že
+	 * automaticky priečinok vytvorí, ak nejestvuje.</p>
+	 * 
+	 * @param názovPoložky názov položky v archíve
+	 * @param názovSúboru názov súboru na disku (môže byť {@code valnull}
+	 * @param prepísať príznak povolenia prepísania jestvujúceho súboru na
+	 *     disku ({@code valtrue} – cieľový súbor smie byť prepísaný, ak
+	 *     jestvuje)
+	 * @param vytvoriťCestu ak je {@code true}, tak metóda automaticky vytvorí
+	 *     cestu k cieľovému súboru, ak nejestvuje
+	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
+	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry} na
+	 *     vykonanie prípadných ďalších úprav (nastavenie komentára
+	 *     položky, úprava dátumu podľa vlastných potrieb a podobne)
+	 * @throws GRobotException ak archív nie je otvorený na čítanie; ak
+	 *     zadaná položka nebola nájdená v archíve; ak cieľový súbor
+	 *     jestvuje a nie je povolená možnosť jeho prepísania (prípadne
+	 *     ak na disku jestvuje položka s rovnakým názvom, ktorá nie je
+	 *     súborom a preto nemôže byť prepísaná)
+	 * @throws java.io.FileNotFoundException ak cieľová cesta nejestvuje
+	 *     a nebolo povolené jej automatické vytvorenie
+	 * 
+	 * @see #uložPoložku(String, String, boolean)
+	 * @see #uložPoložku(String, String)
+	 * @see #uložPoložku(String, boolean, boolean)
+	 * @see #uložPoložku(String, boolean)
+	 * @see #uložPoložku(String)
+	 */
+	public ZipEntry uložPoložku(String názovPoložky, String názovSúboru,
+		boolean prepísať, boolean vytvoriťCestu)
+	{
+		if (null == vstup)
+			throw new GRobotException(
+				"Archív nie je otvorený na čítanie.",
+				"archiveNotOpenForReading");
+
+		názovPoložky = overAKorigujNázovPoložky(názovPoložky);
+		ZipEntry položka = vstup.getEntry(názovPoložky);
+
+		if (null == položka)
+			throw new GRobotException(
+				"Položka „" + názovPoložky + "“ nebola nájdená.",
+				"entryNotFound", názovPoložky);
+
+		if (null == názovSúboru) názovSúboru = názovPoložky;
+			// už obsahuje cestu v archíve, ak je definovaná
+
+		if (-1 != názovSúboru.indexOf('\\'))
+			názovSúboru = názovSúboru.replace('\\', '/');
+
+		// Treba vymazať cestu na disku zo začiatku, lebo tá je použitá nižšie.
+		if (null != cestaNaDisku && názovSúboru.startsWith(cestaNaDisku))
+			názovSúboru = názovSúboru.substring(cestaNaDisku.length());
+
+		File súborCieľa = null == cestaNaDisku ? new File(názovSúboru) :
+			new File(cestaNaDisku, názovSúboru);
+
+
+		// Ak to je priečinok, tak sa proces končí tu (pričom v tomto
+		// prípade sú parametre prepísať a vytvoriťCestu ignorované):
+		if (názovPoložky.length() > 0 &&
+			'/' == názovPoložky.charAt(názovPoložky.length() - 1)
+			// názovPoložky.endsWith("/")
+			)
+		{
+			if (!súborCieľa.exists())
+			{
+				if (!súborCieľa.mkdirs())
+					GRobotException.vypíšChybovéHlásenie(
+						"Nepodarilo sa vytvoriť cestu: " + názovSúboru);
+			}
+			return položka;
+		}
+
+
+		if (!prepísať && súborCieľa.exists())
+			throw new GRobotException(
+				"Cieľový súbor „" + názovSúboru + "“ už jestvuje.",
+				"targetFileExists", názovSúboru);
+		if (súborCieľa.exists() && !súborCieľa.isFile())
+			throw new GRobotException(
+				"Cieľový súbor „" + názovSúboru + "“ nie je súbor.",
+				"targetObjectNotFile", názovSúboru);
+
+		if (vytvoriťCestu)
+		{
+			String názovCesty = súborCieľa.getParent();
+			if (null != názovCesty)
+			{
+				File súborCesty = new File(názovCesty);
+				if (!súborCesty.exists())
+				{
+					if (!súborCesty.mkdirs())
+						GRobotException.vypíšChybovéHlásenie(
+							"Nepodarilo sa vytvoriť cestu: " + názovCesty);
+				}
+			}
+		}
+
+		try
+		{
+			InputStream čítanie = vstup.getInputStream(položka);
+			FileOutputStream zápis = new FileOutputStream(súborCieľa);
+
+			byte[] údaje = new byte[32768];
+			int počet;
+
+			while ((počet = čítanie.read(údaje)) > 0)
+				zápis.write(údaje, 0, počet); // TODO sekvencia
+
+			try { čítanie.close(); } catch (Exception e)
+			{ GRobotException.vypíšChybovéHlásenia(e); }
+			zápis.close();
+
+			súborCieľa.setLastModified(položka.getTime());
+			return položka;
+		}
+		catch (IOException e)
+		{
+			GRobotException.vypíšChybovéHlásenia(e);
+		}
+
+		return null;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #uložPoložku(String, String, boolean, boolean) uložPoložku}.</p> */
+	public ZipEntry ulozPolozku(String názovPoložky, String názovSúboru, boolean prepísať, boolean vytvoriťCestu)
+	{ return uložPoložku(názovPoložky, názovSúboru, prepísať, vytvoriťCestu); }
+
+	/**
+	 * <p>Uloží položku so zadaným názvom z archívu do súboru so zadaným
+	 * názvom, pričom namiesto názvu súboru môže byť zadaná hodnota
+	 * {@code valnull}. V takom prípade bude ako názov súboru použitý názov
+	 * položky. Metóda automaticky vytvorí cestu k cieľovému súboru (ak cesta
+	 * nejestvuje). Ak chcete tomuto správaniu zabrániť, tak použite metódu
+	 * {@link #uložPoložku(String, String, boolean, boolean)
+	 * uložPoložku(názovPoložky, názovSúboru, prepísať, false)}.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
+	 * použiteľná len v prípade, že je archív otvorený na
+	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> V špeciálom prípade, keď položka
+	 * archívu reprezentuje priečinok, je parameter {@code prepísať}
+	 * ignorovaný (pretože nemá význam uvažovať o jeho hodnote).</p>
+	 * 
+	 * @param názovPoložky názov položky v archíve
+	 * @param názovSúboru názov súboru na disku (môže byť {@code valnull}
+	 * @param prepísať príznak povolenia prepísania jestvujúceho súboru na
+	 *     disku ({@code valtrue} – cieľový súbor smie byť prepísaný, ak
+	 *     jestvuje)
+	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
+	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry} na
+	 *     vykonanie prípadných ďalších úprav (nastavenie komentára
+	 *     položky, úprava dátumu podľa vlastných potrieb a podobne)
+	 * @throws GRobotException ak archív nie je otvorený na čítanie; ak
+	 *     zadaná položka nebola nájdená v archíve; ak cieľový súbor
+	 *     jestvuje a nie je povolená možnosť jeho prepísania (prípadne
+	 *     ak na disku jestvuje položka s rovnakým názvom, ktorá nie je
+	 *     súborom a preto nemôže byť prepísaná)
+	 * 
+	 * @see #uložPoložku(String, String, boolean, boolean)
+	 * @see #uložPoložku(String, String)
+	 * @see #uložPoložku(String, boolean, boolean)
+	 * @see #uložPoložku(String, boolean)
+	 * @see #uložPoložku(String)
+	 */
+	public ZipEntry uložPoložku(String názovPoložky, String názovSúboru,
+		boolean prepísať)
+	{ return uložPoložku(názovPoložky, názovSúboru, prepísať, true); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #uložPoložku(String, String, boolean) uložPoložku}.</p> */
+	public ZipEntry ulozPolozku(String názovPoložky, String názovSúboru, boolean prepísať)
+	{ return uložPoložku(názovPoložky, názovSúboru, prepísať); }
+
+	/**
+	 * <p>Uloží položku so zadaným názvom z archívu do súboru so zadaným
+	 * názvom, pričom namiesto názvu súboru môže byť zadaná hodnota
+	 * {@code valnull}. V takom prípade bude ako názov súboru použitý názov
+	 * položky. Cieľový súbor nesmie byť touto metódou prepísaný. Ak
+	 * jestvuje, tak vznikne výnimka. (Ak chcete cieľový súbor prepísať,
+	 * použite metódu {@link #uložPoložku(String, String, boolean)
+	 * uložPoložku(názovPoložky, názovSúboru, true)}.)  Metóda automaticky
+	 * vytvorí cestu k cieľovému súboru (ak cesta nejestvuje). Ak chcete
+	 * tomuto správaniu zabrániť, tak použite iný variant tejto metódy
+	 * (napríklad {@link #uložPoložku(String, String, boolean, boolean)
+	 * uložPoložku(názovPoložky, názovSúboru, prepísať, false)}).</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
+	 * použiteľná len v prípade, že je archív otvorený na
+	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>.</p>
+	 * 
+	 * @param názovPoložky názov položky v archíve
+	 * @param názovSúboru názov súboru na disku (môže byť {@code valnull}
+	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
+	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry} na
+	 *     vykonanie prípadných ďalších úprav (nastavenie komentára
+	 *     položky, úprava dátumu podľa vlastných potrieb a podobne)
+	 * @throws GRobotException ak archív nie je otvorený na čítanie; ak
+	 *     zadaná položka nebola nájdená v archíve; ak cieľový súbor
+	 *     jestvuje
+	 * 
+	 * @see #uložPoložku(String, String, boolean, boolean)
+	 * @see #uložPoložku(String, String, boolean)
+	 * @see #uložPoložku(String, boolean, boolean)
+	 * @see #uložPoložku(String, boolean)
+	 * @see #uložPoložku(String)
+	 */
+	public ZipEntry uložPoložku(String názovPoložky, String názovSúboru)
+	{ return uložPoložku(názovPoložky, názovSúboru, false); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #uložPoložku(String, String) uložPoložku}.</p> */
+	public ZipEntry ulozPolozku(String názovPoložky, String názovSúboru)
+	{ return uložPoložku(názovPoložky, názovSúboru); }
+
+
+	/**
+	 * <p>Táto metóda funguje rovnako ako jej variant {@link 
+	 * #uložPoložku(String, String, boolean, boolean) uložPoložku(názovPoložky,
+	 * názovSúboru, prepísať, vytvoriťCestu)} so zadaným parametrom {@code 
+	 * názovSúboru} rovným {@code valnull}. Podrobnejšie informácie sú v opise
+	 * uvedenej metódy.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
+	 * použiteľná len v prípade, že je archív otvorený na
+	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> V špeciálom prípade, keď položka
+	 * archívu reprezentuje priečinok, sú parametre {@code prepísať}
+	 * a {@code vytvoriťCestu} ignorované a metóda sa správa tak, že
+	 * automaticky priečinok vytvorí, ak nejestvuje.</p>
+	 * 
+	 * @param názovPoložky názov položky v archíve
+	 * @param prepísať príznak povolenia prepísania jestvujúceho súboru
+	 * @param vytvoriťCestu ak je {@code true}, tak metóda automaticky vytvorí
+	 *     cestu k cieľovému súboru, ak nejestvuje
+	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
+	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry} na
+	 *     vykonanie prípadných ďalších úprav
+	 * @throws GRobotException ak archív nie je otvorený na čítanie; ak
+	 *     zadaná položka nebola nájdená v archíve; ak cieľový súbor
+	 *     jestvuje a nie je povolená možnosť jeho prepísania (prípadne
+	 *     ak na disku jestvuje položka s rovnakým názvom, ktorá nie je
+	 *     súborom a preto nemôže byť prepísaná)
+	 * @throws java.io.FileNotFoundException ak cieľová cesta nejestvuje
+	 *     a nebolo povolené jej automatické vytvorenie
+	 * 
+	 * @see #uložPoložku(String, String, boolean, boolean)
+	 * @see #uložPoložku(String, String, boolean)
+	 * @see #uložPoložku(String, String)
+	 * @see #uložPoložku(String, boolean)
+	 * @see #uložPoložku(String)
+	 */
+	public ZipEntry uložPoložku(String názovPoložky,
+		boolean prepísať, boolean vytvoriťCestu)
+	{ return uložPoložku(názovPoložky, null, prepísať, vytvoriťCestu); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #uložPoložku(String, boolean, boolean) uložPoložku}.</p> */
+	public ZipEntry ulozPolozku(String názovPoložky, boolean prepísať, boolean vytvoriťCestu)
+	{ return uložPoložku(názovPoložky, null, prepísať, vytvoriťCestu); }
+
+	/**
+	 * <p>Táto metóda funguje rovnako ako jej variant {@link 
+	 * #uložPoložku(String, String, boolean) uložPoložku(názovPoložky,
+	 * názovSúboru, prepísať)} so zadaným parametrom {@code 
+	 * názovSúboru} rovným {@code valnull}. Podrobnejšie informácie sú v opise
+	 * uvedenej metódy.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> V špeciálom prípade, keď položka
+	 * archívu reprezentuje priečinok, je parameter {@code prepísať}
+	 * ignorovaný (pretože nemá význam uvažovať o jeho hodnote).</p>
+	 * 
+	 * @param názovPoložky názov položky v archíve
+	 * @param prepísať príznak povolenia prepísania jestvujúceho súboru
+	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
+	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry} na
+	 *     vykonanie prípadných ďalších úprav
+	 * @throws GRobotException ak archív nie je otvorený na čítanie; ak
+	 *     zadaná položka nebola nájdená v archíve; ak cieľový súbor
+	 *     jestvuje a nie je povolená možnosť jeho prepísania (prípadne
+	 *     ak na disku jestvuje položka s rovnakým názvom, ktorá nie je
+	 *     súborom a preto nemôže byť prepísaná)
+	 * 
+	 * @see #uložPoložku(String, String, boolean, boolean)
+	 * @see #uložPoložku(String, String, boolean)
+	 * @see #uložPoložku(String, String)
+	 * @see #uložPoložku(String, boolean, boolean)
+	 * @see #uložPoložku(String)
+	 */
+	public ZipEntry uložPoložku(String názovPoložky, boolean prepísať)
+	{ return uložPoložku(názovPoložky, null, prepísať, true); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #uložPoložku(String, boolean) uložPoložku}.</p> */
+	public ZipEntry ulozPolozku(String názovPoložky, boolean prepísať)
+	{ return uložPoložku(názovPoložky, null, prepísať); }
+
+	/**
+	 * <p>Táto metóda funguje rovnako ako jej variant {@link 
+	 * #uložPoložku(String, String) uložPoložku(názovPoložky, názovSúboru)}
+	 * so zadaným parametrom {@code názovSúboru} rovným {@code valnull}.
+	 * Podrobnejšie informácie sú v opise uvedenej metódy.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
+	 * použiteľná len v prípade, že je archív otvorený na
+	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>.</p>
+	 * 
+	 * @param názovPoložky názov položky v archíve
+	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
+	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry} na
+	 *     vykonanie prípadných ďalších úprav
+	 * @throws GRobotException ak archív nie je otvorený na čítanie; ak
+	 *     zadaná položka nebola nájdená v archíve; ak cieľový súbor
+	 *     jestvuje
+	 * 
+	 * @see #uložPoložku(String, String, boolean, boolean)
+	 * @see #uložPoložku(String, String, boolean)
+	 * @see #uložPoložku(String, String)
+	 * @see #uložPoložku(String, boolean, boolean)
+	 * @see #uložPoložku(String, boolean)
+	 */
+	public ZipEntry uložPoložku(String názovPoložky)
+	{ return uložPoložku(názovPoložky, null, false); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #uložPoložku(String) uložPoložku}.</p> */
+	public ZipEntry ulozPolozku(String názovPoložky)
+	{ return uložPoložku(názovPoložky, null); }
+
+
+	/**
+	 * <p>Rozbalí tento balíček do cieľovej lokality. Metóda umožňuje
+	 * spresniť pravidlá, ktorými sa bude riadiť pri procese rozbaľovania
+	 * a to, či môže prepisovať jestvujúce súbory a vytvárať nejestvujúce
+	 * priečinky, ktoré nie sú explicitne vložené ako položky v archíve
+	 * (čiže výsledok nezávisí len od parametrov tejto metódy, ale aj od
+	 * situácie v rámci konkrétneho archívu).</p>
+	 * 
+	 * <p>Návratová hodnota metódy vyjadruje počet položiek, ktoré sa
+	 * podarilo úspešne rozbaliť (alebo vytvoriť). Automaticky vytvorené
+	 * priečinky, ktoré nie sú položkami archívu (pretože toto nie je
+	 * v archívoch povinné), ale sú len súčasťou relatívnych ciest položiek
+	 * archívu, nie sú do tohto počtu zarátané.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je použiteľná
+	 * len v prípade, že je archív otvorený alebo otvoriteľný na
+	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>, to znamená, že
+	 * musí jestvovať na umiestnení, na ktoré smeruje táto inštancia
+	 * a nesmie byť otvorený na {@linkplain #otvorNaZápis(String) zápis}.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Podobne ako pri metóde {@link 
+	 * #uložPoložku(String, String, boolean, boolean) uložPoložku}, aj počas
+	 * tohto procesu rozbaľovania v prípade, keď niektorá položka archívu
+	 * reprezentuje priečinok, sú hodnoty parametrov {@code prepísať}
+	 * a {@code vytvoriťCestu} pre túto položku ignorované a priečinok je
+	 * automaticky vytvorený, ak nejestvuje. (Práve tieto priečinky sú
+	 * zarátané do návratovej hodnoty tejto metódy – pretože sú
+	 * reprezentované položkami v archíve.)</p>
+	 * 
+	 * @param cestaNaRozbalenie cieľová cesta na rozbalenie tohto archívu;
+	 *     ak nie je zadaná (má hodnotu {@code valnull}), tak je obsah archívu
+	 *     rozbalený na aktuálnom umiestnení (na spúšťacej ceste aplikácie)
+	 * @param prepísať príznak povolenia prepísania jestvujúcich súborov na
+	 *     disku ({@code valtrue} – jestvujúce cieľové súboru smú byť
+	 *     prepísané, ak jestvujú)
+	 * @param vytvoriťCestu ak je {@code true}, tak metóda bude automaticky
+	 *     vytvárať cesty k rozbaľovaným súborom (ak nejestvujú)
+	 * @return počet položiek archívu, ktoré boli úspešne rozbalené
+	 *     (vytvorené); záporná hodnota označuje chybu
+	 */
+	public int rozbaľArchív(String cestaNaRozbalenie,
+		boolean prepísať, boolean vytvoriťCestu)
+	{
+		if (null != výstup)
+			throw new GRobotException(
+				"Archív je otvorený na zápis.",
+				"archiveIsOpenForWriting");
+
+		int úspechov = -1;
+		boolean zavri = null == vstup;
+		String pôvodnáCestaNaDisku = cestaNaDisku;
+		String pôvodnáCestaVArchíve = cestaVArchíve;
+
+		try
+		{
+			if (null == vstup) otvorNaČítanie();
+			if (null != cestaNaRozbalenie)
+				cestaNaDisku(cestaNaRozbalenie);
+
+			if (vytvoriťCestu && null != cestaNaDisku)
+			{
+				File súborCesty = new File(cestaNaDisku);
+				if (!súborCesty.exists())
+				{
+					if (!súborCesty.mkdirs())
+						GRobotException.vypíšChybovéHlásenie(
+							"Nepodarilo sa vytvoriť cestu: " + cestaNaDisku);
+				}
+			}
+
+			if (null != vstup)
+			{
+				Enumeration<? extends ZipEntry> položky = vstup.getEntries();
+				úspechov = 0; cestaVArchíve = null;
+				while (položky.hasMoreElements())
+				{
+					ZipEntry položka = položky.nextElement();
+					// TODO sekvencia?
+
+					try {
+						if (null != uložPoložku(položka.getName(),
+							prepísať, vytvoriťCestu)) ++úspechov;
+					} catch (Exception e) {
+						// Zamlčaný neúspech
+					}
+				}
+			}
+		}
+		catch (GRobotException e)
+		{
+			// Zamlčané, aj tak je to v denníku
+		}
+		catch (Exception e)
+		{
+			GRobotException.vypíšChybovéHlásenia(e);
+		}
+		finally
+		{
+			cestaNaDisku = pôvodnáCestaNaDisku;
+			cestaVArchíve = pôvodnáCestaVArchíve;
+			try { if (zavri) zavri(); } catch (Throwable t) { /* ignorované */ }
+		}
+
+		return úspechov;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #rozbaľArchív(String, boolean, boolean) rozbaľArchív}.</p> */
+	public int rozbalArchiv(String cestaNaRozbalenie,
+		boolean prepísať, boolean vytvoriťCestu)
+	{ return rozbaľArchív(cestaNaRozbalenie, prepísať, vytvoriťCestu); }
+
+	/**
+	 * <p>Táto metóda sa správa rovnako ako jej „hlavná verzia“ spustená
+	 * s nasledujúcimi hodnotami parametrov:</p>
+	 * 
+	 * <p>{@link #rozbaľArchív(String, boolean, boolean)
+	 * rozbaľArchív}<code>(cestaNaRozbalenie, prepísať, </code>{@code 
+	 * valtrue}<code>)</code></p>
+	 * 
+	 * <p>Detaily nájdete v opise metódy {@link #rozbaľArchív(String,
+	 * boolean, boolean) rozbaľArchív}.</p>
+	 * 
+	 * @param cestaNaRozbalenie cieľová cesta na rozbalenie tohto archívu
+	 * @param prepísať príznak povolenia prepísania jestvujúcich súborov na
+	 *     disku
+	 * @return počet položiek archívu, ktoré boli úspešne rozbalené (vytvorené)
+	 */
+	public int rozbaľArchív(String cestaNaRozbalenie, boolean prepísať)
+	{ return rozbaľArchív(cestaNaRozbalenie, prepísať, true); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #rozbaľArchív(String, boolean, boolean) rozbaľArchív}.</p> */
+	public int rozbalArchiv(String cestaNaRozbalenie, boolean prepísať)
+	{ return rozbaľArchív(cestaNaRozbalenie, prepísať); }
+
+	/**
+	 * <p>Táto metóda sa správa rovnako ako jej „hlavná verzia“ spustená
+	 * s nasledujúcimi hodnotami parametrov:</p>
+	 * 
+	 * <p>{@link #rozbaľArchív(String, boolean, boolean)
+	 * rozbaľArchív}<code>(cestaNaRozbalenie,
+	 * </code>{@code valfalse}<code>, </code>{@code valtrue}<code>)</code></p>
+	 * 
+	 * <p>Detaily nájdete v opise metódy {@link #rozbaľArchív(String,
+	 * boolean, boolean) rozbaľArchív}.</p>
+	 * 
+	 * @param cestaNaRozbalenie cieľová cesta na rozbalenie tohto archívu
+	 * @return počet položiek archívu, ktoré boli úspešne rozbalené (vytvorené)
+	 */
+	public int rozbaľArchív(String cestaNaRozbalenie)
+	{ return rozbaľArchív(cestaNaRozbalenie, false, true); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #rozbaľArchív(String, boolean, boolean) rozbaľArchív}.</p> */
+	public int rozbalArchiv(String cestaNaRozbalenie)
+	{ return rozbaľArchív(cestaNaRozbalenie); }
+
+	/**
+	 * <p>Táto metóda sa správa rovnako ako jej „hlavná verzia“ spustená
+	 * s nasledujúcimi hodnotami parametrov:</p>
+	 * 
+	 * <p>{@link #rozbaľArchív(String, boolean, boolean)
+	 * rozbaľArchív}<code>(</code>{@code valnull}<code>, prepísať,
+	 * </code>{@code valtrue}<code>)</code></p>
+	 * 
+	 * <p>Detaily nájdete v opise metódy {@link #rozbaľArchív(String,
+	 * boolean, boolean) rozbaľArchív}.</p>
+	 * 
+	 * @param prepísať príznak povolenia prepísania jestvujúcich súborov na
+	 *     disku
+	 * @return počet položiek archívu, ktoré boli úspešne rozbalené (vytvorené)
+	 */
+	public int rozbaľArchív(boolean prepísať)
+	{ return rozbaľArchív(null, prepísať, true); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #rozbaľArchív(String, boolean, boolean) rozbaľArchív}.</p> */
+	public int rozbalArchiv(boolean prepísať) { return rozbaľArchív(prepísať); }
+
+	/**
+	 * <p>Táto metóda sa správa rovnako ako jej „hlavná verzia“ spustená
+	 * s nasledujúcimi hodnotami parametrov:</p>
+	 * 
+	 * <p>{@link #rozbaľArchív(String, boolean, boolean)
+	 * rozbaľArchív}<code>(</code>{@code valnull}<code>, </code>{@code 
+	 * valfalse}<code>, </code>{@code valtrue}<code>)</code></p>
+	 * 
+	 * <p>Detaily nájdete v opise metódy {@link #rozbaľArchív(String,
+	 * boolean, boolean) rozbaľArchív}.</p>
+	 * 
+	 * @return počet položiek archívu, ktoré boli úspešne rozbalené (vytvorené)
+	 */
+	public int rozbaľArchív() { return rozbaľArchív(null, false, true); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #rozbaľArchív(String, boolean, boolean) rozbaľArchív}.</p> */
+	public int rozbalArchiv() { return rozbaľArchív(); }
+
+
+	/**
+	 * <p>Prečíta všetky dekomprimované údaje položky so zadaným názvom
+	 * a vráti ich vo forme poľa bajtov.</p>
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
 	 * použiteľná len v prípade, že je archív otvorený na
@@ -1574,9 +2330,7 @@ public class Archív implements Closeable
 				"Archív nie je otvorený na čítanie.",
 				"archiveNotOpenForReading");
 
-		// TODO TEST
-
-		názovPoložky = upravNázovPoložky(názovPoložky);
+		názovPoložky = overAKorigujNázovPoložky(názovPoložky);
 		ZipEntry položka = vstup.getEntry(názovPoložky);
 
 		if (null == položka)
@@ -1616,7 +2370,12 @@ public class Archív implements Closeable
 
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Pridá do archívu údaje zo zadaného súboru. Metóda dovoľuje zmeniť
+	 * názov položky v archíve – ak prvý parameter ({@code názovPoložky})
+	 * nie je {@code valnull}, tak zadaný názov bude použitý namiesto
+	 * pôvodného názvu súboru. V opačnom prípade bude na pomenovanie položky
+	 * v archíve použitý pôvodný názov súboru (z druhého parametra –
+	 * {@code názovSúboru}).</p>
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
 	 * použiteľná len v prípade, že je archív otvorený na
@@ -1662,7 +2421,7 @@ public class Archív implements Closeable
 
 			int indexOf = názovPoložky.lastIndexOf('/');
 			if (-1 != indexOf) názovPoložky = názovPoložky.
-				substring(indexOf + 1); // TODO TEST
+				substring(indexOf + 1);
 		}
 		else if (-1 != názovPoložky.indexOf('\\'))
 			názovPoložky = názovPoložky.replace('\\', '/');
@@ -1689,7 +2448,7 @@ public class Archív implements Closeable
 		int počet;
 
 		while ((počet = čítanie.read(údaje)) > 0)
-			výstup.write(údaje, 0, počet);
+			výstup.write(údaje, 0, počet); // TODO sekvencia
 
 		položka.setTime(súbor.lastModified());
 		čítanie.close();
@@ -1701,7 +2460,8 @@ public class Archív implements Closeable
 		throws IOException { return pridajPoložku(názovPoložky, názovSúboru); }
 
 	/**
-	 * <p>TODO</p>
+	 * <p>Zapíše údaje zadané vo forme poľa bajtov do položky archívu so
+	 * zadaným názvom.</p>
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
 	 * použiteľná len v prípade, že je archív otvorený na
@@ -1733,7 +2493,7 @@ public class Archív implements Closeable
 				"archiveNotOpenForWriting");
 
 
-		názovPoložky = upravNázovPoložky(názovPoložky);
+		názovPoložky = overAKorigujNázovPoložky(názovPoložky);
 
 		if (položkyVýstupu.containsKey(názovPoložky))
 			throw new GRobotException("Položka „" +
@@ -1744,8 +2504,8 @@ public class Archív implements Closeable
 		položkyVýstupu.put(názovPoložky, položka);
 		výstup.putNextEntry(položka);
 
-		výstup.write(údajePoložky, 0, údajePoložky.length);
-		// položka.setTime(súbor.lastModified());
+		výstup.write(údajePoložky, 0, údajePoložky.length); // TODO sekvencia
+		// Tu nemá zmysel: položka.setTime(súbor.lastModified());
 		return položka;
 	}
 
@@ -1754,53 +2514,125 @@ public class Archív implements Closeable
 		throws IOException { return pridajPoložku(názovPoložky, údajePoložky); }
 
 
-	/* *
-	 * <p>NEDÁ SA – použité súčasti nepodporujú čítanie komentárov „súboru“
-	 * (to jest celého archívu). Jestvuje len podpora práce s komentármi
-	 * položiek archívu. Je nelogické poskytnúť len možnosť zápisu komentára
-	 * „súboru“ (to jest celého archívu).</p>
-	 * 
-	 * @return —
-	 * 
-	 * @see #komentár(String)
-	 * /
-	public String komentár()
-	{
-		if (null != vstup)
-		{
-			// return vstup.getComment();
-		}
-
-		if (null != výstup)
-		{
-			// return výstup.getComment();
-		}
-
-		return null;
-	}/* */
-
-	/* *
-	 * <p>NEDÁ SA – použité súčasti nepodporujú čítanie komentárov „súboru“
-	 * (to jest celého archívu). Jestvuje len podpora práce s komentármi
-	 * položiek archívu. Je nelogické poskytnúť len možnosť zápisu komentára
-	 * „súboru“ (to jest celého archívu).</p>
+	/**
+	 * <p>Pridá do archívu položku reprezentujúcu priečinok.</p>
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
 	 * použiteľná len v prípade, že je archív otvorený na
 	 * <b>{@linkplain #otvorNaZápis(String) zápis}</b>.</p>
 	 * 
-	 * @param komentár —
+	 * @param názov názov pridávaného priečinka (nesmie byť zamlčaný)
+	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
+	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry} na
+	 *     vykonanie prípadných ďalších úprav (nastavenie komentára
+	 *     položky, úprava dátumu podľa vlastných potrieb a podobne)
+	 * 
+	 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
+	 *     operácii
+	 * @throws GRobotException ak archív nie je otvorený na zápis, ak
+	 *     bol názov položky zamlčaný (bola zadaná hodnota {@code valnull})
+	 *     alebo v prípade pokusu o vloženie duplicitnej položky
+	 */
+	public ZipEntry pridajPriečinok(String názov) throws IOException
+	{
+		if (null == výstup)
+			throw new GRobotException(
+				"Archív nie je otvorený na zápis.",
+				"archiveNotOpenForWriting");
+
+		názov = overAKorigujNázovPoložky(názov);
+		if (názov.length() > 0 &&
+			'/' != názov.charAt(názov.length() - 1) // !názov.endsWith("/")
+			) názov += '/';
+
+		if (položkyVýstupu.containsKey(názov))
+			throw new GRobotException("Položka „" +
+				názov + "“ už v archíve jestvuje.",
+				"duplicateEntry", názov);
+
+		ZipEntry položka = new ZipEntry(názov);
+		položkyVýstupu.put(názov, položka);
+		výstup.putNextEntry(položka);
+		return položka;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #pridajPriečinok(String) pridajPriečinok}.</p> */
+	public ZipEntry pridajPriecinok(String názov) throws IOException
+	{ return pridajPriečinok(názov); }
+
+
+	/**
+	 * <p>Vráti komentár archívu otvoreného na čítanie, ak je definovaný.
+	 * V opačnom prípade vráti hodnotu {@code valnull}.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
+	 * použiteľná len v prípade, že je archív otvorený na
+	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>.</p>
+	 * 
+	 * @return komentár archívu otvoreného na čítanie alebo {@code valnull}
+	 * 
+	 * @see #komentár(String)
+	 */
+	public String komentár()
+	{
+		if (null == vstup)
+			throw new GRobotException(
+				"Archív nie je otvorený na čítanie.",
+				"archiveNotOpenForReading");
+
+		return vstup.getComment();
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #komentár() komentár}.</p>*/
+	public String komentar() { return komentár(); }/**/
+
+	/**
+	 * <p>Nastaví nový komentár archívu.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
+	 * použiteľná len v prípade, že je archív otvorený na
+	 * <b>{@linkplain #otvorNaZápis(String) zápis}</b>.</p>
+	 * 
+	 * @param komentár nový komentár archívu
 	 * @return {@code valtrue} v prípade úspechu akcie
 	 * 
 	 * @throws GRobotException ak archív nie je otvorený na zápis
 	 * 
 	 * @see #komentár()
-	 * /
+	 */
 	public void komentár(String komentár)
 	{
 		if (null == výstup)
 			throw new GRobotException(
 				"Archív nie je otvorený na zápis.",
 				"archiveNotOpenForWriting");
-	}/* */
+
+		if (null == komentár)
+			výstup.setComment("");
+		else
+			výstup.setComment(komentár);
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #komentár(String) komentár}.</p>*/
+	public void komentar(String komentár) { komentár(komentár); }
+
+
+	// TODO: Keď bude čas, implementovať mechanizmus (ne)ignorovania chýb.
+	// 
+	// • Metódou ignorujChyby(boolean) sa to zapne/vypne.
+	// • Ak je to zapnuté, tak všetky metódy budú silou mocou obchádzať
+	//   vrhanie výnimiek a ak to pre nich bude možné, tak sa budú usilovať
+	//   indikovať chybový stav nejako inak (návratovou hodnotou, inak?;
+	//   v každom prípade: denník funguje).
+	// • Ak je to vypnuté, tak budú vrhať výnimky aj metódy ako veľkosťPoložky
+	//   a pod.
+	// 
+	// (Lenže toto isté by sa hodilo implementovať aj do triedy Súbor, čo
+	// je v retrospektíve relatívne „nemožné.“)
+
+	// TODO: Významne rozšíriť možnosti pridávania položiek a/alebo prepájania
+	// so súčasťami programovacieho rámca: ukladanie obrázkov (PNG, JPEG, GIF,
+	// SVG) a zvukov do archívu. Rovnako ich čítanie z archívu.
+
+
 }

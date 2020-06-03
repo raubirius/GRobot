@@ -6,7 +6,7 @@
  * (the “License”); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an “AS IS” BASIS,
@@ -17,7 +17,6 @@
 
 // package org.apache.tools.zip;
 package knižnica.apacheAntZIP;
-
 
 // import static org.apache.tools.zip.ZipConstants.BYTE_MASK;
 
@@ -58,7 +57,7 @@ public final class ZipEightByteInteger {
 	private static final int BYTE_7_SHIFT = 56;
 
 	private static final int LEFTMOST_BIT_SHIFT = 63;
-	private static final byte LEFTMOST_BIT = (byte) 0x80;
+	private static final byte LEFTMOST_BIT = (byte)0x80;
 
 	private final BigInteger value;
 
@@ -171,14 +170,14 @@ public final class ZipEightByteInteger {
 	 * @return the corresponding Java BigInteger value
 	 */
 	public static BigInteger getValue(byte[] bytes, int offset) {
-		long value = ((long) bytes[offset + BYTE_7] << BYTE_7_SHIFT) & BYTE_7_MASK;
-		value += ((long) bytes[offset + BYTE_6] << BYTE_6_SHIFT) & BYTE_6_MASK;
-		value += ((long) bytes[offset + BYTE_5] << BYTE_5_SHIFT) & BYTE_5_MASK;
-		value += ((long) bytes[offset + BYTE_4] << BYTE_4_SHIFT) & BYTE_4_MASK;
-		value += ((long) bytes[offset + BYTE_3] << BYTE_3_SHIFT) & BYTE_3_MASK;
-		value += ((long) bytes[offset + BYTE_2] << BYTE_2_SHIFT) & BYTE_2_MASK;
-		value += ((long) bytes[offset + BYTE_1] << BYTE_1_SHIFT) & BYTE_1_MASK;
-		value += ((long) bytes[offset] & ZipConstants.BYTE_MASK);
+		long value = ((long)bytes[offset + BYTE_7] << BYTE_7_SHIFT) & BYTE_7_MASK;
+		value += ((long)bytes[offset + BYTE_6] << BYTE_6_SHIFT) & BYTE_6_MASK;
+		value += ((long)bytes[offset + BYTE_5] << BYTE_5_SHIFT) & BYTE_5_MASK;
+		value += ((long)bytes[offset + BYTE_4] << BYTE_4_SHIFT) & BYTE_4_MASK;
+		value += ((long)bytes[offset + BYTE_3] << BYTE_3_SHIFT) & BYTE_3_MASK;
+		value += ((long)bytes[offset + BYTE_2] << BYTE_2_SHIFT) & BYTE_2_MASK;
+		value += ((long)bytes[offset + BYTE_1] << BYTE_1_SHIFT) & BYTE_1_MASK;
+		value += ((long)bytes[offset] & ZipConstants.BYTE_MASK);
 		BigInteger val = BigInteger.valueOf(value);
 		return (bytes[offset + BYTE_7] & LEFTMOST_BIT) == LEFTMOST_BIT
 			? val.setBit(LEFTMOST_BIT_SHIFT) : val;
@@ -209,8 +208,8 @@ public final class ZipEightByteInteger {
 	 */
 	@Override
 	public boolean equals(Object o) {
-		return (o != null) && (o instanceof ZipEightByteInteger) &&
-			value.equals(((ZipEightByteInteger) o).getValue());
+		return o instanceof ZipEightByteInteger
+			&& value.equals(((ZipEightByteInteger)o).getValue());
 	}
 
 	/**

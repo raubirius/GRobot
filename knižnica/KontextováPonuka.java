@@ -98,23 +98,23 @@ import javax.swing.SwingConstants;
 
 			{@code kwdif} (novýObjekt == položka)
 			{
-				{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Zvolená položka „Nový objekt“."});
+				{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Zvolená položka „Nový objekt.“"});
 			}
 			{@code kwdelse if} (preusporiadať == položka)
 			{
-				{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Zvolená položka „Preusporiadať“."});
+				{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Zvolená položka „Preusporiadať.“"});
 			}
 			{@code kwdelse if} (ďalšiaAkcia1 == položka)
 			{
-				{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Zvolená položka „Ďalšia akcia 1“."});
+				{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Zvolená položka „Ďalšia akcia 1.“"});
 			}
 			{@code kwdelse if} (ďalšiaAkcia2 == položka)
 			{
-				{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Zvolená položka „Ďalšia akcia 2“."});
+				{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Zvolená položka „Ďalšia akcia 2.“"});
 			}
 			{@code kwdelse if} (ďalšiaAkcia3 == položka)
 			{
-				{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Zvolená položka „Ďalšia akcia 3“."});
+				{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Zvolená položka „Ďalšia akcia 3.“"});
 			}
 		}
 	};
@@ -334,9 +334,9 @@ public class KontextováPonuka extends JPopupMenu
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Táto metóda prekrýva originálnu
 	 * metódu {@link JPopupMenu#add(String)}. </p>
-	 * <!-- TODO – skúsiť automaticky overovať v dokumentácii a ak to
-	 * nepôjde, doplniť rovnakú poznámku ku všetkým prekrytým metódam
-	 * v programovacom rámci. -->
+	 * 
+	 * <!-- TODO – priebežne dopĺňať rovnaké poznámky ku všetkým prekrytým
+	 * metódam v programovacom rámci. -->
 	 * 
 	 * @param text text novej kontextovej položky
 	 * @return nová kontextová položka; aj keď je návratová hodnota
@@ -354,6 +354,9 @@ public class KontextováPonuka extends JPopupMenu
 	 * v prípade, že ponuka bola vytvorená konštruktorom: {@link 
 	 * KontextováPonuka#KontextováPonuka(String) KontextováPonuka(popis)}.
 	 * {@code text} nesmie byť {@code valnull}.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda prekrýva originálnu
+	 * metódu {@link JPopupMenu#setLabel(String)}. </p>
 	 * 
 	 * @param text text popisu ponuky; nesmie byť {@code valnull}
 	 * 
@@ -377,6 +380,9 @@ public class KontextováPonuka extends JPopupMenu
 	 * len v prípade, že ponuka bola vytvorená konštruktorom: {@link 
 	 * KontextováPonuka#KontextováPonuka(String)
 	 * KontextováPonuka(popis)}.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda prekrýva originálnu
+	 * metódu {@link JPopupMenu#getLabel()}. </p>
 	 * 
 	 * @return text popisu ponuky alebo {@code valnull} ak ponuka nemôže
 	 *     mať popis

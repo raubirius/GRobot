@@ -6,7 +6,7 @@
  * (the “License”); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an “AS IS” BASIS,
@@ -17,7 +17,6 @@
 
 // package org.apache.tools.zip;
 package knižnica.apacheAntZIP;
-
 
 /**
  * Parser/encoder for the “general purpose bit” field in ZIP’s local
@@ -153,14 +152,13 @@ public final class GeneralPurposeBit implements Cloneable {
 	 * @param buf the output buffer
 	 * @param offset
 	 *         The offset within the output buffer of the first byte to be written.
-	 *         must be non-negative and no larger than <tt>buf.length-2</tt>
+	 *         must be non-negative and no larger than <code>buf.length-2</code>
 	 */
 	public void encode(byte[] buf, int offset) {
-		ZipShort.putShort(
-			(dataDescriptorFlag ? DATA_DESCRIPTOR_FLAG : 0) |
-			(languageEncodingFlag ? UFT8_NAMES_FLAG : 0) |
-			(encryptionFlag ? ENCRYPTION_FLAG : 0) |
-			(strongEncryptionFlag ? STRONG_ENCRYPTION_FLAG : 0),
+		ZipShort.putShort((dataDescriptorFlag ? DATA_DESCRIPTOR_FLAG : 0)
+			| (languageEncodingFlag ? UFT8_NAMES_FLAG : 0)
+			| (encryptionFlag ? ENCRYPTION_FLAG : 0)
+			| (strongEncryptionFlag ? STRONG_ENCRYPTION_FLAG : 0),
 			buf, offset);
 	}
 
@@ -176,8 +174,8 @@ public final class GeneralPurposeBit implements Cloneable {
 		GeneralPurposeBit b = new GeneralPurposeBit();
 		b.useDataDescriptor((generalPurposeFlag & DATA_DESCRIPTOR_FLAG) != 0);
 		b.useUTF8ForNames((generalPurposeFlag & UFT8_NAMES_FLAG) != 0);
-		b.useStrongEncryption((generalPurposeFlag & STRONG_ENCRYPTION_FLAG)
-							!= 0);
+		b.useStrongEncryption(
+			(generalPurposeFlag & STRONG_ENCRYPTION_FLAG) != 0);
 		b.useEncryption((generalPurposeFlag & ENCRYPTION_FLAG) != 0);
 		return b;
 	}
@@ -193,7 +191,7 @@ public final class GeneralPurposeBit implements Cloneable {
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof GeneralPurposeBit) {
-			GeneralPurposeBit g = (GeneralPurposeBit) o;
+			GeneralPurposeBit g = (GeneralPurposeBit)o;
 			return g.encryptionFlag == encryptionFlag
 				&& g.strongEncryptionFlag == strongEncryptionFlag
 				&& g.languageEncodingFlag == languageEncodingFlag
@@ -209,7 +207,8 @@ public final class GeneralPurposeBit implements Cloneable {
 			return super.clone();
 		} catch (CloneNotSupportedException ex) {
 			// impossible
-			throw new RuntimeException("GeneralPurposeBit is not Cloneable?", ex); //NOSONAR
+			throw new RuntimeException(
+				"GeneralPurposeBit is not Cloneable?", ex); //NOSONAR
 		}
 	}
 }

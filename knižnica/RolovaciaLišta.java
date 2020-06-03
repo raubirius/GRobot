@@ -468,7 +468,7 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 
 	/**
 	 * <p>Zistí veľkosť oblasti, ktorú má lišta nastavenú ako aktuálnu
-	 * šírku alebo výšku „okna“. Ide o veľkosť tej časti zobrazenia,
+	 * šírku alebo výšku „okna.“ Ide o veľkosť tej časti zobrazenia,
 	 * ktorá má byť naraz viditeľná.</p>
 	 * 
 	 * @return aktuálna veľkosť zobrazovanej oblasti (výška alebo šírka;
@@ -1148,6 +1148,12 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 * (Viac informácií nájdete v opise metódy {@link #zobrazená()
 	 * zobrazená}.)</p>
 	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda prekrýva originálnu
+	 * metódu {@link JScrollBar#setVisible(boolean)}. </p>
+	 * 
+	 * <!-- TODO – priebežne dopĺňať rovnaké poznámky ku všetkým prekrytým
+	 * metódam v programovacom rámci. -->
+	 * 
 	 * @param zobraz {@code valtrue} znamená, že lišta má byť zobrazená,
 	 *     {@code valfalse} znamená opak
 	 */
@@ -1164,6 +1170,9 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 * aplikácie.
 	 * (Viac informácií nájdete v opise metódy {@link #zobrazená()
 	 * zobrazená}.)</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda prekrýva originálnu
+	 * metódu {@link JScrollBar#isVisible()}. </p>
 	 * 
 	 * @return {@code valtrue} znamená, že lišta je zobrazená,
 	 *     {@code valfalse} znamená opak

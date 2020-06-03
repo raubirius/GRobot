@@ -2023,22 +2023,30 @@ public class Farba extends Color implements Comparable<Color>
 	/**
 	 * <p>Vykoná konverziu z farebnej reprezentácie RGB do HSB.
 	 * Funguje rovnako ako metóda {@link #RGBtoHSB(int) RGBtoHSB(rgb)},
-	 * ibaže nevracia zložky HSB ako argument, ale očakáva trojprvkové
-	 * pole typu {@code typedouble}, do ktorého prevedené zložky vloží.</p>
+	 * ibaže očakáva vopred vytvorené trojprvkové pole typu
+	 * {@code typedouble}, do ktorého prevedené zložky vloží. Ak je
+	 * namiesto poľa zadaná hodnota {@code valnull}, tak metóda pole
+	 * vytvorí. Výsledné pole (vytvorené metódou alebo prijaté v druhom
+	 * argumente) metóda zároveň vráti vo svojej návratovej hodnote.</p>
 	 * 
 	 * @param rgb farba vyjadrená ako kombinácia zložiek farebného
 	 *     priestoru RGB
 	 * @param hsb pole, do ktorého metóda vloží hodnoty definujúce farbu
-	 *     vo farebnom priestore HSB
+	 *     vo farebnom priestore HSB alebo hodnota {@code valnull}
+	 * @return pole, ktoré bolo metóde odovzdané cez argument {@code hsb},
+	 *     alebo nové pole, ktoré metóda vytvorila v prípade prijatia hodnoty
+	 *     {@code valnull} v parametri {@code hsb}
 	 * 
 	 * @see #RGBtoHSV(int, double[])
 	 */
-	public static void RGBtoHSB(int rgb, double[] hsb)
+	public static double[] RGBtoHSB(int rgb, double[] hsb)
 	{
 		float[] f_hsb = new float[3];
 		Color.RGBtoHSB((rgb >> 16) & 0xff,
 			(rgb >> 8) & 0xff, rgb & 0xff, f_hsb);
+		if (null == hsb) hsb = new double[3];
 		hsb[0] = f_hsb[0]; hsb[1] = f_hsb[1]; hsb[2] = f_hsb[2];
+		return hsb;
 	}
 
 	/**
@@ -2168,17 +2176,23 @@ public class Farba extends Color implements Comparable<Color>
 	/**
 	 * <p>Vykoná konverziu z farebnej reprezentácie RGB do HSV.
 	 * Funguje rovnako ako metóda {@link #RGBtoHSV(int) RGBtoHSV(rgb)},
-	 * ibaže nevracia zložky HSV ako argument, ale očakáva trojprvkové
-	 * pole typu {@code typedouble}, do ktorého prevedené zložky vloží.</p>
+	 * ibaže očakáva trojprvkové pole typu {@code typedouble}, do ktorého
+	 * prevedené zložky vloží. Ak je namiesto poľa zadaná hodnota
+	 * {@code valnull}, tak metóda pole vytvorí. Výsledné pole (vytvorené
+	 * metódou alebo prijaté v druhom argumente) metóda zároveň vráti vo
+	 * svojej návratovej hodnote.</p>
 	 * 
 	 * @param rgb farba vyjadrená ako kombinácia zložiek farebného
 	 *     priestoru RGB
 	 * @param hsv pole, do ktorého metóda vloží hodnoty definujúce farbu
-	 *     vo farebnom priestore HSV
+	 *     vo farebnom priestore HSV alebo hodnota {@code valnull}
+	 * @return pole, ktoré bolo metóde odovzdané cez argument {@code hsb},
+	 *     alebo nové pole, ktoré metóda vytvorila v prípade prijatia hodnoty
+	 *     {@code valnull} v parametri {@code hsb}
 	 * 
 	 * @see #RGBtoHSB(int, double[])
 	 */
-	public static void RGBtoHSV(int rgb, double[] hsv)
+	public static double[] RGBtoHSV(int rgb, double[] hsv)
 	{
 		double r = (double)((rgb >> 16) & 0xff) / 255.0;
 		double g = (double)((rgb >>  8) & 0xff) / 255.0;
@@ -2195,6 +2209,7 @@ public class Farba extends Color implements Comparable<Color>
 		if (b > max) max = b;
 
 		// double h, s, v = max;
+		if (null == hsv) hsv = new double[3];
 		hsv[2] = max;
 		double chroma = max - min;
 
@@ -2225,6 +2240,8 @@ public class Farba extends Color implements Comparable<Color>
 			hsv[0] = -1;
 			// return new double[]{h, s, v};
 		}
+
+		return hsv;
 	}
 
 	/**
@@ -2702,14 +2719,13 @@ public class Farba extends Color implements Comparable<Color>
 	 * <p>Táto metóda je súčasťou implementácie rozhrania {@link Comparable
 	 * Comparable}. Porovnanie farieb bolo implementované preto, aby mohli
 	 * byť inštancie farieb zaradené do triedeného zoznamu. Nie je možné
-	 * objektívne určiť ktorá farba je „väčšia“ alebo „menšia“, ale farby
+	 * objektívne určiť ktorá farba je „väčšia“ alebo „menšia,“ ale farby
 	 * sú v počítači reprezentované číslicovo. Táto metóda jednoducho
 	 * vzájomne odčíta číslicové reprezentácie farieb a vráti výsledok.
-	 * Vďaka tomu je možné použiť inštanciu triedy Farba ako kľúč
+	 * Vďaka tomu je možné použiť inštanciu triedy {@code Farba} ako kľúč
 	 * triedeného zoznamu, ktorého použitie je v rámci jazyka Java
-	 * efektívnejšie. Vďaka tomu je možné vytvoriť triedený zoznam Javy,
-	 * v ktorom sa dajú informácie rýchlo vyhľadávať podľa farebného
-	 * kľúča.</p>
+	 * efektívnejšie. Tak sa dá vytvoriť triedený zoznam Javy, v ktorom
+	 * sa dajú rýchlo vyhľadávať informácie podľa farebného kľúča.</p>
 	 * 
 	 * @param ináFarba inštancia inej farby, s ktorou má byť táto farba
 	 *     porovnaná

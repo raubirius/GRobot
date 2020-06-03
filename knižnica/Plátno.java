@@ -138,7 +138,7 @@ import static knižnica.Konštanty.ZVISLÁ;
  * naraz alebo vykonávame naraz viacero kresliacich operácií, z ktorých
  * potrebujeme vidieť iba výsledok, nie jednotlivé čiastkové kroky.</p>
  * 
- * <p>Nasledujúci príklad naprogramuje grafického robota tak, aby
+ * <p>Nasledujúci príklad naprogramuje grafický robot tak, aby
  * reagoval na kurzorové šípky pohybom a aby kláves medzerník prepínal
  * medzi kreslením na strop tyrkysovou farbou a kreslením na podlahu
  * hnedou farbou:</p>
@@ -181,7 +181,7 @@ import static knižnica.Konštanty.ZVISLÁ;
  * <p><b>Výsledok:</b>
  * 
  * <p><image>kreslenieStropPodlaha.png<alt/>Čiary nakreslené na strop
- * a podlahu</image>Čiary nakreslené kurzorovými šípkami počas
+ * a podlahu.</image>Čiary nakreslené kurzorovými šípkami počas
  * činnosti<br />programu tohto príkladu; všimnite si, že hnedá
  * čiara<br />nie je nikdy nakreslená nad tyrkysovou; je to preto,
  * že<br />je kreslená na podlahu a tyrkysová je kreslená na
@@ -355,7 +355,7 @@ public class Plátno implements Priehľadnosť
 		private static class RiadokKonzoly extends Vector<PrototypKonzoly>
 		{ public boolean označenýKoniecRiadka = false; }
 
-		/*packagePrivate*/ static class ZálohaKonzoly
+		/*packagePrivate*/ /*static*/ class ZálohaKonzoly
 		{
 			public final Vector<RiadokKonzoly> záloha = new Vector<>();
 		}
@@ -509,7 +509,7 @@ public class Plátno implements Priehľadnosť
 			if (pridajMedzeru) obsah.append(" ");
 		}
 
-		/*packagePrivate*/ static class VnútornáKonzola
+		/*packagePrivate*/ /*static*/ class VnútornáKonzola
 		{
 			// Písmo
 			/*packagePrivate*/ Písmo aktuálnePísmo = predvolenéPísmoKonzoly;
@@ -2017,10 +2017,10 @@ public class Plátno implements Priehľadnosť
 				poslednáVýškaTextu = 0;
 				poslednáŠírkaTextu = 0;
 				počiatočnáFarbaPozadia = farbaPozadia();
-				zmenaFarbyPozadia = null;
+				// zmenaFarbyPozadia = null;
 				zrušeniePozadia = null == počiatočnáFarbaPozadia;
 				počiatočnáFarba = farba();
-				zmenaFarby = null;
+				// zmenaFarby = null;
 				riadky.clear();
 				aktívneSlová.clear();
 				súradniceAplikované = false;
@@ -2439,7 +2439,7 @@ public class Plátno implements Priehľadnosť
 				// čoskoro po zlyhaní nastane ďalšia udalosť prekreslenia
 				// (práve preto zostával tento problém dlho skrytý).
 
-				GRobotException.vypíšChybovéHlásenia(e, false);
+				GRobotException.vypíšChybovéHlásenia(e/*, false*/);
 				return false;
 			}
 		}
@@ -3107,7 +3107,7 @@ public class Plátno implements Priehľadnosť
 		/**
 		 * <p>Táto metóda slúži na kreslenie obrysov zadaného tvaru na
 		 * plátno. Metóda potrebuje na svoje správne fungovanie robota
-		 * „kresliča“, ktorého farbu alebo náter a štýl čiary použije
+		 * „kresliča,“ ktorého farbu alebo náter a štýl čiary použije
 		 * na kreslenie. Ak je do metódy namiesto konkrétneho kresliča
 		 * zadaná hodnota {@code valnull}, tak je na získanie parametrov
 		 * kreslenia použitý {@linkplain Svet#hlavnýRobot() hlavný robot}
@@ -3140,7 +3140,7 @@ public class Plátno implements Priehľadnosť
 
 		/**
 		 * <p>Táto metóda slúži na kreslenie vyplnených tvarov na plátno.
-		 * Metóda potrebuje na svoje správne fungovanie robota „kresliča“,
+		 * Metóda potrebuje na svoje správne fungovanie robota „kresliča,“
 		 * ktorého farbu alebo náter použije na vyplnenie zadaného tvaru.
 		 * Ak je do metódy namiesto konkrétneho kresliča zadaná hodnota
 		 * {@code valnull}, tak je na získanie parametrov kreslenia použitý
@@ -6712,14 +6712,14 @@ public class Plátno implements Priehľadnosť
 		 * obmedzení. Ak chceme vytvoriť obmedzenie tvaru, ktorý je
 		 * možné vytvoriť inou množinovou operáciou, môžeme na obmedzenie
 		 * kreslenia použiť aj {@link Oblasť Oblasť} (zadanú namiesto
-		 * parametra {@code tvar}). Obmedzenia sú platné pre všetkých
-		 * robotov a zrušíme ich volaním metódy {@link #kresliVšade()
+		 * parametra {@code tvar}). Obmedzenia sú platné pre všetky
+		 * roboty a zrušíme ich volaním metódy {@link #kresliVšade()
 		 * kresliVšade}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Pri takomto orezávaní nie
 		 * je na všetkých platformách a/alebo implementáciách virtuálneho
 		 * stroja Javy dostupná funkcia anti-aliasingu, čo zjednodušene
-		 * povedané znamená, že okraje orezanej kresby budú „zúbkaté“.
+		 * povedané znamená, že okraje orezanej kresby budú „zúbkaté.“
 		 * Ak sa chcete tejto nedokonalosti vyhnúť, použite radšej funkciu
 		 * {@linkplain #použiMasku masky}. Tá dovoľuje ovplyvňovať
 		 * úroveň priehľadnosti s jemnosťou na jednotlivé body rastra.</p>
@@ -6747,13 +6747,13 @@ public class Plátno implements Priehľadnosť
 		 * 
 		 * <p>Rovnako ako pri metóde {@link #kresliDo(Shape) kresliDo}, sa
 		 * aj toto obmedzenie kombinuje s aktuálnymi obmedzeniami kreslenia
-		 * a je platné pre všetkých robotov. Všetky ombedzenia zrušíme
+		 * a je platné pre všetky roboty. Všetky ombedzenia zrušíme
 		 * volaním metódy {@link #kresliVšade() kresliVšade}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Pri takomto orezávaní nie
 		 * je na všetkých platformách a/alebo implementáciách virtuálneho
 		 * stroja Javy dostupná funkcia anti-aliasingu, čo zjednodušene
-		 * povedané znamená, že okraje orezanej kresby budú „zúbkaté“.
+		 * povedané znamená, že okraje orezanej kresby budú „zúbkaté.“
 		 * Ak sa chcete tejto nedokonalosti vyhnúť, použite radšej funkciu
 		 * {@linkplain #použiMasku masky}. Tá dovoľuje ovplyvňovať
 		 * úroveň priehľadnosti s jemnosťou na jednotlivé body rastra.</p>
@@ -7411,8 +7411,8 @@ public class Plátno implements Priehľadnosť
 		 * 
 		 * <p class="remark"><b>Poznámka:</b>
 		 * Prvý výpis (prvé spustenie ľubovoľného príkazu výpisu na konzolu)
-		 * vždy automaticky skryje {@linkplain Svet#hlavnýRobot() hlavného
-		 * robota}. Dôvodom je úsilie o automatické odlíšenie konzolovo
+		 * vždy automaticky skryje {@linkplain Svet#hlavnýRobot() hlavný
+		 * robot}. Dôvodom je úsilie o automatické odlíšenie konzolovo
 		 * orientovaných úloh od graficky orientovaných úloh. (Je malá šanca,
 		 * že bude úloha orientovaná tak, aby vyžadovala ponechanie
 		 * zobrazeného {@linkplain Svet#hlavnýRobot() hlavného robota}
@@ -7896,7 +7896,7 @@ public class Plátno implements Priehľadnosť
 
 			if (index < vnútornáKonzola.riadky.size())
 				vnútornáKonzola.riadky.subList(index,
-						vnútornáKonzola.riadky.size()).clear();
+					vnútornáKonzola.riadky.size()).clear();
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #vymažChvost(int) vymažChvost}.</p> */
@@ -8074,7 +8074,7 @@ public class Plátno implements Priehľadnosť
 		 * <td><p><image>parkety.png<alt/>Parkety.</image><a
 		 * href="resources/parkety.png" target="_blank">parkety.png</a> –
 		 * obrázok parkiet na prevzatie.</p></td>
-		 * <td><p><image>vzor.png<alt/>Bodkovaný vzor</image><a
+		 * <td><p><image>vzor.png<alt/>Bodkovaný vzor.</image><a
 		 * href="resources/vzor.png" target="_blank">vzor.png</a> –
 		 * obrázok vzoru na prevzatie.</p></td></tr></table>
 		 * 
@@ -8131,7 +8131,7 @@ public class Plátno implements Priehľadnosť
 		 * spôsobom kreslenia). Napríklad kreslenie obrázkov so stredom na
 		 * zadanej pozícii by vyžadovalo dodatočný výpočet. Ak chcete
 		 * kresliť obrázky vystredené na zadanej pozícii, tak použite na
-		 * nakreslenie niektorého robota. (To je najjednoduchší spôsob.)</p>
+		 * nakreslenie niektorý robot. (To je najjednoduchší spôsob.)</p>
 		 * 
 		 * <p>Obrázok prečítaný zo súboru je chápaný ako zdroj a po
 		 * prečítaní zostane uložený vo vnútornej pamäti sveta. Z nej
@@ -8187,7 +8187,7 @@ public class Plátno implements Priehľadnosť
 		 * spôsobom kreslenia). Napríklad kreslenie obrázkov so stredom na
 		 * zadanej pozícii by vyžadovalo dodatočný výpočet. Ak chcete
 		 * kresliť obrázky vystredené na zadanej pozícii, tak použite na
-		 * nakreslenie niektorého robota. (To je najjednoduchší spôsob.)</p>
+		 * nakreslenie niektorý robot. (To je najjednoduchší spôsob.)</p>
 		 * 
 		 * <p>Obrázok prečítaný zo súboru je chápaný ako zdroj a po
 		 * prečítaní zostane uložený vo vnútornej pamäti sveta. Z nej
@@ -8278,7 +8278,7 @@ public class Plátno implements Priehľadnosť
 		 * spôsobom kreslenia). Napríklad kreslenie obrázkov so stredom na
 		 * zadanej pozícii by vyžadovalo dodatočný výpočet. Ak chcete
 		 * kresliť obrázky vystredené na zadanej pozícii, tak použite na
-		 * nakreslenie niektorého robota. (To je najjednoduchší spôsob.)</p>
+		 * nakreslenie niektorý robot. (To je najjednoduchší spôsob.)</p>
 		 * 
 		 * @param x x-ová súradnica polohy obrázka
 		 * @param y y-ová súradnica polohy obrázka
@@ -8322,7 +8322,7 @@ public class Plátno implements Priehľadnosť
 		 * spôsobom kreslenia). Napríklad kreslenie obrázkov so stredom na
 		 * zadanej pozícii by vyžadovalo dodatočný výpočet. Ak chcete
 		 * kresliť obrázky vystredené na zadanej pozícii, tak použite na
-		 * nakreslenie niektorého robota. (To je najjednoduchší spôsob.)</p>
+		 * nakreslenie niektorý robot. (To je najjednoduchší spôsob.)</p>
 		 * 
 		 * @param objekt objekt určujúci polohu kreslenia obrázka
 		 * @param obrázok obrázok, ktorý má byť vykreslený
@@ -9452,8 +9452,9 @@ public class Plátno implements Priehľadnosť
 		/**
 		 * <p>Rozmaže grafiku tohto plátna. Dosiahneme rovnaký efekt, ako keby
 		 * sme volali metódu: {@link #rozmaž(int, int, Color)
-		 * rozmaž}{@code (opakovanie, rozsah, }{@link Svet Svet}.{@link 
-		 * Svet#farbaPozadia() farbaPozadia}{@code ());}
+		 * rozmaž}{@code (opakovanie, rozsah, }{@link Svet
+		 * Svet}<code>.</code>{@link Svet#farbaPozadia()
+		 * farbaPozadia}{@code ());}
 		 * <!--   -->
 		 * To znamená, že pre priehľadné (neviditeľné) body je pri procese
 		 * rozmazania použitá aktuálna farba pozadia sveta (pozri: {@link 
@@ -9526,7 +9527,7 @@ public class Plátno implements Priehľadnosť
 		 * <p>Rozmaže grafiku tohto plátna. Dosiahneme rovnaký efekt, ako keby
 		 * sme volali metódu: {@link #rozmaž(int, int, Color)
 		 * rozmaž}{@code (opakovanie, }{@code num1}{@code , }{@link Svet
-		 * Svet}.{@link Svet#farbaPozadia() farbaPozadia}{@code ());}
+		 * Svet}<code>.</code>{@link Svet#farbaPozadia() farbaPozadia}{@code ());}
 		 * <!--   -->
 		 * To znamená, že pre priehľadné (neviditeľné) body je pri procese
 		 * rozmazania použitá aktuálna farba pozadia sveta (pozri: {@link 
@@ -9544,7 +9545,7 @@ public class Plátno implements Priehľadnosť
 		/**
 		 * <p>Rozmaže grafiku tohto plátna. Dosiahneme rovnaký efekt, ako keby
 		 * sme volali metódu: {@link #rozmaž(int, int, Color)
-		 * rozmaž}{@code (opakovanie, rozsah, }{@link Svet Svet}.{@link 
+		 * rozmaž}{@code (opakovanie, rozsah, }{@link Svet Svet}<code>.</code>{@link 
 		 * Svet#farbaPozadia() farbaPozadia}{@code ());}
 		 * <!--   -->
 		 * To znamená, že pre priehľadné (neviditeľné) body je pri procese
@@ -9804,7 +9805,7 @@ public class Plátno implements Priehľadnosť
 
 					{@code comm// Krátky inicializačný kód na nakreslenie pečiatkového farebného}
 					{@code comm// vzoru na plátno. (Aby bolo čo pretáčať.)}
-			 
+
 					{@link GRobot#skoč(double) skoč}({@code num10});
 					{@link GRobot#vpravo(double) vpravo}({@code num30});
 					{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num3});

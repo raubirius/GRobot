@@ -39,7 +39,10 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Locale;
 import java.util.Vector;
+
+import static java.util.Calendar.*;
 
 // -------------------------------- //
 //  *** Trieda GRobotException ***  //
@@ -67,6 +70,11 @@ import java.util.Vector;
  * <table class="langIDTable">
  * <tr><th>Jazykový identifikátor</th><th>Text výnimky v slovenskom
  * jazyku</th><th>Stručné vysvetlenie</th></tr>
+ * 
+ * <tr><td><code>archiveIsOpenForWriting</code></td><td>Archív je
+ * otvorený na zápis.</td><td>Vzniká pri pokuse o {@linkplain 
+ * Archív#rozbaľArchív(String, boolean, boolean) rozbalenie} {@linkplain 
+ * Archív archívu}, ktorý je práve otvorený na zápis.</td></tr>
  * 
  * <tr><td><code>archiveNameOmitted</code></td><td>Názov archívu nesmie byť
  * zamlčaný.</td><td>Vzniká pri pokuse o prácu s archívom so zamlčaným
@@ -322,7 +330,7 @@ import java.util.Vector;
  * <tr><td><code>noRobotWithSuchName</code></td><td>Robot so zadaným
  * menom (<em>«meno»</em>) nejestvuje.</td><td>Vzniká pri pokuse
  * o registráciu robota v konfigurácii podľa mena, ktoré nepatrí žiadnemu
- * robotovi. Meno údajného robota, ktorého registrácia zlyhala je
+ * robotu. Meno údajného robota, ktorého registrácia zlyhala je
  * zistiteľné metódou {@link #getParameter() getParameter}. Spresňujúcim
  * objektom je výnimka {@link IllegalArgumentException}
  * (bez textu).</td></tr>
@@ -401,26 +409,26 @@ import java.util.Vector;
  * 
  * <tr><td><code>robotNameContainsEquals</code></td><td>Meno robota nesmie
  * obsahovať znak rovná sa.</td><td>Vzniká pri pokuse o priradenie takého
- * mena robotovi, ktoré obsahuje znak rovná sa. Meno robota, ktorého
+ * mena robotu, ktoré obsahuje znak rovná sa. Meno robota, ktorého
  * priradenie zlyhalo je zistiteľné metódou
  * {@link #getParameter() getParameter}. Spresňujúcim objektom je výnimka
  * {@link IllegalArgumentException} (bez textu).</td></tr>
  * 
  * <tr><td><code>robotNameEmpty</code></td><td>Meno robota nesmie byť
  * prázdne.</td><td>Vzniká pri pokuse o priradenie prázdneho mena
- * robotovi. Spresňujúcim objektom je výnimka
+ * robotu. Spresňujúcim objektom je výnimka
  * {@link IllegalArgumentException} (bez textu).</td></tr>
  * 
  * <tr><td><code>robotNameEndsWithDot</code></td><td>Meno robota sa
  * nesmie končiť bodkou.</td><td>Vzniká pri pokuse o priradenie takého
- * mena robotovi, ktoré sa končí znakom bodky. Meno robota, ktorého
+ * mena robotu, ktoré sa končí znakom bodky. Meno robota, ktorého
  * priradenie zlyhalo je zistiteľné metódou
  * {@link #getParameter() getParameter}. Spresňujúcim objektom je
  * výnimka {@link IllegalArgumentException} (bez textu).</td></tr>
  * 
  * <tr><td><code>robotNameMustBeUnique</code></td><td>Meno robota
  * (<em>«meno»</em>) musí byť unikátne.</td><td>Vzniká pri pokuse
- * o priradenie takého mena robotovi, ktoré už bolo použité. Meno robota,
+ * o priradenie takého mena robotu, ktoré už bolo použité. Meno robota,
  * ktorého priradenie zlyhalo je zistiteľné metódou
  * {@link #getParameter() getParameter}. Spresňujúcim objektom je výnimka
  * {@link IllegalArgumentException} (bez textu).</td></tr>
@@ -434,14 +442,14 @@ import java.util.Vector;
  * 
  * <tr><td><code>robotNameStartsWithDot</code></td><td>Meno robota sa
  * nesmie začínať bodkou.</td><td>Vzniká pri pokuse o priradenie takého
- * mena robotovi, ktoré sa začína znakom bodky. Meno robota, ktorého
+ * mena robotu, ktoré sa začína znakom bodky. Meno robota, ktorého
  * priradenie zlyhalo je zistiteľné metódou
  * {@link #getParameter() getParameter}. Spresňujúcim objektom je
  * výnimka {@link IllegalArgumentException} (bez textu).</td></tr>
  * 
  * <tr><td><code>robotNameStartsWithSemicolon</code></td><td>Meno robota
  * sa nesmie začínať znakom komentára.</td><td>Vzniká pri pokuse
- * o priradenie takého mena robotovi, ktoré sa začína znakom bodkočiarky
+ * o priradenie takého mena robotu, ktoré sa začína znakom bodkočiarky
  * (znak komentára). Meno robota, ktorého priradenie zlyhalo je
  * zistiteľné metódou {@link #getParameter() getParameter}. Spresňujúcim
  * objektom je výnimka {@link IllegalArgumentException}
@@ -519,13 +527,13 @@ import java.util.Vector;
  * vznik chyby počas spracovania.</td></tr>
  * 
  * <tr><td><code>svgReadError</code></td><td>Chyba pri spracovaní SVG
- * súboru „<em>«meno»</em>“.</td><td>Vzniká pri spracovaní SVG súboru.
+ * súboru „<em>«meno»</em>.“</td><td>Vzniká pri spracovaní SVG súboru.
  * Spresneňujúcim objektom (zistiteľným metódou
  * {@link Throwable#getCause() getCause}) je pôvodná výnimka, ktorá
  * vyvolala chybu spracovania.</td></tr>
  * 
  * <tr><td><code>svgWriteError</code></td><td>Chyba pri zápise SVG
- * súboru „<em>«meno»</em>“.</td><td>Vzniká pri zapisovaní SVG súboru.
+ * súboru „<em>«meno»</em>.“</td><td>Vzniká pri zapisovaní SVG súboru.
  * Spresneňujúcim objektom (zistiteľným metódou
  * {@link Throwable#getCause() getCause}) je pôvodná výnimka, ktorá
  * vyvolala chybu spracovania.</td></tr>
@@ -577,6 +585,25 @@ public class GRobotException extends RuntimeException
 	 * inštancia denníka je dostupná prostredníctvom statického atribútu
 	 * {@linkplain GRobotException#denník denník}.</p>
 	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Obsah denníka sa nezapisuje
+	 * automaticky. Najjednoduchší spôsob zápisu denníka do súboru je uvedený
+	 * nižšie – volanie metódy {@link Denník#pripoj(String) pripoj} v reakcii
+	 * na {@linkplain GRobot#ukončenie() ukončenie aplikácie.}</p>
+	 * 
+	 * <pre CLASS="example">
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#ukončenie() ukončenie}()
+		{
+			{@link GRobotException GRobotException}.{@link GRobotException#denník denník}.{@link Denník#pripoj(String) pripoj}({@code srg"priklad.log"});
+		}
+		</pre>
+	 * 
+	 * <p>Okrem zápisu do súboru sa s denníkom dá pracovať ako s klasickým
+	 * {@linkplain Zoznam zoznamom.} Jednotlivé položky zoznamu sú inštancie
+	 * triedy {@link Chyba GRobotException.Chyba}, ktoré obsahujú dve verejné
+	 * položky: {@link Chyba#správa správa} a {@link Chyba#výnimka
+	 * výnimka}. Z nich je spravidla relevantná len jedna. Tieto položky,
+	 * resp. spravidla jedna z nich, obsahujú podrobnosti o vzniku chyby.</p>
+	 * 
 	 * @see Chyba
 	 * @see #denník
 	 * @see #poslednáVýnimka()
@@ -584,10 +611,28 @@ public class GRobotException extends RuntimeException
 	@SuppressWarnings("serial")
 	public static class Denník extends Zoznam<Chyba>
 	{
+		// Príznak potreby zapísania času štartu aplikácie:
+		private boolean zapíšČasŠtartu = true;
+
 		/**
 		 * <p>Pripojí aktuálny obsah denníka do súboru so zadaným menom.
 		 * Súbor denníka musí mať príponu {@code .log}. Ak ju nemá,
 		 * metóda ju automaticky doplní.</p>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b> Obsah denníka sa
+		 * nezapisuje automaticky. Najjednoduchší spôsob zápisu denníka do
+		 * súboru je uvedený v príklade nižšie (ide o volanie tejto metódy
+		 * v tele reakcie {@linkplain GRobot#ukončenie() ukončenia
+		 * aplikácie}).</p>
+		 * 
+		 * <p><b>Príklad použitia:</b></p>
+		 * 
+		 * <pre CLASS="example">
+			{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#ukončenie() ukončenie}()
+			{
+				{@link GRobotException GRobotException}.{@link GRobotException#denník denník}.{@link Denník#pripoj(String) pripoj}({@code srg"priklad.log"});
+			}
+			</pre>
 		 * 
 		 * @param názovSúboru názov súboru s denníkom na pripojenie
 		 *     aktuálneho obsahu tejto inštancie denníka
@@ -614,7 +659,6 @@ public class GRobotException extends RuntimeException
 			if (!názovSúboru.endsWith(".log"))
 				názovSúboru += ".log";
 
-			// TODO – otestuj
 			try
 			{
 				File súborDenníka = new File(názovSúboru);
@@ -624,15 +668,43 @@ public class GRobotException extends RuntimeException
 					new OutputStreamWriter(new FileOutputStream(
 						súborDenníka, true), "UTF-8"));
 
+				if (zapíšČasŠtartu && null != Svet.časŠtartu)
+				{
+					int deň = Svet.časŠtartu.get(DAY_OF_MONTH);
+					int mesiac = Svet.časŠtartu.get(MONTH) + 1;
+					int rok = Svet.časŠtartu.get(YEAR);
+					int hodina = Svet.časŠtartu.get(HOUR_OF_DAY);
+					int minúta = Svet.časŠtartu.get(MINUTE);
+					int sekunda = Svet.časŠtartu.get(SECOND);
+
+					pripoj.write("Štart aplikácie: " +
+						deň + ". " + mesiac + ". " + rok + ", " +
+						String.format(Locale.ENGLISH, "%02d", hodina) + ":" +
+						String.format(Locale.ENGLISH, "%02d", minúta) + ":" +
+						String.format(Locale.ENGLISH, "%02d", sekunda) +
+						"\r\n");
+
+					zapíšČasŠtartu = false;
+				}
+
 				for (Chyba ch : this)
 				{
 					if (null != ch.správa)
+					{
 						pripoj.write(ch.správa);
+						pripoj.write("\r\n");
+					}
+
 					if (null != ch.výnimka)
 					{
+						/*
+						// Toto je zbytočné, lebo presne to tvorí „hlavičku“
+						// výpisu stack trace:
 						pripoj.write(ch.výnimka.getClass().getName());
+						pripoj.write(": ");
 						pripoj.write(ch.výnimka.getMessage());
-
+						pripoj.write("\r\n");
+						*/
 						StringWriter sw = new StringWriter();
 						PrintWriter pw = new PrintWriter(sw);
 						ch.výnimka.printStackTrace(pw);
@@ -655,8 +727,11 @@ public class GRobotException extends RuntimeException
 
 	/**
 	 * <p>Denník chybových správ generovaných rámcom. Denník sa začína
-	 * utvárať v čase inicializácie programovacieho rámca a po ukončení
-	 * aplikácie je vymazaný.</p>
+	 * utvárať v čase inicializácie programovacieho rámca. Predvolene je
+	 * uchovávaný len v pamäti počítača, to znamená, že po ukončení
+	 * aplikácie je jeho obsah vymazaný (stratený). Príklad uchovania
+	 * denníka do súboru je v opise metódy denníka
+	 * {@link Denník#pripoj(String) pripoj}.</p>
 	 * 
 	 * @see Denník
 	 * @see Chyba
@@ -678,12 +753,14 @@ public class GRobotException extends RuntimeException
 	 */
 	public static class Chyba
 	{
-		// TODO – pridaj do denníka dátum a čas štartu aplikácie…
-
 		/** <p>Jednoduché textové chybové hlásenie programovacieho rámca.</p> */
 		public final String správa;
 
-		/** <p>Inštancia výnimky generovanej programovacím rámcom.</p> */
+		/**
+		 * <p>Inštancia vzniknutej alebo programovacím rámcom generovanej
+		 * výnimky. Zväčša ide o inštanciu triedy {@link GRobotException
+		 * GRobotException}.</p>
+		 */
 		public final Exception výnimka;
 
 		/** <p><a class="alias"></a> Alias pre {@link #správa správa}.</p> */
@@ -742,7 +819,10 @@ public class GRobotException extends RuntimeException
 		new Chyba(s, null);
 	}
 
-	// Výpis textového chybového hlásenia.
+	// Výpis textového chybového hlásenia. (Parameter vždy vynúti výpis aj
+	// vtedy, ak nie je vypisovanie chybových hlásení zapnuté. Predvolene
+	// je vždy rovné false – nemá význam volať túto metódu s argumentom
+	// false, efektívnejšie je volať jej predchádzajúcu verziu.)
 	/*packagePrivate*/ static void vypíšChybovéHlásenie(
 		String s, boolean vždy)
 	{
@@ -766,7 +846,9 @@ public class GRobotException extends RuntimeException
 		new Chyba(null, e);
 	}
 
-	// Výpis podrobných chybových hlásení pri vzniku výnimiek.
+	// Výpis podrobných chybových hlásení pri vzniku výnimiek. (Pozri aj
+	// komentár k parametru vždy – vyššie pri metóde
+	// vypíšChybovéHlásenie(String, boolean).)
 	/*packagePrivate*/ static void vypíšChybovéHlásenia(
 		Exception e, boolean vždy)
 	{
@@ -897,7 +979,8 @@ public class GRobotException extends RuntimeException
 	 * alebo {@code valnull}.</p>
 	 * 
 	 * @return nepovinný spresňujúci parameter výnimky, napríklad meno
-	 *     súboru
+	 *     súboru (pozri {@linkplain GRobotException tabuľku uvedenú
+	 *     v hlavnom opise tejto triedy})
 	 */
 	public String getParameter() { return parameter; }
 
@@ -926,7 +1009,7 @@ public class GRobotException extends RuntimeException
 	 * Táto metóda funguje rovnako, len slúži na získanie výpisu stopy
 	 * zásobníka z ľubovoľnej inštancie {@link Throwable Throwable}.
 	 * (Čiže aj z inštancií výnimiek iného typu, než {@link GRobotException
-	 *  GRobotException}.</p>
+	 * GRobotException}.</p>
 	 * 
 	 * @param t ľubovoľná inštancia {@link Throwable Throwable}
 	 * @return reťazec s výpisom stopy (trasy) volaní metód v čase vzniku
