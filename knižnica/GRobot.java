@@ -435,7 +435,7 @@ import javax.swing.SwingUtilities;
  * <p>Rovnako nie je použiteľný žiadny identifikátor s čiastočne použitou
  * diakritikou (napríklad {@code Priehľadnost} alebo {@code Priehladnosť}).
  * O problémoch s diakritikou v krátkosti informujeme aj
- * v <a href=\"index.html\">úvodnom slove</a>.</p>
+ * v <a href="index.html">úvodnom slove</a>.</p>
  * 
  * <!-- TODO – presunúť do samostatnej kapitoly -->
  * 
@@ -1577,7 +1577,7 @@ TODO: na úvodnú stránku
 				 * 
 				 * <p><b>Príklad:</b></p>
 				 * 
-				 * <pre CLASS="example"><!-- TODO over vzhľad -->
+				 * <pre CLASS="example">
 					{@code comm// Vytvorenie dvoch robotov:}
 					{@link GRobot GRobot} robotA = {@code kwdnew} {@link GRobot GRobot}();
 					{@link GRobot GRobot} robotB = {@code kwdnew} {@link GRobot GRobot}();
@@ -5844,7 +5844,7 @@ TODO: na úvodnú stránku
 				 * (čiarou) alebo vypĺňaný. (Príklad používa triedu Javy
 				 * {@link Shape Shape}.)</p>
 				 * 
-				 * <pre CLASS="example"><!-- TODO over vzhľad -->
+				 * <pre CLASS="example">
 					{@code comm// Výroba cesty (iba čiarka dlhá 120 bodov – ovál z nej vytvorí až}
 					{@code comm// veľmi hrubá čiara, ktorá je v tomto rámci predvolene zaoblená):}
 					{@link GRobot#odskoč(double) odskoč}({@code num60});
@@ -5853,7 +5853,7 @@ TODO: na úvodnú stránku
 
 					{@code comm// Nastavenie hrúbky čiary a vyrobenie tvaru z cesty:}
 					{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num150});
-					{@link Shape java.awt.Shape} tvar = {@link GRobot#tvarPodľaČiary(Shape) tvarPodľaČiary}({@link GRobot#cesta() cesta}());
+					{@link Shape java.awt.Shape} tvar = {@code currtvarPodľaČiary}({@link GRobot#cesta() cesta}());
 
 					{@code comm// Vymazanie čiarky:}
 					{@link Svet Svet}.{@link Svet#vymaž() vymaž}();
@@ -6283,7 +6283,7 @@ TODO: na úvodnú stránku
 				 * 
 				 * <p><b>Príklad:</b></p>
 				 * 
-				 * <pre CLASS="example"><!-- TODO over vzhľad -->
+				 * <pre CLASS="example">
 					{@code comm// Prvý kruh bude vyplnený bez špeciálneho náteru – predvolenou}
 					{@code comm// čiernou farbou.}
 					{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#tyrkysová tyrkysová});
@@ -21327,13 +21327,110 @@ TODO: na úvodnú stránku
 				 * Jej prekrytím sa dá upraviť správanie robota počas jeho
 				 * zobrazenia.</p>
 				 * 
-				 * <!-- p><b>Príklad:</b></p>
+				 * <p><b>Príklad:</b></p>
 				 * 
-				 * <p>TODO</p>
+				 * <p>V tomto príklade sú reakcie {@code currzobrazenie}
+				 * a {@link #skrytie() skrytie} využité na synchronizované
+				 * zobrazovanie a skrývanie dvoch robotov, z ktorých jeden
+				 * predstavuje podvozok a druhý delo tanku (z ktorých oboje
+				 * môže mať samostatný smer). Smerovanie dela sa riadi
+				 * jednoducho pohybom myši nad plátnom a na ovládanie podvozku
+				 * tanku slúžia klávesy {@code A}, {@code S}, {@code W},
+				 * {@code D}. Na synchronizované zobrazovanie a skrývanie
+				 * dvojice robotov slúžia medzerník a ľubovoľné tlačidlo
+				 * myši.</p>
 				 * 
 				 * <pre CLASS="example">
-					TODO
-					</pre -->
+					{@code kwdimport} knižnica.*;
+
+					{@code kwdpublic} {@code typeclass} ZobrazenieRobota {@code kwdextends} {@link GRobot GRobot}
+					{
+						{@code kwdprivate} {@code kwdstatic} {@link GRobot GRobot} delo;
+
+						{@code kwdprivate} ZobrazenieRobota()
+						{
+							{@link GRobot#ohranič() ohranič}();
+							{@link GRobot#zaoblenie(double) zaoblenie}({@code num5});
+							{@link GRobot#pomer(double) pomer}({@code num0.8});
+							{@link GRobot#zdvihniPero() zdvihniPero}();
+							{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num2.5});
+							{@link Svet Svet}.{@link Svet#zbaľ() zbaľ}();
+							{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
+						}
+
+						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliTvar() kresliTvar}()
+						{
+							{@link GRobot#obdĺžnik() obdĺžnik}();
+						}
+
+						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@code currzobrazenie}()
+						{
+							delo.{@link GRobot#zobraz() zobraz}();
+						}
+
+						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#skrytie() skrytie}()
+						{
+							delo.{@link GRobot#skry() skry}();
+						}
+
+						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#stlačenieKlávesu() stlačenieKlávesu}()
+						{
+							{@code kwdswitch} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#kláves() kláves}())
+							{
+							{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_W VK_W}: {@link GRobot#rýchlosť(double) rýchlosť}({@code num10}); {@code kwdbreak};
+							{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_S VK_S}: {@link GRobot#rýchlosť(double) rýchlosť}(-{@code num10}); {@code kwdbreak};
+							{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_A VK_A}: {@link GRobot#rýchlosťOtáčania(double) rýchlosťOtáčania}({@code num10}); {@code kwdbreak};
+							{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_D VK_D}: {@link GRobot#rýchlosťOtáčania(double) rýchlosťOtáčania}(-{@code num10}); {@code kwdbreak};
+							{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#MEDZERA MEDZERA}: {@link GRobot#skry() skry}(); {@code kwdbreak};
+							}
+						}
+
+						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#uvoľnenieKlávesu() uvoľnenieKlávesu}()
+						{
+							{@code kwdswitch} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#kláves() kláves}())
+							{
+							{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_W VK_W}: {@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_S VK_S}: {@link GRobot#rýchlosť(double) rýchlosť}({@code num0}); {@code kwdbreak};
+							{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_A VK_A}: {@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VK_D VK_D}: {@link GRobot#rýchlosťOtáčania(double) rýchlosťOtáčania}({@code num0}); {@code kwdbreak};
+							{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#MEDZERA MEDZERA}: {@link GRobot#zobraz() zobraz}(); {@code kwdbreak};
+							}
+						}
+
+						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#aktivita() aktivita}()
+						{
+							delo.{@link GRobot#skočNa(Poloha) skočNa}({@code valthis});
+						}
+
+						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#pohybMyši() pohybMyši}()
+						{
+							delo.{@link GRobot#otočNaMyš() otočNaMyš}();
+						}
+
+						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#stlačenieTlačidlaMyši() stlačenieTlačidlaMyši}()
+						{
+							{@link GRobot#skry() skry}();
+						}
+
+						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#uvoľnenieTlačidlaMyši() uvoľnenieTlačidlaMyši}()
+						{
+							{@link GRobot#zobraz() zobraz}();
+						}
+
+						{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
+						{
+							{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"ZobrazenieRobota.cfg"});
+							delo = {@code kwdnew} {@link GRobot GRobot}({@code num500}, {@code num400});
+							delo.{@link GRobot#vlastnýTvar(KreslenieTvaru) vlastnýTvar}(r -&gt; r.{@link GRobot#vpred() vpred}());
+							delo.{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num5});
+							delo.{@link GRobot#veľkosť(double) veľkosť}({@code num15});
+							{@code kwdnew} ZobrazenieRobota();
+						}
+					}
+					</pre>
+				 * 
+				 * <p><image>zobrazenie-robota.png<alt/>Ukážka fungovania
+				 * príkladu ZobrazenieRobota.</image>Ukážka fungovania
+				 * príkladu synchronizovaného zobrazenia a skrytia robotov
+				 * (podvozku a dela tanku).</p>
 				 * 
 				 * @see #skrytie()
 				 */
@@ -21347,7 +21444,7 @@ TODO: na úvodnú stránku
 				 * prekrytím sa dá upraviť správanie robota počas jeho
 				 * skrytia.<p>
 				 * 
-				 * <p>Príklad použitia tejto metódy je pri opise metódy
+				 * <p>Príklad použitia tejto metódy je v opise metódy
 				 * {@link #zobrazenie() zobrazenie}.</p>
 				 * 
 				 * @see #zobrazenie()

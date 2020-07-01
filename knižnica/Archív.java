@@ -56,10 +56,83 @@ import static java.util.Calendar.*;
  * Poskytuje programátorské rozhranie na čo najjednoduchšie vytvorenie
  * archívu jeho zápis, čítanie alebo analýzu. Programovací rámec umožňuje
  * prepojenie iných súčastí (napríklad {@linkplain Súbor súboru}) s archívom
- * a tým ešte väčšmi zjednodušiť prácu s ním.</p>
+ * a tým ešte väčšmi zjednodušiť prácu s ním. (Pozri príklad na konci
+ * tohto opisu.)</p>
  * 
- * <p class="remark"><b>Poznámka:</b> Pracujeme na spresnení opisu.</p>
- * <!-- TODO – dokončiť opis. -->
+ * <p>Trieda je navrhnutá tak, aby bolo jej používanie čo najintuitívnejšie.
+ * Napríklad, ak máme jestvujúci archív, rozbaliť ho (aj s výpisom počtu
+ * rozbalených položiek) môžeme jednoducho takto:</p>
+ * 
+ * <pre CLASS="example">
+	{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Počet rozbalených položiek: "},
+		{@code kwdnew} {@link Archív#Archív(String) Archív}({@code srg"archív_na_rozbalenie.zip"}).
+			{@link Archív#rozbaľArchív(String) rozbaľArchív}({@code srg"cieľový_priečinok"}));
+	</pre>
+ * 
+ * <p>Naopak, vytvoriť jednoduchý archív môžeme takto:</p>
+ * 
+ * <pre CLASS="example">
+	{@code currArchív} archív = {@code kwdnew} {@link Archív#Archív(String) Archív}({@code srg"archív_na_zbalenie.zip"});
+	archív.{@link Archív#otvorNaZápis() otvorNaZápis}();
+	archív.{@link Archív#pridajPoložku(String, String) pridajPoložku}({@code srg"názov_položky"}, {@code srg"cesta/názov_súboru_na_zbalenie"});
+	{@code comm// archív.pridajPoložku(…}
+	archív.{@link Archív#zavri() zavri}();
+	</pre>
+ * 
+ * <p>Na vytvorenie archívu, ktorý (bez filtrovania) zbalí celý obsah
+ * priečinka na disku môžeme využiť nasledujúce definície:</p>
+ * 
+ * <pre CLASS="example">
+	{@code comm// Inštancia archívu.}
+	{@code kwdprivate} {@code currArchív} archív = {@code kwdnew} {@link Archív#Archív() Archív}();
+
+	{@code comm// Rekurzívna metóda pridávajúca do archívu obsah priečinka}
+	{@code comm// a podpriečinkov.}
+	{@code kwdprivate} {@code typevoid} pridajObsahPriečinka({@link String String} priečinok, {@link String String} podpriečinok)
+		{@code kwdthrows} {@link IOException IOException}
+	{
+		{@link String String}[] zoznam = {@link Súbor Súbor}.{@link Súbor#zoznam(String) zoznam}(priečinok + podpriečinok);
+		{@code kwdfor} ({@link String String} položka : zoznam)
+		{
+			{@link String String} položkaArchívu = podpriečinok + položka;
+			{@code kwdif} ({@link Súbor Súbor}.{@link Súbor#jePriečinok(String) jePriečinok}(priečinok + položkaArchívu))
+			{
+				{@code comm// Rekurzívne pridávanie obsahu (pod)priečinka:}
+				{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg'«'}, položkaArchívu, {@code srg'»'});
+				archív.{@link Archív#pridajPriečinok(String) pridajPriečinok}(položkaArchívu);
+				pridajObsahPriečinka(priečinok, položkaArchívu + {@code srg'/'});
+			}
+			{@code kwdelse}
+			{
+				{@code comm// Pridanie položky súboru:}
+				{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(položkaArchívu);
+				archív.{@link Archív#pridajPoložku(String, String) pridajPoložku}(položkaArchívu,
+					priečinok + položkaArchívu);
+			}
+		}
+	}
+
+	{@code comm// Metóda slúžiaca na spustenie procesu balenia.}
+	{@code kwdpublic} {@code typevoid} zbaľPriečinok({@link String String} názovArchívu, {@link String String} priečinok)
+		{@code kwdthrows} {@link IOException IOException}
+	{
+		priečinok = priečinok.{@link String#replace(char, char) replace}({@code srg'\\'}, {@code srg'/'});
+		{@code kwdif} (!priečinok.{@link String#endsWith(String) endsWith}({@code srg"/"})) priečinok += {@code srg'/'};
+
+		archív.{@link Archív#otvorNaZápis(String) otvorNaZápis}(názovArchívu);
+		pridajObsahPriečinka(priečinok, {@code srg""});
+		archív.{@link Archív#zavri() zavri}();
+	}
+	</pre>
+ * 
+ * <p>Príkaz slúžiaci na zahájenie balenia s využitím týchto definícií
+ * potom môže vyzerať takto:</p>
+ * 
+ * <pre CLASS="example">
+	zbaľPriečinok({@code srg"názov_archívu.zip"}, {@code srg"priečinok"});
+	</pre>
+ * 
+ * <p> </p>
  * 
  * <p><b>Príklad:</b></p>
  * 
@@ -85,16 +158,16 @@ import static java.util.Calendar.*;
 					{@code kwdreturn} {@code valfalse};
 				}
 
-				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zapíšKonfiguráciu(Súbor) zapíšKonfiguráciu}(Súbor súbor)
-					{@code kwdthrows} java.io.IOException
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zapíšKonfiguráciu(Súbor) zapíšKonfiguráciu}({@link Súbor Súbor} súbor)
+					{@code kwdthrows} java.io.{@link IOException IOException}
 				{
 					{@code comm// Zápis vlastných vlastností:}
 					{@code comm// súbor.zapíšVlastnosť("názov", hodnota);}
 					{@code comm// …}
 				}
 
-				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#čítajKonfiguráciu(Súbor) čítajKonfiguráciu}(Súbor súbor)
-					{@code kwdthrows} java.io.IOException
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#čítajKonfiguráciu(Súbor) čítajKonfiguráciu}({@link Súbor Súbor} súbor)
+					{@code kwdthrows} java.io.{@link IOException IOException}
 				{
 					{@code comm// Čítanie vlastných vlastností:}
 					{@code comm// hodnota = súbor.čítajVlastnosť("názov", predvolenáHodnota);}
@@ -509,9 +582,10 @@ public class Archív implements Closeable
 	 * cestaNaDisku}.</p>
 	 * 
 	 * @return „vstupný archív“ knižnice <a href="https://ant.apache.org/"
-	 *     target="_blank">Apache Ant</a> {@link ZipFile ZipFile} na
-	 *     vykonanie prípadných ďalších úprav (nastavenie komentára, úprava
-	 *     rôznych konfiguračných položiek podľa vlastných potrieb a podobne)
+	 *     target="_blank">Apache Ant</a> <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipFile.java"
+	 *     target="_blank"><code>ZipFile</code></a> na vykonanie prípadných
+	 *     ďalších úprav (nastavenie komentára, úprava rôznych konfiguračných
+	 *     položiek podľa vlastných potrieb a podobne)
 	 * 
 	 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
 	 *     operácii
@@ -546,25 +620,25 @@ public class Archív implements Closeable
 	{ return otvorNaČítanie(); }
 
 	/**
-	 * <p>Otvorí archív so zadaným menom na zápis. Zapisovaný súbor bude
-	 * vytvorený alebo prepísaný buď na aktuálnom umiestnení, alebo na
-	 * ceste určenej vlastnosťou {@link #cestaNaDisku(String)
-	 * cestaNaDisku} (prípadne inak, napríklad cestou určenou priamo
-	 * v názve archívu).</p>
+	 * <p>Otvorí archív na zápis. Zapisovaný súbor bude vytvorený alebo
+	 * prepísaný buď na aktuálnom umiestnení, alebo na ceste určenej
+	 * vlastnosťou {@link #cestaNaDisku(String) cestaNaDisku} (prípadne
+	 * inak, napríklad cestou určenou priamo v názve archívu).</p>
 	 * 
-	 * <p class="attention"><b>Upozornenie:</b> Ak použijete objekt {@link 
-	 * ZipOutputStream ZipOutputStream}, ktorý je návratovou hodnotou tejto
-	 * metódy na pridávanie nových položiek, tak táto trieda programovacieho
-	 * rámca nebude schopná detegovať duplicitné položky, ani spätne
-	 * pracovať s pridanými položkami, pretože ich evidenciu vykonáva
-	 * vo vlastnej réžii nad rámec možností triedy {@link ZipOutputStream
-	 * ZipOutputStream}.</p>
+	 * <p class="attention"><b>Upozornenie:</b> Ak použijete objekt <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipOutputStream.java"
+	 * target="_blank"><code>ZipOutputStream</code></a>, ktorý je návratovou
+	 * hodnotou tejto metódy na pridávanie nových položiek, tak táto trieda
+	 * programovacieho rámca nebude schopná detegovať duplicitné položky, ani
+	 * spätne pracovať s pridanými položkami, pretože ich evidenciu vykonáva
+	 * vo vlastnej réžii nad rámec možností triedy <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipOutputStream.java"
+	 * target="_blank"><code>ZipOutputStream</code></a>.</p>
 	 * 
 	 * @return „výstupný archív“ (prúd) knižnice <a
 	 *     href="https://ant.apache.org/" target="_blank">Apache Ant</a>
-	 *     {@link ZipOutputStream ZipOutputStream} na vykonanie prípadných
-	 *     ďalších úprav (nastavenie komentára, úprava rôznych konfiguračných
-	 *     položiek podľa vlastných potrieb a podobne)
+	 *     <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipOutputStream.java"
+	 *     target="_blank"><code>ZipOutputStream</code></a> na vykonanie
+	 *     prípadných ďalších úprav (nastavenie komentára, úprava rôznych
+	 *     konfiguračných položiek podľa vlastných potrieb a podobne)
 	 * 
 	 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
 	 *     operácii
@@ -610,9 +684,10 @@ public class Archív implements Closeable
 	 * 
 	 * @param názov meno archívu
 	 * @return „vstupný archív“ knižnice <a href="https://ant.apache.org/"
-	 *     target="_blank">Apache Ant</a> {@link ZipFile ZipFile} na
-	 *     vykonanie prípadných ďalších úprav (nastavenie komentára, úprava
-	 *     rôznych konfiguračných položiek podľa vlastných potrieb a podobne)
+	 *     target="_blank">Apache Ant</a> <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipFile.java"
+	 *     target="_blank"><code>ZipFile</code></a> na vykonanie prípadných
+	 *     ďalších úprav (nastavenie komentára, úprava rôznych konfiguračných
+	 *     položiek podľa vlastných potrieb a podobne)
 	 * 
 	 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
 	 *     operácii
@@ -652,20 +727,21 @@ public class Archív implements Closeable
 	 * ceste určenej vlastnosťou {@link #cestaNaDisku(String) cestaNaDisku}
 	 * (prípadne inak, napríklad cestou určenou priamo v názve archívu).</p>
 	 * 
-	 * <p class="attention"><b>Upozornenie:</b> Ak použijete objekt {@link 
-	 * ZipOutputStream ZipOutputStream}, ktorý je návratovou hodnotou tejto
-	 * metódy na pridávanie nových položiek, tak táto trieda programovacieho
-	 * rámca nebude schopná detegovať duplicitné položky, ani spätne
-	 * pracovať s pridanými položkami, pretože ich evidenciu vykonáva
-	 * vo vlastnej réžii nad rámec možností triedy {@link ZipOutputStream
-	 * ZipOutputStream}.</p>
+	 * <p class="attention"><b>Upozornenie:</b> Ak použijete objekt  <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipOutputStream.java"
+	 * target="_blank"><code>ZipOutputStream</code></a>, ktorý je návratovou
+	 * hodnotou tejto metódy na pridávanie nových položiek, tak táto trieda
+	 * programovacieho rámca nebude schopná detegovať duplicitné položky, ani
+	 * spätne pracovať s pridanými položkami, pretože ich evidenciu vykonáva
+	 * vo vlastnej réžii nad rámec možností triedy  <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipOutputStream.java"
+	 * target="_blank"><code>ZipOutputStream</code></a>.</p>
 	 * 
 	 * @param názov meno archívu
 	 * @return „výstupný archív“ (prúd) knižnice <a
 	 *     href="https://ant.apache.org/" target="_blank">Apache Ant</a>
-	 *     {@link ZipOutputStream ZipOutputStream} na vykonanie prípadných
-	 *     ďalších úprav (nastavenie komentára, úprava rôznych konfiguračných
-	 *     položiek podľa vlastných potrieb a podobne)
+	 *     <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipOutputStream.java"
+	 *     target="_blank"><code>ZipOutputStream</code></a> na vykonanie
+	 *     prípadných ďalších úprav (nastavenie komentára, úprava rôznych
+	 *     konfiguračných položiek podľa vlastných potrieb a podobne)
 	 * 
 	 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
 	 *     operácii
@@ -709,9 +785,10 @@ public class Archív implements Closeable
 	 * @param cesta pracovná cesta (na pevnom disku)
 	 * @param názov meno archívu
 	 * @return „vstupný archív“ knižnice <a href="https://ant.apache.org/"
-	 *     target="_blank">Apache Ant</a> {@link ZipFile ZipFile} na
-	 *     vykonanie prípadných ďalších úprav (nastavenie komentára, úprava
-	 *     rôznych konfiguračných položiek podľa vlastných potrieb a podobne)
+	 *     target="_blank">Apache Ant</a> <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipFile.java"
+	 *     target="_blank"><code>ZipFile</code></a> na vykonanie prípadných
+	 *     ďalších úprav (nastavenie komentára, úprava rôznych konfiguračných
+	 *     položiek podľa vlastných potrieb a podobne)
 	 * 
 	 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
 	 *     operácii
@@ -756,9 +833,10 @@ public class Archív implements Closeable
 	 * @param názov meno archívu
 	 * @return „výstupný archív“ (prúd) knižnice <a
 	 *     href="https://ant.apache.org/" target="_blank">Apache Ant</a>
-	 *     {@link ZipOutputStream ZipOutputStream} na vykonanie prípadných
-	 *     ďalších úprav (nastavenie komentára, úprava rôznych konfiguračných
-	 *     položiek podľa vlastných potrieb a podobne)
+	 *     <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipOutputStream.java"
+	 *     target="_blank"><code>ZipOutputStream</code></a> na vykonanie
+	 *     prípadných ďalších úprav (nastavenie komentára, úprava rôznych
+	 *     konfiguračných položiek podľa vlastných potrieb a podobne)
 	 * 
 	 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
 	 *     operácii
@@ -1751,13 +1829,15 @@ public class Archív implements Closeable
 	/**
 	 * <p>Vráti jestvujúcu položku archívu knižnice <a
 	 * href="https://ant.apache.org/" target="_blank">Apache Ant</a>
-	 * {@link ZipEntry ZipEntry} na prácu s ňou. Ak súbor nie je otvorený
-	 * na čítanie alebo zápis, alebo ak položka v archíve nejestvuje, tak
-	 * metóda vráti hodnotu {@code valnull}.</p>
+	 * <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipEntry.java"
+	 * target="_blank"><code>ZipEntry</code></a> na prácu s ňou. Ak súbor nie
+	 * je otvorený na čítanie alebo zápis, alebo ak položka v archíve
+	 * nejestvuje, tak metóda vráti hodnotu {@code valnull}.</p>
 	 * 
 	 * @param názovPoložky názov položky, ktorá má byť vrátená
 	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
-	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry}
+	 *     target="_blank">Apache Ant</a> <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipEntry.java"
+	 *     target="_blank"><code>ZipEntry</code></a>
 	 */
 	public ZipEntry dajPoložku(String názovPoložky)
 	{
@@ -1789,16 +1869,17 @@ public class Archív implements Closeable
 	 * automaticky priečinok vytvorí, ak nejestvuje.</p>
 	 * 
 	 * @param názovPoložky názov položky v archíve
-	 * @param názovSúboru názov súboru na disku (môže byť {@code valnull}
+	 * @param názovSúboru názov súboru na disku (môže byť {@code valnull})
 	 * @param prepísať príznak povolenia prepísania jestvujúceho súboru na
 	 *     disku ({@code valtrue} – cieľový súbor smie byť prepísaný, ak
 	 *     jestvuje)
 	 * @param vytvoriťCestu ak je {@code true}, tak metóda automaticky vytvorí
 	 *     cestu k cieľovému súboru, ak nejestvuje
 	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
-	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry} na
-	 *     vykonanie prípadných ďalších úprav (nastavenie komentára
-	 *     položky, úprava dátumu podľa vlastných potrieb a podobne)
+	 *     target="_blank">Apache Ant</a> <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipEntry.java"
+	 *     target="_blank"><code>ZipEntry</code></a> na vykonanie prípadných
+	 *     ďalších úprav (nastavenie komentára položky, úprava dátumu podľa
+	 *     vlastných potrieb a podobne)
 	 * @throws GRobotException ak archív nie je otvorený na čítanie; ak
 	 *     zadaná položka nebola nájdená v archíve; ak cieľový súbor
 	 *     jestvuje a nie je povolená možnosť jeho prepísania (prípadne
@@ -1932,14 +2013,15 @@ public class Archív implements Closeable
 	 * ignorovaný (pretože nemá význam uvažovať o jeho hodnote).</p>
 	 * 
 	 * @param názovPoložky názov položky v archíve
-	 * @param názovSúboru názov súboru na disku (môže byť {@code valnull}
+	 * @param názovSúboru názov súboru na disku (môže byť {@code valnull})
 	 * @param prepísať príznak povolenia prepísania jestvujúceho súboru na
 	 *     disku ({@code valtrue} – cieľový súbor smie byť prepísaný, ak
 	 *     jestvuje)
 	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
-	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry} na
-	 *     vykonanie prípadných ďalších úprav (nastavenie komentára
-	 *     položky, úprava dátumu podľa vlastných potrieb a podobne)
+	 *     target="_blank">Apache Ant</a> <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipEntry.java"
+	 *     target="_blank"><code>ZipEntry</code></a> na vykonanie prípadných
+	 *     ďalších úprav (nastavenie komentára položky, úprava dátumu podľa
+	 *     vlastných potrieb a podobne)
 	 * @throws GRobotException ak archív nie je otvorený na čítanie; ak
 	 *     zadaná položka nebola nájdená v archíve; ak cieľový súbor
 	 *     jestvuje a nie je povolená možnosť jeho prepísania (prípadne
@@ -1978,11 +2060,12 @@ public class Archív implements Closeable
 	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>.</p>
 	 * 
 	 * @param názovPoložky názov položky v archíve
-	 * @param názovSúboru názov súboru na disku (môže byť {@code valnull}
+	 * @param názovSúboru názov súboru na disku (môže byť {@code valnull})
 	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
-	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry} na
-	 *     vykonanie prípadných ďalších úprav (nastavenie komentára
-	 *     položky, úprava dátumu podľa vlastných potrieb a podobne)
+	 *     target="_blank">Apache Ant</a> <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipEntry.java"
+	 *     target="_blank"><code>ZipEntry</code></a> na vykonanie prípadných
+	 *     ďalších úprav (nastavenie komentára položky, úprava dátumu podľa
+	 *     vlastných potrieb a podobne)
 	 * @throws GRobotException ak archív nie je otvorený na čítanie; ak
 	 *     zadaná položka nebola nájdená v archíve; ak cieľový súbor
 	 *     jestvuje
@@ -2022,8 +2105,9 @@ public class Archív implements Closeable
 	 * @param vytvoriťCestu ak je {@code true}, tak metóda automaticky vytvorí
 	 *     cestu k cieľovému súboru, ak nejestvuje
 	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
-	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry} na
-	 *     vykonanie prípadných ďalších úprav
+	 *     target="_blank">Apache Ant</a> <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipEntry.java"
+	 *     target="_blank"><code>ZipEntry</code></a> na vykonanie prípadných
+	 *     ďalších úprav
 	 * @throws GRobotException ak archív nie je otvorený na čítanie; ak
 	 *     zadaná položka nebola nájdená v archíve; ak cieľový súbor
 	 *     jestvuje a nie je povolená možnosť jeho prepísania (prípadne
@@ -2060,8 +2144,9 @@ public class Archív implements Closeable
 	 * @param názovPoložky názov položky v archíve
 	 * @param prepísať príznak povolenia prepísania jestvujúceho súboru
 	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
-	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry} na
-	 *     vykonanie prípadných ďalších úprav
+	 *     target="_blank">Apache Ant</a> <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipEntry.java"
+	 *     target="_blank"><code>ZipEntry</code></a> na vykonanie prípadných
+	 *     ďalších úprav
 	 * @throws GRobotException ak archív nie je otvorený na čítanie; ak
 	 *     zadaná položka nebola nájdená v archíve; ak cieľový súbor
 	 *     jestvuje a nie je povolená možnosť jeho prepísania (prípadne
@@ -2093,8 +2178,9 @@ public class Archív implements Closeable
 	 * 
 	 * @param názovPoložky názov položky v archíve
 	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
-	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry} na
-	 *     vykonanie prípadných ďalších úprav
+	 *     target="_blank">Apache Ant</a> <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipEntry.java"
+	 *     target="_blank"><code>ZipEntry</code></a> na vykonanie prípadných
+	 *     ďalších úprav
 	 * @throws GRobotException ak archív nie je otvorený na čítanie; ak
 	 *     zadaná položka nebola nájdená v archíve; ak cieľový súbor
 	 *     jestvuje
@@ -2115,8 +2201,8 @@ public class Archív implements Closeable
 
 	/**
 	 * <p>Rozbalí tento balíček do cieľovej lokality. Metóda umožňuje
-	 * spresniť pravidlá, ktorými sa bude riadiť pri procese rozbaľovania
-	 * a to, či môže prepisovať jestvujúce súbory a vytvárať nejestvujúce
+	 * spresniť pravidlá, ktorými sa bude riadiť pri procese rozbaľovania.
+	 * Konkrétne, či môže prepisovať jestvujúce súbory a vytvárať nejestvujúce
 	 * priečinky, ktoré nie sú explicitne vložené ako položky v archíve
 	 * (čiže výsledok nezávisí len od parametrov tejto metódy, ale aj od
 	 * situácie v rámci konkrétneho archívu).</p>
@@ -2126,6 +2212,9 @@ public class Archív implements Closeable
 	 * priečinky, ktoré nie sú položkami archívu (pretože toto nie je
 	 * v archívoch povinné), ale sú len súčasťou relatívnych ciest položiek
 	 * archívu, nie sú do tohto počtu zarátané.</p>
+	 * 
+	 * <p>Ak otvorenie archívu zlyhá (prípadne zlyhá iná časť inicializácie
+	 * procesu), tak je návratová hodnota metódy rovná −1.</p>
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je použiteľná
 	 * len v prípade, že je archív otvorený alebo otvoriteľný na
@@ -2386,9 +2475,10 @@ public class Archív implements Closeable
 	 * @param názovSúboru názov súboru, z ktorého majú byť prečítané
 	 *     údaje pridávanej položky
 	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
-	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry} na
-	 *     vykonanie prípadných ďalších úprav (nastavenie komentára
-	 *     položky, úprava dátumu podľa vlastných potrieb a podobne)
+	 *     target="_blank">Apache Ant</a> <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipEntry.java"
+	 *     target="_blank"><code>ZipEntry</code></a> na vykonanie prípadných
+	 *     ďalších úprav (nastavenie komentára položky, úprava dátumu podľa
+	 *     vlastných potrieb a podobne)
 	 * 
 	 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
 	 *     operácii
@@ -2470,9 +2560,10 @@ public class Archív implements Closeable
 	 * @param názovPoložky názov pridávanej položky (nesmie byť zamlčaný)
 	 * @param údajePoložky údaje pridávanej položky (vo forme poľa bajtov)
 	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
-	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry} na
-	 *     vykonanie prípadných ďalších úprav (nastavenie komentára
-	 *     položky, úprava dátumu podľa vlastných potrieb a podobne)
+	 *     target="_blank">Apache Ant</a> <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipEntry.java"
+	 *     target="_blank"><code>ZipEntry</code></a> na vykonanie prípadných
+	 *     ďalších úprav (nastavenie komentára položky, úprava dátumu podľa
+	 *     vlastných potrieb a podobne)
 	 * 
 	 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
 	 *     operácii
@@ -2515,7 +2606,19 @@ public class Archív implements Closeable
 
 
 	/**
-	 * <p>Pridá do archívu položku reprezentujúcu priečinok.</p>
+	 * <p>Pridá do archívu položku reprezentujúcu priečinok. <b>Pozor!</b>
+	 * Metóda pridá iba jednu položku vo význame priečinka. Metóda nepridáva
+	 * do archívu prípadný obsah (vnorené položky) jestvujúceho priečinka na
+	 * disku. (V skutočnosti priečinok na disku ani nemusí jestvovať a do
+	 * archívu ho ako položku môžeme pridať.)</p>
+	 * 
+	 * <p>Prítomnosť tohto druhu položiek v archíve je nepovinná. Priečinky
+	 * a podpriečinky sú softvérmi pracujúcimi s archívmi automaticky
+	 * rozpoznávané vďaka ukladaniu ciest k súborom, ktoré sú v rámci
+	 * archívu pripojené pred názvy položiek (t. j. zbalených súborov).
+	 * Avšak pridanie položky priečinka má význam, a to v prípade, že
+	 * chceme do archívu vložiť prázdny priečinok (ktorý sa pri
+	 * rozbaľovaní archívu automaticky vytvorí).</p>
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
 	 * použiteľná len v prípade, že je archív otvorený na
@@ -2523,9 +2626,10 @@ public class Archív implements Closeable
 	 * 
 	 * @param názov názov pridávaného priečinka (nesmie byť zamlčaný)
 	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
-	 *     target="_blank">Apache Ant</a> {@link ZipEntry ZipEntry} na
-	 *     vykonanie prípadných ďalších úprav (nastavenie komentára
-	 *     položky, úprava dátumu podľa vlastných potrieb a podobne)
+	 *     target="_blank">Apache Ant</a> <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipEntry.java"
+	 *     target="_blank"><code>ZipEntry</code></a> na vykonanie prípadných
+	 *     ďalších úprav (nastavenie komentára položky, úprava dátumu podľa
+	 *     vlastných potrieb a podobne)
 	 * 
 	 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
 	 *     operácii
@@ -2562,25 +2666,27 @@ public class Archív implements Closeable
 
 
 	/**
-	 * <p>Vráti komentár archívu otvoreného na čítanie, ak je definovaný.
+	 * <p>Vráti komentár otvoreného archívu, ak je definovaný.
 	 * V opačnom prípade vráti hodnotu {@code valnull}.</p>
 	 * 
-	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
+	 * <!-- p class="attention"><b>Upozornenie:</b> Táto metóda je
 	 * použiteľná len v prípade, že je archív otvorený na
-	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>.</p>
+	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>.</p -->
 	 * 
-	 * @return komentár archívu otvoreného na čítanie alebo {@code valnull}
+	 * @return komentár otvoreného archívu alebo {@code valnull}
 	 * 
 	 * @see #komentár(String)
 	 */
 	public String komentár()
 	{
-		if (null == vstup)
-			throw new GRobotException(
-				"Archív nie je otvorený na čítanie.",
-				"archiveNotOpenForReading");
+		if (null != vstup) return vstup.getComment();
+			// (else) throw new GRobotException(
+			// 	"Archív nie je otvorený na čítanie.",
+			// 	"archiveNotOpenForReading");
 
-		return vstup.getComment();
+		if (null != výstup) return výstup.getComment();
+
+		return null;
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #komentár() komentár}.</p>*/
@@ -2591,7 +2697,9 @@ public class Archív implements Closeable
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
 	 * použiteľná len v prípade, že je archív otvorený na
-	 * <b>{@linkplain #otvorNaZápis(String) zápis}</b>.</p>
+	 * <b>{@linkplain #otvorNaZápis(String) zápis}</b>. (V opačnom
+	 * prípade vznikne {@linkplain GRobotException výnimka}
+	 * {@code srg"archiveNotOpenForWriting"}.)</p>
 	 * 
 	 * @param komentár nový komentár archívu
 	 * @return {@code valtrue} v prípade úspechu akcie

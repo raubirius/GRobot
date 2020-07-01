@@ -853,7 +853,20 @@ public class ZipOutputStream extends FilterOutputStream {
 	 * @param comment the comment
 	 */
 	public void setComment(String comment) {
-		this.comment = comment;
+		// AbRH20 – QuickFix by Roman Horváth (2020, June)
+		if (null == comment) this.comment = "";
+		else this.comment = comment;
+	}
+
+	/**
+	 * Get the file comment.
+	 * 
+	 * @return the comment
+	 */
+	public String getComment()
+	{
+		// AbRH20 – Add by Roman Horváth (2020, June)
+		return null == comment || comment.isEmpty() ? null : comment;
 	}
 
 	/**

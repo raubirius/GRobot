@@ -1852,7 +1852,7 @@ public class Roj
 							// do SVG ten. Však ho netreba nejako extra
 							// transformovať… Rotáciu a mierku obetujeme…“
 							// Lenže sám od seba by sa nedostal ani na
-							// správnu pozíciu, haha…
+							// správnu pozíciu, heh…
 
 							// TODO – overiť, či toto riešenie dostatočne
 							// dobre funguje:

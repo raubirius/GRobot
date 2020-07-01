@@ -1104,7 +1104,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 			{@code comm// }
 			{@code comm// Teraz predpokladajme, že program je spustený n-tý raz a jestvuje}
 			{@code comm// bližšie neurčený počet uložených PNG a HTML/SVG súborov. Zápis}
-			{@code comm// PNG súboru bude zlyhávať dokedy bude jestvovať súbor s aktuálnym}
+			{@code comm// PNG súboru bude zlyhávať, dokedy bude jestvovať súbor s aktuálnym}
 			{@code comm// poradovým číslom, pričom po každom ďalšom pokuse sa poradové}
 			{@code comm// číslo zvýši o jeden. Pri prvom poradovom čísle, pre ktoré nebude}
 			{@code comm// jestvovať prislúchajúci súbor zápis uspeje a ďalej sa bude}
@@ -5980,8 +5980,8 @@ public class SVGPodpora
 	 * 
 	 * <p>Táto metóda sa správa tak, ako keby bola uvedená metóda
 	 * volaná s nasledujúcimi hodnotami argumentov: {@link 
-	 * #dajSVG(String, String) dajSVG}{@code (srg"SVG", }{@code 
-	 * valnull}{@code )}.</p>
+	 * #dajSVG(String, String) dajSVG}{@code (}{@code srg"SVG"}{@code , 
+	 * }{@code valnull}{@code )}.</p>
 	 * 
 	 * @return buď reťazec s exportovaným SVG v požadovanom formáte, alebo
 	 *     prázdny reťazec ({@code srg""}), ak export zlyhal

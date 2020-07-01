@@ -234,7 +234,7 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
 			čakanie
 			časomiera
 
-		interpolácie a ďalšia geometria
+		interpolácie, aproximácie a ďalšia geometria
 
 		celá obrazovka
 
@@ -4978,7 +4978,7 @@ public final class Svet extends JFrame
 		 * ObsluhaUdalostí} (resp. inštancií odvodených tried) je predvolene
 		 * zakázané, aby nedochádzalo k omylom. Po povolení tvorby viacerých
 		 * inštancií obsluhy udalostí zostáva aktívna prvá vytvorená
-		 * inštancia dokedy tok udalostí nepresmerujeme do inej metódou
+		 * inštancia, dokedy tok udalostí nepresmerujeme do inej metódou
 		 * {@link #presmerujObsluhuUdalostí(ObsluhaUdalostí)
 		 * presmerujObsluhuUdalostí}.</p>
 		 * 
@@ -8784,6 +8784,7 @@ public final class Svet extends JFrame
 		 * #zmeňKurzorMyši(String) zmeňKurzorMyši}.</p>
 		 * 
 		 * <p><b>Príklad:</b></p>
+		 * 
 		 * <table><tr><td>
 		 * 
 		 * <pre CLASS="example">
@@ -11745,10 +11746,84 @@ public final class Svet extends JFrame
 			/**
 			 * <p>Toto rozhranie slúži na presmerovanie výstupov a denníkov
 			 * inštancií príkazového riadka. Princíp je jednoduchý, len čo
-			 * je do niektorého z atribútov …<!--TODO--> vložená implementácia
-			 * tohto rozhrania (dá sa použiť aj funkcionálna syntax, keďže
-			 * rozhranie má jedinú metódu), tak je výstup súvisiacej metódy
-			 * (…<!--TODO-->) presmerovaný do metódy implementovaného rozhrania.</p>
+			 * je do niektorého z atribútov {@link PríkazovýRiadok#vyčistenie
+			 * vyčistenie}, {@link PríkazovýRiadok#ladenie ladenie}, {@link 
+			 * PríkazovýRiadok#denník denník}, {@link 
+			 * PríkazovýRiadok#denníkChýb denníkChýb}, {@link 
+			 * PríkazovýRiadok#chybovýVýstup chybovýVýstup} alebo {@link 
+			 * PríkazovýRiadok#výstupProcesu výstupProcesu} vložená
+			 * implementácia tohto rozhrania (dá sa použiť aj funkcionálna
+			 * syntax, keďže rozhranie má jedinú metódu), tak je výstup
+			 * súvisiacej metódy (alebo metód; pozri tabuľku nižšie)
+			 * presmerovaný do metódy {@code spracuj} implementovaného
+			 * rozhrania a to v nasledujúcom tvare:</p>
+			 * 
+			 * <table class="shadedTable">
+			 * <tr><th>Metóda súvisiaca s presmerovaním výstupu</th>
+			 * <th>Tvar volania metódy {@code spracuj}</th></tr>
+			 * 
+			 * <tr><td>{@link PríkazovýRiadok#clearDebug clearDebug}</td>
+			 * <td><code>vyčistenie.</code>{@code 
+			 * spracuj}<code>(</code>{@code num0}<code>,
+			 * metóda);</code></td></tr>
+			 * 
+			 * <tr><td>{@link PríkazovýRiadok#clearLog clearLog}</td>
+			 * <td><code>vyčistenie.</code>{@code 
+			 * spracuj}<code>(</code>{@code num1}<code>,
+			 * metóda);</code></td></tr>
+			 * 
+			 * <tr><td>{@link PríkazovýRiadok#clearErr clearErr}</td>
+			 * <td><code>vyčistenie.</code>{@code 
+			 * spracuj}<code>(</code>{@code num2}<code>,
+			 * metóda);</code></td></tr>
+			 * 
+			 * <tr><td>{@link PríkazovýRiadok#clearError clearError}</td>
+			 * <td><code>vyčistenie.</code>{@code 
+			 * spracuj}<code>(</code>{@code num3}<code>);</code></td></tr>
+			 * 
+			 * <tr><td>{@link PríkazovýRiadok#clearOutput clearOutput}</td>
+			 * <td><code>vyčistenie.</code>{@code 
+			 * spracuj}<code>(</code>{@code num4}<code>);</code></td></tr>
+			 * 
+			 * <tr><td>{@link PríkazovýRiadok#debug debug}</td>
+			 * <td><code>ladenie.</code>{@code 
+			 * spracuj}<code>(texty);</code></td></tr>
+			 * 
+			 * <tr><td>{@link PríkazovýRiadok#log log}</td>
+			 * <td><code>denník.</code>{@code 
+			 * spracuj}<code>(texty);</code></td></tr>
+			 * 
+			 * <tr><td>{@link PríkazovýRiadok#err err}</td>
+			 * <td><code>denníkChýb.</code>{@code 
+			 * spracuj}<code>(texty);</code></td></tr>
+			 * 
+			 * <tr><td>{@link PríkazovýRiadok#error error}</td>
+			 * <td><code>chybovýVýstup.</code>{@code 
+			 * spracuj}<code>(texty);</code></td></tr>
+			 * 
+			 * <tr><td>{@link PríkazovýRiadok#output output}</td>
+			 * <td><code>výstupProcesu.</code>{@code 
+			 * spracuj}<code>(texty);</code></td></tr>
+			 * </table>
+			 * 
+			 * <p><b>Príklad:</b></p>
+			 * 
+			 * <pre CLASS="example">
+				{@code kwdfinal} {@link StringBuffer StringBuffer} out = {@code kwdnew} {@link StringBuffer#StringBuffer() StringBuffer}();
+
+				{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#výstupProcesu výstupProcesu} = (obj) -&gt;
+					{
+						{@code kwdfor} ({@link Object Object} o : obj)
+						{
+							{@link System System}.{@link System#out out}.{@link java.io.PrintStream#print(String) print}(o.{@link Object#toString() toString}());
+							out.{@link StringBuffer#append(String) append}(o.{@link Object#toString() toString}());
+						}
+					};
+				</pre>
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Spracovanie presmerovania
+			 * musí byť rýchle, inak môže nastávať „strácanie sa“ údajov
+			 * z toku v dôsledku preplnenia zásobníkov.</p>
 			 */
 			public static interface PresmerovanieVýstupu
 			{
@@ -11929,8 +12004,9 @@ public final class Svet extends JFrame
 			 * <p>Táto metóda je spúšťaná automaticky v priebehu práce
 			 * tejto inštancie. Účelom je nastavenie titulku okna (konzoly),
 			 * ktorým je v tomto prípade okno sveta. (Mechanizmus je
-			 * implementovaný v rodičovskej triede
-			 * <code>ExecuteShellCommand</code>.)</p>
+			 * implementovaný v rodičovskej triede <a
+			 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExecuteShellCommand.java"
+			 * target="_blank"><code>ExecuteShellCommand</code></a>.)</p>
 			 * 
 			 * <p class="remark"><b>Poznámka:</b> Na zlepšenie dojmu pri
 			 * používaní programovacieho rámca bolo využitie tohto príkazu
@@ -11953,8 +12029,10 @@ public final class Svet extends JFrame
 			/**
 			 * <p>Táto metóda je spúšťaná automaticky v priebehu práce
 			 * tejto inštancie.(Mechanizmus je implementovaný v rodičovskej
-			 * triede <code>ExecuteShellCommand</code>.) Jej účelom je
-			 * poskytnúť aktuálnu verziu programovacieho rámca.</p>
+			 * triede <a
+			 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExecuteShellCommand.java"
+			 * target="_blank"><code>ExecuteShellCommand</code></a>.) Jej
+			 * účelom je poskytnúť aktuálnu verziu programovacieho rámca.</p>
 			 * 
 			 * @return aktuálna verzia programovacieho rámca
 			 */
@@ -11967,8 +12045,9 @@ public final class Svet extends JFrame
 			 * <p>Táto metóda je spúšťaná automaticky pri začatí čakania
 			 * na doplnkový vstup, napríklad pri čítaní hodnoty virtuálnej
 			 * premennej %READ% z príkazového riadka. (Mechanizmus je
-			 * implementovaný v rodičovskej triede
-			 * <code>ExecuteShellCommand</code>.)</p>
+			 * implementovaný v rodičovskej triede <a
+			 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExecuteShellCommand.java"
+			 * target="_blank"><code>ExecuteShellCommand</code></a>.)</p>
 			 * 
 			 * @param návesť návesť, ktorá má byť zobrazená pred začatím
 			 *     čakania na doplnkový vstup
@@ -11991,8 +12070,9 @@ public final class Svet extends JFrame
 			 * startExtraInput}). Metóda poskytuje externej implementácii
 			 * poslednú možnosť kontroly, úpravy alebo zrušenia doplnkového
 			 * vstupu. (Mechanizmus automatického spúšťania tejto metódy je
-			 * implementovaný v rodičovskej triede
-			 * <code>ExecuteShellCommand</code>.)</p>
+			 * implementovaný v rodičovskej triede <a
+			 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExecuteShellCommand.java"
+			 * target="_blank"><code>ExecuteShellCommand</code></a>.)</p>
 			 * 
 			 * @param hodnota hodnota potvrdená používateľom (prípadne
 			 *     odoslaná iným procesom)
@@ -12073,8 +12153,10 @@ public final class Svet extends JFrame
 
 			/**
 			 * <p>Metóda vypisujúca ladiace informácie. Jej automatické
-			 * spúšťanie súvisí napríklad so spúšťaním a ukončovaním
-			 * procesov metódou <code>ExecuteShellCommand.execute</code>.
+			 * spúšťanie súvisí napríklad so spúšťaním a ukončovaním 
+			 * procesov metódou <a
+			 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExecuteShellCommand.java#L2500"
+			 * target="_blank"><code>ExecuteShellCommand.execute</code></a>.
 			 * Jej použitie je otvorené aj pre externé implementácie.
 			 * Funguje tak, že vypisuje texty na vnútornú konzolu sveta
 			 * (stropu) len v prípade zapnutého {@linkplain 
@@ -12441,7 +12523,8 @@ public final class Svet extends JFrame
 		 * jednoduchou implementáciou príkazového riadka operačného systému
 		 * s úzkou množinou vnútorných príkazov vymenovaných nižšie. Metóda
 		 * používa funkcie implementované v statickej inštancii {@link 
-		 * #príkazovýRiadok príkazovýRiadok}. Napríklad metódu {@link 
+		 * #príkazovýRiadok príkazovýRiadok} (pozri triedu {@link 
+		 * PríkazovýRiadok PríkazovýRiadok}). Napríklad metódu {@link 
 		 * PríkazovýRiadok#execute(String, String...) execute} na spustenie
 		 * externého procesu. Štandardný výstup procesov
 		 * je presmerovaný na vnútornú konzolu sveta (stropu – pozri
@@ -12454,7 +12537,9 @@ public final class Svet extends JFrame
 		 * <li><code>CD</code>/<code>CHDIR</code> – zmení vnútorné
 		 * nastavenie aktuálnej cesty, v ktorej má byť spustený nasledujúci
 		 * proces. (Doplňujúce informácie v anglickom jazyku sú v opise
-		 * metódy <code>ExecuteShellCommand.changePath(String)</code>.)</li>
+		 * metódy <a
+		 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExecuteShellCommand.java#L2439"
+		 * target="_blank"><code><code>ExecuteShellCommand.changePath(String)</code></code></a>.)</li>
 		 * <li><code>CLS</code> – vymaže obsah vnútornej konzoly sveta
 		 * (stropu).</li>
 		 * <li><code>ECHO</code> – vypíše zadané argumenty na vnútornú
@@ -12462,25 +12547,30 @@ public final class Svet extends JFrame
 		 * rozvinuté.</li>
 		 * <li><code>CHCP</code> – zmení kódovanie inštancie príkazového
 		 * riadka alebo konfiguruje vnútornú mapu kódovaní príkazov
-		 * podrobnosti v anglickom jazyku sú v opise metódy
-		 * <code>ExecuteShellCommand.changeEncoding(String)</code>.</li>
+		 * podrobnosti v anglickom jazyku sú v opise metódy <a
+		 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExecuteShellCommand.java#L1902"
+		 * target="_blank"><code><code>ExecuteShellCommand.changeEncoding(String)</code></code></a>.</li>
 		 * <li><code>MAPCMD</code> – upraví alebo overí mapovanie zadaného
 		 * príkazu, prípadne vypíše zoznam všetkých mapovaní. (Doplňujúce
-		 * informácie v anglickom jazyku sú v opise metódy
-		 * <code>ExecuteShellCommand.mapCommand(String)</code>.)</li>
+		 * informácie v anglickom jazyku sú v opise metódy <a
+		 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExecuteShellCommand.java#L2003"
+		 * target="_blank"><code><code>ExecuteShellCommand.mapCommand(String)</code></code></a>.)</li>
 		 * <li><code>PROMPT</code> – zmení definíciu náveste príkazového
 		 * riadka. (Použitie náveste je nepovinné. Doplňujúce informácie
-		 * v anglickom jazyku sú v opise metódy
-		 * <code>ExecuteShellCommand.setPrompt(String)</code>.)</li>
+		 * v anglickom jazyku sú v opise metódy <a
+		 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExecuteShellCommand.java#L1342"
+		 * target="_blank"><code><code>ExecuteShellCommand.setPrompt(String)</code></code></a>.)</li>
 		 * <li><code>SET</code> – nastaví, vymaže, vypíše zoznam premenných
 		 * prostredia príkazového riadka alebo si vyžiada doplňujúci vstup.
 		 * Príkaz dokáže vyhodnocovať výrazy (Doplňujúce informácie
-		 * v anglickom jazyku sú v opise metódy
-		 * <code>ExecuteShellCommand.setVariable(String)</code>.)</li>
+		 * v anglickom jazyku sú v opise metódy <a
+		 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExecuteShellCommand.java#L1665"
+		 * target="_blank"><code><code>ExecuteShellCommand.setVariable(String)</code></code></a>.)</li>
 		 * <li><code>TITLE</code> – upraví definíciu titulku okna konzoly,
 		 * ktorá sa automaticky prenesie do titulku okna sveta. (Doplňujúce
-		 * informácie v anglickom jazyku sú v opise metódy
-		 * <code>ExecuteShellCommand.setTitle(String)</code>.)</li>
+		 * informácie v anglickom jazyku sú v opise metódy <a
+		 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExecuteShellCommand.java#L1531"
+		 * target="_blank"><code><code>ExecuteShellCommand.setTitle(String)</code></code></a>.)</li>
 		 * <li><hr/></li>
 		 * <li><code>PAUSE, EXIT</code> – tieto dva príkazy sú vypnuté.
 		 * Metóda ich rozpoznáva, pretože sú relatívne bežné a aby neboli
@@ -16382,58 +16472,92 @@ public final class Svet extends JFrame
 		 * #čakajNaKláves() čakajNaKláves} a {@link #čakajNaKlik()
 		 * čakajNaKlik}.</p>
 		 * 
-		 * <!-- TODO spracovať príklad čakania: -->
+		 * <p><b>Príklad:</b></p>
+		 * 
+		 * <p>Tento príklad ukazuje možné využitie návratovej hodnoty tejto
+		 * metódy na získanie podrobností o udalosti, ktorá čakanie
+		 * ukončila. Aplikácia opakuje príkaz čakania (so zisťovaním
+		 * a vypisovaním detailov o vzniknutej udalosti), dokedy nie je
+		 * stlačené ľavé tlačidlo myši (na ploche aplikácie).</p>
+		 * 
 		 * <pre CLASS="example">
-			import knižnica.GRobot;
-			import knižnica.Svet;
+			{@code kwdimport} knižnica.{@link GRobot GRobot};
+			{@code kwdimport} knižnica.{@link Svet Svet};
 
-			import java.awt.event.InputEvent;
-			import java.awt.event.KeyEvent;
-			import java.awt.event.MouseEvent;
+			{@code kwdimport} java.awt.event.{@link InputEvent InputEvent};
+			{@code kwdimport} java.awt.event.{@link KeyEvent KeyEvent};
+			{@code kwdimport} java.awt.event.{@link MouseEvent MouseEvent};
 
-			public class TestČakania extends GRobot
+			{@code kwdpublic} {@code typeclass} TestČakania {@code kwdextends} {@link GRobot GRobot}
 			{
-				private KeyEvent kláves;
-				private MouseEvent klik;
-				private InputEvent[] udalosti;
+				{@code kwdprivate} {@link KeyEvent KeyEvent} kláves;
+				{@code kwdprivate} {@link MouseEvent MouseEvent} klik;
+				{@code kwdprivate} {@link InputEvent InputEvent}[] udalosti;
 
-				private TestČakania()
+				{@code kwdprivate} TestČakania()
 				{
-					Svet.vypíšRiadok("Stlačte ľubovoľný kláves alebo kliknite " +
-						"ľubovoľným tlačidlom myši.");
-					Svet.vypíšRiadok("(Kliknutie ľavého tlačidla myši " +
-						"ukončí aplikáciu.)");
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Stlačte ľubovoľný kláves alebo kliknite "} +
+						{@code srg"ľubovoľným tlačidlom myši."});
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"(Kliknutie ľavého tlačidla myši "} +
+						{@code srg"ukončí aplikáciu.)"});
 
-					do
+					{@code kwddo}
 					{
-						udalosti = Svet.čakajNaKlikAleboKláves();
-						kláves = (KeyEvent)udalosti[0];
-						klik = (MouseEvent)udalosti[1];
+						{@code comm// Získanie a výpis podrobností o udalosti:}
 
-						if (null != kláves)
-							Svet.vypíšRiadok("ASCII (", (int)kláves.getKeyChar(),
-								")", kláves.getKeyChar());
+						udalosti = {@link Svet Svet}.{@link Svet#čakajNaKlikAleboKláves() čakajNaKlikAleboKláves}();
+						kláves = ({@link KeyEvent KeyEvent})udalosti[{@code num0}];
+						klik = ({@link MouseEvent MouseEvent})udalosti[{@code num1}];
 
-						if (null != klik)
-							Svet.vypíšRiadok(klik.getButton() + ": " +
-								klik.getX() + ", " + klik.getY());
+						{@code kwdif} ({@code valnull} != kláves)
+							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"ASCII ("}, ({@code typeint})kláves.{@link KeyEvent#getKeyChar() getKeyChar}(),
+								{@code srg")"}, kláves.{@link KeyEvent#getKeyChar() getKeyChar}());
+
+						{@code kwdif} ({@code valnull} != klik)
+							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(klik.{@link MouseEvent#getButton() getButton}() + {@code srg": "} +
+								klik.{@link MouseEvent#getX() getX}() + {@code srg", "} + klik.{@link MouseEvent#getY() getY}());
 					}
-					while (null == klik || 1 != klik.getButton());
+					{@code kwdwhile} ({@code valnull} == klik || {@code num1} != klik.{@link MouseEvent#getButton() getButton}());
 				}
 
-				public static void main(String[] args)
+				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 				{
-					Svet.použiKonfiguráciu("TestČakania.cfg");
-					new TestČakania();
-					Svet.vypíšRiadok("Koniec.");
-					Svet.čakaj(1.5);
-					Svet.koniec();
+					{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"TestČakania.cfg"});
+					{@code kwdnew} TestČakania();
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Koniec."});
+					{@link Svet Svet}.{@link Svet#čakaj(double) čakaj}({@code num1.5});
+					{@link Svet Svet}.{@link Svet#koniec() koniec}();
 				}
 			}
 			</pre>
 		 * 
+		 * <p>Výsledné výpisy na obrazovke (konzole programovacieho rámca)
+		 * môžu vyzerať napríklad takto:</p>
+		 * 
+		 * <pre CLASS="example">
+			Stlačte ľubovoľný kláves alebo kliknite ľubovoľným tlačidlom myši.
+			(Kliknutie ľavého tlačidla myši ukončí aplikáciu.)
+			ASCII (116)t
+			ASCII (101)e
+			ASCII (115)s
+			ASCII (116)t
+			ASCII (10)
+
+			ASCII (32) 
+			ASCII (32) 
+			3: 364, 275
+			ASCII (32) 
+			2: 332, 104
+			ASCII (32) 
+			1: 217, 339
+			Koniec.
+			</pre>
+		 * 
 		 * @return dvojprvkové pole vstupných udalostí všeobecného typu
-		 *     ({@link InputEvent InputEvent})
+		 *     ({@link InputEvent InputEvent}; pričom v prvom prvku je
+		 *     očakávaná udalosť klávesnice {@link KeyEvent KeyEvent},
+		 *     ak vznikla, a v druhom udalosť myši {@link MouseEvent
+		 *     MouseEvent} – rovnako, ak vznikla)
 		 */
 		public static InputEvent[] čakajNaKlikAleboKláves()
 		{
@@ -17691,8 +17815,9 @@ public final class Svet extends JFrame
 		}
 
 		/**
-		 * <p>Vráti inštanciu skriptu registrovanú vo vnútornej pamäti
-		 * programovacieho rámca pod zadaným menom.</p>
+		 * <p>Vráti inštanciu skriptu {@linkplain #registrujSkript(String,
+		 * String[]) registrovanú} vo vnútornej pamäti programovacieho rámca
+		 * pod zadaným menom.</p>
 		 * 
 		 * @param názov názov skriptu vopred registrovaného vo vnútornom
 		 *     zozname skriptov (napríklad metódou {@link #nahrajSkript(String,
@@ -17720,8 +17845,8 @@ public final class Svet extends JFrame
 			private static int hĺbkaVolania = 0;
 
 		/**
-		 * <p>Spustí skript registrovaný vo vnútornej pamäti rámca pod
-		 * zadaným menom.</p>
+		 * <p>Spustí skript {@linkplain #registrujSkript(String, String[])
+		 * registrovaný} vo vnútornej pamäti rámca pod zadaným menom.</p>
 		 * 
 		 * @param názov názov skriptu vopred registrovaného vo vnútornom
 		 *     zozname skriptov (napríklad metódou {@link #nahrajSkript(String,
@@ -17807,183 +17932,17 @@ public final class Svet extends JFrame
 		 * alebo príkaz (metódou {@link #vykonajPríkaz(String) vykonajPríkaz}
 		 * alebo jej „klonmi“).</p>
 		 * 
-		 * <p><b>Príklad:</b></p>
-		 * 
-		 * <p>Zabezpečenie spustenia samotného príkazu
-		 * {@code currspustiSkript} je jednoduché (v tomto príklade ho nájdete
-		 * v metóde {@code spusti}), ale zabezpečenie spracovania rôznych
-		 * situácií (udalostí) počas ladenia si vyžaduje náročnejší prístup.
-		 * V tomto príklade je v komentároch stručne opísaný účel jednotlivých
-		 * častí programu s prípadnými návrhmi na ďalšie vylepšovanie. Tento
-		 * príklad v podstate iba naznačuje rôzne aspekty ladenia.</p>
-		 * 
-		 * <pre CLASS="example">
-			{@code kwdimport} knižnica.*;
-
-			{@code kwdpublic} {@code typeclass} TestLadeniaSkriptu {@code kwdextends} {@link GRobot GRobot}
-			{
-				{@code comm// Nasledujúce premenné sú „semafory“ používané počas procesu ladenia:}
-				{@code comm// }
-				{@code comm//   – krok:     hodnota tejto premennej riadi krokovanie; hodnota true}
-				{@code comm//               znamená posunutie programu o krok ďalej (na ďalší príkaz)}
-				{@code comm//   – prerušiť: nastavením hodnoty tejto premennej na true je možné}
-				{@code comm//               ladenie programu predčasne ukončiť}
-				{@code kwdprivate} {@code typeboolean} krok = {@code valfalse}, prerušiť = {@code valfalse};
-
-				{@code comm// Konštruktor.}
-				{@code kwdprivate} TestLadeniaSkriptu()
-				{
-					{@code comm// Definovanie obsluhy udalostí…}
-					{@code kwdnew} {@link ObsluhaUdalostí#ObsluhaUdalostí() ObsluhaUdalostí}()
-					{
-						{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@link ObsluhaUdalostí#ladenie(int, String, int) ladenie}(
-							{@code typeint} riadok, {@link String String} príkaz, {@code typeint} správa)
-						{
-							{@code comm// Nasledujúce vetvenie zabezpečuje spracovanie rôznych}
-							{@code comm// situácií počas ladenia:}
-							{@code kwdswitch} (správa)
-							{
-								{@code kwdcase} {@link GRobot#ČAKAŤ ČAKAŤ}:
-									{@code comm// Čakanie počas krokovania:}
-									{@code kwdif} (krok)
-									{
-										krok = {@code valfalse};
-										{@code kwdreturn} {@code valfalse};
-									}
-									{@code kwdreturn} {@code valtrue};
-
-								{@code kwdcase} {@link GRobot#PRERUŠIŤ PRERUŠIŤ}:
-									{@code comm// Predčasné ukončenie vykonávania skriptu:}
-									{@code kwdif} (prerušiť)
-									{
-										{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#tmavooranžová tmavooranžová});
-										{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Vykonávanie bolo prerušené."});
-										{@code comm// Ďalšie podrobnosti by sme mohli vypísať}
-										{@code comm// napríklad s pomocou nasledujúceho úryvku kódu:}
-										{@code comm//    "na riadku", riadok, ":", GRobot.}{@link Konštanty#riadok riadok}{@code comm,}
-										{@code comm//    príkaz}
-									}
-									{@code kwdreturn} prerušiť;
-
-								{@code comm// Výpis definovaných menoviek skriptu odfiltrujeme:}
-								{@code kwdcase} {@link GRobot#VYPÍSAŤ_MENOVKY VYPÍSAŤ_MENOVKY}: {@code kwdreturn} {@code valfalse};
-
-								{@code kwdcase} {@link GRobot#UKONČENIE_SKRIPTU UKONČENIE_SKRIPTU}:
-									{@code kwdif} (!prerušiť)
-									{
-										{@code comm// Informáciu o ukončení vypíšeme len v prípade,}
-										{@code comm// že program nebol prerušený:}
-										{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#tmavotyrkysová tmavotyrkysová});
-										{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Vykonávanie bolo dokončené."});
-									}
-									{@code kwdreturn} {@code valfalse};
-
-								{@code kwdcase} {@link GRobot#UKONČENIE_CHYBOU UKONČENIE_CHYBOU}:
-									{@code comm// Vypíšeme len text chyby…}
-									{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#červená červená});
-									{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(príkaz);
-										{@code comm// Ďalšie podrobnosti by sme mohli vypísať}
-										{@code comm// napríklad s pomocou nasledujúcich úryvkov kódu:}
-										{@code comm//    "Číslo chyby", Svet.}{@link Svet#kódPoslednejChyby() kódPoslednejChyby}{@code comm()}
-										{@code comm//    "Riadok chyby ", riadok}
-									{@code kwdreturn} {@code valfalse};
-
-								{@code comm// Nefiltrujeme žiadne príkazy,}
-								{@code comm// vykonávame všetko bez rozdielu:}
-								{@code kwdcase} {@link GRobot#ZABRÁNIŤ_VYKONANIU ZABRÁNIŤ_VYKONANIU}: {@code kwdreturn} {@code valfalse};
-							}
-
-							{@code comm// Na všetky ostatné otázky režimu ladenia (}{@link GRobot#VYPÍSAŤ_PREMENNÉ VYPÍSAŤ_PREMENNÉ}{@code comm,}
-							{@code comm// }{@link GRobot#VYPÍSAŤ_RIADOK VYPÍSAŤ_RIADOK}{@code comm, }{@link GRobot#VYPÍSAŤ_PRÍKAZ VYPÍSAŤ_PRÍKAZ}{@code comm, }{@link GRobot#VYKONAŤ_PRÍKAZ VYKONAŤ_PRÍKAZ}{@code comm) odpovedáme}
-							{@code comm// kladne:}
-							{@code kwdreturn} {@code valtrue};
-						}
-
-						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#klik() klik}()
-						{
-							{@code comm// Ak bolo stlačené pravé tlačidlo myši, zistíme hodnotu}
-							{@code comm// číselnej premennej (toto je tu uvedené na demonštračné}
-							{@code comm// účely, dalo by sa to rozpracovať tak, aby si používateľ}
-							{@code comm// mohol zvoliť typ premennej).}
-							{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#PRAVÉ PRAVÉ}))
-							{
-								{@link String String} názov = {@link Svet Svet}.{@link Svet#zadajReťazec(String) zadajReťazec}(
-									{@code srg"Názov číselnej premennej:"});
-								{@code kwdif} ({@code valnull} != názov)
-								{
-									{@code kwdif} ({@link Svet Svet}.{@link Svet#premennáJestvuje(String, Class) premennáJestvuje}(názov, Double.{@code typeclass}))
-									{
-										{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#tyrkysová tyrkysová});
-										{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"     "}, názov, {@code srg" = "},
-											{@link Svet Svet}.{@link Svet#čítajPremennú(String, Class) čítajPremennú}(názov, Double.{@code typeclass}));
-									}
-									{@code kwdelse}
-									{
-										{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#červená červená});
-										{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"     Premenná "},
-											názov, {@code srg"nejestvuje."});
-									}
-								}
-							}
-							{@code comm// Inak (t. j. ak boli stlačené ostatné tlačidlá myši):}
-							{@code comm//   Ak prebieha vykonávanie skriptu, tak prejdeme na}
-							{@code comm//   ďalší krok, inak začneme vykonávanie nového skriptu.}
-							{@code kwdelse} {@code kwdif} ({@link Svet Svet}.{@link Svet#skriptJeSpustený() skriptJeSpustený}()) krok = {@code valtrue}; {@code kwdelse} spusti();
-						}
-
-						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#stlačenieKlávesu() stlačenieKlávesu}()
-						{
-							{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#kláves(int) kláves}({@link Kláves Kláves}.{@link Kláves#ESCAPE ESCAPE}))
-							{
-								{@code comm// Klávesom ESC prerušíme ladenie…}
-								prerušiť = {@code valtrue};
-								krok = {@code valtrue};
-							}
-							{@code kwdelse} {@code kwdif} ({@link Svet Svet}.{@link Svet#skriptJeSpustený() skriptJeSpustený}() &&
-								{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#kláves(int) kláves}({@link Kláves Kláves}.{@link Kláves#MEDZERA MEDZERA}))
-							{
-								{@code comm// Klávesom medzera krokujeme…}
-								krok = {@code valtrue};
-							}
-						}
-					};
-
-					{@code comm// Musíme zapnúť režim interaktívny režim (zapneme len Svet a robot),}
-					{@code comm// režim ladenia a zabezpečíme, aby sa robot automaticky neskryl po}
-					{@code comm// prvom výpise na vnútornú konzolu programovacieho rámca (pozri}
-					{@code comm// poznámku na konci opisu metódy Plátno.}{@link Plátno#vypíš(Object[]) vypíš}{@code comm)}.
-					{@link Svet Svet}.{@link Svet#režimLadenia(boolean) režimLadenia}({@code valtrue});
-					{@link Svet Svet}.{@link Svet#interaktívnyRežim(boolean) interaktívnyRežim}({@code valtrue});
-					{@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code valthis});
-					{@link GRobot#interaktívnyRežim(boolean) interaktívnyRežim}({@code valtrue});
-
-					spusti();
-				}
-
-				{@code comm// Touto metódou sa spúšťa nové ladenie skriptu. Logicky, pokus}
-				{@code comm// o spustenie nového ladenia bude vykonaný len v takom prípade,}
-				{@code comm// keď nie je v činnosti iné ladenie. (Volanie metódy }{@code currspustiSkript}
-				{@code comm// by v opačnom prípade i tak nemalo žiadny efekt.)}
-				{@code kwdpublic} {@code typevoid} spusti()
-				{
-					{@code kwdif} (!{@link Svet Svet}.{@link Svet#skriptJeSpustený() skriptJeSpustený}())
-					{
-						krok = {@code valfalse};
-						prerušiť = {@code valfalse};
-						{@link GRobot#domov() domov}();
-						{@link Svet Svet}.{@link Svet#vymaž() vymaž}();
-						{@link Svet Svet}.{@link Svet#spustiSkript(String, boolean) spustiSkript}({@code srg"Test.GRScript"}, {@code valtrue});
-					}
-				}
-
-				{@code comm// Hlavná metóda.}
-				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
-				{
-					{@link Svet Svet}.{@link Svet#použiKonfiguráciu() použiKonfiguráciu}();
-					{@code kwdnew} TestLadeniaSkriptu();
-				}
-			}
-			</pre>
+		 * <p class="remark"><b>Poznámky:</b> Komplexný príklad ladenia
+		 * je v sekcii Príklad ladenia skriptov v opise triedy {@link Skript
+		 * Skript}.<br />
+		 * Zabezpečenie spustenia príkazu {@code currspustiSkript} je
+		 * jednoduché (v spomínanom príklade sa nachádza v metóde
+		 * {@code spusti}), ale zabezpečenie spracovania rôznych
+		 * situácií (udalostí) počas ladenia si vyžaduje náročnejší
+		 * prístup.
+		 * V spomínanom príklade je v komentároch stručne opísaný účel
+		 * jednotlivých častí programu s prípadnými návrhmi na ďalšie
+		 * vylepšovanie.</p>
 		 * 
 		 * @param riadky pole reťazcov reprezentujúcich riadky skriptu
 		 * 
@@ -18323,6 +18282,10 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Zapne alebo vypne interaktívny režim pre inštanciu sveta.</p>
 		 * 
+		 * <p class="tip"><b>Informácia:</b> Ďalšie podrobnosti súvisiace
+		 * s témou vykonávania príkazov interaktívneho režimu a skriptov
+		 * sú v opise triedy {@link Skript Skript}.</p>
+		 * 
 		 * <p>Režim umožňuje pracovať so zvoleným robotom/robotmi,
 		 * svetom a/alebo plátnom tak, že mnohé príkazy môžu byť spracúvané
 		 * priamo počas činnosti programu a to buď zadaním do zobrazeného
@@ -18395,7 +18358,7 @@ public final class Svet extends JFrame
 		 * <p>Príkazy interaktívneho režimu <b>nie sú</b> zadávané
 		 * v syntakticky identickom tvare ako pri volaní metódy Javy.
 		 * Zápis príkazu musí byť ekvivalentný takej metóde robota (resp.
-		 * sveta/plátna alebo metódy triedy <code>Math</code>), ktorá spĺňa
+		 * sveta/plátna alebo metódy triedy {@link Math Math}), ktorá spĺňa
 		 * jednu z nasledujúcich podmienok:</p>
 		 * 
 		 * <ul>
@@ -21719,7 +21682,7 @@ public final class Svet extends JFrame
 		{ return Zvuk.súborNaZvuk(súbor, unikátny); }
 
 			// ‼TODO‼ – sprístupniť generovanie zvuku do tejto inštancie
-			// a umožnenie jej uloženia
+			// a umožniť uloženie výsledku
 
 
 		// Prehrávanie
@@ -22619,10 +22582,15 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Táto metóda sprostredkúva prístup k vnútornej inštancii
-		 * generátora tónov (<code>BeepChannel</code>). Vlastnosti tohto
+		 * generátora tónov (<a
+		 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/BeepChannel.java"
+		 * target="_blank"><code>BeepChannel</code></a>). Vlastnosti tohto
 		 * generátora nie sú opísané v tejto dokumentácii, ale dajú sa
-		 * naštudovať v angličtine z komentárov uvedených priamo v triedach
-		 * <code>BeepChannel</code> a <code>Channel</code>. Aspoň jednou
+		 * naštudovať v angličtine z komentárov uvedených priamo v triedach <a
+		 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/BeepChannel.java"
+		 * target="_blank"><code>BeepChannel</code></a> a <a
+		 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/Channel.java"
+		 * target="_blank"><code>Channel</code></a>. Aspoň jednou
 		 * z nich sa zaoberá príklad uvedený nižšie.</p>
 		 * 
 		 * <p><b>Príklad:</b></p>
@@ -22967,7 +22935,7 @@ public final class Svet extends JFrame
 		}
 
 
-	// --- Interpolácie a ďalšia geometria
+	// --- Interpolácie, aproximácie a ďalšia geometria
 
 		/**
 		 * <p>S pomocou lineárnej interpolácie je možné získať ľubovoľnú
@@ -23033,6 +23001,8 @@ public final class Svet extends JFrame
 		 * 
 		 * @see #kvadratickáInterpolácia(double, double, double, double)
 		 * @see #kubickáInterpolácia(double, double, double, double, double)
+		 * @see #kvadratickáAproximácia(double, double, double, double)
+		 * @see #kubickáAproximácia(double, double, double, double, double)
 		 */
 
 		public final static double lineárnaInterpolácia(
@@ -23043,25 +23013,26 @@ public final class Svet extends JFrame
 			double a, double b, double t) { return a + t * (b - a); }
 
 		/**
-		 * <p>Vypočíta polohu na kvadratickej (v tomto prípade bézierovej)
-		 * krivke.</p><!-- TODO dokončiť opis (bézierova krivka má určité
-		 * vlastnosti – overiť, aké?) a pridať lepší príklad s obrázkom -->
+		 * <p>Kvadratická interpolácia je počítaná z troch vstupných hodnôt
+		 * (a parametra).<!-- TODO --></p>
 		 * 
-		 * <p><b>Príklad:</b></p>
+		 * <p class="attention"><b>Varovanie:</b> Kvadratická interpolácia nie
+		 * je v súčasnosti implementovaná. Táto metóda paušálne vracia hodnotu
+		 * {@link Double#NaN Double.NaN}.</p>
 		 * 
-		 * <p>Nasledujúce dva riadky kódu vypočítajú súradnice bodu ([x, y])
-		 * na kvadratickej (bézierovej) krivke v mieste, kde je hodnota
-		 * parametra interpolácie (t) rovná 0,5:</p>
+		 * <!-- p><b>Príklad:</b></p>
+		 * 
+		 * <p>TODO</p>
 		 * 
 		 * <pre CLASS="example">
-			<!-- TODO dokončiť príklad -->
-			x = {@code currkvadratickáInterpolácia}(x1, x2, x3, {@code num0.5});
-			y = {@code currkvadratickáInterpolácia}(y1, y2, y3, {@code num0.5});
+			TODO
 			</pre>
 		 * 
-		 * <p><b>Ukážky možných výsledkov:</b></p>
+		 * <p><b>Výsledok:</b></p>
 		 * 
-		 * <p><image>«názov».png<alt/></image>«Popis…»<!-- TODO -->.</p>
+		 * <p><image>kvadratickaInterpolacia.png<alt/>Body vypočítané
+		 * s použitím kvadratickej interpolácie.</image>Body vypočítané
+		 * s použitím kvadratickej interpolácie.</p -->
 		 * 
 		 * @param a prvá hodnota určujúca kvadratickú interpoláciu
 		 * @param b druhá hodnota určujúca kvadratickú interpoláciu
@@ -23072,12 +23043,28 @@ public final class Svet extends JFrame
 		 * 
 		 * @see #lineárnaInterpolácia(double, double, double)
 		 * @see #kubickáInterpolácia(double, double, double, double, double)
+		 * @see #kvadratickáAproximácia(double, double, double, double)
+		 * @see #kubickáAproximácia(double, double, double, double, double)
 		 */
 		public final static double kvadratickáInterpolácia(
 			double a, double b, double c, double t)
 		{
-			double ti = 1.0 - t; // optimalizácia
-			return (ti * a + 2.0 * t * b) * ti + t * t * c;
+			/*
+				TODO:
+				Interpolácia prechádza všetkými bodmi, aproximácia len prvým
+				a posledným. Nech sa snažím akokoľvek, nenachádzam dobrú
+				implementáciu (najmä kubickej) interpolácie a na vlastné
+				výpočty momentálne (júl 2020) nie je čas…
+			*/
+
+			// http://abrobecker.free.fr/text/quad.htm – žiaľ, robí
+			// aproximáciu; ešte k tomu bézierovu (akú mám nižšie), ale nevie
+			// o tom…
+			// 
+			// o = a; b *= 2.0; double p = b - 2.0 * a, q = c - b + a;
+			// return a + (p + q * t) * t;
+
+			return Double.NaN;
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #kvadratickáInterpolácia(double, double, double, double) kvadratickáInterpolácia}.</p> */
@@ -23086,30 +23073,198 @@ public final class Svet extends JFrame
 		{ return kvadratickáInterpolácia(a, b, c, t); }
 
 		/**
-		 * <p>Kubická interpolácia je počítaná zo štyroch hodnôt. Význam
-		 * parametrov sa lepšie vysvetľuje na príklade kreslenia krivky
-		 * s pomocou tohto druhu interpolácie. Interpolujme dvojice súradníc
-		 * štyroch kľúčových bodov ({@code [x0, y0]} až {@code [x3, y3]}).
-		 * V takom prípade prvá a posledná dvojica súradníc určujú „smer“
-		 * kubickej krivky a prostredné dve určujú počiatočný a koncový
-		 * bod krivky. Výsledkom takejto interpolácie sú body ležiace na
-		 * kubickej krivke.</p>
+		 * <p>Kubická interpolácia je počítaná zo štyroch vstupných hodnôt
+		 * (a parametra).<!-- TODO --></p>
+		 * 
+		 * <p class="attention"><b>Varovanie:</b> Kubická interpolácia nie je
+		 * v súčasnosti implementovaná. Táto metóda paušálne vracia hodnotu
+		 * {@link Double#NaN Double.NaN}.</p>
+		 * 
+		 * <!-- p><b>Príklad:</b></p>
+		 * 
+		 * <p>TODO</p>
+		 * 
+		 * <pre CLASS="example">
+			TODO
+			</pre>
+		 * 
+		 * <p><b>Výsledok:</b></p>
 		 * 
 		 * <p><image>kubickaInterpolacia.png<alt/>Body vypočítané s použitím
-		 * kubickej interpolácie.</image>Body vypočítané s pomocou kubickej
-		 * interpolácie zo štyroch označených<br />kľúčových bodov –
+		 * kubickej interpolácie.</image>Body vypočítané s použitím kubickej
+		 * interpolácie.</p -->
+		 * 
+		 * @param v0 prvá hodnota určujúca kubickú interpoláciu
+		 * @param v1 druhá hodnota určujúca kubickú interpoláciu
+		 * @param v2 tretia hodnota určujúca kubickú interpoláciu
+		 * @param v3 štvrtá hodnota určujúca kubickú interpoláciu
+		 * @param t parameter interpolácie – mal by ležať v rozmedzí hodnôt
+		 *     {@code num0.0} až {@code num1.0}
+		 * @return výsledok interpolácie
+		 * 
+		 * @see #lineárnaInterpolácia(double, double, double)
+		 * @see #kvadratickáInterpolácia(double, double, double, double)
+		 * @see #kvadratickáAproximácia(double, double, double, double)
+		 * @see #kubickáAproximácia(double, double, double, double, double)
+		 */
+		public final static double kubickáInterpolácia(
+			double v0, double v1, double v2, double v3, double t)
+		{
+			/*
+				TODO:
+				Interpolácia prechádza všetkými bodmi, aproximácia len prvým
+				a posledným. Nech sa snažím akokoľvek, nenachádzam dobrú
+				implementáciu (najmä kubickej) interpolácie a na vlastné
+				výpočty momentálne (júl 2020) nie je čas…
+			*/
+
+			/* https://stackoverflow.com/questions/20303172/proper-implementation-of-cubic-spline-interpolation
+				d1 = (v2 - v0) / 2.0;
+				d3 = (v3 - v1) / 2.0;
+				a0 = v1;
+				a1 = d1;
+				a2 = (3.0 * (v2 - v1)) - (2.0 * d1) - d3;
+				a3 = d1 + d3 + (2.0 * -(v2 - v1));
+
+				p = a0 + a1 * t + a2 * t * t + a3 * t * t * t;
+				// where t = ⟨0, 1⟩
+
+				// Sklamanie. Je to tiež aproximácia a ešte k tomu menej
+				// efektívna (výpočtovo aj poskytovanými výsledkami) než
+				// tá, ktorá je použitá v metóde kubickáAproximácia…
+
+				double d1 = v2 - v0;
+				double d2 = v2 - v1;
+				double d3 = (v3 - v1) / 2.0;
+				// a0 = v1;
+				double a1 = d1 / 2.0;
+				double a2 = 3.0 * d2 - d1 - d3;
+				double a3 = a1 - 2.0 * d2 + d3;
+
+				return v1 + (a1 + (a2 + a3 * t) * t) * t;
+			*/
+
+			return Double.NaN;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #kubickáInterpolácia(double, double, double, double, double) kubickáInterpolácia}.</p> */
+		public final static double kubickaInterpolacia(
+			double v0, double v1, double v2, double v3, double t)
+		{ return kubickáInterpolácia(v0, v1, v2, v3, t); }
+
+
+		/**
+		 * <p>Kvadratická aproximácia je počítaná z troch vstupných hodnôt
+		 * (a parametra). Ak túto metódu použijeme na dve série vstupných
+		 * hodnôt (dve súradnice), tak posúvaním parametra <em>t</em> získame
+		 * polohy bodov na kvadratickej (v tomto prípade bézierovej)
+		 * krivke.</p><!-- TODO dokončiť opis (bézierova krivka má určité
+		 * vlastnosti – overiť, aké?) a pridať lepší príklad s obrázkom -->
+		 * 
+		 * <p><b>Príklad:</b></p>
+		 * 
+		 * <p>Nasledujúce dva riadky kódu vypočítajú súradnice bodu ([x, y])
+		 * na kvadratickej (bézierovej) krivke v mieste, kde je hodnota
+		 * parametra aproximácie (t) rovná 0,5:</p>
+		 * 
+		 * <pre CLASS="example">
+			x = {@link Svet Svet}.{@code currkvadratickáAproximácia}(x1, x2, x3, {@code num0.5});
+			y = {@link Svet Svet}.{@code currkvadratickáAproximácia}(y1, y2, y3, {@code num0.5});
+			</pre>
+		 * 
+		 * <p><b>Ukážky možných výsledkov:</b></p>
+		 * 
+		 * <p>Ukážky znázorňujú krivky kreslené medzi bodmi A a B (so
+		 * súradnicami x1, y1 a x3, y3), ktorých tvar upravuje poloha bodu C
+		 * (so súradnicami x2, y2). Poloha bodu V (so súradnicami x, y)
+		 * v mieste hodnoty parametra aproximácie <em>t</em> = 0,5, je
+		 * znázornená zelenou farbou. Pod každým obrázkom je výpis všetkých
+		 * hodnôt vzťahujúcich sa k obrázku.</p>
+		 * 
+		 * <table class="centered">
+		 * 
+		 * <tr><td><image>kvadratickaAproximaciaA.png<alt/></image></td>
+		 * <td>    </td>
+		 * <td><image>kvadratickaAproximaciaB.png<alt/></image></td></tr>
+		 * <tr><td><p>Hodnoty súradníc kľúčových bodov:</p>
+		 * <p>x1 = −100,0; y1 = −100,0<br />x2 = 0,0; y2 = 100,0<br />
+		 * x3 = 100,0; y3 = 0,0</p>
+		 * <p>Vypočítané hodnoty súradníc v mieste parametra <em>t</em> = 0,5:</p>
+		 * <p>x = 0,0; y = 25,0<br /> </p></td>
+		 * <td>    </td>
+		 * <td><p>Hodnoty súradníc kľúčových bodov:</p>
+		 * <p>x1 = −100,0; y1 = −100,0<br />x2 = 0,0; y2 = 100,0<br />
+		 * x3 = 100,0; y3 = 100,0</p>
+		 * <p>Vypočítané hodnoty súradníc v mieste parametra <em>t</em> = 0,5:</p>
+		 * <p>x = 0,0; y = 50,0<br /> </p></td></tr>
+		 * 
+		 * <tr><td><image>kvadratickaAproximaciaC.png<alt/></image></td>
+		 * <td>    </td>
+		 * <td><image>kvadratickaAproximaciaD.png<alt/></image></td></tr>
+		 * <tr><td><p>Hodnoty súradníc kľúčových bodov:</p>
+		 * <p>x1 = −100,0; y1 = −100,0<br />x2 = 100,0; y2 = 0,0<br />
+		 * x3 = 100,0; y3 = 100,0</p>
+		 * <p>Vypočítané hodnoty súradníc v mieste parametra <em>t</em> = 0,5:</p>
+		 * <p>x = 50,0; y = 0,0<br /> </p></td>
+		 * <td>    </td>
+		 * <td><p>Hodnoty súradníc kľúčových bodov:</p>
+		 * <p>x1 = −100,0; y1 = 100,0<br />x2 = 0,0; y2 = −100,0<br />
+		 * x3 = 100,0; y3 = 100,0</p>
+		 * <p>Vypočítané hodnoty súradníc v mieste parametra <em>t</em> = 0,5:</p>
+		 * <p>x = 0,0; y = 0,0<br /> </p></td></tr>
+		 * 
+		 * </table>
+		 * 
+		 * @param a prvá hodnota určujúca kvadratickú aproximáciu
+		 * @param b druhá hodnota určujúca kvadratickú aproximáciu
+		 * @param c tretia hodnota určujúca kvadratickú aproximáciu
+		 * @param t parameter aproximácie – mal by ležať v rozmedzí hodnôt
+		 *     {@code num0.0} až {@code num1.0}
+		 * @return výsledok aproximácie
+		 * 
+		 * @see #lineárnaInterpolácia(double, double, double)
+		 * @see #kvadratickáInterpolácia(double, double, double, double)
+		 * @see #kubickáInterpolácia(double, double, double, double, double)
+		 * @see #kubickáAproximácia(double, double, double, double, double)
+		 */
+		public final static double kvadratickáAproximácia(
+			double a, double b, double c, double t)
+		{
+			double ti = 1.0 - t; // optimalizácia
+			return (ti * a + 2.0 * t * b) * ti + t * t * c;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #kvadratickáAproximácia(double, double, double, double) kvadratickáAproximácia}.</p> */
+		public final static double kvadratickaAproximacia(
+			double a, double b, double c, double t)
+		{ return kvadratickáAproximácia(a, b, c, t); }
+
+		/**
+		 * <p>Kubická aproximácia je počítaná zo štyroch vstupných hodnôt
+		 * (a parametra). Význam parametrov sa lepšie vysvetľuje na príklade
+		 * kreslenia krivky s použitím tejto aproximácie. Aproximujme dvojice
+		 * súradníc štyroch kľúčových bodov ({@code [x0, y0]} až {@code [x3,
+		 * y3]}).
+		 * V takom prípade prvá a posledná dvojica súradníc určujú „smer“
+		 * kubickej krivky a prostredné dve určujú počiatočný a koncový
+		 * bod krivky. Výsledkom takejto aproximácie sú body ležiace na
+		 * kubickej krivke.</p>
+		 * 
+		 * <p><image>kubickaAproximacia.png<alt/>Body vypočítané s použitím
+		 * kubickej aproximácie.</image>Body vypočítané s použitím kubickej
+		 * aproximácie zo štyroch označených<br />kľúčových bodov –
 		 * vypočítané body ležia na kubickej krivke.</p>
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
 		 * <p>Nasledujúci príklad ukazuje interaktívny test kubickej
-		 * interpolácie (po preložení a spustení príkladu je klikaním
+		 * aproximácie (po preložení a spustení príkladu je klikaním
 		 * a posúvaním bodov možné ovplyvňovať kresbu).</p>
 		 * 
 		 * <pre CLASS="example">
 			{@code kwdimport} knižnica.*;
 
-			{@code kwdpublic} {@code typeclass} TestInterpolácie {@code kwdextends} {@link GRobot GRobot}
+			{@code kwdpublic} {@code typeclass} TestAproximácie {@code kwdextends} {@link GRobot GRobot}
 			{
 				{@code comm// Aktívny bod (predvolene je to prvý bod – s indexom nula).}
 				{@code kwdprivate} {@code typeint} bod = {@code num0};
@@ -23124,7 +23279,7 @@ public final class Svet extends JFrame
 				}
 
 				{@code comm// Konštruktor.}
-				{@code kwdprivate} TestInterpolácie()
+				{@code kwdprivate} TestAproximácie()
 				{
 					{@link GRobot#zdvihniPero() zdvihniPero}();
 					{@link GRobot#skry() skry}();
@@ -23141,9 +23296,9 @@ public final class Svet extends JFrame
 
 					{@code kwdfor} ({@code typedouble} t = {@code num0.0}; t &lt;= {@code num1.0}; t += {@code num0.1})
 					{
-						{@code typedouble} x = {@link Svet Svet}.{@code currkubickáInterpolácia}(body[{@code num0}].{@link Bod#polohaX() polohaX}(),
+						{@code typedouble} x = {@link Svet Svet}.{@code currkubickáAproximácia}(body[{@code num0}].{@link Bod#polohaX() polohaX}(),
 							body[{@code num1}].{@link Bod#polohaX() polohaX}(), body[{@code num2}].{@link Bod#polohaX() polohaX}(), body[{@code num3}].{@link Bod#polohaX() polohaX}(), t);
-						{@code typedouble} y = {@link Svet Svet}.{@code currkubickáInterpolácia}(body[{@code num0}].{@link Bod#polohaY() polohaY}(),
+						{@code typedouble} y = {@link Svet Svet}.{@code currkubickáAproximácia}(body[{@code num0}].{@link Bod#polohaY() polohaY}(),
 							body[{@code num1}].{@link Bod#polohaY() polohaY}(), body[{@code num2}].{@link Bod#polohaY() polohaY}(), body[{@code num3}].{@link Bod#polohaY() polohaY}(), t);
 
 						{@link GRobot#skočNa(double, double) skočNa}(x, y);
@@ -23187,23 +23342,25 @@ public final class Svet extends JFrame
 				{@code comm// Hlavná metóda.}
 				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 				{
-					{@code kwdnew} TestInterpolácie();
+					{@code kwdnew} TestAproximácie();
 				}
 			}
 			</pre>
 		 * 
-		 * @param v0 prvá hodnota určujúca kubickú interpoláciu
-		 * @param v1 druhá hodnota určujúca kubickú interpoláciu
-		 * @param v2 tretia hodnota určujúca kubickú interpoláciu
-		 * @param v3 štvrtá hodnota určujúca kubickú interpoláciu
-		 * @param t parameter interpolácie – mal by ležať v rozmedzí hodnôt
+		 * @param v0 prvá hodnota určujúca kubickú aproximáciu
+		 * @param v1 druhá hodnota určujúca kubickú aproximáciu
+		 * @param v2 tretia hodnota určujúca kubickú aproximáciu
+		 * @param v3 štvrtá hodnota určujúca kubickú aproximáciu
+		 * @param t parameter aproximácie – mal by ležať v rozmedzí hodnôt
 		 *     {@code num0.0} až {@code num1.0}
-		 * @return výsledok interpolácie
+		 * @return výsledok aproximácie
 		 * 
 		 * @see #lineárnaInterpolácia(double, double, double)
 		 * @see #kvadratickáInterpolácia(double, double, double, double)
+		 * @see #kubickáInterpolácia(double, double, double, double, double)
+		 * @see #kvadratickáAproximácia(double, double, double, double)
 		 */
-		public final static double kubickáInterpolácia(
+		public final static double kubickáAproximácia(
 			double v0, double v1, double v2, double v3, double t)
 		{
 			double o = v0 - v1;
@@ -23214,10 +23371,10 @@ public final class Svet extends JFrame
 			return ((p * t + q) * t + r) * t + v1;
 		}
 
-		/** <p><a class="alias"></a> Alias pre {@link #kubickáInterpolácia(double, double, double, double, double) kubickáInterpolácia}.</p> */
-		public final static double kubickaInterpolacia(
+		/** <p><a class="alias"></a> Alias pre {@link #kubickáAproximácia(double, double, double, double, double) kubickáAproximácia}.</p> */
+		public final static double kubickaAproximacia(
 			double v0, double v1, double v2, double v3, double t)
-		{ return kubickáInterpolácia(v0, v1, v2, v3, t); }
+		{ return kubickáAproximácia(v0, v1, v2, v3, t); }
 
 
 		/**
@@ -24778,7 +24935,9 @@ public final class Svet extends JFrame
 		 * prienik, tak je vzdialenosť záporná. (Ak sa dotýkajú v jedinom
 		 * bode, tak je nulová.)</p>
 		 * 
-		 * <!-- TODO pridať príklad použitia a/alebo obrázok. -->
+		 * <p><image>vzdialenost-kruznic.png<alt/></image>Grafické
+		 * znázornenie vzdialenosti medzi kružnicami (červenou), ktorú
+		 * počíta táto metóda.</p>
 		 * 
 		 * <p>Parametre metódy určujú: S1[x1, y1] – stred prvej kružnice;
 		 * r1 – polomer prvej kružnice; S2[x2, y2] – stred druhej kružnice;
@@ -24985,33 +25144,51 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Vypočíta vzdialenosť medzi určenou priamkou a kružnicou. Ak sa
-		 * priamka a kružnica pretínajú, tak vrátená vzdialenosť je menšia od
-		 * nuly, pričom absolútna hodnota tejto vzdialenosti je rovná
-		 * vzdialenosti dvoch bodov určených takto: Body ležia na kolmici (K)
-		 * so zadanou priamkou (P), ktorá tiež prechádza stredom zadanej
-		 * kružnice (C). Jeden bod je priesečníkom oboch priamok K a P. Druhý
-		 * bod je tým priesečníkom kolmice K a kružnice C, ktorý leží bližšie
-		 * k prvému priesečníku.<!-- TODO: Obrázok‼ (Bez neho to je hrůza…) -->
-		 * (Ak sa kružnica a priamka dotýkajú v jedinom bode, tak je
-		 * vzdialenosť nulová.)</p>
+		 * priamka a kružnica pretínajú, tak vrátená vzdialenosť (v) je menšia
+		 * od nuly (dôvody tohto správania sú rovnaké ako pri metóde {@link 
+		 * #vzdialenosťÚsečkyOdKružnice(double, double, double, double,
+		 * double, double, double) vzdialenosťÚsečkyOdKružnice} – pozri jej
+		 * opis), pričom absolútna hodnota tejto vzdialenosti je rovná
+		 * vzdialenosti dvoch bodov určených takto:</p>
 		 * 
-		 * <p class="remark"><b>Poznámka:</b> Zaujímavosťou je, že relatívne
-		 * komplikovaný opis uvedený vyššie (zahŕňajúci priesečníky, kolmicu,
-		 * priamku a kružnicu) vznikol až po analytickom riešení problému ako
-		 * vysvetlenie spôsobu riešenia, ktoré bolo zvolené tak, aby bolo čo
-		 * najmenej výpočtovo náročné. V skutočnosti je veľmi priamočiare.
-		 * Je to rozdiel:<br />
+		 * <p>Ide o body ležiace na kolmici (K) so zadanou priamkou (P),
+		 * ktorá zároveň prechádza stredom zadanej kružnice (C). Prvý bod
+		 * (B<sub>1</sub>) je priesečníkom priamok K a P. Druhý bod
+		 * (B<sub>2</sub>) je taký priesečník kolmice K a kružnice C, ktorý
+		 * leží bližšie k prvému priesečníku (porovnaj s priesečníkom
+		 * B<sub>2</sub>′):</p>
+		 * 
+		 * <p class="image"><img src="resources/priamka-pretinajuca-kruznicu.svg"
+		 * alt="Určovanie vzdialenosti priamky od kružnice."
+		 * onerror="this.onerror=null; this.src='resources/priamka-pretinajuca-kruznicu.png';"
+		 * /><br />Grafické znázornenie vyššie opisovanej situácie – určovania
+		 * vzdialenosti priamky od kružnice, ktoré sa pretínajú.</p>
+		 * 
+		 * <p>Ak sa kružnica a priamka dotýkajú v jedinom bode, tak je
+		 * vzdialenosť nulová.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Cieľom relatívne komplikovaného
+		 * opisu vyššie (zahŕňajúceho priesečníky, kolmicu, priamku
+		 * a kružnicu) je presné vysvetlenie analytického riešenia problému,
+		 * ktoré bolo zvolené tak, aby bolo čo najmenej výpočtovo náročné.
+		 * V skutočnosti je veľmi priamočiare. Je to skrátka rozdiel dvoch
+		 * hodnôt, konkrétne:<br />
 		 * – vzdialenosti stredu kružnice od priamky<br />
 		 * – a polomeru kružnice.<br />
-		 * (Algoritmus výpočtu vzdialenosti bodu od priamky nie je
+		 * (Pričom algoritmus výpočtu vzdialenosti bodu od priamky nie je
 		 * príliš výpočtovo náročný a aj v triedach Javy sa nachádza
 		 * {@linkplain Line2D#ptLineDist(double, double, double, double,
 		 * double, double) metóda}, ktorá tento algoritmus implementuje.)</p>
 		 * 
-		 * <!-- TODO pridať príklad použitia a/alebo obrázok. -->
+		 * <p><image>vzdialenost-priamky-od-kruznice.png<alt/></image>Grafické
+		 * znázornenie vzdialenosti úsečky od kružnice (červenou), ktorú
+		 * počíta táto metóda.<br />(Šedou farbou je znázornená vzdialenosť,
+		 * ktorú by v tomto prípade vypočítala metóda {@link 
+		 * #vzdialenosťÚsečkyOdKružnice(double, double, double, double,
+		 * double, double, double) vzdialenosťÚsečkyOdKružnice}.)</p>
 		 * 
-		 * <p>[x1, y1] – [x2, y2] – určujúce body priamky; [x3, y3] – stred;
-		 * r – polomer</p>
+		 * <p>S1[x1, y1] – S2[x2, y2] – určujúce body priamky; S3[x3, y3] –
+		 * stred kružnice; r – polomer kružnice</p>
 		 * 
 		 * @param x1 x-ová súradnica určujúceho bodu A priamky
 		 * @param y1 y-ová súradnica určujúceho bodu A priamky
@@ -25093,13 +25270,26 @@ public final class Svet extends JFrame
 		 * <p>Vypočíta vzdialenosť medzi určenou úsečkou a kružnicou. Ak sa
 		 * úsečka a kružnica pretínajú, tak vrátená vzdialenosť je menšia od
 		 * nuly a jej absolútna hodnota je vzdialenosťou najbližšieho bodu
-		 * na úsečke od stredu kružnice. (Ak sa kružnica a úsečka dotýkajú
-		 * v jedinom bode, tak je vzdialenosť nulová.)</p>
+		 * na úsečke od stredu kružnice. Technicky je v takom prípade
+		 * vzdialenosť nulová, ale je užitočné mať možnosť rozlíšiť tento
+		 * prípad. Najmä pri programovaní rôznych situácií. Preto vracia táto
+		 * metóda aj záporné hodnoty, ktoré sa dajú v prípade potreby
+		 * odfiltrovať vhodnou podmienkou.</p>
 		 * 
-		 * <!-- TODO pridať príklad použitia a/alebo obrázok. -->
+		 * <p>Ak sa kružnica a úsečka dotýkajú v jedinom bode, tak je
+		 * vzdialenosť nulová. Ak je niektorý krajný bod úsečky (S1 alebo S2)
+		 * najbližším bodom úsečky k stredu kružnice, tak je vypočítaná
+		 * vzdialenosť tohto bodu od kružnice.</p>
 		 * 
-		 * <p>[x1, y1] – [x2, y2] – krajné body úsečky; [x3, y3] – stred;
-		 * r – polomer</p>
+		 * <p><image>vzdialenost-usecky-od-kruznice.png<alt/></image>Grafické
+		 * znázornenie vzdialenosti úsečky od kružnice (červenou), ktorú
+		 * počíta táto metóda.<br />(Pozri aj obrázok v opise metódy
+		 * {@link #vzdialenosťPriamkyOdKružnice(double, double, double,
+		 * double, double, double, double) vzdialenosťPriamkyOdKružnice}.)</p>
+		 * 
+		 * <p>S1[x1, y1] – S2[x2, y2] – krajné body úsečky; S3[x3, y3] – stred
+		 * kružnice; r – polomer kružnice</p>
+		 * 
 		 * @param x1 x-ová súradnica určujúceho bodu A úsečky
 		 * @param y1 y-ová súradnica určujúceho bodu A úsečky
 		 * @param x2 x-ová súradnica určujúceho bodu B úsečky

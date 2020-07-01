@@ -45,7 +45,7 @@ import java.util.zip.InflaterInputStream;
 import java.util.zip.ZipException;
 
 /**
- * Replacement for <code>java.util.ZipFile</code>.
+ * Replacement for <code>java.util.zip.ZipFile</code>.
  * 
  * <p>This class adds support for file name encodings other than UTF-8
  * (which is required to work on ZIP files created by native zip tools
@@ -56,7 +56,7 @@ import java.util.zip.ZipException;
  * 
  * <p>It doesn’t extend <code>java.util.zip.ZipFile</code> as it would
  * have to reimplement all methods anyway. Like
- * <code>java.util.ZipFile</code>, it uses RandomAccessFile under the
+ * <code>java.util.zip.ZipFile</code>, it uses RandomAccessFile under the
  * covers and supports compressed and uncompressed entries. As of
  * Apache Ant 1.9.0 it also transparently supports Zip64
  * extensions and thus individual entries and archives larger than 4
@@ -66,7 +66,7 @@ import java.util.zip.ZipException;
  * <code>java.util.zip.ZipFile</code>, with a couple of exceptions:</p>
  * 
  * <ul>
- * <li>There is no getName method.</li>
+ * <!-- li>There is no getName method.</li -->
  * <li>entries has been renamed to getEntries.</li>
  * <li>getEntries and getEntry return
  * <code>org.apache.tools.zip.ZipEntry</code> instances.</li>
@@ -90,7 +90,7 @@ public class ZipFile implements Closeable {
 	private final List<ZipEntry> entries = new LinkedList<ZipEntry>();
 
 	/**
-	 * Maps String to list of ZipEntrys, name -> actual entries.
+	 * Maps String to list of ZipEntrys, name –> actual entries.
 	 */
 	private final Map<String, LinkedList<ZipEntry>> nameMap =
 		new HashMap<String, LinkedList<ZipEntry>>(HASH_SIZE);
@@ -310,7 +310,7 @@ public class ZipFile implements Closeable {
 	}
 
 	/**
-	 * Returns a named entry - or {@code null} if no entry by
+	 * Returns a named entry – or {@code null} if no entry by
 	 * that name exists.
 	 * 
 	 * <p>If multiple entries with the same name exist the first entry
@@ -318,7 +318,7 @@ public class ZipFile implements Closeable {
 	 * returned.</p>
 	 * 
 	 * @param name name of the entry.
-	 * @return the ZipEntry corresponding to the given name - or
+	 * @return the ZipEntry corresponding to the given name – or
 	 * {@code null} if not present.
 	 */
 	public ZipEntry getEntry(final String name) {
@@ -614,7 +614,7 @@ public class ZipFile implements Closeable {
 	 * <p>Ensures the Zip64 extra either knows both compressed and
 	 * uncompressed size or neither of both as the internal logic in
 	 * ExtraFieldUtils forces the field to create local header data
-	 * even if they are never used - and here a field with only one
+	 * even if they are never used – and here a field with only one
 	 * size would be invalid.</p>
 	 */
 	private void setSizesAndOffsetFromZip64Extra(
@@ -656,8 +656,8 @@ public class ZipFile implements Closeable {
 	}
 
 	/**
-	 * Length of the “End of central directory record” - which is
-	 * supposed to be the last structure of the archive - without file
+	 * Length of the “End of central directory record” – which is
+	 * supposed to be the last structure of the archive – without file
 	 * comment.
 	 */
 	private static final int MIN_EOCD_SIZE = // 22
@@ -701,7 +701,7 @@ public class ZipFile implements Closeable {
 		/* size of the central directory   */ + ZipConstants.WORD; // 4
 
 	/**
-	 * Length of the “Zip64 end of central directory locator” - which
+	 * Length of the “Zip64 end of central directory locator” – which
 	 * should be right in front of the “end of central directory
 	 * record” if one is present at all.
 	 */
@@ -1074,7 +1074,7 @@ public class ZipFile implements Closeable {
 		}
 
 		/**
-		 * Inflater needs an extra dummy byte for nowrap - see
+		 * Inflater needs an extra dummy byte for nowrap – see
 		 * Inflater’s javadocs.
 		 */
 		void addDummy() {
@@ -1135,7 +1135,7 @@ public class ZipFile implements Closeable {
 		@Override
 		public int hashCode() {
 			return 3 * super.hashCode()
-				+ (int) (offsetEntry.headerOffset % Integer.MAX_VALUE);
+				+ (int)(offsetEntry.headerOffset % Integer.MAX_VALUE);
 		}
 
 		@Override

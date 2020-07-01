@@ -153,9 +153,20 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
  * {@link Konštanty#VYKONAŤ_PRÍKAZ VYKONAŤ_PRÍKAZ},
  * {@link Konštanty#VYPÍSAŤ_PREMENNÉ VYPÍSAŤ_PREMENNÉ} a podobne).</p>
  * 
+ * <p class="remark"><b>Poznámka:</b> Krátky úryvok kódu ukazujúci
+ * najjednoduchší spôsob vykonania skriptu uloženého v súbore je v opise
+ * metódy {@link Svet#vykonajSkript(String, boolean) vykonajSkript(skript,
+ * zoSúboru)}. Komplexnejší príklad spúšťania je nižšie v rámci príkladu
+ * ladenia skriptov…</p>
+ * 
  * <p> </p>
  * 
  * <p><b>Vybrané pravidlá vykonávania</b></p>
+ * 
+ * <p class="tip"><b>Informácia:</b> Ďalšie podrobnosti súvisiace
+ * s témou vykonávania príkazov interaktívneho režimu a skriptov
+ * sú v opise metódy {@link Svet#interaktívnyRežim(boolean)
+ * Svet.interaktívnyRežim}.</p>
  * 
  * <p>Vykonávanie skriptu úzko súvisí s interaktívnou inštanciou a tým
  * aj s {@linkplain Svet#interaktívnyRežim(boolean) interaktívnym režimom.}
@@ -655,7 +666,7 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
 								{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Vykonávanie bolo prerušené."});
 								{@link Svet Svet}.{@link Svet#predvolenáFarbaTextu() predvolenáFarbaTextu}();
 								{@code comm// Ďalšie podrobnosti by sme mohli vypísať}
-								{@code comm// napríklad pomocou nasledujúceho úryvku kódu:}
+								{@code comm// napríklad s pomocou nasledujúceho úryvku kódu:}
 								{@code comm//    "na riadku", riadok, ":", GRobot.riadok,}
 								{@code comm//    príkaz}
 							}
@@ -681,7 +692,7 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
 							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(príkaz);
 							{@link Svet Svet}.{@link Svet#predvolenáFarbaTextu() predvolenáFarbaTextu}();
 								{@code comm// Ďalšie podrobnosti by sme mohli vypísať}
-								{@code comm// napríklad pomocou nasledujúcich úryvkov kódu:}
+								{@code comm// napríklad s pomocou nasledujúcich úryvkov kódu:}
 								{@code comm//    "Číslo chyby", Svet.kódPoslednejChyby()}
 								{@code comm//    "Riadok chyby ", riadok}
 							{@code kwdreturn} {@code valfalse};
@@ -1062,6 +1073,25 @@ public abstract class Skript
 			// —return new Value(Value.TypeOrError.UNKNOWN_VALUE);—
 			return customFunction(varID, null);
 		}
+
+		/* TODO
+		
+		Implementovať
+
+			Number * String – zopakovanie reťazca
+			String * Number – zopakovanie reťazca
+			String - String – vyňatie (vymazanie) reťazca
+
+		Zvážiť:
+			String / Number – rozdelenie na zoznam
+			String * String – skombinovanie reťazcov po znakoch
+			String / String – rozdelenie na časti (zoznam) podľa „menovateľa“
+			String % String – ako „podiel,“ ale zostane „zvyšok“ – čiže
+				zoznam obsahujúci nula, jeden až viacero prvkov „menovateľa,“
+				podľa počtu ich výskytu v pôvodnom reťazci
+
+			…
+		TODO */
 	}
 	private final static Výraz výraz = new Výraz();
 
@@ -2489,43 +2519,30 @@ public abstract class Skript
 				if (výsledok instanceof Color)
 				{
 					// TODO sčítanie/odčítanie farieb
-					zapíšPremennú(
-						výsledokDoPremennej, (Color)výsledok);
-					vypíšPremennú(-1, výsledokDoPremennej,
-						FAREBNÁ_PREMENNÁ);
+					zapíšPremennú(výsledokDoPremennej, (Color)výsledok);
+					vypíšPremennú(-1, výsledokDoPremennej, FAREBNÁ_PREMENNÁ);
 				}
 				else if (výsledok instanceof Poloha)
 				{
 					// TODO sčítanie/odčítanie polôh (prípadné ďalšie operácie)
-					zapíšPremennú(
-						výsledokDoPremennej, (Poloha)výsledok);
-					vypíšPremennú(-1, výsledokDoPremennej,
-						POLOHOVÁ_PREMENNÁ);
+					zapíšPremennú(výsledokDoPremennej, (Poloha)výsledok);
+					vypíšPremennú(-1, výsledokDoPremennej, POLOHOVÁ_PREMENNÁ);
 				}
 				else if (výsledok instanceof String)
 				{
-					if (null != operácia)
-						výsledok = (String)čítajPremennú(
-							výsledokDoPremennej, String.class) +
-								výsledok;
+					if (null != operácia) výsledok = (String)čítajPremennú(
+						výsledokDoPremennej, String.class) + výsledok;
 
-					zapíšPremennú(
-						výsledokDoPremennej, (String)výsledok);
-					vypíšPremennú(-1, výsledokDoPremennej,
-						REŤAZCOVÁ_PREMENNÁ);
+					zapíšPremennú(výsledokDoPremennej, (String)výsledok);
+					vypíšPremennú(-1, výsledokDoPremennej, REŤAZCOVÁ_PREMENNÁ);
 				}
-				else if (premennáJestvuje(
-					výsledokDoPremennej, String.class))
+				else if (premennáJestvuje(výsledokDoPremennej, String.class))
 				{
-					if (null != operácia)
-						výsledok = (String)čítajPremennú(
-							výsledokDoPremennej, String.class) +
-								výsledok;
+					if (null != operácia) výsledok = (String)čítajPremennú(
+						výsledokDoPremennej, String.class) + výsledok;
 
-					zapíšPremennú(
-						výsledokDoPremennej, výsledok.toString());
-					vypíšPremennú(-1, výsledokDoPremennej,
-						REŤAZCOVÁ_PREMENNÁ);
+					zapíšPremennú(výsledokDoPremennej, výsledok.toString());
+					vypíšPremennú(-1, výsledokDoPremennej, REŤAZCOVÁ_PREMENNÁ);
 				}
 				else
 				{
@@ -2541,13 +2558,11 @@ public abstract class Skript
 						}
 						else if (výsledok instanceof Integer)
 						{
-							argument1 =
-								((Integer)výsledok).doubleValue();
+							argument1 = ((Integer)výsledok).doubleValue();
 						}
 						else if (výsledok instanceof Boolean)
 						{
-							argument1 = ((Boolean)výsledok) ?
-								1.0 : 0.0;
+							argument1 = ((Boolean)výsledok) ? 1.0 : 0.0;
 						}
 						else
 						{
@@ -2558,18 +2573,23 @@ public abstract class Skript
 						{
 							hodnotaPremennej = (Double)čítajPremennú(
 								výsledokDoPremennej, Double.class);
+
 							if (null == hodnotaPremennej)
 								hodnotaPremennej = 0.0;
-							try {
+
+							try
+							{
 								výsledok = operácia.invoke(
-									null, hodnotaPremennej,
-									argument1);
-							} catch (Exception e) {
+									null, hodnotaPremennej, argument1);
+							}
+							catch (Exception e)
+							{
 								// chybná operácia je ignorovaná,
 								// ale ten prípad by nemal nastať,
 								// lebo operácie sú definované
 								// v očakávanom tvare (binárnej op.)
 							}
+
 							operácia = null;
 							continue;
 						}
@@ -2577,10 +2597,8 @@ public abstract class Skript
 						break;
 					}
 
-					zapíšPremennú(
-						výsledokDoPremennej, argument1);
-					vypíšPremennú(-1, výsledokDoPremennej,
-						ČÍSELNÁ_PREMENNÁ);
+					zapíšPremennú(výsledokDoPremennej, argument1);
+					vypíšPremennú(-1, výsledokDoPremennej, ČÍSELNÁ_PREMENNÁ);
 				}
 			}
 		}
@@ -5561,7 +5579,7 @@ public abstract class Skript
 	 * dokumentácii, ale syntax s mriežkou je bližšie spomenutá napríklad
 	 * v opise metódy {@link Svet#interaktívnyRežim(boolean)
 	 * Svet.interaktívnyRežim}; chybové kódy vyhodnocovača sú uvedené v <a
-	 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java#L278"
+	 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java#L284"
 	 * target="_blank">jeho zdrojovom kóde</a>).<!-- TODO možno ešte lepšie
 	 * zdokumentovať, ale na iných miestach --></p>
 	 * 
@@ -5713,7 +5731,7 @@ public abstract class Skript
 	 * </table>
 	 * 
 	 * <p>Texty chýb vyhodnocovača (matematických) výrazov sú uvedené v <a
-	 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java#L278"
+	 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java#L284"
 	 * target="_blank">jeho zdrojovom kóde</a>.</p>
 	 * 
 	 * @return text ku kódu chyby

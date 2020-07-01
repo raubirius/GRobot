@@ -6795,7 +6795,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 					{@link GRobot#kresliTvary() kresliTvary}();
 
 					{@code comm// Nasledujúci blok kreslí tieňovanie lopty:}
-					{@code comm// (Poznámka: Toto by sa dalo riešiť aj }{@link GRobot#náter(Paint) náterom}{{@code  comm.)}
+					{@code comm// (Poznámka: Toto by sa dalo riešiť aj }{@link GRobot#náter(Paint) náterom}{@code comm.)}
 					{@code typedouble} menej = {@code num0};
 					{@link GRobot#skoč(double, double) skoč}(-{@code num12} + sploštenieX, {@code num12} + sploštenieY);
 					{@code kwdfor} ({@link Farba Farba} farba : farby)
