@@ -1715,4 +1715,30 @@ public class Bod extends Point2D implements Poloha
 
 	/** <p><a class="alias"></a> Alias pre {@link #vyberPolohu(String, Poloha) vyberPolohu}.</p> */
 	public static Bod dialogVolbaPolohy(String titulok, Poloha počiatočnáPoloha) { return PanelPolohy.dialóg(titulok, počiatočnáPoloha); }
+
+
+	/**
+	 * <p>Vytvorí nový bod so súradnicami tvorenými súčtom súradníc zadaných
+	 * bodov.</p>
+	 * 
+	 * @param bod1 prvý bod súčtu
+	 * @param bod2 druhý bod súčtu
+	 * @return výsledný bod súčtu
+	 */
+	public static Bod súčet(Bod bod1, Bod bod2)
+	{ return new Bod(bod1.x + bod2.x, bod1.y + bod2.y); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #súčet(Bod, Bod) súčet}.</p> */
+	public static Bod sucet(Bod bod1, Bod bod2) { return súčet(bod1, bod2); }
+
+	/**
+	 * <p>Vytvorí nový bod so súradnicami tvorenými rozdielom súradníc
+	 * zadaných bodov.</p>
+	 * 
+	 * @param bod1 prvý bod rozdielu
+	 * @param bod2 druhý bod rozdielu
+	 * @return výsledný bod rozdielu
+	 */
+	public static Bod rozdiel(Bod bod1, Bod bod2)
+	{ return new Bod(bod1.x - bod2.x, bod1.y - bod2.y); }
 }

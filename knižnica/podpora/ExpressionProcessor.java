@@ -935,7 +935,7 @@ public class ExpressionProcessor implements ValueProvider
 		public Literal[] getIndexes()
 		{
 			if (TypeOrError.LIST_TYPE == typeOrError)
-				return (Literal[]) list.keySet().toArray();
+				return (Literal[])list.keySet().toArray();
 			return null;
 		}
 

@@ -613,9 +613,9 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * <p>Prilepí poznámkový blok k ľavému okraju. Táto akcia zruší
 	 * prípadné predchádzajúce prilepenie k pravému okraju. Každé
 	 * prilepenie upravuje súradnicový systém poznámkového bloku
-	 * presunutím čo najbližšie k prilepovanému okraju. To znamená
-	 * napríklad, že keď po prilepení k ľavému okraju posunieme
-	 * poznámkový blok na súradnice [10, 0], posunieme ho v skutočnosti
+	 * presunutím čo najbližšie k prilepovanému okraju. To znamená,
+	 * že keď napríklad po prilepení k ľavému okraju posunieme
+	 * poznámkový blok na súradnice [10, 0], tak ho v skutočnosti posunieme
 	 * na pozíciu desať bodov od ľavého okraja.</p>
 	 * 
 	 * @see #prilepVpravo()
@@ -637,9 +637,9 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * <p>Prilepí poznámkový blok k pravému okraju. Táto akcia zruší
 	 * prípadné predchádzajúce prilepenie k ľavému okraju. Každé
 	 * prilepenie upravuje súradnicový systém poznámkového bloku
-	 * presunutím čo najbližšie k prilepovanému okraju. To znamená
-	 * napríklad, že keď po prilepení k pravému okraju posunieme
-	 * poznámkový blok na súradnice [-10, 0], posunieme ho v skutočnosti
+	 * presunutím čo najbližšie k prilepovanému okraju. To znamená,
+	 * že keď napríklad po prilepení k pravému okraju posunieme
+	 * poznámkový blok na súradnice [-10, 0], tak ho v skutočnosti posunieme
 	 * na pozíciu desať bodov od pravého okraja.</p>
 	 * 
 	 * @see #prilepVľavo()
@@ -658,9 +658,9 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * <p>Prilepí poznámkový blok k hornému okraju. Táto akcia zruší
 	 * prípadné predchádzajúce prilepenie k dolnému okraju. Každé
 	 * prilepenie upravuje súradnicový systém poznámkového bloku
-	 * presunutím čo najbližšie k prilepovanému okraju. To znamená
-	 * napríklad, že keď po prilepení k hornému okraju posunieme
-	 * poznámkový blok na súradnice [0, -10], posunieme ho v skutočnosti
+	 * presunutím čo najbližšie k prilepovanému okraju. To znamená,
+	 * že keď napríklad po prilepení k hornému okraju posunieme
+	 * poznámkový blok na súradnice [0, -10], tak ho v skutočnosti posunieme
 	 * na pozíciu desať bodov od horného okraja.</p>
 	 * 
 	 * @see #prilepVľavo()
@@ -679,9 +679,9 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * <p>Prilepí poznámkový blok k dolnému okraju. Táto akcia zruší
 	 * prípadné predchádzajúce prilepenie k hornému okraju. Každé
 	 * prilepenie upravuje súradnicový systém poznámkového bloku
-	 * presunutím čo najbližšie k prilepovanému okraju. To znamená
-	 * napríklad, že keď po prilepení k dolnému okraju posunieme
-	 * poznámkový blok na súradnice [0, 10], posunieme ho v skutočnosti
+	 * presunutím čo najbližšie k prilepovanému okraju. To znamená,
+	 * že keď napríklad po prilepení k dolnému okraju posunieme
+	 * poznámkový blok na súradnice [0, 10], tak ho v skutočnosti posunieme
 	 * na pozíciu desať bodov od dolného okraja.</p>
 	 * 
 	 * @see #prilepVľavo()

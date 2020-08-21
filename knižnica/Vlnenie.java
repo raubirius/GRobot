@@ -586,7 +586,7 @@ import knižnica.Poloha;
  * o problematike, najviac však <a
  * href="http://www.neilwallis.com/projects/java/water/index.php"
  * target="_blank"><small>Neilovi Wallisovi</small> a jeho článku
- * <em>„Simulate ripples on water“</em> z decembra 2004</a>.</p>
+ * <em>„Simulate ripples on water“</em> z decembra 2004.</a></p>
  * 
  * <p>Autor predstavuje algoritmus založený na dvojitom zásobníku pixelov,
  * používanom na vykonávanie výpočtov jednotlivých snímok simulácie vlnenia.
@@ -1661,7 +1661,7 @@ public class Vlnenie
 	 * s inými rozmermi, by neboli správne umiestnené.</p>
 	 * 
 	 * <p><b>V rámci programovacieho rámca GRobot</b> je posun inštancií
-	 * vlnenia <b>obrázkov</b> upravený <b>automaticky</b>. <small>(Iné
+	 * vlnenia <b>obrázkov</b> upravený <b>automaticky.</b> <small>(Iné
 	 * inštancie vlnenia používané v rámci programovacieho rámca nemusia mať
 	 * posun upravovaný. V podstate ide už len o plátna a samotnú grafickú
 	 * plochu sveta.)</small></p>

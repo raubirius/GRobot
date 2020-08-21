@@ -85,7 +85,7 @@ import javax.swing.SwingUtilities;
 // <!-- vnesená do generátora dokumentácie RoboDoc.                 -->
 
 /**
- * <p>Hlavná trieda definujúca všetky metódy grafického robota, ktoré reprezentujú jeho funkcionalitu a&nbsp;mnohé konštanty, ktoré sú pri práci s&nbsp;programovacím rámcom s&nbsp;výhodou využiteľné.</p><h2>Úvod</h2>
+ * <p>Ústredná trieda definujúca všetky metódy grafického robota (ktoré reprezentujú jeho funkcionalitu) a viaceré konštanty, ktoré sú pri práci s programovacím rámcom s výhodou využiteľné.</p><h2>Úvod</h2>
  * <!--
  * TODO:
  * 
@@ -113,21 +113,21 @@ import javax.swing.SwingUtilities;
  * Obsahuje úplný opis všetkých tried a metód vrátane príkladov použitia.
  * (Materiál môže byť priebežne aktualizovaný, preto odporúčame sledovať
  * tieto stránky.)<!-- Novšie verzie rámca budú publikované na <a
- * href="http://pdf.truni.sk/katedry/kmi/pracovnici?horvath"
+ * href="https://pdf.truni.sk/katedry/kmi/pracovnici?horvath"
  * target="_blank">stránkach autora</a> (buď samostatne, alebo v rámci <a
- * href="http://pdf.truni.sk/horvath/softver?generator"
+ * href="https://pdf.truni.sk/horvath/softver?generator"
  * target="_blank">generátora projektov</a> pre <a
- * href="https://www.bluej.org/" target="_blank">BlueJ</a>, ktorý spomíname
+ * href="https://www.bluej.org/" target="_blank">BlueJ,</a> ktorý spomíname
  * neskôr).--></p>
  * 
  * <p>Od 12. 3. 2019 je zdrojový kód programovacieho rámca GRobot umiestenný
- * na serveroch <a href="https://github.com/" target="_blank">GitHub</a>.
+ * na serveroch <a href="https://github.com/" target="_blank">GitHub.</a>
  * <a href="https://github.com/raubirius/GRobot" target="_blank">Jeho
  * projekt</a> je v nepravidelných intervaloch aktualizovaný. Môže nastať
  * prípad, kedy sa aktuálna verzia tejto dokumentácie presunie na niektorú
  * pridruženú službu repozitára. V tom prípade by sa táto informácia objavila
  * v opise repozitára. Aktuálna verzia <a
- * href="http://pdf.truni.sk/horvath/download?installs-winter-2018/GRobot.jar"
+ * href="https://pdf.truni.sk/horvath/download?installs-winter-2018/GRobot.jar"
  * target="_blank">balíčka JAR</a> (t. j. binárna verzia rámca), môže svoje
  * umiestnenie tiež zmeniť. Aj o tejto skutočnosti sa pokúsime podať
  * informáciu na vhodnom umiestnení (on-line).</p>
@@ -222,12 +222,12 @@ import javax.swing.SwingUtilities;
  * <p class="remark"><b>Poznámka:</b> Rovnakú schému generuje aj šablóna
  * „Hlavná trieda aplikácie“ v slovenskom preklade softvéru <a
  * href="https://www.bluej.org/" target="_blank">BlueJ</a> a tak isto aj
- * <a href="http://pdf.truni.sk/horvath/softver?generator"
+ * <a href="https://pdf.truni.sk/horvath/softver?generator"
  * target="_blank">generátor projektov</a> od autora programovacieho rámca
  * {@code currGRobot}, ktorý nájdete na <a
- * href="http://pdf.truni.sk/katedry/kmi/pracovnici?horvath"
- * target="_blank">jeho stránkach</a>. Spomínaný <a
- * href="http://pdf.truni.sk/horvath/softver?generator"
+ * href="https://pdf.truni.sk/katedry/kmi/pracovnici?horvath"
+ * target="_blank">jeho stránkach.</a> Spomínaný <a
+ * href="https://pdf.truni.sk/horvath/softver?generator"
  * target="_blank">generátor projektov</a> uľahčuje študentom vytvorenie
  * nového projektu <a href="https://www.bluej.org/" target="_blank">BlueJ</a>
  * a nasledujúci import programovacieho rámca {@code currGRobot} do projektu,
@@ -235,6 +235,7 @@ import javax.swing.SwingUtilities;
  * 
  * <pre CLASS="example">
 	{@code kwdimport} knižnica.{@code currGRobot};
+	{@code note«importy ostatných tried, ktoré sú v projekte použité»}
 
 	{@code kwdpublic} {@code typeclass} {@code note«názov triedy»} {@code kwdextends} {@code currGRobot}
 	{
@@ -389,26 +390,28 @@ import javax.swing.SwingUtilities;
 	</pre>
  * 
  * <p>V slovenskom názve anglické slovká get a set nevyzerajú príliš dobre,
- * preto sme sa rozhodli ich v rámci projektu grafického robota zamlčať.
- * Namiesto toho používame v rámci dokumentácie ikonu <a class="getter"></a> na
- * getter a <a class="setter"></a> na setter. Funkčnosť metód sa tým,
- * samozrejme, nemení, ibaže bez explicitného uvedenia „get“ a „set“ v názve
- * ich nie je možné na prvý pohľad (podľa názvu) rozoznať, preto sa to
- * usilujeme kompenzovať aspoň v dokumentácii s pomocou ikon. Jestvujú
- * vlastnosti, ktoré nemajú žiadny setter. Z toho vyplýva, že sú určené len na
- * čítanie. Výskyt opačného typu vlastností (len na zápis) je v praxi veľmi
- * zriedkavý. Obvykle by každá vlastnosť mala mať možnosť čítania hodnoty.
- * V robote sa vlastnosti určené len na zápis nevyskytujú.</p>
+ * preto sme sa rozhodli ich v rámci projektu programovacieho rámca
+ * grafického robota zamlčať. Namiesto toho používame v rámci dokumentácie
+ * ikonu <a class="getter"></a> na getter a <a class="setter"></a> na setter.
+ * Funkčnosť metód sa tým, samozrejme, nemení, ibaže bez explicitného
+ * uvedenia „get“ a „set“ v názve ich nie je možné na prvý pohľad (podľa
+ * názvu) rozoznať, preto sa to usilujeme kompenzovať aspoň v dokumentácii
+ * s pomocou ikon. Jestvujú vlastnosti, ktoré nemajú žiadny setter. Z toho
+ * vyplýva, že sú určené len na čítanie. Výskyt opačného typu vlastností
+ * (len na zápis) je v praxi veľmi zriedkavý. Obvykle by každá vlastnosť
+ * mala mať možnosť čítania hodnoty. V tomto rámci sa vlastnosti určené len
+ * na zápis nevyskytujú.</p>
  * 
- * <p>Trieda {@code currGRobot} a všetky triedy tohto balíčka majú definované
- * veľké množstvo takzvaných <a class="alias"></a> aliasov. Aliasy sú presne
- * tým, čo slovo „alias“ vyjadruje – prezývkami. Potreba ich vzniku vyplynula
- * z častých (často zbytočných) omylov začínajúcich programátorov pri
- * používaní robota. Tie súviseli s nejednoznačnosťou slovenského jazyka,
- * v ktorom jestvuje množstvo synoným (dopredu, vpred, dozadu, vzad
- * a podobne). Časom bolo jasné, že na všetko nebude možné vytvoriť alias,
- * preto po dosiahnutí určitej úrovne nasýtenia už ďalšie aliasy (v súvislosti
- * s riešením synoným) nevznikali.</p>
+ * <p>Trieda {@code currGRobot} a všetky triedy tohto balíčka obsahujú
+ * definície veľkého množstvo takzvaných <a class="alias"></a> aliasov.
+ * Aliasy sú presne tým, čo slovo „alias“ vyjadruje – prezývkami. Potreba
+ * ich vzniku vyplynula z častých (často zbytočných) drobných omylov (kvázi
+ * „preklepov“) začínajúcich programátorov pri používaní robota (resp.
+ * jazykov akým je Logo). Tie súviseli s nejednoznačnosťou (slovenského)
+ * jazyka, v ktorom jestvuje množstvo synoným (v slovenčine sú to napríklad:
+ * dopredu, vpred, dozadu, vzad a podobne). Časom bolo jasné, že na všetko
+ * nebude možné vytvoriť alias, preto po dosiahnutí určitej úrovne nasýtenia
+ * už ďalšie aliasy (v súvislosti s riešením synoným) nevznikali.</p>
  * 
  * <!--(Avšak tie, ktoré boli definované dovtedy už v robote zostali.)-->
  * 
@@ -420,10 +423,10 @@ import javax.swing.SwingUtilities;
  * originálne triedy a ich použitie v rôznych kontextoch je podrobnejšie
  * testované. Aj preto odporúčame používať originály.</p>
  * 
- * <p>Každý slovenský identifikátor s diakritikou má definovaný alias
+ * <p>Každý slovenský identifikátor s diakritikou má tiež definovaný alias
  * bez diakritiky, aby bolo rámec možné používať aj bez používania
  * diakritiky (z historických dôvodov). Je však nevyhnutné byť pri používaní
- * alebo nepoužívaní diakritiky jednotnotný, inak povedané buď používať
+ * alebo nepoužívaní diakritiky jednotnotný: inak povedané, buď používať
  * diakritiku dôsledne, alebo vôbec. Kritické sú prípady priradenia inštancie
  * s diakritikou do premennej typu bez diakritiky. Nasledujúci riadok kódu
  * nie je preložiteľný:</p>
@@ -435,7 +438,7 @@ import javax.swing.SwingUtilities;
  * <p>Rovnako nie je použiteľný žiadny identifikátor s čiastočne použitou
  * diakritikou (napríklad {@code Priehľadnost} alebo {@code Priehladnosť}).
  * O problémoch s diakritikou v krátkosti informujeme aj
- * v <a href="index.html">úvodnom slove</a>.</p>
+ * v <a href="index.html">úvodnom slove.</a></p>
  * 
  * <!-- TODO – presunúť do samostatnej kapitoly -->
  * 
@@ -549,17 +552,28 @@ import javax.swing.SwingUtilities;
  * nezačal a namiesto toho boli niektoré zmeny a kroky súvisiace s ďalším
  * vylepšovaním programovacieho rámca vykonané priamo v tejto línii.</p>
  * 
- * <p>Pre úplnosť dodajme, že pôvodný spôsob umiestnenia celej skupiny tried
- * do jedného súboru malo jediné rýdzo pragmatické odôvodnenie. Nejestvoval
- * <a href="http://pdf.truni.sk/horvath/softver?generator"
- * target="_blank">generátor projektov</a> a študenti si museli vytvárať
- * projekty sami. Vzhľadom na predchádzajúce skúsenosti bolo najjednoduchším
- * riešením poskytnúť jediný nezbalený súbor na prevzatie, ktorý študenti
- * jednoducho a priamo (bez rozbaľovania, bez komplikácií) umiestnili do
- * priečinka s novým projektom. Z hľadiska princípov tvorby softvéru je tento
- * dôvod určite absurdný, lenže tento softvér bol pôvodne primárne tvorený
- * na účely výučby a tomuto cieľu podliehalo všetko, čo s projektom
- * súviselo.</p>
+ * <p> </p>
+ * 
+ * <p class="remark"><b>Poznámka:</b> Na úplnosť dodajme, že pôvodný spôsob
+ * umiestnenia celej skupiny tried do jedného súboru malo jedno rýdzo
+ * pragmatické odôvodnenie. V tom čase autor úplne zavrhoval distribúciu
+ * predchodcov tohto rámca vo forme .jar balíčka a tiež nejestvoval
+ * <a href="https://pdf.truni.sk/horvath/softver?generator"
+ * target="_blank">generátor projektov.</a> Študenti si museli vytvárať
+ * projekty sami a do každého nového projektu museli skopírovať celý obsah
+ * skupiny tried (v tom čase ešte korytnačky). Vzhľadom na prvé systematicky
+ * sa opakujúce skúsenosti získané ešte počas používania predchádzajúcej
+ * pomôcky (ktorou bola trieda {@code Konzola} – jej účelom bolo predovšetkým
+ * zjednodušiť čítanie hodnôt zo štandardného vstupu, ktorým je predvolene
+ * klávesnica, a jej funkcionalitu GRobot absorboval s miernou transformáciou
+ * k svojim potrebám) bolo najjednoduchším riešením poskytnúť jediný
+ * nezbalený súbor na prevzatie, ktorý študenti jednoducho a priamo (bez
+ * rozbaľovania, bez komplikácií) umiestnili do priečinka s novým projektom.
+ * Z hľadiska princípov tvorby softvéru je tento dôvod určite absurdný, lenže
+ * tento softvér bol pôvodne primárne tvorený na účely výučby a tomuto cieľu
+ * podliehalo všetko, čo s projektom súviselo.</p>
+ * 
+ * <p> </p>
  * 
  * <!-- TODO – presunúť do samostatnej kapitoly, zvážiť najlepší spôsob
  * zhromaždenia všetkých zdrojov na jednom mieste… -->
@@ -1084,7 +1098,7 @@ TODO: na úvodnú stránku
 			 * čiarových spojníc, ktoré sú definovateľné medzi robotmi.
 			 * Na vytváranie (prípane rušenie) spojníc slúžia výhradne metódy
 			 * z <a href="kategorie-metod.html#GRobot-Spojnice">kategórie
-			 * spojníc grafického robota</a>. Táto trieda poskytuje prístup
+			 * spojníc grafického robota.</a> Táto trieda poskytuje prístup
 			 * k hodnotám jestvujúcich nastavení (vrátane poskytovania
 			 * možnosti ich zmien) a tiež umožňuje nastavovať a čítať
 			 * doplnkové vlastnosti spojníc, napríklad
@@ -5948,10 +5962,10 @@ TODO: na úvodnú stránku
 				{ farba(podľaObjektu.farba()); }
 
 				/* *
-				 * Toto je „klon“ metódy {@link #farba(Color)}. Farba je
+				 * <p>Toto je „klon“ metódy {@link #farba(Color)}. Farba je
 				 * nastavená len v prípade, že v premennej typu {@link Object}
 				 * (zadanej ako parameter) je uložená inštancia triedy {@link 
-				 * Farba Farba} alebo {@link Color Color}.
+				 * Farba Farba} alebo {@link Color Color}.</p>
 				 * /
 				public void farba(Object nováFarba)
 				{
@@ -11155,7 +11169,7 @@ TODO: na úvodnú stránku
 				 * v aktuálnom smere. Keď je pero položené, tak kreslí
 				 * čiaru. Opakom je metóda {@link #vzad(double) vzad}.</p>
 				 * 
-				 * * <p class="remark"><b>Poznámka:</b> V pôvodnom jazyku
+				 * <p class="remark"><b>Poznámka:</b> V pôvodnom jazyku
 				 * Logo (v anglickej verzii) sú ku každému príkazu pohybu
 				 * korytnačky (z toho pochádza termín „korytnačia grafika“;
 				 * korytnačku v tomto rámci nahrádza grafický robot)
@@ -11250,7 +11264,7 @@ TODO: na úvodnú stránku
 				 * kreslí čiaru. Opakom je metóda {@link #dopredu(double)
 				 * dopredu}.</p>
 				 * 
-				 * * <p class="remark"><b>Poznámka:</b> V pôvodnom jazyku
+				 * <p class="remark"><b>Poznámka:</b> V pôvodnom jazyku
 				 * Logo (v anglickej verzii) sú ku každému príkazu pohybu
 				 * korytnačky (z toho pochádza termín „korytnačia grafika“;
 				 * korytnačku v tomto rámci nahrádza grafický robot)
@@ -11295,7 +11309,7 @@ TODO: na úvodnú stránku
 				 * hodinových ručičiek. Opakom je metóda {@link #vľavo(double)
 				 * vľavo}.</p>
 				 * 
-				 * * <p class="remark"><b>Poznámka:</b> V pôvodnom jazyku
+				 * <p class="remark"><b>Poznámka:</b> V pôvodnom jazyku
 				 * Logo (v anglickej verzii) sú ku každému príkazu pohybu
 				 * korytnačky (z toho pochádza termín „korytnačia grafika“;
 				 * korytnačku v tomto rámci nahrádza grafický robot)
@@ -11344,7 +11358,7 @@ TODO: na úvodnú stránku
 				 * hodinových ručičiek. Opakom je metóda {@link 
 				 * #vpravo(double) vpravo}.</p>
 				 * 
-				 * * <p class="remark"><b>Poznámka:</b> V pôvodnom jazyku
+				 * <p class="remark"><b>Poznámka:</b> V pôvodnom jazyku
 				 * Logo (v anglickej verzii) sú ku každému príkazu pohybu
 				 * korytnačky (z toho pochádza termín „korytnačia grafika“;
 				 * korytnačku v tomto rámci nahrádza grafický robot)
@@ -11635,6 +11649,7 @@ TODO: na úvodnú stránku
 				 * @param uhol uhol, o ktorý sa má robot otočiť
 				 * 
 				 * @see #otoč(double)
+				 * @see #otočO(double, double)
 				 */
 				public void otočO(double uhol)
 				{
@@ -11648,6 +11663,45 @@ TODO: na úvodnú stránku
 
 				/** <p><a class="alias"></a> Alias pre {@link #otočO(double) otoč}.</p> */
 				public void otocO(double uhol) { otočO(uhol); }
+
+
+				/**
+				 * <p>Otočí robot o zadaný uhol s kontrolou maximálneho
+				 * dovoleného uhla pootočenia. Volanie tejto metódy má zmysel
+				 * v prípade použitia premennej, ktorej hodnotu chceme
+				 * obmedziť. Ak je absolútna hodnota uhla väčia ako absolútna
+				 * hodnota obmedzenia (parametrom {@code najviacO}), tak je
+				 * hodnota uhla otáčania „orezaná“ (nastavená na hodnotu
+				 * {@code najviacO} so zachovaním znamienka, ktoré určuje
+				 * smer otáčania).</p>
+				 * 
+				 * <p>Kladná hodnota uhla otáčania značí otáčanie proti smeru
+				 * hodinových ručičiek. Znamienko hodnoty obmedzenia je
+				 * ignorované</p>
+				 * 
+				 * <p>Porovnaj s metódu {@link #otočO(double) otočO}.</p>
+				 * 
+				 * @param uhol uhol, o ktorý sa má robot otočiť
+				 * @param najviacO obmedzenie učujúce maximálnu povolenú
+				 *     hodnota uhla otáčania
+				 * 
+				 * @see #otočO(double)
+				 */
+				public void otočO(double uhol, double najviacO)
+				{
+					if (najviacO < 0) najviacO = -najviacO;
+					if (uhol > 0 && uhol > najviacO) uhol = najviacO;
+					if (uhol < 0 && uhol < -najviacO) uhol = -najviacO;
+
+					aktuálnyUhol += uhol;
+					aktuálnyUhol %= 360;
+					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+
+					if (viditeľný) Svet.automatickéPrekreslenie();
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #otočO(double, double) otoč}.</p> */
+				public void otocO(double uhol, double najviacO) { otočO(uhol, najviacO); }
 
 
 				/**
@@ -16827,7 +16881,7 @@ TODO: na úvodnú stránku
 				 * pri dosiahnutí nulovej rýchlosti. Keď robot nie je
 				 * {@linkplain #aktívny() aktívny} alebo <b>je zadané
 				 * zrýchlenie rovné nule, tak nemá volanie metódy žiadny
-				 * efekt</b>.
+				 * efekt.</b>
 				 * V opačnom prípade je vektor zrýchlenia robota upravený
 				 * správnym smerom – keď robot práve cúva, tak je zrýchlenie
 				 * nastavené na kladnú hodnotu, v opačných prípadoch na
@@ -31484,6 +31538,17 @@ TODO: na úvodnú stránku
 			 * svojho smeru); jednoducho <b>s textom napísaným robotom je
 			 * zaobchádzané ako s grafikou</b>…</small></p>
 			 * 
+			 * <p class="remark"><b>Poznámka:</b> Táto metóda nemôže prijímať
+			 * variabilný počet argumentov (podobne ako metódy sveta {@link 
+			 * Svet#vypíš(Object[]) vypíš} a {@link Svet#vypíšRiadok(Object[])
+			 * vypíšRiadok}), pretože má definované rôzne verzie, ktoré
+			 * umožňujú programátorovi operatívne meniť spôsob (a/alebo
+			 * polohu) kreslenia textov. Z toho dôvodu bola definovaná
+			 * statická metóda {@link #S(Object[]) S}, ktorá prijíma
+			 * variabilný počet argumentov, ktoré konvertuje na jeden zlúčený
+			 * reťazec. (Na získanie ďalších podrobností pozri opis metódy
+			 * {@link #S(Object[]) S}.)</p>
+			 * 
 			 * @param text text, ktorý má byť vypísaný
 			 * @return ak nie je robot {@linkplain Oblasť#zamestnaj(GRobot)
 			 *     zamestnaný} a je {@linkplain #kresliTvary() povolené
@@ -32442,6 +32507,34 @@ TODO: na úvodnú stránku
 			 */
 			public /*static*/ String F(double číslo, int šírka, int desatinné)
 			{ return Svet.F(číslo, šírka, desatinné); }
+
+
+			/**
+			 * <p>Táto metóda slúži na rýchly prevod rôznych objektov do
+			 * textovej podoby a ich zlúčenie do jedného reťazca. Pri
+			 * zlučovaní používa rovnaké pravidlá, aké sú opísané v opise
+			 * metódy {@link Plátno Plátno}<code>.</code>{@link 
+			 * Plátno#vypíš(Object[]) vypíš}<code>(argumenty)</code>. Súvisí
+			 * to napríklad so spôsobom pridávania medzier medzi reťazce
+			 * zlučovaných argumentov, automatickým formátovaním čísiel
+			 * a podobne.</p>
+			 * 
+			 * <!-- TODO ďalšie podrobnosti? -->
+			 * 
+			 * <p><b>Ukážka použitia:</b></p>
+			 * 
+			 * <pre CLASS="example">
+				{@link GRobot#text(String) text}({@code currS}({@code srg"Skóre:"}, aktuálneSkóre));
+				</pre>
+			 * 
+			 * @param argumenty zoznam argumentov rôzneho údajového typu
+			 *     oddelený čiarkami
+			 * 
+			 * @see Svet#vypíš(Object[])
+			 * @see Svet#S(Object[])
+			 */
+			public /*static*/ String S(Object... argumenty)
+			{ return Svet.S(argumenty); }
 
 
 		// Cesta
@@ -36583,7 +36676,7 @@ TODO: na úvodnú stránku
 			 * Roboty podporujú určenie {@linkplain #kolíznaOblasť(Shape)
 			 * kolíznej oblasti}. Zistenie stretu dvoch robotov s pomocou
 			 * {@linkplain Oblasť oblastí} je <em>presné, ale náročnejšie na
-			 * výpočet</em>, takže je zároveň aj pomalšie. Použitie kolíznych
+			 * výpočet,</em> takže je zároveň aj pomalšie. Použitie kolíznych
 			 * oblastí je potrebné vopred dobre zvážiť. Odporúčame ich
 			 * používať veľmi obozretne – v menšej miere. Rozhodne nie pre
 			 * veľké množstvo naraz jestvujúcich potenciálne kolidujúcich

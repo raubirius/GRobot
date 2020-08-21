@@ -417,14 +417,14 @@ public class Farba extends Color implements Comparable<Color>
 
 
 	/* *
-	 * Táto metóda je dokončenie implementácie rozhrania
+	 * <p>Táto metóda predstavuje dokončenie implementácie rozhrania
 	 * {@link Farebnosť Farebnosť}. Návratová hodnota je inštancia tejto
-	 * farby.
+	 * farby.</p>
 	 * 
 	 * @return aktuálna inštancia farby
 	 * /
 	public Farba farba() { return this; }
-	 */
+	*/
 
 
 	// Faktor pre potreby metód svetlejšia(), tmavšia(), priehľadnejšia

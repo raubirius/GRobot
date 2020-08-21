@@ -1280,6 +1280,13 @@ public class Roj
 		/**
 		 * <p>Toto kreslenie umožňuje upraviť tvar objektu nakresleného na
 		 * súradniciach tohto bodu roja.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Vo vlastnom kreslení sa na
+		 * prístup k aktuálne kreslenému bodu dá s výhodou využiť atribút
+		 * {@link Roj#bod bod} roja.</p>
+		 * 
+		 * @see #kresliTeleso()
+		 * @see Roj#kresli()
 		 */
 		public KreslenieTvaru kreslenie = null;
 
@@ -1290,8 +1297,19 @@ public class Roj
 		 * ktorý poskytuje veľmi primitívnu možnosť exportu tvarov roja
 		 * (resp. priemetov jeho bodov a objektov na nich) do formátu SVG.</p>
 		 * 
+		 * <p class="caution"><b>Pozor!</b> Aj keď je tu použité rozhranie
+		 * {@link KreslenieTvaru KreslenieTvaru}, náplňou jeho činnosti nemá
+		 * byť v tomto prípade kreslenie zadaným robotom, ale export tvarov
+		 * do inštancie triedy {@link SVGPodpora SVGPodpora} (buď do
+		 * {@linkplain GRobot#svgPodpora predvolenej,} alebo do inak určenej)
+		 * s pomocou zadaného robota a s prípadným využitím inštancie
+		 * {@link Roj#bod bod} roja.</p>
+		 * 
 		 * <!-- TODO príklad použitia, inak bude nepochopiteľné, ako to bolo
 		 * vôbec myslené… -->
+		 * 
+		 * @see #telesoDoSVG(SVGPodpora)
+		 * @see Roj#pridajDoSVG(SVGPodpora)
 		 */
 		public KreslenieTvaru svgKreslenie = null;
 
@@ -1795,6 +1813,10 @@ public class Roj
 		 * svgKreslenie} a {@link #svgTvar svgTvar}, ak sú neprázdne.
 		 * (Pozri aj ich opisy.) Táto metóda je automaticky volaná metódou
 		 * roja {@link Roj#pridajDoSVG(SVGPodpora) pridajDoSVG}.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Pri exporte sa na prístup
+		 * k aktuálne exportovanému bodu dá s výhodou využiť atribút
+		 * {@link Roj#bod bod} roja.</p>
 		 * 
 		 * @param svgPodpora inštancia {@linkplain SVGPodpora SVG podpory},
 		 *     do ktorej budú exportované {@linkplain Shape tvary Javy}
@@ -4529,6 +4551,11 @@ public class Roj
 	 * zákaznícke kreslenie objektu (telesa) v niektorom z bodov roja tieto
 	 * vlastnosti zmenilo (a neobnovilo), tak sa zmeny prenesú do kreslenia
 	 * ďalších prvkov roja…</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Počas kreslenia je aktualizovaná
+	 * inštancia roja {@link Roj#bod bod}, ktorá sa dá využiť pri zákaznícky
+	 * definovanom kreslení bodov roja (pozri {@link Roj.Bod#kreslenie
+	 * kreslenie}).</p>
 	 */
 	public void kresli()
 	{
@@ -4569,6 +4596,11 @@ public class Roj
 	 * metódy {@link Roj.Bod#spojDoSVG(SVGPodpora) spojDoSVG}
 	 * a {@link Roj.Bod#telesoDoSVG(SVGPodpora) telesoDoSVG} pre
 	 * jednotlivé body roja.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Počas exportu je aktualizovaná
+	 * inštancia roja {@link Roj#bod bod}, ktorá sa dá využiť pri zákaznícky
+	 * definovanom exporte bodov roja (pozri {@link Roj.Bod#svgKreslenie
+	 * svgKreslenie}).</p>
 	 * 
 	 * @param svgPodpora inštancia {@linkplain SVGPodpora SVG podpory},
 	 *     do ktorej budú exportované {@linkplain Shape tvary Javy}

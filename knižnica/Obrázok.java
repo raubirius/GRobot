@@ -3076,10 +3076,10 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		public void vypln(Farebnosť objekt) { vyplň(objekt); }
 
 		/* *
-		 * Toto je „klon“ metódy {@link #vyplň(Color)}. Obrázok je
+		 * <p>Toto je „klon“ metódy {@link #vyplň(Color)}. Obrázok je
 		 * vyplnený len v prípade, že je v premennej typu {@link Object}
 		 * (zadanej ako parameter) uložená inštancia triedy {@link Farba
-		 * Farba} alebo {@link Color Color}.
+		 * Farba} alebo {@link Color Color}.</p>
 		 * /
 		public void vyplň(Object farba)
 		{
@@ -3596,10 +3596,10 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		}
 
 		/* *
-		 * Toto je „klon“ metódy {@link #vylejFarbu(double, double,
+		 * <p>Toto je „klon“ metódy {@link #vylejFarbu(double, double,
 		 * Color)}. Proces vyplnenia sa uskutoční len v prípade, že je
 		 * v premennej typu {@link Object} (zadanej ako parameter) uložená
-		 * inštancia triedy {@link Farba Farba} alebo {@link Color Color}.
+		 * inštancia triedy {@link Farba Farba} alebo {@link Color Color}.</p>
 		 * /
 		public void vylejFarbu(double x, double y, Object farba)
 		{
@@ -3695,10 +3695,10 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		}
 
 		/* *
-		 * Toto je „klon“ metódy {@link #vylejFarbu(double, double,
+		 * <p>Toto je „klon“ metódy {@link #vylejFarbu(double, double,
 		 * Color)}. Proces vyplnenia sa uskutoční len v prípade, že je
 		 * v premennej typu {@link Object} (zadanej ako parameter) uložená
-		 * inštancia triedy {@link Farba Farba} alebo {@link Color Color}.
+		 * inštancia triedy {@link Farba Farba} alebo {@link Color Color}.</p>
 		 * /
 		public void vylejFarbu(Poloha bod, Object farba)
 		{
@@ -4671,8 +4671,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		/**
 		 * <p>Rozmaže grafiku obrázka. Dosiahneme rovnaký efekt, ako keby sme
 		 * volali metódu: {@link #rozmaž(int, int, Color) rozmaž}{@code 
-		 * (}{@code num1}{@code , }{@code num1}{@code , }{@link 
-		 * Svet Svet}<code>.</code>{@link Svet#farbaPozadia()
+		 * (}{@code num1}{@code , }{@code num1}{@code , }{@link Svet 
+		 * Svet}<code>.</code>{@link Svet#farbaPozadia()
 		 * farbaPozadia}{@code ());}
 		 * <!--   -->
 		 * To znamená, že pre priehľadné (neviditeľné) body je pri procese
@@ -4749,9 +4749,9 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * 
 		 * <p><image>trees+sky-200.jpeg<alt/>Zdrojový obrázok na ukážku
 		 * úpravy jasu a kontrastu.</image>Zdrojový obrázok na ukážku úpravy
-		 * jasu a kontrastu<br /><smnall>(verzia v mierne vyššom rozlíšení
+		 * jasu a kontrastu<br /><small>(verzia v mierne vyššom rozlíšení
 		 * je dostupná na prevzatie <a href="resources/trees+sky-800.jpeg"
-		 * target="_blank">tu</a>)</smnall>.</p>
+		 * target="_blank">tu</a>)</small>.</p>
 		 * 
 		 * <p> </p>
 		 * 
@@ -4962,11 +4962,11 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * intenzity farby, ktorý je najlepšie viditeľný na nasledujúcom
 		 * grafe:</p>
 		 * 
-		 * <p class="image"><img src="resources/gama-korekcie.svg"
-		 * alt="Graf zmeny vstupnej veličiny na výstupnú pri rôznych hodnotách γ."
-		 * onerror="this.onerror=null; this.src='resources/gama-korekcie.png';"
-		 * /><br />Graf vyjadrujúci zmenu vstupnej veličiny na výstupnú pri
-		 * rôznych hodnotách faktora gama (γ).</p>
+		 * <p><image>gama-korekcie.svg<alt/>Graf zmeny vstupnej veličiny na
+		 * výstupnú pri rôznych hodnotách
+		 * γ.<onerror>gama-korekcie.png</onerror></image>Graf vyjadrujúci
+		 * zmenu vstupnej veličiny na výstupnú pri rôznych hodnotách
+		 * faktora gama (γ).</p>
 		 * 
 		 * <p> </p>
 		 * 

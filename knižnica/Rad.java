@@ -35,10 +35,9 @@ package knižnica;
  * periodický stúpajúco-klesajúci číselný rad podľa zadaných hraníc
  * a kroku.</p>
  * 
- * <p class="image"><img src="resources/grafy-rad.svg"
- * alt="Ukážky pílových číselných postupností."
- * onerror="this.onerror=null; this.src='resources/grafy-rad.png';"
- * /><br />Ukážky pílových číselných postupností.</p>
+ * <p><image>grafy-rad.svg<alt/>Ukážky pílových číselných
+ * postupností.<onerror>grafy-rad.png</onerror></image>Ukážky pílových
+ * číselných postupností.</p>
  * 
  * <p>Metóda {@link #daj() daj} generuje rad algoritmicky (s pomocou
  * niekoľkých súkromných stavových premenných). Zjednodušene (s jednotkovým

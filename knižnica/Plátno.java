@@ -196,7 +196,7 @@ import static knižnica.Konštanty.ZVISLÁ;
  * 
  * <p>Na prácu s jej obsahom slúži niekoľko skupín metód vymenovaných
  * a utriedených v <a href="kategorie-metod.html#Plátno">kategóriách
- * metód plátna</a>. Úplne najstaršími a základnými je dvojica metód
+ * metód plátna.</a> Úplne najstaršími a základnými je dvojica metód
  * {@link #vypíš(Object[]) vypíš} a {@link #vypíšRiadok(Object[])
  * vypíšRiadok}, ktoré zastupujú funkčnosť procedúr {@code write}
  * a {@code writeln} z jazyka Pascal alebo metód {@code print}
@@ -208,12 +208,12 @@ import static knižnica.Konštanty.ZVISLÁ;
  * Svet Svet}, v rámci ktorej kopírujú správanie vnútornej konzoly
  * „horného“ plátna – {@linkplain GRobot#strop stropu}.</p>
  * 
- * <p>Aby sme bol úplní, treba dodať, že doplnkom simulácie výstupu
+ * <p>Aby sme boli úplní, treba dodať, že doplnkom simulácie výstupu
  * sú metódy slúžiace na čítanie údajov od používateľa. Tie sú
  * definované len v triede {@link Svet Svet}. Majú niekoľko variant
  * a sú vymenované v kategórii sveta <a
  * href="kategorie-metod.html#Svet-Vstupné-dialógy">Vstupné
- * dialógy</a>. (V podstate ide o simuláciu štandardného vstupu,
+ * dialógy.</a> (V podstate ide o simuláciu štandardného vstupu,
  * ktorý je napríklad v jazyku Pascal reprezentovaný procedúrami
  * {@code read} a {@code readln}.)</p>
  */
@@ -477,7 +477,7 @@ public class Plátno implements Priehľadnosť
 			 '}', '%', '“', '”', '»', '›', '\'', '\"'};
 		// 
 
-		private static void pridajMedzeru(StringBuffer obsah, Object časť)
+		/*packagePrivate*/ static void pridajMedzeru(StringBuffer obsah, Object časť)
 		{
 			String reťazec = časť.toString();
 			if (reťazec.isEmpty()) return;
@@ -3992,10 +3992,10 @@ public class Plátno implements Priehľadnosť
 		{ farbaTextu(objekt.farba()); }
 
 		/* *
-		 * Toto je „klon“ metódy {@link #farbaTextu(Color)}. Farba je
+		 * <p>Toto je „klon“ metódy {@link #farbaTextu(Color)}. Farba je
 		 * nastavená len v prípade, že v premennej typu {@link Object}
 		 * (zadanej ako parameter) je uložená inštancia triedy {@link Farba
-		 * Farba} alebo {@link Color Color}.
+		 * Farba} alebo {@link Color Color}.</p>
 		 * /
 		public void farbaTextu(Object nováFarba)
 		{
@@ -8738,10 +8738,10 @@ public class Plátno implements Priehľadnosť
 		public void vypln(Farebnosť objekt) { vyplň(objekt); }
 
 		/* *
-		 * Toto je „klon“ metódy {@link #vyplň(Color)}. Podlaha alebo
+		 * <p>Toto je „klon“ metódy {@link #vyplň(Color)}. Podlaha alebo
 		 * strop sú vyplnené len v prípade, že je v premennej typu {@link 
 		 * Object} (zadanej ako parameter) uložená inštancia triedy {@link 
-		 * Farba Farba} alebo {@link Color Color}.
+		 * Farba Farba} alebo {@link Color Color}.</p>
 		 * /
 		public void vyplň(Object farba)
 		{
@@ -9008,10 +9008,10 @@ public class Plátno implements Priehľadnosť
 		{ vylejFarbu(x, y, objekt.farba()); }
 
 		/* *
-		 * Toto je „klon“ metódy {@link #vylejFarbu(double, double,
+		 * <p>Toto je „klon“ metódy {@link #vylejFarbu(double, double,
 		 * Color)}. Proces vyplnenia sa uskutoční len v prípade, že je
 		 * v premennej typu {@link Object} (zadanej ako parameter) uložená
-		 * inštancia triedy {@link Farba Farba} alebo {@link Color Color}.
+		 * inštancia triedy {@link Farba Farba} alebo {@link Color Color}.</p>
 		 * /
 		public void vylejFarbu(double x, double y, Object farba)
 		{
@@ -9100,10 +9100,10 @@ public class Plátno implements Priehľadnosť
 		{ vylejFarbu(bod, objekt.farba()); }
 
 		/* *
-		 * Toto je „klon“ metódy {@link #vylejFarbu(double, double,
+		 * <p>Toto je „klon“ metódy {@link #vylejFarbu(double, double,
 		 * Color)}. Proces vyplnenia sa uskutoční len v prípade, že je
 		 * v premennej typu {@link Object} (zadanej ako parameter) uložená
-		 * inštancia triedy {@link Farba Farba} alebo {@link Color Color}.
+		 * inštancia triedy {@link Farba Farba} alebo {@link Color Color}.</p>
 		 * /
 		public void vylejFarbu(Poloha bod, Object farba)
 		{
@@ -9544,9 +9544,10 @@ public class Plátno implements Priehľadnosť
 
 		/**
 		 * <p>Rozmaže grafiku tohto plátna. Dosiahneme rovnaký efekt, ako keby
-		 * sme volali metódu: {@link #rozmaž(int, int, Color)
-		 * rozmaž}{@code (opakovanie, rozsah, }{@link Svet Svet}<code>.</code>{@link 
-		 * Svet#farbaPozadia() farbaPozadia}{@code ());}
+		 * sme volali metódu: {@link #rozmaž(int, int, Color) rozmaž}{@code 
+		 * (}{@code num1}{@code , }{@code num1}{@code , }{@link Svet
+		 * Svet}<code>.</code>{@link Svet#farbaPozadia() farbaPozadia}{@code 
+		 * ());}
 		 * <!--   -->
 		 * To znamená, že pre priehľadné (neviditeľné) body je pri procese
 		 * rozmazania použitá aktuálna farba pozadia sveta (pozri: {@link 

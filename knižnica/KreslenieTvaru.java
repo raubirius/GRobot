@@ -209,10 +209,9 @@ public interface KreslenieTvaru
 		});
 		</pre>
 	 * 
-	 * <p class="image"><img src="resources/kruznica-s-nosom.svg"
-	 * alt="Výsledok ukážky kreslenia vlasntého tvaru."
-	 * onerror="this.onerror=null; this.src='resources/kruznica-s-nosom.png';"
-	 * /><br />Ukážka vzhľadu.</p>
+	 * <p><image>kruznica-s-nosom.svg<alt/>Výsledok ukážky kreslenia
+	 * vlasntého tvaru.<onerror>kruznica-s-nosom.png</onerror></image>Ukážka
+	 * vzhľadu.</p>
 	 * 
 	 * <p class="remark"><b>Poznámky:</b> Niektoré metódy upravujú
 	 * v rámci kreslenia vlastného tvaru svoje správanie. Napríklad

@@ -1075,7 +1075,7 @@ public abstract class Skript
 		}
 
 		/* TODO
-		
+
 		Implementovať
 
 			Number * String – zopakovanie reťazca
@@ -1706,6 +1706,7 @@ public abstract class Skript
 					}
 					else
 					{
+						if (0 == mriežka) return true;
 						príkaz += " " + výsledok.toString();
 						// System.out.println("Príkaz parsera: " + príkaz +
 						// 	" (reťazec: " + reťazec + ")");
@@ -2869,54 +2870,67 @@ public abstract class Skript
 			}
 		}
 
+		// Semafor.
+		private boolean spustený = false;
+
 		/**
 		 * <p>Zabezpečí vykonanie tej súčasti skriptu, za ktorú je zodpovedná
 		 * táto inštancia.</p>
 		 */
 		public int vykonaj()
 		{
-			neprerušené = true;
-			poslednáChyba = ŽIADNA_CHYBA;
-			zásobníkInštancií.clear();
-			aktuálnaInštancia = null;
-			hľadajMenovku = null;
-			skočNa = null;
-
-			if (ladenie)
-			{
-				if (null == ObsluhaUdalostí.počúvadlo ||
-					ObsluhaUdalostí.počúvadlo.ladenie(-1, null,
-						VYPÍSAŤ_PREMENNÉ))
-					vypíšPremenné();
-
-				if (null != ObsluhaUdalostí.počúvadlo &&
-					ObsluhaUdalostí.počúvadlo.ladenie(-1, null,
-						VYPÍSAŤ_MENOVKY)) hlavný.vypíšMenovky();
-			}
-
+			if (spustený) return CHYBA_VOLANIA_SKRIPTU;
 			try
 			{
-				int kód = hlavný.vykonaj();
-				if (CHYBA_NEZNÁMA_MENOVKA == (poslednáChyba % 100) &&
-					null != hľadajMenovku &&
-					"koniec".equalsIgnoreCase(hľadajMenovku))
+				spustený = true;
+
+				neprerušené = true;
+				poslednáChyba = ŽIADNA_CHYBA;
+				zásobníkInštancií.clear();
+				aktuálnaInštancia = null;
+				hľadajMenovku = null;
+				skočNa = null;
+
+				if (ladenie)
 				{
-					poslednáChyba = ŽIADNA_CHYBA;
-					kód = 0;
+					if (null == ObsluhaUdalostí.počúvadlo ||
+						ObsluhaUdalostí.počúvadlo.ladenie(-1, null,
+							VYPÍSAŤ_PREMENNÉ))
+						vypíšPremenné();
+
+					if (null != ObsluhaUdalostí.počúvadlo &&
+						ObsluhaUdalostí.počúvadlo.ladenie(-1, null,
+							VYPÍSAŤ_MENOVKY)) hlavný.vypíšMenovky();
 				}
-				return kód;
+
+				try
+				{
+					int kód = hlavný.vykonaj();
+					if (CHYBA_NEZNÁMA_MENOVKA == (poslednáChyba % 100) &&
+						null != hľadajMenovku &&
+						"koniec".equalsIgnoreCase(hľadajMenovku))
+					{
+						poslednáChyba = ŽIADNA_CHYBA;
+						kód = 0;
+					}
+					return kód;
+				}
+				finally
+				{
+					if (ladenie && null != ObsluhaUdalostí.počúvadlo &&
+						ObsluhaUdalostí.počúvadlo.ladenie( -1, null,
+							VYPÍSAŤ_SKRIPT))
+					{
+						prekresli(-1);
+						plátno.vypíšRiadok();
+						vyprázdniZásobníkPremenných();
+					}
+					else zásobníkPremenných.clear();
+				}
 			}
 			finally
 			{
-				if (ladenie && null != ObsluhaUdalostí.počúvadlo &&
-					ObsluhaUdalostí.počúvadlo.ladenie( -1, null,
-						VYPÍSAŤ_SKRIPT))
-				{
-					prekresli(-1);
-					plátno.vypíšRiadok();
-					vyprázdniZásobníkPremenných();
-				}
-				else zásobníkPremenných.clear();
+				spustený = false;
 			}
 		}
 
@@ -5574,7 +5588,7 @@ public abstract class Skript
 	 * <a 
 	 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java"
 	 * target="_blank"><code>ExpressionProcessor</code></a>), ktorý
-	 * (syntakticky) nasleduje za znakom mriežky (chybové kódy vnútorného
+	 * (syntakticky) nasleduje za znakom mriežky {@code #} (chybové kódy vnútorného
 	 * vyhodnocovača (matematických) výrazov nie sú uvedené v tejto
 	 * dokumentácii, ale syntax s mriežkou je bližšie spomenutá napríklad
 	 * v opise metódy {@link Svet#interaktívnyRežim(boolean)
@@ -5750,17 +5764,24 @@ public abstract class Skript
 				"vyhodnocovaču výrazov. (Vnútorný vyhodnocovač " +
 				"matematických výrazov z určitého dôvodu neprijal reťazec " +
 				"na spracovanie.)";
+
+			String text = "kód chyby: " + (kód - 51); try { text = "" +
+				ExpressionProcessor.Value.TypeOrError.values()[kód - 51]; }
+				catch (Throwable t) { }
+
 			return "Vznikla chyba pri vyhodnocovaní výrazu. (Vnútorný " +
 				"vyhodnocovač matematických výrazov ohlásil chybu pri " +
 				"spracovaní reťazca, ktorý pravdepodobne nie je korektným " +
-				"matematickým výrazom. Text chyby: " + výraz.toString() + ".)";
+				"matematickým výrazom. Text chyby: " + výraz.toString() +
+				" – " + text + ".)";
 		}
 
 		switch (kód)
 		{
 			case CHYBA_VOLANIA_SKRIPTU: return "Vznikla chyba pri volaní " +
-				"vnoreného skriptu. (Bola zaznamenaná príliš veľká hĺbka " +
-				"volaní vnorených skriptov.)";
+				"vnoreného skriptu. (Buď bolo zaznamenané rekurzívne " +
+				"spustenie skriptu, alebo bola zaznamenaná príliš veľká " +
+				"hĺbka volaní vnorených skriptov.)";
 
 			case CHYBA_ČÍTANIA_SKRIPTU: return "Vznikla chyba pri " +
 				"čítaní skriptu. (Súbor alebo zdroj s obsahom skriptu " +

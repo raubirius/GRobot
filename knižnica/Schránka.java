@@ -57,9 +57,9 @@ import java.io.IOException;
  * systému, ktorý dovoľuje prenášať informácie rôzneho druhu medzi
  * aplikáciami. Obvykle sú základným operáciám na prácu so schránkou
  * priradené známe klávesové skratky: {@code Ctrl + C} (Windows), {@code 
- * ⌘ + C} (<small>Command + C</small> – Macintosh) na vloženie
+ * ⌘ + C} (<small>Command + C</small> – Macintosh) na vloženie
  * (kopírovanie) informácie do schránky; {@code Ctrl + V} (Windows),
- * {@code ⌘ + V} (<small>Command + C</small>, Macintosh) na prevzatie
+ * {@code ⌘ + V} (<small>Command + C</small>, Macintosh) na prevzatie
  * (prilepenie, „vloženie“) informácie zo schránky (terminológia v tejto
  * oblasti sa v súčasnosti, žiaľ, značne rôzni). Vo svete robota tieto
  * skratky nefungujú automaticky. Ak chceme, aby aplikácia vytvorená

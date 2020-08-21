@@ -1347,7 +1347,7 @@ public class ObsluhaUdalostí
 				{@link PoznámkovýBlok PoznámkovýBlok} blok = {@code kwdnew} {@link PoznámkovýBlok#PoznámkovýBlok() PoznámkovýBlok}();
 				blok.{@link PoznámkovýBlok#roztiahniNaŠírku() roztiahniNaŠírku}(); {@code comm// Nie je nevyhnutné.}
 				blok.{@link PoznámkovýBlok#roztiahniNaVýšku() roztiahniNaVýšku}(); {@code comm// Nie je nevyhnutné.}
-				blok.{@link PoznámkovýBlok#html(String) html}({@code srg"<a href=\"http://pdf.truni.sk/\">Klikni na odkaz.</a>"});
+				blok.{@link PoznámkovýBlok#html(String) html}({@code srg"<a href=\"https://pdf.truni.sk/\">Klikni na odkaz.</a>"});
 				blok.{@link PoznámkovýBlok#neupravuj() neupravuj}();
 				{@link GRobot#skry() skry}(); {@code comm// Tiež je možné vynechať.}
 			}

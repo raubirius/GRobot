@@ -24,9 +24,8 @@ package knižnica.apacheAntZIP;
  * <p>Stores the UTF-8 version of the file comment as stored in the
  * central directory header.</p>
  * 
- * * <p>See {@link http://www.pkware.com/documents/casestudies/APPNOTE.TXT
+ * <p>See {@link http://www.pkware.com/documents/casestudies/APPNOTE.TXT
  * PKWARE’s APPNOTE.TXT, section 4.6.8}.</p>
- * 
  */
 public class UnicodeCommentExtraField extends AbstractUnicodeExtraField {
 

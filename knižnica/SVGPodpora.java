@@ -153,7 +153,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 			{@code typeint} prečítané = {@link SVGPodpora svgPodpora}.{@link SVGPodpora#čítaj(String) čítaj}({@code srg"Panak.svg"});
 
 			{@code comm// Overenie toho, či sa čítanie podarilo:}
-			{@code kwdif} ({@code num-1} == prečítané)
+			{@code kwdif} (-{@code num1} == prečítané)
 			{
 				{@code comm// V prípade neúspechu je informácia vypísaná červenou farbou:}
 				{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#červená červená});
@@ -515,7 +515,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 
 			{@code comm// Do premennej výsledok najprv vložíme hodnotu -1, ktorá signalizuje}
 			{@code comm// chybu:}
-			{@code typeint} výsledok = {@code num-1};
+			{@code typeint} výsledok = -{@code num1};
 
 			{@code comm// V nasledujúcom bloku na zachytávanie výnimiek sa pokúsime}
 			{@code comm// prečítať súbor so zadaným menom:}
@@ -537,7 +537,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 
 			{@code comm// Podľa hodnoty premennej výsledok je vypísané hlásenie a prípadne}
 			{@code comm// vykonané ďalšie kroky…}
-			{@code kwdif} ({@code num-1} == výsledok)
+			{@code kwdif} (-{@code num1} == výsledok)
 				{@link Svet Svet}.{@link Svet#vypíšRiadok(Object...) vypíšRiadok}({@code srg"Čítanie súboru zlyhalo!"});
 			{@code kwdelse}
 			{
@@ -880,7 +880,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * 
  * <p><image>mola-bodkova.svg<alt/>Mola prevedená na bodkovaný obraz
  * prevedený do SVG formátu.</image>Výsledný <a target="_blank"
- * href="resources/mola-bodkova.svg">SVG obraz</a>.</p>
+ * href="resources/mola-bodkova.svg">SVG obraz.</a></p>
  * 
  * <p> </p>
  * 
@@ -930,7 +930,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 			{@link Svet Svet}.{@link Svet#spustiČasovač() spustiČasovač}();
 
 			{@code comm// Úvodné nastavenie robota a spustenie kreslenia rastlinky.}
-			{@link GRobot#skoč(double, double) skoč}({@code num0}, {@code num-300});
+			{@link GRobot#skoč(double, double) skoč}({@code num0}, -{@code num300});
 			{@link GRobot#farba(int, int, int, int) farba}({@code num0}, {@code num120}, {@code num0}, {@code num120});
 			rastlinka({@code num96});
 
@@ -973,8 +973,8 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 			{@code comm// vnútorného zásobníka tvarov inštancie svgPodpora a vzápätí}
 			{@code comm// upravíme jej vizuálne vlastnosti.}
 			{@link SVGPodpora svgPodpora}.{@link SVGPodpora#pridaj(Shape, String...) pridaj}({@code kwdnew} {@link Line2D Line2D}.{@link Line2D.Double#Line2D.Double(double, double, double, double) Double}(x0, y0, x1, y1));
-			{@link SVGPodpora svgPodpora}.{@link SVGPodpora#hrúbkaČiary(int, double) hrúbkaČiary}({@code num-1}, {@link GRobot#hrúbkaČiary() hrúbkaČiary}());
-			{@link SVGPodpora svgPodpora}.{@link SVGPodpora#farbaČiary(int, Color) farbaČiary}({@code num-1}, {@link GRobot#farba() farba}());
+			{@link SVGPodpora svgPodpora}.{@link SVGPodpora#hrúbkaČiary(int, double) hrúbkaČiary}(-{@code num1}, {@link GRobot#hrúbkaČiary() hrúbkaČiary}());
+			{@link SVGPodpora svgPodpora}.{@link SVGPodpora#farbaČiary(int, Color) farbaČiary}(-{@code num1}, {@link GRobot#farba() farba}());
 		}
 
 		{@code comm// Rekurzívna metóda na kreslenie rastlinky}
@@ -1131,7 +1131,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 					{@link Svet Svet}.{@link Svet#uložObrázok(String) uložObrázok}(názov + {@code srg"-"} + n + {@code srg".png"});
 
 					{@code comm// Pokus o uloženie HTML/SVG súboru.}
-					{@code kwdif} ({@code num-1} == {@link SVGPodpora svgPodpora}.{@link SVGPodpora#zapíš(String) zapíš}(názov + {@code srg"-"} + n + {@code srg".html"}))
+					{@code kwdif} (-{@code num1} == {@link SVGPodpora svgPodpora}.{@link SVGPodpora#zapíš(String) zapíš}(názov + {@code srg"-"} + n + {@code srg".html"}))
 					{
 						{@link Súbor Súbor}.{@link Súbor#vymaž(String) vymaž}(názov + {@code srg"-"} + n + {@code srg".png"});
 						{@code kwdcontinue};
@@ -1212,7 +1212,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * definícií. So zreteľom na široké možnosti štandardu SVG na prezentáciu
  * textových (znakových) informácií sú možnosti tejto triedy skutočne
  * primitívne. Ide v podstate len o prečítanie a zápis obsahu značky
- * {@code &lt;text&gt;} a o poskytnutie základných geometrických
+ * {@code <text>} a o poskytnutie základných geometrických
  * transformácií.</p>
  * 
  * <p><b>Použité zdroje:</b></p>
@@ -1332,7 +1332,7 @@ public class SVGPodpora
 	 * <a href="https://www.w3.org/TR/css-transforms-1/"
 	 * target="_blank">definíciu CSS</a>) <a
 	 * href="https://svgwg.org/svg2-draft/coords.html#TransformProperty"
-	 * target="_blank">draft štandardu SVG 2</a>. (Pri každom takomto
+	 * target="_blank">draft štandardu SVG 2.</a> (Pri každom takomto
 	 * type transformácie sa nachádza upozornenie.)
 	 * Tento typ transformácie je pri prevádzaní transformácií na
 	 * reťazec predvolene prevedený na iný (kompatibilný a štandardom 1.1
@@ -1366,9 +1366,8 @@ public class SVGPodpora
 		 * <td> </td><td>1</td><td>⎦</td></tr>
 		 * </table -->
 		 * 
-		 * <p><img src="resources/matica-vseobecnej-transformacie.svg"
-		 * alt="Matica všeobecnej transformácie." onerror="this.onerror=null;
-		 * this.src='resources/matica-vseobecnej-transformacie.png';" /></p>
+		 * <p><image>matica-vseobecnej-transformacie.svg<alt/>Matica všeobecnej
+		 * transformácie.<onerror>matica-vseobecnej-transformacie.png</onerror></image></p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Všetky identifikátory
 		 * transformácií boli preložené do slovenského jazyka a zároveň
@@ -3259,8 +3258,8 @@ public class SVGPodpora
 
 
 	/* *
-	 * Prevedie celočíselnú hodnotu typu udalosti v rámci analýzy údajov
-	 * z XML prúdu na čitateľný tvar reťazca v slovenskom jazyku.
+	 * <p>Prevedie celočíselnú hodnotu typu udalosti v rámci analýzy údajov
+	 * z XML prúdu na čitateľný tvar reťazca v slovenskom jazyku.</p>
 	 * /
 	private static String XMLTypUdalostiNaReťazec(int typUdalosti)
 	{
@@ -5212,9 +5211,9 @@ public class SVGPodpora
 	 * vygenerovaný obrys textu, ale jeho výplň).</p>
 	 * 
 	 * <p>Trieda pri {@linkplain #zapíš(String, String, boolean) ukladaní
-	 * tvarov do súboru} použije XML/SVG značku {@code &lt;text&gt;}, ku
+	 * tvarov do súboru} použije XML/SVG značku {@code <text>}, ku
 	 * ktorej priradí sériu základných a zadaných atribútov. Obsahom značky
-	 * {@code &lt;text&gt;} bude zadaný text.</p>
+	 * {@code <text>} bude zadaný text.</p>
 	 * 
 	 * <p class="remark"><b>Poznámky:</b> Atribúty bez mena sú ignorované
 	 * a na rozdiel od metódy {@link #pridaj(Shape, String[]) pridaj(tvar,
@@ -5468,7 +5467,7 @@ public class SVGPodpora
 				if (null != font)
 				{
 					tvar.atribúty.put("font-family", "" + font.getFamily());
-					tvar.atribúty.put("font-size", font.getSize2D() + "pt");
+					tvar.atribúty.put("font-size", font.getSize2D() + "px");
 					if (font.isBold())
 						tvar.atribúty.put("font-weight", "bold");
 					if (font.isItalic())
@@ -5869,7 +5868,7 @@ public class SVGPodpora
 	 * 
 	 * @param formát formát exportovaného SVG reťazca; povolené sú dva
 	 *     formáty: {@code HTML} a {@code SVG})
-	 * @param titulok obsah značky {@code &lt;title&gt;}; ak je zadaná
+	 * @param titulok obsah značky {@code <title>}; ak je zadaná
 	 *     hodnota {@code valnull}, tak sa použije predvolený tvar:
 	 *     {@code SVG tvary generované programovacím rámcom
 	 *     GRobot }<em>«verzia»</em>{@code , © }<em>«roky

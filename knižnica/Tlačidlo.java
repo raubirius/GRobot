@@ -600,7 +600,7 @@ public class Tlačidlo extends JButton implements Poloha
 	 * <p>Prilepí tlačidlo k ľavému okraju. Táto akcia zruší prípadné
 	 * predchádzajúce prilepenie k pravému okraju. Každé prilepenie upravuje
 	 * súradnicový systém tlačidla presunutím čo najbližšie
-	 * k prilepovanému okraju. To znamená napríklad, že keď po prilepení
+	 * k prilepovanému okraju. To znamená, že keď napríklad po prilepení
 	 * k ľavému okraju posunieme tlačidlo na súradnice [10, 0], posunieme
 	 * ho v skutočnosti na pozíciu desať bodov od ľavého okraja.</p>
 	 * 
@@ -623,9 +623,9 @@ public class Tlačidlo extends JButton implements Poloha
 	 * <p>Prilepí tlačidlo k pravému okraju. Táto akcia zruší prípadné
 	 * predchádzajúce prilepenie k ľavému okraju. Každé prilepenie upravuje
 	 * súradnicový systém tlačidla presunutím čo najbližšie
-	 * k prilepovanému okraju. To znamená napríklad, že keď po prilepení
+	 * k prilepovanému okraju. To znamená, že keď napríklad po prilepení
 	 * k pravému okraju posunieme tlačidlo na súradnice [-10, 0],
-	 * posunieme ho v skutočnosti na pozíciu desať bodov od pravého
+	 * tak ho v skutočnosti posunieme na pozíciu desať bodov od pravého
 	 * okraja.</p>
 	 * 
 	 * @see #prilepVľavo()
@@ -644,9 +644,9 @@ public class Tlačidlo extends JButton implements Poloha
 	 * <p>Prilepí tlačidlo k hornému okraju. Táto akcia zruší prípadné
 	 * predchádzajúce prilepenie k dolnému okraju. Každé prilepenie upravuje
 	 * súradnicový systém tlačidla presunutím čo najbližšie
-	 * k prilepovanému okraju. To znamená napríklad, že keď po prilepení
+	 * k prilepovanému okraju. To znamená, že keď napríklad po prilepení
 	 * k hornému okraju posunieme tlačidlo na súradnice [0, -10],
-	 * posunieme ho v skutočnosti na pozíciu desať bodov od horného
+	 * tak ho v skutočnosti posunieme na pozíciu desať bodov od horného
 	 * okraja.</p>
 	 * 
 	 * @see #prilepVľavo()
@@ -665,9 +665,9 @@ public class Tlačidlo extends JButton implements Poloha
 	 * <p>Prilepí tlačidlo k dolnému okraju. Táto akcia zruší prípadné
 	 * predchádzajúce prilepenie k hornému okraju. Každé prilepenie upravuje
 	 * súradnicový systém tlačidla presunutím čo najbližšie
-	 * k prilepovanému okraju. To znamená napríklad, že keď po prilepení
+	 * k prilepovanému okraju. To znamená, že keď napríklad po prilepení
 	 * k dolnému okraju posunieme tlačidlo na súradnice [0, 10],
-	 * posunieme ho v skutočnosti na pozíciu desať bodov od dolného
+	 * tak ho v skutočnosti posunieme na pozíciu desať bodov od dolného
 	 * okraja.</p>
 	 * 
 	 * @see #prilepVľavo()

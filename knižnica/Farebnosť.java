@@ -970,13 +970,13 @@ public interface Farebnosť
 	public Farba farba();
 
 	// Odporúčané metódy na nastavenie novej farby objektu
-	/* * Prototyp metódy na nastavenie farby objektu. * /
+	/* * <p>Prototyp metódy na nastavenie farby objektu.</p> * /
 	public void farba(Color nováFarba);
-	/* * Prototyp metódy na kopírovanie farby objektu. * /
+	/* * <p>Prototyp metódy na kopírovanie farby objektu.</p> * /
 	public void farba(Farebnosť podľaObjektu);
-	/* * Prototyp metódy na nastavenie farby objektu. * /
+	/* * <p>Prototyp metódy na nastavenie farby objektu.</p> * /
 	public Farba farba(int r, int g, int b);
-	/* * Prototyp metódy na nastavenie farby objektu. * /
+	/* * <p>Prototyp metódy na nastavenie farby objektu.</p> * /
 	public Farba farba(int r, int g, int b, int a);
 	*/
 }

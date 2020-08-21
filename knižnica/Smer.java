@@ -74,13 +74,13 @@ public interface Smer
 	public double smer();
 
 	// Odporúčané metódy na nastavenie smeru/uhla objektu
-	/* * Prototyp metódy na nastavenie smeru/uhla objektu. * /
+	/* * <p>Prototyp metódy na nastavenie smeru/uhla objektu.</p> * /
 	public void uhol(double uhol);
-	/* * Prototyp metódy na nastavenie smeru/uhla objektu. * /
+	/* * <p>Prototyp metódy na nastavenie smeru/uhla objektu.</p> * /
 	public void smer(double uhol);
-	/* * Prototyp metódy na nastavenie smeru/uhla objektu. * /
+	/* * <p>Prototyp metódy na nastavenie smeru/uhla objektu.</p> * /
 	public void otoč(double uhol);
-	/* * Prototyp metódy na nastavenie smeru/uhla objektu. * /
+	/* * <p>Prototyp metódy na nastavenie smeru/uhla objektu.</p> * /
 	public void otoc(double uhol);
 	*/
 }

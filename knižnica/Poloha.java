@@ -189,20 +189,20 @@ public interface Poloha
 	public Bod poloha();
 
 	// Odporúčané protipóly metód na nastavenie súradníc alebo polohy objektu
-	/* * Prototyp metódy na nastavenie súradnice objektu. * /
+	/* * <p>Prototyp metódy na nastavenie súradnice objektu.</p> * /
 	public void polohaX(double novéX);
-	/* * Prototyp metódy na nastavenie súradnice objektu. * /
+	/* * <p>Prototyp metódy na nastavenie súradnice objektu.</p> * /
 	public void polohaY(double novéY);
-	/* * Prototyp metódy na nastavenie súradnice objektu. * /
+	/* * <p>Prototyp metódy na nastavenie súradnice objektu.</p> * /
 	public void súradnicaX(double novéX);
-	/* * Prototyp metódy na nastavenie súradnice objektu. * /
+	/* * <p>Prototyp metódy na nastavenie súradnice objektu.</p> * /
 	public void suradnicaX(double novéX);
-	/* * Prototyp metódy na nastavenie súradnice objektu. * /
+	/* * <p>Prototyp metódy na nastavenie súradnice objektu.</p> * /
 	public void súradnicaY(double novéY);
-	/* * Prototyp metódy na nastavenie súradnice objektu. * /
+	/* * <p>Prototyp metódy na nastavenie súradnice objektu.</p> * /
 	public void suradnicaY(double novéY);
 
-	/* * Prototyp metódy na nastavenie obidvoch súradníc objektu. * /
+	/* * <p>Prototyp metódy na nastavenie obidvoch súradníc objektu.</p> * /
 	public void poloha(Poloha poloha);
 	*/
 

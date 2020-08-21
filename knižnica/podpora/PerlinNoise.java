@@ -18,14 +18,14 @@ package knižnica.podpora;
  * <p>The class has been originally downloaded from:
  * <a href="https://gist.github.com/Flafla2/f0260a861be0ebdeef76"
  * target="_blank">A slightly modified implementation of Ken Perlin’s
- * improved noise that allows for tiling the noise arbitrarily</a>. The
+ * improved noise that allows for tiling the noise arbitrarily.</a> The
  * information about the licensing, however, is provided here:
  * <a href="http://flafla2.github.io/2014/08/09/perlinnoise.html"
- * target="_blank">Understanding Perlin Noise</a>. The author of C# code,
+ * target="_blank">Understanding Perlin Noise.</a> The author of C# code,
  * <a href="http://flafla2.github.io/about" target="_blank">Adrian
  * Biagioli</a> (alias Flafla2), claims that the code is free to use.
  * Also the author of the original algorithm, <a
- * href="https://mrl.nyu.edu/~perlin/" target="_blank">Ken Perlin</a>,
+ * href="https://mrl.nyu.edu/~perlin/" target="_blank">Ken Perlin,</a>
  * did not apply for any patents on the algorithm.</p>
  * 
  * @author Ken Perlin (the algorithm author), Adrian Biagioli (C# code

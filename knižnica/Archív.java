@@ -1861,7 +1861,7 @@ public class Archív implements Closeable
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
 	 * použiteľná len v prípade, že je archív otvorený na
-	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>.</p>
+	 * <b>{@linkplain #otvorNaČítanie(String) čítanie.}</b></p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> V špeciálom prípade, keď položka
 	 * archívu reprezentuje priečinok, sú parametre {@code prepísať}
@@ -2006,7 +2006,7 @@ public class Archív implements Closeable
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
 	 * použiteľná len v prípade, že je archív otvorený na
-	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>.</p>
+	 * <b>{@linkplain #otvorNaČítanie(String) čítanie.}</b></p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> V špeciálom prípade, keď položka
 	 * archívu reprezentuje priečinok, je parameter {@code prepísať}
@@ -2057,7 +2057,7 @@ public class Archív implements Closeable
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
 	 * použiteľná len v prípade, že je archív otvorený na
-	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>.</p>
+	 * <b>{@linkplain #otvorNaČítanie(String) čítanie.}</b></p>
 	 * 
 	 * @param názovPoložky názov položky v archíve
 	 * @param názovSúboru názov súboru na disku (môže byť {@code valnull})
@@ -2093,7 +2093,7 @@ public class Archív implements Closeable
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
 	 * použiteľná len v prípade, že je archív otvorený na
-	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>.</p>
+	 * <b>{@linkplain #otvorNaČítanie(String) čítanie.}</b></p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> V špeciálom prípade, keď položka
 	 * archívu reprezentuje priečinok, sú parametre {@code prepísať}
@@ -2174,7 +2174,7 @@ public class Archív implements Closeable
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
 	 * použiteľná len v prípade, že je archív otvorený na
-	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>.</p>
+	 * <b>{@linkplain #otvorNaČítanie(String) čítanie.}</b></p>
 	 * 
 	 * @param názovPoložky názov položky v archíve
 	 * @return položka archívu knižnice <a href="https://ant.apache.org/"
@@ -2218,7 +2218,7 @@ public class Archív implements Closeable
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je použiteľná
 	 * len v prípade, že je archív otvorený alebo otvoriteľný na
-	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>, to znamená, že
+	 * <b>{@linkplain #otvorNaČítanie(String) čítanie,}</b> to znamená, že
 	 * musí jestvovať na umiestnení, na ktoré smeruje táto inštancia
 	 * a nesmie byť otvorený na {@linkplain #otvorNaZápis(String) zápis}.</p>
 	 * 
@@ -2403,7 +2403,7 @@ public class Archív implements Closeable
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
 	 * použiteľná len v prípade, že je archív otvorený na
-	 * <b>{@linkplain #otvorNaČítanie(String) čítanie}</b>.</p>
+	 * <b>{@linkplain #otvorNaČítanie(String) čítanie.}</b></p>
 	 * 
 	 * @param názovPoložky názov položky, ktorej údaje majú byť prečítané
 	 *     (pozri aj {@link #zoznamPoložiek() zoznamPoložiek})
@@ -2468,7 +2468,7 @@ public class Archív implements Closeable
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
 	 * použiteľná len v prípade, že je archív otvorený na
-	 * <b>{@linkplain #otvorNaZápis(String) zápis}</b>.</p>
+	 * <b>{@linkplain #otvorNaZápis(String) zápis.}</b></p>
 	 * 
 	 * @param názovPoložky názov pridávanej položky (smie byť {@code valnull};
 	 *     v tom prípade bude použitý názov súboru)
@@ -2555,7 +2555,7 @@ public class Archív implements Closeable
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
 	 * použiteľná len v prípade, že je archív otvorený na
-	 * <b>{@linkplain #otvorNaZápis(String) zápis}</b>.</p>
+	 * <b>{@linkplain #otvorNaZápis(String) zápis.}</b></p>
 	 * 
 	 * @param názovPoložky názov pridávanej položky (nesmie byť zamlčaný)
 	 * @param údajePoložky údaje pridávanej položky (vo forme poľa bajtov)
@@ -2622,7 +2622,7 @@ public class Archív implements Closeable
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
 	 * použiteľná len v prípade, že je archív otvorený na
-	 * <b>{@linkplain #otvorNaZápis(String) zápis}</b>.</p>
+	 * <b>{@linkplain #otvorNaZápis(String) zápis.}</b></p>
 	 * 
 	 * @param názov názov pridávaného priečinka (nesmie byť zamlčaný)
 	 * @return položka archívu knižnice <a href="https://ant.apache.org/"

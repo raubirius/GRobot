@@ -72,13 +72,13 @@ import static knižnica.Konštanty.VODOROVNÁ;
  * niektorých implementácií, ktoré by mohli poslúžiť ako vzory
  * do budúcna, sú dostupné tu: <a
  * href="http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/6-b27/javax/swing/JScrollBar.java"
- * target="_blank">grepcode.com</a>, <a
+ * target="_blank">grepcode.com,</a> <a
  * href="http://developer.classpath.org/doc/javax/swing/JScrollBar-source.html"
- * target="_blank">developer.classpath.org</a>, <a
+ * target="_blank">developer.classpath.org,</a> <a
  * href="https://book2s.com/java/src/package/javax/swing/jscrollbar.html"
  * target="_blank">book2s.com</a>. Zálohy zdrojových kódov
  * z 28. 10. 2017 sú dostupné v <a href="resources/JScrollBar.7z"
- * target="_blank">tomto balíčku (7z)</a>.</p>
+ * target="_blank">tomto balíčku (7z).</a></p>
  * 
  * <p><b>Príklad:</b></p>
  * 
@@ -855,9 +855,9 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 * <p>Prilepí rolovaciu lištu k ľavému okraju. Táto akcia zruší
 	 * prípadné predchádzajúce prilepenie k pravému okraju. Každé
 	 * prilepenie upravuje súradnicový systém rolovacej lišty
-	 * presunutím čo najbližšie k prilepovanému okraju. To znamená
-	 * napríklad, že keď po prilepení k ľavému okraju posunieme
-	 * rolovaciu lištu na súradnice [10, 0], posunieme ju v skutočnosti
+	 * presunutím čo najbližšie k prilepovanému okraju. To znamená,
+	 * že keď napríklad po prilepení k ľavému okraju posunieme
+	 * rolovaciu lištu na súradnice [10, 0], tak ju ju v skutočnosti posunieme
 	 * na pozíciu desať bodov od ľavého okraja.</p>
 	 * 
 	 * @see #prilepVpravo()
@@ -879,9 +879,9 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 * <p>Prilepí rolovaciu lištu k pravému okraju. Táto akcia zruší
 	 * prípadné predchádzajúce prilepenie k ľavému okraju. Každé
 	 * prilepenie upravuje súradnicový systém rolovacej lišty
-	 * presunutím čo najbližšie k prilepovanému okraju. To znamená
-	 * napríklad, že keď po prilepení k pravému okraju posunieme
-	 * rolovaciu lištu na súradnice [-10, 0], posunieme ju v skutočnosti
+	 * presunutím čo najbližšie k prilepovanému okraju. To znamená,
+	 * že keď napríklad po prilepení k pravému okraju posunieme
+	 * rolovaciu lištu na súradnice [-10, 0], tak ju ju v skutočnosti posunieme
 	 * na pozíciu desať bodov od pravého okraja.</p>
 	 * 
 	 * @see #prilepVľavo()
@@ -900,9 +900,9 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 * <p>Prilepí rolovaciu lištu k hornému okraju. Táto akcia zruší
 	 * prípadné predchádzajúce prilepenie k dolnému okraju. Každé
 	 * prilepenie upravuje súradnicový systém rolovacej lišty
-	 * presunutím čo najbližšie k prilepovanému okraju. To znamená
-	 * napríklad, že keď po prilepení k hornému okraju posunieme
-	 * rolovaciu lištu na súradnice [0, -10], posunieme ju v skutočnosti
+	 * presunutím čo najbližšie k prilepovanému okraju. To znamená,
+	 * že keď napríklad po prilepení k hornému okraju posunieme
+	 * rolovaciu lištu na súradnice [0, -10], tak ju ju v skutočnosti posunieme
 	 * na pozíciu desať bodov od horného okraja.</p>
 	 * 
 	 * @see #prilepVľavo()
@@ -921,9 +921,9 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 * <p>Prilepí rolovaciu lištu k dolnému okraju. Táto akcia zruší
 	 * prípadné predchádzajúce prilepenie k hornému okraju. Každé
 	 * prilepenie upravuje súradnicový systém rolovacej lišty
-	 * presunutím čo najbližšie k prilepovanému okraju. To znamená
-	 * napríklad, že keď po prilepení k dolnému okraju posunieme
-	 * rolovaciu lištu na súradnice [0, 10], posunieme ju v skutočnosti
+	 * presunutím čo najbližšie k prilepovanému okraju. To znamená,
+	 * že keď napríklad po prilepení k dolnému okraju posunieme
+	 * rolovaciu lištu na súradnice [0, 10], tak ju ju v skutočnosti posunieme
 	 * na pozíciu desať bodov od dolného okraja.</p>
 	 * 
 	 * @see #prilepVľavo()
@@ -1082,7 +1082,7 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 
 	/**
 	 * <p>Zistí, či je rolovacia lišta viditeľná (zobrazená) alebo nie.
-	 * <!-- Po vytvorení je rolovacia lišta predvolene <b>skrytá</b>.
+	 * <!-- Po vytvorení je rolovacia lišta predvolene <b>skrytá.</b>
 	 * To znamená, že je potrebné ju zobraziť. -->Lištu môžeme skrývať
 	 * a zobrazovať metódami {@link #skry() skry} a {@link #zobraz()
 	 * zobraz}. Alternatívou tejto metódy je metóda
@@ -1102,7 +1102,7 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 
 	/**
 	 * <p>Zistí, či je rolovacia lišta viditeľná (zobrazená) alebo nie.
-	 * <!-- Po vytvorení je rolovacia lišta predvolene <b>skrytá</b>.
+	 * <!-- Po vytvorení je rolovacia lišta predvolene <b>skrytá.</b>
 	 * To znamená, že je potrebné ju zobraziť. -->Lištu môžeme skrývať
 	 * a zobrazovať metódami {@link #skry() skry} a {@link #zobraz()
 	 * zobraz}. Alternatívou tejto metódy je metóda
