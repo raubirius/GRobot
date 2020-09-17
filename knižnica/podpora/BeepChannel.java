@@ -49,6 +49,9 @@ public class BeepChannel extends Channel implements ActionListener
 	// Action countdown
 	private int delay = 0;
 
+	// Get next schedule record flag
+	private boolean next = false;
+
 	/** <p>The constructor.</p> */
 	public BeepChannel()
 	{
@@ -58,21 +61,57 @@ public class BeepChannel extends Channel implements ActionListener
 		timer.start();
 	}
 
+	private static long nanoTime1a = System.nanoTime();
+	// private static long nanoTime1b = nanoTime1a;
+
 	/** <p>Timer tick handler…</p> */
 	public void actionPerformed(ActionEvent evt)
 	{
-		if (delay > 0) --delay;
-		else if (0 == delay)
+		long nanoTime2a = System.nanoTime();
+		// System.out.println("System.nanoTime() A: " + // nanoTime1a + " " +
+		// 	((double)(nanoTime2a - nanoTime1a) / 1_000_000.0) + " ms");
+		int time = (int)((nanoTime2a - nanoTime1a) / 1000000);
+		nanoTime1a = nanoTime2a;
+
+		if (delay > 0)
 		{
-			--delay;
-			if (schedule.isEmpty()) pause();
+			// System.out.print("Delay: " + delay + " (" + ((double)delay /
+			// 	1000.0) + " s); time: " + time + " (" + ((double)time /
+			// 	1000.0) + " s)");
+
+			delay -= time;
+			if (delay <= 0) next = true;
+
+			// System.out.println("; reduced: " + delay + " (" + ((double)delay /
+			// 	1000.0) + " s); next: " + next);
+		}
+
+		if (next)
+		{
+			// long nanoTime2b = System.nanoTime();
+			// System.out.println("System.nanoTime() B: " + // nanoTime1b + " " +
+			// 	((double)(nanoTime2b - nanoTime1b) / 1_000_000_000.0) + " s");
+			// nanoTime1b = nanoTime2b;
+			// System.out.println("schedule.isEmpty(): " + schedule.isEmpty());
+
+			if (schedule.isEmpty())
+			{
+				next = false;
+				delay = 0;
+				pause();
+			}
 			else
 			{
 				Schedule current = schedule.remove(0);
-				if (current.duration >= 0) delay = current.duration;
-				else delay = 0;
+				if (current.duration >= 0) delay += current.duration;
 				if (current.frequency >= 0) setFrequency(current.frequency);
 				if (current.volume >= 0) setVolume(current.volume);
+				next = delay <= 0;
+
+				// System.out.println("  Frequency: " + getFrequency());
+				// System.out.println("  Volume: " + getVolume());
+				// System.out.println("  Delay: " + delay);
+				// System.out.println("  Next: " + next);
 			}
 		}
 
@@ -89,16 +128,31 @@ public class BeepChannel extends Channel implements ActionListener
 	/** <p>Add new schedule record.</p> */
 	public void addSchedule(int duration, double frequency, double volume)
 	{
-		if (delay < 0 && schedule.isEmpty())
+		if (!next && delay <= 0 && schedule.isEmpty())
 		{
-			if (duration >= 0) delay = duration; else delay = 0;
+			// System.out.println("Activate: ");
+
+			next = false;
+			if (duration >= 0) delay = duration; else next = true;
 			if (frequency >= 0) setFrequency(frequency);
 			if (volume >= 0) setVolume(volume);
+
+			// System.out.println("  Frequency: " + getFrequency());
+			// System.out.println("  Volume: " + getVolume());
+			// System.out.println("  Delay: " + delay);
+			// System.out.println("  Next: " + next);
 		}
 		else
 		{
+			// System.out.println("Schedule: ");
+
 			schedule.add(new Schedule(duration, frequency, volume));
-			if (delay < 0) delay = 0;
+			if (!next && delay <= 0) next = true;
+
+			// System.out.println("  Frequency: " + frequency);
+			// System.out.println("  Volume: " + volume);
+			// System.out.println("  Duration: " + duration);
+			// System.out.println("  Next: " + next);
 		}
 
 		resume();

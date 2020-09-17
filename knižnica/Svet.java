@@ -33,6 +33,7 @@
 
 package knižnica;
 
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -52,6 +53,7 @@ import java.awt.KeyEventDispatcher;
 import java.awt.MenuItem; // len skrz systémovúIkonu (SystemTray>TrayIcon)
 import java.awt.Point;
 import java.awt.PopupMenu; // len skrz systémovúIkonu (SystemTray>TrayIcon)
+import java.awt.Robot;
 import java.awt.Shape;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
@@ -918,6 +920,11 @@ public final class Svet extends JFrame
 						if (dtde.isDataFlavorSupported(
 							DataFlavor.javaFileListFlavor))
 						{
+							ÚdajeUdalostí.poslednáSúradnicaMyšiX =
+								ÚdajeUdalostí.súradnicaMyšiX;
+							ÚdajeUdalostí.poslednáSúradnicaMyšiY =
+								ÚdajeUdalostí.súradnicaMyšiY;
+
 							ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(
 								dtde.getLocation().getX());
 							ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(
@@ -1516,7 +1523,12 @@ public final class Svet extends JFrame
 				svet.setLocation(počiatočnéX, počiatočnéY);
 				svet.setVisible(zobrazPriŠtarte);
 
-				// TODO: Detekcia retina displejov a implementácia mechanizmu
+				// Poznámka: Nasledujúci nápad bol dobrý, ale nepodarilo sa
+				// ho zrealizovať. Detekcie retiny, ktoré som našiel
+				// jednoducho nefungujú… Škoda. Možno v budúcnosti sa
+				// situácia zlepší, takže to tu ponechávam ako TODO.
+				// 
+				// Detekcia retina displejov a implementácia mechanizmu
 				// automatického čítania obrázkov s vyšším rozlíšením.
 				// Odoslať na System.err nasledujúce upozornenie pri
 				// prečítaní prvého obrázka, ku ktorému nebola nájdená verzia
@@ -2034,7 +2046,8 @@ public final class Svet extends JFrame
 
 		private final static Časovač časovač = new Časovač();
 
-		// Udalosti okna – ObsluhaUdalostí.počúvadlo myši, klávesnice a udalostí komponentov
+		// Udalosti okna – ObsluhaUdalostí.počúvadlo myši, klávesnice
+		// a udalostí komponentov
 		private static class UdalostiOkna implements MouseListener,
 			MouseMotionListener, MouseWheelListener, KeyListener,
 			ComponentListener, WindowFocusListener, WindowListener,
@@ -2071,12 +2084,21 @@ public final class Svet extends JFrame
 			}
 
 			public void mouseEntered(MouseEvent e) {}
-			public void mouseExited(MouseEvent e) {}
+
+			public void mouseExited(MouseEvent e)
+			{
+				if (null != robotMyši) robotMyši.spracuj(e);
+			}
 
 			public void mousePressed(MouseEvent e)
 			{
 				synchronized (ÚdajeUdalostí.zámokMyši)
 				{
+					ÚdajeUdalostí.poslednáSúradnicaMyšiX =
+						ÚdajeUdalostí.súradnicaMyšiX;
+					ÚdajeUdalostí.poslednáSúradnicaMyšiY =
+						ÚdajeUdalostí.súradnicaMyšiY;
+
 					ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
 					ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
 					e.translatePoint(
@@ -2125,6 +2147,11 @@ public final class Svet extends JFrame
 			{
 				synchronized (ÚdajeUdalostí.zámokMyši)
 				{
+					ÚdajeUdalostí.poslednáSúradnicaMyšiX =
+						ÚdajeUdalostí.súradnicaMyšiX;
+					ÚdajeUdalostí.poslednáSúradnicaMyšiY =
+						ÚdajeUdalostí.súradnicaMyšiY;
+
 					ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
 					ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
 					e.translatePoint(
@@ -2173,8 +2200,21 @@ public final class Svet extends JFrame
 			{
 				synchronized (ÚdajeUdalostí.zámokMyši)
 				{
-					ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
-					ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
+					if (null != robotMyši)
+					{
+						if (robotMyši.spracuj(e)) return;
+					}
+					else
+					{
+						ÚdajeUdalostí.poslednáSúradnicaMyšiX =
+							ÚdajeUdalostí.súradnicaMyšiX;
+						ÚdajeUdalostí.poslednáSúradnicaMyšiY =
+							ÚdajeUdalostí.súradnicaMyšiY;
+
+						ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
+						ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
+					}
+
 					e.translatePoint(
 						(int)ÚdajeUdalostí.súradnicaMyšiX - e.getX(),
 						(int)ÚdajeUdalostí.súradnicaMyšiY - e.getY());
@@ -2203,8 +2243,21 @@ public final class Svet extends JFrame
 			{
 				synchronized (ÚdajeUdalostí.zámokMyši)
 				{
-					ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
-					ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
+					if (null != robotMyši)
+					{
+						if (robotMyši.spracuj(e)) return;
+					}
+					else
+					{
+						ÚdajeUdalostí.poslednáSúradnicaMyšiX =
+							ÚdajeUdalostí.súradnicaMyšiX;
+						ÚdajeUdalostí.poslednáSúradnicaMyšiY =
+							ÚdajeUdalostí.súradnicaMyšiY;
+
+						ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
+						ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
+					}
+
 					e.translatePoint(
 						(int)ÚdajeUdalostí.súradnicaMyšiX - e.getX(),
 						(int)ÚdajeUdalostí.súradnicaMyšiY - e.getY());
@@ -2233,6 +2286,11 @@ public final class Svet extends JFrame
 			{
 				synchronized (ÚdajeUdalostí.zámokMyši)
 				{
+					ÚdajeUdalostí.poslednáSúradnicaMyšiX =
+						ÚdajeUdalostí.súradnicaMyšiX;
+					ÚdajeUdalostí.poslednáSúradnicaMyšiY =
+						ÚdajeUdalostí.súradnicaMyšiY;
+
 					ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
 					ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
 					e.translatePoint(
@@ -2647,6 +2705,76 @@ public final class Svet extends JFrame
 		// Inštancia spracúvajúca udalosti okna
 		/*packagePrivate*/ final static UdalostiOkna udalostiOkna =
 			new UdalostiOkna();
+
+		// Robot Javy (slúžiaci na automatizované generovanie udalostí vstupu –
+		// v našom prípade myši), s ktorého pomocou je riešené trvalé
+		// zachytenie kurzora myši v okne sveta.
+		private static class RobotMyši extends Robot
+		{
+			// Vráti novú inštanciu.
+			/*packagePrivate*/ static RobotMyši daj()
+			{
+				// Vrhá AWTException alebo SecurityException.
+				try { return new RobotMyši(); } catch (Exception e)
+				{ GRobotException.vypíšChybovéHlásenia(e); } return null;
+			}
+
+			// Konštruktor.
+			/*packagePrivate*/ RobotMyši() throws AWTException {}
+
+			// Resetuje polohu kurzora myši.
+			/*packagePrivate*/ void naStred()
+			{
+				Point p = hlavnýPanel.getLocationOnScreen();
+
+				mouseMove(
+					p.x + (hlavnýPanel.getWidth() / 2),
+					p.y + (hlavnýPanel.getHeight() / 2));
+
+				ÚdajeUdalostí.poslednáSúradnicaMyšiX =
+					ÚdajeUdalostí.poslednáSúradnicaMyšiY =
+					ÚdajeUdalostí.súradnicaMyšiX =
+					ÚdajeUdalostí.súradnicaMyšiY = 0;
+			}
+
+			// Spracovanie udalosti myši. Návratová hodnota indikuje, či má byť
+			// toto spracovanie ignorované obsluhami pohybu myšou.
+			/*packagePrivate*/ boolean spracuj(MouseEvent e)
+			{
+				int polohaX = hlavnýPanel.getWidth() / 2;
+				int polohaY = hlavnýPanel.getHeight() / 2;
+
+				int eGetX = e.getX();
+				int eGetY = e.getY();
+
+				// Overí, či bola táto udalosť myši spôsobená týmto robotom.
+				// Ak áno, ignoruje ju. (Inak by to zmrzlo.)
+				if (eGetX == polohaX && eGetY == polohaY) return true;
+
+				// Presunie kurzor myši do stredu okna.
+				// (Pozor, poloha myši je relatívna voči oknu!)
+				mouseMove(
+					e.getXOnScreen() - eGetX + polohaX,
+					e.getYOnScreen() - eGetY + polohaY);
+
+				// Uloží predchádzajúce súradnice myši.
+				ÚdajeUdalostí.poslednáSúradnicaMyšiX =
+					ÚdajeUdalostí.súradnicaMyšiX;
+				ÚdajeUdalostí.poslednáSúradnicaMyšiY =
+					ÚdajeUdalostí.súradnicaMyšiY;
+
+				// Prepočíta a uloží novú polohu myši.
+				ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(eGetX);
+				ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(eGetY);
+
+				return false;
+			}
+		}
+
+		// Robot Javy (automat) schopný generovať udalosti vstupu. Tento robot
+		// (ak jestvuje) je používaný na trvalé zachytenie kurzora myši v okne
+		// sveta.
+		private static RobotMyši robotMyši = null;
 
 
 	// Nie je možné vytvárať inštancie sveta
@@ -8879,6 +9007,18 @@ public final class Svet extends JFrame
 		 * (resp. ikonami) alebo zvukmi, ktoré prijímajú názov súboru ako
 		 * parameter.)</p>
 		 * 
+		 * <p class="remark"><b>Poznámka:</b> Z dôvodu konzistencie by
+		 * k tejto metóde mal byť definovaný alias {@code obrazok(súbor)}
+		 * (bez diakritiky), ktorý by korešpondoval s rovnakým aliasom metódy
+		 * {@link #ikona() ikona()}, podobne ako je to v triedach {@linkplain 
+		 * KontextováPoložka#obrazok(String) kontextových} a {@linkplain 
+		 * PoložkaPonuky#obrazok(String) klasických} položiek ponuky. V tejto
+		 * triede to však nie je možné, pretože už obsahuje definíciu
+		 * metódy {@link #obrazok(String) obrazok(súbor)} (ktorá je aliasom
+		 * metódy {@link #obrázok(String) obrázok(súbor)} – s diakritikou).
+		 * Nie je to závažný technický problém, pretože metódy sú navrhnuté
+		 * tak, aby boli univerzálne. Je to iba „kozmetický“ problém.</p>
+		 * 
 		 * @param súbor názov súboru s obrázkom
 		 * 
 		 * @throws GRobotException ak súbor s obrázkom nebol nájdený
@@ -8895,13 +9035,6 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Nastaví oknu aplikácie ikonu podľa zadaného obrázka.</p>
 		 * 
-		 * <!-- p class="remark"><b>Poznámka:</b> Z dôvodu konzistencie je
-		 * k tejto metóde definovaný alias {@link #obrazok(Image)
-		 * obrazok(obrázok)} (s názvom bez diakritiky), ktorý má korešpondovať
-		 * s aliasom metódy {@link #ikona() ikona()}.</p> NEDÁ SA – TODO:
-		 * vysvetliť prečo a podotknúť, že to neprekáža, lebo metóda
-		 * akceptuje oboje -->
-		 * 
 		 * @param obrázok obrázok slúžiaci ako predloha pre ikonu
 		 */
 		public static void ikona(Image obrázok)
@@ -8917,15 +9050,10 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Prečíta ikonu okna aplikácie a prevedie ju na obrázok.</p>
 		 * 
-		 * <!-- p class="remark"><b>Poznámka:</b> Názov tejto metódy neobsahuje
-		 * žiadnu diakritiku, preto nemohol byť definovaný prislúchajúci alias,
-		 * ktorý by vracal objekt typu {@link Obrazok Obrazok} (t. j. triedy
-		 * aliasu, ktorej názov tiež neobsahuje diakritiku). Z toho dôvodu je
-		 * alias nahradený metódou {@link #obrazok() obrazok} (bez
-		 * diakritiky).</p> NEDÁ SA – TODO: vysvetliť prečo a podotknúť, že to
-		 * bolo vyriešené tak, že táto metóda vracia objekt typu Obrazok bez
-		 * diakritiky, ktorý je akceptovaný aj všade tam, kde by sme inak
-		 * očakávali objekt typu Obrázok s diakritikou. -->
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda vriacia objekt typu
+		 * {@link Obrazok Obrazok} (t. j. triedy, ktorá je aliasom triedy
+		 * {@link Obrázok Obrázok}). Dôvod je uvedený v poznámke v opise metódy
+		 * {@link #ikona(String) ikona(súbor)}.</p>
 		 * 
 		 * @return obrázok s ikonou
 		 */
@@ -12555,11 +12683,25 @@ public final class Svet extends JFrame
 
 			/**
 			 * <p>Táto metóda je vykonaná automaticky po ukončení
-			 * externého procesu.
-			 * <!-- TODO dopracovať opis --></p>
+			 * externého procesu. Návratový kód je nositeľom informácie
+			 * o spôsobe ukončenia procesu alebo o chybe. Obvykle túto
+			 * informáciu tvorí spustený proces pri svojom ukončení, ale
+			 * môže ísť aj o informáciu odovzdanú spúšťajúcim procesom
+			 * (príkazovým riadkom systému alebo programovacieho rámca).
+			 * Hodnota nula obvykle znamená korektné ukončenie procesu.
+			 * Interpretácia iných hodnôt závisí od konkrétneho procesu –
+			 * o tom by mala informovať jeho dokumentácia.</p>
+			 * 
+			 * <p>V tomto programovacom rámci je jediná výnimka, keď túto
+			 * hodnotu negeneruje spustený proces a to pri pokuse spustenia
+			 * nového procesu v čase, keď je skôr spustený proces stále
+			 * v činnosti. Jedna inštancia príkazového riadka dovoľuje
+			 * v jednom čase spustenie iba jedného procesu. V prípade pokusu
+			 * o konfliktné spustenie vygeneruje rámec túto udalosť
+			 * s návratovým kódom −1.</p>
 			 * 
 			 * @param návratovýKód kód, ktorý vrátil externý proces
-			 *     pri ukončení
+			 *     pri ukončení; prípadne kód generovaný nadradeným procesom
 			 */
 			public void processEnded(int návratovýKód)
 			{
@@ -16431,7 +16573,12 @@ public final class Svet extends JFrame
 				}
 			}
 			</pre>
-		 * <!-- TODO pridať výsledok príkladu použitia -->
+		 * 
+		 * <p><b>Výsledok:</b></p>
+		 * 
+		 * <p><image>standardny-vstup-na-vnutornu-konzolu.png<alt/>Výsledok
+		 * štandardného vstupu na vnútornej konzole.</image>Výsledok.
+		 * (Ako vidno, nastavenie správneho kódovania môže byť problém…)</p>
 		 * 
 		 * @return ak bol štandardný vstup bezchybne aktivovaný, tak táto
 		 *     metóda vráti hodnotu {@code valtrue}
@@ -16971,7 +17118,6 @@ public final class Svet extends JFrame
 		public static void režimLadenia(boolean zapniLadenie,
 			boolean vypíšChybovéHlásenia)
 		{
-			// TODO – pridať reakciu vzniklaVýnimka(GRobotException výnimka)…
 			Skript.ladenie = zapniLadenie;
 			GRobotException.vypíšChybovéHlásenia = vypíšChybovéHlásenia;
 		}
@@ -18170,7 +18316,7 @@ public final class Svet extends JFrame
 		 * <pre CLASS="example">
 			{@code kwdimport} knižnica.*;
 			{@code kwdimport} knižnica.podpora.ExpressionProcessor;
-			
+
 			{@code kwdpublic} {@code typeclass} SpustiSkript {@code kwdextends} {@link GRobot GRobot}
 			{
 				{@code comm// Špeciálny príkaz (dostupný v skripte ako: list "name) slúžiaci na}
@@ -18180,7 +18326,7 @@ public final class Svet extends JFrame
 				{
 					ExpressionProcessor.globalVariables.getOrCreate(name).clear();
 				}
-			
+
 				{@code comm// Špeciálny príkaz (dostupný v skripte ako: size "name) slúžiaci na}
 				{@code comm// overenie aktuálnej veľkosti poľa.}
 				{@code kwdpublic} {@code kwdstatic} {@code typedouble} size(String name)
@@ -18190,7 +18336,7 @@ public final class Svet extends JFrame
 					{@code kwdif} ({@code valnull} == list) {@code kwdreturn} -{@code num2};
 					{@code kwdreturn} list.size();
 				}
-			
+
 				{@code kwdprivate} SpustiSkript({@link String String}[] args)
 				{
 					{@code comm// V skripte (nižšie) sú interaktívne inštancie vždy explicitne určené}
@@ -18199,7 +18345,7 @@ public final class Svet extends JFrame
 					{@code comm// }
 					{@code comm// 	interaktívnyRežim(true);}
 					{@code comm// 	Svet.interaktívnyRežim(true);}
-			
+
 					{@code comm// Spúšťanie skriptov zo súborov, ktorých názvy boli zadané ako}
 					{@code comm// argumenty príkazového riadka procesu (príkazového riadka OS) a čo}
 					{@code comm// najpresnejší výpis výsledku (najmä v súvislosti so zachytením}
@@ -18212,7 +18358,7 @@ public final class Svet extends JFrame
 					{
 						{@code kwdif} (!arg.{@link String#endsWith(String) endsWith}({@code srg".GRScript"})) arg += {@code srg".GRScript"};
 						{@code typeint} kód = {@link Svet Svet}.{@link Svet#vykonajSkript(String, boolean) vykonajSkript}(arg, {@code valtrue});
-			
+
 						{@code kwdif} ({@code num0} &gt; kód)
 							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Chyba pri čítaní súboru „"}, arg,
 								{@code srg"“ ("}, kód, {@code srg")."});
@@ -18223,22 +18369,22 @@ public final class Svet extends JFrame
 						}
 						{@code kwdelse}
 							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Skript „"}, arg, {@code srg"“ bol vykonaný úspešne."});
-			
+
 						{@code kwdif} (!{@link GRobotException GRobotException}.{@link GRobotException#denník denník}.{@link Zoznam#prázdny() prázdny}())
 						{
 							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Správy z denníka chýb:"});
-			
+
 							{@code kwdfor} ({@link GRobotException GRobotException}.{@link GRobotException.Chyba Chyba} chyba : {@link GRobotException GRobotException}.{@link GRobotException#denník denník})
 							{
 								{@code kwdif} ({@code valnull} != chyba.výnimka) {@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(chyba.{@link GRobotException.Chyba#výnimka výnimka});
 								{@code kwdif} ({@code valnull} != chyba.správa) {@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(chyba.{@link GRobotException.Chyba#správa správa});
 							}
-			
+
 							{@link GRobotException GRobotException}.{@link GRobotException#denník denník}.{@link Zoznam#vymaž() vymaž}();
 						}
 					}
 				}
-			
+
 				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 				{
 					{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"SpustiSkript.cfg"});
@@ -19647,7 +19793,7 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Vypíše sériu argumentov v tvare textu na strope. Má rovnaký efekt
 		 * ako keby sme volali metódu {@link Plátno#vypíš(Object[])
-		 * strop.vypíš(Object...)}.</p>
+		 * strop.vypíš(Object...)} – ďalšie podrobnosti sú v jej opise.</p>
 		 * 
 		 * @param argumenty zoznam argumentov rôzneho údajového typu
 		 *     oddelený čiarkami
@@ -19665,8 +19811,7 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Vypíše sériu argumentov v tvare textu na strope a posunie sa na
 		 * ďalší riadok. Má rovnaký efekt ako keby sme volali metódu {@link 
-		 * Plátno#vypíšRiadok(Object[])
-		 * strop.vypíšRiadok(Object...)}.</p>
+		 * Plátno#vypíšRiadok(Object[]) strop.vypíšRiadok(Object...)}.</p>
 		 * 
 		 * @param argumenty zoznam argumentov rôzneho údajového typu
 		 *     oddelený čiarkami
@@ -23255,10 +23400,9 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Spustí časovač so zadaným časovým intervalom v sekundách.
-		 * Pri viacnásobnom volaní tejto metódy je predchádzajúci časovač
-		 * vždy zastavený (to aj vtedy, keď je zadaný rovnaký časový interval
-		 * ako naposledy) a je vytvorený nový časovač so zadaným časovým
-		 * intervalom.</p>
+		 * Pri viacnásobnom volaní tejto metódy je časovač vždy zastavený
+		 * (to aj vtedy, keď je zadaný rovnaký časový interval ako naposledy)
+		 * a opätovne spustený s novým časovým intervalom.</p>
 		 * 
 		 * <p>Ďalšie podrobnosti o časovači sú uvedené v opise metódy
 		 * {@link #spustiČasovač() spustiČasovač()}.</p>
@@ -25466,13 +25610,64 @@ public final class Svet extends JFrame
 		{ return vzdialenosťBodov(poleBodov); }
 
 
+		// Optimalizovaná verzia metódy Line2D.ptLineDistSq.
+		// TODO: Odkaz na článok ICETA’20 (ak vyjde).
+		private static double ptLineDistSq(double x1, double y1,
+			double x2, double y2, double px, double py)
+		{
+			x2 -= x1; y2 -= y1; px -= x1; py -= y1;
+			double pd2 = x2 * x2 + y2 * y2;
+
+			double x = -px, y = -py;
+			if (pd2 != 0)
+			{
+				// (Keď *NIE SÚ* body zhodné.)
+				double u = (px * x2 + py * y2) / pd2;
+				x += u * x2; y += u * y2;
+			}
+
+			return x * x + y * y;
+		}
+
+		// Náhrada metódy Line2D.ptLineDist.
+		private static double ptLineDist(double x1, double y1,
+			double x2, double y2, double px, double py)
+		{ return Math.sqrt(ptLineDistSq(x1, y1, x2, y2, px, py)); }
+
+		// Optimalizovaná verzia metódy Line2D.ptSegDistSq.
+		// TODO: Odkaz na článok ICETA’20 (ak vyjde).
+		private static double ptSegDistSq(double x1, double y1,
+			double x2, double y2, double px, double py)
+		{
+			x2 -= x1; y2 -= y1; double pd2 = x2 * x2 + y2 * y2;
+			px -= x1; py -= y1; double x = -px, y = -py;
+
+			if (pd2 != 0)
+			{
+				double u = (px * x2 + py * y2) / pd2;
+				if (u > 1.0) { x += x2; y += y2; }
+				else if (u >= 0.0) { x += u * x2; y += u * y2; }
+			}
+
+			return x * x + y * y;
+		}
+
+		// Náhrada metódy Line2D.ptSegDist.
+		private static double ptSegDist(double x1, double y1, double x2,
+			double y2, double px, double py)
+		{ return Math.sqrt(ptSegDistSq(x1, y1, x2, y2, px, py)); }
+
+
 		/**
 		 * <p>Vypočíta vzdialenosť od zadaného voľného bodu V[x0, y0]
 		 * k priamke určenej dvomi bodmi A[x1, y1] a B[x2, y2]. (Ak bod
-		 * leží na priamke, tak je vzdialenosť rovná nule.) Táto metóda
-		 * volá metódu jazyka Java {@link Line2D#ptLineDist(double, double,
-		 * double, double, double, double) Line2D.ptLineDist(x1, y1, x2, y2,
-		 * x0, y0)}.</p>
+		 * leží na priamke, tak je vzdialenosť rovná nule.)</p>
+		 * 
+		 * <p>Metóda nepoužíva metódu jazyka Java {@link 
+		 * Line2D#ptLineDist(double, double, double, double, double, double)
+		 * Line2D.ptLineDist(x1, y1, x2, y2, x0, y0)}, ale vnútornú
+		 * (rovnomennú) optimalizovanú verziu jednej z implementácií tejto
+		 * metódy.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> V skutočnosti by sme nemali
 		 * hovoriť, že ide o „metódu jazyka Java.“ Je to statická metóda
@@ -25513,12 +25708,12 @@ public final class Svet extends JFrame
 		 */
 		public final static double vzdialenosťBoduOdPriamky(
 			double x0, double y0, double x1, double y1, double x2, double y2)
-		{ return Line2D.ptLineDist(x1, y1, x2, y2, x0, y0); }
+		{ return ptLineDist(x1, y1, x2, y2, x0, y0); }
 
 		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťBoduOdPriamky(double, double, double, double, double, double) vzdialenosťBoduOdPriamky}.</p> */
 		public final static double vzdialenostBoduOdPriamky(
 			double x0, double y0, double x1, double y1, double x2, double y2)
-		{ return Line2D.ptLineDist(x1, y1, x2, y2, x0, y0); }
+		{ return ptLineDist(x1, y1, x2, y2, x0, y0); }
 
 		/**
 		 * <p>Vypočíta vzdialenosť od zadaného voľného bodu V k priamke |AB|.
@@ -25533,13 +25728,13 @@ public final class Svet extends JFrame
 		 */
 		public final static double vzdialenosťBoduOdPriamky(
 			Poloha V, Poloha A, Poloha B)
-		{ return Line2D.ptLineDist(A.polohaX(), A.polohaY(),
+		{ return ptLineDist(A.polohaX(), A.polohaY(),
 			B.polohaX(), B.polohaY(), V.polohaX(), V.polohaY()); }
 
 		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťBoduOdPriamky(Poloha, Poloha, Poloha) vzdialenosťBoduOdPriamky}.</p> */
 		public final static double vzdialenostBoduOdPriamky(
 			Poloha V, Poloha A, Poloha B)
-		{ return Line2D.ptLineDist(A.polohaX(), A.polohaY(),
+		{ return ptLineDist(A.polohaX(), A.polohaY(),
 			B.polohaX(), B.polohaY(), V.polohaX(), V.polohaY()); }
 
 		/**
@@ -25561,7 +25756,7 @@ public final class Svet extends JFrame
 				null == poleBodov[0] || null == poleBodov[1] ||
 				null == poleBodov[2]*/) return Double.NaN;
 
-			return Line2D.ptLineDist(
+			return ptLineDist(
 				poleBodov[1].polohaX(), poleBodov[1].polohaY(),
 				poleBodov[2].polohaX(), poleBodov[2].polohaY(),
 				poleBodov[0].polohaX(), poleBodov[0].polohaY());
@@ -25576,10 +25771,13 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Vypočíta vzdialenosť od zadaného voľného bodu V[x0, y0]
 		 * k úsečke určenej dvomi bodmi A[x1, y1] a B[x2, y2]. (Ak bod
-		 * leží na úsečke, tak je vzdialenosť rovná nule.) Táto metóda
-		 * volá metódu jazyka Java {@link Line2D#ptSegDist(double, double,
-		 * double, double, double, double) Line2D.ptSegDist(x1, y1, x2, y2,
-		 * x0, y0)}.</p>
+		 * leží na úsečke, tak je vzdialenosť rovná nule.)</p>
+		 * 
+		 * <p>Metóda nepoužíva metódu jazyka Java {@link 
+		 * Line2D#ptSegDist(double, double, double, double, double, double)
+		 * Line2D.ptSegDist(x1, y1, x2, y2, x0, y0)}, ale vnútornú
+		 * (rovnomennú) optimalizovanú verziu jednej z implementácií tejto
+		 * metódy.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> V skutočnosti by sme nemali
 		 * hovoriť, že ide o „metódu jazyka Java.“ Je to statická metóda
@@ -25707,12 +25905,12 @@ public final class Svet extends JFrame
 		 */
 		public final static double vzdialenosťBoduOdÚsečky(
 			double x0, double y0, double x1, double y1, double x2, double y2)
-		{ return Line2D.ptSegDist(x1, y1, x2, y2, x0, y0); }
+		{ return ptSegDist(x1, y1, x2, y2, x0, y0); }
 
 		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťBoduOdÚsečky(double, double, double, double, double, double) vzdialenosťBoduOdÚsečky}.</p> */
 		public final static double vzdialenostBoduOdUsecky(
 			double x0, double y0, double x1, double y1, double x2, double y2)
-		{ return Line2D.ptSegDist(x1, y1, x2, y2, x0, y0); }
+		{ return ptSegDist(x1, y1, x2, y2, x0, y0); }
 
 		/**
 		 * <p>Vypočíta vzdialenosť od zadaného voľného bodu V k úsečke |AB|.
@@ -25727,13 +25925,13 @@ public final class Svet extends JFrame
 		 */
 		public final static double vzdialenosťBoduOdÚsečky(
 			Poloha V, Poloha A, Poloha B)
-		{ return Line2D.ptSegDist(A.polohaX(), A.polohaY(),
+		{ return ptSegDist(A.polohaX(), A.polohaY(),
 			B.polohaX(), B.polohaY(), V.polohaX(), V.polohaY()); }
 
 		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťBoduOdÚsečky(Poloha, Poloha, Poloha) vzdialenosťBoduOdÚsečky}.</p> */
 		public final static double vzdialenostBoduOdUsecky(
 			Poloha V, Poloha A, Poloha B)
-		{ return Line2D.ptSegDist(A.polohaX(), A.polohaY(),
+		{ return ptSegDist(A.polohaX(), A.polohaY(),
 			B.polohaX(), B.polohaY(), V.polohaX(), V.polohaY()); }
 
 		/**
@@ -25755,7 +25953,7 @@ public final class Svet extends JFrame
 				null == poleBodov[0] || null == poleBodov[1] ||
 				null == poleBodov[2]*/) return Double.NaN;
 
-			return Line2D.ptSegDist(
+			return ptSegDist(
 				poleBodov[1].polohaX(), poleBodov[1].polohaY(),
 				poleBodov[2].polohaX(), poleBodov[2].polohaY(),
 				poleBodov[0].polohaX(), poleBodov[0].polohaY());
@@ -26037,15 +26235,15 @@ public final class Svet extends JFrame
 
 			// Všeobecne – tento riadok by vypočítal vzdialenosť voľného bodu
 			// [x0, y0] od úsečky [x1, y1] – [x2, y2]:
-			// Line2D.ptSegDist(x1, y1, x2, y2, x0, y0);
+			// ptSegDist(x1, y1, x2, y2, x0, y0);
 			// (Nižšie sú konkretizované štyri rôzne situácie.)
 
-			double vzdialenosť = Line2D.ptSegDist(x1, y1, x2, y2, x3, y3);
-			double porovnaj = Line2D.ptSegDist(x1, y1, x2, y2, x4, y4);
+			double vzdialenosť = ptSegDist(x1, y1, x2, y2, x3, y3);
+			double porovnaj = ptSegDist(x1, y1, x2, y2, x4, y4);
 			if (vzdialenosť > porovnaj) vzdialenosť = porovnaj;
-			porovnaj = Line2D.ptSegDist(x3, y3, x4, y4, x1, y1);
+			porovnaj = ptSegDist(x3, y3, x4, y4, x1, y1);
 			if (vzdialenosť > porovnaj) vzdialenosť = porovnaj;
-			porovnaj = Line2D.ptSegDist(x3, y3, x4, y4, x2, y2);
+			porovnaj = ptSegDist(x3, y3, x4, y4, x2, y2);
 			if (vzdialenosť > porovnaj) vzdialenosť = porovnaj;
 
 			return vzdialenosť;
@@ -26157,7 +26355,9 @@ public final class Svet extends JFrame
 		 * (Pričom algoritmus výpočtu vzdialenosti bodu od priamky nie je
 		 * príliš výpočtovo náročný a aj v triedach Javy sa nachádza
 		 * {@linkplain Line2D#ptLineDist(double, double, double, double,
-		 * double, double) metóda}, ktorá tento algoritmus implementuje.)</p>
+		 * double, double) metóda}, ktorá tento algoritmus implementuje.
+		 * Programovací rámec GRobot vnútorne implementuje vlastnú
+		 * optimalizovanú verziu jednej z implementácií tejto metódy.)</p>
 		 * 
 		 * <p><image>vzdialenost-priamky-od-kruznice.svg<alt/><onerror>vzdialenost-priamky-od-kruznice.png</onerror></image>Grafické
 		 * znázornenie vzdialenosti úsečky od kružnice (červenou), ktorú
@@ -26180,13 +26380,13 @@ public final class Svet extends JFrame
 		public final static double vzdialenosťPriamkyOdKružnice(
 			double x1, double y1, double x2, double y2,
 			double x3, double y3, double r)
-		{ return Line2D.ptLineDist(x1, y1, x2, y2, x3, y3) - r; }
+		{ return ptLineDist(x1, y1, x2, y2, x3, y3) - r; }
 
 		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťPriamkyOdKružnice(double, double, double, double, double, double, double) vzdialenosťPriamkyOdKružnice}.</p> */
 		public final static double vzdialenostPriamkyOdKruznice(
 			double x1, double y1, double x2, double y2,
 			double x3, double y3, double r)
-		{ return Line2D.ptLineDist(x1, y1, x2, y2, x3, y3) - r; }
+		{ return ptLineDist(x1, y1, x2, y2, x3, y3) - r; }
 
 		/**
 		 * <p>Vypočíta vzdialenosť medzi určenou priamkou |AB| a kružnicou
@@ -26202,13 +26402,13 @@ public final class Svet extends JFrame
 		 */
 		public final static double vzdialenosťPriamkyOdKružnice(
 			Poloha A, Poloha B, Poloha S, double r)
-		{ return Line2D.ptLineDist(A.polohaX(), A.polohaY(), B.polohaX(),
+		{ return ptLineDist(A.polohaX(), A.polohaY(), B.polohaX(),
 			B.polohaY(), S.polohaX(), S.polohaY()) - r; }
 
 		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťPriamkyOdKružnice(Poloha, Poloha, Poloha, double) vzdialenosťPriamkyOdKružnice}.</p> */
 		public final static double vzdialenostPriamkyOdKruznice(
 			Poloha A, Poloha B, Poloha S, double r)
-		{ return Line2D.ptLineDist(A.polohaX(), A.polohaY(), B.polohaX(),
+		{ return ptLineDist(A.polohaX(), A.polohaY(), B.polohaX(),
 			B.polohaY(), S.polohaX(), S.polohaY()) - r; }
 
 		/**
@@ -26233,7 +26433,7 @@ public final class Svet extends JFrame
 				null == poleBodov[2]*/)
 				return Double.NaN;
 
-			return Line2D.ptLineDist(poleBodov[0].polohaX(),
+			return ptLineDist(poleBodov[0].polohaX(),
 				poleBodov[0].polohaY(), poleBodov[1].polohaX(),
 				poleBodov[1].polohaY(), poleBodov[2].polohaX(),
 				poleBodov[2].polohaY()) - r;
@@ -26280,13 +26480,13 @@ public final class Svet extends JFrame
 		public final static double vzdialenosťÚsečkyOdKružnice(
 			double x1, double y1, double x2, double y2,
 			double x3, double y3, double r)
-		{ return Line2D.ptSegDist(x1, y1, x2, y2, x3, y3) - r; }
+		{ return ptSegDist(x1, y1, x2, y2, x3, y3) - r; }
 
 		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťÚsečkyOdKružnice(double, double, double, double, double, double, double) vzdialenosťÚsečkyOdKružnice}.</p> */
 		public final static double vzdialenostUseckyOdKruznice(
 			double x1, double y1, double x2, double y2,
 			double x3, double y3, double r)
-		{ return Line2D.ptSegDist(x1, y1, x2, y2, x3, y3) - r; }
+		{ return ptSegDist(x1, y1, x2, y2, x3, y3) - r; }
 
 		/**
 		 * <p>Vypočíta vzdialenosť medzi určenou úsečkou |AB| a kružnicou
@@ -26302,13 +26502,13 @@ public final class Svet extends JFrame
 		 */
 		public final static double vzdialenosťÚsečkyOdKružnice(
 			Poloha A, Poloha B, Poloha S, double r)
-		{ return Line2D.ptSegDist(A.polohaX(), A.polohaY(), B.polohaX(),
+		{ return ptSegDist(A.polohaX(), A.polohaY(), B.polohaX(),
 			B.polohaY(), S.polohaX(), S.polohaY()) - r; }
 
 		/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťÚsečkyOdKružnice(Poloha, Poloha, Poloha, double) vzdialenosťÚsečkyOdKružnice}.</p> */
 		public final static double vzdialenostUseckyOdKruznice(
 			Poloha A, Poloha B, Poloha S, double r)
-		{ return Line2D.ptSegDist(A.polohaX(), A.polohaY(), B.polohaX(),
+		{ return ptSegDist(A.polohaX(), A.polohaY(), B.polohaX(),
 			B.polohaY(), S.polohaX(), S.polohaY()) - r; }
 
 		/**
@@ -26333,7 +26533,7 @@ public final class Svet extends JFrame
 				null == poleBodov[2]*/)
 				return Double.NaN;
 
-			return Line2D.ptSegDist(poleBodov[0].polohaX(),
+			return ptSegDist(poleBodov[0].polohaX(),
 				poleBodov[0].polohaY(), poleBodov[1].polohaX(),
 				poleBodov[1].polohaY(), poleBodov[2].polohaX(),
 				poleBodov[2].polohaY()) - r;
@@ -26844,6 +27044,139 @@ public final class Svet extends JFrame
 		public static boolean celaObrazovka(
 			int zariadenie, boolean celáObrazovka)
 		{ return celáObrazovka(zariadenie, celáObrazovka); }
+
+
+		/**
+		 * <p>Zachytí kurzor myši v okne sveta. Zmení sa tým správanie udalostí
+		 * pohybu myši a to tak, že od okamihu úspešného zachytenia myši v okne
+		 * bude kurzor myši automaticky presúvaný do stredu okna po každej
+		 * udalosti {@linkplain ObsluhaUdalostí#pohybMyši() pohybu} alebo
+		 * {@linkplain ObsluhaUdalostí#ťahanieMyšou() ťahania} myšou
+		 * a {@linkplain ÚdajeUdalostí#polohaMyši() aktuálne súradnice polohy
+		 * kurzora myši} budú indikovať posledný relatívny posun kurzora od
+		 * tejto polohy (v súlade s tým budú {@linkplain 
+		 * ÚdajeUdalostí#poslednáPolohaMyši() súradnice poslednej polohy
+		 * kurzora myši} indikovať predposledný relatívny posun).</p>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b> Zachytenie kurzora myši
+		 * vyžaduje permanentý nízkoúrovňový prístup ku kurzoru, aby aplikácia
+		 * mohla viazať jeho polohu k stredu okna. V niektorých prípadoch
+		 * (napríklad z dôvodu obmedzení operačným systémom alebo pri
+		 * prístupe cez vzdialenú správu) aplikácia tento prístup nemá.
+		 * V takom prípade nebude zachytenie kurzora myši fungovať správne.</p>
+		 * 
+		 * <p class="tip"><b>Tip:</b> Keďže kurzor myši je fixovaný do stredu
+		 * okna sveta. Odporúčame kurzor súčasne s jeho zachytením skryť:
+		 * {@link #zmeňKurzorMyši(String)
+		 * zmeňKurzorMyši}<code>(</code>{@code valnull}<code>)</code>.</p>
+		 * 
+		 * <p><b>Príklad:</b></p>
+		 * 
+		 * <p>V tomto príklade je použité zachytenie kurzora myši.
+		 * Prostredie je nastavené tak, že hlavný robot je ovládaný myšou,
+		 * pričom vďaka ohraničeniu a zobrazeniu okna sveta na celej obrazovke
+		 * prechádza cyklicky cez okraje obrazovky.</p>
+		 * 
+		 * <pre CLASS="example">
+			{@code kwdimport} knižnica.*;
+
+			{@code kwdpublic} {@code typeclass} ZachytenieMyši {@code kwdextends} {@link GRobot GRobot}
+			{
+				{@code kwdprivate} ZachytenieMyši()
+				{
+					{@code comm// Nastav rozmery plátna podľa rozmerov obrazovky (resp. tzv. prvého}
+					{@code comm// zobrazovacieho zariadenia – prvého monitora):}
+					{@code valsuper}({@link Svet Svet}.{@link Svet#šírkaZariadenia() šírkaZariadenia}(), {@link Svet Svet}.{@link Svet#výškaZariadenia() výškaZariadenia}());
+
+					{@code comm// Nastav vlastnosti robota:}
+					{@link GRobot#ohranič() ohranič}();
+					{@link GRobot#vľavo(double) vľavo}({@code num30});
+					{@link GRobot#veľkosť(double) veľkosť}({@code num30});
+					{@link GRobot#vypĺňajTvary() vypĺňajTvary}();
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#papierová papierová});
+
+					{@code comm// Nastav vlastnosti sveta (medzi inými aj zachytenie myši v okne):}
+					{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@link Farebnosť#antracitová antracitová});
+					{@link Svet Svet}.{@code currzachyťMyš}();
+					{@link Svet Svet}.{@link Svet#celáObrazovka(boolean) celáObrazovka}({@code valtrue});
+					{@link Svet Svet}.{@link Svet#zmeňKurzorMyši(String) zmeňKurzorMyši}({@code valnull});
+				}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#pohybMyši() pohybMyši}()
+				{
+					{@code comm// Pohyb robota podľa pohybu myši:}
+					{@code kwdif} ({@link Svet Svet}.{@link Svet#myšJeZachytená() myšJeZachytená}())
+						{@link GRobot#skoč(double, double) skoč}({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiX() polohaMyšiX}(), {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyšiY() polohaMyšiY}());
+					{@code kwdelse}
+						{@code comm// Táto vetva zaručí, že keby zachytenie myši zlyhalo,}
+						{@code comm// ovládanie bude fungovať relatívne správne:}
+						{@link GRobot#skočNa(Poloha) skočNa}({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyši() polohaMyši}());
+				}
+
+				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
+				{
+					{@code kwdnew} ZachytenieMyši();
+				}
+			}
+			</pre>
+		 * 
+		 * @return {@code valtrue} v prípade úspešnej operácie
+		 * 
+		 * @see #uvoľniMyš()
+		 * @see #myšJeZachytená()
+		 */
+		public static boolean zachyťMyš()
+		{
+			if (null == robotMyši)
+			{
+				robotMyši = RobotMyši.daj();
+
+				if (null != robotMyši)
+				{
+					robotMyši.naStred();
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #zachyťMyš() zachyťMyš}.</p> */
+		public static boolean zachytMys()
+		{ return zachyťMyš(); }
+
+		/**
+		 * <p>Zruší zachytenie kurzora myš v okne sveta. Pozri metódu {@link 
+		 * #zachyťMyš() zachyťMyš}.</p>
+		 * 
+		 * @return {@code valtrue} v prípade úspešnej operácie
+		 * 
+		 * @see #zachyťMyš()
+		 * @see #myšJeZachytená()
+		 */
+		public static boolean uvoľniMyš()
+		{
+			if (null == robotMyši) return false;
+			robotMyši = null; return true;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #uvoľniMyš() uvoľniMyš}.</p> */
+		public static boolean uvolniMys() { return uvoľniMyš(); }
+
+		/**
+		 * <p>Overí, či je myš zachytená v okne sveta. Pozri metódu {@link 
+		 * #zachyťMyš() zachyťMyš}.</p>
+		 * 
+		 * @return {@code valtrue} ak je myš zachytená
+		 * 
+		 * @see #zachyťMyš()
+		 * @see #uvoľniMyš()
+		 */
+		public static boolean myšJeZachytená()
+		{ return null != robotMyši; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #myšJeZachytená() myšJeZachytená}.</p> */
+		public static boolean mysJeZachytena() { return myšJeZachytená(); }
 
 
 		// Rôzne súkromné atribúty slúžiace potrebám režimu celej obrazovky.

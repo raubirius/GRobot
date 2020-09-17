@@ -3130,9 +3130,11 @@ public class Plátno implements Priehľadnosť
 
 			if (null == kreslič) return;
 
+			kreslič.nastavVlastnostiGrafiky(grafikaPlátna);
 			kreslič.nastavFarbuAleboVýplňPodľaRobota(grafikaPlátna);
 			grafikaPlátna.setStroke(kreslič.čiara);
 			grafikaPlátna.draw(tvar);
+			kreslič.obnovVlastnostiGrafiky(grafikaPlátna);
 
 			if (!Svet.právePrekresľujem)
 				Svet.automatickéPrekreslenie();
@@ -3163,8 +3165,10 @@ public class Plátno implements Priehľadnosť
 
 			if (null == kreslič) return;
 
+			kreslič.nastavVlastnostiGrafiky(grafikaPlátna);
 			kreslič.nastavFarbuAleboVýplňPodľaRobota(grafikaPlátna);
 			grafikaPlátna.fill(tvar);
+			kreslič.obnovVlastnostiGrafiky(grafikaPlátna);
 
 			if (!Svet.právePrekresľujem)
 				Svet.automatickéPrekreslenie();
@@ -3191,9 +3195,11 @@ public class Plátno implements Priehľadnosť
 		{
 			if (null == Svet.hlavnýRobot) return;
 
+			Svet.hlavnýRobot.nastavVlastnostiGrafiky(grafikaPlátna);
 			Svet.hlavnýRobot.nastavFarbuAleboVýplňPodľaRobota(grafikaPlátna);
 			grafikaPlátna.setStroke(Svet.hlavnýRobot.čiara);
 			grafikaPlátna.draw(tvar);
+			Svet.hlavnýRobot.obnovVlastnostiGrafiky(grafikaPlátna);
 
 			if (!Svet.právePrekresľujem)
 				Svet.automatickéPrekreslenie();
@@ -3216,8 +3222,10 @@ public class Plátno implements Priehľadnosť
 		{
 			if (null == Svet.hlavnýRobot) return;
 
+			Svet.hlavnýRobot.nastavVlastnostiGrafiky(grafikaPlátna);
 			Svet.hlavnýRobot.nastavFarbuAleboVýplňPodľaRobota(grafikaPlátna);
 			grafikaPlátna.fill(tvar);
+			Svet.hlavnýRobot.obnovVlastnostiGrafiky(grafikaPlátna);
 
 			if (!Svet.právePrekresľujem)
 				Svet.automatickéPrekreslenie();
@@ -6711,7 +6719,7 @@ public class Plátno implements Priehľadnosť
 		 * sa priebežne vytvára oblasť, ktorá je prienikom všetkých
 		 * obmedzení. Ak chceme vytvoriť obmedzenie tvaru, ktorý je
 		 * možné vytvoriť inou množinovou operáciou, môžeme na obmedzenie
-		 * kreslenia použiť aj {@link Oblasť Oblasť} (zadanú namiesto
+		 * kreslenia použiť {@link Oblasť Oblasť} (zadanú namiesto
 		 * parametra {@code tvar}). Obmedzenia sú platné pre všetky
 		 * roboty a zrušíme ich volaním metódy {@link #kresliVšade()
 		 * kresliVšade}.</p>
@@ -7465,9 +7473,9 @@ public class Plátno implements Priehľadnosť
 
 		/**
 		 * <p>Vypíše sériu argumentov v tvare textu na podlahe alebo strope
-		 * a presunie sa na ďalší riadok. Na ďalšie informácie pozri {@link 
-		 * #vypíš(Object[]) vypíš(Object...)}, ktorej správanie je okrem
-		 * prechodu na nový riadok zhodné.</p>
+		 * a presunie sa na ďalší riadok. Ďalšie informácie pozri v opise
+		 * metódy {@link #vypíš(Object[]) vypíš(Object...)}, ktorej správanie
+		 * je, okrem prechodu na nový riadok, zhodné.</p>
 		 * 
 		 * @param argumenty zoznam argumentov rôzneho údajového typu
 		 *     oddelený čiarkami

@@ -497,7 +497,9 @@ import javax.swing.SwingUtilities;
  * pod pracovným názvom {@code Želva} a bola už postavená na triedach
  * s príponou 2D – napríklad {@link Graphics2D Graphics2D}…). Postupne
  * pribúdali nové a nové vnorené triedy (niekedy nazývané aj zahniezdené
- * triedy, angl. nested classes) a do stavu s funkčnou lúkou, oblohou,
+ * triedy, angl. <a
+ * href="https://docs.oracle.com/javase/tutorial/java/javaOO/nested.html"
+ * target="_blank">nested classes</a>) a do stavu s funkčnou lúkou, oblohou,
  * súbormi, udalosťami, automatickým časovačom a tak ďalej, sa trieda
  * postupne prepracovávala od verzie 5.0 vyššie.</p>
  * 
@@ -817,6 +819,11 @@ TODO: na úvodnú stránku
 			/*packagePrivate*/ double aktuálneX;
 			/*packagePrivate*/ double aktuálneY;
 			/*packagePrivate*/ double aktuálnyUhol;
+
+			// Posledná poloha a smer
+			private double poslednéX;
+			private double poslednéY;
+			private double poslednýUhol;
 
 			// Predvolený uhol otáčania bezparametrických príkazov vpravo/vľavo
 			private double uholOtáčania = 45.0;
@@ -1498,6 +1505,9 @@ TODO: na úvodnú stránku
 							double pootočenieTvaru_Záloha =
 								cieľ.pootočenieTvaru;
 
+							// cieľ.poslednéX = aktuálneX; // nie‼
+							// cieľ.poslednéY = aktuálneY; // nie‼
+							// cieľ.poslednýUhol = aktuálnyUhol; // nie‼
 							cieľ.aktuálneX = polohaX;
 							cieľ.aktuálneY = polohaY;
 							cieľ.aktuálnyUhol = uhol;
@@ -1523,6 +1533,9 @@ TODO: na úvodnú stránku
 							double pootočenieTvaru_Záloha =
 								robot.pootočenieTvaru;
 
+							// robot.poslednéX = aktuálneX; // nie‼
+							// robot.poslednéY = aktuálneY; // nie‼
+							// robot.poslednýUhol = aktuálnyUhol; // nie‼
 							robot.aktuálneX = polohaX;
 							robot.aktuálneY = polohaY;
 							robot.aktuálnyUhol = uhol;
@@ -3508,7 +3521,10 @@ TODO: na úvodnú stránku
 							String.class).getDeclaringClass().
 							equals(GRobot.class) ||
 						!getClass().getMethod("koniecVstupu").
-						getDeclaringClass().equals(GRobot.class))
+						getDeclaringClass().equals(GRobot.class) ||
+						!getClass().getMethod("vzniklaChyba",
+							GRobotException.Chyba.class).getDeclaringClass().
+							equals(GRobot.class))
 						počúvajúciSystém.add(this);
 				}
 				catch (Exception e)
@@ -3800,7 +3816,10 @@ TODO: na úvodnú stránku
 						BasicStroke.CAP_ROUND,
 						BasicStroke.JOIN_ROUND);
 					farbaRobota = predvolenáFarbaRobota;
+
+					poslednéX = 0; poslednéY = 0;
 					aktuálneX = aktuálneY = 0;
+					poslednýUhol = 30;
 					aktuálnyUhol = 30;
 
 					double veľkosť = this.veľkosť;
@@ -3857,6 +3876,23 @@ TODO: na úvodnú stránku
 
 			private void úsečka(double x0, double y0, double x1, double y1)
 			{
+				boolean vráťKompozit = priehľadnosť < 1.0;
+				Composite zálohaKompozitu = null;
+
+				if (vráťKompozit)
+				{
+					zálohaKompozitu = grafikaAktívnehoPlátna.getComposite();
+
+					if (priehľadnosť > 0.0)
+						grafikaAktívnehoPlátna.setComposite(
+							AlphaComposite.getInstance(
+								AlphaComposite.SRC_OVER, priehľadnosť));
+					else
+						grafikaAktívnehoPlátna.setComposite(
+							AlphaComposite.getInstance(
+								AlphaComposite.SRC_OVER, 0.0f));
+				}
+
 				if (null != náter)
 				{
 					grafikaAktívnehoPlátna.setPaint(náter);
@@ -3889,6 +3925,9 @@ TODO: na úvodnú stránku
 						new Line2D.Double(x0P, y0P, x1P, y1P));
 				}
 
+				if (vráťKompozit)
+					grafikaAktívnehoPlátna.setComposite(zálohaKompozitu);
+
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -3903,6 +3942,27 @@ TODO: na úvodnú stránku
 			// Tento atribút je permanentné pole slúžiace na určenie
 			// podielov kruhového náteru:
 			private final float[] podiely = new float[] {0.0f, 1.0f};
+
+			// 
+			private boolean vráťKompozit_vlastnosťGrafiky = false;
+			private Composite zálohaKompozitu_vlastnosťGrafiky = null;
+
+			/*packagePrivate*/ void nastavVlastnostiGrafiky(Graphics2D grafika)
+			{
+				vráťKompozit_vlastnosťGrafiky = priehľadnosť < 1.0;
+				zálohaKompozitu_vlastnosťGrafiky = null;
+
+				if (vráťKompozit_vlastnosťGrafiky)
+				{
+					zálohaKompozitu_vlastnosťGrafiky = grafika.getComposite();
+					if (priehľadnosť > 0.0)
+						grafika.setComposite(AlphaComposite.getInstance(
+							AlphaComposite.SRC_OVER, priehľadnosť));
+					else
+						grafika.setComposite(AlphaComposite.getInstance(
+							AlphaComposite.SRC_OVER, 0.0f));
+				}
+			}
 
 			/*packagePrivate*/ void nastavFarbuAleboVýplňPodľaRobota(
 				Graphics2D grafika)
@@ -3954,6 +4014,12 @@ TODO: na úvodnú stránku
 						(float)x0P, (float)y0P, farbaRobota,
 						(float)x1P, (float)y1P, cieľováFarba));
 				}
+			}
+
+			/*packagePrivate*/ void obnovVlastnostiGrafiky(Graphics2D grafika)
+			{
+				if (vráťKompozit_vlastnosťGrafiky)
+					grafika.setComposite(zálohaKompozitu_vlastnosťGrafiky);
 			}
 
 			private void prepočítajPolygón()
@@ -5059,10 +5125,12 @@ TODO: na úvodnú stránku
 				/*packagePrivate*/ void kresli(Area oblasť)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 					grafikaAktívnehoPlátna.draw(oblasť);
 					// aktualizujPôsobisko(oblasť.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -5071,9 +5139,11 @@ TODO: na úvodnú stránku
 				/*packagePrivate*/ void vyplň(Area oblasť)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(oblasť);
 					// aktualizujPôsobisko(oblasť.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -6342,20 +6412,44 @@ TODO: na úvodnú stránku
 				}
 
 				/**
-				 * <p>Určí, aby robot v prípade nastavenia {@linkplain 
-				 * #cieľováFarba(Color) cieľovej farby} vytvoril kruhový
-				 * náter na výplň tvarov.</p>
+				 * <p>Prikáže, aby robot v prípade nastavenia {@linkplain 
+				 * #cieľováFarba(Color) cieľovej farby} použil na výplň tvarov
+				 * kruhový náter.</p>
 				 * 
 				 * <p><b>Príklad:</b></p>
 				 * 
 				 * <pre CLASS="example">
-					«príklad – ospravedlňujeme sa, pracujeme na doplnení…»
-					<!-- TODO -->
+					{@code comm// Obmedzenie kreslenia:}
+					{@link GRobot#kresliDo(Shape) kresliDo}({@link GRobot#kružnica(double) kružnica}({@code num50}));
+
+					{@code comm// Nastavenia ovplyvňujúce náter:}
+					{@link GRobot#veľkosť(double) veľkosť}({@code num80});
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#biela biela});
+					{@link GRobot#cieľováFarba(Color) cieľováFarba}({@link Farebnosť#modrá modrá});
+					{@code currpoužiKruhovýNáter}();
+
+					{@code comm// Použitie náteru:}
+					{@link GRobot#skoč(double, double) skoč}(-{@code num25}, {@code num30});
+					{@link GRobot#kruh(double) kruh}({@code num100});
+
+					{@code comm// Zrušenie obedzenia kreslenia a nakreslenie okrajovej čiary:}
+					{@link GRobot#kresliVšade() kresliVšade}();
+					{@link GRobot#skočNa(Poloha) skočNa}({@link Poloha#stred stred});
+					{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num2});
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#čierna čierna});
+					{@link GRobot#kružnica(double) kružnica}({@code num50});
 					</pre>
+				 * 
+				 * <p>Predchádzajúca sekvencia príkazov nakreslí obrázok
+				 * nižšie. Vysunutie kruhového náteru je realizované
+				 * s použitím triku <a
+				 * href="kategorie-metod.html#GRobot-Obmedzenie-kreslenia">obmedzenia
+				 * kreslenia.</a></p>
 				 * 
 				 * <p><b>Výsledok:</b></p>
 				 * 
-				 * <p><image>«názov».png<alt/></image>«Popis…»<!-- TODO -->.</p>
+				 * <p><image>pouzi-kruhovy-nater.png<alt/></image>Výsledok
+				 * kreslenia.</p>
 				 * 
 				 * 
 				 * @see #použijeKruhovýNáter()
@@ -6383,13 +6477,25 @@ TODO: na úvodnú stránku
 				 * <p><b>Príklad:</b></p>
 				 * 
 				 * <pre CLASS="example">
-					«príklad – ospravedlňujeme sa, pracujeme na doplnení…»
-					<!-- TODO -->
+					{@link GRobot#veľkosť(double) veľkosť}({@code num75});
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#červená červená});
+					{@link GRobot#cieľováFarba(Color) cieľováFarba}({@link Farebnosť#žiadna žiadna});
+					{@link GRobot#použiKruhovýNáter() použiKruhovýNáter}();
+					{@link GRobot#kruh() kruh}();
+					{@link GRobot#vpravo(double) vpravo}({@code num45});
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#žltá žltá});
+					{@code currnepoužiKruhovýNáter}();
+					{@link GRobot#vyplňŠtvorec() vyplňŠtvorec}();
 					</pre>
+				 * 
+				 * <p>Krátka sekvencia príkazov vyššie nakreslí obrázok nižšie.
+				 * Štvorec prekrýva kruh, ktorý je vyplnený kruhovým náterom.
+				 * Vypnutie kruhového náteru je použité na vyplnenie štvorca
+				 * lineárnym náterom.</p>
 				 * 
 				 * <p><b>Výsledok:</b></p>
 				 * 
-				 * <p><image>«názov».png<alt/></image>«Popis…»<!-- TODO -->.</p>
+				 * <p><image>nepouzi-kruhovy-nater.png<alt/></image>Výsledok.</p>
 				 * 
 				 * 
 				 * @see #použijeKruhovýNáter()
@@ -6491,10 +6597,10 @@ TODO: na úvodnú stránku
 
 					{@code comm// Vytvorenie náteru kruhového farebného prechodu:}
 					{@link java.awt.RadialGradientPaint RadialGradientPaint} náter = {@code kwdnew} {@link java.awt.RadialGradientPaint#RadialGradientPaint(float, float, float, float, float, float[], Color[], java.awt.MultipleGradientPaint.CycleMethod) RadialGradientPaint}(
-						({@code typefloat}){@link Svet Svet}.{@link Svet#prepočítajX(double) Svet.prepočítajX}({@code num0}),
-							({@code typefloat}){@link Svet Svet}.{@link Svet#prepočítajY(double) Svet.prepočítajY}({@code num5}), {@code num30}, {@code comm// stred a polomer}
-						({@code typefloat}){@link Svet Svet}.{@link Svet#prepočítajX(double) Svet.prepočítajX}({@code num20}),
-							({@code typefloat}){@link Svet Svet}.{@link Svet#prepočítajY(double) Svet.prepočítajY}({@code num10}),   {@code comm// ohnisko}
+						({@code typefloat}){@link Svet Svet}.{@link Svet#prepočítajX(double) prepočítajX}({@code num0}),
+							({@code typefloat}){@link Svet Svet}.{@link Svet#prepočítajY(double) prepočítajY}({@code num5}), {@code num30}, {@code comm// stred a polomer}
+						({@code typefloat}){@link Svet Svet}.{@link Svet#prepočítajX(double) prepočítajX}({@code num20}),
+							({@code typefloat}){@link Svet Svet}.{@link Svet#prepočítajY(double) prepočítajY}({@code num10}),   {@code comm// ohnisko}
 						polohy, {@code comm// polohy farebných kotiev}
 						farby,  {@code comm// farby farebných kotiev}
 						{@link java.awt.MultipleGradientPaint.CycleMethod CycleMethod}.{@link java.awt.MultipleGradientPaint.CycleMethod#REFLECT REFLECT}); {@code comm// metóda opakovania prechodu zrkadlením}
@@ -6533,7 +6639,7 @@ TODO: na úvodnú stránku
 
 					{@code comm// Vytvorenie inštancie stredu tieňa s prepočítanými súradnicami:}
 					{@link java.awt.geom.Point2D Point2D}.{@link java.awt.geom.Point2D.Double Double} polohaStredu = {@code kwdnew} {@link java.awt.geom.Point2D.Double#Point2D.Double(double, double) Point2D.Double}(
-						{@link Svet Svet}.{@link Svet#prepočítajX(double) Svet.prepočítajX}({@code num0}), {@link Svet Svet}.{@link Svet#prepočítajY(double) Svet.prepočítajY}(-(rozmer * {@code num1.75})));
+						{@link Svet Svet}.{@link Svet#prepočítajX(double) prepočítajX}({@code num0}), {@link Svet Svet}.{@link Svet#prepočítajY(double) prepočítajY}(-(rozmer * {@code num1.75})));
 
 					{@code comm// Príprava transformácie tieňa:}
 					{@link java.awt.geom.AffineTransform AffineTransform} transformácia = {@code kwdnew} {@link java.awt.geom.AffineTransform#AffineTransform() AffineTransform}();
@@ -6950,11 +7056,13 @@ TODO: na úvodnú stránku
 				 * <p><a class="getter"></a> Zistí aktuálnu úroveň
 				 * (ne)priehľadnosti tvaru tohto robota.</p>
 				 * 
-				 * <p class="remark"><b>Poznámka:</b> Táto vlastnosť sa
+				 * <p class="remark"><b>Poznámka:</b> <!--Táto vlastnosť sa
 				 * vzťahuje len na zobrazenie (kreslenie) tvaru robota. Nemá
 				 * vplyv na priehľadnosť priehľadnosť objektov (čiary, výplne
-				 * atď.), ktoré robot kreslí na plátno. Pozri aj podrobnejšiu
-				 * poznámku v opise metódy {@link #priehľadnosť(double)
+				 * atď.), ktoré robot kreslí na plátno.-->
+				 * Kreslenie priehľadných tvarov so sebou prináša jeden efekt,
+				 * ktorý je vhodné vziať do úvahy. Pozri podrobnejšiu poznámku
+				 * v opise metódy {@link #priehľadnosť(double)
 				 * priehľadnosť(priehľadnosť)}.</p>
 				 * 
 				 * @return aktuálna úroveň priehľadnosti tvaru tohto robota
@@ -6991,18 +7099,21 @@ TODO: na úvodnú stránku
 				 * {@link #skry() skry}. Úroveň 1.0 znamená, že robot bude
 				 * zobrazený bez úpravy priehľadnosti.</p>
 				 * 
-				 * <p class="remark"><b>Poznámka:</b> Táto vlastnosť sa
+				 * <p class="remark"><b>Poznámka:</b> <!-- Táto vlastnosť sa
 				 * vzťahuje len na zobrazenie (kreslenie) tvaru robota. Nemá
 				 * vplyv na priehľadnosť priehľadnosť objektov (čiary, výplne
-				 * atď.), ktoré robot kreslí na plátno.<br /> <br />Popri
-				 * uvedenom treba vziať do úvahy jeden kľúčový fakt – počas
-				 * kreslenia vlastného tvaru pôjde o zmenu priehľadnosti
-				 * kreslenia jednotlivých prvkov, z ktorých tento tvar
-				 * pozostáva. To znamená, že ak je tvar robota tvorený
-				 * viacerými prvkami, ktoré sa prekrývajú, tak (ne)priehľadnosť
-				 * prekrývajúcich sa častí sa „sčíta“ (dalo by sa povedať, že
-				 * v častiach, ktoré sa prekrývajú sa bude „kumulovať
-				 * nepriehľadnosť“).</p>
+				 * atď.), ktoré robot kreslí na plátno.<br /> <br / -->Pri
+				 * kreslení vlastného tvaru robota treba popri uvedenom vziať
+				 * do úvahy ešte jeden kľúčový fakt – počas kreslenia
+				 * vlastného tvaru pôjde o zmenu priehľadnosti kreslenia
+				 * jednotlivých prvkov, z ktorých tento tvar pozostáva.
+				 * To znamená, že ak je tvar robota tvorený viacerými
+				 * prvkami (čiarami alebo vyplnenými tvarmi), ktoré sa
+				 * prekrývajú, tak (ne)priehľadnosť prekrývajúcich sa častí
+				 * sa „sčíta“ (dalo by sa povedať, že v častiach, ktoré sa
+				 * prekrývajú sa bude „kumulovať nepriehľadnosť“). Ukazuje
+				 * to táto animácia:<br /> <br /><image>slnecny-kriz-priehladnost.gif<alt/>Slnečný
+				 * kríž.</image></p>
 				 * 
 				 * @param priehľadnosť nová úroveň priehľadnosti tvaru tohto
 				 *     robota (0.0 – 1.0)
@@ -7271,7 +7382,11 @@ TODO: na úvodnú stránku
 				public void polohaX(double novéX)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+					}
 
 					aktuálneX = novéX;
 
@@ -7307,7 +7422,11 @@ TODO: na úvodnú stránku
 				public void polohaY(double novéY)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéY = aktuálneY;
+					}
 
 					aktuálneY = novéY;
 
@@ -7379,7 +7498,12 @@ TODO: na úvodnú stránku
 				public void poloha(Poloha poloha)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					aktuálneX = poloha.polohaX();
 					aktuálneY = poloha.polohaY();
@@ -7511,6 +7635,7 @@ TODO: na úvodnú stránku
 				 */
 				public void uhol(double uhol)
 				{
+					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol = uhol;
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
@@ -7530,6 +7655,7 @@ TODO: na úvodnú stránku
 				 */
 				public void smer(double uhol)
 				{
+					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol = uhol;
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
@@ -7570,6 +7696,7 @@ TODO: na úvodnú stránku
 				 */
 				public void otoč(double uhol)
 				{
+					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol = uhol;
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
@@ -7589,6 +7716,7 @@ TODO: na úvodnú stránku
 				 */
 				public void uhol(Smer objekt)
 				{
+					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol = objekt.uhol();
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
@@ -7604,6 +7732,7 @@ TODO: na úvodnú stránku
 				 */
 				public void smer(Smer objekt)
 				{
+					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol = objekt.uhol();
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
@@ -7938,6 +8067,107 @@ TODO: na úvodnú stránku
 				{ náhodnáVeľkosť(miera); }
 
 
+				/**
+				 * <p>Zistí poslednú x-ovú súradnicu robota. Táto hodnota sa
+				 * automaticky zálohuje pri každej zmene a nedá sa nastaviť
+				 * ručne.</p>
+				 * 
+				 * @return posledná x-ová súradnica robota
+				 * 
+				 * @see #polohaX()
+				 * @see #poslednáPolohaY()
+				 * @see #poslednáPoloha()
+				 */
+				public double poslednáPolohaX() { return poslednéX; }
+
+				/** <p><a class="alias"></a> Alias pre {@link #poslednáPolohaX() poslednáPolohaX}.</p> */
+				public double poslednaPolohaX() { return poslednéX; }
+
+				/**
+				 * <p>Zistí poslednú y-ovú súradnicu robota. Táto hodnota sa
+				 * automaticky zálohuje pri každej zmene a nedá sa nastaviť
+				 * ručne.</p>
+				 * 
+				 * @return posledná y-ová súradnica robota
+				 * 
+				 * @see #polohaY()
+				 * @see #poslednáPolohaX()
+				 * @see #poslednáPoloha()
+				 */
+				public double poslednáPolohaY() { return poslednéY; }
+
+				/** <p><a class="alias"></a> Alias pre {@link #poslednáPolohaY() poslednáPolohaY}.</p> */
+				public double poslednaPolohaY() { return poslednéY; }
+
+
+				/** <p><a class="alias"></a> Alias pre {@link #poslednáPolohaX() poslednáPolohaX}.</p> */
+				public double poslednáSúradnicaX() { return poslednéX; }
+
+				/** <p><a class="alias"></a> Alias pre {@link #poslednáSúradnicaX() poslednáSúradnicaX}.</p> */
+				public double poslednaSuradnicaX() { return poslednéX; }
+
+				/** <p><a class="alias"></a> Alias pre {@link #poslednáPolohaY() poslednáPolohaY}.</p> */
+				public double poslednáSúradnicaY() { return poslednéY; }
+
+				/** <p><a class="alias"></a> Alias pre {@link #poslednáSúradnicaY() poslednáSúradnicaY}.</p> */
+				public double poslednaSuradnicaY() { return poslednéY; }
+
+
+
+				/**
+				 * <p>Vráti posledné súradnice robota v objekte typu
+				 * {@link Bod Bod}. Vrátený objekt bude obsahovať posledné
+				 * (zálohované) súradnice robota. Poloha tohto bodu nie je
+				 * ďalej aktualizovaná podľa novších záloh polohy robota.
+				 * To znamená, že vždy keď potrebujete získať posledné
+				 * súradnice robota, tak musíte znova volať túto metódu
+				 * a získať nový objekt typu {@link Bod Bod} s poslednými
+				 * súradnicami.</p>
+				 * 
+				 * @return objekt typu {@link Bod Bod} obsahujúci posledné
+				 *     súradnice robota
+				 * 
+				 * @see #poloha()
+				 * @see #poslednáPolohaX()
+				 * @see #poslednáPolohaY()
+				 * @see #poslednáPoloha()
+				 */
+				public Bod poslednáPoloha()
+				{
+					return new Bod(poslednéX, poslednéY);
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #poslednáPoloha() poslednáPoloha}.</p> */
+				public Bod poslednaPoloha() { return poslednáPoloha(); }
+
+
+				/**
+				 * <p>Zistí posledný uhol (smer) robota.</p>
+				 * 
+				 * @return posledný uhol otočenia robota
+				 * 
+				 * @see #uhol()
+				 * @see #poslednýSmer()
+				 */
+				public double poslednýUhol() { return poslednýUhol; }
+
+				/** <p><a class="alias"></a> Alias pre {@link #poslednýUhol() poslednýUhol}.</p> */
+				public double poslednyUhol() { return poslednýUhol; }
+
+				/**
+				 * <p>Zistí posledný uhol (smer) robota.</p>
+				 * 
+				 * @return posledný uhol otočenia robota
+				 * 
+				 * @see #uhol()
+				 * @see #poslednýUhol()
+				 */
+				public double poslednýSmer() { return poslednýUhol; }
+
+				/** <p><a class="alias"></a> Alias pre {@link #poslednýSmer() poslednýSmer}.</p> */
+				public double poslednySmer() { return poslednýUhol; }
+
+
 			// Domov
 
 				/**
@@ -7998,7 +8228,13 @@ TODO: na úvodnú stránku
 				public void domov()
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+						poslednýUhol = aktuálnyUhol;
+					}
 
 					aktuálneX = domaX;
 					aktuálneY = domaY;
@@ -8060,7 +8296,13 @@ TODO: na úvodnú stránku
 				public void domov(double novýUholDoma)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+						poslednýUhol = aktuálnyUhol;
+					}
 
 					aktuálneX = domaX;
 					aktuálneY = domaY;
@@ -8125,7 +8367,13 @@ TODO: na úvodnú stránku
 				public void domov(Smer novýSmerDoma)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+						poslednýUhol = aktuálnyUhol;
+					}
 
 					aktuálneX = domaX;
 					aktuálneY = domaY;
@@ -8190,7 +8438,13 @@ TODO: na úvodnú stránku
 				public void domov(double novéXDoma, double novéYDoma)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+						poslednýUhol = aktuálnyUhol;
+					}
 
 					aktuálneX = domaX = novéXDoma;
 					aktuálneY = domaY = novéYDoma;
@@ -8255,7 +8509,13 @@ TODO: na úvodnú stránku
 					double novýUholDoma)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+						poslednýUhol = aktuálnyUhol;
+					}
 
 					aktuálneX = domaX = novéXDoma;
 					aktuálneY = domaY = novéYDoma;
@@ -8323,7 +8583,13 @@ TODO: na úvodnú stránku
 					Smer novýSmerDoma)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+						poslednýUhol = aktuálnyUhol;
+					}
 
 					aktuálneX = domaX = novéXDoma;
 					aktuálneY = domaY = novéYDoma;
@@ -8388,7 +8654,13 @@ TODO: na úvodnú stránku
 				public void domov(Poloha nováPolohaDoma)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+						poslednýUhol = aktuálnyUhol;
+					}
 
 					aktuálneX = domaX = nováPolohaDoma.polohaX();
 					aktuálneY = domaY = nováPolohaDoma.polohaY();
@@ -8452,7 +8724,13 @@ TODO: na úvodnú stránku
 				public void domov(Poloha nováPolohaDoma, double novýUholDoma)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+						poslednýUhol = aktuálnyUhol;
+					}
 
 					aktuálneX = domaX = nováPolohaDoma.polohaX();
 					aktuálneY = domaY = nováPolohaDoma.polohaY();
@@ -8519,7 +8797,13 @@ TODO: na úvodnú stránku
 				public void domov(Poloha nováPolohaDoma, Smer novýSmerDoma)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+						poslednýUhol = aktuálnyUhol;
+					}
 
 					aktuálneX = domaX = nováPolohaDoma.polohaX();
 					aktuálneY = domaY = nováPolohaDoma.polohaY();
@@ -8585,7 +8869,13 @@ TODO: na úvodnú stránku
 				public void domov(Častica častica)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+						poslednýUhol = aktuálnyUhol;
+					}
 
 					aktuálneX = domaX = častica.polohaX();
 					aktuálneY = domaY = častica.polohaY();
@@ -8659,7 +8949,13 @@ TODO: na úvodnú stránku
 				public void domov(GRobot iný)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+						poslednýUhol = aktuálnyUhol;
+					}
 
 					aktuálneX = domaX = iný.domaX;
 					aktuálneY = domaY = iný.domaY;
@@ -9417,7 +9713,7 @@ TODO: na úvodnú stránku
 
 
 				/**
-				 * <p>Zistí ako sa mení farba po prechode robota
+				 * <p>Zistí, ako sa mení farba po prechode robota
 				 * {@linkplain #domov() domov}. Buď je vrátená konkrétna
 				 * farba, alebo hodnota {@code valnull}, ktorá
 				 * signalizuje, že farba sa po prechode domov nemení.</p>
@@ -9565,7 +9861,7 @@ TODO: na úvodnú stránku
 
 
 				/**
-				 * <p>Zistí ako sa mení cieľová farba po prechode robota
+				 * <p>Zistí, ako sa mení cieľová farba po prechode robota
 				 * {@linkplain #domov() domov}. Buď je vrátená konkrétna
 				 * farba, alebo hodnota {@code valnull}, ktorá signalizuje
 				 * to, že cieľová farba nie je po prechode robota domov
@@ -9807,7 +10103,7 @@ TODO: na úvodnú stránku
 
 
 				/**
-				 * <p>Zistí ako sa mení hrúbka pera po prechode robota
+				 * <p>Zistí, ako sa mení hrúbka pera po prechode robota
 				 * {@linkplain #domov() domov}. Buď je vrátená konkrétna
 				 * číselná hodnota, alebo hodnota {@code valnull}, ktorá
 				 * signalizuje, že hrúbka pera sa po prechode domov nemení.</p>
@@ -9827,7 +10123,7 @@ TODO: na úvodnú stránku
 				public Double hrubkaPeraDoma() { return polomerPeraDoma; }
 
 				/**
-				 * <p>Zistí ako sa mení hrúbka pera po prechode robota
+				 * <p>Zistí, ako sa mení hrúbka pera po prechode robota
 				 * {@linkplain #domov() domov}. Buď je vrátená konkrétna
 				 * číselná hodnota, alebo hodnota {@code valnull}, ktorá
 				 * signalizuje, že hrúbka pera sa po prechode domov nemení.</p>
@@ -9934,7 +10230,7 @@ TODO: na úvodnú stránku
 
 
 				/**
-				 * <p>Zistí ako sa mení veľkosť robota po jeho prechode na
+				 * <p>Zistí, ako sa mení veľkosť robota po jeho prechode na
 				 * {@linkplain #domov() domovskú pozíciu}. Buď je vrátená
 				 * konkrétna číselná hodnota, alebo hodnota {@code valnull},
 				 * ktorá signalizuje, že veľkosť robota sa po prechode domov
@@ -9999,7 +10295,7 @@ TODO: na úvodnú stránku
 
 
 				/**
-				 * <p>Zistí ako sa mení priehľadnosť robota po jeho prechode na
+				 * <p>Zistí, ako sa mení priehľadnosť robota po jeho prechode na
 				 * {@linkplain #domov() domovskú pozíciu}. Buď je vrátená
 				 * konkrétna číselná hodnota, alebo hodnota {@code valnull},
 				 * ktorá signalizuje, že priehľadnosť robota sa po prechode
@@ -10065,7 +10361,7 @@ TODO: na úvodnú stránku
 
 
 				/**
-				 * <p>Zistí ako sa mení písmo robota po jeho prechode na
+				 * <p>Zistí, ako sa mení písmo robota po jeho prechode na
 				 * {@linkplain #domov() domovskú pozíciu}. Buď je vrátený
 				 * konkrétny objekt reprezentujúci písmo, alebo hodnota
 				 * {@code valnull}, ktorá signalizuje, že písmo robota sa po
@@ -11207,7 +11503,12 @@ TODO: na úvodnú stránku
 				public void dopredu(double dĺžka)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					double novéX = aktuálneX + Math.cos(
 						Math.toRadians(aktuálnyUhol)) * dĺžka;
@@ -11343,6 +11644,7 @@ TODO: na úvodnú stránku
 				 */
 				public void vpravo(double uhol)
 				{
+					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol -= uhol;
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
@@ -11392,6 +11694,7 @@ TODO: na úvodnú stránku
 				 */
 				public void vľavo(double uhol)
 				{
+					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol += uhol;
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
@@ -11556,7 +11859,12 @@ TODO: na úvodnú stránku
 				public void skoč(double dĺžka)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					double novéX = aktuálneX + Math.cos(
 						Math.toRadians(aktuálnyUhol)) * dĺžka;
@@ -11653,6 +11961,7 @@ TODO: na úvodnú stránku
 				 */
 				public void otočO(double uhol)
 				{
+					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol += uhol;
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
@@ -11677,7 +11986,7 @@ TODO: na úvodnú stránku
 				 * 
 				 * <p>Kladná hodnota uhla otáčania značí otáčanie proti smeru
 				 * hodinových ručičiek. Znamienko hodnoty obmedzenia je
-				 * ignorované</p>
+				 * ignorované.</p>
 				 * 
 				 * <p>Porovnaj s metódu {@link #otočO(double) otočO}.</p>
 				 * 
@@ -11693,6 +12002,7 @@ TODO: na úvodnú stránku
 					if (uhol > 0 && uhol > najviacO) uhol = najviacO;
 					if (uhol < 0 && uhol < -najviacO) uhol = -najviacO;
 
+					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol += uhol;
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
@@ -11716,7 +12026,12 @@ TODO: na úvodnú stránku
 				public void posuňVpravo(double dĺžka)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					double novéX = aktuálneX + Math.cos(
 						Math.toRadians(aktuálnyUhol - 90)) * dĺžka;
@@ -11786,7 +12101,12 @@ TODO: na úvodnú stránku
 				public void posuňVľavo(double dĺžka)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					double novéX = aktuálneX + Math.cos(
 						Math.toRadians(aktuálnyUhol + 90)) * dĺžka;
@@ -11894,7 +12214,12 @@ TODO: na úvodnú stránku
 				public void posuňVSmere(double smer, double dĺžka)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					double novéX = aktuálneX + Math.cos(
 						Math.toRadians(smer)) * dĺžka;
@@ -11974,7 +12299,12 @@ TODO: na úvodnú stránku
 				public void posuňVSmere(Smer smer, double dĺžka)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					double novéX = aktuálneX + Math.cos(
 						Math.toRadians(smer.smer())) * dĺžka;
@@ -12055,7 +12385,12 @@ TODO: na úvodnú stránku
 				public void preskočVpravo(double dĺžka)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					double novéX = aktuálneX + Math.cos(
 						Math.toRadians(aktuálnyUhol - 90)) * dĺžka;
@@ -12114,7 +12449,12 @@ TODO: na úvodnú stránku
 				public void preskočVľavo(double dĺžka)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					double novéX = aktuálneX + Math.cos(
 						Math.toRadians(aktuálnyUhol + 90)) * dĺžka;
@@ -12211,7 +12551,12 @@ TODO: na úvodnú stránku
 				public void preskočVSmere(double smer, double dĺžka)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					double novéX = aktuálneX + Math.cos(
 						Math.toRadians(smer)) * dĺžka;
@@ -12279,7 +12624,12 @@ TODO: na úvodnú stránku
 				public void preskočVSmere(Smer smer, double dĺžka)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					double novéX = aktuálneX + Math.cos(
 						Math.toRadians(smer.smer())) * dĺžka;
@@ -12658,6 +13008,7 @@ TODO: na úvodnú stránku
 							aktuálnyUhol = α;
 						*/
 
+						poslednýUhol = aktuálnyUhol;
 						aktuálnyUhol = Math.toDegrees(Math.atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
@@ -12726,6 +13077,7 @@ TODO: na úvodnú stránku
 				// 		/*
 				// 		double α = Math.toDegrees(Math.atan(Δy / Δx));
 				// 
+				// 		poslednýUhol = aktuálnyUhol;
 				// 		if (Δx < 0)
 				// 			aktuálnyUhol = 180 + α;
 				// 		else if (Δy < 0)
@@ -12813,6 +13165,7 @@ TODO: na úvodnú stránku
 							aktuálnyUhol = α;
 						*/
 
+						poslednýUhol = aktuálnyUhol;
 						aktuálnyUhol = Math.toDegrees(Math.atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
@@ -12900,6 +13253,7 @@ TODO: na úvodnú stránku
 							aktuálnyUhol = α;
 						*/
 
+						poslednýUhol = aktuálnyUhol;
 						aktuálnyUhol = Math.toDegrees(Math.atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
@@ -12981,6 +13335,7 @@ TODO: na úvodnú stránku
 							aktuálnyUhol = α;
 						*/
 
+						poslednýUhol = aktuálnyUhol;
 						aktuálnyUhol = Math.toDegrees(Math.atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
@@ -13065,6 +13420,7 @@ TODO: na úvodnú stránku
 							aktuálnyUhol = α;
 						*/
 
+						poslednýUhol = aktuálnyUhol;
 						aktuálnyUhol = Math.toDegrees(Math.atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
@@ -13119,6 +13475,7 @@ TODO: na úvodnú stránku
 				 */
 				public void otoč(Smer objekt)
 				{
+					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol = objekt.smer();
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
@@ -13543,7 +13900,12 @@ TODO: na úvodnú stránku
 				public void choďNa(double novéX, double novéY)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					if (peroPoložené)
 					{
@@ -13608,7 +13970,12 @@ TODO: na úvodnú stránku
 				public void choďNa(Poloha objekt)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					if (peroPoložené)
 					{
@@ -13680,7 +14047,12 @@ TODO: na úvodnú stránku
 				public void choďNa(Shape tvar)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					Rectangle2D hranice = tvar.getBounds2D();
 					double novéX = Svet.prepočítajSpäťX(hranice.getX()) +
@@ -13744,7 +14116,12 @@ TODO: na úvodnú stránku
 				public void choďNaMyš()
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					if (peroPoložené)
 					{
@@ -13814,7 +14191,12 @@ TODO: na úvodnú stránku
 				public void choď(double Δx, double Δy)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					if (peroPoložené)
 					{
@@ -13885,7 +14267,12 @@ TODO: na úvodnú stránku
 				public void skočNa(double novéX, double novéY)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					aktuálneX = novéX;
 					aktuálneY = novéY;
@@ -13940,7 +14327,12 @@ TODO: na úvodnú stránku
 				public void skočNa(Poloha objekt)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					aktuálneX = objekt.polohaX();
 					aktuálneY = objekt.polohaY();
@@ -14000,7 +14392,12 @@ TODO: na úvodnú stránku
 				public void skočNa(Shape tvar)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					Rectangle2D hranice = tvar.getBounds2D();
 					double novéX = Svet.prepočítajSpäťX(hranice.getX()) +
@@ -14053,7 +14450,12 @@ TODO: na úvodnú stránku
 				public void skočNaMyš()
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					aktuálneX = ÚdajeUdalostí.súradnicaMyšiX;
 					aktuálneY = ÚdajeUdalostí.súradnicaMyšiY;
@@ -14109,7 +14511,12 @@ TODO: na úvodnú stránku
 				public void skoč(double Δx, double Δy)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					aktuálneX += Δx;
 					aktuálneY += Δy;
@@ -14170,15 +14577,20 @@ TODO: na úvodnú stránku
 				public void posuň(double Δx, double Δy)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					double novéX = aktuálneX
-						+Math.sin(Math.toRadians(aktuálnyUhol)) * Δx
-						+Math.cos(Math.toRadians(aktuálnyUhol)) * Δy;
+						+ Math.sin(Math.toRadians(aktuálnyUhol)) * Δx
+						+ Math.cos(Math.toRadians(aktuálnyUhol)) * Δy;
 
 					double novéY = aktuálneY
-						-Math.cos(Math.toRadians(aktuálnyUhol)) * Δx
-						+Math.sin(Math.toRadians(aktuálnyUhol)) * Δy;
+						- Math.cos(Math.toRadians(aktuálnyUhol)) * Δx
+						+ Math.sin(Math.toRadians(aktuálnyUhol)) * Δy;
 
 					if (peroPoložené)
 					{
@@ -14334,15 +14746,20 @@ TODO: na úvodnú stránku
 				public void preskoč(double Δx, double Δy)
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					double novéX = aktuálneX
-						+Math.sin(Math.toRadians(aktuálnyUhol)) * Δx
-						+Math.cos(Math.toRadians(aktuálnyUhol)) * Δy;
+						+ Math.sin(Math.toRadians(aktuálnyUhol)) * Δx
+						+ Math.cos(Math.toRadians(aktuálnyUhol)) * Δy;
 
 					double novéY = aktuálneY
-						-Math.cos(Math.toRadians(aktuálnyUhol)) * Δx
-						+Math.sin(Math.toRadians(aktuálnyUhol)) * Δy;
+						- Math.cos(Math.toRadians(aktuálnyUhol)) * Δx
+						+ Math.sin(Math.toRadians(aktuálnyUhol)) * Δy;
 
 					aktuálneX = novéX;
 					aktuálneY = novéY;
@@ -14421,10 +14838,18 @@ TODO: na úvodnú stránku
 					// akoby zaseknutý, neschopný otáčať sa na mieste.)
 					if (0 == uhol || 0 == polomer) return;
 
+					// (Potrebné do lambda výrazu v registrujPretočOhraničenie,
+					// lebo premenná musí byť „efektívne konečná“.)
 					double uhol2 = uhol, polomer2 = polomer;
 
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+						poslednýUhol = aktuálnyUhol;
+					}
 
 					/*
 					if (polomer < 0)
@@ -14467,7 +14892,6 @@ TODO: na úvodnú stránku
 							Arc2D.OPEN);
 
 						// posuňVľavo…
-
 						aktuálneX += Math.cos(Math.toRadians(
 							aktuálnyUhol + 90)) * polomer;
 						aktuálneY += Math.sin(Math.toRadians(
@@ -14558,10 +14982,12 @@ TODO: na úvodnú stránku
 					if (peroPoložené)
 					{
 						// grafikaAktívnehoPlátna.setColor(farbaRobota);
+						nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 						nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 						grafikaAktívnehoPlátna.setStroke(čiara);
 						grafikaAktívnehoPlátna.draw(oblúk);
 						aktualizujPôsobisko(oblúk.getBounds2D());
+						obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 						Svet.automatickéPrekreslenie();
 					}
 					else if (viditeľný) Svet.automatickéPrekreslenie();
@@ -14595,6 +15021,7 @@ TODO: na úvodnú stránku
 					double krok = (Math.PI * polomer * jemnosť) / 180.0;
 					double alfa = uhol >= 0 ? jemnosť : -jemnosť;
 					double rotácia = alfa;
+					poslednýUhol = aktuálnyUhol;
 					while (Math.abs(rotácia) <= Math.abs(uhol))
 					{
 						aktuálnyUhol -= alfa;
@@ -14648,6 +15075,19 @@ TODO: na úvodnú stránku
 					// v prípade, že je uhol nenulový ‼ (V podstate je
 					// akoby zaseknutý, neschopný otáčať sa na mieste.)
 					if (0 == uhol || 0 == polomer) return;
+
+					// (Potrebné do lambda výrazu v registrujPretočOhraničenie,
+					// lebo premenná musí byť „efektívne konečná“.)
+					double uhol2 = uhol, polomer2 = polomer;
+
+					// Prvý krok ohraničenia (ak je aktívne)
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+						poslednýUhol = aktuálnyUhol;
+					}
 
 					double prepočítanéX = Svet.prepočítajX(aktuálneX);
 					double prepočítanéY = Svet.prepočítajY(aktuálneY);
@@ -14738,6 +15178,14 @@ TODO: na úvodnú stránku
 								Svet.prepočítajY(aktuálneY));
 					}
 
+					// Kontrola ohraničenia
+					if (!kreslímVlastnýTvar && vyriešOhraničenie())
+					{
+						registrujPretočOhraničenie(() ->
+							{ skočPoOblúku(uhol2, polomer2); });
+						while (doriešOhraničenie());
+					}
+
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
@@ -14791,7 +15239,7 @@ TODO: na úvodnú stránku
 				/**
 				 * <p>Pohne robotom po oblúku s polomerom rovným veľkosti
 				 * robota o aktuálny uhol otáčania a v prípade, že je položené
-				 * pero, tak oblúk aj nakreslí. Pozri metódy{@link #veľkosť()}
+				 * pero, tak oblúk aj nakreslí. Pozri metódy {@link #veľkosť()}
 				 * a {@link #uholOtáčania()}. Ďalej platia rovnaké informácie
 				 * ako pri metóde {@link #choďPoOblúku(double, double)
 				 * choďPoOblúku(uhol, polomer)}.</p>
@@ -14811,7 +15259,7 @@ TODO: na úvodnú stránku
 				/**
 				 * <p>Pohne robotom po oblúku s polomerom rovným veľkosti
 				 * robota o aktuálny uhol otáčania bez nakreslenia oblúka.
-				 * Pozri metódy{@link #veľkosť()} a {@link #uholOtáčania()}.
+				 * Pozri metódy {@link #veľkosť()} a {@link #uholOtáčania()}.
 				 * Ďalej platia rovnaké informácie ako pri metóde
 				 * {@link #skočPoOblúku(double, double)
 				 * skočPoOblúku(uhol, polomer)}.</p>
@@ -14880,7 +15328,7 @@ TODO: na úvodnú stránku
 				/**
 				 * <p>Pohne robotom po oblúku s polomerom rovným veľkosti
 				 * robota o aktuálny uhol otáčania a v prípade, že je položené
-				 * pero, tak oblúk aj nakreslí. Pozri metódy{@link #veľkosť()}
+				 * pero, tak oblúk aj nakreslí. Pozri metódy {@link #veľkosť()}
 				 * a {@link #uholOtáčania()}. Ak je hodnota parametra
 				 * {@code vpravo} rovná {@code valtrue}, tak sa robot bude
 				 * otáčať doprava. Inak platia rovnaké informácie
@@ -14905,7 +15353,7 @@ TODO: na úvodnú stránku
 				/**
 				 * <p>Pohne robotom po oblúku s polomerom rovným veľkosti
 				 * robota o aktuálny uhol otáčania bez nakreslenia oblúka.
-				 * Pozri metódy{@link #veľkosť()} a {@link #uholOtáčania()}.
+				 * Pozri metódy {@link #veľkosť()} a {@link #uholOtáčania()}.
 				 * Ak je hodnota parametra {@code vpravo} rovná
 				 * {@code valtrue}, tak sa robot bude otáčať doprava. Inak
 				 * platia rovnaké informácie ako pri metóde
@@ -15027,10 +15475,12 @@ TODO: na úvodnú stránku
 					if (δ < 0.0001 || δ > 359.9999)
 					{
 						choďNa(x, y);
+						double zálohaUhla = aktuálnyUhol;
 						aktuálnyUhol += δ;
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 
 						uhol(aktuálnyUhol);
+						poslednýUhol = zálohaUhla;
 						return;
 					}
 					else if (δ > 179.9999 && δ < 180.0001)
@@ -15239,10 +15689,12 @@ TODO: na úvodnú stránku
 					if (δ < 0.0001 || δ > 359.9999)
 					{
 						skočNa(x, y);
+						double zálohaUhla = aktuálnyUhol;
 						aktuálnyUhol += δ;
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 
 						uhol(aktuálnyUhol);
+						poslednýUhol = zálohaUhla;
 						return;
 					}
 
@@ -17177,7 +17629,11 @@ TODO: na úvodnú stránku
 							double β = smerNa(cieľX, cieľY);
 							if (Math.abs(aktuálnyUhol - β) <= 0.05 ||
 								Math.abs(360 + aktuálnyUhol - β) <=
-								0.05) aktuálnyUhol = β;
+								0.05)
+							{
+								poslednýUhol = aktuálnyUhol;
+								aktuálnyUhol = β;
+							}
 							else return true;
 						}
 
@@ -18032,7 +18488,12 @@ TODO: na úvodnú stránku
 				public void choďNaCieľ()
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					if (peroPoložené)
 					{
@@ -18090,7 +18551,12 @@ TODO: na úvodnú stránku
 				public void skočNaCieľ()
 				{
 					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar) zálohujÚdajeOhraničenia();
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
 
 					aktuálneX = cieľX;
 					aktuálneY = cieľY;
@@ -18143,6 +18609,7 @@ TODO: na úvodnú stránku
 					if (Δx == 0 && Δy == 0) return;
 					else
 					{
+						poslednýUhol = aktuálnyUhol;
 						aktuálnyUhol = Math.toDegrees(Math.atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
@@ -20482,6 +20949,7 @@ TODO: na úvodnú stránku
 										Math.abs(360 + aktuálnyUhol - β) <=
 										0.01)
 									{
+										poslednýUhol = aktuálnyUhol;
 										aktuálnyUhol = β;
 										choďNa(cieľX, cieľY);
 										cieľAktívny = false;
@@ -22215,6 +22683,18 @@ TODO: na úvodnú stránku
 				 * <p>Táto metóda je predvolene prázdna a je určená na
 				 * prekrytie v niektorej z tried odvodených od robota.</p>
 				 * 
+				 * <p>Opis fungovania tejto metódy je totožný s opisom
+				 * fungovania rovnomennej metódy {@link ObsluhaUdalostí
+				 * ObsluhaUdalostí}{@code .}{@link 
+				 * ObsluhaUdalostí#vzniklaChyba(GRobotException.Chyba)
+				 * vzniklaChyba}{@code (chyba)}.</p>
+				 */
+				public void vzniklaChyba(GRobotException.Chyba chyba) {}
+
+				/**
+				 * <p>Táto metóda je predvolene prázdna a je určená na
+				 * prekrytie v niektorej z tried odvodených od robota.</p>
+				 * 
 				 * <p>Opis fungovania tejto metódy je totožný s opisom fungovania
 				 * metódy {@link ObsluhaUdalostí ObsluhaUdalostí}{@code .}{@link 
 				 * ObsluhaUdalostí#stlačenieTlačidlaMyši()
@@ -23920,15 +24400,17 @@ TODO: na úvodnú stránku
 				{
 					if (obrázokAktívnehoPlátna instanceof Obrázok)
 					{
-						((Obrázok)obrázokAktívnehoPlátna).vyplň(farbaRobota);
+						((Obrázok)obrázokAktívnehoPlátna).vyplň(this);
 					}
 					else
 					{
 						// grafikaAktívnehoPlátna.setColor(farbaRobota);
+						nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 						nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 						grafikaAktívnehoPlátna.fillRect(0, 0,
 							obrázokAktívnehoPlátna.getWidth(),
 							obrázokAktívnehoPlátna.getHeight());
+						obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					}
 					Svet.automatickéPrekreslenie();
 				}
@@ -24197,6 +24679,7 @@ TODO: na úvodnú stránku
 			public void bod()
 			{
 				// grafikaAktívnehoPlátna.setColor(farbaRobota);
+				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
 				// Nemôžem použiť metódu BufferedImage.setRGB(x, y, rgb), ani
@@ -24215,6 +24698,7 @@ TODO: na úvodnú stránku
 							Svet.prepočítajY(aktuálneY) - (polomerPera / 2),
 							polomerPera, polomerPera));
 
+				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -24373,10 +24857,12 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 					grafikaAktívnehoPlátna.draw(kružnica);
 					aktualizujPôsobisko(polomer/* + (polomerPera / 2)*/);
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -24449,9 +24935,11 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(kruh);
 					aktualizujPôsobisko(polomer);
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -24585,10 +25073,12 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 					grafikaAktívnehoPlátna.draw(elipsa);
 					aktualizujPôsobisko(elipsa.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 				return elipsa;
@@ -24671,9 +25161,11 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(elipsa);
 					aktualizujPôsobisko(elipsa.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -24826,10 +25318,12 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 					grafikaAktívnehoPlátna.draw(štvorec);
 					aktualizujPôsobisko(štvorec.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -24918,9 +25412,11 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(štvorec);
 					aktualizujPôsobisko(štvorec.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -25087,10 +25583,12 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 					grafikaAktívnehoPlátna.draw(obdĺžnik);
 					aktualizujPôsobisko(obdĺžnik.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -25193,9 +25691,11 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(obdĺžnik);
 					aktualizujPôsobisko(obdĺžnik.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -25316,10 +25816,12 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 					grafikaAktívnehoPlátna.draw(hviezda);
 					aktualizujPôsobisko(hviezda.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -25375,9 +25877,11 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(hviezda);
 					aktualizujPôsobisko(hviezda.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -25499,10 +26003,12 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 					grafikaAktívnehoPlátna.draw(kružnica);
 					aktualizujPôsobisko(veľkosť/* + (polomerPera / 2)*/);
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -25568,9 +26074,11 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(kruh);
 					aktualizujPôsobisko(veľkosť);
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -25713,10 +26221,12 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 					grafikaAktívnehoPlátna.draw(elipsa);
 					aktualizujPôsobisko(elipsa.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 				return elipsa;
@@ -25801,9 +26311,11 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(elipsa);
 					aktualizujPôsobisko(elipsa.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -25946,10 +26458,12 @@ TODO: na úvodnú stránku
 
 				if (kresliTvary)
 				{
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 					grafikaAktívnehoPlátna.draw(elipsa);
 					aktualizujPôsobisko(elipsa.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 				return elipsa;
@@ -26026,9 +26540,11 @@ TODO: na úvodnú stránku
 
 				if (kresliTvary)
 				{
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(elipsa);
 					aktualizujPôsobisko(elipsa.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -26171,10 +26687,12 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 					grafikaAktívnehoPlátna.draw(štvorec);
 					aktualizujPôsobisko(štvorec.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -26256,9 +26774,11 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(štvorec);
 					aktualizujPôsobisko(štvorec.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -26434,10 +26954,12 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 					grafikaAktívnehoPlátna.draw(obdĺžnik);
 					aktualizujPôsobisko(obdĺžnik.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -26545,9 +27067,11 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(obdĺžnik);
 					aktualizujPôsobisko(obdĺžnik.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -26710,10 +27234,12 @@ TODO: na úvodnú stránku
 
 				if (kresliTvary)
 				{
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 					grafikaAktívnehoPlátna.draw(obdĺžnik);
 					aktualizujPôsobisko(obdĺžnik.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -26813,9 +27339,11 @@ TODO: na úvodnú stránku
 
 				if (kresliTvary)
 				{
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(obdĺžnik);
 					aktualizujPôsobisko(obdĺžnik.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -26923,10 +27451,12 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 					grafikaAktívnehoPlátna.draw(hviezda);
 					aktualizujPôsobisko(hviezda.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -26975,9 +27505,11 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(hviezda);
 					aktualizujPôsobisko(hviezda.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -27054,6 +27586,7 @@ TODO: na úvodnú stránku
 				if (!kresliTvary) return new Polygon(fx, fy, 7);
 
 				// grafikaAktívnehoPlátna.setColor(farbaRobota);
+				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
 				if (vyplnený)
@@ -27066,6 +27599,7 @@ TODO: na úvodnú stránku
 					grafikaAktívnehoPlátna.drawPolygon(fx, fy, 7);
 				}
 
+				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				Svet.automatickéPrekreslenie();
 				return null;
 			}
@@ -27110,6 +27644,7 @@ TODO: na úvodnú stránku
 				if (!kresliTvary) return new Polygon(fx, fy, 7);
 
 				// grafikaAktívnehoPlátna.setColor(farbaRobota);
+				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
 				if (vyplnený)
@@ -27122,6 +27657,7 @@ TODO: na úvodnú stránku
 					grafikaAktívnehoPlátna.drawPolygon(fx, fy, 7);
 				}
 
+				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				Svet.automatickéPrekreslenie();
 				return null;
 			}
@@ -27159,10 +27695,12 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 					grafikaAktívnehoPlátna.draw(tvar);
 					aktualizujPôsobisko(tvar.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 				return tvar;
@@ -27192,9 +27730,11 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(tvar);
 					aktualizujPôsobisko(tvar.getBounds2D());
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 				return tvar;
@@ -27425,6 +27965,7 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 
@@ -27460,6 +28001,7 @@ TODO: na úvodnú stránku
 						aktualizujPôsobisko(tvar.getBounds2D());
 					}
 
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 				else if (upravRobotom && (aktuálnyUhol != 90 ||
@@ -27519,6 +28061,7 @@ TODO: na úvodnú stránku
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
+					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
 					if (!upravRobotom || (aktuálnyUhol == 90 &&
@@ -27553,6 +28096,7 @@ TODO: na úvodnú stránku
 						aktualizujPôsobisko(tvar.getBounds2D());
 					}
 
+					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
 				}
 				else if (upravRobotom && (aktuálnyUhol != 90 ||
@@ -31719,6 +32263,7 @@ TODO: na úvodnú stránku
 				}
 
 				// grafikaAktívnehoPlátna.setColor(farbaRobota);
+				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
 				if ((90.0 == aktuálnyUhol) ||
@@ -31829,6 +32374,7 @@ TODO: na úvodnú stránku
 						prepočítanéX, prepočítanéY);
 				}
 
+				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				Svet.automatickéPrekreslenie();
 				return null;
 			}
@@ -31945,6 +32491,7 @@ TODO: na úvodnú stránku
 				}
 
 				// grafikaAktívnehoPlátna.setColor(farbaRobota);
+				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
 				if ((90.0 == aktuálnyUhol) ||
@@ -32055,6 +32602,7 @@ TODO: na úvodnú stránku
 						prepočítanéX + Δx, prepočítanéY - Δy);
 				}
 
+				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				Svet.automatickéPrekreslenie();
 				return null;
 			}
@@ -32732,9 +33280,11 @@ TODO: na úvodnú stránku
 				záznamCesty = false;
 				záznamCestyBezPolohyPera = true;
 				// grafikaAktívnehoPlátna.setColor(farbaRobota);
+				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 				grafikaAktívnehoPlátna.fill(cesta);
 				// grafikaAktívnehoPlátna.fillPolygon(cesta);
+				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -32803,10 +33353,12 @@ TODO: na úvodnú stránku
 				záznamCesty = false;
 				záznamCestyBezPolohyPera = true;
 				// grafikaAktívnehoPlátna.setColor(farbaRobota);
+				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 				grafikaAktívnehoPlátna.setStroke(čiara);
 				grafikaAktívnehoPlátna.draw(cesta);
 				// grafikaAktívnehoPlátna.drawPolyline(cesta.xpoints, cesta.ypoints, cesta.npoints);
+				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -32853,10 +33405,12 @@ TODO: na úvodnú stránku
 				}
 
 				// grafikaAktívnehoPlátna.setColor(farbaRobota);
+				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 				grafikaAktívnehoPlátna.setStroke(čiara);
 				grafikaAktívnehoPlátna.draw(cesta);
 				// grafikaAktívnehoPlátna.drawPolygon(cesta);
+				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -33376,6 +33930,7 @@ TODO: na úvodnú stránku
 			public void obkresliOblasť(Area oblasť)
 			{
 				// grafikaAktívnehoPlátna.setColor(farbaRobota);
+				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 				grafikaAktívnehoPlátna.setStroke(čiara);
 
@@ -33410,6 +33965,7 @@ TODO: na úvodnú stránku
 					aktualizujPôsobisko(a.getBounds2D());
 				}
 
+				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -33436,6 +33992,7 @@ TODO: na úvodnú stránku
 			public void vyplňOblasť(Area oblasť)
 			{
 				// grafikaAktívnehoPlátna.setColor(farbaRobota);
+				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
 				if (aktuálnyUhol == 90 && aktuálneX == 0 &&
@@ -33472,6 +34029,7 @@ TODO: na úvodnú stránku
 					aktualizujPôsobisko(a.getBounds2D());
 				}
 
+				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -37653,7 +38211,7 @@ TODO: na úvodnú stránku
 			 * že sa priebežne vytvára oblasť, ktorá je prienikom všetkých
 			 * obmedzení. Ak chceme vytvoriť obmedzenie pre tvar, ktorý je
 			 * možné vytvoriť inou množinovou operáciou, môžeme na
-			 * obmedzenie kreslenia použiť aj {@link Oblasť Oblasť} (zadanú
+			 * obmedzenie kreslenia použiť {@link Oblasť Oblasť} (zadanú
 			 * namiesto parametra {@code tvar}). Je nevyhnutné podotknúť, že
 			 * obmedzenie je viazané na plátno a je platné pre všetky
 			 * roboty.</p>

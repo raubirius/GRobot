@@ -881,6 +881,75 @@ public class ObsluhaUdalostí
 
 
 	/**
+	 * <p>Táto reakcia je spustená v prípade, že bola nahlásená chyba
+	 * prostriedkami programovacieho rámca. Medzi nich patrí
+	 * generovanie výnimiek programovacieho rámca ({@link GRobotException
+	 * GRobotException}) a vnútorný mechanizmus hlásenia rôznych (chybových)
+	 * stavov rámca.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Všetky chyby sú zároveň
+	 * zaznamenávané do {@linkplain GRobotException#denník denníka chýb}.</p>
+	 * 
+	 * <p><b>Príklad:</b></p>
+	 * 
+	 * <p>Výpisy chýb môžu byť rôznych úrovní. Niektoré spôsoby ukazuje
+	 * tento príklad.</p>
+	 * 
+	 * <pre CLASS="example">
+		{@code kwdimport} knižnica.*;
+
+		{@code kwdpublic} {@code typeclass} VzniklaChyba {@code kwdextends} {@link GRobot GRobot}
+		{
+			{@code kwdprivate} VzniklaChyba()
+			{
+				{@link GRobot#obrázok(String) obrázok}({@code srg"obrazok-nejestvuje"});
+			}
+
+			{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#vzniklaChyba(GRobotException.Chyba) vzniklaChyba}({@link GRobotException GRobotException}.{@link GRobotException.Chyba#GRobotException.Chyba Chyba} chyba)
+			{
+				{@code kwdif} ({@code valnull} != chyba.{@link GRobotException.Chyba#správa správa})
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(chyba.{@link GRobotException.Chyba#správa správa});
+
+				{@code kwdif} ({@code valnull} != chyba.{@link GRobotException.Chyba#výnimka výnimka})
+				{
+					{@code kwdif} ({@code valnull} == chyba.{@link GRobotException.Chyba#výnimka výnimka}.{@link Throwable#getMessage() getMessage}())
+						Svet.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@link GRobotException GRobotException}.
+							{@link GRobotException#stackTraceToString(Throwable) stackTraceToString}(chyba.{@link GRobotException.Chyba#výnimka výnimka}));
+					{@code kwdelse}
+						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(chyba.{@link GRobotException.Chyba#výnimka výnimka}.{@link Throwable#getMessage() getMessage}());
+				}
+
+				{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"———"});
+			}
+
+			{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#klik() klik}()
+			{
+				{@code kwdnew} {@link GRobotException#GRobotException(String, String) GRobotException}({@code srg"Test výnimky"}, {@code valnull});
+			}
+
+			{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
+			{
+				{@code kwdnew} VzniklaChyba();
+			}
+		}
+		</pre>
+	 * 
+	 * <p><b>Výsledok:</b></p>
+	 * 
+	 * <p><image>vznikla-vynimka.png<alt/>Ukážka výpisov chýb.</image>Ukážka
+	 * výsledku výpisu chýb.</p>
+	 * 
+	 * @param chyba inštancia obsahujúca podrobnosti o chybe; pozri {@link 
+	 *     GRobotException.Chyba GRobotException.Chyba}
+	 * 
+	 * @see GRobot#vzniklaChyba(GRobotException.Chyba)
+	 * @see GRobotException
+	 * @see GRobotException.Chyba
+	 */
+	public void vzniklaChyba(GRobotException.Chyba chyba) {}
+
+
+	/**
 	 * <p>Spustená pri stlačení tlačidla myši. Použite metódu
 	 * {@link ÚdajeUdalostí#myš() ÚdajeUdalostí.myš()} na
 	 * získanie podrobnejších údajov o tejto udalosti. Stav myši

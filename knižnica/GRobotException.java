@@ -42,6 +42,8 @@ import java.io.StringWriter;
 import java.util.Locale;
 import java.util.Vector;
 
+import javax.swing.SwingUtilities;
+
 import static java.util.Calendar.*;
 
 // -------------------------------- //
@@ -570,6 +572,11 @@ import static java.util.Calendar.*;
  * {@link Poloha#stred stred}.</td></tr>
  * 
  * </table>
+ * 
+ * <p class="remark"><b>Poznámka:</b> Vznik výnimiek a rôznych iných
+ * chybových stavov programovacieho rámca je sprevádzaný vznikom udalosti
+ * {@link ObsluhaUdalostí#vzniklaChyba(GRobotException.Chyba)
+ * vzniklaChyba(chyba)}.</p>
  */
 @SuppressWarnings("serial")
 public class GRobotException extends RuntimeException
@@ -596,6 +603,9 @@ public class GRobotException extends RuntimeException
 			{@link GRobotException GRobotException}.{@link GRobotException#denník denník}.{@link Denník#pripoj(String) pripoj}({@code srg"priklad.log"});
 		}
 		</pre>
+	 * 
+	 * <p>(Alternatívou by mohlo byť napríklad využitie udalosti {@link 
+	 * ObsluhaUdalostí#vzniklaChyba(GRobotException.Chyba) vzniklaChyba}.)</p>
 	 * 
 	 * <p>Okrem zápisu do súboru sa s denníkom dá pracovať ako s klasickým
 	 * {@linkplain Zoznam zoznamom.} Jednotlivé položky zoznamu sú inštancie
@@ -633,6 +643,10 @@ public class GRobotException extends RuntimeException
 				{@link GRobotException GRobotException}.{@link GRobotException#denník denník}.{@link Denník#pripoj(String) pripoj}({@code srg"priklad.log"});
 			}
 			</pre>
+		 * 
+		 * <p>Alternatívou by mohlo byť napríklad využitie udalosti {@link 
+		 * ObsluhaUdalostí#vzniklaChyba(GRobotException.Chyba)
+		 * vzniklaChyba}.</p>
 		 * 
 		 * @param názovSúboru názov súboru s denníkom na pripojenie
 		 *     aktuálneho obsahu tejto inštancie denníka
@@ -779,6 +793,26 @@ public class GRobotException extends RuntimeException
 			this.vynimka = výnimka;
 
 			denník.pridaj(this);
+			SwingUtilities.invokeLater(() -> vzniklaChyba(Chyba.this));
+		}
+	}
+
+
+	// Spustenie obslúh udalosti „vznikla chyba.“
+	private static void vzniklaChyba(Chyba chyba)
+	{
+		if (null != ObsluhaUdalostí.počúvadlo)
+			synchronized (ÚdajeUdalostí.zámokUdalostí)
+			{
+				ObsluhaUdalostí.počúvadlo.vzniklaChyba(chyba);
+			}
+	
+		synchronized (ÚdajeUdalostí.zámokUdalostí)
+		{
+			for (GRobot počúvajúci : GRobot.počúvajúciSystém)
+			{
+				počúvajúci.vzniklaChyba(chyba);
+			}
 		}
 	}
 

@@ -1057,7 +1057,7 @@ public class Plazma
 	 * váhyŤahu(x, y)} (podrobnosti pozri v jej opise).</p>
 	 * 
 	 * @param bod kvázi smerový vektor určujúci nové nastavenie váh ťahu
-	 *     (pozri aj opis metódy{@link #váhyŤahu(double, double)
+	 *     (pozri aj opis metódy {@link #váhyŤahu(double, double)
 	 *     váhyŤahu(x, y)})
 	 * 
 	 * @see #váhyŤahu()

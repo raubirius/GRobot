@@ -2360,7 +2360,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * sa priebežne vytvára oblasť, ktorá je prienikom všetkých
 		 * obmedzení. Ak chceme vytvoriť obmedzenie tvaru, ktorý je
 		 * možné vytvoriť inou množinovou operáciou, môžeme na obmedzenie
-		 * kreslenia použiť aj {@link Oblasť Oblasť} (zadanú namiesto
+		 * kreslenia použiť {@link Oblasť Oblasť} (zadanú namiesto
 		 * parametra {@code tvar}). Obmedzenia sú platné pre všetky
 		 * roboty a zrušíme ich volaním metódy {@link #kresliVšade()
 		 * kresliVšade}.</p>
@@ -2880,16 +2880,20 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 			if (null != kreslič)
 			{
 				// grafika.setColor(kreslič.farbaRobota);
+				kreslič.nastavVlastnostiGrafiky(grafika);
 				kreslič.nastavFarbuAleboVýplňPodľaRobota(grafika);
 				grafika.setStroke(kreslič.čiara);
 				grafika.draw(tvar);
+				kreslič.obnovVlastnostiGrafiky(grafika);
 			}
 			else if (null != Svet.hlavnýRobot)
 			{
 				// grafika.setColor(Svet.hlavnýRobot.farbaRobota);
+				Svet.hlavnýRobot.nastavVlastnostiGrafiky(grafika);
 				Svet.hlavnýRobot.nastavFarbuAleboVýplňPodľaRobota(grafika);
 				grafika.setStroke(Svet.hlavnýRobot.čiara);
 				grafika.draw(tvar);
+				Svet.hlavnýRobot.obnovVlastnostiGrafiky(grafika);
 			}
 		}
 
@@ -2918,9 +2922,11 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 			if (null == kreslič) return;
 
 			// grafika.setColor(kreslič.farbaRobota);
+			kreslič.nastavVlastnostiGrafiky(grafika);
 			kreslič.nastavFarbuAleboVýplňPodľaRobota(grafika);
 			grafika.setStroke(kreslič.čiara);
 			grafika.draw(tvar);
+			kreslič.obnovVlastnostiGrafiky(grafika);
 		}
 
 		/**
@@ -2983,14 +2989,18 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 			if (null != kreslič)
 			{
 				// grafika.setColor(kreslič.farbaRobota);
+				kreslič.nastavVlastnostiGrafiky(grafika);
 				kreslič.nastavFarbuAleboVýplňPodľaRobota(grafika);
 				grafika.fill(tvar);
+				kreslič.obnovVlastnostiGrafiky(grafika);
 			}
 			else if (null != Svet.hlavnýRobot)
 			{
 				// grafika.setColor(Svet.hlavnýRobot.farbaRobota);
+				Svet.hlavnýRobot.nastavVlastnostiGrafiky(grafika);
 				Svet.hlavnýRobot.nastavFarbuAleboVýplňPodľaRobota(grafika);
 				grafika.fill(tvar);
+				Svet.hlavnýRobot.obnovVlastnostiGrafiky(grafika);
 			}
 		}
 
@@ -3021,13 +3031,27 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 			if (null == kreslič) return;
 
 			// grafika.setColor(kreslič.farbaRobota);
+			kreslič.nastavVlastnostiGrafiky(grafika);
 			kreslič.nastavFarbuAleboVýplňPodľaRobota(grafika);
 			grafika.fill(tvar);
+			kreslič.obnovVlastnostiGrafiky(grafika);
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #vyplň(Shape, GRobot) vyplň}.</p> */
 		public void vypln(Shape tvar, GRobot kreslič) { vyplň(tvar, kreslič); }
 
+
+		// Vypĺňanie s použitím všetkých vlastností robota (náter,
+		// cieľová farba a pod.).
+		private void vyplň(GRobot robot)
+		{
+			robot.nastavVlastnostiGrafiky(grafika);
+			robot.nastavFarbuAleboVýplňPodľaRobota(grafika);
+			grafika.translate(-posunX, -posunY);
+			grafika.fillRect(0, 0, šírka, výška);
+			grafika.translate(posunX, posunY);
+			robot.obnovVlastnostiGrafiky(grafika);
+		}
 
 		/**
 		 * <p>Vyplní celú plochu obrázka zadanou farbou.</p>

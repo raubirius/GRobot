@@ -708,4 +708,19 @@ public class Rad
 		return spodnáHranica + (krok * (odčítanec - Math.abs(
 			(parameter % deliteľ) - odčítanec)));
 	}
+
+	/**
+	 * <p>Zamieša tento rad. Metóda nastaví aktuálnu hodnotu radu na náhodné
+	 * číslo v rámci jeho hraníc, s ohľadom na hodnotu kroku a náhodne zmení
+	 * aktuálny smer radu.</p>
+	 */
+	public void zamiešaj()
+	{
+		hodnota = (int)Svet.náhodnéCeléČíslo(vrchnáHranica, spodnáHranica);
+		napravHodnotu();
+		vzostupne = 0 == Svet.náhodnéCeléČíslo(0, 1);
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #zamiešaj() zamiešaj}.</p> */
+	public void zamiesaj() { zamiešaj(); }
 }

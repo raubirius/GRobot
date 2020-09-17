@@ -77,6 +77,8 @@ public class ÚdajeUdalostí
 		/*packagePrivate*/ static int tlačidloMyši = 0;
 		/*packagePrivate*/ static double súradnicaMyšiX = 0;
 		/*packagePrivate*/ static double súradnicaMyšiY = 0;
+		/*packagePrivate*/ static double poslednáSúradnicaMyšiX = 0;
+		/*packagePrivate*/ static double poslednáSúradnicaMyšiY = 0;
 		/*packagePrivate*/ static int rolovanieKolieskomMyšiX = 0;
 		/*packagePrivate*/ static int rolovanieKolieskomMyšiY = 0;
 
@@ -640,6 +642,7 @@ public class ÚdajeUdalostí
 	 * 
 	 * @see #myš()
 	 * @see #súradnicaMyšiY()
+	 * @see #poslednáSúradnicaMyšiX()
 	 */
 	public static double súradnicaMyšiX()
 	{
@@ -663,6 +666,7 @@ public class ÚdajeUdalostí
 	 * 
 	 * @see #myš()
 	 * @see #súradnicaMyšiX()
+	 * @see #poslednáSúradnicaMyšiY()
 	 */
 	public static double súradnicaMyšiY()
 	{
@@ -694,6 +698,7 @@ public class ÚdajeUdalostí
 	 * 
 	 * @see #súradnicaMyšiX()
 	 * @see #súradnicaMyšiY()
+	 * @see #poslednáPolohaMyši()
 	 */
 	public static Bod polohaMyši()
 	{
@@ -704,6 +709,84 @@ public class ÚdajeUdalostí
 	public static Bod polohaMysi()
 	{
 		return polohaMyši();
+	}
+
+
+	/**
+	 * <p>Vráti hodnotu poslednej x-ovej súradnice myši prepočítanú do
+	 * súradníc plátna. Ide o hodnotu súradnice myši pred poslednou
+	 * zmenou. Takto sa dá overiť miera prípadného posunutia kurzora
+	 * myši pri dvoch po sebe nasledujúcich udalostiach myši.</p>
+	 * 
+	 * @return hodnota poslednej x-ovej súradnice myši
+	 * 
+	 * @see #súradnicaMyšiX()
+	 * @see #poslednáSúradnicaMyšiY()
+	 */
+	public static double poslednáSúradnicaMyšiX()
+	{
+		synchronized (zámokMyši)
+		{
+			return poslednáSúradnicaMyšiX;
+		}
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #poslednáSúradnicaMyšiX() poslednáSúradnicaMyšiX}.</p> */
+	public static double poslednaSuradnicaMysiX() { return poslednáSúradnicaMyšiX(); }
+
+	/**
+	 * <p>Vráti hodnotu poslednej y-ovej súradnice myši prepočítanú do
+	 * súradníc plátna. Ide o hodnotu súradnice myši pred poslednou
+	 * zmenou. Takto sa dá overiť miera prípadného posunutia kurzora
+	 * myši pri dvoch po sebe nasledujúcich udalostiach myši.</p>
+	 * 
+	 * @return hodnota poslednej y-ovej súradnice myši
+	 * 
+	 * @see #súradnicaMyšiY()
+	 * @see #poslednáSúradnicaMyšiX()
+	 */
+	public static double poslednáSúradnicaMyšiY()
+	{
+		synchronized (zámokMyši)
+		{
+			return poslednáSúradnicaMyšiY;
+		}
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #poslednáSúradnicaMyšiY() poslednáSúradnicaMyšiY}.</p> */
+	public static double poslednaSuradnicaMysiY() { return poslednáSúradnicaMyšiY(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #poslednáSúradnicaMyšiX() poslednáSúradnicaMyšiX}.</p> */
+	public static double poslednáPolohaMyšiX() { return poslednáSúradnicaMyšiX(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #poslednáPolohaMyšiX() poslednáPolohaMyšiX}.</p> */
+	public static double poslednaPolohaMysiX() { return poslednáSúradnicaMyšiX(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #poslednáSúradnicaMyšiY() poslednáSúradnicaMyšiY}.</p> */
+	public static double poslednáPolohaMyšiY() { return poslednáSúradnicaMyšiY(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #poslednáPolohaMyšiY() poslednáPolohaMyšiY}.</p> */
+	public static double poslednaPolohaMysiY() { return poslednáSúradnicaMyšiY(); }
+
+	/**
+	 * <p>Vráti polohu kurzora myši pred poslednou zmenou. (Poloha je
+	 * prepočítaná do súradníc plátna.)</p>
+	 * 
+	 * @return aktuálna poloha kurzora myši
+	 * 
+	 * @see #poslednáSúradnicaMyšiX()
+	 * @see #poslednáSúradnicaMyšiY()
+	 * @see #polohaMyši()
+	 */
+	public static Bod poslednáPolohaMyši()
+	{
+		return new Bod(poslednáSúradnicaMyšiX, poslednáSúradnicaMyšiY);
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #poslednáPolohaMyši() poslednáPolohaMyši}.</p> */
+	public static Bod poslednaPolohaMysi()
+	{
+		return poslednáPolohaMyši();
 	}
 
 
