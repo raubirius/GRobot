@@ -26719,6 +26719,7 @@ public final class Svet extends JFrame
 		 * @see #celáObrazovka(int)
 		 * @see #celáObrazovka(boolean)
 		 * @see #celáObrazovka(int, boolean)
+		 * @see #oknoCelejObrazovky()
 		 */
 		public static boolean celáObrazovka() { return celáObrazovka(0, true); }
 
@@ -26747,6 +26748,7 @@ public final class Svet extends JFrame
 		 * @see #celáObrazovka()
 		 * @see #celáObrazovka(boolean)
 		 * @see #celáObrazovka(int, boolean)
+		 * @see #oknoCelejObrazovky()
 		 */
 		public static boolean celáObrazovka(int zariadenie)
 		{ return celáObrazovka(zariadenie, true); }
@@ -26773,6 +26775,7 @@ public final class Svet extends JFrame
 		 * @see #celáObrazovka()
 		 * @see #celáObrazovka(int)
 		 * @see #celáObrazovka(int, boolean)
+		 * @see #oknoCelejObrazovky()
 		 */
 		public static boolean celáObrazovka(boolean celáObrazovka)
 		{ return celáObrazovka(0, celáObrazovka); }
@@ -26874,6 +26877,7 @@ public final class Svet extends JFrame
 		 * @see #celáObrazovka()
 		 * @see #celáObrazovka(int)
 		 * @see #celáObrazovka(boolean)
+		 * @see #oknoCelejObrazovky()
 		 */
 		public static boolean celáObrazovka(
 			int zariadenie, boolean celáObrazovka)
@@ -27044,6 +27048,18 @@ public final class Svet extends JFrame
 		public static boolean celaObrazovka(
 			int zariadenie, boolean celáObrazovka)
 		{ return celáObrazovka(zariadenie, celáObrazovka); }
+
+		/**
+		 * <p>Ak je svet v {@link #celáObrazovka() režime celej obrazovky},
+		 * tak táto metóda vráti inštanciu {@link JFrame okna} celej
+		 * obrazovky, inak metóda vráti hodnotu {@code valnull}.</p>
+		 * 
+		 * @return inštancia {@link JFrame okna} alebo {@code valnull}
+		 * 
+		 * @see #celáObrazovka()
+		 */
+		public static JFrame oknoCelejObrazovky()
+		{ return oknoCelejObrazovky; }
 
 
 		/**
