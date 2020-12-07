@@ -1111,9 +1111,10 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	 * Ak používateľ dialóg zruší, tak metóda vráti hodnotu {@code valnull}.
 	 * Programátor má možnosť zvoliť vlastný titulok dialógového okna.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Text tlačidla na reset je
-	 * upraviteľný volaním metódy {@link Svet#textTlačidla(String, String)
-	 * textTlačidla} triedy {@link Svet Svet}.</p>
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel dialógu
+	 * (vrátane tlačidla reset) sú upraviteľné volaním metódy {@link 
+	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link 
+	 * Svet Svet}.</p>
 	 * 
 	 * @param titulok vlastný titulok dialógu
 	 * @return zvolený smer alebo {@code valnull}
@@ -1140,9 +1141,10 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	 * hodnotu {@code valnull}. Programátor má možnosť zvoliť vlastný titulok
 	 * dialógového okna.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Text tlačidla na reset je
-	 * upraviteľný volaním metódy {@link Svet#textTlačidla(String, String)
-	 * textTlačidla} triedy {@link Svet Svet}.</p>
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel dialógu
+	 * (vrátane tlačidla reset) sú upraviteľné volaním metódy {@link 
+	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link 
+	 * Svet Svet}.</p>
 	 * 
 	 * @param titulok vlastný titulok dialógu
 	 * @param počiatočnýSmer predvolený smer v novo otvorenom dialógu
@@ -1219,9 +1221,10 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	 * Ak používateľ dialóg zruší, tak metóda vráti hodnotu {@code valnull}.
 	 * Programátor má možnosť zvoliť vlastný titulok dialógového okna.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Text tlačidla na reset je
-	 * upraviteľný volaním metódy {@link Svet#textTlačidla(String, String)
-	 * textTlačidla} triedy {@link Svet Svet}.</p>
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel dialógu
+	 * (vrátane tlačidla reset) sú upraviteľné volaním metódy {@link 
+	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link 
+	 * Svet Svet}.</p>
 	 * 
 	 * @param titulok vlastný titulok dialógu
 	 * @return zvolený smer alebo {@code valnull}
@@ -1252,9 +1255,10 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 	 * hodnotu {@code valnull}. Programátor má možnosť zvoliť vlastný titulok
 	 * dialógového okna.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Text tlačidla na reset je
-	 * upraviteľný volaním metódy {@link Svet#textTlačidla(String, String)
-	 * textTlačidla} triedy {@link Svet Svet}.</p>
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel dialógu
+	 * (vrátane tlačidla reset) sú upraviteľné volaním metódy {@link 
+	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link 
+	 * Svet Svet}.</p>
 	 * 
 	 * @param titulok vlastný titulok dialógu
 	 * @param počiatočnýSmer predvolený smer v novo otvorenom dialógu

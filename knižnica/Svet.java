@@ -147,6 +147,7 @@ import javax.imageio.ImageIO;
 
 
 import knižnica.podpora.BeepChannel;
+import knižnica.podpora.EnumRadioPanel;
 import knižnica.podpora.ExecuteShellCommand;
 import knižnica.podpora.PerlinNoise;
 import knižnica.podpora.ReadStandardInput;
@@ -12340,7 +12341,7 @@ public final class Svet extends JFrame
 
 			/**
 			 * <p>Táto metóda je spúšťaná automaticky v priebehu práce
-			 * tejto inštancie.(Mechanizmus je implementovaný v rodičovskej
+			 * tejto inštancie. (Mechanizmus je implementovaný v rodičovskej
 			 * triede <a
 			 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExecuteShellCommand.java"
 			 * target="_blank"><code>ExecuteShellCommand</code></a>.) Jej
@@ -13797,18 +13798,27 @@ public final class Svet extends JFrame
 		 * s predvolenou hodnotou podľa zadanej inštancie {@link Uhol Uhol}
 		 * a s možnosťou zadania (zmeny) uhla prostredníctvom vstupného
 		 * poľa,</li>
-
+		 * 
+		 * <li>hodnota inštancie údajového typu {@link Enum Enum} – čiže
+		 * prvok enumeračného údajového typu; ktorý spôsobí, že na určenej
+		 * pozícii dialógu bude zobrazený panel so zoznamom rádiových
+		 * tlačidiel vytvorený podľa všetkých položiek dotknutého údajového
+		 * typu, pričom zadaná hodnota bude použitá na určenie aktuálne
+		 * zvoleného rádiového tlačidla (aktuálne zvolenej hodnoty v rámci
+		 * skupiny týchto tlačidiel),</li>
+		 * 
 		 * <li>hodnota údajového typu {@link Character Character},
 		 * ktorá má špeciálny význam – je rezervovaná na vkladanie riadiacich
 		 * znakov – v súčasnosti je platná len hodnota znaku nového riadka
-		 * ({@code srg'\n' } – odporúčame použiť znakovú konštantu
-		 * {@link Konštanty#riadok riadok}), ktorá prepne dialóg zo stĺpcového do
+		 * ({@code srg'\n'} – odporúčame použiť znakovú konštantu {@link 
+		 * Konštanty#riadok riadok}), ktorá prepne dialóg zo stĺpcového do
 		 * riadkového režimu a všetky komponenty dialógu (<small>zodpovedajúce
 		 * jednotlivým prvkom vstupného poľa – zdrojovým prvkom</small>),
 		 * ktorých zdrojové prvky sú umiestnené medzi prvkami nového riadka
-		 * (<small>to znamená, že každý nový riadok musí byť samostatným prvkom
-		 * vstupného poľa {@code údaje}</small>), budú umiestnené na
-		 * samostatnom neviditeľnom paneli dialógu – akoby v jednom riadku</li>
+		 * (<small>to znamená, že každý nový riadok musí byť samostatným
+		 * prvkom vstupného poľa {@code údaje}</small>), budú umiestnené na
+		 * samostatnom neviditeľnom paneli dialógu – akoby v jednom
+		 * riadku</li>
 		 * 
 		 * <li>a hodnotu {@code valnull}, ktorá spôsobí, že na určenej
 		 * pozícii bude umiestnený vstupný prvok na zadanie hesla.</li>
@@ -14063,6 +14073,10 @@ public final class Svet extends JFrame
 							);
 						početKomponentov += 2;
 					}
+					else if (údaj instanceof Enum)
+					{
+						početKomponentov += 2;
+					}
 					else if (údaj instanceof Character)
 					{
 						++poslednýPanel;
@@ -14239,6 +14253,24 @@ public final class Svet extends JFrame
 							aktívnyPanel.add(panel);
 							indexyZdrojov[i] = i;
 						}
+						else if (údaj instanceof Enum)
+						{
+							EnumRadioPanel panel =
+								new EnumRadioPanel((Enum)údaj);
+
+							if (j < popisy.length && null != popisy[j])
+							{
+								if (popisyDialógu.size() < (l + 1))
+									popisyDialógu.add(new JLabel());
+								JLabel popis = popisyDialógu.get(l++);
+								popis.setText(popisy[j]);
+								aktívnyPanel.add(popis);
+							}
+
+							komponentyÚdajov[i] = panel;
+							aktívnyPanel.add(panel);
+							indexyZdrojov[i] = i;
+						}
 						else if (údaj instanceof Character)
 						{
 							if (riadok == (Character)údaj)
@@ -14374,6 +14406,20 @@ public final class Svet extends JFrame
 						indexyZdrojov[i] = j + 1;
 						j += 2;
 					}
+					else if (údaj instanceof Enum)
+					{
+						EnumRadioPanel panel =
+							new EnumRadioPanel((Enum)údaj);
+
+						if (i < popisy.length && null != popisy[i])
+							komponentyÚdajov[j] = popisy[i];
+						else
+							komponentyÚdajov[j] = "";
+						komponentyÚdajov[j + 1] = panel;
+
+						indexyZdrojov[i] = j + 1;
+						j += 2;
+					}
 					else indexyZdrojov[i] = -1;
 					++i;
 				}
@@ -14427,6 +14473,12 @@ public final class Svet extends JFrame
 					{
 						údaje[i] = ((Uhol.PanelSmeru)komponentyÚdajov
 							[indexyZdrojov[i]]).dajSmer();
+					}
+					else if (údaj instanceof Enum)
+					{
+						údaje[i] = ((EnumRadioPanel)komponentyÚdajov
+							[indexyZdrojov[i]]).getSelection();
+						komponentyÚdajov[indexyZdrojov[i]] = null;
 					}
 					++i;
 				}

@@ -1601,9 +1601,10 @@ public class Bod extends Point2D implements Poloha
 	 * zruší, tak metóda vráti hodnotu {@code valnull}. Programátor má
 	 * možnosť zvoliť vlastný titulok dialógového okna.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Text tlačidla na reset je
-	 * upraviteľný volaním metódy {@link Svet#textTlačidla(String, String)
-	 * textTlačidla} triedy {@link Svet Svet}.</p>
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel dialógu
+	 * (vrátane tlačidla reset) sú upraviteľné volaním metódy {@link 
+	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link 
+	 * Svet Svet}.</p>
 	 * 
 	 * @param titulok vlastný titulok dialógu
 	 * @return zvolená poloha alebo {@code valnull}
@@ -1619,9 +1620,10 @@ public class Bod extends Point2D implements Poloha
 	 * zruší, tak metóda vráti hodnotu {@code valnull}. Programátor má
 	 * možnosť zvoliť vlastný titulok dialógového okna.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Text tlačidla na reset je
-	 * upraviteľný volaním metódy {@link Svet#textTlačidla(String, String)
-	 * textTlačidla} triedy {@link Svet Svet}.</p>
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel dialógu
+	 * (vrátane tlačidla reset) sú upraviteľné volaním metódy {@link 
+	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link 
+	 * Svet Svet}.</p>
 	 * 
 	 * @param titulok vlastný titulok dialógu
 	 * @param počiatočnáPoloha predvolená poloha v novo otvorenom dialógu

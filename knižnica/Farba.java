@@ -1679,10 +1679,10 @@ public class Farba extends Color implements Comparable<Color>
 	 * v novom objekte typu {@link Farba Farba}. Ak používateľ dialóg
 	 * zruší, tak metóda vráti hodnotu {@code valnull}.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na reset
-	 * a miešanie farieb sú upraviteľné volaním metódy {@link 
-	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link Svet
-	 * Svet}.</p>
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na potvrdenie
+	 * a zrušenie dialógu a na reset a miešanie farieb sú upraviteľné
+	 * volaním metódy {@link Svet#textTlačidla(String, String) textTlačidla}
+	 * triedy {@link Svet Svet}.</p>
 	 * 
 	 * <p><image>dialog-volby-farby.png<alt/>Dialóg na výber
 	 * farby.</image>Dialóg na výber farby.</p>
@@ -1716,10 +1716,10 @@ public class Farba extends Color implements Comparable<Color>
 	 * v novom objekte typu {@link Farba Farba}. Ak používateľ dialóg
 	 * zruší, tak metóda vráti hodnotu {@code valnull}.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na reset
-	 * a miešanie farieb sú upraviteľné volaním metódy {@link 
-	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link Svet
-	 * Svet}.</p>
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na potvrdenie
+	 * a zrušenie dialógu a na reset a miešanie farieb sú upraviteľné
+	 * volaním metódy {@link Svet#textTlačidla(String, String) textTlačidla}
+	 * triedy {@link Svet Svet}.</p>
 	 * 
 	 * <p><image>dialog-volby-farby.png<alt/>Dialóg na výber
 	 * farby.</image>Dialóg na výber farby.</p>
@@ -1756,10 +1756,10 @@ public class Farba extends Color implements Comparable<Color>
 	 * v novom objekte typu {@link Farba Farba}. Ak používateľ dialóg
 	 * zruší, tak metóda vráti hodnotu {@code valnull}.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na reset
-	 * a miešanie farieb sú upraviteľné volaním metódy {@link 
-	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link Svet
-	 * Svet}.</p>
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na potvrdenie
+	 * a zrušenie dialógu a na reset a miešanie farieb sú upraviteľné
+	 * volaním metódy {@link Svet#textTlačidla(String, String) textTlačidla}
+	 * triedy {@link Svet Svet}.</p>
 	 * 
 	 * <p><image>dialog-volby-farby.png<alt/>Dialóg na výber
 	 * farby.</image>Dialóg na výber farby.</p>
@@ -1794,10 +1794,10 @@ public class Farba extends Color implements Comparable<Color>
 	 * v novom objekte typu {@link Farba Farba}. Ak používateľ dialóg
 	 * zruší, tak metóda vráti hodnotu {@code valnull}.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na reset
-	 * a miešanie farieb sú upraviteľné volaním metódy {@link 
-	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link Svet
-	 * Svet}.</p>
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na potvrdenie
+	 * a zrušenie dialógu a na reset a miešanie farieb sú upraviteľné
+	 * volaním metódy {@link Svet#textTlačidla(String, String) textTlačidla}
+	 * triedy {@link Svet Svet}.</p>
 	 * 
 	 * <p><image>dialog-volby-farby.png<alt/>Dialóg na výber
 	 * farby.</image>Dialóg na výber farby.</p>
@@ -1836,10 +1836,10 @@ public class Farba extends Color implements Comparable<Color>
 	 * zruší, tak metóda vráti hodnotu {@code valnull}. Programátor má
 	 * možnosť zvoliť vlastný titulok dialógového okna.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na reset
-	 * a miešanie farieb sú upraviteľné volaním metódy {@link 
-	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link Svet
-	 * Svet}.</p>
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na potvrdenie
+	 * a zrušenie dialógu a na reset a miešanie farieb sú upraviteľné
+	 * volaním metódy {@link Svet#textTlačidla(String, String) textTlačidla}
+	 * triedy {@link Svet Svet}.</p>
 	 * 
 	 * <p><image>dialog-volby-farby.png<alt/>Dialóg na výber
 	 * farby.</image>Dialóg na výber farby.</p>
@@ -1875,10 +1875,10 @@ public class Farba extends Color implements Comparable<Color>
 	 * zruší, tak metóda vráti hodnotu {@code valnull}. Programátor má
 	 * možnosť zvoliť vlastný titulok dialógového okna.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na reset
-	 * a miešanie farieb sú upraviteľné volaním metódy {@link 
-	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link Svet
-	 * Svet}.</p>
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na potvrdenie
+	 * a zrušenie dialógu a na reset a miešanie farieb sú upraviteľné
+	 * volaním metódy {@link Svet#textTlačidla(String, String) textTlačidla}
+	 * triedy {@link Svet Svet}.</p>
 	 * 
 	 * <p><image>dialog-volby-farby.png<alt/>Dialóg na výber
 	 * farby.</image>Dialóg na výber farby.</p>
@@ -1917,10 +1917,10 @@ public class Farba extends Color implements Comparable<Color>
 	 * zruší, tak metóda vráti hodnotu {@code valnull}. Programátor má
 	 * možnosť zvoliť vlastný titulok dialógového okna.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na reset
-	 * a miešanie farieb sú upraviteľné volaním metódy {@link 
-	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link Svet
-	 * Svet}.</p>
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na potvrdenie
+	 * a zrušenie dialógu a na reset a miešanie farieb sú upraviteľné
+	 * volaním metódy {@link Svet#textTlačidla(String, String) textTlačidla}
+	 * triedy {@link Svet Svet}.</p>
 	 * 
 	 * <p><image>dialog-volby-farby.png<alt/>Dialóg na výber
 	 * farby.</image>Dialóg na výber farby.</p>
@@ -1957,10 +1957,10 @@ public class Farba extends Color implements Comparable<Color>
 	 * zruší, tak metóda vráti hodnotu {@code valnull}. Programátor má
 	 * možnosť zvoliť vlastný titulok dialógového okna.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na reset
-	 * a miešanie farieb sú upraviteľné volaním metódy {@link 
-	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link Svet
-	 * Svet}.</p>
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel na potvrdenie
+	 * a zrušenie dialógu a na reset a miešanie farieb sú upraviteľné
+	 * volaním metódy {@link Svet#textTlačidla(String, String) textTlačidla}
+	 * triedy {@link Svet Svet}.</p>
 	 * 
 	 * <p><image>dialog-volby-farby.png<alt/>Dialóg na výber
 	 * farby.</image>Dialóg na výber farby.</p>
