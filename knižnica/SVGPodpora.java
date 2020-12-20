@@ -230,7 +230,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 				farba = {@link SVGPodpora svgPodpora}.{@link SVGPodpora#farbaČiary(int) farbaČiary}(i);
 				{@code kwdif} ({@code valnull} != farba)
 				{
-					{@code typedouble} hrúbkaČiary = {@link SVGPodpora svgPodpora}.{@link SVGPodpora#hrúbkaČiary(int) hrúbkaČiary}(i);
+					{@code typedouble} hrúbkaČiary = {@link SVGPodpora svgPodpora}.{@link SVGPodpora#hrúbkaČiary(int) hrúbkaČiary}(i) * {@link GRobot#mierka() mierka}();
 					{@code kwdif} ({@link Double Double}.{@link Double#isFinite(double) isFinite}(hrúbkaČiary))
 						{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}(hrúbkaČiary);
 					{@code kwdelse}

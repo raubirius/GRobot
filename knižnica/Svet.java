@@ -120,6 +120,7 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.TooManyListenersException;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import java.util.regex.Pattern;
@@ -167,6 +168,8 @@ import static knižnica.Konštanty.UKONČENIE_SKRIPTU;
 import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
 import static knižnica.Konštanty.VYPÍSAŤ_PRÍKAZ;
 import static knižnica.Konštanty.ŽIADNA_CHYBA;
+import static knižnica.Konštanty.PRAVÉ;
+import static knižnica.Konštanty.ĽAVÉ;
 
 
 // --------------------- //
@@ -696,6 +699,9 @@ public final class Svet extends JFrame
 
 							konfiguračnýSúbor.zapíšVlastnosť("interaktívny",
 								GRobot.strop.interaktívnyRežim);
+
+							konfiguračnýSúbor.zapíšVlastnosť("skratky",
+								skratkyStropu);
 						}
 						catch (Exception e)
 						{ GRobotException.vypíšChybovéHlásenia(e); }
@@ -2126,6 +2132,36 @@ public final class Svet extends JFrame
 
 					ÚdajeUdalostí.poslednáUdalosťMyši = e;
 
+					// Súčasť implementácie označovania
+					// a kopírovania textov stropu.
+					if (skratkyStropu)
+					{
+						if (PRAVÉ == ÚdajeUdalostí.tlačidloMyši)
+						{
+							GRobot.strop.textyDoSchránky(true);
+							GRobot.strop.zrušOznačenieTextov();
+							Svet.pípni();
+						}
+						else if (ĽAVÉ == ÚdajeUdalostí.tlačidloMyši)
+						{
+							if (!ÚdajeUdalostí.poslednáUdalosťMyši.
+								isControlDown())
+								GRobot.strop.zrušOznačenieTextov();
+
+							int[] výpis = GRobot.strop.výpisPriBode(
+								ÚdajeUdalostí.súradnicaMyšiX,
+								ÚdajeUdalostí.súradnicaMyšiY);
+
+							if (null != výpis)
+							{
+								počiatočnýRiadokStropu =
+									koncovýRiadokStropu = výpis[0];
+								počiatočnýBlokStropu   =
+									koncovýBlokStropu   = výpis[1];
+							}
+						}
+					}
+
 					if (null != ObsluhaUdalostí.počúvadlo)
 						synchronized (ÚdajeUdalostí.zámokUdalostí)
 						{
@@ -2264,6 +2300,29 @@ public final class Svet extends JFrame
 						(int)ÚdajeUdalostí.súradnicaMyšiY - e.getY());
 
 					ÚdajeUdalostí.poslednáUdalosťMyši = e;
+
+					// Súčasť implementácie označovania
+					// a kopírovania textov stropu.
+					if (skratkyStropu && ĽAVÉ == ÚdajeUdalostí.tlačidloMyši)
+					{
+						int[] výpis = GRobot.strop.výpisPriBode(
+							ÚdajeUdalostí.súradnicaMyšiX,
+							ÚdajeUdalostí.súradnicaMyšiY);
+
+						if (null != výpis)
+						{
+							GRobot.strop.zrušOznačenieVýpisov(
+								počiatočnýRiadokStropu, počiatočnýBlokStropu,
+								koncovýRiadokStropu, koncovýBlokStropu);
+
+							koncovýRiadokStropu = výpis[0];
+							koncovýBlokStropu   = výpis[1];
+
+							GRobot.strop.označVýpisy(
+								počiatočnýRiadokStropu, počiatočnýBlokStropu,
+								koncovýRiadokStropu, koncovýBlokStropu);
+						}
+					}
 
 					if (null != ObsluhaUdalostí.počúvadlo)
 						synchronized (ÚdajeUdalostí.zámokUdalostí)
@@ -10732,12 +10791,14 @@ public final class Svet extends JFrame
 		 * musí byť volaná pred vytvorením {@linkplain #hlavnýRobot()
 		 * hlavného robota}, čiže ešte pred začatím inicializácie sveta
 		 * (najlepšie v hlavnej metóde).
+		 * 
 		 * V súčasnosti konfigurácia sveta zahŕňa polohu a rozmery hlavného
 		 * okna (vrátane stavu minimalizovania/maximalizovania okna)
-		 * a ukladanie vlastností registrovaných robotov. Meno
-		 * konfiguračného súboru určuje parameter {@code 
-		 * názovSúboru}. Súbor nemusí jestvovať, v takom prípade bude
-		 * vytvorený automaticky pri ukončení aplikácie.</p>
+		 * a ukladanie vlastností {@linkplain #registrujRobot(GRobot,
+		 * String) registrovaných} robotov. Meno konfiguračného súboru
+		 * určuje parameter {@code názovSúboru}. Súbor nemusí jestvovať,
+		 * v takom prípade bude vytvorený automaticky pri ukončení
+		 * aplikácie.</p>
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
@@ -10783,12 +10844,14 @@ public final class Svet extends JFrame
 		 * musí byť volaná pred vytvorením {@linkplain #hlavnýRobot()
 		 * hlavného robota}, čiže ešte pred začatím inicializácie sveta
 		 * (najlepšie v hlavnej metóde).
+		 * 
 		 * V súčasnosti konfigurácia sveta zahŕňa polohu a rozmery hlavného
 		 * okna (vrátane stavu minimalizovania/maximalizovania okna)
-		 * a ukladanie vlastností registrovaných robotov. Metóda
-		 * použije predvolené meno konfiguračného súboru {@code 
-		 * srg"grobot.cfg"}. Súbor nemusí jestvovať, v takom prípade bude
-		 * vytvorený automaticky pri ukončení aplikácie.</p>
+		 * a ukladanie vlastností {@linkplain #registrujRobot(GRobot,
+		 * String) registrovaných} robotov. Metóda použije predvolené
+		 * meno konfiguračného súboru {@code srg"grobot.cfg"}. Súbor
+		 * nemusí jestvovať, v takom prípade bude vytvorený automaticky
+		 * pri ukončení aplikácie.</p>
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
@@ -11264,6 +11327,9 @@ public final class Svet extends JFrame
 
 				GRobot.strop.interaktívnyRežim = konfiguračnýSúbor.
 					čítajVlastnosť("interaktívny", GRobot.strop.interaktívnyRežim);
+
+				skratkyStropu = konfiguračnýSúbor.
+					čítajVlastnosť("skratky", skratkyStropu);
 			}
 			catch (Exception e) { GRobotException.vypíšChybovéHlásenia(e); }
 			finally
@@ -11734,29 +11800,22 @@ public final class Svet extends JFrame
 		 * 
 		 * <p><b>Príklad – grafická konzola:</b></p>
 		 * 
+		 * <div id="grconsole01" style="display:">
+		 * 
+		 * <p><a href="javascript:;"
+		 * onclick="document.getElementById('grconsole01').style.display = 'none'; document.getElementById('grconsole02').style.display = '';">Zobraziť
+		 * dlhšiu verziu (s alternatívnou implementáciou ovládania konzoly
+		 * v komentároch).</a></p>
+		 * 
 		 * <pre CLASS="example">
 			{@code kwdimport} knižnica.*;
-			{@code kwdimport} java.io.IOException;
+			{@code kwdimport} java.io.{@link java.io.IOException IOException};
 
 			{@code kwdpublic} {@code typeclass} GrafickáKonzola {@code kwdextends} {@link GRobot GRobot}
 			{
-				{@code comm// Súčasť implementácie rolovania a posúvania textov vnútornej konzoly}
-				{@code comm// stropu s pomocou klávesnice.}
-				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} home = {@code srg"home"};
-				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} end  = {@code srg"end"};
-				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} hore = {@code srg"hore"};
-				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} dole = {@code srg"dole"};
-				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} pgUp = {@code srg"pgUp"};
-				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} pgDn = {@code srg"pgDn"};
-
 				{@code comm// Súčasť implementácie ukončenia spusteného procesu klávesovou}
 				{@code comm// skratkou.}
 				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} kill = {@code srg"kill"};
-
-				{@code comm// Súčasť implementácie označovania a kopírovania textov stropu.}
-				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} dAll = {@code srg"dAll"};
-				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} sAll = {@code srg"sAll"};
-				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} copy = {@code srg"copy"};
 
 				{@code comm// Príznak aktivovania vnútorného príkazu pause.}
 				{@code kwdprivate} {@code typeboolean} pause = {@code valfalse};
@@ -11765,32 +11824,15 @@ public final class Svet extends JFrame
 				{@code kwdprivate} GrafickáKonzola()
 				{
 					{@link GRobot#skry() skry}();
+					{@link Svet Svet}.{@link Svet#skratkyStropu(boolean) skratkyStropu}({@code valtrue});
 					{@link Svet Svet}.{@link Svet#neskrývajVstupnýRiadok(boolean) neskrývajVstupnýRiadok}({@code valtrue});
 					{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#output(Object...) output}({@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#getVersion() getVersion}());
 					{@link Plátno strop}.{@link Plátno#automatickéZobrazovanieLíšt(boolean) automatickéZobrazovanieLíšt}({@code valtrue});
 					{@link Plátno strop}.{@link Plátno#písmo(String, double) písmo}({@code srg"Consolas"}, {@code num14});
 
-					{@code comm// Súčasť implementácie rolovania a posúvania textov vnútornej}
-					{@code comm// konzoly stropu s pomocou klávesnice.}
-					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int) pridajKlávesovúSkratku}(home, {@link Kláves Kláves}.{@link Kláves#HOME HOME});
-					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int) pridajKlávesovúSkratku}(end,  {@link Kláves Kláves}.{@link Kláves#END END});
-					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int) pridajKlávesovúSkratku}(hore, {@link Kláves Kláves}.{@link Kláves#HORE HORE});
-					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int) pridajKlávesovúSkratku}(dole, {@link Kláves Kláves}.{@link Kláves#DOLE DOLE});
-					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int, int) pridajKlávesovúSkratku}(pgUp, {@link Kláves Kláves}.{@link Kláves#PAGE_UP PAGE_UP}, {@code num0}); {@code comm// bez ctrl…}
-					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int, int) pridajKlávesovúSkratku}(pgDn, {@link Kláves Kláves}.{@link Kláves#PAGE_DOWN PAGE_DOWN}, {@code num0});
-
 					{@code comm// Súčasť implementácie ukončenia spusteného procesu klávesovou}
 					{@code comm// skratkou.}
 					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int) pridajKlávesovúSkratku}(kill, {@link Kláves Kláves}.{@link Kláves#VK_D VK_D});
-
-					{@code comm// Súčasť implementácie označovania a kopírovania textov stropu.}
-					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int, int) pridajKlávesovúSkratku}(dAll, {@link Kláves Kláves}.{@link Kláves#VK_A VK_A},
-						{@link Kláves Kláves}.{@link Kláves#SKRATKA_PONUKY SKRATKA_PONUKY} | {@link Kláves Kláves}.{@link Kláves#SHIFT_MASK SHIFT_MASK});
-					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int, int, boolean) pridajKlávesovúSkratku}(dAll, {@link Kláves Kláves}.{@link Kláves#ESCAPE ESCAPE}, {@code num0}, {@code valfalse});
-					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int, int, boolean) pridajKlávesovúSkratku}(sAll, {@link Kláves Kláves}.{@link Kláves#VK_A VK_A},
-						{@link Kláves Kláves}.{@link Kláves#SKRATKA_PONUKY SKRATKA_PONUKY}, {@code valfalse});
-					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int, int, boolean) pridajKlávesovúSkratku}(copy, {@link Kláves Kláves}.{@link Kláves#VK_C VK_C},
-						{@link Kláves Kláves}.{@link Kláves#SKRATKA_PONUKY SKRATKA_PONUKY}, {@code valfalse});
 				}
 
 				{@code comm// Súčasť implementácie ukončenia spusteného procesu klávesovou}
@@ -11807,29 +11849,9 @@ public final class Svet extends JFrame
 				{
 					{@link String String} skratka = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#príkazSkratky() príkazSkratky}();
 
-					{@code comm// Súčasť implementácie rolovania a posúvania textov vnútornej}
-					{@code comm// konzoly stropu s pomocou klávesnice.}
-					{@code kwdif} (skratka == home) {@link Plátno strop}.{@link Plátno#posunutieTextov(int, int) posunutieTextov}(
-						{@link Plátno strop}.{@link Plátno#posunutieTextovX() posunutieTextovX}(), {@link Plátno strop}.{@link Plátno#poslednáVýškaTextu() poslednáVýškaTextu}());
-					{@code kwdelse} {@code kwdif} (skratka == end)
-						{@link Plátno strop}.{@link Plátno#posunutieTextov(int, int) posunutieTextov}({@link Plátno strop}.{@link Plátno#posunutieTextovX() posunutieTextovX}(), {@code num0});
-					{@code kwdelse} {@code kwdif} (skratka == hore)
-						{@link Plátno strop}.{@link Plátno#rolujTexty(int, int) rolujTexty}({@code num0}, {@link Plátno strop}.{@link Plátno#výškaRiadka() výškaRiadka}());
-					{@code kwdelse} {@code kwdif} (skratka == dole)
-						{@link Plátno strop}.{@link Plátno#rolujTexty(int, int) rolujTexty}({@code num0}, -{@link Plátno strop}.{@link Plátno#výškaRiadka() výškaRiadka}());
-					{@code kwdelse} {@code kwdif} (skratka == pgUp)
-						{@link Plátno strop}.{@link Plátno#rolujTexty(int, int) rolujTexty}({@code num0}, {@link Plátno Plátno}.{@link Plátno#viditeľnáVýška() viditeľnáVýška}() &#45; {@code num10});
-					{@code kwdelse} {@code kwdif} (skratka == pgDn)
-						{@link Plátno strop}.{@link Plátno#rolujTexty(int, int) rolujTexty}({@code num0}, {@code num10} &#45; {@link Plátno Plátno}.{@link Plátno#viditeľnáVýška() viditeľnáVýška}());
-
 					{@code comm// Súčasť implementácie ukončenia spusteného procesu klávesovou}
 					{@code comm// skratkou.}
-					{@code kwdelse} {@code kwdif} (skratka == kill) killProcess();
-
-					{@code comm// Súčasť implementácie označovania a kopírovania textov stropu.}
-					{@code kwdelse} {@code kwdif} (skratka == dAll) {@link Plátno strop}.{@link Plátno#zrušOznačenieTextov() zrušOznačenieTextov}();
-					{@code kwdelse} {@code kwdif} (skratka == sAll) {@link Plátno strop}.{@link Plátno#označVšetkyTexty(Color...) označVšetkyTexty}();
-					{@code kwdelse} {@code kwdif} (skratka == copy) {@link Plátno strop}.{@link Plátno#textyDoSchránky(boolean) textyDoSchránky}({@code valtrue});
+					{@code kwdif} (skratka == kill) killProcess();
 				}
 
 				{@code comm// Využitie vstupného riadka na vstup príkazového riadka.}
@@ -11892,10 +11914,10 @@ public final class Svet extends JFrame
 							{
 							{@code kwdcase} {@code num0}: {@code comm// pause}
 								{@code kwdif} (argumenty.{@link String#isEmpty() isEmpty}())
-									{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#outputLine(Object...) outputLine}(riadok,
+									{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#outputLine(Object...) outputLine}({@link Konštanty#riadok riadok},
 										{@code srg"Potvrďte ďalší príkazový riadok."});
 								{@code kwdelse}
-									{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#outputLine(Object...) outputLine}(riadok,
+									{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#outputLine(Object...) outputLine}({@link Konštanty#riadok riadok},
 										{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#expandVariables(String) expandVariables}(argumenty));
 								pause = {@code valtrue};
 								{@code kwdreturn};
@@ -11906,6 +11928,7 @@ public final class Svet extends JFrame
 							}
 						}
 					}
+
 					{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#updateTitle() updateTitle}();
 					{@link Svet Svet}.{@link Svet#spracujPríkaz(String) spracujPríkaz}(príkaz);
 					{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#updateTitle() updateTitle}();
@@ -11939,69 +11962,332 @@ public final class Svet extends JFrame
 					{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#čítajKonfiguráciu(Súbor) čítajKonfiguráciu}(súbor);
 				}
 
-				{@code comm// Súčasť implementácie označovania a kopírovania textov stropu.}
-				{@code kwdprivate} {@code typeint} počiatočnýRiadok, koncovýRiadok, počiatočnýBlok, koncovýBlok;
-
-				{@code comm// Súčasť implementácie označovania a kopírovania textov stropu.}
-				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#stlačenieTlačidlaMyši() stlačenieTlačidlaMyši}()
+				{@code comm// (Prekresľovanie s pomocou časovača, aby bola činnosť}
+				{@code comm// konzoly svižnejšia.)}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#tik() tik}()
 				{
-					{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link GRobot#PRAVÉ PRAVÉ}))
-					{
-						{@link Plátno strop}.{@link Plátno#textyDoSchránky(boolean) textyDoSchránky}({@code valtrue});
-						{@link Plátno strop}.{@link Plátno#zrušOznačenieTextov() zrušOznačenieTextov}();
-						{@link Svet Svet}.{@link Svet#pípni() pípni}();
-					}
-					{@code kwdelse}
-					{
-						{@code kwdif} (!{@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#myš() myš}().{@link java.awt.event.InputEvent#isControlDown() isControlDown}())
-							{@link Plátno strop}.{@link Plátno#zrušOznačenieTextov() zrušOznačenieTextov}();
+					{@code kwdif} ({@link Svet Svet}.{@link Svet#neboloPrekreslené() neboloPrekreslené}())
+						{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
+				}
 
-						{@code typeint}[] výpis = {@link Plátno strop}.{@link Plátno#výpisPriMyši() výpisPriMyši}();
-						{@code kwdif} ({@code valnull} != výpis)
+				{@code comm// Ukončenie.}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#ukončenie() ukončenie}()
+				{
+					{@code comm// Ak je náhodou spustený vnorený (detský) proces, nezostáva iné}
+					{@code comm// riešenie ako ho ukončiť:}
+					killProcess();
+				}
+
+				{@code comm// Hlavná (vstupná) metóda.}
+				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
+				{
+					{@link Svet Svet}.{@link Svet#režimLadenia(boolean) režimLadenia}({@code valtrue});
+					{@link Svet Svet}.{@link Svet#skry() skry}();
+					{@link Svet Svet}.{@link Svet#nekresli() nekresli}();
+					{@link Svet Svet}.{@link Svet#aktivujHistóriuVstupnéhoRiadka() aktivujHistóriuVstupnéhoRiadka}();
+					{@link Svet Svet}.{@link Svet#uchovajHistóriuVstupnéhoRiadka() uchovajHistóriuVstupnéhoRiadka}();
+					{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"GrafickáKonzola.cfg"});
+					{@code kwdnew} GrafickáKonzola();
+					{@link Svet Svet}.{@link Svet#spustiČasovač() spustiČasovač}();
+					{@link Svet Svet}.{@link Svet#zobraz() zobraz}();
+				}
+			}
+			</pre>
+		 * 
+		 * 
+		 * </div><div id="grconsole02" style="display:none">
+		 * 
+		 * <p><a href="javascript:;"
+		 * onclick="document.getElementById('grconsole01').style.display = ''; document.getElementById('grconsole02').style.display = 'none';">Zobraziť
+		 * kratšiu verziu (bez komentárov s alternatívnou implementáciou
+		 * ovládania konzoly).</a></p>
+		 * 
+		 * <pre CLASS="example">
+			{@code kwdimport} knižnica.*;
+			{@code kwdimport} java.io.{@link java.io.IOException IOException};
+
+			{@code kwdpublic} {@code typeclass} GrafickáKonzola {@code kwdextends} {@link GRobot GRobot}
+			{
+				{@code comm// Súčasť alternatívnej implementácie rolovania a posúvania textov}
+				{@code comm// vnútornej konzoly stropu s pomocou klávesnice.}
+				{@code comm// }
+				{@code comm// Poznámka: Nahradené príkazom Svet.skratkyStropu(true);}
+				{@code comm// }
+				{@code comm/*private final static String home = "home";}
+				{@code commprivate final static String end  = "end";}
+				{@code commprivate final static String hore = "hore";}
+				{@code commprivate final static String dole = "dole";}
+				{@code commprivate final static String pgUp = "pgUp";}
+				{@code commprivate final static String pgDn = "pgDn";&#42;/}
+
+				{@code comm// Súčasť implementácie ukončenia spusteného procesu klávesovou}
+				{@code comm// skratkou.}
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link String String} kill = {@code srg"kill"};
+
+				{@code comm// Súčasť alternatívnej implementácie označovania a kopírovania}
+				{@code comm// textov stropu.}
+				{@code comm// }
+				{@code comm// Poznámka: Nahradené príkazom Svet.skratkyStropu(true);}
+				{@code comm// }
+				{@code comm/*private final static String dAll1 = "dAll1";}
+				{@code commprivate final static String dAll2 = "dAll2";}
+				{@code commprivate final static String sAll = "sAll";}
+				{@code commprivate final static String copy = "copy";&#42;/}
+
+				{@code comm// Príznak aktivovania vnútorného príkazu pause.}
+				{@code kwdprivate} {@code typeboolean} pause = {@code valfalse};
+
+				{@code comm// Konštruktor.}
+				{@code kwdprivate} GrafickáKonzola()
+				{
+					{@link GRobot#skry() skry}();
+					{@link Svet Svet}.{@link Svet#skratkyStropu(boolean) skratkyStropu}({@code valtrue});
+					{@link Svet Svet}.{@link Svet#neskrývajVstupnýRiadok(boolean) neskrývajVstupnýRiadok}({@code valtrue});
+					{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#output(Object...) output}({@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#getVersion() getVersion}());
+					{@link Plátno strop}.{@link Plátno#automatickéZobrazovanieLíšt(boolean) automatickéZobrazovanieLíšt}({@code valtrue});
+					{@link Plátno strop}.{@link Plátno#písmo(String, double) písmo}({@code srg"Consolas"}, {@code num14});
+
+					{@code comm// Súčasť alternatívnej implementácie rolovania a posúvania textov}
+					{@code comm// vnútornej konzoly stropu s pomocou klávesnice.}
+					{@code comm/*Svet.pridajKlávesovúSkratku(home, Kláves.HOME);}
+					{@code commSvet.pridajKlávesovúSkratku(end,  Kláves.END);}
+					{@code commSvet.pridajKlávesovúSkratku(hore, Kláves.HORE);}
+					{@code commSvet.pridajKlávesovúSkratku(dole, Kláves.DOLE);}
+					{@code commSvet.pridajKlávesovúSkratku(pgUp, Kláves.PAGE_UP, 0); // bez ctrl…}
+					{@code commSvet.pridajKlávesovúSkratku(pgDn, Kláves.PAGE_DOWN, 0);&#42;/}
+
+					{@code comm// Súčasť implementácie ukončenia spusteného procesu klávesovou}
+					{@code comm// skratkou.}
+					{@link Svet Svet}.{@link Svet#pridajKlávesovúSkratku(String, int) pridajKlávesovúSkratku}(kill, {@link Kláves Kláves}.{@link Kláves#VK_D VK_D});
+
+					{@code comm// Súčasť alternatívnej implementácie označovania a kopírovania}
+					{@code comm// textov stropu.}
+					{@code comm/*Svet.pridajKlávesovúSkratku(dAll1, Kláves.VK_A,}
+					{@code comm	Kláves.SKRATKA_PONUKY | Kláves.SHIFT_MASK);}
+					{@code commSvet.pridajKlávesovúSkratku(dAll2, Kláves.ESCAPE, 0, false);}
+					{@code commSvet.pridajKlávesovúSkratku(sAll, Kláves.VK_A,}
+					{@code comm	Kláves.SKRATKA_PONUKY, false);}
+					{@code commSvet.pridajKlávesovúSkratku(copy, Kláves.VK_C,}
+					{@code comm	Kláves.SKRATKA_PONUKY, false);&#42;/}
+				}
+
+				{@code comm// Súčasť implementácie ukončenia spusteného procesu klávesovou}
+				{@code comm// skratkou. (Metóda je zároveň využitá v reakcii na ukončenie}
+				{@code comm// aplikácie.)}
+				{@code kwdprivate} {@code typevoid} killProcess()
+				{
+					{@link Process Process} proces = {@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#getRunningProcess() getRunningProcess}();
+					{@code kwdif} ({@code valnull} != proces)
+						proces.{@link Process#destroy() destroy}();
+				}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#klávesováSkratka() klávesováSkratka}()
+				{
+					{@link String String} skratka = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#príkazSkratky() príkazSkratky}();
+
+					{@code comm// Súčasť alternatívnej implementácie rolovania a posúvania textov}
+					{@code comm// vnútornej konzoly stropu s pomocou klávesnice.}
+					{@code comm/*if (skratka == home) strop.posunutieTextov(}
+					{@code comm	strop.posunutieTextovX(), strop.poslednáVýškaTextu());}
+					{@code commelse if (skratka == end)}
+					{@code comm	strop.posunutieTextov(strop.posunutieTextovX(), 0);}
+					{@code commelse if (skratka == hore)}
+					{@code comm	strop.rolujTexty(0, strop.výškaRiadka());}
+					{@code commelse if (skratka == dole)}
+					{@code comm	strop.rolujTexty(0, -strop.výškaRiadka());}
+					{@code commelse if (skratka == pgUp)}
+					{@code comm	strop.rolujTexty(0, Plátno.viditeľnáVýška() - 10);}
+					{@code commelse if (skratka == pgDn)}
+					{@code comm	strop.rolujTexty(0, 10 - Plátno.viditeľnáVýška());&#42;/}
+
+					{@code comm// Súčasť implementácie ukončenia spusteného procesu klávesovou}
+					{@code comm// skratkou.}
+					{@code comm/*else &#42;/}{@code kwdif} (skratka == kill) killProcess();
+
+					{@code comm// Súčasť alternatívnej implementácie označovania a kopírovania}
+					{@code comm// textov stropu.}
+					{@code comm/*else if (skratka == dAll1 || skratka == dAll2)}
+					{@code comm	strop.zrušOznačenieTextov();}
+					{@code commelse if (skratka == sAll) strop.označVšetkyTexty();}
+					{@code commelse if (skratka == copy) strop.textyDoSchránky(true);&#42;/}
+				}
+
+				{@code comm// Využitie vstupného riadka na vstup príkazového riadka.}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#potvrdenieVstupu() potvrdenieVstupu}()
+				{
+					{@code kwdif} (pause)
+					{
+						pause = {@code valfalse};
+						{@code kwdreturn};
+					}
+
+					{@link String String} príkaz = {@link Svet Svet}.{@link Svet#prevezmiReťazec() prevezmiReťazec}();
+					{@code kwdif} (!{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#isProcessRunning() isProcessRunning}())
+					{
+						{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#output(Object...) output}({@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#expandPrompt() expandPrompt}());
+						{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#output(Object...) output}(príkaz);
+						{@code kwdif} (príkaz.{@link String#isEmpty() isEmpty}()) {@code kwdreturn};
+
+						{@code comm// Prekrytie dvoch predvolene deaktivovaných príkazov:}
+						{@code typeint}[] zhoda = {@link Svet Svet}.{@link Svet.PríkazovýRiadok PríkazovýRiadok}.{@link Svet.PríkazovýRiadok#matchCommand(String, String...) matchCommand}(
+							príkaz, {@code srg"pause"}, {@code srg"exit"});
+
+						{@code comm// Poznámka: Na to, aby niektoré príkazy fungovali rovnako ako}
+						{@code comm//     v systémovej konzole, by musela byť na tomto mieste}
+						{@code comm//     vykonaná dodatočná implementácia. Súvisí to najmä}
+						{@code comm//     s príkazom na zmenu priečinka (cd/chdir). V príkazovom}
+						{@code comm//     riadku Windows sa zvyknú používať tieto skrátené formy}
+						{@code comm//     príkazu:}
+						{@code comm// }
+						{@code comm//     cd\   chdir\}
+						{@code comm// }
+						{@code comm//     (Podobne ako v iných OS tvary: cd/ a chdir/)}
+						{@code comm// }
+						{@code comm//     Znamenajú prechod do koreňového priečinka aktuálnej}
+						{@code comm//     jednotky. Tieto skrátené tvary nie sú spracované. Okrem}
+						{@code comm//     tohto faktu samotný symbol \ alebo / nemá v tejto}
+						{@code comm//     konzole význam koreňového priečinka. Implementácia}
+						{@code comm//     metódy ExecuteShellCommand.changePath sa správa inak:}
+						{@code comm//       1. prevezme zadaný reťazec,}
+						{@code comm//       2. identifikuje, či ide o relatívnu alebo absolútnu}
+						{@code comm//          cestu}
+						{@code comm//       3. a podľa toho nastaví novú aktuálnu cestu.}
+						{@code comm//     Samotné znaky \ a / nenesú informáciu o zmene}
+						{@code comm//     priečinka, takže sú v podstate ignorované.}
+						{@code comm// }
+						{@code comm//     Ďalšia odlišnosť je správanie sa príkazu cd/chdir}
+						{@code comm//     bez parametrov. V súlade s opisom fungovania metódy}
+						{@code comm//     ExecuteShellCommand.changePath spôsobí potvrdenie}
+						{@code comm//     tohto príkazu návrat do aktuálneho štartovacieho}
+						{@code comm//     priečinka virtuálneho stroja javy (JVM), to jest,}
+						{@code comm//     cesta, na ktorej bola spustená aktuálna aplikácia}
+						{@code comm//     (nemusí sa nevyhnutne zhodovať s cestou, na ktorej}
+						{@code comm//     je aplikácia umiestnená).}
+
+						{@code kwdif} ({@code valnull} != zhoda && {@code num3} != zhoda[{@code num0}])
 						{
-							počiatočnýRiadok = koncovýRiadok = výpis[{@code num0}];
-							počiatočnýBlok   = koncovýBlok   = výpis[{@code num1}];
+							{@link String String} argumenty = príkaz.{@link String#substring(int) substring}(zhoda[{@code num2}]);
+
+							{@code kwdswitch} (zhoda[{@code num1}])
+							{
+							{@code kwdcase} {@code num0}: {@code comm// pause}
+								{@code kwdif} (argumenty.{@link String#isEmpty() isEmpty}())
+									{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#outputLine(Object...) outputLine}({@link Konštanty#riadok riadok},
+										{@code srg"Potvrďte ďalší príkazový riadok."});
+								{@code kwdelse}
+									{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#outputLine(Object...) outputLine}({@link Konštanty#riadok riadok},
+										{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#expandVariables(String) expandVariables}(argumenty));
+								pause = {@code valtrue};
+								{@code kwdreturn};
+
+							{@code kwdcase} {@code num1}: {@code comm// exit}
+								{@link Svet Svet}.{@link Svet#koniec() koniec}();
+								{@code kwdreturn};
+							}
 						}
 					}
+
+					{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#updateTitle() updateTitle}();
+					{@link Svet Svet}.{@link Svet#spracujPríkaz(String) spracujPríkaz}(príkaz);
+					{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#updateTitle() updateTitle}();
 				}
 
-				{@code comm// Súčasť implementácie označovania a kopírovania textov stropu.}
-				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#ťahanieMyšou() ťahanieMyšou}()
+				{@code comm// Súčasť ukladania a čítania konfigurácie príkazového riadka.}
+				{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@link GRobot#konfiguráciaZmenená() konfiguráciaZmenená}()
 				{
-					{@code typeint}[] výpis = {@link Plátno strop}.{@link Plátno#výpisPriMyši() výpisPriMyši}();
-
-					{@code kwdif} ({@code valnull} != výpis)
-					{
-						{@link Plátno strop}.{@link Plátno#zrušOznačenieVýpisov(int, int, int, int) zrušOznačenieVýpisov}(
-							počiatočnýRiadok, počiatočnýBlok,
-							koncovýRiadok, koncovýBlok);
-
-						koncovýRiadok = výpis[{@code num0}];
-						koncovýBlok   = výpis[{@code num1}];
-
-						{@link Plátno strop}.{@link Plátno#označVýpisy(int, int, int, int, Color...) označVýpisy}(
-							počiatočnýRiadok, počiatočnýBlok,
-							koncovýRiadok, koncovýBlok);
-					}
+					{@code kwdif} ({@code valnull} == {@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}) {@code kwdreturn} {@code valfalse};
+					{@code kwdreturn} {@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#konfiguráciaZmenená konfiguráciaZmenená};
 				}
+
+				{@code comm// Súčasť ukladania a čítania konfigurácie príkazového riadka.}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#zapíšKonfiguráciu(Súbor) zapíšKonfiguráciu}({@link Súbor Súbor} súbor) {@code kwdthrows} {@link IOException IOException}
+				{
+					{@code kwdif} ({@code valnull} == {@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}) {@code kwdreturn};
+
+					{@code comm// Pozor‼ V čase zápisu konfigurácie by vlastnosti nastavení}
+					{@code comm// príkazového riadka mali byť pre istotu zapísané bez ohľadu}
+					{@code comm// na hodnotu príznaku „Svet.príkazovýRiadok.konfiguráciaZmenená.“}
+					{@code comm// Nemáme istotu, že inštancia konfiguračného súboru nemá nastavenú}
+					{@code comm// vlastnosť „odstraňujNepoužitéVlastnosti.“}
+
+					{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#zapíšKonfiguráciu(Súbor) zapíšKonfiguráciu}(súbor);
+				}
+
+				{@code comm// Súčasť ukladania a čítania konfigurácie príkazového riadka.}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#čítajKonfiguráciu(Súbor) čítajKonfiguráciu}({@link Súbor Súbor} súbor) {@code kwdthrows} {@link IOException IOException}
+				{
+					{@code kwdif} ({@code valnull} == {@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}) {@code kwdreturn};
+					{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#čítajKonfiguráciu(Súbor) čítajKonfiguráciu}(súbor);
+				}
+
+				{@code comm// Súčasť alternatívnej implementácie označovania a kopírovania}
+				{@code comm// textov stropu.}
+				{@code comm/*private int počiatočnýRiadok, koncovýRiadok,}
+				{@code comm	počiatočnýBlok, koncovýBlok;&#42;/}
+
+				{@code comm// Súčasť alternatívnej implementácie označovania a kopírovania}
+				{@code comm// textov stropu.}
+				{@code comm/*@Override public void stlačenieTlačidlaMyši()}
+				{@code comm&#123;}
+				{@code comm	if (ÚdajeUdalostí.tlačidloMyši(PRAVÉ))}
+				{@code comm	&#123;}
+				{@code comm		strop.textyDoSchránky(true);}
+				{@code comm		strop.zrušOznačenieTextov();}
+				{@code comm		Svet.pípni();}
+				{@code comm	&#125;}
+				{@code comm	else}
+				{@code comm	&#123;}
+				{@code comm		if (!ÚdajeUdalostí.myš().isControlDown())}
+				{@code comm			strop.zrušOznačenieTextov();}
+
+				{@code comm		int[] výpis = strop.výpisPriMyši();}
+				{@code comm		if (null != výpis)}
+				{@code comm		&#123;}
+				{@code comm			počiatočnýRiadok = koncovýRiadok = výpis[0];}
+				{@code comm			počiatočnýBlok   = koncovýBlok   = výpis[1];}
+				{@code comm		&#125;}
+				{@code comm	&#125;}
+				{@code comm&#125;&#42;/}
+
+				{@code comm// Súčasť alternatívnej implementácie označovania a kopírovania}
+				{@code comm// textov stropu.}
+				{@code comm/*@Override public void ťahanieMyšou()}
+				{@code comm&#123;}
+				{@code comm	int[] výpis = strop.výpisPriMyši();}
+
+				{@code comm	if (null != výpis)}
+				{@code comm	&#123;}
+				{@code comm		strop.zrušOznačenieVýpisov(}
+				{@code comm			počiatočnýRiadok, počiatočnýBlok,}
+				{@code comm			koncovýRiadok, koncovýBlok);}
+
+				{@code comm		koncovýRiadok = výpis[0];}
+				{@code comm		koncovýBlok   = výpis[1];}
+
+				{@code comm		strop.označVýpisy(}
+				{@code comm			počiatočnýRiadok, počiatočnýBlok,}
+				{@code comm			koncovýRiadok, koncovýBlok);}
+				{@code comm	&#125;}
+				{@code comm&#125;&#42;/}
 
 				{@code comm// Alternatívna implementácia klávesovej skratky ESC (bez držania}
 				{@code comm// ktoréhokoľvek z modifikátorov), ktorá má význam zrušenia označenia}
 				{@code comm// textov konzoly:}
-				{@code comm/&#42;@Override public void stlačenieKlávesu()}
+				{@code comm/*@Override public void stlačenieKlávesu()}
 				{@code comm&#123;}
-				{@code comm    // Tento príznak je platný len vtedy, ak nebol stlačený žiadny}
-				{@code comm    // modifikátor:}
-				{@code comm    boolean nACS = !(ÚdajeUdalostí.klávesnica().isAltDown() ||}
-				{@code comm        ÚdajeUdalostí.klávesnica().isControlDown() ||}
-				{@code comm        ÚdajeUdalostí.klávesnica().isMetaDown() ||}
-				{@code comm        ÚdajeUdalostí.klávesnica().isShiftDown());}
+				{@code comm	// Tento príznak je platný len vtedy, ak nebol stlačený žiadny}
+				{@code comm	// modifikátor:}
+				{@code comm	boolean nACS = !(ÚdajeUdalostí.klávesnica().isAltDown() ||}
+				{@code comm		ÚdajeUdalostí.klávesnica().isControlDown() ||}
+				{@code comm		ÚdajeUdalostí.klávesnica().isMetaDown() ||}
+				{@code comm		ÚdajeUdalostí.klávesnica().isShiftDown());}
 
-				{@code comm    // Súčasť implementácie označovania a kopírovania textov stropu.}
-				{@code comm    switch (ÚdajeUdalostí.kláves())}
-				{@code comm    &#123;}
-				{@code comm    case Kláves.ESCAPE: if (nACS) strop.zrušOznačenieTextov(); break;}
-				{@code comm    &#125;}
+				{@code comm	// Súčasť alternatívnej implementácie označovania a kopírovania}
+				{@code comm	// textov stropu.}
+				{@code comm	switch (ÚdajeUdalostí.kláves())}
+				{@code comm	&#123;}
+				{@code comm	case Kláves.ESCAPE: if (nACS) strop.zrušOznačenieTextov(); break;}
+				{@code comm	&#125;}
 				{@code comm&#125;&#42;/}
 
 				{@code comm// (Prekresľovanie s pomocou časovača, aby bola činnosť}
@@ -12034,6 +12320,21 @@ public final class Svet extends JFrame
 					{@link Svet Svet}.{@link Svet#zobraz() zobraz}();
 				}
 			}
+			</pre>
+		 * 
+		 * </div>
+		 * 
+		 * <p>Do konfigurácie odporúčame (v OS Windows) pridať tieto
+		 * riadky:</p>
+		 * 
+		 * <pre CLASS="example">
+			mapaKódovaní.počet=1
+			mapaKódovaní.príkaz[0]=cmd
+			mapaKódovaní.mapovanie[0]=windows-1250
+
+			mapaPríkazov.počet=1
+			mapaPríkazov.príkaz[0]=cmd
+			mapaPríkazov.mapovanie[0]=%0 /k chcp 1250>nul & %~
 			</pre>
 		 */
 		public static class PríkazovýRiadok extends ExecuteShellCommand
@@ -16571,6 +16872,114 @@ public final class Svet extends JFrame
 		{ return rímskeNaCelé(reťazec); }
 
 
+		// Táto sekcia patrí k metóde jePrvočíslo. Je to implementácia
+		// vnútorného mechanizmu hľadania prvočísiel, ktorý je spomínaný
+		// v poznámke v opise tejto metódy. Správnosť overovania prvočísiel
+		// bola úspešne overená pre prvých milión čísiel a to s pomocou
+		// nasledujúceho (síce výpočtovo náročného, zato primitívneho)
+		// princípu:
+		// 
+		// 	…
+		// 	for (long i = 2; i < číslo; ++i)
+		// 		if (0 == číslo % i) return false;
+		// 	…
+		// 
+
+		private final static TreeSet<Long> prvočísla = new TreeSet<>();
+		static { prvočísla.add(2L); prvočísla.add(3L); }
+		private static long overenéPrvočísla = 4;
+
+		private static void overPrvočísla(long poČíslo)
+		{
+			over: for (long číslo = overenéPrvočísla + 1;
+				číslo <= poČíslo; ++číslo)
+			{
+				long polovica = číslo / 2;
+				for (Long prvočíslo : prvočísla)
+				{
+					if (prvočíslo > polovica)
+					{
+						prvočísla.add(číslo);
+						overenéPrvočísla = číslo;
+						continue over;
+					}
+
+					if (0 == číslo % prvočíslo) continue over;
+				}
+
+				overenéPrvočísla = číslo;
+				prvočísla.add(číslo);
+			}
+		}
+
+
+		/**
+		 * <p>Overí, či zadané číslo je prvočíslo. Metóda
+		 * prevedie záporné číslo na kladné, pretože záporné
+		 * čísla sú považované za združené (angl. associates)
+		 * a v tomto zmysle je prvočíslom každé záporné číslo,
+		 * ktorého kladný „súrodenec“ je prvočíslom [1, 2,
+		 * 3].<p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Vnútorný
+		 * mechanizmus sveta zabezpečuje dynamické vyhľadávanie
+		 * potrebného množstva (kladných) prvočísiel podľa
+		 * najvyššieho naposledy overeného čísla. Nájdené
+		 * prvočísla vnútorne uchováva a používa na overovanie
+		 * ostatných zadávaných čísiel.</p>
+		 * 
+		 * <table>
+		 * 
+		 * <tr><td>[1]</td><td><a
+		 * href="https://primes.utm.edu/notes/faq/negative_primes.html"
+		 * target="_blank"><em>Can negative numbers be
+		 * prime?</em> PrimePages. Citované:
+		 * 16. 12. 2020.</a></td></tr>
+		 * 
+		 * <tr><td>[2]</td><td><a
+		 * href="https://math.stackexchange.com/questions/1002459/do-we-have-negative-prime-numbers"
+		 * target="_blank">Gud, Git (asker) – Tanner, J. W. (answerer), et al.
+		 * <em>Do we have negative prime numbers?</em> Mathematics Stack
+		 * Exchange. 2014. Citované: 16. 12. 2020.</a></td></tr>
+		 * 
+		 * <tr><td>[3]</td><td><a
+		 * href="https://www.quora.com/Can-negative-numbers-be-prime"
+		 * target="_blank">Jagielski, Matthew – Cheng, Yuanyou
+		 * F a.k.a. Fred) (answerers). <em>Can negative numbers
+		 * be prime?</em> Quora. 2013, 2016. Citované:
+		 * 16. 12. 2020.</a></td></tr>
+		 * 
+		 * </table>
+		 
+		 * @param číslo celé číslo, ktorého prvočíselnosť
+		 *     chceme overiť
+		 * @return {@code valtrue} ak je zadané číslo
+		 *     prvočíslo; {@code valfalse} v opačnom prípade
+		 */
+		public static boolean jePrvočíslo(long číslo)
+		{
+			if (číslo < 0) číslo = -číslo;
+			if (číslo < 2) return false;
+
+			long polovica = číslo / 2;
+
+			if (polovica > overenéPrvočísla)
+				overPrvočísla(číslo);
+
+			for (Long prvočíslo : prvočísla)
+			{
+				if (prvočíslo > polovica) return true;
+				if (0 == číslo % prvočíslo) return false;
+			}
+
+			return true;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #jePrvočíslo(long) jePrvočíslo}.</p> */
+		public static boolean jePrvocislo(long číslo)
+		{ return jePrvočíslo(číslo); }
+
+
 		// Štandardný vstup
 
 		/**
@@ -16819,6 +17228,11 @@ public final class Svet extends JFrame
 		 * @see #aktivujŠtandardnýVstup()
 		 * @see #aktivujŠtandardnýVstup(String)
 		 * @see #štandardnýVstupAktívny()
+		 * 
+		 * @see #čakaj(double)
+		 * @see #čakajNaKláves()
+		 * @see #čakajNaKlik()
+		 * @see #čakajNaKlikAleboKláves()
 		 */
 		public static String čakajNaVstup()
 		{
@@ -16868,7 +17282,8 @@ public final class Svet extends JFrame
 		 * 
 		 * <p class="caution"><b>Pozor!</b><b> Použitie tejto metódy
 		 * (a jej príbuzných) je kritické!</b> Metóda slúži výhradne na
-		 * pozastavenie činnosti veľmi jednoduchého programu, ktorého činnosť
+		 * pozastavenie činnosti veľmi jednoduchého (<b>synchrónne
+		 * vykonávaného</b>) programu, ktorého činnosť
 		 * je prakticky úplne dokončená v rámci konštruktora hlavnej triedy
 		 * (t. j. v rámci inicializácie aplikácie). Metóda síce môže slúžiť
 		 * na pozastavenie inicializácie akejkoľvek aplikácie, ale môže byť
@@ -16881,6 +17296,11 @@ public final class Svet extends JFrame
 		 * vykonanie tejto metódy (a jej príbuzných) zablokuje!</p>
 		 * 
 		 * @return udalosť klávesnice alebo hodnota {@code valnull}
+		 * 
+		 * @see #čakaj(double)
+		 * @see #čakajNaVstup()
+		 * @see #čakajNaKlik()
+		 * @see #čakajNaKlikAleboKláves()
 		 */
 		public static KeyEvent čakajNaKláves()
 		{
@@ -16918,7 +17338,8 @@ public final class Svet extends JFrame
 		 * 
 		 * <p class="caution"><b>Pozor!</b><b> Použitie tejto metódy
 		 * (a jej príbuzných) je kritické!</b> Metóda slúži výhradne na
-		 * pozastavenie činnosti veľmi jednoduchého programu, ktorého činnosť
+		 * pozastavenie činnosti veľmi jednoduchého (<b>synchrónne
+		 * vykonávaného</b>) programu, ktorého činnosť
 		 * je prakticky úplne dokončená v rámci konštruktora hlavnej triedy
 		 * (t. j. v rámci inicializácie aplikácie). Metóda síce môže slúžiť
 		 * na pozastavenie inicializácie akejkoľvek aplikácie, ale môže byť
@@ -16931,6 +17352,11 @@ public final class Svet extends JFrame
 		 * vykonanie tejto metódy (a jej príbuzných) zablokuje!</p>
 		 * 
 		 * @return udalosť myši alebo hodnota {@code valnull}
+		 * 
+		 * @see #čakaj(double)
+		 * @see #čakajNaVstup()
+		 * @see #čakajNaKláves()
+		 * @see #čakajNaKlikAleboKláves()
 		 */
 		public static MouseEvent čakajNaKlik()
 		{
@@ -16974,7 +17400,8 @@ public final class Svet extends JFrame
 		 * 
 		 * <p class="caution"><b>Pozor!</b><b> Použitie tejto metódy
 		 * (a jej príbuzných) je kritické!</b> Metóda slúži výhradne na
-		 * pozastavenie činnosti veľmi jednoduchého programu, ktorého činnosť
+		 * pozastavenie činnosti veľmi jednoduchého (<b>synchrónne
+		 * vykonávaného</b>) programu, ktorého činnosť
 		 * je prakticky úplne dokončená v rámci konštruktora hlavnej triedy
 		 * (t. j. v rámci inicializácie aplikácie). Metóda síce môže slúžiť
 		 * na pozastavenie inicializácie akejkoľvek aplikácie, ale môže byť
@@ -17072,6 +17499,11 @@ public final class Svet extends JFrame
 		 *     očakávaná udalosť klávesnice {@link KeyEvent KeyEvent},
 		 *     ak vznikla, a v druhom udalosť myši {@link MouseEvent
 		 *     MouseEvent} – rovnako, ak vznikla)
+		 * 
+		 * @see #čakaj(double)
+		 * @see #čakajNaVstup()
+		 * @see #čakajNaKláves()
+		 * @see #čakajNaKlik()
 		 */
 		public static InputEvent[] čakajNaKlikAleboKláves()
 		{
@@ -18630,6 +19062,7 @@ public final class Svet extends JFrame
 		}
 
 
+		// Príznak spustenia skriptu. (V podstate ďalší semafor.)
 		private static boolean skriptJeSpustený = false;
 
 		/**
@@ -23601,8 +24034,27 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Pozdrží vykonávanie programu na zadaný počet sekúnd.</p>
 		 * 
+		 * <p>Táto metóda v skutočnosti uspí aktuálne (pravdepodobne hlavné)
+		 * vlákno aplikácie. Jej použitie musí byť vždy dobre zvážené.
+		 * Môže nájsť využitie napríklad pri odľahčení procesora spomalením
+		 * programu (výpočtu) pri výpočtovo náročných operáciách, treba však
+		 * rátať so značným znížením výkonu. Môže byť tiež použitá na
+		 * pozastavenie synchrónne vykonávaného programu (t. j. programu
+		 * v jednom vlákne, ktorého činnosť sa končí prakticky okamžite po
+		 * ukončení hlavnej metódy, čo je hlavný rozdiel oproti asynchrónne
+		 * vykonávaným, čiže udalosťami riadeným, programom/aplikáciám).</p>
+		 * 
+		 * <p>(Pozri aj opisy ostatných metód na čakanie, ktorých využitie
+		 * je, s výnimkou metódy {@link #čakajNaVstup() čakajNaVstup}, možné
+		 * len v hlavnom vlákne, len pri synchrónnej činnosti programu.)</p>
+		 * 
 		 * @param početSekúnd počet sekúnd, na ktorý sa má vykonávanie
 		 *     programu zastaviť
+		 * 
+		 * @see #čakajNaVstup()
+		 * @see #čakajNaKláves()
+		 * @see #čakajNaKlik()
+		 * @see #čakajNaKlikAleboKláves()
 		 */
 		public static void čakaj(double početSekúnd)
 		{
@@ -27267,6 +27719,31 @@ public final class Svet extends JFrame
 			}
 		};
 
+
+		// Súčasť implementácie skratiek stropu.
+		private static boolean skratkyStropu = false;
+
+		// Súčasť implementácie označovania a kopírovania textov stropu.
+		private static int počiatočnýRiadokStropu = 0,
+			koncovýRiadokStropu = 0, počiatočnýBlokStropu = 0,
+			koncovýBlokStropu = 0;
+
+		// Súčasť implementácie rolovania a posúvania textov
+		// vnútornej konzoly stropu s pomocou klávesnice.
+		private final static String home = "home";
+		private final static String end  = "end";
+		private final static String hore = "hore";
+		private final static String dole = "dole";
+		private final static String pgUp = "pgUp";
+		private final static String pgDn = "pgDn";
+
+		// Súčasť implementácie označovania a kopírovania
+		// textov stropu.
+		private final static String dAll1 = "dAll1";
+		private final static String dAll2 = "dAll2";
+		private final static String sAll = "sAll";
+		private final static String copy = "copy";
+
 		/*packagePrivate*/ static class KlávesováSkratka extends AbstractAction
 		{
 			public final String príkaz;
@@ -27282,6 +27759,47 @@ public final class Svet extends JFrame
 
 			@Override public void actionPerformed(ActionEvent e)
 			{
+				if (skratkyStropu)
+				{
+					boolean nepokračuj = true;
+
+					// Súčasť implementácie rolovania a posúvania textov
+					// vnútornej konzoly stropu s pomocou klávesnice.
+					if (príkaz == home)
+						GRobot.strop.posunutieTextov(
+							GRobot.strop.posunutieTextovX(),
+							GRobot.strop.poslednáVýškaTextu());
+					else if (príkaz == end)
+						GRobot.strop.posunutieTextov(
+							GRobot.strop.posunutieTextovX(), 0);
+					else if (príkaz == hore)
+						GRobot.strop.rolujTexty(0,
+							GRobot.strop.výškaRiadka());
+					else if (príkaz == dole)
+						GRobot.strop.rolujTexty(0,
+							-GRobot.strop.výškaRiadka());
+					else if (príkaz == pgUp)
+						GRobot.strop.rolujTexty(0,
+							Plátno.viditeľnáVýška() - 10);
+					else if (príkaz == pgDn)
+						GRobot.strop.rolujTexty(0,
+							10 - Plátno.viditeľnáVýška());
+
+					// Súčasť implementácie označovania a kopírovania
+					// textov stropu.
+					else if (príkaz == dAll1 || príkaz == dAll2)
+						GRobot.strop.zrušOznačenieTextov();
+					else if (príkaz == sAll)
+						GRobot.strop.označVšetkyTexty();
+					else if (príkaz == copy)
+						GRobot.strop.textyDoSchránky(true);
+					else
+						nepokračuj = false;
+
+					if (nepokračuj) return;
+				}
+
+
 				// Podobné ako: poslednáUdalosťKlávesnice
 				ÚdajeUdalostí.poslednáUdalosťSkratky = e;
 				ÚdajeUdalostí.poslednýPríkazSkratky = príkaz;
@@ -27346,6 +27864,8 @@ public final class Svet extends JFrame
 		 * @see #odoberKlávesovúSkratku(String)
 		 * @see #skratkaPríkazu(String)
 		 * @see #reťazecSkratkyPríkazu(String)
+		 * @see #skratkyStropu()
+		 * @see #skratkyStropu(boolean)
 		 */
 		public static void pridajKlávesovúSkratku(String príkaz, int kódKlávesu)
 		{
@@ -27392,6 +27912,8 @@ public final class Svet extends JFrame
 		 * @see #odoberKlávesovúSkratku(String)
 		 * @see #skratkaPríkazu(String)
 		 * @see #reťazecSkratkyPríkazu(String)
+		 * @see #skratkyStropu()
+		 * @see #skratkyStropu(boolean)
 		 */
 		public static void pridajKlávesovúSkratku(String príkaz, int kódKlávesu,
 			int modifikátor)
@@ -27448,9 +27970,11 @@ public final class Svet extends JFrame
 		 * @see #odoberKlávesovúSkratku(String)
 		 * @see #skratkaPríkazu(String)
 		 * @see #reťazecSkratkyPríkazu(String)
+		 * @see #skratkyStropu()
+		 * @see #skratkyStropu(boolean)
 		 */
-		public static void pridajKlávesovúSkratku(String príkaz, int kódKlávesu,
-			int modifikátor, boolean ajVstupnýRiadok)
+		public static void pridajKlávesovúSkratku(String príkaz,
+			int kódKlávesu, int modifikátor, boolean ajVstupnýRiadok)
 		{
 			if (klávesovéSkratky.containsKey(príkaz))
 				odoberKlávesovúSkratku(príkaz);
@@ -27462,7 +27986,10 @@ public final class Svet extends JFrame
 
 			klávesovéSkratky.put(príkaz, klávesováSkratka);
 
-			hlavnýPanel.getInputMap(JPanel.WHEN_IN_FOCUSED_WINDOW).
+			hlavnýPanel.getInputMap(JPanel.
+				// WHEN_IN_FOCUSED_WINDOW
+				WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
+				).
 				put(keyStroke, príkaz);
 			hlavnýPanel.getActionMap().put(príkaz, klávesováSkratka);
 
@@ -27492,6 +28019,13 @@ public final class Svet extends JFrame
 		 * metód {@link #pridajKlávesovúSkratku(String, int)
 		 * pridajKlávesovúSkratku}.</p>
 		 * 
+		 * <p class="attention"><b>Upozornenie:</b> Táto metóda odoberie
+		 * prípadnú skratku definovanú pre hlavné okno (t. j. prostredníctvom
+		 * niektorej z metód {@link #pridajKlávesovúSkratku(String, int)
+		 * pridajKlávesovúSkratku}) a túto skratku je možné odobrať (rovnako
+		 * ako skratky hlavného okna) volaním metódy {@link 
+		 * #odoberKlávesovúSkratku(String) odoberKlávesovúSkratku}</p>
+		 * 
 		 * @param príkaz príkaz, ktorý bude previazaný s touto klávesovou
 		 *     skratkou
 		 * @param kódKlávesu kód klávesu, ktorý má byť použitý ako klávesová
@@ -27516,6 +28050,8 @@ public final class Svet extends JFrame
 		 * @see #odoberKlávesovúSkratku(String)
 		 * @see #skratkaPríkazu(String)
 		 * @see #reťazecSkratkyPríkazu(String)
+		 * @see #skratkyStropu()
+		 * @see #skratkyStropu(boolean)
 		 */
 		public static void pridajKlávesovúSkratkuVstupnéhoRiadka(
 			String príkaz, int kódKlávesu, int modifikátor)
@@ -27554,6 +28090,8 @@ public final class Svet extends JFrame
 		 * @see #pridajKlávesovúSkratkuVstupnéhoRiadka(String, int, int)
 		 * @see #skratkaPríkazu(String)
 		 * @see #reťazecSkratkyPríkazu(String)
+		 * @see #skratkyStropu()
+		 * @see #skratkyStropu(boolean)
 		 */
 		public static void odoberKlávesovúSkratku(String príkaz)
 		{
@@ -27563,7 +28101,10 @@ public final class Svet extends JFrame
 					klávesovéSkratky.get(príkaz).//keyStroke;
 					getValue(AbstractAction.ACCELERATOR_KEY);
 
-				hlavnýPanel.getInputMap(JPanel.WHEN_IN_FOCUSED_WINDOW).
+				hlavnýPanel.getInputMap(JPanel.
+					// WHEN_IN_FOCUSED_WINDOW
+					WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
+					).
 					remove(keyStroke);
 				hlavnýPanel.getActionMap().remove(príkaz);
 
@@ -27599,6 +28140,8 @@ public final class Svet extends JFrame
 		 * @see #pridajKlávesovúSkratkuVstupnéhoRiadka(String, int, int)
 		 * @see #odoberKlávesovúSkratku(String)
 		 * @see #reťazecSkratkyPríkazu(String)
+		 * @see #skratkyStropu()
+		 * @see #skratkyStropu(boolean)
 		 */
 		public static KeyStroke skratkaPríkazu(String príkaz)
 		{
@@ -27632,6 +28175,8 @@ public final class Svet extends JFrame
 		 * @see #pridajKlávesovúSkratkuVstupnéhoRiadka(String, int, int)
 		 * @see #odoberKlávesovúSkratku(String)
 		 * @see #skratkaPríkazu(String)
+		 * @see #skratkyStropu()
+		 * @see #skratkyStropu(boolean)
 		 */
 		public static String reťazecSkratkyPríkazu(String príkaz)
 		{
@@ -27646,6 +28191,126 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #reťazecSkratkyPríkazu(String) reťazecSkratkyPríkazu}.</p> */
 		public static String retazecSkratkyPrikazu(String príkaz)
 		{ return reťazecSkratkyPríkazu(príkaz); }
+
+
+		/**
+		 * <p>Zapne alebo vypne fungovanie niekoľkých predvolených skratiek
+		 * vnútornej konzoly stropu. Predvolene sú tieto skratky vypnuté.
+		 * Ide o tieto skratky, z ktorých niektoré sú kombinované
+		 * s predvoleným modifikátorom {@linkplain Kláves#SKRATKA_PONUKY
+		 * skratiek ponuky} (Ctrl na Windows, ⌘/Command na macOS; tu označené
+		 * ako <code>C</code>) a niektoré s modifikátorom {@linkplain 
+		 * java.awt.event.InputEvent#SHIFT_MASK Shift} (tu označené ako
+		 * <code>S</code>):</p>
+		 * 
+		 * <ul>
+		 * <li>{@link Kláves Kláves}<code>.</code>{@link Kláves#HOME HOME} –
+		 * roluje texty stropu (t. j. jeho konzoly) na začiatok.</li>
+		 * <li>{@link Kláves Kláves}<code>.</code>{@link Kláves#END END} –
+		 * roluje texty stropu na koniec.</li>
+		 * <li>{@link Kláves Kláves}<code>.</code>{@link Kláves#HORE HORE} –
+		 * roluje texty stropu o riadok vyššie.</li>
+		 * <li>{@link Kláves Kláves}<code>.</code>{@link Kláves#DOLE DOLE} –
+		 * roluje texty stropu o riadok nižšie.</li>
+		 * <li>{@link Kláves Kláves}<code>.</code>{@link 
+		 * Kláves#PAGE_UP PAGE_UP} – roluje texty stropu o stránku
+		 * vyššie.</li>
+		 * <li>{@link Kláves Kláves}<code>.</code>{@link 
+		 * Kláves#PAGE_DOWN PAGE_DOWN} – roluje texty stropu o stránku
+		 * nižšie.</li>
+		 * <li><code>C</code> + {@link Kláves Kláves}<code>.</code>{@link 
+		 * Kláves#VK_A VK_A} – označí všetky texty konzoly (stropu).</li>
+		 * <li>{@link Kláves Kláves}<code>.</code>{@link Kláves#ESCAPE ESCAPE}
+		 * alebo <code>C</code> + <code>S</code> + {@link Kláves
+		 * Kláves}<code>.</code>{@link Kláves#VK_A VK_A} – zruší označenie
+		 * textov konzoly.</li>
+		 * <li><code>C</code> + {@link Kláves Kláves}<code>.</code>{@link 
+		 * Kláves#VK_C VK_C} – skopíruje označené texty do schránky.</li>
+		 * </ul>
+		 * 
+		 * <p>Spolu so skratkami je aktivoavané základné ovládanie myšou:
+		 * kliknutím a ťahaním ľavého tlačidla myši sa dajú označovať texty
+		 * stropu (v súčasnosti je označovanie implementované len po tzv.
+		 * blokoch výpisu) a stlačenie pravého tlačidla myši skopíruje texty
+		 * do schránky a zruší ich označenie (čo je sprevádzané pípnutím).
+		 * Klasicky je staré označenie pri začatí nového ťahania myšou
+		 * zrušené, ak je však pri tom držaný kláves {@code Ctrl}, nové
+		 * označenie je pridané k starému.</p>
+		 * 
+		 * @param zapnúť {@code valtrue}, ak majú byť skratky zapnuté,
+		 *     {@code valfalse} v opačnom 
+		 * 
+		 * @see #skratkyStropu()
+		 * @see #pridajKlávesovúSkratku(String, int)
+		 * @see #pridajKlávesovúSkratku(String, int, int)
+		 * @see #pridajKlávesovúSkratku(String, int, int, boolean)
+		 * @see #pridajKlávesovúSkratkuVstupnéhoRiadka(String, int, int)
+		 * @see #odoberKlávesovúSkratku(String)
+		 * @see #skratkaPríkazu(String)
+		 */
+		public static void skratkyStropu(boolean zapnúť)
+		{
+			if (zapnúť)
+			{
+				// Súčasť implementácie rolovania a posúvania textov
+				// vnútornej konzoly stropu s pomocou klávesnice.
+				pridajKlávesovúSkratku(home, Kláves.VK_HOME, 0, false);
+				pridajKlávesovúSkratku(end, Kláves.VK_END, 0, false);
+				pridajKlávesovúSkratku(hore, Kláves.VK_UP, 0, false);
+				pridajKlávesovúSkratku(dole, Kláves.VK_DOWN, 0, false);
+				pridajKlávesovúSkratku(pgUp,
+					Kláves.PAGE_UP, 0, false); // bez ctrl…
+				pridajKlávesovúSkratku(pgDn, Kláves.PAGE_DOWN, 0, false);
+
+				// Súčasť implementácie označovania a kopírovania
+				// textov stropu.
+				pridajKlávesovúSkratku(dAll1, Kláves.VK_A,
+					Kláves.SKRATKA_PONUKY | Kláves.SHIFT_MASK, false);
+				pridajKlávesovúSkratku(dAll2, Kláves.VK_ESCAPE, 0, false);
+				pridajKlávesovúSkratku(sAll, Kláves.VK_A,
+					Kláves.SKRATKA_PONUKY, false);
+				pridajKlávesovúSkratku(copy, Kláves.VK_C,
+					Kláves.SKRATKA_PONUKY, false);
+			}
+			else
+			{
+				// Súčasť implementácie rolovania a posúvania textov
+				// vnútornej konzoly stropu s pomocou klávesnice.
+				odoberKlávesovúSkratku(home);
+				odoberKlávesovúSkratku(end);
+				odoberKlávesovúSkratku(hore);
+				odoberKlávesovúSkratku(dole);
+				odoberKlávesovúSkratku(pgUp);
+				odoberKlávesovúSkratku(pgDn);
+
+				// Súčasť implementácie označovania a kopírovania
+				// textov stropu.
+				odoberKlávesovúSkratku(dAll1);
+				odoberKlávesovúSkratku(dAll2);
+				odoberKlávesovúSkratku(sAll);
+				odoberKlávesovúSkratku(copy);
+			}
+
+			skratkyStropu = zapnúť;
+		}
+
+		/**
+		 * <p>Overí, či sú zapnuté preddefinované skratky stropu. Viac
+		 * detailov je v opise metódy {@link #skratkyStropu(boolean)
+		 * skratkyStropu(zapnúť)}.</p>
+		 * 
+		 * @return {@code valtrue}, ak sú skratky zapnuté, {@code valfalse}
+		 *     v opačnom prípade
+		 * 
+		 * @see #skratkyStropu(boolean)
+		 * @see #pridajKlávesovúSkratku(String, int)
+		 * @see #pridajKlávesovúSkratku(String, int, int)
+		 * @see #pridajKlávesovúSkratku(String, int, int, boolean)
+		 * @see #pridajKlávesovúSkratkuVstupnéhoRiadka(String, int, int)
+		 * @see #odoberKlávesovúSkratku(String)
+		 * @see #skratkaPríkazu(String)
+		 */
+		public static boolean skratkyStropu() { return skratkyStropu; }
 
 
 	// --- Vlnenie
