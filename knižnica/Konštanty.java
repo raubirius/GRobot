@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2020 by Roman Horváth
+ // Copyright © 2010 – 2021 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -70,13 +70,13 @@ public interface Konštanty
 		/** <p>Konštanta minoritnej verzie tohto robota.</p> */
 		public final static int minorVersion = 00;
 		/** <p>Konštanta poznámky verzie tohto robota.</p> */
-		public final static String versionNote = " (2020-12-19)";
+		public final static String versionNote = " (2021-01-06)";
 		/** <p>Konštanta rozpätia rokov vývoja tejto verzie…
 			(v podstate na účel výpisu copyrightu…)</p> */
-		public final static String years = "2010 – 2020";
+		public final static String years = "2010 – 2021";
 		/** <p>Konštanta rozpätia rokov a mesiacov vývoja tejto verzie…
 			(na účely automatického spracovania dokumentácie…)</p> */
-		public final static String yearsMonths = "august 2010 – december 2020";
+		public final static String yearsMonths = "august 2010 – január 2021";
 		/** <p>Konštanta s menom hlavného (zatiaľ jediného) vývojára tejto
 			verzie… (v podstate na účel výpisu copyrightu… kto vie, či časom
 			pribudnú aj nejakí ďalší…)</p> */

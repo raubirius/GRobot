@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2020 by Roman Horváth
+ // Copyright © 2010 – 2021 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -2373,8 +2373,16 @@ public final class Svet extends JFrame
 							-e.getWheelRotation();
 					}
 
-					if (GRobot.podlaha.rolujTexty) GRobot.podlaha.rolujTexty();
-					if (GRobot.strop.rolujTexty) GRobot.strop.rolujTexty();
+					if (0 == (e.getModifiersEx() & (
+						InputEvent.ALT_DOWN_MASK |
+						InputEvent.CTRL_DOWN_MASK |
+						InputEvent.META_DOWN_MASK)))
+					{
+						if (GRobot.podlaha.rolujTexty)
+							GRobot.podlaha.rolujTexty();
+						if (GRobot.strop.rolujTexty)
+							GRobot.strop.rolujTexty();
+					}
 
 					if (null != ObsluhaUdalostí.počúvadlo)
 						synchronized (ÚdajeUdalostí.zámokUdalostí)
@@ -16282,6 +16290,61 @@ public final class Svet extends JFrame
 		 * #uchovajHistóriuVstupnéhoRiadka() uchovať v konfiguračnom súbore},
 		 * avšak musí byť aktívna aj samotná {@linkplain 
 		 * #použiKonfiguráciu(String) konfigurácia}.</p>
+		 * 
+		 * <p class="remark"><b>Poznámky:</b> Najnovšie položky sú v zozname
+		 * histórie umiestnené na konci. Správa histórie vstupného riadka
+		 * automaticky maže staré duplikáty každého potvrdeného riadka. To
+		 * znamená, že ak by história obsahovala riadky: x, x, y, y, x, y, z
+		 * a používateľ by potvrdil riadok x, tak by sa história zmenila na:
+		 * y, y, y, z, x. Po ďalšom potvrdení y by v histórii zostalo: z, x,
+		 * y. Najjednoduchší spôsob overenia umožňuje príklad nižšie.</p>
+		 * 
+		 * <p><b>Príklad:</b></p>
+		 * 
+		 * <p>Tento príklad umožňuje overenie informácií uvedených
+		 * v poznámkach vyššie.</p>
+		 * 
+		 * <pre CLASS="example">
+			{@code kwdimport} knižnica.*;
+			{@code kwdimport} {@code kwdstatic} knižnica.{@link Svet Svet}.*;
+
+			{@code kwdpublic} {@code typeclass} OverHistóriu {@code kwdextends} {@link GRobot GRobot}
+			{
+				{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link Zoznam Zoznam}<{@link String String}> história = {@link Svet#históriaVstupnéhoRiadka() históriaVstupnéhoRiadka}();
+
+				{@code kwdprivate} OverHistóriu()
+				{
+					{@link Svet#začniVstup() začniVstup}();
+					neskrývajVstupnýRiadok();
+					história.{@link Zoznam#pridaj(Object) pridaj}({@code srg"x"});
+					história.{@link Zoznam#pridaj(Object) pridaj}({@code srg"x"});
+					história.{@link Zoznam#pridaj(Object) pridaj}({@code srg"y"});
+					história.{@link Zoznam#pridaj(Object) pridaj}({@code srg"y"});
+					história.{@link Zoznam#pridaj(Object) pridaj}({@code srg"x"});
+					história.{@link Zoznam#pridaj(Object) pridaj}({@code srg"y"});
+					história.{@link Zoznam#pridaj(Object) pridaj}({@code srg"z"});
+					vypíšHistóriu();
+				}
+
+				{@code kwdprivate} {@code typevoid} vypíšHistóriu()
+				{
+					{@link Svet#vymažTexty() vymažTexty}();
+					{@link Svet#vypíš(Object[]) vypíš}(história);
+				}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#potvrdenieVstupu() potvrdenieVstupu}()
+				{
+					vypíšHistóriu();
+				}
+
+				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
+				{
+					{@link Svet#aktivujHistóriuVstupnéhoRiadka() aktivujHistóriuVstupnéhoRiadka}();
+					{@code kwdnew} OverHistóriu();
+					{@link Svet#zbaľ() zbaľ}(); {@link Svet#vystreď() vystreď}();
+				}
+			}
+			</pre>
 		 * 
 		 * @return zoznam reťazcov (história vstupného riadka)
 		 * 

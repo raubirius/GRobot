@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2020 by Roman Horváth
+ // Copyright © 2010 – 2021 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -273,6 +273,7 @@ public class Plátno implements Priehľadnosť
 			public Integer odsaďPrvý = null;
 			public Integer odsaďZľava = null;
 			public Integer odsaďSprava = null;
+			public Integer odsaďTabulátorom = null;
 			public boolean zamrazOdsadenie = false;
 		}
 
@@ -612,6 +613,7 @@ public class Plátno implements Priehľadnosť
 			private Integer odsadeniePrvéhoRiadka = null;
 			private Integer zmenaOdsadeniaZľava = null;
 			private Integer zmenaOdsadeniaSprava = null;
+			private Integer virtuálnyTabulátor = null;
 
 			// Premenná požadujúca zamrazenie ľavého odsadenia
 			// na aktuálnej pozícii
@@ -770,6 +772,12 @@ public class Plátno implements Priehľadnosť
 						}
 					}
 
+					if (null != príkaz.odsaďTabulátorom)
+					{
+						x = odsadenieZľava + x0 + príkaz.odsaďTabulátorom;
+						// aplikujOdsadeniaZľava = false;
+					}
+
 					if (null != príkaz.odsaďSprava)
 						odsadenieSprava = príkaz.odsaďSprava;
 
@@ -813,6 +821,13 @@ public class Plátno implements Priehľadnosť
 							if (!súradniceAplikované)
 								x -= posunutieTextovX;
 						}
+					}
+
+					if (null != príkaz.odsaďTabulátorom)
+					{
+						x = odsadenieZľava + x0 + príkaz.odsaďTabulátorom;
+						if (!súradniceAplikované)
+							x -= posunutieTextovX;
 					}
 
 					if (null != príkaz.odsaďSprava)
@@ -1720,6 +1735,13 @@ public class Plátno implements Priehľadnosť
 					zmenaOdsadeniaSprava = null;
 				}
 
+				if (null != virtuálnyTabulátor)
+				{
+					if (null == príkaz) príkaz = new PríkazKonzoly();
+					príkaz.odsaďTabulátorom = virtuálnyTabulátor;
+					virtuálnyTabulátor = null;
+				}
+
 				if (zamrazOdsadenie)
 				{
 					if (null == príkaz) príkaz = new PríkazKonzoly();
@@ -2028,6 +2050,7 @@ public class Plátno implements Priehľadnosť
 				odsadeniePrvéhoRiadka = null;
 				zmenaOdsadeniaZľava = null;
 				zmenaOdsadeniaSprava = null;
+				virtuálnyTabulátor = null;
 				zmenaSúradníc = null;
 				zamrazOdsadenie = false;
 				zálohaOdsadenia = 0;
@@ -6097,6 +6120,8 @@ public class Plátno implements Priehľadnosť
 		 * @see #zmeňOdsadenieZľava(Integer)
 		 * @see #zmeňOdsadenieSprava()
 		 * @see #zmeňOdsadenieSprava(Integer)
+		 * @see #virtuálnyTabulátor()
+		 * @see #virtuálnyTabulátor(Integer)
 		 * @see #zamrazOdsadenie()
 		 * @see #zamrazOdsadenie(boolean)
 		 */
@@ -6124,6 +6149,8 @@ public class Plátno implements Priehľadnosť
 		 * @see #zmeňOdsadenieZľava(Integer)
 		 * @see #zmeňOdsadenieSprava()
 		 * @see #zmeňOdsadenieSprava(Integer)
+		 * @see #virtuálnyTabulátor()
+		 * @see #virtuálnyTabulátor(Integer)
 		 * @see #zamrazOdsadenie()
 		 * @see #zamrazOdsadenie(boolean)
 		 */
@@ -6156,6 +6183,8 @@ public class Plátno implements Priehľadnosť
 		 * @see #zmeňOdsadenieZľava(Integer)
 		 * @see #zmeňOdsadenieSprava()
 		 * @see #zmeňOdsadenieSprava(Integer)
+		 * @see #virtuálnyTabulátor()
+		 * @see #virtuálnyTabulátor(Integer)
 		 * @see #zamrazOdsadenie()
 		 * @see #zamrazOdsadenie(boolean)
 		 */
@@ -6182,6 +6211,8 @@ public class Plátno implements Priehľadnosť
 		 * @see #zmeňOdsadenieZľava()
 		 * @see #zmeňOdsadenieSprava()
 		 * @see #zmeňOdsadenieSprava(Integer)
+		 * @see #virtuálnyTabulátor()
+		 * @see #virtuálnyTabulátor(Integer)
 		 * @see #zamrazOdsadenie()
 		 * @see #zamrazOdsadenie(boolean)
 		 */
@@ -6214,6 +6245,8 @@ public class Plátno implements Priehľadnosť
 		 * @see #zmeňOdsadenieZľava()
 		 * @see #zmeňOdsadenieZľava(Integer)
 		 * @see #zmeňOdsadenieSprava(Integer)
+		 * @see #virtuálnyTabulátor()
+		 * @see #virtuálnyTabulátor(Integer)
 		 * @see #zamrazOdsadenie()
 		 * @see #zamrazOdsadenie(boolean)
 		 */
@@ -6240,6 +6273,8 @@ public class Plátno implements Priehľadnosť
 		 * @see #zmeňOdsadenieZľava()
 		 * @see #zmeňOdsadenieZľava(Integer)
 		 * @see #zmeňOdsadenieSprava()
+		 * @see #virtuálnyTabulátor()
+		 * @see #virtuálnyTabulátor(Integer)
 		 * @see #zamrazOdsadenie()
 		 * @see #zamrazOdsadenie(boolean)
 		 */
@@ -6249,6 +6284,80 @@ public class Plátno implements Priehľadnosť
 		/** <p><a class="alias"></a> Alias pre {@link #zmeňOdsadenieSprava(Integer) zmeňOdsadenieSprava}.</p> */
 		public void zmenOdsadenieSprava(Integer novéOdsadenie)
 		{ vnútornáKonzola.zmenaOdsadeniaSprava = novéOdsadenie; }
+
+
+		/**
+		 * <p><a class="getter"></a> Zistí (dočasnú) hodnotu <b>požiadavky na
+		 * zmenu</b> odsadenia konzolových textov plátna (podlahy alebo
+		 * stropu) s pomocou virtuálneho tabulátora. Ak nie je aktívna žiadna
+		 * <b>požiadavka na zmenu</b> odsadenia, tak táto metóda vráti hodnotu
+		 * {@code valnull}.</p>
+		 * 
+		 * <p>Virtuálny tabulátor nie je v texte konzoly nijako reprezentovaný,
+		 * preto ani nebude skopírovaný do schránky v prípade kopírovania
+		 * textov konzoly do schránky. Ide o vnútorný príkaz, ktorý upraví
+		 * pozíciu najbližšieho výpisu textu konzoly podľa požadovanej
+		 * hodnoty.</p>
+		 * 
+		 * <p>Hodnota <b>požiadavky na zmenu</b> odsadenia tabulátorom je
+		 * platná vždy do najbližšieho použitia príkazov určených na vypísanie
+		 * textu na vnútornú konzolu (napríklad {@link #vypíš(Object[]) vypíš}
+		 * alebo {@link #vypíšRiadok(Object[]) vypíšRiadok}). V okamihu jej
+		 * použitia sa hodnota aplikuje a spotrebuje. To, že sa spotrebuje
+		 * hodnota <b>požiadavky na zmenu</b> znamená, že už nebude
+		 * zistiteľná (merateľná) touto metódou, samotné odsadenie však
+		 * bude použité na tomto mieste pri výpise textov konzoly.</p>
+		 * 
+		 * @return aktuálna hodnota požiadavky na zmenu odsadenia textov
+		 *     plátna s pomocou virtuálneho tabulátora alebo {@code valnull}
+		 * 
+		 * @see #virtuálnyTabulátor(Integer)
+		 * @see #odsadeniePrvéhoRiadka()
+		 * @see #odsadeniePrvéhoRiadka(Integer)
+		 * @see #zmeňOdsadenieZľava()
+		 * @see #zmeňOdsadenieZľava(Integer)
+		 * @see #zmeňOdsadenieSprava()
+		 * @see #zmeňOdsadenieSprava(Integer)
+		 * @see #zamrazOdsadenie()
+		 * @see #zamrazOdsadenie(boolean)
+		 */
+		public Integer virtuálnyTabulátor()
+		{ return vnútornáKonzola.virtuálnyTabulátor; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #virtuálnyTabulátor() virtuálnyTabulátor}.</p> */
+		public Integer virtualnyTabulator()
+		{ return vnútornáKonzola.virtuálnyTabulátor; }
+
+		/**
+		 * <p><a class="setter"></a> Nastaví novú (dočasnú) hodnotu požiadavky
+		 * na zmenu odsadenia konzolových textov plátna (podlahy alebo stropu)
+		 * s pomocou virtuálneho tabulátora.</p>
+		 * 
+		 * <p>Platí to isté ako je uvedené v opise metódy
+		 * {@link #virtuálnyTabulátor() virtuálnyTabulátor()}. Ak je
+		 * potrebné požiadavku zrušiť, stačí zadať do parametra
+		 * {@code odsadenie} hodnotu {@code valnull}.</p>
+		 * 
+		 * @param odsadenie nová požiadavka na zmenu odsadenia
+		 *     textov konzoly s pomocou virtuálneho tabulátora
+		 * 
+		 * @see #virtuálnyTabulátor()
+		 * @see #odsadeniePrvéhoRiadka()
+		 * @see #odsadeniePrvéhoRiadka(Integer)
+		 * @see #zmeňOdsadenieZľava()
+		 * @see #zmeňOdsadenieZľava(Integer)
+		 * @see #zmeňOdsadenieSprava()
+		 * @see #zmeňOdsadenieSprava(Integer)
+		 * @see #zamrazOdsadenie()
+		 * @see #zamrazOdsadenie(boolean)
+		 */
+		public void virtuálnyTabulátor(Integer odsadenie)
+		{ vnútornáKonzola.virtuálnyTabulátor = odsadenie; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #virtuálnyTabulátor(Integer) virtuálnyTabulátor}.</p> */
+		public void virtualnyTabulator(Integer odsadenie)
+		{ vnútornáKonzola.virtuálnyTabulátor = odsadenie; }
+
 
 		/**
 		 * <p><a class="getter"></a> Zistí či bola zadaná požiadavka na
@@ -6275,6 +6384,8 @@ public class Plátno implements Priehľadnosť
 		 * @see #zmeňOdsadenieZľava(Integer)
 		 * @see #zmeňOdsadenieSprava()
 		 * @see #zmeňOdsadenieSprava(Integer)
+		 * @see #virtuálnyTabulátor()
+		 * @see #virtuálnyTabulátor(Integer)
 		 * @see #zamrazOdsadenie(boolean)
 		 */
 		public boolean zamrazOdsadenie()
@@ -6300,6 +6411,8 @@ public class Plátno implements Priehľadnosť
 		 * @see #zmeňOdsadenieZľava(Integer)
 		 * @see #zmeňOdsadenieSprava()
 		 * @see #zmeňOdsadenieSprava(Integer)
+		 * @see #virtuálnyTabulátor()
+		 * @see #virtuálnyTabulátor(Integer)
 		 * @see #zamrazOdsadenie()
 		 */
 		public void zamrazOdsadenie(boolean zamraziť)

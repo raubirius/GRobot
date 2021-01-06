@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2020 by Roman Horváth
+ // Copyright © 2010 – 2021 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -2439,7 +2439,7 @@ public class SVGPodpora
 	private static void naplňMapuFarieb()
 	{
 		mapaFarieb.put("aliceblue", new Farba(240, 248, 255));
-		mapaFarieb.put("amethyst", new Farba(153, 102, 204));
+		// mapaFarieb.put("amethyst", new Farba(153, 102, 204)); // nepodporovaná
 		mapaFarieb.put("antiquewhite", new Farba(250, 235, 215));
 		mapaFarieb.put("aqua", new Farba(0, 255, 255));
 		mapaFarieb.put("aquamarine", new Farba(127, 255, 212));
@@ -2479,6 +2479,7 @@ public class SVGPodpora
 		mapaFarieb.put("darkviolet", new Farba(148, 0, 211));
 		mapaFarieb.put("deeppink", new Farba(255, 20, 147));
 		mapaFarieb.put("deepskyblue", new Farba(0, 191, 255));
+		mapaFarieb.put("dimgray", new Farba(105, 105, 105));
 		mapaFarieb.put("dimgrey", new Farba(105, 105, 105));
 		mapaFarieb.put("dodgerblue", new Farba(30, 144, 255));
 		mapaFarieb.put("firebrick", new Farba(178, 34, 34));
@@ -2497,7 +2498,7 @@ public class SVGPodpora
 		mapaFarieb.put("hotpink", new Farba(255, 105, 180));
 		mapaFarieb.put("chartreuse", new Farba(127, 255, 0));
 		mapaFarieb.put("chocolate", new Farba(210, 105, 30));
-		mapaFarieb.put("indianred ", new Farba(205, 92, 92));
+		mapaFarieb.put("indianred", new Farba(205, 92, 92));
 		mapaFarieb.put("indigo", new Farba(75, 0, 130));
 		mapaFarieb.put("ivory", new Farba(255, 255, 240));
 		mapaFarieb.put("khaki", new Farba(240, 230, 140));
@@ -6660,16 +6661,16 @@ public class SVGPodpora
 				chybne. Viem, že sa také dávnejšie náhodne vyskytli pri hre
 				Asteroidy, ale to bola iná chyba a tú som opravil… Potom sa
 				zrazu vyskytlo niečo úplne iné, ale neuložil som si to
-				a terazto neviem nájsť. Asi zostáva len čakať, kedy mi tento
+				a teraz to neviem nájsť. Asi zostáva len čakať, kedy mi tento
 				skrytý problém opäť „vybuchne do tváre.“
 
 				————————————————————————
 				To sa nakoniec stalo 28. 4. 2020. Problém s „príkazom“
 				'z'/'Z' však nevyplával na povrch okamžite. Ladenie bolo
-				rozkúskované v troch dňoch – do 30. 4. 2020. Mal som
+				„rozkúskované“ v troch dňoch – do 30. 4. 2020. Mal som
 				šťastie, že sa mi podarilo vypracovať veľa vhodného
-				testovacieho materiálu k príkladu Kolotoč a tiež že som
-				našiel spôsob ako si zobraziť korešpondujúce súradnice
+				testovacieho materiálu k príkladu Kolotoč a tiež, že som
+				našiel spôsob, ako si zobraziť korešpondujúce súradnice
 				v Inkscape.
 			*/
 

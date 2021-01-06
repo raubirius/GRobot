@@ -43,21 +43,27 @@ import static java.lang.Math.*;
  * possibility to delay the processing  of variable names after the expression
  * parsing (that means during the evaluation process) was added.</p>
  * 
- * <p>On August 2nd 2018, this class became  the part of supporting  package
+ * <p>On August 2nd, 2018, this class became  the part of supporting package
  * of  the GRobot  framework.  Several  unfinished features  (including  the
  * claimed customFunction) were completed and  new were add.  The steps made
  * should make the class more compatible with the framework.</p>
  * 
- * <p>On April 26th 2019, another  feature was  implemented.  The ability
+ * <p>On April 26th, 2019, another feature was  implemented.  The ability
  * to  join  the  identifiers  to  make  the  processor  compatible  with
  * the GRobot’s scripting engine. (See the methods joinsTheIdentifiers(),
  * joinTheIdentifiers(join), and joinIdentifiers(id1, id2).)</p>
  * 
- * <p>On June 1st 2020, the class was extended with thirteen new static
- * methods (from advancedOr to advancedPow). The purpose of the methods
- * is to extend the class by new features in connection to some special
- * operations, like “multiplying/dividing the strings (or other types)”
+ * <p>On June 1st, 2020, the class was extended with thirteen new static
+ * methods (from advancedOr  to advancedPow). The purpose of the methods
+ * is to extend the class by new  features in connection to some special
+ * operations, like “multiplying/dividing  the strings (or other types)”
  * (methods: advancedMul, advancedDiv) and similarly.</p>
+ * 
+ * <p>On December 29th, 2020, small bugs were fixed: method VariableScope.
+ * getValue(…) creates a new instance of Value, so the returned  value is
+ * detached from the variable.  Method attachString(…)  now works even if
+ * the processor is in the ATTACHED  state  (which  didn’t previously: it
+ * returned the false value).</p>
  * 
  * <p>(Notice: The author did not fix the bug(s) in the original C++ class
  * because he  had no C++ compiler  installed at the time  and it would be
@@ -131,7 +137,7 @@ import static java.lang.Math.*;
  * (in the source code) of an appropriate enumeration class.</p>
  * 
  * @author Roman Horváth
- * @version 26. 4. 2019
+ * @version 29. 12. 2020
  * 
  * @exclude
  */
@@ -1667,15 +1673,16 @@ public class ExpressionProcessor implements ValueProvider
 
 
 		/**
-		 * Gets value of the specified variable. If the variable does not exist,
-		 * the VariableScope.UNKNOWN_VARIABLE static instance is returned.
+		 * Gets value of the specified variable. If the variable does not
+		 * exist, the VariableScope.UNKNOWN_VARIABLE static instance is
+		 * returned.
 		 */
 		public Value getValue(String variableName)
 		{
 			Variable variable = list.get(variableName);
 			if (null == variable)
 				return VariableScope.UNKNOWN_VARIABLE;
-			return variable;
+			return new Value(variable);
 		}
 	}
 
@@ -4437,6 +4444,7 @@ public class ExpressionProcessor implements ValueProvider
 				// do not put a break here‼
 
 			case INITIALIZED:
+			case ATTACHED:
 				this.stringToParse = stringToParse;
 				state = State.ATTACHED;
 				return true;

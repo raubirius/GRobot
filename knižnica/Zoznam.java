@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2020 by Roman Horváth
+ // Copyright © 2010 – 2021 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -568,8 +568,9 @@ public class Zoznam<Typ> extends Vector<Typ>
 	 * predchádzajúci}) zase metódu {@link #počítadloNaKoniec()
 	 * počítadloNaKoniec}.</p>
 	 * 
-	 * <p>Nasledujúci príklad ukazuje, ako prejsť číselný zoznam od
-	 * konca.</p>
+	 * <p>Nasledujúci príklad ukazuje, ako jednorazovo prejsť číselný zoznam
+	 * od konca, aj keď na takéto jednorazové prejdenie zoznamu je vhodnejší
+	 * iný spôsob – pozri poznámku pod výsledkom príkladu.</p>
 	 * 
 	 * <p><b>Príklad:</b></p>
 	 * 
@@ -591,9 +592,11 @@ public class Zoznam<Typ> extends Vector<Typ>
 		{@code 4 5 8 0 }
 		</pre>
 	 * 
-	 * <p>V súčasnej verzii programovacieho rámca jestvuje ešte jeden
-	 * (komfortnejší) spôsob prechádzania zoznamu odzadu – pozri metódu
-	 * {@link #odzadu() odzadu}.</p>
+	 * <p class="remark"><b>Poznámka:</b> Tento spôsob prechádzania zoznamu
+	 * je vhodný aj na asynchrónne prechádzanie zoznamu (pohyb po ňom).
+	 * Jestvuje ešte jeden spôsob prechádzania zoznamu odzadu a síce
+	 * s použitím prevráteného iterátora – pozri metódu {@link #odzadu()
+	 * odzadu}.</p>
 	 * 
 	 * @param nováHodnota nová hodnota vnútorného počítadla
 	 */
@@ -1247,6 +1250,12 @@ public class Zoznam<Typ> extends Vector<Typ>
 	 * 
 	 * <p>bude vykonaný pre každý prvok zoznamu začnúc od posledného
 	 * a končiac prvým.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Tento spôsob prechádzania zoznamu
+	 * je vhodný na jednorazové (synchrónne) prejdenie zoznamu. Na
+	 * asynchrónne prechádzanie zoznamu (pohyb po ňom) je vhodnejšie použiť
+	 * vnútorné počítadlo zoznamu – pozri metódu {@link #počítadlo(int)
+	 * počítadlo}.</p>
 	 * 
 	 * @param pôvodný pôvodný zoznam
 	 * @return iterátor umožňujúci prejsť zoznam v obrátenom poradí
