@@ -19,13 +19,15 @@ package knižnica.podpora;
 import java.io.IOException;
 import java.io.StringReader;
 
+// import java.math.BigDecimal;
+
 import java.util.Map;
 import java.util.TreeMap;
 
 import static java.lang.Math.*;
 
 /**
- * <p>This class with a group of static  nested classes is based on  C++ class
+ * <p>This class with a group of static  nested classes is based on  C++ class
  * CExpression  programmed by the same author.  The author rewrote it in 2014.
  * The original C++ class was created in the years 2003 – 2010. It has started
  * on  19-May-2003.  (The  C++ source  code  was  transformed  to  Unicode  on
@@ -35,7 +37,7 @@ import static java.lang.Math.*;
  * tests  showed that this library  is powerful enough to replace ScriptEngine
  * in existing projects (of the author).  One bug was fixed during the process
  * of rewriting, and the list of supported functions was extended.  There were
- * also  some minor improvements.  On 1-Jul-2015 creation  of a new version of
+ * also  some minor improvements.  On 1-Jul-2015 creation  of a new version of
  * this  class has started.  Lots of code was optimized by changing  it to  be
  * more  Java-like  than c/C++-like.  For example, VariableScope’s Vector  was
  * substituted  by TreeMap.  Enumerations were  extended by abstract  methods.
@@ -60,10 +62,21 @@ import static java.lang.Math.*;
  * (methods: advancedMul, advancedDiv) and similarly.</p>
  * 
  * <p>On December 29th, 2020, small bugs were fixed: method VariableScope.
- * getValue(…) creates a new instance of Value, so the returned  value is
+ * getValue(…) creates a new instance of Value, so the returned  value is
  * detached from the variable.  Method attachString(…)  now works even if
  * the processor is in the ATTACHED  state  (which  didn’t previously: it
  * returned the false value).</p>
+ * 
+ * <p>On January 7th, 2021, new  TypeOrError   element  has  been  added:
+ * UNKNOWN_ERROR.  This value  is reserved  for unpredictable  situations
+ * like getting an unknown type (string) from a stream (file, database…).
+ * The method  listToString has  been fixed:  it now produces  a parsable
+ * string.</p>
+ * 
+ * <p>Between  January 8 and 16, 2021  a bug  related  to  the premature
+ * termination of expression parsing  when an empty list occurred at the
+ * beginning of an expression has been fixed. New special functions have
+ * also been added: for, if, until and while.</p>
  * 
  * <p>(Notice: The author did not fix the bug(s) in the original C++ class
  * because he  had no C++ compiler  installed at the time  and it would be
@@ -137,7 +150,7 @@ import static java.lang.Math.*;
  * (in the source code) of an appropriate enumeration class.</p>
  * 
  * @author Roman Horváth
- * @version 29. 12. 2020
+ * @version 16. 1. 2021
  * 
  * @exclude
  */
@@ -215,7 +228,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This is part of implementation the ValueProvider interface. It
-		 * creates a new Value instance from numeric or string value stored in
+		 * creates a new Value instance from numeric or string value stored in
 		 * this instance.
 		 */
 		public Value getValue()
@@ -225,7 +238,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Checks whether this instance is representing a string value.
+		 * Checks whether this instance is representing a string value.
 		 */
 		public boolean isString() { return null != string; }
 
@@ -253,7 +266,8 @@ public class ExpressionProcessor implements ValueProvider
 		 */
 		@Override public String toString()
 		{
-			if (null != string) return '"' + string + '"';
+			if (null != string) return '"' + string.replace(
+				"\"", "\"\"") + '"';
 			return Double.toString(value);
 		}
 
@@ -336,8 +350,11 @@ public class ExpressionProcessor implements ValueProvider
 			VARIABLE_EXISTS			("variable already exists"),
 			INVALID_ASSIGNMENT		("invalid assignment"),
 			NO_SUCH_ELEMENT			("no such element"),
+			INVALID_FOR_RANGE		("invalid “for” range"),
 
-			PARSE_ERROR				("parse error"); // all other parse errors
+			PARSE_ERROR				("parse error"), // all other parse errors
+
+			UNKNOWN_ERROR			("unknown error"); // reserved for unpredictable situations like getting unknown type from a stream…
 
 			// Examples of some parse errors:
 			//
@@ -639,7 +656,7 @@ public class ExpressionProcessor implements ValueProvider
 		// and lists)
 
 		/**
-		 * Checks whether this instance is representing a string value.
+		 * Checks whether this instance is representing a string value.
 		 */
 		public boolean isString()
 		{ return TypeOrError.STRING_TYPE == typeOrError; }
@@ -657,7 +674,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * Checks whether this instance is representing an error state.
-		 * That means it does not contain a valid type (numeric, string,
+		 * That means it does not contain a valid type (numeric, string,
 		 * nor list). The error state of this instance may indicate various
 		 * error states (like parse errors).
 		 */
@@ -754,6 +771,9 @@ public class ExpressionProcessor implements ValueProvider
 		 */
 		public void set(Value index, Value value)
 		{
+			if (index.isList()) index = getSingleElement(index);
+			if (index.isError() || index.isList()) return;
+
 			convertToEmptyList();
 			list.put(new Literal(index), new Value(value));
 		}
@@ -765,6 +785,9 @@ public class ExpressionProcessor implements ValueProvider
 		 */
 		public void set(Value index, double value)
 		{
+			if (index.isList()) index = getSingleElement(index);
+			if (index.isError() || index.isList()) return;
+
 			convertToEmptyList();
 			list.put(new Literal(index), new Value(value));
 		}
@@ -776,6 +799,9 @@ public class ExpressionProcessor implements ValueProvider
 		 */
 		public void set(Value index, String value)
 		{
+			if (index.isList()) index = getSingleElement(index);
+			if (index.isError() || index.isList()) return;
+
 			convertToEmptyList();
 			list.put(new Literal(index), new Value(value));
 		}
@@ -870,7 +896,19 @@ public class ExpressionProcessor implements ValueProvider
 		/**
 		 * This method tries to get numeric value of list item. It either
 		 * returns valid real value of the specified element or Double.NaN.
-		 * (See description of method Value.get(Value) for more details.)
+		 * (See description of method Value.get(Literal) for more details.)
+		 */
+		public double get(Value index)
+		{
+			if (index.isList()) index = getSingleElement(index);
+			if (index.isError() || index.isList()) return Double.NaN;
+			return get(new Literal(index));
+		}
+
+		/**
+		 * This method tries to get numeric value of list item. It either
+		 * returns valid real value of the specified element or Double.NaN.
+		 * (See description of method Value.get(Literal) for more details.)
 		 */
 		public double get(double index)
 		{
@@ -880,7 +918,7 @@ public class ExpressionProcessor implements ValueProvider
 		/**
 		 * This method tries to get numeric value of list item. It either
 		 * returns valid real value of the specified element or Double.NaN.
-		 * (See description of method Value.get(Value) for more details.)
+		 * (See description of method Value.get(Literal) for more details.)
 		 */
 		public double get(String index)
 		{
@@ -903,6 +941,8 @@ public class ExpressionProcessor implements ValueProvider
 		 */
 		public boolean elementExists(Value index)
 		{
+			if (index.isList()) index = getSingleElement(index);
+			if (index.isError() || index.isList()) return false;
 			return elementExists(new Literal(index));
 		}
 
@@ -924,8 +964,41 @@ public class ExpressionProcessor implements ValueProvider
 
 
 		/**
+		 * Gets the number of elements in the list recursively.
+		 */
+		public int count()
+		{
+			int count = 0;
+
+			if (TypeOrError.LIST_TYPE == typeOrError && null != list)
+			{
+				for (Value value : list.values())
+					if (TypeOrError.LIST_TYPE == value.typeOrError)
+					{
+						if (null != value.list)
+						{
+							try
+							{
+								if (!value.recursiveJam(this))
+									count += value.count();
+							}
+							catch (Throwable e)
+							{
+								// System.err.println(e.getMessage());
+							}
+						}
+					}
+					else
+						++count;
+			}
+
+			return count;
+		}
+
+
+		/**
 		 * Gets the number of elements in the list or -1 if the type of
-		 * this value is not a list.
+		 * this value is not a list.
 		 */
 		public int size()
 		{
@@ -934,6 +1007,9 @@ public class ExpressionProcessor implements ValueProvider
 			return -1;
 		}
 
+		// Just to correct a typecast problem within the following method.
+		private final static Literal[] emptyLiteralArray = {};
+
 		/**
 		 * This method returns list of valid indexes (in the form of array),
 		 * if this instance is the list or null in the other case.
@@ -941,7 +1017,7 @@ public class ExpressionProcessor implements ValueProvider
 		public Literal[] getIndexes()
 		{
 			if (TypeOrError.LIST_TYPE == typeOrError)
-				return (Literal[])list.keySet().toArray();
+				return list.keySet().toArray(emptyLiteralArray);
 			return null;
 		}
 
@@ -957,23 +1033,109 @@ public class ExpressionProcessor implements ValueProvider
 				Value element = list.get(index);
 				if (null != element) return element;
 			}
+			else if (TypeOrError.STRING_TYPE == typeOrError)
+			{
+				if (null != string && index.isValidNumber())
+				{
+					int value = (int)index.get();
+					if (value >= 0 && value < string.length())
+						return new Value("" + string.charAt(value));
+				}
+			}
 			return new Value(TypeOrError.NO_SUCH_ELEMENT);
 		}
 
 		/**
-		 * This method returns either value of the specified element (the element
-		 * associated with the specified index) or TypeOrError.NO_SUCH_ELEMENT, if
-		 * there is no such element exists.
+		 * This method returns either value of the specified element (the
+		 * element associated with the specified index) or
+		 * TypeOrError.NO_SUCH_ELEMENT, if there is no such element exists.
 		 */
 		public Value getValue(Value index)
 		{
+			if (index.isList())
+			{
+				int size = index.size();
+				if (1 == size)
+				{
+					index = getSingleElement(index);
+					if (index.isError()) return index;
+					if (index.isList()) return new Value(
+						Value.TypeOrError.TOO_MANY_ARGUMENTS);
+					return getValue(new Literal(index));
+				}
+
+				if (size < 2) return new Value(
+					Value.TypeOrError.MISSING_ARGUMENT);
+				if (size > 2) return new Value(
+					Value.TypeOrError.TOO_MANY_ARGUMENTS);
+
+				Literal[] indexes = index.getIndexes();
+
+				Value startV = index.getValue(indexes[0]);
+				if (startV.isError()) return startV;
+				if (startV.isList()) return new Value(
+					Value.TypeOrError.TOO_MANY_ARGUMENTS);
+
+				Value endV = index.getValue(indexes[1]);
+				if (endV.isError()) return endV;
+				if (endV.isList()) return new Value(
+					Value.TypeOrError.TOO_MANY_ARGUMENTS);
+
+				Literal startL = new Literal(startV);
+				Literal endL = new Literal(endV);
+
+				if (TypeOrError.LIST_TYPE == typeOrError)
+				{
+					try
+					{
+						Value value = new Value((String)null);
+						value.convertToEmptyList();
+
+						if (null == value.list)
+							value.list = new TreeMap<Literal, Value>(
+								list.subMap(startL, endL));
+						else
+							value.list.putAll(
+								list.subMap(startL, endL));
+
+						return value;
+					}
+					catch (Throwable t)
+					{
+						// return new Value(
+						// 	Value.TypeOrError.INVALID_ARGUMENT);
+					}
+				}
+				else if (TypeOrError.STRING_TYPE == typeOrError)
+				{
+					try
+					{
+						if (startL.isValidNumber() && endL.isValidNumber())
+						{
+							int start = (int)startL.get();
+							int end = (int)endL.get();
+							return new Value(string.substring(start, end));
+						}
+					}
+					catch (Throwable t)
+					{
+						// return new Value(
+						// 	Value.TypeOrError.INVALID_ARGUMENT);
+					}
+				}
+				else return new Value(Value.TypeOrError.INVALID_BRACKETS);
+
+				return new Value(Value.TypeOrError.INVALID_ARGUMENT);
+			}
+
+			if (index.isError()) return index;
 			return getValue(new Literal(index));
 		}
 
 		/**
-		 * This method returns either value of the specified element (the element
-		 * associated with the specified index) or TypeOrError.NO_SUCH_ELEMENT, if
-		 * there is no such element exists.
+		 * This method returns either value of the specified element (the
+		 * element associated with the specified index) or
+		 * TypeOrError.NO_SUCH_ELEMENT, if there is no such element exists.
 		 */
 		public Value getValue(double index)
 		{
@@ -981,9 +1143,9 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * This method returns either value of the specified element (the element
-		 * associated with the specified index) or TypeOrError.NO_SUCH_ELEMENT, if
-		 * there is no such element exists.
+		 * This method returns either value of the specified element (the
+		 * element associated with the specified index) or
+		 * TypeOrError.NO_SUCH_ELEMENT, if there is no such element exists.
 		 */
 		public Value getValue(String index)
 		{
@@ -994,7 +1156,7 @@ public class ExpressionProcessor implements ValueProvider
 		/**
 		 * Converts this instance to empty list. That means that the original
 		 * value of non-list type is dismissed. If this instance is already
-		 * a list type, no change is made.
+		 * a list type, no change is made.
 		 */
 		public void convertToEmptyList()
 		{
@@ -1061,6 +1223,53 @@ public class ExpressionProcessor implements ValueProvider
 			else
 				list.clear();
 		}
+
+
+		/**
+		 * If this instance is not list, converts it to list type, existing
+		 * original value of this instance will be copied to first element.
+		 * The entered element is put to this list with next index number.
+		 */
+		public void join(Value element)
+		{
+			convertToList();
+
+			/*if (element.isList())
+			{
+				if (null != element.list)
+					for (Value value : element.list.values())
+						add(value);
+			}
+			else */if (list.isEmpty())
+			{
+				list.put(new Literal(0.0), new Value(element));
+			}
+			else
+			{
+				Literal nextKey, lastKey = list.lastKey();
+				if (null == lastKey)
+				{
+					nextKey = new Literal(0.0);
+				}
+				else if (lastKey.isValidNumber())
+				{
+					nextKey = new Literal(lastKey.get() + 1);
+				}
+				else
+				{
+					do { lastKey = list.lowerKey(lastKey); }
+					while (null != lastKey && !lastKey.isValidNumber());
+
+					if (null == lastKey)
+						nextKey = new Literal(0.0);
+					else
+						nextKey = new Literal(lastKey.get() + 1);
+				}
+
+				list.put(nextKey, new Value(element));
+			}
+		}
+
 
 		/**
 		 * If this instance is not list, converts it to list type, existing
@@ -1129,23 +1338,46 @@ public class ExpressionProcessor implements ValueProvider
 		/**
 		 * Converts list type to string – creates recursively concatenated
 		 * string from list items. If the list is empty or this instance is
-		 * not a list type, then an empty string will be returned.
+		 * not a list type, then an empty string will be returned.
 		 */
 		public String listToString()
 		{
 			StringBuffer sb = new StringBuffer();
 			if (TypeOrError.LIST_TYPE == typeOrError && null != list)
 			{
+				sb.append('(');
+				boolean first = true;
 				for (Value value : list.values())
 					try
 					{
 						if (!value.recursiveJam(this))
-							sb.append(value.getString());
+						{
+							if (first) first = false;
+							else sb.append(", ");
+							if (value.isError())
+							{
+								sb.append('\'');
+								sb.append(value.getString());
+								sb.append('\'');
+							}
+							else if (value.isString())
+							{
+								sb.append('"');
+								sb.append(value.getString()
+									.replace("\"", "\"\""));
+								sb.append('"');
+							}
+							else
+								sb.append(value.getString());
+						}
+						else
+							sb.append("'JAM'");
 					}
 					catch (Throwable e)
 					{
 						// System.err.println(e.getMessage());
 					}
+				sb.append(')');
 			}
 			return sb.toString();
 		}
@@ -1175,20 +1407,20 @@ public class ExpressionProcessor implements ValueProvider
 		 * Gets an error state of the instance no matter wheter it contains
 		 * the error code or not. For example the type
 		 * Value.TypeOrError.NUMERIC_TYPE means that this instance is
-		 * representing a valid double value.
+		 * representing a valid double value.
 		 */
 		public TypeOrError getError() { return typeOrError; }
 
 		/**
 		 * Gets the location of error state of the instance. There is no
 		 * special value returned in case that this instance is representing
-		 * a valid type – a real number, for example.
+		 * a valid type – a real number, for example.
 		 */
 		public long getErrorLocation() { return errorLocation; }
 
 
 		/**
-		 * Creates recursively concatenated human-readable dump of a list type.
+		 * Creates recursively concatenated human-readable dump of a list type.
 		 * An entered separator will separate list items. This list itself
 		 * and the nested sublists will start with prefix string and end with
 		 * postfix string. This method use methods Literal.toString() and
@@ -1290,7 +1522,7 @@ public class ExpressionProcessor implements ValueProvider
 			if (TypeOrError.STRING_TYPE == typeOrError)
 			{
 				if (null == string) return "" + null;
-				return '"' + string + '"';
+				return '"' + string.replace("\"", "\"\"") + '"';
 			}
 
 			if (TypeOrError.LIST_TYPE == typeOrError)
@@ -1312,14 +1544,14 @@ public class ExpressionProcessor implements ValueProvider
 	//////////////////////////////////////////////////////////////////////
 
 	/**
-	 * This class stores identifiers of a variables or namespaces that must
+	 * This class stores identifiers of a variables or namespaces that must
 	 * be found at runtime that means in the time of evaluating the parsed
 	 * expression.
 	 */
 	public static class Identifier
 	{
 		/**
-		 * Identifier of a variable. Must not be null.
+		 * Identifier of a variable. Must not be null.
 		 */
 		public final String identifier;
 
@@ -1357,7 +1589,7 @@ public class ExpressionProcessor implements ValueProvider
 		// Constructors
 
 		/**
-		 * Creates a variable with the specified name and value.
+		 * Creates a variable with the specified name and value.
 		 */
 		public Variable(String variableName, Value initialValue)
 		{
@@ -1366,7 +1598,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Creates a variable with the specified name and value.
+		 * Creates a variable with the specified name and value.
 		 */
 		public Variable(String variableName, double initialValue)
 		{
@@ -1405,7 +1637,7 @@ public class ExpressionProcessor implements ValueProvider
 	//////////////////////////////////////////////////////////////////////
 
 	/**
-	 * This class provides space for a group of variables accessible from
+	 * This class provides space for a group of variables accessible from
 	 * the specific variable scope. Only one scope is predefined – it is the
 	 * global space for variables. The name of its instance is:
 	 * globalVariables.
@@ -1422,7 +1654,7 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This instance is returned after attempting to read the value of
-		 * a non-existing variable. It contains
+		 * a non-existing variable. It contains
 		 * Value.TypeOrError.UNKNOWN_VARIABLE error state (at location 0).
 		 */
 		public final static Value UNKNOWN_VARIABLE =
@@ -1480,8 +1712,8 @@ public class ExpressionProcessor implements ValueProvider
 		// Creating and searching namespaces
 
 		/**
-		 * This method creates a nested namespaces. It checks if entered
-		 * namespace exists first and if not, it creates a new one and returns
+		 * This method creates a nested namespaces. It checks if entered
+		 * namespace exists first and if not, it creates a new one and returns
 		 * it as the return value. Otherwise, null is returned.
 		 * 
 		 * Notice that namespaces are in use only after calling
@@ -1511,23 +1743,26 @@ public class ExpressionProcessor implements ValueProvider
 			return namespaces.get(namespace);
 		}
 
+		// Just to correct a typecast problem within the following method.
+		private final static String[] emptyStringArray = {};
+
 		/**
 		 * This method gets a list of nested namespaces in the form of
-		 * a string array. If no nested namespace is defined, an empty array
+		 * a string array. If no nested namespace is defined, an empty array
 		 * is returned. (The method does not return null.)
 		 */
 		public String[] getNamespaces()
 		{
-			return (String[])namespaces.keySet().toArray();
+			return namespaces.keySet().toArray(emptyStringArray);
 		}
 
 		//////////////////////////////////////
 		// Creating and searching variables
 
 		/**
-		 * Creates a new variable with the specified name and returns it as instance
-		 * only if it does not exist. If variable did exist before, the null
-		 * value is returned. New variable is initialised by 0.0.
+		 * Creates a new variable with the specified name and returns it as
+		 * instance only if it does not exist. If variable did exist before,
+		 * the null value is returned. New variable is initialised by 0.0.
 		 */
 		public Variable create(String variableName)
 		{
@@ -1539,7 +1774,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Creates a new variable with the specified name and initial value and
+		 * Creates a new variable with the specified name and initial value and
 		 * returns it as instance only if it does not exist. If variable did
 		 * exist before, the null value is returned.
 		 */
@@ -1562,7 +1797,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Gets existing or creates a new variable with the specified name and
+		 * Gets existing or creates a new variable with the specified name and
 		 * returns the relevant instance. (New variables are initialised by
 		 * 0.0.)
 		 */
@@ -1579,12 +1814,12 @@ public class ExpressionProcessor implements ValueProvider
 
 		/**
 		 * This method gets a list of all variables in this namespace
-		 * in the form of a string array. If no variable is defined, an
+		 * in the form of a string array. If no variable is defined, an
 		 * empty array is returned. (The method does not return null.)
 		 */
 		public String[] getVariables()
 		{
-			return (String[])list.keySet().toArray();
+			return list.keySet().toArray(emptyStringArray);
 		}
 
 		///////////////////////////////////////////////////////////
@@ -1593,7 +1828,7 @@ public class ExpressionProcessor implements ValueProvider
 		/**
 		 * Declares new (and only new) variable with the specified name and
 		 * returns the result as follows: If the variable does not exist then
-		 * the return value is equal to the initial value of a new variable
+		 * the return value is equal to the initial value of a new variable
 		 * (which is 0.0). If the variable already exists, then the return
 		 * value is the VariableScope.VARIABLE_EXISTS instance (which contains
 		 * the typeOrError value: Value.TypeOrError.VARIABLE_EXISTS).
@@ -1610,9 +1845,9 @@ public class ExpressionProcessor implements ValueProvider
 		 * Defines new (and only new) variable with the specified name,
 		 * initialises it with the specified value and returns the result as
 		 * follows: If the variable does not exist then the return value is
-		 * equal to the initial value of a new variable. If the variable already
-		 * exists, then the return value is the VariableScope.VARIABLE_EXISTS
-		 * instance.
+		 * equal to the initial value of a new variable. If the variable
+		 * already exists, then the return value is the
+		 * VariableScope.VARIABLE_EXISTS instance.
 		 */
 		public Value define(String variableName, Value newValue)
 		{
@@ -1639,7 +1874,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Assigns value to a variable with the specified name and returns the
+		 * Assigns value to a variable with the specified name and returns the
 		 * assigned value to allow chain assigning. If the variable does
 		 * not exist, it is created automatically. (However, this method is
 		 * not used directly by the expression parser. So any attempt to use
@@ -1654,11 +1889,11 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Registers existing variable created by user. The name of the specified
-		 * variable must be unique. No variable with the same name may exist
-		 * within this variable scope. The result of this method is as
-		 * follows: if the variable name is unique, then the return value is
-		 * equal to its value; if there already is a variable with the same
+		 * Registers existing variable created by user. The name of the
+		 * specified variable must be unique. No variable with the same name
+		 * may exist within this variable scope. The result of this method is
+		 * as follows: if the variable name is unique, then the return value
+		 * is equal to its value; if there already is a variable with the same
 		 * name in this variable scope, then the return value is the
 		 * VariableScope.VARIABLE_EXISTS instance (which contains the
 		 * typeOrError value: Value.TypeOrError.VARIABLE_EXISTS).
@@ -1708,7 +1943,7 @@ public class ExpressionProcessor implements ValueProvider
 			//
 			//	NOT_CLASSIFIED      // undefined type
 			//	LITERAL             // numeric or string literal (value)
-			//	IDENTIFIER          // string indentifier of a variable or
+			//	IDENTIFIER          // string indentifier of a variable or
 			//	                    // namespace
 			//	VARIABLE            // the variable
 			//	OPERATOR            // common operator
@@ -1766,7 +2001,7 @@ public class ExpressionProcessor implements ValueProvider
 				}
 			},
 
-			// String indentifier of a variable or namespace
+			// String indentifier of a variable or namespace
 			IDENTIFIER
 			{
 				public void copy(Node nodeTarget, Node nodeSource)
@@ -2004,14 +2239,19 @@ public class ExpressionProcessor implements ValueProvider
 				{
 					Value value = node.operator.getValue(node);
 					if (null != value) return value;
+					// FIX?:
 					return new Value(Value.TypeOrError.UNKNOWN_OPERATOR,
 						node.location);
+					// value = new Value((String)null);
+					// value.convertToEmptyList();
+					// return value;
 				}
 
 				public String getString(Node node)
 				{
 					Value value = node.operator.getValue(node);
 					if (null != value) return value.getString();
+					// FIX?:
 					return new Value(Value.TypeOrError.UNKNOWN_OPERATOR,
 						node.location).getString();
 				}
@@ -2114,7 +2354,7 @@ public class ExpressionProcessor implements ValueProvider
 		 * but the syntaxes for unary minus (-) and logical not (!) are
 		 * supported and they are internally solved as converting to functions
 		 * (unary plus is ignored).
-		 * Operators LEFPAR and RIGPAR are not a real operators, just special
+		 * Operators LEFPAR and RIGPAR are not a real operators, just special
 		 * states used by the parser. There is no ternary operator
 		 * implemented.
 		 * Full list of operators and functions is in the introduction
@@ -2128,7 +2368,7 @@ public class ExpressionProcessor implements ValueProvider
 			//
 			//	SEPARATOR   // ,   – list separator
 			//	SELECTOR    // []  – list item selector (special operator)
-			//	ASSIGN      // =   – assign value (to a variable)
+			//	ASSIGN      // =   – assign value (to a variable)
 			//
 			//	OR          // ||  – logical or
 			//	AND         // &&  – logical and
@@ -2167,7 +2407,7 @@ public class ExpressionProcessor implements ValueProvider
 				public Value getValue(Node node)
 				{
 					Value c = new Value(node.left.getValue());
-					c.add(node.right.getValue());
+					c.join(node.right.getValue());
 					return c;
 				}
 			},
@@ -2182,7 +2422,7 @@ public class ExpressionProcessor implements ValueProvider
 				}
 			},
 
-			// Assign value (to a variable)
+			// Assign value (to a variable)
 			ASSIGN((byte)1, "=")
 			{
 				public Value getValue(Node node)
@@ -2199,8 +2439,22 @@ public class ExpressionProcessor implements ValueProvider
 					Value a = node.left.getValue();
 					if (a.isError()) return a;
 
+					if (a.isList())
+					{
+						Value c = new Value(a);
+						c.join(node.right.getValue());
+						return c;
+					}
+
 					Value b = node.right.getValue();
 					if (b.isError()) return b;
+
+					if (b.isList())
+					{
+						Value c = new Value(a);
+						c.join(b);
+						return c;
+					}
 
 					if (a.isNumber() && b.isNumber())
 						return new Value(0 != a.get() ||
@@ -2772,7 +3026,7 @@ public class ExpressionProcessor implements ValueProvider
 		 * functions. Only the default functions receiving only one parameter
 		 * are implemented. All the default functions that require two
 		 * parameters (div, max, min, mod, pow) are implemented as binary
-		 * operators using infix syntax (e. g. a min b). All such “functions”
+		 * operators using infix syntax (e. g. a min b). All such “functions”
 		 * except min and max have also the symbolic representation (e. g.:
 		 * pow – ^, mod – %, or – ||, and – &&). According that the div
 		 * operator is not integer division like in Pascal programming
@@ -2800,33 +3054,98 @@ public class ExpressionProcessor implements ValueProvider
 			//	CEIL    // ceil
 			//	COS     // cos
 			//	COSH    // cosh, coshyp
+			//	COUNT   // count – returns the number of items in the list
+			//	              recursively; for string and number the result
+			//	              is -1
 			//	DEG     // deg – toDegrees
-			//	(DIV)   // implemented as operator; a div b (also a / b)
+			//	(DIV)   // implemented as operator; a div b (also a / b)
 			//	EXP     // exp
 			//	FLOOR   // floor
+			//	FOR     // for – cycles (many variants): the function
+			//	               receives three parameters all of which may
+			//	               be a list; the first parameter must contain
+			//	               a variable (reference made by identifier) or
+			//	               a pair of variables (within the list) that
+			//	               will be assigned by value within some range;
+			//	               if the first parameter contains one variable
+			//	               then the second parameter might be single
+			//	               value, a pair of values, or set of three
+			//	               values; single value means the upper bound
+			//	               that will be excluded of the range of values
+			//	               of the FOR control variable starting from
+			//	               zero; two values specify lower and upper
+			//	               bounds included in the range; three values
+			//	               specify starting bound, ending bound, and the
+			//	               step for the control variable value; if the
+			//	               first parameter is a pair of variables then
+			//	               the second parameter should be a list (single
+			//	               value will be converted to list containing
+			//	               just that value); then first variable will
+			//	               gradually recieve the indexes of the elements
+			//	               in that list and the second variable the
+			//	               values of the elements; the third parameter
+			//	               of the FOR is always an expression evaluated
+			//	               in each FOR iteration whose result(s) will
+			//	               create a list that will be the result of the
+			//	               FOR function (as a whole)
+			//	IF      // if – decides between parameter 2 or 3 according
+			//	               to logical value of parameter 1
 			//	INT     // int, integer – uses conversion (double)(long)
 			//	               or converts string to integer
 			//	LN      // ln – uses function log
 			//	LOG     // log – uses function log10
-			//	(MAX)   // implemented as operator; a max b
-			//	(MIN)   // implemented as operator; a min b
-			//	(MOD)   // implemented as operator; a mod b (also a % b)
+			//	LENGTH  // length – gets length of a string; for number the
+			//	               result is -1; for list the result is
+			//	               -1 - size(list)
+			//	(MAX)   // implemented as operator; a max b
+			//	(MIN)   // implemented as operator; a min b
+			//	(MOD)   // implemented as operator; a mod b (also a % b)
 			//	NEG     // neg – negative value (unary minus; also -a)
 			//	NUM     // num, number – keeps number or converts string
 			//	               to number
-			//	(POW)   // implemented as operator; a pow b, a ^ b
+			//	(POW)   // implemented as operator; a pow b, a ^ b
 			//	RAD     // rad – toRadians
 			//	RAND    // rand, rnd
 			//	SIG     // sig, signum – signum
 			//	SIN     // sin
 			//	SINH    // sinh, sinhyp
+			//	SIZE    // size – returns the size (number of items) of
+			//	               current level of the list; for number it is
+			//	               the number of digits of the integer part of the
+			//	               value; for string the result is -1
 			//	SQR     // sqr – square – power of 2
 			//	SQRT    // sqrt – square root
 			//	TAN     // tan, tg, tn
 			//	TANH    // tanh, tgh, tnh, tanhyp, tghyp, tnhyp
+			//	UNTIL   // until – evaluates the parameter 2 until the
+			//	               condition in parameter 1 becomes true;
+			//	               function may recieve third parameter that
+			//	               may set the restriction rule of the minimal
+			//	               or maximal number of repetitions – positive
+			//	               (non-zero) number means the upper limit
+			//	               (maximum number of repetitions); a negative
+			//	               number means the lower limit (its absolute
+			//	               value will determine the smallest number of
+			//	               repetitions); the result is a list
+			//	               ‼Warning‼ This function does not work like
+			//	               the repeat-until control flow statement,
+			//	               unless the third parameter is equal to -1.
+			//	               That means it implicitly does not have
+			//	               a minimal number of repetitions (i.e. at
+			//	               least one) like the repeat-until statement.
+			//	WHILE   // while – evaluates the parameter 2 while the
+			//	               condition in parameter 1 is true; function
+			//	               may recieve third parameter that may set the
+			//	               restriction rule of the minimal or maximal
+			//	               number of repetitions – positive (non-zero)
+			//	               number means the upper limit (maximum number
+			//	               of repetitions); a negative number means the
+			//	               lower limit (its absolute value will
+			//	               determine the smallest number of repetitions);
+			//	               the result is a list
 			//	---
-			//	(OR)    // implemented as operator; a or b (also a || b)
-			//	(AND)   // implemented as operator; a and b (also a && b)
+			//	(OR)    // implemented as operator; a or b (also a || b)
+			//	(AND)   // implemented as operator; a and b (also a && b)
 			//	NOT     // logical not operator (also !a)
 
 
@@ -2950,6 +3269,18 @@ public class ExpressionProcessor implements ValueProvider
 				}
 			},
 
+			// count
+			COUNT("count")
+			{
+				public Value getValue(Node node)
+				{
+					Value value = node.right.getValue();
+					if (value.isList()) return new Value(value.count());
+					if (value.isError()) return value;
+					return new Value(-1);
+				}
+			},
+
 			// deg – toDegrees
 			DEG("deg")
 			{
@@ -2989,6 +3320,216 @@ public class ExpressionProcessor implements ValueProvider
 					if (value.isString()) return new Value(
 						Value.TypeOrError.INVALID_ARGUMENT);
 					return new Value(floor(value.get()));
+				}
+			},
+
+			// for – cycles (many variants)
+			FOR("for")
+			{
+				public Value getValue(Node node)
+				{
+					Node base = node.right;
+
+					if (null != base.left && null != base.left.left &&
+						null != base.left.right && null != base.right)
+					{
+						Node vars = base.left.left;
+						Node bnds = base.left.right;
+						Node cmds = base.right;
+
+						Value result = new Value((String)null);
+						result.convertToEmptyList();
+
+						if (null != vars.left && null != vars.right)
+						{
+							if (!vars.left.possiblyAssignable())
+								return new Value(Value.TypeOrError.
+									INVALID_ASSIGNMENT, vars.left.location);
+
+							if (!vars.right.possiblyAssignable())
+								return new Value(Value.TypeOrError.
+									INVALID_ASSIGNMENT, vars.right.location);
+
+							Value list = bnds.getValue();
+							if (list.isError()) return list;
+							if (list.isList())
+							{
+								// Perform for each:
+
+								Literal[] indexes = list.getIndexes();
+								for (Literal index : indexes)
+								{
+									Value value = list.
+										getValue(index);
+
+									vars.left.assign(index.getValue());
+									vars.right.assign(value);
+
+									result.join(cmds.getValue());
+								}
+							}
+							else
+							{
+								// Create single value “for”:
+								vars.left.assign(new Value(0.0));
+								vars.right.assign(list);
+								result.join(cmds.getValue());
+							}
+						}
+						else
+						{
+							if (!vars.possiblyAssignable())
+								return new Value(Value.TypeOrError.
+									INVALID_ASSIGNMENT, vars.location);
+
+							Value list = bnds.getValue();
+							if (list.isError()) return list;
+
+							if (list.isList())
+							{
+								// Create ranged for:
+								double low = 0.0;
+								double high = 0.0;
+								double step = 1.0;
+
+								int size = list.size();
+								Literal[] indexes = list.getIndexes();
+
+								if (size > 2)
+								{
+									Value value;
+
+									value = list.getValue(indexes[0]);
+									if (value.isValidNumber())
+										low = value.get();
+									else return new Value(Value.
+										TypeOrError.INVALID_FOR_RANGE);
+
+									value = list.getValue(indexes[1]);
+									if (value.isValidNumber())
+										high = value.get();
+									else return new Value(Value.
+										TypeOrError.INVALID_FOR_RANGE);
+
+									value = list.getValue(indexes[2]);
+									if (value.isValidNumber())
+										step = value.get();
+									else return new Value(Value.
+										TypeOrError.INVALID_FOR_RANGE);
+								}
+								else if (size > 1)
+								{
+									Value value;
+
+									value = list.getValue(indexes[0]);
+									if (value.isValidNumber())
+										low = value.get();
+									else return new Value(Value.
+										TypeOrError.INVALID_FOR_RANGE);
+
+									value = list.getValue(indexes[1]);
+									if (value.isValidNumber())
+										high = value.get();
+									else return new Value(Value.
+										TypeOrError.INVALID_FOR_RANGE);
+								}
+								else if (size > 0)
+								{
+									Value value;
+
+									value = list.getValue(indexes[0]);
+									if (value.isValidNumber())
+										high = value.get() - step;
+									else return new Value(Value.
+										TypeOrError.INVALID_FOR_RANGE);
+								}
+
+								if (0.0 == step) return new Value(Value.
+									TypeOrError.INVALID_FOR_RANGE);
+
+								if (step > 0.0)
+									for (double index = low;
+										index <= high; index += step)
+									{
+										vars.assign(new Value(index));
+										result.join(cmds.getValue());
+									}
+								else
+									for (double index = low;
+										index >= high; index += step)
+									{
+										vars.assign(new Value(index));
+										result.join(cmds.getValue());
+									}
+							}
+							else
+							{
+								// Create ranged for:
+								double high = 0.0;
+
+								Value value = list.getValue();
+								if (value.isValidNumber())
+									high = value.get();
+								else return new Value(Value.
+									TypeOrError.INVALID_FOR_RANGE);
+
+								for (double index = 0.0;
+									index < high; index += 1.0)
+								{
+									vars.assign(new Value(index));
+									result.join(cmds.getValue());
+								}
+							}
+						}
+
+						return result;
+					}
+
+					return new Value(Value.TypeOrError.MISSING_ARGUMENT);
+				}
+			},
+
+			// if – decides between parameter 2 or 3 according to logical
+			// value of parameter 1
+			IF("if")
+			{
+				public Value getValue(Node node)
+				{
+					Node base = node.right;
+
+					if (base.checkOperator(Node.Operator.SEPARATOR) &&
+						null != base.left && null != base.right &&
+						base.left.checkOperator(Node.Operator.SEPARATOR) &&
+						null != base.left.left && null != base.left.right)
+					{
+						Node cond = base.left.left;
+						Node cmdT = base.left.right;
+						Node cmdF = base.right;
+
+						if (0.0 != cond.getValue().get())
+							return cmdT.getValue();
+						return cmdF.getValue();
+					}
+
+					/*Value value = node.right.getValue();
+					if (value.isList())
+					{
+						int size = value.size();
+
+						if (size < 3) return new Value(
+							Value.TypeOrError.MISSING_ARGUMENT);
+						if (size > 3) return new Value(
+							Value.TypeOrError.TOO_MANY_ARGUMENTS);
+
+						Literal[] indexes = value.getIndexes();
+
+						return (0.0 != value.get(indexes[0])) ?
+							value.getValue(indexes[1]) :
+							value.getValue(indexes[2]);
+					}
+					if (value.isError()) return value;*/
+
+					return new Value(Value.TypeOrError.MISSING_ARGUMENT);
 				}
 			},
 
@@ -3046,6 +3587,20 @@ public class ExpressionProcessor implements ValueProvider
 					return new Value(log10(value.get()),
 						Value.TypeOrError.ARGUMENT_DOMAIN_ERROR,
 						node.location);
+				}
+			},
+
+			// length
+			LENGTH("length")
+			{
+				public Value getValue(Node node)
+				{
+					Value value = node.right.getValue();
+					if (value.isList()) return new Value(-value.size() - 1);
+					if (value.isError()) return value;
+					if (value.isString()) return new Value(
+						value.getString().length());
+					return new Value(-1);
 				}
 			},
 
@@ -3169,6 +3724,31 @@ public class ExpressionProcessor implements ValueProvider
 				}
 			},
 
+			// size
+			SIZE("size")
+			{
+				public Value getValue(Node node)
+				{
+					Value value = node.right.getValue();
+					if (value.isList()) return new Value(value.size());
+					if (value.isError()) return value;
+					if (value.isString()) return new Value(-1);
+
+					long number = (long)value.get();
+					long decimals = 0;
+					do
+					{
+						++decimals;
+						number /= 10;
+					}
+					while (number != 0);
+					return new Value(decimals);
+
+					// return new Value(new BigDecimal(
+					// 	value.get()).precision());
+				}
+			},
+
 			// sqr – square – power of 2
 			SQR("sqr")
 			{
@@ -3231,6 +3811,176 @@ public class ExpressionProcessor implements ValueProvider
 				}
 			},
 
+			// until – cycles… (a few variants)
+			UNTIL("until")
+			{
+				public Value getValue(Node node)
+				{
+					Node base = node.right;
+
+					if (base.checkOperator(Node.Operator.SEPARATOR) &&
+						null != base.left && null != base.right)
+					{
+						Node cond, cmds;
+
+						Value result = new Value((String)null);
+						result.convertToEmptyList();
+
+						// result.join(new Value("\nLeft separator: " +
+						// 	base.left.checkOperator(
+						// 		Node.Operator.SEPARATOR) + "\n"));
+
+						if (base.left.checkOperator(
+								Node.Operator.SEPARATOR) &&
+							null != base.left.left &&
+							null != base.left.right)
+						{
+							cond = base.left.left;
+							cmds = base.left.right;
+							Node rstr = base.right;
+
+							// result.join(new Value("\n\tcond: " +
+							// 	cond.dumpRecursive() + "\n"));
+							// result.join(new Value("\n\tcmds: " +
+							// 	cmds.dumpRecursive() + "\n"));
+							// result.join(new Value("\n\trstr: " +
+							// 	rstr.dumpRecursive() + "\n"));
+
+							Value restrict = rstr.getValue();
+							int count = restrict.isValidNumber() ?
+								(int)restrict.get() : 0;
+
+							if (count > 0)
+							{
+								while (0.0 == cond.getValue().get() &&
+									count > 0)
+								{
+									--count;
+									result.join(cmds.getValue());
+								}
+							}
+							else if (count < 0)
+							{
+								while (count < 0)
+								{
+									++count;
+									result.join(cmds.getValue());
+								}
+								while (0.0 == cond.getValue().get())
+									result.join(cmds.getValue());
+							}
+							else
+							{
+								while (0.0 == cond.getValue().get())
+									result.join(cmds.getValue());
+							}
+						}
+						else
+						{
+							cond = base.left;
+							cmds = base.right;
+
+							// result.join(new Value("\n\tcond: " +
+							// 	cond.dumpRecursive() + "\n"));
+							// result.join(new Value("\n\tcmds: " +
+							// 	cmds.dumpRecursive() + "\n"));
+
+							while (0.0 == cond.getValue().get())
+								result.join(cmds.getValue());
+						}
+
+						return result;
+					}
+
+					return new Value(Value.TypeOrError.MISSING_ARGUMENT);
+				}
+			},
+
+			// while – cycles… (a few variants)
+			WHILE("while")
+			{
+				public Value getValue(Node node)
+				{
+					Node base = node.right;
+
+					if (base.checkOperator(Node.Operator.SEPARATOR) &&
+						null != base.left && null != base.right)
+					{
+						Node cond, cmds;
+
+						Value result = new Value((String)null);
+						result.convertToEmptyList();
+
+						// result.join(new Value("\nLeft separator: " +
+						// 	base.left.checkOperator(
+						// 		Node.Operator.SEPARATOR) + "\n"));
+
+						if (base.left.checkOperator(
+								Node.Operator.SEPARATOR) &&
+							null != base.left.left &&
+							null != base.left.right)
+						{
+							cond = base.left.left;
+							cmds = base.left.right;
+							Node rstr = base.right;
+
+							// result.join(new Value("\n\tcond: " +
+							// 	cond.dumpRecursive() + "\n"));
+							// result.join(new Value("\n\tcmds: " +
+							// 	cmds.dumpRecursive() + "\n"));
+							// result.join(new Value("\n\trstr: " +
+							// 	rstr.dumpRecursive() + "\n"));
+
+							Value restrict = rstr.getValue();
+							int count = restrict.isValidNumber() ?
+								(int)restrict.get() : 0;
+
+							if (count > 0)
+							{
+								while (0.0 != cond.getValue().get() &&
+									count > 0)
+								{
+									--count;
+									result.join(cmds.getValue());
+								}
+							}
+							else if (count < 0)
+							{
+								while (count < 0)
+								{
+									++count;
+									result.join(cmds.getValue());
+								}
+								while (0.0 != cond.getValue().get())
+									result.join(cmds.getValue());
+							}
+							else
+							{
+								while (0.0 != cond.getValue().get())
+									result.join(cmds.getValue());
+							}
+						}
+						else
+						{
+							cond = base.left;
+							cmds = base.right;
+
+							// result.join(new Value("\n\tcond: " +
+							// 	cond.dumpRecursive() + "\n"));
+							// result.join(new Value("\n\tcmds: " +
+							// 	cmds.dumpRecursive() + "\n"));
+
+							while (0.0 != cond.getValue().get())
+								result.join(cmds.getValue());
+						}
+
+						return result;
+					}
+
+					return new Value(Value.TypeOrError.MISSING_ARGUMENT);
+				}
+			},
+
 			// logical not operator
 			NOT("not")
 			{
@@ -3258,42 +4008,10 @@ public class ExpressionProcessor implements ValueProvider
 				this.name = name;
 			}
 
-			// This method MUST BE used on list only! If the list contains
-			// single element, it returns it as value (unless the element is
-			// a list in what case it returns
-			// Value.TypeOrError.TOO_MANY_ARGUMENTS error state). If the
-			// list contains more elements, it returns
-			// Value.TypeOrError.TOO_MANY_ARGUMENTS error state. If the list
-			// is empty, it returns Value.TypeOrError.MISSING_ARGUMENT error
-			// state.
-			private static Value getSingleElement(Value value)
-			{
-				int size = value.size();
 
-				if (1 == size)
-				{
-					if (value.elementExists(0))
-					{
-						value = value.getValue(0);
-						if (value.isList())
-							return new Value(Value.TypeOrError.
-								TOO_MANY_ARGUMENTS);
-						return value;
-					}
+			// The Original place of the private static Value
+			// getSingleElement(Value value) method.
 
-					Literal[] indexes = value.getIndexes();
-					value = value.getValue(indexes[0]);
-					if (value.isList())
-						return new Value(Value.TypeOrError.
-							TOO_MANY_ARGUMENTS);
-					return value;
-				}
-
-				if (1 < size) return new Value(
-					Value.TypeOrError.TOO_MANY_ARGUMENTS);
-
-				return new Value(Value.TypeOrError.MISSING_ARGUMENT);
-			}
 
 			/**
 			 * This abstract method is used by Node.getValue() method.
@@ -3354,7 +4072,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Creates a new unclassified with the specified location set.
+		 * Creates a new unclassified with the specified location set.
 		 */
 		public Node(long location)
 		{
@@ -3467,7 +4185,7 @@ public class ExpressionProcessor implements ValueProvider
 		/**
 		 * This method copies the content from source node. It follows the
 		 * situation. For example it will copy the variable reference, but
-		 * creates a new literal object. (The same way is also used by copy
+		 * creates a new literal object. (The same way is also used by copy
 		 * constructor.)
 		 */
 		public void copy(Node nodeSource)
@@ -3504,9 +4222,33 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Assigns new value to a variable that is represented by this node. If
-		 * this node is not a variable the result is Value instance containing
-		 * Value.TypeOrError.INVALID_ASSIGNMENT error state.
+		 * Checks if this node is possibly assignable – it is a variable
+		 * or current settings indicate that this could be a variable.
+		 */
+		public boolean possiblyAssignable()
+		{
+			if (checkNodeClass(Node.Class.VARIABLE)) return true;
+
+			if (checkNodeClass(Node.Class.IDENTIFIER))
+			{
+				Value value = Node.Class.IDENTIFIER.getValue(this);
+				if (value instanceof Variable) return true;
+				else
+				{
+					ExpressionProcessor processor = identifier.processor;
+					if (processor.useCustoms) return true;
+				}
+			}
+			else if (checkNodeClass(Node.Class.OPERATOR) &&
+				checkOperator(Node.Operator.SELECTOR)) return true;
+
+			return false;
+		}
+
+		/**
+		 * Assigns new value to a variable that is represented by this node.
+		 * If this node is not a variable the result is Value instance
+		 * containing Value.TypeOrError.INVALID_ASSIGNMENT error state.
 		 */
 		public Value assign(Value newValue)
 		{
@@ -3552,10 +4294,10 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Assigns new value to a variable that is represented by this node. If
-		 * this node is not a variable the result is Value instance containing
-		 * Value.TypeOrError.INVALID_ASSIGNMENT error state. The value to
-		 * assign is computed from specified node.
+		 * Assigns new value to a variable that is represented by this node.
+		 * If this node is not a variable the result is Value instance
+		 * containing Value.TypeOrError.INVALID_ASSIGNMENT error state. The
+		 * value to assign is computed from specified node.
 		 */
 		public Value assign(Node newValue)
 		{
@@ -3597,9 +4339,9 @@ public class ExpressionProcessor implements ValueProvider
 		// Basic working with left and right subnode and with parent node
 
 		/**
-		 * This static method clears the parent of the specified node and cleans
-		 * up the tree structure. This is also helping method for insertion
-		 * of nodes.
+		 * This static method clears the parent of the specified node and
+		 * cleans up the tree structure. This is also helping method for
+		 * insertion of nodes.
 		 */
 		public static void clearParent(Node toClear)
 		{
@@ -3652,17 +4394,17 @@ public class ExpressionProcessor implements ValueProvider
 
 
 		/**
-		 * Checks if this node has a left subnode and returns true if it has.
+		 * Checks if this node has a left subnode and returns true if it has.
 		 */
 		public boolean hasLeft() { return null != left; }
 
 		/**
-		 * Checks if this node has a right subnode and returns true if it has.
+		 * Checks if this node has a right subnode and returns true if it has.
 		 */
 		public boolean hasRight() { return null != right; }
 
 		/**
-		 * Checks if this node has a parent and returns true if it has.
+		 * Checks if this node has a parent and returns true if it has.
 		 */
 		public boolean hasParent() { return null != parent; }
 
@@ -3702,7 +4444,7 @@ public class ExpressionProcessor implements ValueProvider
 		/**
 		 * Inserts the new node into tree replacing the position of old node.
 		 * The tree structure will be reconnected and the old node becomes
-		 * the right subnode of a new node.
+		 * the right subnode of a new node.
 		 */
 		public static boolean insert(Node oldNode, Node newNode)
 		{
@@ -3746,16 +4488,16 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Puts the new node as right subnode of old node if it is empty at the
-		 * time. If the right subnode of old node exists at the time, it will
-		 * be saved to left subnode (of old node) which must be empty at the
-		 * time.
+		 * Puts the new node as right subnode of old node if it is empty at
+		 * the time. If the right subnode of old node exists at the time, it
+		 * will be saved to left subnode (of old node) which must be empty at
+		 * the time.
 		 */
 		public static boolean putNode(Node oldNode, Node newNode)
 		{
 			if (null == oldNode || null == newNode) return false;
 
-			// The new node must not be a root node
+			// The new node must not be a root node
 			if (null != newNode.parent) return false;
 
 			// Only nodes of specific classes can recieve this new node:
@@ -3821,7 +4563,7 @@ public class ExpressionProcessor implements ValueProvider
 			{
 				nodeClass = Node.Class.TYPE_OR_ERROR;
 				if (null == typeOrError)
-					// Create a new value
+					// Create a new value
 					typeOrError = new Value(value);
 				else
 					// Overwrite old value
@@ -3840,7 +4582,7 @@ public class ExpressionProcessor implements ValueProvider
 			// TODO: consider to create Node.Class.LIST
 			nodeClass = Node.Class.TYPE_OR_ERROR;
 
-			// Create a new numeric value…
+			// Create a new numeric value…
 			if (null == this.typeOrError)
 				this.typeOrError = new Value(Double.NaN);
 
@@ -3971,7 +4713,7 @@ public class ExpressionProcessor implements ValueProvider
 			nodeClass = Node.Class.TYPE_OR_ERROR;
 
 			if (null == this.typeOrError)
-				// Create a new error
+				// Create a new error
 				this.typeOrError = new Value(error, location);
 			else
 				// Overwrite old error
@@ -3987,7 +4729,7 @@ public class ExpressionProcessor implements ValueProvider
 			nodeClass = Node.Class.TYPE_OR_ERROR;
 
 			if (null == this.typeOrError)
-				// Create a new error
+				// Create a new error
 				this.typeOrError = new Value(error, errorLocation);
 			else
 				// Overwrite old error
@@ -4066,7 +4808,7 @@ public class ExpressionProcessor implements ValueProvider
 
 
 		/**
-		 * Returns a string value of this object.
+		 * Returns a string value of this object.
 		 * (This is part of implementation the ValueProvider interface.)
 		 */
 		public String getString()
@@ -4175,8 +4917,8 @@ public class ExpressionProcessor implements ValueProvider
 
 
 		/**
-		 * Checks the state of existence of this tree. A tree is considered
-		 * as “existing” when it has a valid root node.
+		 * Checks the state of existence of this tree. A tree is considered
+		 * as “existing” when it has a valid root node.
 		 */
 		public boolean treeExists()
 		{
@@ -4364,10 +5106,10 @@ public class ExpressionProcessor implements ValueProvider
 		public static enum State
 		{
 			INITIALIZED,	// The tree is just initialised – still empty.
-			ATTACHED,		// The string to be parsed has been attached, but
-							// still not parsed.
-			PARSED,			// The string is parsed (in the tree).
-			PARSE_ERROR,	// A parse error has arisen.
+			ATTACHED,	// The string to be parsed has been attached, but
+						// still not parsed.
+			PARSED,		// The string is parsed (in the tree).
+			PARSE_ERROR,	// A parse error has arisen.
 		}
 
 
@@ -4375,7 +5117,7 @@ public class ExpressionProcessor implements ValueProvider
 		 * This list is used only when useNamespaces is set to true.
 		 * It is the list of superclass variables accessible for this
 		 * expression. This list may be (and by default is) empty. The
-		 * programmer who is using this library may put here a list containing
+		 * programmer who is using this library may put here a list containing
 		 * variables that are accessible from the superclass of currently
 		 * handled instance by this expression. This list will be then
 		 * processed before the list of global variables.
@@ -4387,7 +5129,7 @@ public class ExpressionProcessor implements ValueProvider
 		 * This list is used only when useNamespaces is set to true.
 		 * It is the list of instance variables accessible for this
 		 * expression. This list may be (and by default is) empty. The
-		 * programmer who is using this library may put here a list containing
+		 * programmer who is using this library may put here a list containing
 		 * instance variables accessible for this expression during evaluation
 		 * process. This list will be then processed before the list of
 		 * superclass and global variables.
@@ -4398,7 +5140,7 @@ public class ExpressionProcessor implements ValueProvider
 		/**
 		 * This is the list of local variables. This list may be (and
 		 * by default is) empty. The programmer who is using this library
-		 * may put here a list containing local variables accessible for
+		 * may put here a list containing local variables accessible for
 		 * this expression. (Method parameters are also considered to be the
 		 * local variables.) This list will be then processed before the
 		 * list of global, superclass and instance variables.
@@ -4441,7 +5183,7 @@ public class ExpressionProcessor implements ValueProvider
 				tree.clear();
 
 				// The fallthrough here is intentional –
-				// do not put a break here‼
+				// do not put a break here‼
 
 			case INITIALIZED:
 			case ATTACHED:
@@ -4488,8 +5230,8 @@ public class ExpressionProcessor implements ValueProvider
 					Node.Class.TYPE_OR_ERROR))
 			{
 				// note: this does not necessarily mean the error
-				// it might be also a list (but, in fact, list is not
-				// a standard numeric result)
+				// it might be also a list (but, in fact, list is not
+				// a standard numeric result)
 				closeParsing();
 				state = State.PARSE_ERROR;
 				return false;
@@ -4558,7 +5300,7 @@ public class ExpressionProcessor implements ValueProvider
 
 
 		// Helper method that is initializing the parsing process.
-		// Initialization creates a new string reader that is used to get
+		// Initialization creates a new string reader that is used to get
 		// characters for parsing one by one.
 		private boolean initParsing()
 		{
@@ -4808,6 +5550,9 @@ public class ExpressionProcessor implements ValueProvider
 				if (value.equals("cosh") || value.equals("coshyp"))
 					return new Node(Node.Function.COSH, markLocation);
 
+				if (value.equals("count"))
+					return new Node(Node.Function.COUNT, markLocation);
+
 				if (value.equals("div"))
 					return new Node(Node.Operator.DIV, markLocation);
 
@@ -4820,6 +5565,12 @@ public class ExpressionProcessor implements ValueProvider
 				if (value.equals("floor"))
 					return new Node(Node.Function.FLOOR, markLocation);
 
+				if (value.equals("for"))
+					return new Node(Node.Function.FOR, markLocation);
+
+				if (value.equals("if"))
+					return new Node(Node.Function.IF, markLocation);
+
 				if (value.equals("int") || value.equals("integer"))
 					return new Node(Node.Function.INT, markLocation);
 
@@ -4828,6 +5579,9 @@ public class ExpressionProcessor implements ValueProvider
 
 				if (value.equals("log"))
 					return new Node(Node.Function.LOG, markLocation);
+
+				if (value.equals("length"))
+					return new Node(Node.Function.LENGTH, markLocation);
 
 				if (value.equals("max"))
 					return new Node(Node.Operator.MAX, markLocation);
@@ -4863,6 +5617,9 @@ public class ExpressionProcessor implements ValueProvider
 				if (value.equals("sinh") || value.equals("sinhyp"))
 					return new Node(Node.Function.SINH, markLocation);
 
+				if (value.equals("size"))
+					return new Node(Node.Function.SIZE, markLocation);
+
 				if (value.equals("sqr"))
 					return new Node(Node.Function.SQR, markLocation);
 
@@ -4877,6 +5634,12 @@ public class ExpressionProcessor implements ValueProvider
 					value.equals("tnh") || value.equals("tanhyp") ||
 					value.equals("tghyp") || value.equals("tnhyp"))
 					return new Node(Node.Function.TANH, markLocation);
+
+				if (value.equals("until"))
+					return new Node(Node.Function.UNTIL, markLocation);
+
+				if (value.equals("while"))
+					return new Node(Node.Function.WHILE, markLocation);
 
 				if (value.equals("or"))
 					return new Node(Node.Operator.OR, markLocation);
@@ -5022,7 +5785,7 @@ public class ExpressionProcessor implements ValueProvider
 		@SuppressWarnings("fallthrough")
 		private Node reparseTree()
 		{
-			Node workNode = null;	// Current node
+			Node workNode = null;	// Work (current) node
 			Node newNode = null;	// New node
 
 			// Note: comments in following section contain references to graph
@@ -5067,6 +5830,8 @@ public class ExpressionProcessor implements ValueProvider
 				switch (workNode.getNodeClass())
 				{
 				case TYPE_OR_ERROR:
+					addDump("TODO: Check if the list shouldn’t be " +
+						"handled here");
 					// TODO – check if the list shouldn’t be handled here
 					throw new ReparseBreak();
 
@@ -5101,16 +5866,63 @@ public class ExpressionProcessor implements ValueProvider
 						addDump("Creating an empty list.");
 						workNode = new Node();
 						workNode.setList();
-						throw new ReparseBreak();
+
+						// Fix attempt 1: after final closing ‘)’ the
+						// 	expression might continue… This fix attempt
+						// 	didn’t work here. The situation was even worse
+						// 	after various clones of the following code were
+						// 	put to work here. (Now the remnant is in the
+						// 	comment below.) I had no idea how to fix it
+						// 	(even partially). My guess was that the whole
+						// 	engine should be re-designed.  But the partial
+						// 	fix appeared to be made elsewhere. See fix
+						// 	attempt 2. It didn’t fix the problem of creating
+						// 	a list containing an empty list in its first
+						// 	element, but it was a progress.
+
+						/*if (readerHasCharacters)
+						{
+							addDump("Reader still has characters.");
+							newNode = parseNextNode();
+
+							if (null == newNode)
+								throw new ReparseBreak();
+
+							addDump(" *** New node: ",
+								newNode.dumpRecursive());
+
+							if (!newNode.checkNodeClass(Node.Class.OPERATOR))
+							{
+								addDump("Error (should be an operator).");
+								throw new ReparseError(Value.TypeOrError.
+									OPERATOR_EXPECTED);
+							}
+
+							addDump("Putting in reverse…");
+
+							if (!Node.putNode(newNode, workNode))
+								throw new ReparseError(Value.TypeOrError.
+									INVALID_OPERATOR);
+
+							addDump("Activating the new node.");
+							workNode = newNode;
+							newNode = null;
+						}
+						else*/
+							throw new ReparseBreak();
 					}
+					else
+					{
+						workNode = null;
+						workNode = reparseTree();
 
-					workNode = null;
-					workNode = reparseTree();
-
-					// If error arises skip to end, otherwise continue
-					// parsing…
-					if (workNode.checkNodeClass(Node.Class.TYPE_OR_ERROR))
-						throw new ReparseBreak();
+						// If error arises skip to end, otherwise continue
+						// parsing…
+						if (workNode.checkNodeClass(
+							Node.Class.TYPE_OR_ERROR) &&
+							!workNode.typeOrError.isList())
+							throw new ReparseBreak();
+					}
 
 				// Intentional fallthrough switch structure – do not put
 				// break here…
@@ -5170,20 +5982,24 @@ public class ExpressionProcessor implements ValueProvider
 						}
 
 						addDump("Continuous status:");
-						addDump(" *** Current node: ",
+						addDump(" *** Work node (",
+							workNode.getNodeClass(), "): ",
 							workNode.dumpRecursive());
 
 						if (null != newNode)
 						{
-							addDump(" *** New node: ",
+							addDump(" *** New node (",
+								newNode.getNodeClass(), "): ",
 								newNode.dumpRecursive());
+
 							if (joinIdentifiers && newNode.checkNodeClass(
 								Node.Class.IDENTIFIER) && workNode.
 								checkNodeClass(Node.Class.IDENTIFIER))
 							{
 								addDump("Joining two identifiers.");
 								workNode.setIdentifier(joinIdentifiers(
-									workNode.identifier, newNode.identifier));
+									workNode.identifier,
+									newNode.identifier));
 								newNode = null;
 							}
 							else switch (newNode.getNodeClass())
@@ -5207,7 +6023,7 @@ public class ExpressionProcessor implements ValueProvider
 								// Put variable, identifier or literal after
 								// function:
 								case FUNCTION:			// cur. – B
-									addDump("Putting a new node into " +
+									addDump("Putting a new node into " +
 										"the tree.");
 									if (!Node.putNode(workNode, newNode))
 										throw new ReparseError(
@@ -5233,7 +6049,8 @@ public class ExpressionProcessor implements ValueProvider
 										workNode.checkOperator(
 											Node.Operator.SUB))
 									{
-										addDump("Unary operator detected: -");
+										addDump("Unary operator " +
+											"detected: -");
 										workNode.setOperator(
 											Node.Operator.ADD);
 										newNode.setLiteral(
@@ -5244,7 +6061,7 @@ public class ExpressionProcessor implements ValueProvider
 									// Now it is on another place.
 
 									// Put node
-									addDump("Putting a new node into " +
+									addDump("Putting a new node into " +
 										"the tree.");
 									if (!Node.putNode(workNode, newNode))
 										throw new ReparseError(
@@ -5271,7 +6088,7 @@ public class ExpressionProcessor implements ValueProvider
 								// Put function after function or operator:
 								case FUNCTION:			// cur. – B
 								case OPERATOR:			// cur. – F +(D, E)
-									addDump("Putting a new node into " +
+									addDump("Putting a new node into " +
 										"the tree.");
 									if (!Node.putNode(workNode, newNode))
 										throw new ReparseError(
@@ -5314,8 +6131,8 @@ public class ExpressionProcessor implements ValueProvider
 										break;
 									}
 
-									// In this case dismissing of a newNode is
-									// possible, because it was not used:
+									// In this case dismissing of a newNode
+									// is possible, because it was not used:
 									addDump("Dismissing the new node.");
 									addDump("Searching for and returning " +
 										"the root.");
@@ -5337,7 +6154,7 @@ public class ExpressionProcessor implements ValueProvider
 												Node.Class.IDENTIFIER))
 										{
 											addDump("Changing to " +
-												"a custom function.");
+												"a custom function.");
 
 											// Change to custom function
 											workNode.changeToCustomFunction();
@@ -5347,10 +6164,10 @@ public class ExpressionProcessor implements ValueProvider
 											OPERATOR_EXPECTED);
 									}
 
-									// In this case dismissing of a newNode is
-									// possible, because it was not used:
+									// In this case dismissing of a newNode
+									// is possible, because it was not used:
 									addDump("Dismissing the new node.");
-									addDump("Creating a sub-tree…");
+									addDump("Creating a sub-tree…");
 
 									newNode = null;
 									newNode = reparseTree();
@@ -5364,8 +6181,9 @@ public class ExpressionProcessor implements ValueProvider
 										workNode.clear();
 										workNode = null;
 										addDump("Error arose – destroying " +
-											"the current tree and returning " +
-											"just with the error node.");
+											"the current tree and " +
+											"returning just with the " +
+											"error node.");
 										workNode = newNode;
 										newNode = null;
 										throw new ReparseBreak();
@@ -5373,11 +6191,11 @@ public class ExpressionProcessor implements ValueProvider
 
 									addDump("Sub-tree: ",
 										newNode.dumpRecursive());
-									addDump("Current node: ",
+									addDump("Work node: ",
 										workNode.dump());
 
-									addDump("Putting the returned sub-tree " +
-										"into the existing tree.");
+									addDump("Putting the returned sub-" +
+										"tree into the existing tree.");
 
 									if (!Node.putNode(workNode, newNode))
 									{
@@ -5388,7 +6206,7 @@ public class ExpressionProcessor implements ValueProvider
 										{
 											addDump("Activating the right " +
 												"subnode and changing to " +
-												"a custom function.");
+												"a custom function.");
 
 											// Activate right subnode and
 											// change it to custom function
@@ -5437,8 +6255,8 @@ public class ExpressionProcessor implements ValueProvider
 										break;
 									}
 
-									// In this case dismissing of a newNode is
-									// possible, because it was not used:
+									// In this case dismissing of a newNode
+									// is possible, because it was not used:
 									addDump("Dismissing the new node.");
 									addDump("Searching for and returning " +
 										"the root.");
@@ -5465,7 +6283,8 @@ public class ExpressionProcessor implements ValueProvider
 											(
 												// (multidimensional)
 												workNode.checkOperator(
-													Node.Operator.SELECTOR) ||
+													Node.Operator.SELECTOR)
+												||
 												// (second argument)
 												(workNode.hasRight() &&
 													(workNode.getRight().
@@ -5486,10 +6305,11 @@ public class ExpressionProcessor implements ValueProvider
 									// newNode will be converted to special
 									// operator:
 									addDump("Converting the new node to " +
-										"a bracket operator.");
+										"a bracket operator.");
 									addDump("Creating sub-tree…");
 
-									newNode = new Node(Node.Operator.SELECTOR,
+									newNode = new Node(
+										Node.Operator.SELECTOR,
 										currentLocation);
 
 									// According to conditions above the
@@ -5502,10 +6322,10 @@ public class ExpressionProcessor implements ValueProvider
 										Node.Operator.SELECTOR))
 									{
 										// Move to the identifier on right:
-										addDump("Moving to a variable in " +
-											"the right sub-node: " + workNode.
-											dump() + " – " + workNode.
-											getRight().dump());
+										addDump("Moving to a variable in " +
+											"the right sub-node: " +
+											workNode.dump() + " – " +
+											workNode.getRight().dump());
 										workNode = workNode.getRight();
 									}
 
@@ -5525,8 +6345,9 @@ public class ExpressionProcessor implements ValueProvider
 										workNode.clear();
 										workNode = null;
 										addDump("Error arose – destroying " +
-											"the current tree and returning " +
-											"just with the error node.");
+											"the current tree and " +
+											"returning just with the " +
+											"error node.");
 										workNode = newNode;
 										newNode = null;
 										throw new ReparseBreak();
@@ -5534,11 +6355,11 @@ public class ExpressionProcessor implements ValueProvider
 
 									addDump("Sub-tree: ",
 										newNode.dumpRecursive());
-									addDump("Current node: ",
+									addDump("Work node: ",
 										workNode.dump());
 
-									addDump("Putting the returned sub-tree " +
-										"into the existing tree.");
+									addDump("Putting the returned sub-" +
+										"tree into the existing tree.");
 
 									if (!Node.putNode(workNode, newNode))
 										throw new ReparseError(
@@ -5560,26 +6381,39 @@ public class ExpressionProcessor implements ValueProvider
 											"into the tree.");
 										if (!Node.insert(workNode, newNode))
 											throw new ReparseError(
-												Value.TypeOrError.PARSE_ERROR);
+												Value.TypeOrError.
+												PARSE_ERROR);
 										addDump("Activating the new node.");
 										workNode = newNode;	// activate node
 										newNode = null;
 										break;
 
+									case TYPE_OR_ERROR:
+										// Fix attempt 2: this should be
+										// a list… (which should be handled
+										// the same way as literal,
+										// identifier, variable).
+										addDump("Checking list.");
+										if (!workNode.typeOrError.isList())
+											throw new ReparseError(
+												Value.TypeOrError.
+												PARSE_ERROR);
+
 									case LITERAL:
 									case IDENTIFIER:
 									case VARIABLE:
 										// If active node is of type literal,
-										// identifier or variable, it must not
-										// have parent. Then put workNode into
-										// newNode and activate newNode…
+										// identifier or variable, it must
+										// not have parent. Then put workNode
+										// into newNode and activate newNode…
 										addDump("Putting in reverse – new " +
-											"node now contains the current " +
-											"tree.");
+											"node now contains the " +
+											"current tree.");
 										if (workNode.hasParent() ||
 											!Node.putNode(newNode, workNode))
 											throw new ReparseError(
-												Value.TypeOrError.PARSE_ERROR);
+												Value.TypeOrError.
+												PARSE_ERROR);
 
 										addDump("Activating the new node.");
 										workNode = newNode;	// activate node
@@ -5588,8 +6422,8 @@ public class ExpressionProcessor implements ValueProvider
 
 									case OPERATOR:
 
-										// Here was found out that an error is
-										// buried in the original C/C++
+										// Here was found out that an error
+										// is buried in the original C/C++
 										// library – mistakenly the
 										// PARENTH_OPERATOR was handled the
 										// same way as common OPERATOR…
@@ -5624,16 +6458,19 @@ public class ExpressionProcessor implements ValueProvider
 
 											while (workNode.hasParent())
 											{
-												workNode = workNode.getParent();
+												workNode = workNode.
+													getParent();
 												if (newNode.getOperator().
 													priority <=
 													workNode.getOperator().
 													priority) break;
 												addDump("Priority: new = ",
 													newNode.getOperator().
-													priority, ", current = ",
+													priority,
+													", current = ",
 													workNode.getOperator().
-													priority, " (continuous)");
+													priority,
+													" (continuous)");
 											}
 
 											addDump("Priority: new = ",
@@ -5652,18 +6489,20 @@ public class ExpressionProcessor implements ValueProvider
 										{
 											addDump("Failed (because we " +
 												"are in root)!");
-											addDump("Inserting the new node " +
-												"instead of the current node.");
-											if (!Node.insert(workNode, newNode))
+											addDump("Inserting the new " +
+												"node instead of the " +
+												"current node.");
+											if (!Node.insert(workNode,
+												newNode))
 												throw new ReparseError(
 													Value.TypeOrError.
 													PARSE_ERROR);
 										}
 										else
 										{
-											addDump("Inserting the new node " +
-												"into the right part of the " +
-												"current node.");
+											addDump("Inserting the new " +
+												"node into the right " +
+												"part of the current node.");
 											if (!Node.insert(workNode.
 												getRight(), newNode))
 												throw new ReparseError(
@@ -5716,13 +6555,21 @@ public class ExpressionProcessor implements ValueProvider
 											"without any further checking.");
 										if (!Node.insert(workNode, newNode))
 											throw new ReparseError(
-												Value.TypeOrError.PARSE_ERROR);
+												Value.TypeOrError.
+												PARSE_ERROR);
 
 										addDump("Activating the new node.");
 										workNode = newNode;
 										newNode = null;
 
 										break;
+									default:
+										addDump("Warning! Unknown case" +
+											" in case newNode.OPERATOR," +
+											" switch (workNode." +
+												"getNodeClass())" +
+											" with workNode: ", workNode,
+											" and newNode: ", newNode);
 									}
 								}
 								break;
@@ -5732,9 +6579,10 @@ public class ExpressionProcessor implements ValueProvider
 
 								if (newNode.typeOrError.isList())
 								{
-									addDump("It’s a list, but I don’t " +
+									addDump("It’s a list, but I don’t " +
 										"know how to handle it right now.");
-									// TODO – consider how to handle lists here‼
+									// TODO – consider how to handle lists
+									// here‼
 									if (null != workNode)
 									{
 										while (workNode.hasParent())
@@ -5762,6 +6610,11 @@ public class ExpressionProcessor implements ValueProvider
 
 								throw new ReparseBreak();
 
+							default:
+								addDump("Warning! Unknown case in" +
+									" switch (newNode.getNodeClass())" +
+									" with workNode: ", workNode,
+									" and newNode: ", newNode);
 							}	// switch (newNode.getNodeClass())
 
 						}	// if (null != newNode)
@@ -5866,7 +6719,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * Returns a string value of this object.
+		 * Returns a string value of this object.
 		 * (This is part of implementation the ValueProvider interface.)
 		 */
 		public String getString()
@@ -5950,8 +6803,8 @@ public class ExpressionProcessor implements ValueProvider
 		 * identifiers are reserved and are not allowed to be used as global
 		 * namespace: this, self, super, parent, global and general.
 		 * This method checks if entered namespace exists and if not, it
-		 * creates a new one and returns it as the return value. Otherwise, null
-		 * is returned.
+		 * creates a new one and returns it as the return value. Otherwise,
+		 * null is returned.
 		 */
 		public static VariableScope createNamespace(String namespace)
 		{
@@ -6074,13 +6927,13 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * This method has a default implementation but is open to be
+		 * This method has a default implementation but is open to be
 		 * overridden in the superclass. This is one of the ways how
 		 * superclasses may extend this processor. It opens the possibility
 		 * to modify how the consecutive identifiers will be joined. The
 		 * default implementation joins the identifiers using single space.
 		 * That means it allows the identifiers to contain spaces and it
-		 * basically works as a space trimmer.
+		 * basically works as a space trimmer.
 		 * 
 		 * NOTE: This method is invoked only in case the property
 		 *     “joinTheIdentifiers” is enabled‼
@@ -6092,7 +6945,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * This method has a default implementation but is open to be
+		 * This method has a default implementation but is open to be
 		 * overridden in the superclass. This is one of the ways how
 		 * superclasses may extend this processor. It opens the possibility
 		 * to implement custom functions providing unique functionality.
@@ -6109,7 +6962,7 @@ public class ExpressionProcessor implements ValueProvider
 		}
 
 		/**
-		 * This method has a default implementation but is open to be
+		 * This method has a default implementation but is open to be
 		 * overridden in the superclass. This is one of the ways how
 		 * superclasses may extend this processor. It opens the possibility
 		 * to read or write the contents of custom variables. The default
@@ -6173,6 +7026,43 @@ public class ExpressionProcessor implements ValueProvider
 
 		// Helper method decreasing the indentation of next dump lines.
 		private void unindentDump() { if (dumpIndent > 0) --dumpIndent; }
+
+		// This method MUST BE used on list only! If the list contains
+		// single element, it returns it as value (unless the element is
+		// a list in what case it returns
+		// Value.TypeOrError.TOO_MANY_ARGUMENTS error state). If the
+		// list contains more elements, it returns
+		// Value.TypeOrError.TOO_MANY_ARGUMENTS error state. If the list
+		// is empty, it returns Value.TypeOrError.MISSING_ARGUMENT error
+		// state.
+		private static Value getSingleElement(Value value)
+		{
+			int size = value.size();
+
+			if (1 == size)
+			{
+				if (value.elementExists(0))
+				{
+					value = value.getValue(0);
+					if (value.isError()) return value;
+					if (value.isList()) return new Value(
+						Value.TypeOrError.TOO_MANY_ARGUMENTS);
+					return value;
+				}
+
+				Literal[] indexes = value.getIndexes();
+				value = value.getValue(indexes[0]);
+				if (value.isError()) return value;
+				if (value.isList()) return new Value(
+					Value.TypeOrError.TOO_MANY_ARGUMENTS);
+				return value;
+			}
+
+			if (1 < size) return new Value(
+				Value.TypeOrError.TOO_MANY_ARGUMENTS);
+
+			return new Value(Value.TypeOrError.MISSING_ARGUMENT);
+		}
 	// }
 
 
@@ -6233,7 +7123,7 @@ public class ExpressionProcessor implements ValueProvider
 		/**
 		 * This static method serves to extend the standard MIN (min)
 		 * operator functionality. You can overload it to enhance the
-		 * standard numeric operation (or better said a selector function
+		 * standard numeric operation (or better said a selector function
 		 * implemented as binary operation).
 		 */
 		public static Value advancedMin(Value a, Value b)
@@ -6242,7 +7132,7 @@ public class ExpressionProcessor implements ValueProvider
 		/**
 		 * This static method serves to extend the standard MAX (max)
 		 * operator functionality. You can overload it to enhance the
-		 * standard numeric operation (or better said a selector function
+		 * standard numeric operation (or better said a selector function
 		 * implemented as binary operation).
 		 */
 		public static Value advancedMax(Value a, Value b)
@@ -6323,7 +7213,7 @@ public class ExpressionProcessor implements ValueProvider
 }
 
 /**
- * This interface is implemented by every class that should provide a value
+ * This interface is implemented by every class that should provide a value
  * and must override the toString method.
  */
 interface ValueProvider

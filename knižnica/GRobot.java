@@ -3255,7 +3255,7 @@ TODO: na úvodnú stránku
 
 			// (predvolene podlaha, môže byť zvolený aj strop)
 			/*packagePrivate*/ Plátno aktívnePlátno;
-			private BufferedImage obrázokAktívnehoPlátna;
+			/*packagePrivate*/ BufferedImage obrázokAktívnehoPlátna;
 			/*packagePrivate*/ Graphics2D grafikaAktívnehoPlátna;
 
 		// Vnútorná pamäť robota
@@ -3943,7 +3943,8 @@ TODO: na úvodnú stránku
 			// podielov kruhového náteru:
 			private final float[] podiely = new float[] {0.0f, 1.0f};
 
-			// 
+			// Príznak návratu a záloha kompozitu vlastnosti grafiky. Tento
+			// kompozit súvisí s priehľadnosťou.
 			private boolean vráťKompozit_vlastnosťGrafiky = false;
 			private Composite zálohaKompozitu_vlastnosťGrafiky = null;
 
@@ -4600,6 +4601,162 @@ TODO: na úvodnú stránku
 					}
 				}
 			}
+
+			// Najjednoduchší spôsob zálohovania a obnovy väčšiny vlastností
+			// robota. Rovnaké vlastnosti zálohuje a obnovuje kreslenie
+			// vlastného tvaru, ale tam je kód vložený „inline“ (kreslenie
+			// je aj bez toho výkonovo citlivá vec).
+			/*packagePrivate*/ static class ZálohaVlastností
+			{
+				GRobot robot;
+
+				ZálohaVlastností(GRobot robot)
+				{
+					this.robot = robot;
+					zálohuj();
+				}
+
+				int spôsobKreslenia_Záloha;
+
+				Plátno aktívnePlátno_Záloha;
+				BufferedImage obrázokAktívnehoPlátna_Záloha;
+				Graphics2D grafikaAktívnehoPlátna_Záloha;
+
+				boolean peroPoložené_Záloha;
+				boolean viditeľný_Záloha;
+				boolean kresliTvary_Záloha;
+				boolean vypĺňajTvary_Záloha;
+
+				double aktuálneX_Záloha;
+				double aktuálneY_Záloha;
+				double aktuálnyUhol_Záloha;
+				double domaX_Záloha;
+				double domaY_Záloha;
+				double uholDoma_Záloha;
+
+				Farba farbaDoma_Záloha;
+				Farba cieľováFarbaDoma_Záloha;
+				boolean zrušCieľovúFarbuDoma_Záloha;
+				Double polomerPeraDoma_Záloha;
+				Boolean peroPoloženéDoma_Záloha;
+				Boolean viditeľnýDoma_Záloha;
+				Double veľkosťDoma_Záloha;
+				Float priehľadnosťDoma_Záloha;
+				Písmo písmoDoma_Záloha;
+				Double pootočenieTvaruDoma_Záloha;
+
+				Písmo aktuálnePísmo_Záloha;
+				Stroke čiara_Záloha;
+				Farba farbaRobota_Záloha;
+				Farba cieľováFarba_Záloha;
+				boolean použiKruhovýNáter_Záloha;
+				double polomerPera_Záloha;
+
+				float priehľadnosť_Záloha;
+				double veľkosť_Záloha;
+				double pomer_Záloha;
+				double zaoblenieX_Záloha;
+				double zaoblenieY_Záloha;
+				double pôvodnáVeľkosť_Záloha;
+				double pootočenieTvaru_Záloha;
+
+				void zálohuj()
+				{
+					spôsobKreslenia_Záloha = robot.spôsobKreslenia;
+
+					aktívnePlátno_Záloha = robot.aktívnePlátno;
+					obrázokAktívnehoPlátna_Záloha =
+						robot.obrázokAktívnehoPlátna;
+					grafikaAktívnehoPlátna_Záloha =
+						robot.grafikaAktívnehoPlátna;
+
+					peroPoložené_Záloha = robot.peroPoložené;
+					viditeľný_Záloha = robot.viditeľný;
+					kresliTvary_Záloha = robot.kresliTvary;
+					vypĺňajTvary_Záloha = robot.vypĺňajTvary;
+
+					aktuálneX_Záloha = robot.aktuálneX;
+					aktuálneY_Záloha = robot.aktuálneY;
+					aktuálnyUhol_Záloha = robot.aktuálnyUhol;
+					domaX_Záloha = robot.domaX;
+					domaY_Záloha = robot.domaY;
+					uholDoma_Záloha = robot.uholDoma;
+
+					farbaDoma_Záloha = robot.farbaDoma;
+					cieľováFarbaDoma_Záloha = robot.cieľováFarbaDoma;
+					zrušCieľovúFarbuDoma_Záloha = robot.zrušCieľovúFarbuDoma;
+					polomerPeraDoma_Záloha = robot.polomerPeraDoma;
+					peroPoloženéDoma_Záloha = robot.peroPoloženéDoma;
+					viditeľnýDoma_Záloha = robot.viditeľnýDoma;
+					veľkosťDoma_Záloha = robot.veľkosťDoma;
+					priehľadnosťDoma_Záloha = robot.priehľadnosťDoma;
+					písmoDoma_Záloha = robot.písmoDoma;
+					pootočenieTvaruDoma_Záloha = robot.pootočenieTvaruDoma;
+
+					aktuálnePísmo_Záloha = robot.aktuálnePísmo;
+					čiara_Záloha = robot.čiara;
+					farbaRobota_Záloha = robot.farbaRobota;
+					cieľováFarba_Záloha = robot.cieľováFarba;
+					použiKruhovýNáter_Záloha = robot.použiKruhovýNáter;
+					polomerPera_Záloha = robot.polomerPera;
+
+					priehľadnosť_Záloha = robot.priehľadnosť;
+					veľkosť_Záloha = robot.veľkosť;
+					pomer_Záloha = robot.pomerVeľkosti;
+					zaoblenieX_Záloha = robot.zaoblenieX;
+					zaoblenieY_Záloha = robot.zaoblenieY;
+					pôvodnáVeľkosť_Záloha = robot.pôvodnáVeľkosť;
+					pootočenieTvaru_Záloha = robot.pootočenieTvaru;
+				}
+
+				void obnov()
+				{
+					robot.aktívnePlátno = aktívnePlátno_Záloha;
+					robot.obrázokAktívnehoPlátna = obrázokAktívnehoPlátna_Záloha;
+					robot.grafikaAktívnehoPlátna = grafikaAktívnehoPlátna_Záloha;
+
+					robot.peroPoložené = peroPoložené_Záloha;
+					robot.viditeľný = viditeľný_Záloha;
+					robot.kresliTvary = kresliTvary_Záloha;
+					robot.vypĺňajTvary = vypĺňajTvary_Záloha;
+
+					robot.aktuálneX = aktuálneX_Záloha;
+					robot.aktuálneY = aktuálneY_Záloha;
+					robot.aktuálnyUhol = aktuálnyUhol_Záloha;
+					robot.domaX = domaX_Záloha;
+					robot.domaY = domaY_Záloha;
+					robot.uholDoma = uholDoma_Záloha;
+
+					robot.farbaDoma = farbaDoma_Záloha;
+					robot.cieľováFarbaDoma = cieľováFarbaDoma_Záloha;
+					robot.zrušCieľovúFarbuDoma = zrušCieľovúFarbuDoma_Záloha;
+					robot.polomerPeraDoma = polomerPeraDoma_Záloha;
+					robot.peroPoloženéDoma = peroPoloženéDoma_Záloha;
+					robot.viditeľnýDoma = viditeľnýDoma_Záloha;
+					robot.veľkosťDoma = veľkosťDoma_Záloha;
+					robot.priehľadnosťDoma = priehľadnosťDoma_Záloha;
+					robot.písmoDoma = písmoDoma_Záloha;
+					robot.pootočenieTvaruDoma = pootočenieTvaruDoma_Záloha;
+
+					robot.aktuálnePísmo = aktuálnePísmo_Záloha;
+					robot.čiara = čiara_Záloha;
+					robot.farbaRobota = farbaRobota_Záloha;
+					robot.cieľováFarba = cieľováFarba_Záloha;
+					robot.použiKruhovýNáter = použiKruhovýNáter_Záloha;
+					robot.polomerPera = polomerPera_Záloha;
+
+					robot.priehľadnosť = priehľadnosť_Záloha;
+					robot.veľkosť = veľkosť_Záloha;
+					robot.pomerVeľkosti = pomer_Záloha;
+					robot.zaoblenieX = zaoblenieX_Záloha;
+					robot.zaoblenieY = zaoblenieY_Záloha;
+					robot.pôvodnáVeľkosť = pôvodnáVeľkosť_Záloha;
+					robot.pootočenieTvaru = pootočenieTvaru_Záloha;
+
+					robot.spôsobKreslenia = spôsobKreslenia_Záloha;
+				}
+			}
+
 
 		// Práca s tvarom hviezdy
 
@@ -24514,6 +24671,118 @@ TODO: na úvodnú stránku
 			{ return kreslímNaObrázok(); }
 
 
+			/**
+			 * <p>Vráti (na technické účely) aktuálny grafický objekt
+			 * používaný týmto robotom. (Definícia tejto metódy sa stala
+			 * nevyhnutnou so vznikom triedy {@link Tlač Tlač}.)</p>
+			 * 
+			 * @return aktuálny grafický objekt používaný na kreslenie
+			 *     týmto robotom
+			 * 
+			 * @see #obrázok()
+			 * @see Tlač
+			 */
+			public Graphics2D grafika() { return grafikaAktívnehoPlátna; }
+
+			/**
+			 * <p>Vráti (na technické účely) aktuálny obrázok, na ktorý
+			 * tento robot kreslí. (Definícia tejto metódy dopĺňa
+			 * definíciu metódy {@link #grafika() grafika}.)</p>
+			 * 
+			 * @return aktuálny obrázok, na ktorý tento robot kreslí
+			 * 
+			 * @see #grafika()
+			 * @see Tlač
+			 */
+			public BufferedImage obrázok() { return obrázokAktívnehoPlátna; }
+
+			/** <p><a class="alias"></a> Alias pre {@link #obrázok() obrázok}.</p> */
+			public BufferedImage obrazok() { return obrázok(); }
+
+
+			/**
+			 * <p>Táto metóda je určená na implementáciu vlastného kreslenia
+			 * robotom s použitím externého grafického objektu {@link 
+			 * Graphics2D Graphics2D}. Má byť spustená pred začatím práce
+			 * s týmto objektom a po skončení práce musí byť volaná párujúca
+			 * metóda {@link #skončiKreslenie(Graphics2D) skončiKreslenie}
+			 * (s tým istým objektom grafiky v parametri).</p>
+			 * 
+			 * @param g2d objekt, ktorého vlastnosti majú byť nastavené
+			 *     podľa vlastností tohto robota
+			 */
+			public void začniKreslenie(Graphics2D g2d)
+			{
+				nastavVlastnostiGrafiky(g2d);
+				nastavFarbuAleboVýplňPodľaRobota(g2d);
+				g2d.setStroke(čiara);
+				g2d.setFont(aktuálnePísmo);
+			}
+
+			/**
+			 * <p>Táto metóda je určená na implementáciu vlastného kreslenia
+			 * robotom s použitím externého grafického objektu {@link 
+			 * Graphics2D Graphics2D}. Má byť spustená po ukončení práce
+			 * s týmto objektom, pričom pred začatím práce musí byť volaná
+			 * párujúca metóda {@link #začniKreslenie(Graphics2D)
+			 * začniKreslenie} (s tým istým objektom grafiky v parametri).</p>
+			 * 
+			 * @param g2d objekt, ktorého vlastnosti majú byť obnovené
+			 */
+			public void skončiKreslenie(Graphics2D g2d)
+			{
+				obnovVlastnostiGrafiky(g2d);
+				Svet.automatickéPrekreslenie();
+			}
+
+			/** <p><a class="alias"></a> Alias pre {@link #začniKreslenie(Graphics2D) začniKreslenie}.</p> */
+			public void zacniKreslenie(Graphics2D g2d)
+			{ začniKreslenie(g2d); }
+
+			/** <p><a class="alias"></a> Alias pre {@link #skončiKreslenie(Graphics2D) skončiKreslenie}.</p> */
+			public void skonciKreslenie(Graphics2D g2d)
+			{ skončiKreslenie(g2d); }
+
+
+			/**
+			 * <p>Táto metóda je určená na implementáciu vlastného kreslenia
+			 * robotom s použitím interného (aktívneho) grafického objektu
+			 * robota dostupného aj prostredníctvom metódy {@link 
+			 * #grafika() grafika}. Má byť spustená pred začatím grafických
+			 * prác za hranicami programovacieho rámca a po skončení prác
+			 * musí byť volaná párujúca metóda {@link #skončiKreslenie()
+			 * skončiKreslenie} (bez parametra).</p>
+			 */
+			public void začniKreslenie()
+			{
+				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
+				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
+				grafikaAktívnehoPlátna.setStroke(čiara);
+				grafikaAktívnehoPlátna.setFont(aktuálnePísmo);
+			}
+
+			/**
+			 * <p>Táto metóda je určená na implementáciu vlastného kreslenia
+			 * robotom s použitím interného (aktívneho) grafického objektu
+			 * robota dostupného aj prostredníctvom metódy {@link 
+			 * #grafika() grafika}. Má byť spustená po ukončení grafických
+			 * prác za hranicami programovacieho rámca, pričom pred začatím
+			 * prác musí byť volaná párujúca metóda {@link #začniKreslenie()
+			 * začniKreslenie} (bez parametra).</p>
+			 */
+			public void skončiKreslenie()
+			{
+				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+				Svet.automatickéPrekreslenie();
+			}
+
+			/** <p><a class="alias"></a> Alias pre {@link #začniKreslenie() začniKreslenie}.</p> */
+			public void zacniKreslenie() { začniKreslenie(); }
+
+			/** <p><a class="alias"></a> Alias pre {@link #skončiKreslenie() skončiKreslenie}.</p> */
+			public void skonciKreslenie() { skončiKreslenie(); }
+
+
 		// Tvary
 
 			/**
@@ -28125,7 +28394,7 @@ TODO: na úvodnú stránku
 				return tvar;
 			}
 
-			/** <p><a class="alias"></a> Alias pre {@link #vyplňTvar(Shape) vyplňTvar}.</p> */
+			/** <p><a class="alias"></a> Alias pre {@link #vyplňTvar(Shape, boolean) vyplňTvar}.</p> */
 			public Shape vyplnTvar(Shape tvar, boolean upravRobotom) { return vyplňTvar(tvar, upravRobotom); }
 
 			/**
@@ -28281,7 +28550,7 @@ TODO: na úvodnú stránku
 				return tvar;
 			}
 
-			/** <p><a class="alias"></a> Alias pre {@link #vyplňTvar(Shape, String) vyplňTvar}.</p> */
+			/** <p><a class="alias"></a> Alias pre {@link #vyplňTvar(Shape, String, boolean) vyplňTvar}.</p> */
 			public Shape vyplnTvar(Shape tvar, String súbor, boolean upravRobotom)
 			{ return vyplňTvar(tvar, súbor, upravRobotom); }
 
@@ -28510,7 +28779,7 @@ TODO: na úvodnú stránku
 				return tvar;
 			}
 
-			/** <p><a class="alias"></a> Alias pre {@link #vyplňTvar(Shape, Image) vyplňTvar}.</p> */
+			/** <p><a class="alias"></a> Alias pre {@link #vyplňTvar(Shape, Image, boolean) vyplňTvar}.</p> */
 			public Shape vyplnTvar(Shape tvar, Image výplň, boolean upravRobotom)
 			{ return vyplňTvar(tvar, výplň, upravRobotom); }
 

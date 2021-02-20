@@ -806,7 +806,7 @@ public class GRobotException extends RuntimeException
 			{
 				ObsluhaUdalostí.počúvadlo.vzniklaChyba(chyba);
 			}
-	
+
 		synchronized (ÚdajeUdalostí.zámokUdalostí)
 		{
 			for (GRobot počúvajúci : GRobot.počúvajúciSystém)

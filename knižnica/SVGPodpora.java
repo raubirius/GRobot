@@ -3363,6 +3363,27 @@ public class SVGPodpora
 	/** <p><a class="alias"></a> Alias pre {@link #vymaž() vymaž}.</p> */
 	public void vymaz() { vymaž(); }
 
+	/**
+	 * <p>Odstráni tvar tejto inštancie so zadaným indexom. Ako v ostatných
+	 * prípadoch, index nula označuje prvý tvar v zásobníku. Ak je zadaný
+	 * index záporný, tak bude metóda brať do úvahy tvar od konca zásobníka.
+	 * To znamená, že index {@code num-1} označuje posledný tvar v zásobníku.
+	 * Ak výsledný index (po úprave zo zápornej hodnoty na kladnú alebo bez
+	 * úpravy) neukazuje na jestvujúci tvar (čiže jeho hodnota je mimo
+	 * rozsahu {@code num0} až {@link #počet() počet()}{@code  - }{@code 
+	 * num1}, tak metóda nevykoná nič.</p>
+	 * 
+	 * @param index index tvaru, ktorý má byť vymazaný
+	 */
+	public void vymaž(int index)
+	{
+		if (index < 0) index = tvary.size() + index;
+		if (index >= 0 && index < tvary.size()) tvary.remove(index);
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #vymaž(int) vymaž}.</p> */
+	public void vymaz(int index) { vymaž(index); }
+
 
 	/**
 	 * <p>Táto statická metóda vyrobí transformovanú verziu zadaného tvaru
@@ -4114,12 +4135,17 @@ public class SVGPodpora
 
 	/**
 	 * <p>Pokúsi sa zistiť farbu výplne tvaru asociovaného so zadaným
-	 * indexom. Možnosti metódy sú obmedzené (pozri informácie v opise
-	 * triedy). Ak sa farbu nepodarí zistiť, tak metóda vráti hodnotu
-	 * {@code valnull}.</p>
+	 * indexom. Možnosti metódy sú obmedzené (pozri aj informácie v opise
+	 * triedy).<!-- Ak sa farbu nepodarí zistiť, tak metóda vráti hodnotu
+	 * {@code valnull}. --></p>
 	 * 
-	 * <p>Táto metóda vracia ako predvolenú farbu (to jest, ak nie je
-	 * definovaný atribút {@code fill}) čiernu.</p>
+	 * <p class="attention"><b>Upozornenie:</b> Táto metóda vracia ako
+	 * predvolenú farbu (to jest, ak nie je definovaný atribút {@code fill})
+	 * čiernu farbu. Hodnota {@code valnull} je vrátená len tom v prípade,
+	 * keď je hodnota SVG atribútu {@code fill} rovná {@code srg"none"}.
+	 * Táto hodnota sa dá nastaviť metódou {@link #farbaVýplne(int, Color)
+	 * farbaVýplne}{@code (index, farba)} zadaním inštancie farby {@link 
+	 * Farebnosť#žiadna žiadna}.</p>
 	 * 
 	 * @param index index tvaru v rámci vnútorného zásobníka (táto
 	 *     metóda používa na zistenie hodnoty atribútu metódu {@link 
@@ -4137,8 +4163,9 @@ public class SVGPodpora
 			return reťazecNaFarbu(farba, dajAtribút(index,
 				"fill-opacity"));
 		}
-		// return null;
-		return reťazecNaFarbu("black", dajAtribút(index, "fill-opacity"));
+		// return null; // Pozor‼ „Prázdna“ výplň musí byť určená hodnotou "none."
+		return reťazecNaFarbu("black",
+			dajAtribút(index, "fill-opacity"));
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #farbaVýplne(int) farbaVýplne}.</p> */
@@ -4266,6 +4293,10 @@ public class SVGPodpora
 	 * (Metóda nastavuje asociovanému tvaru atribúty {@code fill}
 	 * a {@code fill-opacity}.)</p>
 	 * 
+	 * <p class="remark"><b>Poznámka:</b> Inštancia farby {@link 
+	 * Farebnosť#žiadna žiadna} má špeciálny význam – nastavuje hodnotu SVG
+	 * atribútu {@code fill} na {@code srg"none"}.</p>
+	 * 
 	 * @param index index tvaru v rámci vnútorného zásobníka (táto
 	 *     metóda používa na vloženie hodnoty atribútu metódu {@link 
 	 *     #prepíšAtribút(int, String, Object) prepíšAtribút}, takže pre
@@ -4278,7 +4309,11 @@ public class SVGPodpora
 	 *     do reťazcovej podoby použité metódy {@link #farbaNaReťazec(Color,
 	 *     boolean) farbaNaReťazec(farba, ignorujAlfu)} (pre atribút
 	 *     {@code fill} a {@link #alfaNaReťazec(Color) alfaNaReťazec(farba)}
-	 *     (pre atribút {@code fill-opacity})
+	 *     (pre atribút {@code fill-opacity}); neprítomnosť atribútov výplne
+	 *     má za následok použitie predvolenej výplne pri kreslení SVG tvarov;
+	 *     nevyplnený tvar musí mať hodnotu atribútu výplne ({@code fill})
+	 *     nastavenú na {@code srg"none"}, čo sa dá dosiahnuť zadaním
+	 *     inštancie farby {@link Farebnosť#žiadna žiadna} do tohto parametra
 	 */
 	public void farbaVýplne(int index, Color farba)
 	{

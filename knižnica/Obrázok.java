@@ -327,8 +327,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 	// Zoznam všetkých vytvorených obrázkov programovacieho rámca
 
-		/*packagePrivate*/ final static Vector<Obrázok> zoznamObrázkovKnižnice =
-			new Vector<>();
+		/*packagePrivate*/ final static Vector<Obrázok>
+			zoznamObrázkovKnižnice = new Vector<>();
 
 	// Zoznam všetkých práve animovaných obrázkov…
 	/*packagePrivate*/ final static Vector<Obrázok> animácie = new Vector<>();

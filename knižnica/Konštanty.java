@@ -68,15 +68,15 @@ public interface Konštanty
 		/** <p>Konštanta majoritnej verzie tohto robota.</p> */
 		public final static int majorVersion = 2;
 		/** <p>Konštanta minoritnej verzie tohto robota.</p> */
-		public final static int minorVersion = 00;
+		public final static int minorVersion = 10;
 		/** <p>Konštanta poznámky verzie tohto robota.</p> */
-		public final static String versionNote = " (2021-01-06)";
+		public final static String versionNote = " (2021-02-19)";
 		/** <p>Konštanta rozpätia rokov vývoja tejto verzie…
 			(v podstate na účel výpisu copyrightu…)</p> */
 		public final static String years = "2010 – 2021";
 		/** <p>Konštanta rozpätia rokov a mesiacov vývoja tejto verzie…
 			(na účely automatického spracovania dokumentácie…)</p> */
-		public final static String yearsMonths = "august 2010 – január 2021";
+		public final static String yearsMonths = "august 2010 – február 2021";
 		/** <p>Konštanta s menom hlavného (zatiaľ jediného) vývojára tejto
 			verzie… (v podstate na účel výpisu copyrightu… kto vie, či časom
 			pribudnú aj nejakí ďalší…)</p> */

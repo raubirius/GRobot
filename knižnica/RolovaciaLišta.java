@@ -114,7 +114,7 @@ import static knižnica.Konštanty.VODOROVNÁ;
 			tlačidlo.{@link Tlačidlo#prilepDole() prilepDole}();
 
 			{@code comm// Vytvorenie zvislej rolovacej lišty}
-			zvislá = {@code kwdnew} {@link RolovaciaLišta#RolovaciaLišta(int) RolovaciaLišta}({@link RolovaciaLišta RolovaciaLišta}.{@link Konštanty#ZVISLÁ ZVISLÁ});
+			zvislá = {@code kwdnew} {@link RolovaciaLišta#RolovaciaLišta(int) RolovaciaLišta}({@link Konštanty#ZVISLÁ ZVISLÁ});
 			zvislá.{@link GRobot#skoč(double, double) skoč}({@code num0}, {@code num20});
 			zvislá.{@link RolovaciaLišta#prilepVpravo() prilepVpravo}();
 			zvislá.{@link RolovaciaLišta#roztiahniNaVýšku() roztiahniNaVýšku}();<!--
@@ -123,7 +123,7 @@ import static knižnica.Konštanty.VODOROVNÁ;
 			zvislá.{@link RolovaciaLišta#hornáHranica(int) hornáHranica}({@link Svet#výška() výška}() / {@code num2});
 
 			{@code comm// Vytvorenie vodorovnej rolovacej lišty}
-			vodorovná = {@code kwdnew} {@link RolovaciaLišta#RolovaciaLišta(int) RolovaciaLišta}({@link RolovaciaLišta RolovaciaLišta}.{@link Konštanty#VODOROVNÁ VODOROVNÁ});
+			vodorovná = {@code kwdnew} {@link RolovaciaLišta#RolovaciaLišta(int) RolovaciaLišta}({@link Konštanty#VODOROVNÁ VODOROVNÁ});
 			vodorovná.{@link GRobot#skoč(double, double) skoč}(-{@code num20}, {@code num0});
 			vodorovná.{@link RolovaciaLišta#prilepDole() prilepDole}();
 			vodorovná.{@link RolovaciaLišta#roztiahniNaŠírku() roztiahniNaŠírku}();<!--
