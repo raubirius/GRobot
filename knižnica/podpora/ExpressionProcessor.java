@@ -78,6 +78,13 @@ import static java.lang.Math.*;
  * beginning of an expression has been fixed. New special functions have
  * also been added: for, if, until and while.</p>
  * 
+ * <p>On May 17th, 2021, operator  priority  had been adjusted. Now all
+ * operators with  the same priority are evaluated  from right to left,
+ * not the opposite way. This was due to the “power of” operator: 2^4^2
+ * is  65,536, not 256.  As a result, from  now on, the  16/4/4 is  16,
+ * not 1.  If you need the  left to right  evaluation, the  only way is
+ * to use parentheses.</p>
+ * 
  * <p>(Notice: The author did not fix the bug(s) in the original C++ class
  * because he  had no C++ compiler  installed at the time  and it would be
  * time-consuming to get one, install it, set up it, and fix the bug(s).)</p>
@@ -6444,7 +6451,8 @@ public class ExpressionProcessor implements ValueProvider
 											workNode.getOperator().priority,
 											")");
 
-										if (newNode.getOperator().priority <=
+										if (newNode.getOperator().priority
+											< // <= // equal priority excluded
 											workNode.getOperator().priority)
 										{
 											addDump("Yes! Trying to find " +
@@ -6461,7 +6469,8 @@ public class ExpressionProcessor implements ValueProvider
 												workNode = workNode.
 													getParent();
 												if (newNode.getOperator().
-													priority <=
+													priority
+													< // <= // eq. prior. excl.
 													workNode.getOperator().
 													priority) break;
 												addDump("Priority: new = ",
@@ -6484,7 +6493,8 @@ public class ExpressionProcessor implements ValueProvider
 											addDump("No. Do not consider…");
 										}
 
-										if (newNode.getOperator().priority <=
+										if (newNode.getOperator().priority
+											< // <= // equal priority excluded
 											workNode.getOperator().priority)
 										{
 											addDump("Failed (because we " +
