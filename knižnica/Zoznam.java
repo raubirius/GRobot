@@ -665,9 +665,11 @@ public class Zoznam<Typ> extends Vector<Typ>
 	 * počítadla menšia od nuly (a zoznam nie je prázdny), metóda vráti
 	 * posledný prvok zoznamu. Ak je naopak hodnota počítadla väčšia
 	 * alebo rovná dĺžke zoznamu, vráti prvý prvok zoznamu (opäť
-	 * v prípade, že zoznam nie je prázdny).</p>
+	 * v prípade, že zoznam nie je prázdny, pretože v takom prípade
+	 * metóda vrhá výnimku).</p>
 	 * 
 	 * @return prvok zoznamu
+	 * @throws NoSuchElementException
 	 */
 	public Typ daj()
 	{

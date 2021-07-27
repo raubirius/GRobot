@@ -161,8 +161,7 @@ import static knižnica.Konštanty.ZÁPIS_GIF_ANIMÁCIE;
 		{@code kwdprivate} {@code typeint} overČasPo = -{@code num1};
 
 		{@code comm// ## private static int zariadenie = 0;}
-
-
+		<hr/>
 		{@code comm// Súkromná trieda hodín.}
 		{@code kwdprivate} {@code kwdstatic} {@code typeclass} Hodiny {@code kwdextends} {@link GRobot GRobot}
 		{
@@ -196,8 +195,7 @@ import static knižnica.Konštanty.ZÁPIS_GIF_ANIMÁCIE;
 				novýCieľ();
 			}
 		}
-
-
+		<hr/>
 		{@code comm// Konštruktor hlavného robota. Sú v ňom vykonané potrebné nastavenia}
 		{@code comm// a vytvorené hodinové roboty.}
 		{@code kwdprivate} ObrázokAkoTvar()
@@ -7037,8 +7035,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 				{@code comm// Inštancia obrázka, do ktorej budú ukladané snímky vytváranej animácie}
 				{@code comm// a ktorá ju uloží do seknvencie PNG súborov:}
 				{@code kwdprivate} {@link Obrázok Obrázok} animovanýObrázok;
-
-
+				<hr/>
 				{@code comm// Kreslenie indikátora priebehu.}
 				{@code kwdprivate} {@code typevoid} kresliIndikátor({@code typedouble} hotovo)
 				{

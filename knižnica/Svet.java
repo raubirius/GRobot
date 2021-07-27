@@ -51,6 +51,7 @@ import java.awt.Image;
 import java.awt.KeyboardFocusManager;
 import java.awt.KeyEventDispatcher;
 import java.awt.MenuItem; // len skrz systémovúIkonu (SystemTray>TrayIcon)
+import java.awt.MouseInfo; // (kofeín)
 import java.awt.Point;
 import java.awt.PopupMenu; // len skrz systémovúIkonu (SystemTray>TrayIcon)
 import java.awt.Robot;
@@ -1984,6 +1985,34 @@ public final class Svet extends JFrame
 							automatickéPrekreslenie();
 					}
 
+					if (kofeín != null && aktuálnyIntervalKofeínu > 0)
+					{
+						if (0 == --aktuálnyIntervalKofeínu)
+						{
+							Point p = MouseInfo.getPointerInfo().getLocation();
+
+							int smer = Math.abs(generátor.nextInt() % 8);
+
+							switch (smer)
+							{
+							// case 0: kofeín.mouseMove(p.x + 1, p.y + 1); break;
+							case 1: kofeín.mouseMove(p.x - 1, p.y + 1); break;
+							case 2: kofeín.mouseMove(p.x + 1, p.y - 1); break;
+							case 3: kofeín.mouseMove(p.x - 1, p.y - 1); break;
+
+							case 4: kofeín.mouseMove(p.x + 1, p.y); break;
+							case 5: kofeín.mouseMove(p.x - 1, p.y); break;
+							case 6: kofeín.mouseMove(p.x, p.y + 1); break;
+							case 7: kofeín.mouseMove(p.x, p.y - 1); break;
+
+							default: kofeín.mouseMove(p.x + 1, p.y + 1); break;
+							}
+							kofeín.mouseMove(p.x, p.y);
+
+							aktuálnyIntervalKofeínu = intervalKofeínu;
+						}
+					}
+
 					if (null != ObsluhaUdalostí.počúvadlo)
 						ObsluhaUdalostí.počúvadlo.tik();
 
@@ -2072,6 +2101,7 @@ public final class Svet extends JFrame
 				synchronized (ÚdajeUdalostí.zámokMyši)
 				{
 					ÚdajeUdalostí.poslednáUdalosťMyši = e;
+					aktuálnyIntervalKofeínu = intervalKofeínu;
 					hlavnýPanel.requestFocusInWindow();
 
 					if (null != ObsluhaUdalostí.počúvadlo)
@@ -2131,6 +2161,7 @@ public final class Svet extends JFrame
 						ÚdajeUdalostí.tlačidloMyši = 0;
 
 					ÚdajeUdalostí.poslednáUdalosťMyši = e;
+					aktuálnyIntervalKofeínu = intervalKofeínu;
 
 					// Súčasť implementácie označovania
 					// a kopírovania textov stropu.
@@ -2214,6 +2245,7 @@ public final class Svet extends JFrame
 						ÚdajeUdalostí.tlačidloMyši = 0;
 
 					ÚdajeUdalostí.poslednáUdalosťMyši = e;
+					aktuálnyIntervalKofeínu = intervalKofeínu;
 
 					if (null != ObsluhaUdalostí.počúvadlo)
 						synchronized (ÚdajeUdalostí.zámokUdalostí)
@@ -2257,6 +2289,7 @@ public final class Svet extends JFrame
 						(int)ÚdajeUdalostí.súradnicaMyšiY - e.getY());
 
 					ÚdajeUdalostí.poslednáUdalosťMyši = e;
+					aktuálnyIntervalKofeínu = intervalKofeínu;
 
 					if (null != ObsluhaUdalostí.počúvadlo)
 						synchronized (ÚdajeUdalostí.zámokUdalostí)
@@ -2300,6 +2333,7 @@ public final class Svet extends JFrame
 						(int)ÚdajeUdalostí.súradnicaMyšiY - e.getY());
 
 					ÚdajeUdalostí.poslednáUdalosťMyši = e;
+					aktuálnyIntervalKofeínu = intervalKofeínu;
 
 					// Súčasť implementácie označovania
 					// a kopírovania textov stropu.
@@ -2359,6 +2393,7 @@ public final class Svet extends JFrame
 
 					ÚdajeUdalostí.poslednáUdalosťMyši =
 						ÚdajeUdalostí.poslednáUdalosťRolovania = e;
+					aktuálnyIntervalKofeínu = intervalKofeínu;
 
 					if (e.isShiftDown())
 					{
@@ -2407,6 +2442,7 @@ public final class Svet extends JFrame
 				synchronized (ÚdajeUdalostí.zámokKlávesnice)
 				{
 					ÚdajeUdalostí.poslednáUdalosťKlávesnice = e;
+					aktuálnyIntervalKofeínu = intervalKofeínu;
 
 					if (null != ObsluhaUdalostí.počúvadlo)
 						synchronized (ÚdajeUdalostí.zámokUdalostí)
@@ -2431,6 +2467,7 @@ public final class Svet extends JFrame
 				synchronized (ÚdajeUdalostí.zámokKlávesnice)
 				{
 					ÚdajeUdalostí.poslednáUdalosťKlávesnice = e;
+					aktuálnyIntervalKofeínu = intervalKofeínu;
 
 					if (null != ObsluhaUdalostí.počúvadlo)
 						synchronized (ÚdajeUdalostí.zámokUdalostí)
@@ -2462,6 +2499,7 @@ public final class Svet extends JFrame
 				synchronized (ÚdajeUdalostí.zámokKlávesnice)
 				{
 					ÚdajeUdalostí.poslednáUdalosťKlávesnice = e;
+					aktuálnyIntervalKofeínu = intervalKofeínu;
 
 					if (null != ObsluhaUdalostí.počúvadlo)
 						synchronized (ÚdajeUdalostí.zámokUdalostí)
@@ -2483,6 +2521,17 @@ public final class Svet extends JFrame
 			public void componentHidden(ComponentEvent e)
 			{
 				ÚdajeUdalostí.poslednáUdalosťOkna = e;
+
+				if (null != oknoCelejObrazovky &&
+					nečakanéSkrytieCelejObrazovky)
+				{
+					// System.out.println("nečakané skrytie celej obrazovky");
+					// windowClosing(new WindowEvent(oknoCelejObrazovky,
+					// 	WindowEvent.WINDOW_CLOSING));
+					Svet.zavrieť(/*0*/);
+					return;
+				}
+				// System.out.println("skrytie");
 
 				if (null != ObsluhaUdalostí.počúvadlo)
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
@@ -2653,6 +2702,7 @@ public final class Svet extends JFrame
 			{
 				ÚdajeUdalostí.poslednáUdalosťAktivityOkna = e;
 				boolean zavrieť = true;
+				// System.out.println("zatvaranie");
 
 				if (null != ObsluhaUdalostí.počúvadlo)
 				{
@@ -2774,6 +2824,26 @@ public final class Svet extends JFrame
 		/*packagePrivate*/ final static UdalostiOkna udalostiOkna =
 			new UdalostiOkna();
 
+		/** 
+		 * <p>Vygeneruje udalosť zavretia hlavného okna. Ak nie je zavretie
+		 * odmietnuté žiadnou z reakcií na zavretie okna (pozri napríklad
+		 * {@link ObsluhaUdalostí ObsluhaUdalostí}{@code .}{@link 
+		 * ObsluhaUdalostí#zavretie() zavretie}{@code ()}), tak bude aplikácia
+		 * ukončená.</p>
+		 * 
+		 * @see #koniec()
+		 */
+		public static void zavrieť(/*int kód*/)
+		{
+			// TODO: kód je ignorovaný…
+			udalostiOkna.windowClosing(new WindowEvent(
+				null == oknoCelejObrazovky ? svet : oknoCelejObrazovky,
+				WindowEvent.WINDOW_CLOSING));
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #zavrieť() zavrieť}.</p> */
+		public static void zavriet() { zavrieť(); }
+
 		// Robot Javy (slúžiaci na automatizované generovanie udalostí vstupu –
 		// v našom prípade myši), s ktorého pomocou je riešené trvalé
 		// zachytenie kurzora myši v okne sveta.
@@ -2843,6 +2913,18 @@ public final class Svet extends JFrame
 		// (ak jestvuje) je používaný na trvalé zachytenie kurzora myši v okne
 		// sveta.
 		private static RobotMyši robotMyši = null;
+
+
+		// Kofeín je jeden softvér, ktorý zabraňuje počítaču, aby zaspal
+		// (aby prešiel do režimu spánku). Nikdy som ho síce nepoužil
+		// a nemal som ho ani nainštalovaný, ale názov sa mi veľmi zapáčil
+		// (a čírou náhodou je kofeín zábavne sémanticky asociovaný aj
+		// s Javou). Všetky prvky majúce v názve kofeín súvisia presne
+		// s takouto funkciou, ktorú poskytuje trieda Svet.
+		private static int aktuálnyIntervalKofeínu = 0;
+		private static int intervalKofeínu = 1000;
+			// (int)(40000.0 / „interval časovača“);
+		private static Robot kofeín = null;
 
 
 	// Nie je možné vytvárať inštancie sveta
@@ -5275,8 +5357,7 @@ public final class Svet extends JFrame
 					{@link Svet Svet}.{@link #upevni() upevni}();
 					{@link Svet Svet}.{@link #zbaľ() zbaľ}();
 				}
-
-
+				<hr/>
 				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 				{
 					{@code kwdnew} ViacnásobnáObsluhaUdalostí();
@@ -5567,8 +5648,7 @@ public final class Svet extends JFrame
 					{@code comm// činnosti programu):}
 					obrázok = {@code kwdnew} {@link Obrázok#Obrázok(int, int) Obrázok}({@code num200}, {@code num200});
 					textúra = {@code kwdnew} {@link Obrázok#Obrázok(int, int) Obrázok}({@code num160}, {@code num120});
-
-
+					<hr/>
 					{@code comm// Vykonanie počiatočných nastavení príkladu:}
 
 					bezšvová = {@code valtrue};
@@ -5945,11 +6025,9 @@ public final class Svet extends JFrame
 						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@link Konštanty#riadok riadok}, {@code srg"Stlačte Escape…"});
 					}
 				}
-
-
+				<hr/>
 				{@code comm// Obsluhy udalostí (časovača, myši a klávesnice):}
-
-
+				<hr/>
 				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#tik() tik}()
 				{
 					{@code kwdif} ({@link Svet Svet}.{@link Svet#neboloPrekreslené() neboloPrekreslené}()) {@link Svet Svet}.{@link Svet#prekresli() prekresli}();
@@ -6096,8 +6174,7 @@ public final class Svet extends JFrame
 							{@code kwdbreak};
 					}
 				}
-
-
+				<hr/>
 				{@code comm// Hlavná metóda.}
 				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}... args)
 				{
@@ -9473,7 +9550,7 @@ public final class Svet extends JFrame
 
 					{@code kwdcase} {@code num2}:
 						{@code comm// Druhá položka (technicky tretia) kontextovej ponuky aplikáciu zavrie.}
-						{@link Svet Svet}.{@link Svet#koniec() koniec}();
+						{@link Svet Svet}.{@link Svet#zavrieť() zavrieť}();
 						{@code kwdbreak};
 					}
 				}
@@ -9995,15 +10072,23 @@ public final class Svet extends JFrame
 
 
 		/**
-		 * <p>Skončí aplikáciu.</p>
+		 * <p>Skončí aplikáciu bez opýtania. Pozri aj {@link Svet#koniec(int)
+		 * koniec}{@code (kód)}.</p>
+		 * 
+		 * @see #zavrieť()
 		 */
 		public static void koniec() { koniec(0); }
 
 		/**
-		 * <p>Skončí aplikáciu s návratovým kódom pre opreračný systém.</p>
+		 * <p>Skončí aplikáciu s návratovým kódom pre opreračný systém.
+		 * Ukončenie je okamžité, na rozdiel od metódy {@link #zavrieť()
+		 * zavrieť}, ktorá generuje udalosť zavretia okna (ktorá môže
+		 * byť odmietnutá).</p>
 		 * 
 		 * @param kód celočíselný návratový kód, ktorý je schopný prijať
 		 *     operačný systém
+		 * 
+		 * @see #zavrieť()
 		 */
 		public static void koniec(int kód)
 		{
@@ -11430,6 +11515,102 @@ public final class Svet extends JFrame
 
 
 		/**
+		 * <p>Spustí aktivitu pravidelného generovania udalostí pohybu
+		 * kurzorom myšky, aby sa zabránilo prechodu počítača do režimu
+		 * spánku. Táto verzia automaticky spustí časovač a zachová pôvodný
+		 * (prípadne predvolený) interval generovania udalostí.
+		 * Viac podrobností nájdete v opise nasledujúcej verzie metódy:
+		 * {@link #nespi(int, boolean) nespi}{@code (novýInterval,
+		 * ajČasovač)}.</p>
+		 * 
+		 * @see #nespi(int)
+		 * @see #nespi(int, boolean)
+		 * @see #spi()
+		 */
+		public static void nespi()
+		{ nespi(intervalKofeínu, true); }
+
+		/**
+		 * <p>Spustí aktivitu pravidelného generovania udalostí pohybu
+		 * kurzorom myšky, aby sa zabránilo prechodu počítača do režimu
+		 * spánku. Táto verzia automaticky spustí časovač.
+		 * Viac podrobností nájdete v opise nasledujúcej verzie metódy:
+		 * {@link #nespi(int, boolean) nespi}{@code (novýInterval,
+		 * ajČasovač)}.</p>
+		 * 
+		 * @param novýInterval celé číslo určujúce počet {@linkplain 
+		 *     ObsluhaUdalostí#tik() tikov} {@linkplain 
+		 *     Svet#spustiČasovač(double) časovača}, po uplynutí ktorých
+		 *     sa budú generovať nové udalosti pohybu kurzora myši; nulová
+		 *     alebo záporná hodnota zastaví generovanie
+		 * 
+		 * @see #nespi()
+		 * @see #nespi(int, boolean)
+		 * @see #spi()
+		 */
+		public static void nespi(int novýInterval)
+		{ nespi(novýInterval, true); }
+
+		/**
+		 * <p>Spustí aktivitu pravidelného generovania udalostí pohybu
+		 * kurzorom myšky, aby sa zabránilo prechodu počítača do režimu
+		 * spánku.
+		 * Toto je dôležité najmä pri aplikáciách, ktoré niečo samostatne
+		 * prezentujú. Bez tejto možnosti by po určitom čase počítač mohol
+		 * „zaspať“ (a prezentovanie by stratilo efekt).</p>
+		 * 
+		 * <p>Udalosti, ktoré budú generované sú systémom považované za
+		 * reálne udalosti, ktoré spôsobil používateľ. Keďže virtuálny
+		 * stroj Javy nemá priamy prístup k nastaveniam súvisiacim so
+		 * správou a šetrením energie, toto je jediná možnosť ako túto
+		 * záležitosť ovplyvniť.</p>
+		 * 
+		 * @param novýInterval celé číslo určujúce počet {@linkplain 
+		 *     ObsluhaUdalostí#tik() tikov} {@linkplain 
+		 *     Svet#spustiČasovač(double) časovača}, po uplynutí ktorých
+		 *     sa budú generovať nové udalosti pohybu kurzora myši; nulová
+		 *     alebo záporná hodnota zastaví generovanie
+		 * @param ajČasovač ak je {@code valtrue}, tak je automaticky
+		 *     {@linkplain Svet#spustiČasovač() spustený časovač}
+		 *     (v prípade, že je nečinný); bez spusteného časovača nebude
+		 *     táto aktivita fungovať – dôvodom na použitie hodnoty {@code 
+		 *     valfalse} môže byť spustenie v prípravnej fáze aplikácie
+		 *     s tým, že časovač bude spustený neskôr, keď bude aplikácie
+		 *     korektne inicializovaná (pripravená na činnosť)
+		 * 
+		 * @see #nespi()
+		 * @see #nespi(int)
+		 * @see #spi()
+		 */
+		public static void nespi(int novýInterval, boolean ajČasovač)
+		{
+			if (null == kofeín)
+				try { kofeín = new Robot(); } catch (Exception e)
+				{ GRobotException.vypíšChybovéHlásenia(e); }
+
+			if (null != kofeín)
+			{
+				aktuálnyIntervalKofeínu = intervalKofeínu = novýInterval;
+				if (ajČasovač) Svet.spustiČasovač();
+			}
+		}
+
+		/**
+		 * <p>Zastaví aktivitu pravidelného generovania udalostí pohybu
+		 * kurzorom myšky, ktorá slúžila na to, aby sa zabránilo prechodu
+		 * počítača do režimu spánku.</p>
+		 * 
+		 * @see #nespi()
+		 * @see #nespi(int)
+		 * @see #nespi(int, boolean)
+		 */
+		public static void spi()
+		{
+			kofeín = null;
+		}
+
+
+		/**
 		 * <p>Pokúsi sa použiť zadaný textový reťazec ako webovú adresu
 		 * a otvoriť ju v predvolenom prehliadači operačného systému.</p>
 		 * 
@@ -11932,6 +12113,7 @@ public final class Svet extends JFrame
 
 							{@code kwdcase} {@code num1}: {@code comm// exit}
 								{@link Svet Svet}.{@link Svet#koniec() koniec}();
+								{@code comm// (Prípadne by sa dala použiť metóda Svet.zavrieť.)}
 								{@code kwdreturn};
 							}
 						}
@@ -12190,6 +12372,7 @@ public final class Svet extends JFrame
 
 							{@code kwdcase} {@code num1}: {@code comm// exit}
 								{@link Svet Svet}.{@link Svet#koniec() koniec}();
+								{@code comm// (Prípadne by sa dala použiť metóda Svet.zavrieť.)}
 								{@code kwdreturn};
 							}
 						}
@@ -14234,9 +14417,9 @@ public final class Svet extends JFrame
 			{
 				{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Prihlasovanie zlyhalo!"});
 				{@link Svet Svet}.{@link Svet#koniec() koniec}();
-				{@code kwdreturn}; {@code comm// (Volanie metódy „koniec“ nemusí znamenať okamžité}
-						{@code comm// ukončenie aplikácie, preto sem pridávame aj príkaz}
-						{@code comm// „return.“)}
+				{@code kwdreturn}; {@code comm// (Volanie metódy „koniec“ nie je to isté ako okamžité}
+						{@code comm// ukončenie aplikácie – „upratovacie procesy“ ešte môžu chvíľu trvať,}
+						{@code comm// preto sem pridávame aj príkaz „return.“)}
 			}
 
 			{@code comm// ...}
@@ -17240,8 +17423,7 @@ public final class Svet extends JFrame
 					{@code comm// }
 					{@code comm// Nasleduje príklad použitia čítania štandardného vstupu}
 					{@code comm// s použitím programovacieho rámca GRobot…}
-
-
+					<hr/>
 					{@code comm// Počet určíme s pomocou reťazca zadaného do prvého argumentu}
 					{@code comm// aplikácie, pričom najmenší povolený počet je 1.}
 					{@code typeint} počet = {@code num1};
@@ -19713,9 +19895,9 @@ public final class Svet extends JFrame
 		 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java"
 		 * target="_blank"><code>ExpressionProcessor</code>, ktorej zdrojový
 		 * kód je tu</a>; môže byť užitočné pozrieť si v ňom napríklad <a
-		 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java#L2118"
+		 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java#L2372"
 		 * target="_blank">zoznam operátorov</a> a <a
-		 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java#L2780"
+		 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java#L3048"
 		 * target="_blank">zoznam funkcií</a>). Na jeho aktiváciu
 		 * slúži rezervovaný znak mriežky {@code #}. Všetko, čo na príkazovom
 		 * riadku nasleduje za znakom mriežky (ak to nebolo súčasťou reťazca)
@@ -20659,8 +20841,7 @@ public final class Svet extends JFrame
 
 				{@code comm// Aktuálne posunutie generovaného šumu.}
 				{@code kwdprivate} {@code typedouble} Δx = {@code num0}, Δy = {@code num0};
-
-
+				<hr/>
 				{@code comm// Konštruktor.}
 				{@code kwdprivate} PerlinovŠum()
 				{
@@ -20682,8 +20863,7 @@ public final class Svet extends JFrame
 					prekresliŠum();
 					{@link Svet Svet}.{@link Svet#zbaľ() zbaľ}();
 				}
-
-
+				<hr/>
 				{@code comm// Súkromná metóda na prekreslenie generovaného šumu:}
 				{@code kwdprivate} {@code typevoid} prekresliŠum()
 				{
@@ -20770,8 +20950,7 @@ public final class Svet extends JFrame
 					{@link GRobot#krúžok() krúžok}();
 					{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
 				}
-
-
+				<hr/>
 				{@code comm// Reakcia na kliknutie ľubovoľným tlačidlom myši.}
 				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#klik() klik}()
 				{
@@ -20795,8 +20974,7 @@ public final class Svet extends JFrame
 					{@code comm// Prekreslíme šum:}
 					prekresliŠum();
 				}
-
-
+				<hr/>
 				{@code comm// Počiatočná poloha myši používaná na vypočítanie rozdielu určujúceho}
 				{@code comm// mieru posunutia generovaného šumu.}
 				{@code kwdprivate} {@link Bod Bod} poloha1 = {@code valnull};
@@ -20837,8 +21015,7 @@ public final class Svet extends JFrame
 					{@code comm// Vyprázdnenie počiatočnej polohy.}
 					poloha1 = {@code valnull};
 				}
-
-
+				<hr/>
 				{@code comm// Hlavná metóda.}
 				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 				{
@@ -25802,14 +25979,22 @@ public final class Svet extends JFrame
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
-		 * <pre CLASS="example">
-			«príklad – ospravedlňujeme sa, pracujeme na doplnení…»
-			<!-- TODO – nájdenie a grafické znázornenie bodu… -->
-			</pre>
+		 * <p>Pozrite sa na príklad v opise metódy {@link 
+		 * #najbližšíBodNaÚsečke(double, double, double, double, double, double)
+		 * najbližšíBodNaÚsečke} a nahraďte v ňom volanie metódy {@link 
+		 * #najbližšíBodNaÚsečke(Poloha[]) najbližšíBodNaÚsečke}
+		 * metódou {@link #najbližšíBodNaPriamke(Poloha[])
+		 * najbližšíBodNaPriamke}. Priamka bude síce stále kreslená ako úsečka
+		 * (riešenie tejto nedokonalosti ponechávame na čitateľoch), ale
+		 * správanie príkladu sa zmení tak, že nájdený bod bude „opúšťať
+		 * hranice úsečky“ a posúvať sa aj za hraničné body pôvodnej úsečky
+		 * (pretože v skutočnosti bude ležať na priamke).</p>
 		 * 
 		 * <p><b>Výsledok:</b></p>
 		 * 
-		 * <p><image>«názov».png<alt/></image>«Popis…»<!-- TODO -->.</p>
+		 * <p><image>bod-na-priamke.png<alt/>Výsledok príkladu po
+		 * úprave.</image>Ukážka interaktívneho príkladu v činnosti po vyššie
+		 * uvedenej úprave.</p>
 		 * 
 		 * <p><b>Užitočný zdroj:</b></p>
 		 * 
@@ -25920,14 +26105,99 @@ public final class Svet extends JFrame
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
+		 * <p>Toto je krátky interaktívny príklad ukazujúci fungovanie
+		 * metódy {@link #najbližšíBodNaÚsečke(Poloha[])
+		 * najbližšíBodNaÚsečke}. Krajné body úsečky a samotný voľný bod
+		 * sa dajú ťahať myšou a nájdený bod je vyznačený o niečo väčšou
+		 * kružnicou, než sú vyznačené tri kľúčové body.</p>
+		 * 
 		 * <pre CLASS="example">
-			«príklad – ospravedlňujeme sa, pracujeme na doplnení…»
-			<!-- TODO – nájdenie a grafické znázornenie bodu… -->
+			{@code kwdimport} knižnica.*;
+
+			{@code kwdpublic} {@code typeclass} BodNaÚsečke {@code kwdextends} {@link GRobot GRobot}
+			{
+				{@code comm// Pole bodov. Prvý bod je voľný bod a ďalšie dva sú krajné body úsečky.}
+				{@code kwdprivate} {@link Bod Bod}[] body = {{@code kwdnew} {@link Bod#Bod() Bod}(), {@code kwdnew} {@link Bod#Bod() Bod}(), {@code kwdnew} {@link Bod#Bod() Bod}()};
+
+				{@code comm// Index aktuálne ťahaného bodu:}
+				{@code kwdprivate} {@code typeint} aktívny = {@code num0};
+
+				{@code comm// Konštruktor.}
+				{@code kwdprivate} BodNaÚsečke()
+				{
+					{@code comm// Zmena rozmerov plátna a inicializácia príkladu.}
+
+					{@code valsuper}({@code num400}, {@code num400});
+					{@link GRobot#skry() skry}();
+					{@link Svet Svet}.{@link Svet#zbaľ() zbaľ}();
+					{@link Svet Svet}.{@link Svet#vystreď() vystreď}();
+
+					{@code kwdfor} ({@link Bod Bod} bod : body)
+					{
+						{@link GRobot#náhodnáPoloha() náhodnáPoloha}();
+						bod.{@link Bod#poloha(Poloha) poloha}({@code valthis});
+					}
+
+					{@link GRobot#prekreslenie() prekreslenie}();
+				}
+
+				{@code comm// Reakcia na stlačenie tlačidla myši.}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#stlačenieTlačidlaMyši() stlačenieTlačidlaMyši}()
+				{
+					{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#ĽAVÉ ĽAVÉ}))
+					{
+						{@code comm// Ľavé tlačidlo vykoná vyhľadanie a aktiváciu bodu na polohe myši…}
+						{@link GRobot#skočNaMyš() skočNaMyš}();
+						{@code kwdfor} ({@code typeint} i = {@code num0}; i &lt; body.length; ++i)
+							{@code kwdif} ({@link GRobot#bodVKruhu(Poloha) bodVKruhu}(body[i])) aktívny = i;
+						body[aktívny].{@link Bod#poloha(Poloha) poloha}({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyši() polohaMyši}());
+						{@link GRobot#prekreslenie() prekreslenie}();
+					}
+				}
+
+				{@code comm// Reakcia na ťahanie kurzora myši (ťahanie znamená pohyb myšou počas}
+				{@code comm// držania ľubovoľného tlačidla).}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#ťahanieMyšou() ťahanieMyšou}()
+				{
+					{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#ĽAVÉ ĽAVÉ}))
+					{
+						{@code comm// Ľavé tlačidlo premiestňuje aktívny bod.}
+						body[aktívny].{@link Bod#poloha(Poloha) poloha}({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyši() polohaMyši}());
+						{@link GRobot#prekreslenie() prekreslenie}();
+					}
+				}
+
+				{@code comm// Reakcia na prekreslenie spôsobí prekreslenie scény.}
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#prekreslenie() prekreslenie}()
+				{
+					{@link Plátno podlaha}.{@link Plátno#vymažGrafiku() vymažGrafiku}();
+
+					{@link GRobot#skočNa(Poloha) skočNa}(body[{@code num1}]);
+					{@link GRobot#choďNa(Poloha) choďNa}(body[{@code num2}]);
+
+					{@code kwdfor} ({@code typeint} i = {@code num0}; i &lt; body.length; ++i)
+					{
+						{@link GRobot#skočNa(Poloha) skočNa}(body[i]);
+						{@link GRobot#krúžok(double) krúžok}({@code num3});
+					}
+
+					{@link Bod Bod} bod = {@link Svet Svet}.{@link Svet#najbližšíBodNaÚsečke(Poloha[]) najbližšíBodNaÚsečke}(body);
+					{@link GRobot#skočNa(Poloha) skočNa}(bod);
+					{@link GRobot#krúžok(double) krúžok}({@code num6});
+				}
+
+				{@code comm// Hlavná metóda.}
+				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
+				{
+					{@code kwdnew} BodNaÚsečke();
+				}
+			}
 			</pre>
 		 * 
 		 * <p><b>Výsledok:</b></p>
 		 * 
-		 * <p><image>«názov».png<alt/></image>«Popis…»<!-- TODO -->.</p>
+		 * <p><image>bod-na-usecke.png<alt/>Výsledok príkladu.</image>Ukážka
+		 * interaktívneho príkladu v činnosti.</p>
 		 * 
 		 * @param x0 x-ová súradnica voľného bodu V
 		 * @param y0 y-ová súradnica voľného bodu V
@@ -26252,13 +26522,41 @@ public final class Svet extends JFrame
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
+		 * <p>Pozrite sa na príklad v opise metódy {@link 
+		 * #vzdialenosťBoduOdÚsečky(double, double, double, double, double,
+		 * double) vzdialenosťBoduOdÚsečky} a upravte telo reakcie {@link 
+		 * GRobot#prekreslenie() prekreslenie} takto:</p>
+		 * 
 		 * <pre CLASS="example">
-			«príklad – ospravedlňujeme sa, pracujeme na doplnení…»
-			<!-- TODO – nájdenie a grafické znázornenie bodu… -->
+			{@link Plátno podlaha}.{@link Plátno#vymažGrafiku() vymažGrafiku}();
+
+			{@link GRobot#skočNa(Poloha) skočNa}(body[{@code num1}]);
+			{@link GRobot#choďNa(Poloha) choďNa}(body[{@code num2}]);
+
+			{@code comm// Tieto riadky pribudli:}
+			{@link GRobot#skočNa(Poloha) skočNa}(body[{@code num1}]);
+			{@link GRobot#otočNa(Poloha) otočNa}(body[{@code num2}]);
+			{@link GRobot#vzad(double) vzad}({@code num2000});
+			{@link GRobot#skočNa(Poloha) skočNa}(body[{@code num2}]);
+			{@link GRobot#dopredu(double) dopredu}({@code num2000});
+
+			{@code kwdfor} ({@code typeint} i = {@code num0}; i &lt; body.length; ++i)
+			{
+				{@link GRobot#skočNa(Poloha) skočNa}(body[i]);
+				{@link GRobot#krúžok(double) krúžok}({@code num3});
+			}
+
+			{@link GRobot#skočNa(Poloha) skočNa}(body[{@code num0}]); {@link GRobot#uhol(double) uhol}({@code num90}); {@link GRobot#skoč() skoč}();
+
+			{@code comm// Volanie metódy na tomto riadku sa zmenilo:}
+			{@link GRobot#text(String) text}({@link GRobot#F(double, int) F}({@link Svet Svet}.{@link Svet#vzdialenosťBoduOdPriamky(Poloha[]) vzdialenosťBoduOdPriamky}(body), {@code num2}));
 			</pre>
 		 * 
 		 * <p><b>Výsledok:</b></p>
 		 * 
+		 * <p><image>bod-od-priamky.png<alt/>Výsledok príkladu.</image>Ukážka
+		 * interaktívneho príkladu v činnosti.</p>
+
 		 * <p><b>Zdroj:</b></p>
 		 * 
 		 * <ul><li><a href="https://docs.oracle.com/javase/8/docs/api/java/awt/geom/Line2D.html#ptLineDist-double-double-double-double-double-double-"
@@ -27414,7 +27712,7 @@ public final class Svet extends JFrame
 				{
 					{@code comm// Kláves ESC spôsobí vypnutie aplikácie.}
 					{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#kláves(int) kláves}({@link Kláves Kláves}.{@link Kláves#ESCAPE ESCAPE}))
-						{@link Svet Svet}.{@link Svet#koniec() koniec}();
+						{@link Svet Svet}.{@link Svet#zavrieť() zavrieť}();
 				}
 
 				{@code comm// Hlavná metóda.}
@@ -27490,6 +27788,7 @@ public final class Svet extends JFrame
 					svet.remove(hlavnýPanel);
 					svet.remove(panelVstupnéhoRiadka);
 
+					nečakanéSkrytieCelejObrazovky = true;
 					oknoCelejObrazovky = new JFrame();
 					oknoCelejObrazovky.setResizable(false);
 					oknoCelejObrazovky.setUndecorated(true);
@@ -27558,6 +27857,7 @@ public final class Svet extends JFrame
 					// zariadenia[zariadenie].setFullScreenWindow(null);
 					spôsobZmeny.zmena(zariadenie, zariadenia[zariadenie],
 						celáObrazovka, oknoCelejObrazovky);
+					nečakanéSkrytieCelejObrazovky = false;
 					oknoCelejObrazovky.setVisible(false);
 
 					/*---*
@@ -27766,6 +28066,7 @@ public final class Svet extends JFrame
 		// private static boolean zobrazPonukuPoCelejObrazovke = false;
 		// private static AbstractAction koniecSveta = new AbstractAction()
 		// { public void actionPerformed(ActionEvent e) { System.exit(0); }};
+		private static boolean nečakanéSkrytieCelejObrazovky = true;
 		private static KeyEventDispatcher koniecSveta = new KeyEventDispatcher()
 		{
 			public boolean dispatchKeyEvent(KeyEvent e)
@@ -27774,7 +28075,8 @@ public final class Svet extends JFrame
 					e.getModifiers() == Toolkit.getDefaultToolkit().
 						getMenuShortcutKeyMask())
 				{
-					System.exit(0);
+					// System.exit(0);
+					Svet.zavrieť(/*0*/);
 					return true;
 				}
 
@@ -27865,6 +28167,7 @@ public final class Svet extends JFrame
 
 				// Podobné ako: poslednáUdalosťKlávesnice
 				ÚdajeUdalostí.poslednáUdalosťSkratky = e;
+				aktuálnyIntervalKofeínu = intervalKofeínu;
 				ÚdajeUdalostí.poslednýPríkazSkratky = príkaz;
 
 				if (null != ObsluhaUdalostí.počúvadlo)

@@ -165,7 +165,8 @@ public class PoložkaPonuky extends JMenuItem
 				else if (ÚdajeUdalostí.poslednáPoložkaPonuky ==
 					Svet.položkaSkončiť)
 				{
-					System.exit(0);
+					// System.exit(0);
+					Svet.zavrieť(/*0*/);
 				}
 				else
 				{

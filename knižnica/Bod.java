@@ -830,18 +830,14 @@ public class Bod extends Point2D implements Poloha
 	{ return bodNaReťazec(bod); }
 
 	/**
-	 * <p>Prevedie zadanú implementáciu rozhrania {@link Poloha Poloha}
-	 * (čiže nielen bodu – vstupom môže byť napríklad {@link GRobot robot},
-	 * {@link Oblasť oblasť}, {@link Tlačidlo tlačidlo}, {@link Častica
-	 * častica}…) do textovej podoby, ktorá bude reprezentovať polohu so
-	 * súradnicami x a y.
-	 * (Vhodné napríklad pri ukladaní údajov do konfiguračného súboru.)</p>
+	 * <p>Prevedie zadané súradnice do textovej podoby zhodnej s výsledkom
+	 * metódy {@link #polohaNaReťazec(Poloha) polohaNaReťazec}.</p>
 	 * 
 	 * @param x x-ová súradnica polohy, ktorá má byť prevedená do
 	 *     reťazcovej podoby
 	 * @param y y-ová súradnica polohy, ktorá má byť prevedená do
 	 *     reťazcovej podoby
-	 * @return poloha prevedená do reťazcovej podoby
+	 * @return súradnice prevedené do reťazcovej podoby
 	 * 
 	 * @see #reťazecNaPolohu(String)
 	 * @see #správnyFormát(String)
@@ -854,14 +850,14 @@ public class Bod extends Point2D implements Poloha
 	{ return polohaNaReťazec(x, y); }
 
 	/**
-	 * <p>Prevedie súradnice inštancie triedy {@link Point2D Point2D} (bod
-	 * Javy) do textovej podoby.</p>
+	 * <p>Prevedie zadané súradnice do textovej podoby zhodnej s výsledkom
+	 * metódy {@link #bodNaReťazec(Point2D) bodNaReťazec}.</p>
 	 * 
 	 * @param x x-ová súradnica bodu, ktorý má byť prevedený do
 	 *     reťazcovej podoby
 	 * @param y y-ová súradnica bodu, ktorý má byť prevedený do
 	 *     reťazcovej podoby
-	 * @return súradnice bodu prevedené do reťazcovej podoby
+	 * @return súradnice prevedené do reťazcovej podoby
 	 * 
 	 * @see #reťazecNaBod(String)
 	 * @see #správnyFormát(String)
@@ -885,8 +881,8 @@ public class Bod extends Point2D implements Poloha
 	 * </code><em>súradnicaY</em><code>]</code>,</li>
 	 * </ul>
 	 * 
-	 * <p>kde <em>súradnicaX</em> je x-ová a <em>súradnicaY</em> y-ová súradnica
-	 * polohy/bodu.</p>
+	 * <p>kde <em>súradnicaX</em> je x-ová a <em>súradnicaY</em> y-ová
+	 * súradnica polohy/bodu.</p>
 	 * 
 	 * <p>Metóda je vhodná ako doplnok k metóde {@link 
 	 * #polohaNaReťazec(Poloha) polohaNaReťazec}.</p>
@@ -958,8 +954,8 @@ public class Bod extends Point2D implements Poloha
 	 * </code><em>súradnicaY</em><code>]</code>,</li>
 	 * </ul>
 	 * 
-	 * <p>kde <em>súradnicaX</em> je x-ová a <em>súradnicaY</em> y-ová súradnica
-	 * polohy/bodu.</p>
+	 * <p>kde <em>súradnicaX</em> je x-ová a <em>súradnicaY</em> y-ová
+	 * súradnica polohy/bodu.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Táto metóda vnútorne používa
 	 * metódu {@link #reťazecNaPolohu(String) reťazecNaPolohu}, ktorej
@@ -999,8 +995,8 @@ public class Bod extends Point2D implements Poloha
 	 * </code><em>súradnicaY</em><code>]</code>,</li>
 	 * </ul>
 	 * 
-	 * <p>kde <em>súradnicaX</em> je x-ová a <em>súradnicaY</em> y-ová súradnica
-	 * polohy/bodu.</p>
+	 * <p>kde <em>súradnicaX</em> je x-ová a <em>súradnicaY</em> y-ová
+	 * súradnica polohy/bodu.</p>
 	 * 
 	 * <p>Metóda je vhodná ako doplnok k metódam {@link 
 	 * #polohaNaReťazec(Poloha) polohaNaReťazec} a {@link 

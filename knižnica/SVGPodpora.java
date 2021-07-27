@@ -351,8 +351,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 		{@code comm// Toto je záložná hodnota predchádzajúceho atribútu a je medzi nimi}
 		{@code comm// rovnaký vzťah ako medzi dvomi celočíselnými atribútmi vyššie:}
 		{@code kwdprivate} {@link String String} menoSúboruZKonfigurácie = {@code valnull};
-
-
+		<hr/>
 		{@code comm// Konštruktor.}
 		{@code kwdprivate} SVGTvarRobota()
 		{
@@ -393,8 +392,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 					{@code comm// mohol používateľ opraviť a znova potvrdiť.}
 					{@link Svet Svet}.{@link Svet#textVstupnéhoRiadka(String) textVstupnéhoRiadka}({@link Svet Svet}.{@link Svet#prevezmiReťazec() prevezmiReťazec}());
 				}
-
-
+				<hr/>
 				{@code comm// Táto reakcia je spustená, keď si svet potrebuje overiť,}
 				{@code comm// či má zmysel zapisovať konfiguráciu, či sa zmenila hodnota}
 				{@code comm// niektorej zákazníckej vlastnosti. (Svet túto reakciu vôbec}
@@ -473,8 +471,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 			{@code comm// pri príkaze Svet.nekresli(); v úvode tohto konštruktora):}
 			{@link Svet Svet}.{@link Svet#spustiČasovač() spustiČasovač}();
 		}
-
-
+		<hr/>
 		{@code comm/////////////////////////////////////////////////////////////////}
 		{@code comm// ##   Výhodou interaktívneho režimu je, že všetky nové    ## //}
 		{@code comm// ##   definované verejné metódy (spĺňajúce kritériá       ## //}
@@ -482,8 +479,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 		{@code comm// ##   sa automaticky stávajú príkazmi použiteľnými        ## //}
 		{@code comm// ##   v tomto režime…                                     ## //}
 		{@code comm/////////////////////////////////////////////////////////////////}
-
-
+		<hr/>
 		{@code comm// Vypíše aktuálny počet útvarov uložených vo vnútornom zásobníku}
 		{@code comm// inštancie svgPodpora. To je zároveň horná hranica číselného rozsahu}
 		{@code comm// použiteľného s metódou nastavTvar (nižšie).}
@@ -496,8 +492,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 		{@code comm// | interaktívneho režimu použiteľná aj verzia tohto príkazu bez}
 		{@code comm// | diakritiky.}
 		{@code kwdpublic} {@code typevoid} vypisPocet() { vypíšPočet(); }
-
-
+		<hr/>
 		{@code comm// Táto metóda slúži na prečítanie SVG súboru so zadaným menom. Tvary,}
 		{@code comm// ktoré sa podaria nájsť inštancii svgPodpora budú použiteľné na}
 		{@code comm// nastavenie vlastného tvaru robota.}
@@ -565,8 +560,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 		{@code comm// | interaktívneho režimu použiteľná aj verzia tohto príkazu bez}
 		{@code comm// | diakritiky.}
 		{@code kwdpublic} {@code typevoid} citaj() { čítaj(); }
-
-
+		<hr/>
 		{@code comm// Táto metóda vygeneruje taký tvar oblasti, ktorý bude použiteľný ako}
 		{@code comm// vlastný tvar robota. Oblasť musí byť umiestnená v strede plátna, inak}
 		{@code comm// by bol vlastný tvar posunutý oproti skutočnej polohe robota. Tvar}
@@ -639,13 +633,11 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 				}
 			}
 		}
-
-
+		<hr/>
 		{@code comm// Táto verzia metódy dovoľuje použitie príkazu tohto bez zadania}
 		{@code comm// parametra (namiesto ktorého je dosadená predvolená hodnota 1).}
 		{@code kwdpublic} {@code typevoid} nastavTvar() { nastavTvar({@code num1}); }
-
-
+		<hr/>
 		{@code comm// Táto reakcia zabezpečuje kreslenie vlastného (a v tomto prípade aj}
 		{@code comm// predvoleného) tvaru robota.}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliTvar() kresliTvar}()
@@ -673,8 +665,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 				{@link GRobot#trojzubec() trojzubec}();
 			}
 		}
-
-
+		<hr/>
 		{@code comm// Hlavná metóda.}
 		{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}... args)
 		{
@@ -748,8 +739,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 			{@code comm// Nastavenie (konštantnej) veľkosti robota má zmysel najmä pri}
 			{@code comm// inej verzii konverzie obrázka, ale výkonu aplikácie to neublíži:}
 			{@link GRobot#veľkosť(double) veľkosť}({@code num2.5});
-
-
+			<hr/>
 			{@code comm// Úlohou nasledujúcich štyroch (postupne sa vnárajúcich) cyklov}
 			{@code comm// „for“ je prechádzať po blokoch 10 × 10 pixelov po obrázku,}
 			{@code comm// vypočítať z každého bloku priemer jasu (alebo farebnosti, prípadne}
@@ -842,8 +832,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 				{@code comm// proces konverzie značne urýchli):}
 				{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
 			}
-
-
+			<hr/>
 			{@code comm// Skrytie obrázka na podlahe:}
 			{@link Plátno podlaha}.{@link Plátno#priehľadnosť(double) priehľadnosť}({@code num0});
 
@@ -854,8 +843,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 			{@code comm// Opätovné zapnutie automatického prekresľovania.}
 			{@link Svet Svet}.{@link Svet#kresli() kresli}();
 		}
-
-
+		<hr/>
 		{@code comm// Hlavná metóda.}
 		{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}... args)
 		{

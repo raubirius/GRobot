@@ -1,3 +1,4 @@
+
  /////////////////////////////////////////////////////////////////////////////
  // This source code is part of the graphical framework called “Programovací
  // rámec GRobot”. (The name is Slovak like the vast majority of own
@@ -78,6 +79,18 @@ import java.util.Vector;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import static java.lang.Math.abs;
+// import static java.lang.Math.atan;
+import static java.lang.Math.atan2;
+import static java.lang.Math.cos;
+import static java.lang.Math.hypot;
+import static java.lang.Math.PI;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
+import static java.lang.Math.toDegrees;
+import static java.lang.Math.toRadians;
+
 
 // <!-- Prvý riadok v nasledujúcom JavaDoc komentári je vysvetlivka -->
 // <!-- figurujúca v tabuľke so zoznamom tried a zároveň značka pre -->
@@ -89,7 +102,7 @@ import javax.swing.SwingUtilities;
  * <!--
  * TODO:
  * 
- * Premiestniť do samostatnej kapitoly, prepracovať vymyslieť novú
+ * Premiestniť do samostatnej kapitoly, prepracovať/vymyslieť novú
  * dokumentáciu pre túto triedu.
  * 
  * Pravdepodobne sa premenuje „Dokumentácia…“ na „Programovanie v Jave
@@ -639,12 +652,12 @@ import javax.swing.SwingUtilities;
  * <p><b>Od verzie 1.0 vyššie je pravidelne aktualizovaný
  * <a href="zoznam-zmien.html">zoznam zmien</a>.</b></p>
  */
-public class GRobot implements Poloha, Smer, Farebnosť, Priehľadnosť, Konštanty
+public class GRobot implements Poloha, Smer, Rozmer, Farebnosť, Priehľadnosť,
+	Konštanty
 {
-	/*
-	Poznámky:
+/*
+Toto bolo presunuté na úvodnú stránku:
 
-TODO: na úvodnú stránku
  * 
  * @version CURRENT_VERSION</dd>
 <dt><b>Úplný názov publikácie:</b></dt>
@@ -655,6 +668,10 @@ TODO: na úvodnú stránku
 <dt><b>Vydanie:</b></dt>
   <dd class="O-publikacii">tretie, prepracované</dd>
 
+(Je to tu ponechané na archivačné účely.)
+
+
+	Poznámky:
 
 		– Pri prechode robota na novú verziu Javy pozri:
 			public Zoznam(Typ... prvky)
@@ -804,6 +821,9 @@ TODO: na úvodnú stránku
 			// Zmena veľkosti po návrate domov
 			private Double veľkosťDoma = null;
 
+			// Zmena pomeru po návrate domov
+			private Double pomerDoma = null;
+
 			// Zmena priehľadnosti robota po návrate domov
 			private Float priehľadnosťDoma = null;
 
@@ -874,10 +894,10 @@ TODO: na úvodnú stránku
 			// veľkosť (atribút vyššie) je čitateľom mierky.
 			private double pôvodnáVeľkosť = 10.0;
 
-			// Číslo určujúce „pomer rozmerov niektorých tvarov (elipsy
+			// Číslo určujúce „pomer rozmerov niektorých tvarov (napr. elipsy
 			// a obdĺžnika) generovaných robotom“ (je to číslo, ktoré má
-			// vplyv len na tie metódy generovania dotknutých tvarov (elipsy,
-			// a obdĺžnika), ktoré neprijímajú žiadny argument).
+			// vplyv len na tie metódy generovania dotknutých tvarov (t. j.
+			// napr. elipsy a obdĺžnika), ktoré neprijímajú žiadny argument).
 			private double pomerVeľkosti = 1.0;
 
 			// Horizontálne a vertikálne zaoblenie rohov štvorcov
@@ -1153,8 +1173,7 @@ TODO: na úvodnú stránku
 							r.{@link GRobot#položPero() položPero}();
 							r.{@link GRobot#dopredu(double) dopredu}({@code num10});
 						};
-
-
+						<hr/>
 						{@code comm// Vytvorenie štyroch inštancií robotov, ktoré budú prepojené}
 						{@code comm// spojnicami (prvý robot je hlavný, takže používame konštruktor,}
 						{@code comm// ktorým zároveň nastavíme veľkosť plátien):}
@@ -1198,8 +1217,7 @@ TODO: na úvodnú stránku
 						{@code comm// Uloženie inštancií do zoznamu:}
 						{@code kwdfinal} {@link Zoznam Zoznam}&lt;{@link GRobot GRobot}&gt; zoznam = {@code kwdnew} {@link Zoznam#Zoznam(Object...) Zoznam}&lt;{@link GRobot GRobot}&gt;(
 							alfa, beta, gama, delta);
-
-
+						<hr/>
 						{@code comm// Vytvorenie (definovanie) spojníc a ich vlastností:}
 
 						alfa.{@link GRobot#spojnica(GRobot, Shape, Shape) spojnica}(beta, alfa.{@link GRobot#elipsa(double) elipsa}({@code num2}), beta.{@link GRobot#elipsa(double) elipsa}({@code num2}))
@@ -1217,8 +1235,7 @@ TODO: na úvodnú stránku
 						beta.{@link GRobot#spojnica(GRobot, Shape, Shape) spojnica}(delta, beta.{@link GRobot#elipsa(double) elipsa}({@code num2}), delta.{@link GRobot#elipsa(double) elipsa}({@code num2}))
 							.{@link Spojnica#definujZnačkuZačiatku(KreslenieTvaru) definujZnačkuZačiatku}(šípka)
 							.{@link Spojnica#definujZnačkuKonca(KreslenieTvaru) definujZnačkuKonca}(šípka);
-
-
+						<hr/>
 						{@code comm// Dokončenie automatickej konfigurácie a obsluha udalostí:}
 
 						{@code kwdfor} ({@link GRobot GRobot} r : zoznam) r.{@link GRobot#registrujVKonfigurácii() registrujVKonfigurácii}();
@@ -1343,8 +1360,7 @@ TODO: na úvodnú stránku
 							AffineTransform at = new AffineTransform();
 							at.translate(-cieľ.aktuálneX,
 								cieľ.aktuálneY);
-							at.rotate(Math.toRadians(
-								(cieľ.aktuálnyUhol +
+							at.rotate(toRadians((cieľ.aktuálnyUhol +
 									cieľ.pootočenieTvaru) - 90),
 								Svet.prepočítajX(cieľ.aktuálneX),
 								Svet.prepočítajY(cieľ.aktuálneY));
@@ -1357,7 +1373,7 @@ TODO: na úvodnú stránku
 							AffineTransform at = new AffineTransform();
 							at.translate(-robot.aktuálneX,
 								robot.aktuálneY);
-							at.rotate(Math.toRadians(
+							at.rotate(toRadians(
 								(robot.aktuálnyUhol +
 									robot.pootočenieTvaru) - 90),
 								Svet.prepočítajX(robot.aktuálneX),
@@ -1962,8 +1978,7 @@ TODO: na úvodnú stránku
 					{@code kwdfinal} {@code typedouble} veľkosťRobota = {@code num50.0};
 					{@code kwdfinal} {@code typedouble} veľkosťZnačky = {@code num12.5};
 					{@code kwdfinal} {@code typedouble} pomer = {@code num2.5};
-
-
+					<hr/>
 					{@code comm// Definícia tvaru robotov:}
 					{@link KreslenieTvaru KreslenieTvaru} tvar = r -&gt;
 					{
@@ -1978,8 +1993,7 @@ TODO: na úvodnú stránku
 						r.{@link GRobot#vzad(double) vzad}(veľkosťZnačky);
 						r.{@link GRobot#kružnica(double) kružnica}(veľkosťZnačky);
 					};
-
-
+					<hr/>
 					{@code comm// Definícia prvého robota (A):}
 					{@link GRobot GRobot} A = {@code kwdnew} {@link GRobot#GRobot() GRobot}()
 					{{
@@ -2001,8 +2015,7 @@ TODO: na úvodnú stránku
 
 						{@link GRobot#skoč(double, double) skoč}({@code num180}, -{@code num150});
 					}};
-
-
+					<hr/>
 					{@code comm// Definícia spojnice so začiatkom v robote (elipse) A a koncom}
 					{@code comm// v robote (elipse) B:}
 					A.{@link GRobot#spojnica(GRobot, Shape, Shape) spojnica}(B,
@@ -2167,7 +2180,7 @@ TODO: na úvodnú stránku
 						AffineTransform at = new AffineTransform();
 						at.translate(-robot.aktuálneX,
 							robot.aktuálneY);
-						at.rotate(Math.toRadians(
+						at.rotate(toRadians(
 							(robot.aktuálnyUhol + robot.pootočenieTvaru) - 90),
 							Svet.prepočítajX(robot.aktuálneX),
 							Svet.prepočítajY(robot.aktuálneY));
@@ -2187,7 +2200,7 @@ TODO: na úvodnú stránku
 						AffineTransform at = new AffineTransform();
 						at.translate(-cieľ.aktuálneX,
 							cieľ.aktuálneY);
-						at.rotate(Math.toRadians(
+						at.rotate(toRadians(
 							(cieľ.aktuálnyUhol + cieľ.pootočenieTvaru) - 90),
 							Svet.prepočítajX(cieľ.aktuálneX),
 							Svet.prepočítajY(cieľ.aktuálneY));
@@ -2223,7 +2236,7 @@ TODO: na úvodnú stránku
 								robot.aktuálneY != 0)
 							{
 								AffineTransform at = new AffineTransform();
-								at.rotate(Math.toRadians(
+								at.rotate(toRadians(
 									90 - (robot.aktuálnyUhol +
 										robot.pootočenieTvaru)),
 									Svet.prepočítajX(robot.aktuálneX),
@@ -2248,7 +2261,7 @@ TODO: na úvodnú stránku
 								cieľ.aktuálneY != 0)
 							{
 								AffineTransform at = new AffineTransform();
-								at.rotate(Math.toRadians(
+								at.rotate(toRadians(
 									90 - (cieľ.aktuálnyUhol +
 										cieľ.pootočenieTvaru)),
 									Svet.prepočítajX(cieľ.aktuálneX),
@@ -2272,12 +2285,11 @@ TODO: na úvodnú stránku
 								Svet.prepočítajY(koniecY = cieľ.aktuálneY));
 						else
 						{
-							double α = Math.toRadians(
-								robot.smerNa(cieľ) - 90);
-							double Δx1 = Math.cos(α) * vysunutieZačiatku;
-							double Δy1 = Math.sin(α) * vysunutieZačiatku;
-							double Δx2 = Math.cos(α) * vysunutieKonca;
-							double Δy2 = Math.sin(α) * vysunutieKonca;
+							double α = toRadians(robot.smerNa(cieľ) - 90);
+							double Δx1 = cos(α) * vysunutieZačiatku;
+							double Δy1 = sin(α) * vysunutieZačiatku;
+							double Δx2 = cos(α) * vysunutieKonca;
+							double Δy2 = sin(α) * vysunutieKonca;
 
 							čiaraSpojnice = new Line2D.Double(
 								Svet.prepočítajX(začiatokX = robot.aktuálneX + Δx1),
@@ -2339,12 +2351,11 @@ TODO: na úvodnú stránku
 								Svet.prepočítajY(koniecY = cieľ.aktuálneY));
 						else
 						{
-							double α = Math.toRadians(
-								robot.smerNa(cieľ) - 90);
-							double Δx1 = Math.cos(α) * vysunutieZačiatku;
-							double Δy1 = Math.sin(α) * vysunutieZačiatku;
-							double Δx2 = Math.cos(α) * vysunutieKonca;
-							double Δy2 = Math.sin(α) * vysunutieKonca;
+							double α = toRadians(robot.smerNa(cieľ) - 90);
+							double Δx1 = cos(α) * vysunutieZačiatku;
+							double Δy1 = sin(α) * vysunutieZačiatku;
+							double Δx2 = cos(α) * vysunutieKonca;
+							double Δy2 = sin(α) * vysunutieKonca;
 
 							čiaraSpojnice = new Line2D.Double(
 								Svet.prepočítajX(začiatokX = robot.aktuálneX + Δx1),
@@ -2614,8 +2625,7 @@ TODO: na úvodnú stránku
 					{@code kwdfinal} {@code typedouble} veľkosťRobota = {@code num25.0};
 					{@code kwdfinal} {@code typedouble} veľkosťZnačky = {@code num6.0};
 					{@code kwdfinal} {@code typedouble} pomer = {@code num2.5};
-
-
+					<hr/>
 					{@code comm// Definícia tvaru robotov:}
 					{@link KreslenieTvaru KreslenieTvaru} tvar = r -&gt;
 					{
@@ -2650,8 +2660,7 @@ TODO: na úvodnú stránku
 
 						{@link GRobot#skoč(double, double) skoč}({@code num90}, -{@code num75});
 					}};
-
-
+					<hr/>
 					{@code comm// Definícia spojnice:}
 					{@link Spojnica Spojnica} spojnica = štart.{@link GRobot#spojnica(GRobot) spojnica}(koniec,
 
@@ -2661,8 +2670,7 @@ TODO: na úvodnú stránku
 					{@code comm// Zrušenie predvolených farieb, aby sa}
 					{@code comm// zhodovali s farbami prepájaných robotov:}
 					).{@link Spojnica#farba(Color) farba}(({@link Farba Farba}){@code valnull}).{@link Spojnica#farbaKonca(Color) farbaKonca}(({@link Farba Farba}){@code valnull});
-
-
+					<hr/>
 					{@code comm// Počiatočné čakanie tri sekundy:}
 					{@link Svet Svet}.{@link Svet#čakaj(double) čakaj}({@code num3.0});
 
@@ -2909,8 +2917,7 @@ TODO: na úvodnú stránku
 				 * <pre CLASS="example">
 					{@code comm// Konštanta veľkostí robotov:}
 					{@code kwdfinal} {@code typedouble} veľkosťRobota = {@code num66.0};
-
-
+					<hr/>
 					{@code comm// Kreslenie tvaru šípky, ktorá bude tvoriť značku spojnice:}
 					{@code kwdfinal} {@link KreslenieTvaru KreslenieTvaru} šípka = r -&gt;
 					{
@@ -2931,8 +2938,7 @@ TODO: na úvodnú stránku
 						r.{@link GRobot#hviezda() hviezda}();
 						r.{@link GRobot#text(String) text}(r.{@link GRobot#meno() meno}());
 					};
-
-
+					<hr/>
 					{@code comm// Definícia robota s menom αlpha:}
 					{@code kwdfinal} {@link GRobot GRobot} α = {@code kwdnew} {@link GRobot#GRobot() GRobot}();
 					α.{@link GRobot#meno(String) meno}({@code srg"αlpha"});
@@ -2954,18 +2960,15 @@ TODO: na úvodnú stránku
 					{@code comm// Nastavenie počiatočných polôh robotov:}
 					α.{@link GRobot#skoč(double, double) skoč}({@code num110}, -{@code num55});
 					β.{@link GRobot#skoč(double, double) skoč}(-{@code num110}, {@code num55});
-
-
+					<hr/>
 					{@code comm// Definícia spojnice a jej orezania:}
 					{@link Spojnica Spojnica} spojnica = α.{@link GRobot#spojnica(GRobot) spojnica}(β);
 					spojnica.{@link Spojnica#orezanieZačiatku(Shape) orezanieZačiatku}(α.{@link GRobot#hviezda() hviezda}());
 					spojnica.{@link Spojnica#orezanieKonca(Shape) orezanieKonca}(β.{@link GRobot#hviezda() hviezda}());
-
-
+					<hr/>
 					{@code comm// Nastavenie kreslenia značky začiatku:}
 					spojnica.{@link Spojnica#definujZnačkuZačiatku(KreslenieTvaru) definujZnačkuZačiatku}(šípka);
-
-
+					<hr/>
 					{@code comm// Definícia takej obsluhy udalostí, ktorá umožnení presúvanie robotov:}
 					{@code kwdnew} {@link ObsluhaUdalostí#ObsluhaUdalostí() ObsluhaUdalostí}()
 					{
@@ -3933,11 +3936,24 @@ TODO: na úvodnú stránku
 
 		// Kreslenie robota a spojníc
 
-			// Nasledujúce tri atribúty a metóda slúžia na prepočítanie
-			// aktuálneho (predvoleného) tvaru grafického robota:
-			private final double[] c = new double[5];
+			// Nasledujúce atribúty (a k nim patriace metódy prepočítajPolygón
+			// a starýPolygón – nižšie) slúžia na prepočítanie aktuálneho
+			// (predvoleného) tvaru grafického robota. Systém postupne rástol
+			// a komplexnel s rozvojom rámca. Medzi prvé patria cx, cy, fx
+			// a fy. Cx a cy slúžia na uchovanie aktuálnych koeficientov,
+			// z ktorých je prepočítaný polygón. Fx a fy slúžia na uchovanie
+			// cieľového polygónu. Gx a gy slúžia na uchovanie súradníc, ktoré
+			// budú transformované maticou mat, ktorú vyrobí inštancia
+			// transformácie fat. Dohromady je výsledkom želaný polygón, ktorý
+			// môže byť obkreslený alebo vyplnený.
+			private final double[] cx = new double[5];
+			private final double[] cy = new double[5];
 			private final int[] fx = new int[7];
 			private final int[] fy = new int[7];
+			private final double[] gx = new double[7];
+			private final double[] gy = new double[7];
+			private final AffineTransform fat = new AffineTransform();
+			private final double[] mat = new double[6];
 
 			// Tento atribút je permanentné pole slúžiace na určenie
 			// podielov kruhového náteru:
@@ -3986,7 +4002,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(
+					double α = toRadians(
 						// 
 						// Farebný prechod nie je správne ovplyvňovať
 						// pootočením tvaru, pretože keď sa vlákno dostane
@@ -4004,8 +4020,8 @@ TODO: na úvodnú stránku
 						//        aktuálnyUhol + pootočenieTvaru
 						// 
 						aktuálnyUhol);
-					double cosα = Math.cos(α) * veľkosť;
-					double sinα = Math.sin(α) * veľkosť;
+					double cosα = cos(α) * veľkosť;
+					double sinα = sin(α) * veľkosť;
 					double x0P = Svet.prepočítajX(aktuálneX - cosα);
 					double y0P = Svet.prepočítajY(aktuálneY - sinα);
 					double x1P = Svet.prepočítajX(aktuálneX + cosα);
@@ -4023,86 +4039,229 @@ TODO: na úvodnú stránku
 					grafika.setComposite(zálohaKompozitu_vlastnosťGrafiky);
 			}
 
+			// (Pozri atribúty cx, cy, fx, fy, gx, gy, fat a mat vyššie.)
 			private void prepočítajPolygón()
 			{
-				c[0] = veľkosť * 0.91;
-				c[1] = veľkosť * 1.91;
-				c[2] = veľkosť * 0.6;
-				c[3] = veľkosť * 1.405;
-				c[4] = veľkosť * 0.415;
+				// double veľkosťX = veľkosť * pomerVeľkosti;
+				double veľkosťY = veľkosť * pomerVeľkosti;
+				cx[0] = veľkosť * -0.91;  cy[0] = veľkosťY * -0.91; // (negované)
+				cx[1] = veľkosť * 1.91;   cy[1] = veľkosťY * 1.91;
+				cx[2] = veľkosť * 0.6;    cy[2] = veľkosťY * 0.6;
+				cx[3] = veľkosť * 1.405;  cy[3] = veľkosťY * 1.405;
+				cx[4] = veľkosť * 0.415;  cy[4] = veľkosťY * 0.415;
 
-				double α = Math.toRadians(aktuálnyUhol + pootočenieTvaru);
-				double x = aktuálneX - Math.cos(α) * c[0];
-				double y = aktuálneY - Math.sin(α) * c[0];
+				/* * /
+				// Dva „neúspešné“ pokusy v jednom. Fungovali pre trojzubec,
+				// ktorý sa celý zmestil do kružnice (a bol na jej báze
+				// prepočítavaný), ale keď prišla vlastnosť šírky, prestalo
+				// to platiť. Prvý v podstate reprezentuje mierne modifikovaný
+				// pôvodný spôsob. Druhý bol pokus o nápravu…
 
-				fx[0] = (int)Svet.prepočítajX(x + Math.cos(α) * c[1]);
-				fy[0] = (int)Svet.prepočítajY(y + Math.sin(α) * c[1]);
+				// Prvý mal všetky:
+				// 	fx = x + cos(α) * cx // [1, 2, 3, 4, 4, 3, 2, 1]
+				// 	fy = y + sin(α) * cy
+
+				// double x = aktuálneX - cos(α) * cx[0];
+				// double y = aktuálneY - sin(α) * cy[0];
+
+				// Druhý vyzeral takto:
+
+				double α = toRadians(aktuálnyUhol + pootočenieTvaru);
+				double x = aktuálneX - cos(α) * cx[0] + sin(α) * cx[0];
+				double y = aktuálneY - sin(α) * cx[0] - cos(α) * cy[0];
 
 				// u1: 26.5°  —  0.4625122517784973  rad
 				// u2: 18.5°  —  0.32288591161895097 rad
 				// u3: 45°    —  0.7853981633974483  rad
 
+				fx[0] = (int)Svet.prepočítajX(
+					x + cos(α) * cx[1] - sin(α) * cy[1]);
+				fy[0] = (int)Svet.prepočítajY(
+					// y + sin(α) * cy[1]
+					y + sin(α) * cx[1] + cos(α) * cy[1]);
+
 				α += 0.4625122517784973; // u1
-				fx[1] = (int)Svet.prepočítajX(x + Math.cos(α) * c[2]);
-				fy[1] = (int)Svet.prepočítajY(y + Math.sin(α) * c[2]);
+				fx[1] = (int)Svet.prepočítajX(
+					x + cos(α) * cx[2] - sin(α) * cy[2]);
+				fy[1] = (int)Svet.prepočítajY(
+					// y + sin(α) * cy[2]
+					y + sin(α) * cx[2] + cos(α) * cy[2]);
 
 				α += 0.32288591161895097; // u2
-				fx[2] = (int)Svet.prepočítajX(x + Math.cos(α) * c[3]);
-				fy[2] = (int)Svet.prepočítajY(y + Math.sin(α) * c[3]);
+				fx[2] = (int)Svet.prepočítajX(
+					x + cos(α) * cx[3] - sin(α) * cy[3]);
+				fy[2] = (int)Svet.prepočítajY(
+					// y + sin(α) * cy[3]
+					y + sin(α) * cx[3] + cos(α) * cy[3]);
 
 				α += 0.7853981633974483; // u3
-				fx[3] = (int)Svet.prepočítajX(x + Math.cos(α) * c[4]);
-				fy[3] = (int)Svet.prepočítajY(y + Math.sin(α) * c[4]);
+				fx[3] = (int)Svet.prepočítajX(
+					x + cos(α) * cx[4] - sin(α) * cy[4]);
+				fy[3] = (int)Svet.prepočítajY(
+					// y + sin(α) * cy[4]
+					y + sin(α) * cx[4] + cos(α) * cy[4]);
 
 				α += 3.141592653589793;  // 180°
-				fx[4] = (int)Svet.prepočítajX(x + Math.cos(α) * c[4]);
-				fy[4] = (int)Svet.prepočítajY(y + Math.sin(α) * c[4]);
+				fx[4] = (int)Svet.prepočítajX(
+					x + cos(α) * cx[4] - sin(α) * cy[4]);
+				fy[4] = (int)Svet.prepočítajY(
+					// y + sin(α) * cy[4]
+					y + sin(α) * cx[4] + cos(α) * cy[4]);
 
 				α += 0.7853981633974483; // u3
-				fx[5] = (int)Svet.prepočítajX(x + Math.cos(α) * c[3]);
-				fy[5] = (int)Svet.prepočítajY(y + Math.sin(α) * c[3]);
+				fx[5] = (int)Svet.prepočítajX(
+					x + cos(α) * cx[3] - sin(α) * cy[3]);
+				fy[5] = (int)Svet.prepočítajY(
+					// y + sin(α) * cy[3]
+					y + sin(α) * cx[3] + cos(α) * cy[3]);
 
 				α += 0.32288591161895097; // u2
-				fx[6] = (int)Svet.prepočítajX(x + Math.cos(α) * c[2]);
-				fy[6] = (int)Svet.prepočítajY(y + Math.sin(α) * c[2]);
+				fx[6] = (int)Svet.prepočítajX(
+					x + cos(α) * cx[2] - sin(α) * cy[2]);
+				fy[6] = (int)Svet.prepočítajY(
+					// y + sin(α) * cy[2]
+					y + sin(α) * cx[2] + cos(α) * cy[2]);
+				/* */
+
+				fat.setToTranslation(aktuálneX, aktuálneY);
+				fat.rotate(toRadians(aktuálnyUhol + pootočenieTvaru));
+
+				double α = 0;
+				double x = cos(α) * cx[0];
+				double y = sin(α) * cy[0];
+				// Poznámka: Pozri cx, cy – sú negované…
+
+				// u1: 26.5°  —  0.4625122517784973  rad
+				// u2: 18.5°  —  0.32288591161895097 rad
+				// u3: 45°    —  0.7853981633974483  rad
+
+				gx[0] = x + cos(α) * cx[1]; gy[0] = y + sin(α) * cy[1];
+
+				α += 0.4625122517784973; // u1
+				gx[1] = x + cos(α) * cx[2]; gy[1] = y + sin(α) * cy[2];
+
+				α += 0.32288591161895097; // u2
+				gx[2] = x + cos(α) * cx[3]; gy[2] = y + sin(α) * cy[3];
+
+				α += 0.7853981633974483; // u3
+				gx[3] = x + cos(α) * cx[4]; gy[3] = y + sin(α) * cy[4];
+
+				α += 3.141592653589793;  // 180°
+				gx[4] = x + cos(α) * cx[4]; gy[4] = y + sin(α) * cy[4];
+
+				α += 0.7853981633974483; // u3
+				gx[5] = x + cos(α) * cx[3]; gy[5] = y + sin(α) * cy[3];
+
+				α += 0.32288591161895097; // u2
+				gx[6] = x + cos(α) * cx[2]; gy[6] = y + sin(α) * cy[2];
+
+				fat.getMatrix(mat);
+				double m00 = mat[0], m10 = mat[1], m01 = mat[2];
+				double m11 = mat[3], m02 = mat[4], m12 = mat[5];
+
+				for (int i = 0; i < 7; ++i)
+				{
+					double tx = gx[i] * m00 + gy[i] * m01 + m02;
+					double ty = gx[i] * m10 + gy[i] * m11 + m12;
+					fx[i] = (int)Svet.prepočítajX(tx);
+					fy[i] = (int)Svet.prepočítajY(ty);
+				}
 			}
 
+			// (Pozri atribúty cx, cy, fx a fy vyššie.)
 			private void starýPolygón()
 			{
-				c[0] = veľkosť * 0.4; c[1] = veľkosť * 0.5;
-				c[2] = veľkosť * 0.6; c[3] = veľkosť * 1.2;
-				c[4] = veľkosť * 2.0;
+				// double veľkosťX = veľkosť * pomerVeľkosti;
+				double veľkosťY = veľkosť * pomerVeľkosti;
+				cx[0] = veľkosť * 0.4;  cy[0] = veľkosťY * 0.4;
+				cx[1] = veľkosť * -0.5; cy[1] = veľkosťY * -0.5; // (negované)
+				cx[2] = veľkosť * 0.6;  cy[2] = veľkosťY * 0.6;
+				cx[3] = veľkosť * 1.2;  cy[3] = veľkosťY * 1.2;
+				cx[4] = veľkosť * 2.0;  cy[4] = veľkosťY * 2.0;
 
-				double α = Math.toRadians(aktuálnyUhol + pootočenieTvaru);
-				double x = aktuálneX - Math.cos(α) * c[1];
-				double y = aktuálneY - Math.sin(α) * c[1];
+				/* * /
+				// Po vzore metódy prepočítajPolygón bola najprv uchovaná
+				// staršia verzia (ktorá deformovala polygón pri obdĺžnikových
+				// proporciách tvaru) a nižšie implementovaná novšia verzia.
 
-				fx[0] = (int)Svet.prepočítajX(x + Math.cos(α) * c[4]); // 20.0
-				fy[0] = (int)Svet.prepočítajY(y + Math.sin(α) * c[4]);
+				double α = toRadians(aktuálnyUhol + pootočenieTvaru);
+				double x = aktuálneX - cos(α) * cx[1];
+				double y = aktuálneY - sin(α) * cy[1];
+
+				fx[0] = (int)Svet.prepočítajX(x + cos(α) * cx[4]); // 20.0
+				fy[0] = (int)Svet.prepočítajY(y + sin(α) * cy[4]);
 
 				α += 0.3490658503988659; // 20°
-				fx[1] = (int)Svet.prepočítajX(x + Math.cos(α) * c[2]); // 6.0
-				fy[1] = (int)Svet.prepočítajY(y + Math.sin(α) * c[2]);
+				fx[1] = (int)Svet.prepočítajX(x + cos(α) * cx[2]); // 6.0
+				fy[1] = (int)Svet.prepočítajY(y + sin(α) * cy[2]);
 
 				α += 0.3490658503988659; // 20°
-				fx[2] = (int)Svet.prepočítajX(x + Math.cos(α) * c[3]); // 12.0
-				fy[2] = (int)Svet.prepočítajY(y + Math.sin(α) * c[3]);
+				fx[2] = (int)Svet.prepočítajX(x + cos(α) * cx[3]); // 12.0
+				fy[2] = (int)Svet.prepočítajY(y + sin(α) * cy[3]);
 
 				α += 0.8726646259971648; // 50°
-				fx[3] = (int)Svet.prepočítajX(x + Math.cos(α) * c[0]); // 4.0
-				fy[3] = (int)Svet.prepočítajY(y + Math.sin(α) * c[0]);
+				fx[3] = (int)Svet.prepočítajX(x + cos(α) * cx[0]); // 4.0
+				fy[3] = (int)Svet.prepočítajY(y + sin(α) * cy[0]);
 
 				α += 3.141592653589793;  // 180°
-				fx[4] = (int)Svet.prepočítajX(x + Math.cos(α) * c[0]); // 4.0
-				fy[4] = (int)Svet.prepočítajY(y + Math.sin(α) * c[0]);
+				fx[4] = (int)Svet.prepočítajX(x + cos(α) * cx[0]); // 4.0
+				fy[4] = (int)Svet.prepočítajY(y + sin(α) * cy[0]);
 
 				α += 0.8726646259971648; // 50°
-				fx[5] = (int)Svet.prepočítajX(x + Math.cos(α) * c[3]); // 12.0
-				fy[5] = (int)Svet.prepočítajY(y + Math.sin(α) * c[3]);
+				fx[5] = (int)Svet.prepočítajX(x + cos(α) * cx[3]); // 12.0
+				fy[5] = (int)Svet.prepočítajY(y + sin(α) * cy[3]);
 
 				α += 0.3490658503988659; // 20°
-				fx[6] = (int)Svet.prepočítajX(x + Math.cos(α) * c[2]); // 6.0
-				fy[6] = (int)Svet.prepočítajY(y + Math.sin(α) * c[2]);
+				fx[6] = (int)Svet.prepočítajX(x + cos(α) * cx[2]); // 6.0
+				fy[6] = (int)Svet.prepočítajY(y + sin(α) * cy[2]);
+				/* */
+
+				fat.setToTranslation(aktuálneX, aktuálneY);
+				fat.rotate(toRadians(aktuálnyUhol + pootočenieTvaru));
+
+				double α = 0;
+				double x = cos(α) * cx[1];
+				double y = sin(α) * cy[1];
+				// Poznámka: Pozri cx, cy – sú negované…
+
+				gx[0] = x + cos(α) * cx[4]; // 20.0
+				gy[0] = y + sin(α) * cy[4];
+
+				α += 0.3490658503988659; // 20°
+				gx[1] = x + cos(α) * cx[2]; // 6.0
+				gy[1] = y + sin(α) * cy[2];
+
+				α += 0.3490658503988659; // 20°
+				gx[2] = x + cos(α) * cx[3]; // 12.0
+				gy[2] = y + sin(α) * cy[3];
+
+				α += 0.8726646259971648; // 50°
+				gx[3] = x + cos(α) * cx[0]; // 4.0
+				gy[3] = y + sin(α) * cy[0];
+
+				α += 3.141592653589793;  // 180°
+				gx[4] = x + cos(α) * cx[0]; // 4.0
+				gy[4] = y + sin(α) * cy[0];
+
+				α += 0.8726646259971648; // 50°
+				gx[5] = x + cos(α) * cx[3]; // 12.0
+				gy[5] = y + sin(α) * cy[3];
+
+				α += 0.3490658503988659; // 20°
+				gx[6] = x + cos(α) * cx[2]; // 6.0
+				gy[6] = y + sin(α) * cy[2];
+
+				fat.getMatrix(mat);
+				double m00 = mat[0], m10 = mat[1], m01 = mat[2];
+				double m11 = mat[3], m02 = mat[4], m12 = mat[5];
+
+				for (int i = 0; i < 7; ++i)
+				{
+					double tx = gx[i] * m00 + gy[i] * m01 + m02;
+					double ty = gx[i] * m10 + gy[i] * m11 + m12;
+					fx[i] = (int)Svet.prepočítajX(tx);
+					fy[i] = (int)Svet.prepočítajY(ty);
+				}
 			}
 
 			/*packagePrivate*/ void kresliRobot( // pôvodne: kresliRobota
@@ -4171,7 +4330,7 @@ TODO: na úvodnú stránku
 					}
 					else if (pôvodnáVeľkosť == veľkosť)
 					{
-						double α = Math.toRadians(aktuálnyUhol +
+						double α = toRadians(aktuálnyUhol +
 							pootočenieTvaru - 90);
 
 						grafika.rotate(-α, prepočítanéX, prepočítanéY);
@@ -4191,7 +4350,7 @@ TODO: na úvodnú stránku
 					{
 						AffineTransform transformácie = grafika.getTransform();
 
-						double α = Math.toRadians(aktuálnyUhol +
+						double α = toRadians(aktuálnyUhol +
 							pootočenieTvaru - 90);
 						double s = veľkosť / pôvodnáVeľkosť;
 
@@ -4252,6 +4411,7 @@ TODO: na úvodnú stránku
 				Boolean peroPoloženéDoma_Záloha = robot.peroPoloženéDoma;
 				Boolean viditeľnýDoma_Záloha = robot.viditeľnýDoma;
 				Double veľkosťDoma_Záloha = robot.veľkosťDoma;
+				Double pomerDoma_Záloha = robot.pomerDoma;
 				Float priehľadnosťDoma_Záloha = robot.priehľadnosťDoma;
 				Písmo písmoDoma_Záloha = robot.písmoDoma;
 				Double pootočenieTvaruDoma_Záloha = robot.pootočenieTvaruDoma;
@@ -4317,6 +4477,7 @@ TODO: na úvodnú stránku
 				robot.peroPoloženéDoma = peroPoloženéDoma_Záloha;
 				robot.viditeľnýDoma = viditeľnýDoma_Záloha;
 				robot.veľkosťDoma = veľkosťDoma_Záloha;
+				robot.pomerDoma = pomerDoma_Záloha;
 				robot.priehľadnosťDoma = priehľadnosťDoma_Záloha;
 				robot.písmoDoma = písmoDoma_Záloha;
 				robot.pootočenieTvaruDoma = pootočenieTvaruDoma_Záloha;
@@ -4386,7 +4547,7 @@ TODO: na úvodnú stránku
 									aktuálneX != 0 || aktuálneY != 0)
 								{
 									AffineTransform at = new AffineTransform();
-									at.rotate(Math.toRadians(
+									at.rotate(toRadians(
 										90 - (aktuálnyUhol + pootočenieTvaru)),
 										Svet.prepočítajX(aktuálneX),
 										Svet.prepočítajY(aktuálneY));
@@ -4411,7 +4572,7 @@ TODO: na úvodnú stránku
 									s.cieľ.aktuálneY != 0)
 								{
 									AffineTransform at = new AffineTransform();
-									at.rotate(Math.toRadians(
+									at.rotate(toRadians(
 										90 - (s.cieľ.aktuálnyUhol +
 											s.cieľ.pootočenieTvaru)),
 										Svet.prepočítajX(s.cieľ.aktuálneX),
@@ -4439,12 +4600,12 @@ TODO: na úvodnú stránku
 									Svet.prepočítajY(s.cieľ.aktuálneY));
 							else
 							{
-								double α = Math.toRadians(
+								double α = toRadians(
 									s.robot.smerNa(s.cieľ) - 90);
-								double Δx1 = Math.cos(α) * s.vysunutieZačiatku;
-								double Δy1 = Math.sin(α) * s.vysunutieZačiatku;
-								double Δx2 = Math.cos(α) * s.vysunutieKonca;
-								double Δy2 = Math.sin(α) * s.vysunutieKonca;
+								double Δx1 = cos(α) * s.vysunutieZačiatku;
+								double Δy1 = sin(α) * s.vysunutieZačiatku;
+								double Δx2 = cos(α) * s.vysunutieKonca;
+								double Δy2 = sin(α) * s.vysunutieKonca;
 
 								čiaraSpojnice = new Line2D.Double(
 									Svet.prepočítajX(aktuálneX + Δx1),
@@ -4482,7 +4643,7 @@ TODO: na úvodnú stránku
 									{
 										AffineTransform at =
 											new AffineTransform();
-										at.rotate(Math.toRadians(
+										at.rotate(toRadians(
 											90 - (aktuálnyUhol +
 												pootočenieTvaru)),
 											Svet.prepočítajX(aktuálneX),
@@ -4513,7 +4674,7 @@ TODO: na úvodnú stránku
 									{
 										AffineTransform at =
 											new AffineTransform();
-										at.rotate(Math.toRadians(
+										at.rotate(toRadians(
 											90 - (s.cieľ.aktuálnyUhol +
 												s.cieľ.pootočenieTvaru)),
 											Svet.prepočítajX(s.cieľ.aktuálneX),
@@ -4563,12 +4724,12 @@ TODO: na úvodnú stránku
 									Svet.prepočítajY(s.cieľ.aktuálneY));
 							else
 							{
-								double α = Math.toRadians(
+								double α = toRadians(
 									s.robot.smerNa(s.cieľ) - 90);
-								double Δx1 = Math.cos(α) * s.vysunutieZačiatku;
-								double Δy1 = Math.sin(α) * s.vysunutieZačiatku;
-								double Δx2 = Math.cos(α) * s.vysunutieKonca;
-								double Δy2 = Math.sin(α) * s.vysunutieKonca;
+								double Δx1 = cos(α) * s.vysunutieZačiatku;
+								double Δy1 = sin(α) * s.vysunutieZačiatku;
+								double Δx2 = cos(α) * s.vysunutieKonca;
+								double Δy2 = sin(α) * s.vysunutieKonca;
 
 								čiaraSpojnice = new Line2D.Double(
 									Svet.prepočítajX(aktuálneX + Δx1),
@@ -4641,6 +4802,7 @@ TODO: na úvodnú stránku
 				Boolean peroPoloženéDoma_Záloha;
 				Boolean viditeľnýDoma_Záloha;
 				Double veľkosťDoma_Záloha;
+				Double pomerDoma_Záloha;
 				Float priehľadnosťDoma_Záloha;
 				Písmo písmoDoma_Záloha;
 				Double pootočenieTvaruDoma_Záloha;
@@ -4689,6 +4851,7 @@ TODO: na úvodnú stránku
 					peroPoloženéDoma_Záloha = robot.peroPoloženéDoma;
 					viditeľnýDoma_Záloha = robot.viditeľnýDoma;
 					veľkosťDoma_Záloha = robot.veľkosťDoma;
+					pomerDoma_Záloha = robot.pomerDoma;
 					priehľadnosťDoma_Záloha = robot.priehľadnosťDoma;
 					písmoDoma_Záloha = robot.písmoDoma;
 					pootočenieTvaruDoma_Záloha = robot.pootočenieTvaruDoma;
@@ -4734,6 +4897,7 @@ TODO: na úvodnú stránku
 					robot.peroPoloženéDoma = peroPoloženéDoma_Záloha;
 					robot.viditeľnýDoma = viditeľnýDoma_Záloha;
 					robot.veľkosťDoma = veľkosťDoma_Záloha;
+					robot.pomerDoma = pomerDoma_Záloha;
 					robot.priehľadnosťDoma = priehľadnosťDoma_Záloha;
 					robot.písmoDoma = písmoDoma_Záloha;
 					robot.pootočenieTvaruDoma = pootočenieTvaruDoma_Záloha;
@@ -4773,7 +4937,7 @@ TODO: na úvodnú stránku
 			// rovnaké):
 			private final static double faktorHviezdy1 = 0.7265425280053608;
 			// Vypočítané ako: √(5 − 2√5)
-			//	(alebo v jazyku Javy: Math.sqrt(5 - 2 * Math.sqrt(5));)
+			//	(alebo v jazyku Javy: sqrt(5 - 2 * sqrt(5));)
 
 			// Trieda zoskupujúca základné vnútorné činnosti s hviezdou
 			private class Hviezda
@@ -4802,32 +4966,32 @@ TODO: na úvodnú stránku
 					double dĺžka = polomer * faktorHviezdy1;
 					double uhol = aktuálnyUhol;
 					double x1 = Svet.prepočítajX(aktuálneX +
-						Math.cos(Math.toRadians(uhol)) * polomer);
+						cos(toRadians(uhol)) * polomer);
 					double y1 = Svet.prepočítajY(aktuálneY +
-						Math.sin(Math.toRadians(uhol)) * polomer);
+						sin(toRadians(uhol)) * polomer);
 
 					Path2D.Double hviezda = new Path2D.Double();
 
 					uhol += 162;
-					x1 += Math.cos(Math.toRadians(uhol)) * dĺžka;
-					y1 -= Math.sin(Math.toRadians(uhol)) * dĺžka;
+					x1 += cos(toRadians(uhol)) * dĺžka;
+					y1 -= sin(toRadians(uhol)) * dĺžka;
 					hviezda.moveTo(x1, y1);
 
 					uhol -= 72;
-					x1 += Math.cos(Math.toRadians(uhol)) * dĺžka;
-					y1 -= Math.sin(Math.toRadians(uhol)) * dĺžka;
+					x1 += cos(toRadians(uhol)) * dĺžka;
+					y1 -= sin(toRadians(uhol)) * dĺžka;
 					hviezda.lineTo(x1, y1);
 
 					for (int i = 1; i < 5; ++i)
 					{
 						uhol += 144;
-						x1 += Math.cos(Math.toRadians(uhol)) * dĺžka;
-						y1 -= Math.sin(Math.toRadians(uhol)) * dĺžka;
+						x1 += cos(toRadians(uhol)) * dĺžka;
+						y1 -= sin(toRadians(uhol)) * dĺžka;
 						hviezda.lineTo(x1, y1);
 
 						uhol -= 72;
-						x1 += Math.cos(Math.toRadians(uhol)) * dĺžka;
-						y1 -= Math.sin(Math.toRadians(uhol)) * dĺžka;
+						x1 += cos(toRadians(uhol)) * dĺžka;
+						y1 -= sin(toRadians(uhol)) * dĺžka;
 						hviezda.lineTo(x1, y1);
 					}
 
@@ -4851,44 +5015,42 @@ TODO: na úvodnú stránku
 
 					double dĺžka = polomer * faktorHviezdy1;
 					double uhol = aktuálnyUhol;
-					double x1 = aktuálneX + Math.cos(
-						Math.toRadians(uhol)) * polomer;
-					double y1 = aktuálneY + Math.sin(
-						Math.toRadians(uhol)) * polomer;
+					double x1 = aktuálneX + cos(toRadians(uhol)) * polomer;
+					double y1 = aktuálneY + sin(toRadians(uhol)) * polomer;
 
 					tvar[1][0] = x1;
 					tvar[1][1] = y1;
 
 					uhol -= 162;
-					x1 += Math.cos(Math.toRadians(uhol)) * dĺžka;
-					y1 += Math.sin(Math.toRadians(uhol)) * dĺžka;
+					x1 += cos(toRadians(uhol)) * dĺžka;
+					y1 += sin(toRadians(uhol)) * dĺžka;
 					tvar[2][0] = x1;
 					tvar[2][1] = y1;
 
 					uhol += 72;
-					x1 += Math.cos(Math.toRadians(uhol)) * dĺžka;
-					y1 += Math.sin(Math.toRadians(uhol)) * dĺžka;
+					x1 += cos(toRadians(uhol)) * dĺžka;
+					y1 += sin(toRadians(uhol)) * dĺžka;
 					tvar[3][0] = x1;
 					tvar[3][1] = y1;
 
 					for (int i = 2; i < 5; ++i)
 					{
 						uhol -= 144;
-						x1 += Math.cos(Math.toRadians(uhol)) * dĺžka;
-						y1 += Math.sin(Math.toRadians(uhol)) * dĺžka;
+						x1 += cos(toRadians(uhol)) * dĺžka;
+						y1 += sin(toRadians(uhol)) * dĺžka;
 						tvar[i * 2][0] = x1;
 						tvar[i * 2][1] = y1;
 
 						uhol += 72;
-						x1 += Math.cos(Math.toRadians(uhol)) * dĺžka;
-						y1 += Math.sin(Math.toRadians(uhol)) * dĺžka;
+						x1 += cos(toRadians(uhol)) * dĺžka;
+						y1 += sin(toRadians(uhol)) * dĺžka;
 						tvar[i * 2 + 1][0] = x1;
 						tvar[i * 2 + 1][1] = y1;
 					}
 
 					uhol -= 144;
-					x1 += Math.cos(Math.toRadians(uhol)) * dĺžka;
-					y1 += Math.sin(Math.toRadians(uhol)) * dĺžka;
+					x1 += cos(toRadians(uhol)) * dĺžka;
+					y1 += sin(toRadians(uhol)) * dĺžka;
 					tvar[10][0] = tvar[0][0] = x1;
 					tvar[10][1] = tvar[0][1] = y1;
 
@@ -5318,7 +5480,7 @@ TODO: na úvodnú stránku
 						grafikaAktívnehoPlátna.fill(oblasť);
 					else
 					{
-						double β = Math.toRadians(Svet.otočVýplňΑ);
+						double β = toRadians(Svet.otočVýplňΑ);
 						grafikaAktívnehoPlátna.rotate(-β,
 							Svet.otočVýplňX, Svet.otočVýplňY);
 						Area a = oblasť.createTransformedArea(
@@ -5357,7 +5519,7 @@ TODO: na úvodnú stránku
 
 						if (0 != Svet.otočVýplňΑ)
 						{
-							β = Math.toRadians(Svet.otočVýplňΑ);
+							β = toRadians(Svet.otočVýplňΑ);
 							grafikaAktívnehoPlátna.rotate(-β,
 								Svet.otočVýplňX, Svet.otočVýplňY);
 							a = oblasť.createTransformedArea(
@@ -5395,14 +5557,14 @@ TODO: na úvodnú stránku
 				double x, double y, double α)
 			{
 				if (0 == α) return x;
-				return (x * Math.cos(α)) - (y * Math.sin(α));
+				return (x * cos(α)) - (y * sin(α));
 			}
 
 			/*packagePrivate*/ static double rotovanéYRad(
 				double x, double y, double α)
 			{
 				if (0 == α) return y;
-				return (x * Math.sin(α)) + (y * Math.cos(α));
+				return (x * sin(α)) + (y * cos(α));
 			}
 
 
@@ -8223,6 +8385,7 @@ TODO: na úvodnú stránku
 				public void nahodnaVelkost(double miera)
 				{ náhodnáVeľkosť(miera); }
 
+				// TODO: náhodnýPomer – rozptyl (??), náhodnýRozmer
 
 				/**
 				 * <p>Zistí poslednú x-ovú súradnicu robota. Táto hodnota sa
@@ -8339,7 +8502,8 @@ TODO: na úvodnú stránku
 				 * skryť/&#8203;zobraziť robot. Ďalej sú do úvahy
 				 * brané aj ďalšie nastaviteľné informácie: domovská
 				 * {@linkplain #farbaDoma(Color) farba}, {@linkplain 
-				 * #veľkosťDoma(Double) veľkosť} a {@linkplain 
+				 * #veľkosťDoma(Double) veľkosť}, {@linkplain 
+				 * #pomerDoma(Double) pomer} a {@linkplain 
 				 * #hrúbkaČiaryDoma(Double) hrúbka čiary}.</p>
 				 * 
 				 * <p>Použitie tejto metódy a všetkých jej „klonov“ má za
@@ -8421,6 +8585,8 @@ TODO: na úvodnú stránku
 						hrúbkaČiary(polomerPeraDoma);
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
+					if (null != pomerDoma)
+						pomer(pomerDoma);
 					if (null != priehľadnosťDoma)
 						priehľadnosť(priehľadnosťDoma);
 					if (null != písmoDoma)
@@ -8491,6 +8657,8 @@ TODO: na úvodnú stránku
 						hrúbkaČiary(polomerPeraDoma);
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
+					if (null != pomerDoma)
+						pomer(pomerDoma);
 					if (null != priehľadnosťDoma)
 						priehľadnosť(priehľadnosťDoma);
 					if (null != písmoDoma)
@@ -8562,6 +8730,8 @@ TODO: na úvodnú stránku
 						hrúbkaČiary(polomerPeraDoma);
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
+					if (null != pomerDoma)
+						pomer(pomerDoma);
 					if (null != priehľadnosťDoma)
 						priehľadnosť(priehľadnosťDoma);
 					if (null != písmoDoma)
@@ -8631,6 +8801,8 @@ TODO: na úvodnú stránku
 						hrúbkaČiary(polomerPeraDoma);
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
+					if (null != pomerDoma)
+						pomer(pomerDoma);
 					if (null != priehľadnosťDoma)
 						priehľadnosť(priehľadnosťDoma);
 					if (null != písmoDoma)
@@ -8704,6 +8876,8 @@ TODO: na úvodnú stránku
 						hrúbkaČiary(polomerPeraDoma);
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
+					if (null != pomerDoma)
+						pomer(pomerDoma);
 					if (null != priehľadnosťDoma)
 						priehľadnosť(priehľadnosťDoma);
 					if (null != písmoDoma)
@@ -8778,6 +8952,8 @@ TODO: na úvodnú stránku
 						hrúbkaČiary(polomerPeraDoma);
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
+					if (null != pomerDoma)
+						pomer(pomerDoma);
 					if (null != priehľadnosťDoma)
 						priehľadnosť(priehľadnosťDoma);
 					if (null != písmoDoma)
@@ -8847,6 +9023,8 @@ TODO: na úvodnú stránku
 						hrúbkaČiary(polomerPeraDoma);
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
+					if (null != pomerDoma)
+						pomer(pomerDoma);
 					if (null != priehľadnosťDoma)
 						priehľadnosť(priehľadnosťDoma);
 					if (null != písmoDoma)
@@ -8919,6 +9097,8 @@ TODO: na úvodnú stránku
 						hrúbkaČiary(polomerPeraDoma);
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
+					if (null != pomerDoma)
+						pomer(pomerDoma);
 					if (null != priehľadnosťDoma)
 						priehľadnosť(priehľadnosťDoma);
 					if (null != písmoDoma)
@@ -8992,6 +9172,8 @@ TODO: na úvodnú stránku
 						hrúbkaČiary(polomerPeraDoma);
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
+					if (null != pomerDoma)
+						pomer(pomerDoma);
 					if (null != priehľadnosťDoma)
 						priehľadnosť(priehľadnosťDoma);
 					if (null != písmoDoma)
@@ -9011,13 +9193,32 @@ TODO: na úvodnú stránku
 				}
 
 				/**
-				 * <p>Presne ako {@link #domov() domov}, len s tým rozdielom, že
-				 * robotu nastaví novú štartovaciu pozíciu a smer.</p>
+				 * <p>Presne ako {@link #domov() domov}, len s tým rozdielom,
+				 * že robotu nastaví novú štartovaciu pozíciu, smer
+				 * a rozmer (resp. domovskú veľkosť a domovský pomer veľkostí
+				 * robota).</p>
 				 * 
-				 * <p class="remark"><b>Poznámka:</b> Počas kreslenia vlastného
-				 * tvaru sú nový štartovací smer a pozícia platné len do
-				 * skončenia kreslenia vlastného tvaru.
-				 * (Pozri aj informácie pri metóde {@link #domov() domov()}.)</p>
+				 * <p class="remark"><b>Poznámka:</b> Počas kreslenia
+				 * vlastného tvaru sú nový štartovací smer a pozícia platné
+				 * len do skončenia kreslenia vlastného tvaru. (Pozri aj
+				 * informácie pri metóde {@link #domov() domov()}.)</p>
+				 * 
+				 * <!--p class="remark"><b>Poznámka:</b> {@linkplain Častica
+				 * Častica} a robot majú ešte jednu spoločnú vlastnosť –
+				 * {@linkplain #rozmery(double, double) rozmery.} Táto
+				 * vlastnosť nie je touto metódou braná do úvahy.
+				 * V skutočnosti sú rozmery triedy {@link GRobot GRobot} iba
+				 * „tieňovou“ vlastnosťou – sú prepočítavané podľa vlastností
+				 * {@linkplain #veľkosť() veľkosti}
+				 * a {@linkplain #pomer() pomeru.}</p-->
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> V súvislosti
+				 * s vlastnosťou rozmeru venujte pozornosť upozorneniu
+				 * v opise metódy {@link #rozmery(double, double)
+				 * rozmery}{@code (šírka, výška)}. To znamená, že volanie
+				 * tejto metódy zmení nastavenia {@linkplain 
+				 * #veľkosťDoma(Double) veľkosti doma} a {@linkplain 
+				 * #pomerDoma(Double) pomeru veľkostí doma.}</p>
 				 * 
 				 * @param častica častica určujúca nové súradnice
 				 *     domovskej pozície (v súradnicovom priestore rámca)
@@ -9041,6 +9242,10 @@ TODO: na úvodnú stránku
 					aktuálnyUhol = uholDoma = novýUholDoma;
 					if (kreslímVlastnýTvar) return;
 
+					veľkosť = veľkosťDoma = častica.výška() / 2.0;
+					pomerVeľkosti = pomerDoma =
+						(častica.šírka() / 2.0) / veľkosť;
+
 					vymažPôsobisko();
 					zrušCestu();
 					if (null != peroPoloženéDoma)
@@ -9062,8 +9267,10 @@ TODO: na úvodnú stránku
 						cieľováFarba = cieľováFarbaDoma;
 					if (null != polomerPeraDoma)
 						hrúbkaČiary(polomerPeraDoma);
-					if (null != veľkosťDoma)
+					/* if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
+					if (null != pomerDoma)
+						pomer(pomerDoma); */
 					if (null != priehľadnosťDoma)
 						priehľadnosť(priehľadnosťDoma);
 					if (null != písmoDoma)
@@ -9126,6 +9333,7 @@ TODO: na úvodnú stránku
 					viditeľnýDoma = iný.viditeľnýDoma;
 					polomerPeraDoma = iný.polomerPeraDoma;
 					veľkosťDoma = iný.veľkosťDoma;
+					pomerDoma = iný.pomerDoma;
 					priehľadnosťDoma = iný.priehľadnosťDoma;
 					písmoDoma = iný.písmoDoma;
 					pootočenieTvaruDoma = iný.pootočenieTvaruDoma;
@@ -9155,6 +9363,8 @@ TODO: na úvodnú stránku
 						hrúbkaČiary(polomerPeraDoma);
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
+					if (null != pomerDoma)
+						pomer(pomerDoma);
 					if (null != priehľadnosťDoma)
 						priehľadnosť(priehľadnosťDoma);
 					if (null != písmoDoma)
@@ -9388,6 +9598,7 @@ TODO: na úvodnú stránku
 					zrušCieľovúFarbuDoma = iný.zrušCieľovúFarbuDoma;
 					polomerPeraDoma = iný.polomerPeraDoma;
 					veľkosťDoma = iný.veľkosťDoma;
+					pomerDoma = iný.pomerDoma;
 					priehľadnosťDoma = iný.priehľadnosťDoma;
 					písmoDoma = iný.písmoDoma;
 					pootočenieTvaruDoma = iný.pootočenieTvaruDoma;
@@ -9875,7 +10086,8 @@ TODO: na úvodnú stránku
 				 * farba, alebo hodnota {@code valnull}, ktorá
 				 * signalizuje, že farba sa po prechode domov nemení.</p>
 				 * 
-				 * @return farba na domovskej pozícii alebo {@code valnull}
+				 * @return hodnota farby po prechode robota na domovskú
+				 *     pozíciu alebo {@code valnull}
 				 * 
 				 * @see #farbaDoma(Color)
 				 * @see #farbaDoma(Farebnosť)
@@ -9903,8 +10115,9 @@ TODO: na úvodnú stránku
 				 * aby kompilátor dokázal určiť, ktorú verziu z preťažených
 				 * metód má volať.</p>
 				 * 
-				 * @param nováFarba nová farba na domovskej pozícii alebo
-				 *     pretypovaná hodnota {@code (Farba)}{@code valnull}
+				 * @param nováFarba nová hodnota farby pera robota, ktorá má
+				 *     byť nastavená po jeho prechode na domovskú pozíciu
+				 *     alebo pretypovaná hodnota {@code (Farba)}{@code valnull}
 				 * 
 				 * @see #farbaDoma()
 				 * @see #farbaDoma(Farebnosť)
@@ -10024,7 +10237,8 @@ TODO: na úvodnú stránku
 				 * to, že cieľová farba nie je po prechode robota domov
 				 * ovplyvnená.</p>
 				 * 
-				 * @return cieľová farba na domovskej pozícii alebo {@code valnull}
+				 * @return hodnota cieľovej farby robota po jeho prechode
+				 *     na domovskú pozíciu alebo {@code valnull}
 				 * 
 				 * @see #cieľováFarbaDoma(Color)
 				 * @see #cieľováFarbaDoma(Farebnosť)
@@ -10099,9 +10313,10 @@ TODO: na úvodnú stránku
 				 * metód má volať.</p>
 				 * 
 				 * @param podľaObjektu objekt určujúci nastavenie cieľovej
-				 *     farby na domovskej pozícii, pričom pretypovaná hodnota
+				 *     farby robota, ktorá bude použitá pri jeho prechode
+				 *     na domovskú pozíciu, pričom pretypovaná hodnota
 				 *     {@code (Farebnosť)}{@code valnull} signalizuje zrušenie
-				 *     nastavenia cieľovej farby po prechode domov
+				 *     nastavenia cieľovej farby pri prechode domov
 				 * 
 				 * @see #cieľováFarbaDoma()
 				 * @see #cieľováFarbaDoma(Color)
@@ -10393,10 +10608,15 @@ TODO: na úvodnú stránku
 				 * ktorá signalizuje, že veľkosť robota sa po prechode domov
 				 * nemení.</p>
 				 * 
-				 * @return veľkosť robota na domovskej pozícii alebo
-				 *     {@code valnull}
+				 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+				 * upozorneniu v opise metódy {@link #rozmery(double, double)
+				 * rozmery}{@code (šírka, výška)}.</p>
 				 * 
-				 * @see #veľkosťDoma(Double)
+				 * @return hodnota veľkosti robota po prechode na domovskú
+				 *     pozíciu alebo {@code valnull}
+				 * 
+				 * @see #pomerDoma()
+				 * @see #rozmerDoma()
 				 * @see #zachovajVeľkosťDoma()
 				 * @see #veľkosť()
 				 */
@@ -10405,8 +10625,60 @@ TODO: na úvodnú stránku
 				/** <p><a class="alias"></a> Alias pre {@link #veľkosťDoma() veľkosťDoma}.</p> */
 				public Double velkostDoma() { return veľkosťDoma; }
 
-				/** <p><a class="alias"></a> Alias pre {@link #veľkosťDoma() veľkosťDoma}.</p> */
-				public Double rozmerDoma() { return veľkosťDoma; }
+				/**
+				 * <p>Zistí, ako sa mení pomer veľkosti robota po jeho
+				 * prechode na {@linkplain #domov() domovskú pozíciu}. Buď
+				 * je vrátená konkrétna číselná hodnota, alebo hodnota
+				 * {@code valnull}, ktorá signalizuje, že pomer veľkosti
+				 * robota sa po prechode domov nemení.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+				 * upozorneniu v opise metódy {@link #rozmery(double, double)
+				 * rozmery}{@code (šírka, výška)}.</p>
+				 * 
+				 * @return hodnota pomeru veľkosti robota po prechode na
+				 *     domovskú pozíciu alebo {@code valnull}
+				 * 
+				 * @see #veľkosťDoma()
+				 * @see #rozmerDoma()
+				 * @see #zachovajPomerDoma()
+				 * @see #pomer()
+				 */
+				public Double pomerDoma() { return pomerDoma; }
+
+				/**
+				 * <p>Zistí, či a ako sa budú meniť rozmery ({@linkplain 
+				 * #výška() výšky} a {@linkplain #šírka() šírky} robota po
+				 * prechode na domovskú pozíciu. V skutočnosti (pozri poznámku
+				 * nižšie) ide o prepočítané hodnoty dvoch iných vlastností:
+				 * {@link #veľkosťDoma() veľkosťDoma} a {@link #pomerDoma()
+				 * pomerDoma}. Ak je hociktorá z týchto dvoch vlastností
+				 * <b><i>ne</i></b>nastavená (rovná {@code valnull}), tak
+				 * bude návratová hodnota tejto metódy {@code valnull},
+				 * pretože domovský rozmer bez nich nemôže byť vypočítaný.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+				 * upozorneniu v opise metódy {@link #rozmery(double, double)
+				 * rozmery}{@code (šírka, výška)}.</p>
+				 * 
+				 * {@link #veľkosťDoma() veľkosťDoma}
+				 * {@link #pomerDoma() pomerDoma}
+				 * 
+				 * @return objekt obsahujúci zmenu rozmerov robota po
+				 *     prechode na domovskú pozíciu alebo {@code valnull}
+				 * 
+				 * @see #veľkosťDoma()
+				 * @see #pomerDoma()
+				 * @see #zachovajRozmerDoma()
+				 * @see #rozmery()
+				 */
+				public Rozmer rozmerDoma()
+				{
+					// TODO – test
+					if (null == veľkosťDoma || null == pomerDoma) return null;
+					return new Rozmery(2.0 * veľkosťDoma * pomerDoma,
+						2.0 * veľkosťDoma);
+				}
 
 				/**
 				 * <p>Nastaví alebo zruší ovplyvňovanie veľkosti robota po jeho
@@ -10416,12 +10688,18 @@ TODO: na úvodnú stránku
 				 * hodnota {@code valnull}, tak veľkosť robota nebude po
 				 * prechode domov ovplyvnená.</p>
 				 * 
-				 * @param nováVeľkosť nová veľkosť robota na domovskej pozícii
+				 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+				 * upozorneniu v opise metódy {@link #rozmery(double, double)
+				 * rozmery}{@code (šírka, výška)}.</p>
+				 * 
+				 * @param nováVeľkosť nová veľkosť robota, ktorá bude
+				 *     nastavená pri prechode robota na domovskú pozíciu
 				 *     alebo {@code valnull}
 				 * 
-				 * @see #veľkosťDoma()
+				 * @see #pomerDoma(Double)
+				 * @see #rozmerDoma(Rozmer)
 				 * @see #zachovajVeľkosťDoma()
-				 * @see #veľkosť()
+				 * @see #veľkosť(double)
 				 */
 				public void veľkosťDoma(Double nováVeľkosť)
 				{ veľkosťDoma = nováVeľkosť; }
@@ -10430,16 +10708,82 @@ TODO: na úvodnú stránku
 				public void velkostDoma(Double nováVeľkosť)
 				{ veľkosťDoma = nováVeľkosť; }
 
-				/** <p><a class="alias"></a> Alias pre {@link #veľkosťDoma(Double) veľkosťDoma}.</p> */
-				public void rozmerDoma(Double nováVeľkosť)
-				{ veľkosťDoma = nováVeľkosť; }
+				/**
+				 * <p>Nastaví alebo zruší ovplyvňovanie pomeru veľkosti robota
+				 * po jeho prechode na {@linkplain #domov() domovskú pozíciu}.
+				 * Ak je zadaná konkrétna číselná hodnota, tak bude pomer
+				 * veľkosti robota po prechode domov upravený na zadanú
+				 * hodnotu. Ak je zadaná hodnota {@code valnull}, tak sa
+				 * pomer veľkosti robota po prechode domov nezmení.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+				 * upozorneniu v opise metódy {@link #rozmery(double, double)
+				 * rozmery}{@code (šírka, výška)}.</p>
+				 * 
+				 * @param novýPomer nová hodnota pomeru veľkosti pri prechode
+				 *     na domovskú pozíciu; {@code valnull} znamená „nemeniť
+				 *     pomer pri prechode na domovskú pozíciu“
+				 * 
+				 * @see #veľkosťDoma(Double)
+				 * @see #rozmerDoma(Rozmer)
+				 * @see #zachovajPomerDoma()
+				 * @see #pomer(double)
+				 */
+				public void pomerDoma(Double novýPomer)
+				{ pomerDoma = novýPomer; }
+
+				/**
+				 * <p>Nastaví alebo zruší nastavovanie zmeny rozmerov (výšky
+				 * a šírky) robota po prechode na domovskú pozíciu.
+				 * V skutočnosti nastavuje táto metóda hodnoty dvojice
+				 * vlastností {@link #veľkosťDoma(Double) veľkosťDoma}
+				 * a {@link #pomerDoma(Double) pomerDoma}. Ich hodnoty sú
+				 * prepočítané podľa pravidiel, ktoré sú rozpísané
+				 * v upozornení v opise metódy {@link #rozmery(double,
+				 * double) rozmery}{@code (šírka, výška)} (pozri aj poznámku
+				 * nižšie). Ak je hodnota nového rozmeru rovná
+				 * {@code valnull}, tak budú obidve vlastnosti (domovská
+				 * veľkosť a domovský pomer veľkosti) nastavené na
+				 * {@code valnull}.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+				 * upozorneniu v opise metódy {@link #rozmery(double, double)
+				 * rozmery}{@code (šírka, výška)}.</p>
+				 * 
+				 * @param novýRozmer inštancia rozmeru, ktorého hodnoty budú
+				 *     prepočítané na {@link #veľkosťDoma(Double) veľkosťDoma}
+				 *     a {@link #pomerDoma(Double) pomerDoma} alebo hodnota
+				 *     {@code valnull}
+				 * 
+				 * @see #veľkosťDoma(Double)
+				 * @see #pomerDoma(Double)
+				 * @see #zachovajRozmerDoma()
+				 * @see #rozmery(Rozmer)
+				 */
+				public void rozmerDoma(Rozmer novýRozmer)
+				{
+					// TODO – test
+					if (null == novýRozmer)
+						veľkosťDoma = pomerDoma = null;
+					else
+					{
+						veľkosťDoma = novýRozmer.výška() / 2.0;
+						pomerDoma = (novýRozmer.šírka() / 2.0) / veľkosťDoma;
+					}
+				}
 
 				/**
 				 * <p>Po použití tejto metódy nebude veľkosť robota pri
 				 * použití niektorej modifikácie metódy {@link #domov() domov}
 				 * ovplyvňovaná.</p>
 				 * 
+				 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+				 * upozorneniu v opise metódy {@link #rozmery(double, double)
+				 * rozmery}{@code (šírka, výška)}.</p>
+				 * 
 				 * @see #veľkosťDoma()
+				 * @see #pomerDoma()
+				 * @see #rozmerDoma()
 				 * @see #veľkosťDoma(Double)
 				 */
 				public void zachovajVeľkosťDoma() { veľkosťDoma = null; }
@@ -10447,8 +10791,43 @@ TODO: na úvodnú stránku
 				/** <p><a class="alias"></a> Alias pre {@link #zachovajVeľkosťDoma() zachovajVeľkosťDoma}.</p> */
 				public void zachovajVelkostDoma() { veľkosťDoma = null; }
 
-				/** <p><a class="alias"></a> Alias pre {@link #zachovajVeľkosťDoma() zachovajVeľkosťDoma}.</p> */
-				public void zachovajRozmerDoma() { veľkosťDoma = null; }
+				/**
+				 * <p>Po použití tejto metódy nebude pomer veľkostí robota
+				 * (výšky a šírky) pri použití niektorej modifikácie metódy
+				 * {@link #domov() domov} ovplyvňovaný.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+				 * upozorneniu v opise metódy {@link #rozmery(double, double)
+				 * rozmery}{@code (šírka, výška)}.</p>
+				 * 
+				 * @see #veľkosťDoma()
+				 * @see #pomerDoma()
+				 * @see #rozmerDoma()
+				 * @see #pomerDoma(Double)
+				 */
+				public void zachovajPomerDoma() { pomerDoma = null; }
+
+				/**
+				 * <p>Volanie tejto metódy je ekvivalentné volaniu tejto
+				 * dvojice metód:</p>
+				 * 
+				 * <ul><li>{@link #zachovajVeľkosťDoma() zachovajVeľkosťDoma}</li>
+				 * <li>{@link #zachovajPomerDoma() zachovajPomerDoma}</li></ul>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+				 * upozorneniu v opise metódy {@link #rozmery(double, double)
+				 * rozmery}{@code (šírka, výška)}.</p>
+				 * 
+				 * @see #veľkosťDoma()
+				 * @see #pomerDoma()
+				 * @see #rozmerDoma()
+				 * @see #rozmerDoma(Rozmer)
+				 */
+				public void zachovajRozmerDoma()
+				{
+					veľkosťDoma = null;
+					pomerDoma = null;
+				}
 
 
 				/**
@@ -10458,8 +10837,8 @@ TODO: na úvodnú stránku
 				 * ktorá signalizuje, že priehľadnosť robota sa po prechode
 				 * domov nemení.</p>
 				 * 
-				 * @return priehľadnosť robota na domovskej pozícii alebo
-				 *     {@code valnull}
+				 * @return hodnota priehľadnosti robota po jeho prechode
+				 *     na domovskú pozíciu alebo {@code valnull}
 				 * 
 				 * @see #priehľadnosťDoma(Double)
 				 * @see #zachovajPriehľadnosťDoma()
@@ -10524,7 +10903,8 @@ TODO: na úvodnú stránku
 				 * {@code valnull}, ktorá signalizuje, že písmo robota sa po
 				 * prechode domov nemení.</p>
 				 * 
-				 * @return písmo robota na domovskej pozícii alebo {@code valnull}
+				 * @return písmo, ktoré bude nastavené po prechode robota na
+				 *     domovskú pozíciu alebo {@code valnull}
 				 * 
 				 * @see #písmoDoma(Font)
 				 * @see #písmoDoma(String, double)
@@ -11160,6 +11540,8 @@ TODO: na úvodnú stránku
 							viditeľnýDoma);
 						veľkosťDoma = súbor.čítajVlastnosť("veľkosť",
 							veľkosťDoma);
+						pomerDoma = súbor.čítajVlastnosť("pomer",
+							pomerDoma);
 
 						vlastnosťD = súbor.čítajVlastnosť("priehľadnosť",
 							null == priehľadnosťDoma ? (Double)null :
@@ -11550,6 +11932,7 @@ TODO: na úvodnú stránku
 						súbor.zapíšVlastnosť("peroPoložené", peroPoloženéDoma);
 						súbor.zapíšVlastnosť("viditeľnosť", viditeľnýDoma);
 						súbor.zapíšVlastnosť("veľkosť", veľkosťDoma);
+						súbor.zapíšVlastnosť("pomer", pomerDoma);
 						súbor.zapíšVlastnosť("priehľadnosť", priehľadnosťDoma);
 
 						Písmo.uložDoSúboru(súbor, písmoDoma);
@@ -11667,10 +12050,10 @@ TODO: na úvodnú stránku
 						poslednéY = aktuálneY;
 					}
 
-					double novéX = aktuálneX + Math.cos(
-						Math.toRadians(aktuálnyUhol)) * dĺžka;
-					double novéY = aktuálneY + Math.sin(
-						Math.toRadians(aktuálnyUhol)) * dĺžka;
+					double novéX = aktuálneX + cos(
+						toRadians(aktuálnyUhol)) * dĺžka;
+					double novéY = aktuálneY + sin(
+						toRadians(aktuálnyUhol)) * dĺžka;
 
 					if (peroPoložené)
 					{
@@ -11885,6 +12268,9 @@ TODO: na úvodnú stránku
 				 * nebráni ani pri „klasickom“ programovaní s použitím
 				 * programovacieho rámca GRobot.</p>
 				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+				 * 
 				 * @see #dopredu(double) dopredu(dĺžka)
 				 * @see #vpred() (vpred)
 				 * @see #vzad() vzad
@@ -11915,6 +12301,9 @@ TODO: na úvodnú stránku
 				 * {@code vľ}/{@code vl}. Samozrejme, že jej použitiu nič
 				 * nebráni ani pri „klasickom“ programovaní s použitím
 				 * programovacieho rámca GRobot.</p>
+				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 				 * 
 				 * @see #vzad(double) vzad(dĺžka)
 				 * @see #dopredu() dopredu
@@ -12023,10 +12412,10 @@ TODO: na úvodnú stránku
 						poslednéY = aktuálneY;
 					}
 
-					double novéX = aktuálneX + Math.cos(
-						Math.toRadians(aktuálnyUhol)) * dĺžka;
-					double novéY = aktuálneY + Math.sin(
-						Math.toRadians(aktuálnyUhol)) * dĺžka;
+					double novéX = aktuálneX + cos(
+						toRadians(aktuálnyUhol)) * dĺžka;
+					double novéY = aktuálneY + sin(
+						toRadians(aktuálnyUhol)) * dĺžka;
 
 					aktuálneX = novéX;
 					aktuálneY = novéY;
@@ -12084,6 +12473,9 @@ TODO: na úvodnú stránku
 				 * {@link #odskoč() odskoč}.
 				 * (Pozri aj metódu {@link #skoč(double) skoč(dĺžka)}.)</p>
 				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+				 * 
 				 * @see #dopredu() dopredu
 				 */
 				public void skoč() { skoč(veľkosť); }
@@ -12097,6 +12489,9 @@ TODO: na úvodnú stránku
 				 * (v aktuálnom smere). Robot pri skákaní nekreslí čiaru.
 				 * Opakom je metóda {@link #skoč() skoč}.
 				 * (Pozri aj metódu {@link #odskoč(double) odskoč(dĺžka)}.)</p>
+				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 				 * 
 				 * @see #vzad() vzad
 				 */
@@ -12190,10 +12585,10 @@ TODO: na úvodnú stránku
 						poslednéY = aktuálneY;
 					}
 
-					double novéX = aktuálneX + Math.cos(
-						Math.toRadians(aktuálnyUhol - 90)) * dĺžka;
-					double novéY = aktuálneY + Math.sin(
-						Math.toRadians(aktuálnyUhol - 90)) * dĺžka;
+					double novéX = aktuálneX + cos(
+						toRadians(aktuálnyUhol - 90)) * dĺžka;
+					double novéY = aktuálneY + sin(
+						toRadians(aktuálnyUhol - 90)) * dĺžka;
 
 					if (peroPoložené)
 					{
@@ -12265,10 +12660,10 @@ TODO: na úvodnú stránku
 						poslednéY = aktuálneY;
 					}
 
-					double novéX = aktuálneX + Math.cos(
-						Math.toRadians(aktuálnyUhol + 90)) * dĺžka;
-					double novéY = aktuálneY + Math.sin(
-						Math.toRadians(aktuálnyUhol + 90)) * dĺžka;
+					double novéX = aktuálneX + cos(
+						toRadians(aktuálnyUhol + 90)) * dĺžka;
+					double novéY = aktuálneY + sin(
+						toRadians(aktuálnyUhol + 90)) * dĺžka;
 
 					if (peroPoložené)
 					{
@@ -12328,6 +12723,9 @@ TODO: na úvodnú stránku
 				 * zostane obrátený tam, kam bol. Keď je pero položené, tak
 				 * kreslí čiaru. Protikladom je metóda {@link #posuňVľavo()
 				 * posuňVľavo}.</p>
+				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 				 */
 				public void posuňVpravo() { posuňVpravo(veľkosť * pomerVeľkosti); }
 
@@ -12347,6 +12745,9 @@ TODO: na úvodnú stránku
 				 * zostane obrátený tam, kam bol. Keď je pero položené, tak
 				 * kreslí čiaru. Protikladom je metóda {@link #posuňVpravo()
 				 * posuňVpravo}.</p>
+				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 				 */
 				public void posuňVľavo() { posuňVľavo(veľkosť * pomerVeľkosti); }
 
@@ -12378,10 +12779,8 @@ TODO: na úvodnú stránku
 						poslednéY = aktuálneY;
 					}
 
-					double novéX = aktuálneX + Math.cos(
-						Math.toRadians(smer)) * dĺžka;
-					double novéY = aktuálneY + Math.sin(
-						Math.toRadians(smer)) * dĺžka;
+					double novéX = aktuálneX + cos(toRadians(smer)) * dĺžka;
+					double novéY = aktuálneY + sin(toRadians(smer)) * dĺžka;
 
 					if (peroPoložené)
 					{
@@ -12435,6 +12834,9 @@ TODO: na úvodnú stránku
 				 * zostane obrátený tam, kam bol. Keď je pero položené, tak
 				 * kreslí čiaru.</p>
 				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+				 * 
 				 * @param smer uhol smeru, ktorým sa má robot posunúť
 				 */
 				public void posuňVSmere(double smer)
@@ -12463,10 +12865,10 @@ TODO: na úvodnú stránku
 						poslednéY = aktuálneY;
 					}
 
-					double novéX = aktuálneX + Math.cos(
-						Math.toRadians(smer.smer())) * dĺžka;
-					double novéY = aktuálneY + Math.sin(
-						Math.toRadians(smer.smer())) * dĺžka;
+					double novéX = aktuálneX + cos(
+						toRadians(smer.smer())) * dĺžka;
+					double novéY = aktuálneY + sin(
+						toRadians(smer.smer())) * dĺžka;
 
 					if (peroPoložené)
 					{
@@ -12520,6 +12922,9 @@ TODO: na úvodnú stránku
 				 * zostane obrátený tam, kam bol. Keď je pero položené, tak
 				 * kreslí čiaru.</p>
 				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+				 * 
 				 * @param smer inštancia určujúca smer, ktorým sa má robot
 				 *     posunúť
 				 */
@@ -12549,10 +12954,10 @@ TODO: na úvodnú stránku
 						poslednéY = aktuálneY;
 					}
 
-					double novéX = aktuálneX + Math.cos(
-						Math.toRadians(aktuálnyUhol - 90)) * dĺžka;
-					double novéY = aktuálneY + Math.sin(
-						Math.toRadians(aktuálnyUhol - 90)) * dĺžka;
+					double novéX = aktuálneX + cos(
+						toRadians(aktuálnyUhol - 90)) * dĺžka;
+					double novéY = aktuálneY + sin(
+						toRadians(aktuálnyUhol - 90)) * dĺžka;
 
 					aktuálneX = novéX;
 					aktuálneY = novéY;
@@ -12613,10 +13018,10 @@ TODO: na úvodnú stránku
 						poslednéY = aktuálneY;
 					}
 
-					double novéX = aktuálneX + Math.cos(
-						Math.toRadians(aktuálnyUhol + 90)) * dĺžka;
-					double novéY = aktuálneY + Math.sin(
-						Math.toRadians(aktuálnyUhol + 90)) * dĺžka;
+					double novéX = aktuálneX + cos(
+						toRadians(aktuálnyUhol + 90)) * dĺžka;
+					double novéY = aktuálneY + sin(
+						toRadians(aktuálnyUhol + 90)) * dĺžka;
 
 					aktuálneX = novéX;
 					aktuálneY = novéY;
@@ -12665,6 +13070,9 @@ TODO: na úvodnú stránku
 				 * zostane obrátený tam, kam bol a pri skákaní nekreslí čiaru.
 				 * Protikladom je metóda {@link #preskočVľavo()
 				 * preskočVľavo}.</p>
+				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 				 */
 				public void preskočVpravo() { preskočVpravo(veľkosť * pomerVeľkosti); }
 
@@ -12684,6 +13092,9 @@ TODO: na úvodnú stránku
 				 * zostane obrátený tam, kam bol a pri skákaní nekreslí čiaru.
 				 * Protikladom je metóda {@link #preskočVpravo()
 				 * preskočVpravo}.</p>
+				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 				 */
 				public void preskočVľavo() { preskočVľavo(veľkosť * pomerVeľkosti); }
 
@@ -12715,10 +13126,8 @@ TODO: na úvodnú stránku
 						poslednéY = aktuálneY;
 					}
 
-					double novéX = aktuálneX + Math.cos(
-						Math.toRadians(smer)) * dĺžka;
-					double novéY = aktuálneY + Math.sin(
-						Math.toRadians(smer)) * dĺžka;
+					double novéX = aktuálneX + cos(toRadians(smer)) * dĺžka;
+					double novéY = aktuálneY + sin(toRadians(smer)) * dĺžka;
 
 					aktuálneX = novéX;
 					aktuálneY = novéY;
@@ -12758,8 +13167,10 @@ TODO: na úvodnú stránku
 				/**
 				 * <p>Prikáže robotu, aby preskočil v zadanom smere o hodnotu
 				 * svojej {@linkplain #veľkosť() veľkosti}. Robot zostane
-				 * obrátený tam, kam bol a pri skákaní nekreslí
-				 * čiaru.</p>
+				 * obrátený tam, kam bol a pri skákaní nekreslí čiaru.</p>
+				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 				 * 
 				 * @param smer uhol smeru, ktorým má robot skočiť
 				 */
@@ -12788,10 +13199,10 @@ TODO: na úvodnú stránku
 						poslednéY = aktuálneY;
 					}
 
-					double novéX = aktuálneX + Math.cos(
-						Math.toRadians(smer.smer())) * dĺžka;
-					double novéY = aktuálneY + Math.sin(
-						Math.toRadians(smer.smer())) * dĺžka;
+					double novéX = aktuálneX + cos(
+						toRadians(smer.smer())) * dĺžka;
+					double novéY = aktuálneY + sin(
+						toRadians(smer.smer())) * dĺžka;
 
 					aktuálneX = novéX;
 					aktuálneY = novéY;
@@ -12831,8 +13242,10 @@ TODO: na úvodnú stránku
 				/**
 				 * <p>Prikáže robotu, aby preskočil v zadanom smere o hodnotu
 				 * svojej {@linkplain #veľkosť() veľkosti}. Robot zostane
-				 * obrátený tam, kam bol a pri skákaní nekreslí
-				 * čiaru.</p>
+				 * obrátený tam, kam bol a pri skákaní nekreslí čiaru.</p>
+				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 				 * 
 				 * @param smer inštancia určujúca smer, ktorým má robot skočiť
 				 */
@@ -12881,12 +13294,12 @@ TODO: na úvodnú stránku
 					else if (Δx > 0 && Δy == 0) return 0;
 					else if (Δx < 0 && Δy == 0) return 180;
 
-					double α = Math.toDegrees(Math.atan(Δy / Δx));
+					double α = toDegrees(atan(Δy / Δx));
 					if (Δx < 0) return 180 + α;
 					if (Δy < 0) return 360 + α;
 					*/
 
-					double α = Math.toDegrees(Math.atan2(Δy, Δx));
+					double α = toDegrees(atan2(Δy, Δx));
 					if (α < 0) return 360 + α;
 					return α;
 				}
@@ -12936,12 +13349,12 @@ TODO: na úvodnú stránku
 					else if (Δx > 0 && Δy == 0) return 0;
 					else if (Δx < 0 && Δy == 0) return 180;
 
-					double α = Math.toDegrees(Math.atan(Δy / Δx));
+					double α = toDegrees(atan(Δy / Δx));
 					if (Δx < 0) return 180 + α;
 					if (Δy < 0) return 360 + α;
 					*/
 
-					double α = Math.toDegrees(Math.atan2(Δy, Δx));
+					double α = toDegrees(atan2(Δy, Δx));
 					if (α < 0) return 360 + α;
 					return α;
 				}
@@ -12997,12 +13410,12 @@ TODO: na úvodnú stránku
 					else if (Δx > 0 && Δy == 0) return 0;
 					else if (Δx < 0 && Δy == 0) return 180;
 
-					double α = Math.toDegrees(Math.atan(Δy / Δx));
+					double α = toDegrees(atan(Δy / Δx));
 					if (Δx < 0) return 180 + α;
 					if (Δy < 0) return 360 + α;
 					*/
 
-					double α = Math.toDegrees(Math.atan2(Δy, Δx));
+					double α = toDegrees(atan2(Δy, Δx));
 					if (α < 0) return 360 + α;
 					return α;
 				}
@@ -13047,12 +13460,12 @@ TODO: na úvodnú stránku
 					else if (Δx > 0 && Δy == 0) return 0;
 					else if (Δx < 0 && Δy == 0) return 180;
 
-					double α = Math.toDegrees(Math.atan(Δy / Δx));
+					double α = toDegrees(atan(Δy / Δx));
 					if (Δx < 0) return 180 + α;
 					if (Δy < 0) return 360 + α;
 					*/
 
-					double α = Math.toDegrees(Math.atan2(Δy, Δx));
+					double α = toDegrees(atan2(Δy, Δx));
 					if (α < 0) return 360 + α;
 					return α;
 				}
@@ -13105,12 +13518,12 @@ TODO: na úvodnú stránku
 					else if (Δx > 0 && Δy == 0) return 0;
 					else if (Δx < 0 && Δy == 0) return 180;
 
-					double α = Math.toDegrees(Math.atan(Δy / Δx));
+					double α = toDegrees(atan(Δy / Δx));
 					if (Δx < 0) return 180 + α;
 					if (Δy < 0) return 360 + α;
 					*/
 
-					double α = Math.toDegrees(Math.atan2(Δy, Δx));
+					double α = toDegrees(atan2(Δy, Δx));
 					if (α < 0) return 360 + α;
 					return α;
 				}
@@ -13155,7 +13568,7 @@ TODO: na úvodnú stránku
 					else
 					{
 						/*
-						double α = Math.toDegrees(Math.atan(Δy / Δx));
+						double α = toDegrees(atan(Δy / Δx));
 
 						if (Δx < 0)
 							aktuálnyUhol = 180 + α;
@@ -13166,7 +13579,7 @@ TODO: na úvodnú stránku
 						*/
 
 						poslednýUhol = aktuálnyUhol;
-						aktuálnyUhol = Math.toDegrees(Math.atan2(Δy, Δx));
+						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
 
@@ -13232,7 +13645,7 @@ TODO: na úvodnú stránku
 				// 	else
 				// 	{
 				// 		/*
-				// 		double α = Math.toDegrees(Math.atan(Δy / Δx));
+				// 		double α = toDegrees(atan(Δy / Δx));
 				// 
 				// 		poslednýUhol = aktuálnyUhol;
 				// 		if (Δx < 0)
@@ -13243,7 +13656,7 @@ TODO: na úvodnú stránku
 				// 			aktuálnyUhol = α;
 				// 		*/
 				// 
-				// 		aktuálnyUhol = Math.toDegrees(Math.atan2(Δy, Δx));
+				// 		aktuálnyUhol = toDegrees(atan2(Δy, Δx));
 				// 		if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 				// 	}
 				// 
@@ -13312,7 +13725,7 @@ TODO: na úvodnú stránku
 					else
 					{
 						/*
-						double α = Math.toDegrees(Math.atan(Δy / Δx));
+						double α = toDegrees(atan(Δy / Δx));
 
 						if (Δx < 0)
 							aktuálnyUhol = 180 + α;
@@ -13323,7 +13736,7 @@ TODO: na úvodnú stránku
 						*/
 
 						poslednýUhol = aktuálnyUhol;
-						aktuálnyUhol = Math.toDegrees(Math.atan2(Δy, Δx));
+						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
 
@@ -13400,7 +13813,7 @@ TODO: na úvodnú stránku
 					else
 					{
 						/*
-						double α = Math.toDegrees(Math.atan(Δy / Δx));
+						double α = toDegrees(atan(Δy / Δx));
 
 						if (Δx < 0)
 							aktuálnyUhol = 180 + α;
@@ -13411,7 +13824,7 @@ TODO: na úvodnú stránku
 						*/
 
 						poslednýUhol = aktuálnyUhol;
-						aktuálnyUhol = Math.toDegrees(Math.atan2(Δy, Δx));
+						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
 
@@ -13482,7 +13895,7 @@ TODO: na úvodnú stránku
 					else
 					{
 						/*
-						double α = Math.toDegrees(Math.atan(Δy / Δx));
+						double α = toDegrees(atan(Δy / Δx));
 
 						if (Δx < 0)
 							aktuálnyUhol = 180 + α;
@@ -13493,7 +13906,7 @@ TODO: na úvodnú stránku
 						*/
 
 						poslednýUhol = aktuálnyUhol;
-						aktuálnyUhol = Math.toDegrees(Math.atan2(Δy, Δx));
+						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
 
@@ -13567,7 +13980,7 @@ TODO: na úvodnú stránku
 					else
 					{
 						/*
-						double α = Math.toDegrees(Math.atan(Δy / Δx));
+						double α = toDegrees(atan(Δy / Δx));
 
 						if (Δx < 0)
 							aktuálnyUhol = 180 + α;
@@ -13578,7 +13991,7 @@ TODO: na úvodnú stránku
 						*/
 
 						poslednýUhol = aktuálnyUhol;
-						aktuálnyUhol = Math.toDegrees(Math.atan2(Δy, Δx));
+						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
 
@@ -13689,7 +14102,7 @@ TODO: na úvodnú stránku
 				 */
 				public void choďNaPootočený(double x, double y, double uhol)
 				{
-					double α = Math.toRadians(uhol);
+					double α = toRadians(uhol);
 					double Δx = x - aktuálneX;
 					double Δy = y - aktuálneY;
 					choď(rotovanéXRad(Δx, Δy, α),
@@ -13721,7 +14134,7 @@ TODO: na úvodnú stránku
 				 */
 				public void choďNaPootočený(double x, double y, Smer smer)
 				{
-					double α = Math.toRadians(smer.uhol());
+					double α = toRadians(smer.uhol());
 					double Δx = x - aktuálneX;
 					double Δy = y - aktuálneY;
 					choď(rotovanéXRad(Δx, Δy, α),
@@ -13752,7 +14165,7 @@ TODO: na úvodnú stránku
 				 */
 				public void skočNaPootočený(double x, double y, double uhol)
 				{
-					double α = Math.toRadians(uhol);
+					double α = toRadians(uhol);
 					double Δx = x - aktuálneX;
 					double Δy = y - aktuálneY;
 					skoč(rotovanéXRad(Δx, Δy, α),
@@ -13784,7 +14197,7 @@ TODO: na úvodnú stránku
 				 */
 				public void skočNaPootočený(double x, double y, Smer smer)
 				{
-					double α = Math.toRadians(smer.uhol());
+					double α = toRadians(smer.uhol());
 					double Δx = x - aktuálneX;
 					double Δy = y - aktuálneY;
 					skoč(rotovanéXRad(Δx, Δy, α),
@@ -13815,7 +14228,7 @@ TODO: na úvodnú stránku
 				 */
 				public void choďNaPootočený(Poloha poloha, double uhol)
 				{
-					double α = Math.toRadians(uhol);
+					double α = toRadians(uhol);
 					double Δx = poloha.polohaX() - aktuálneX;
 					double Δy = poloha.polohaY() - aktuálneY;
 					choď(rotovanéXRad(Δx, Δy, α),
@@ -13846,7 +14259,7 @@ TODO: na úvodnú stránku
 				 */
 				public void choďNaPootočený(Poloha poloha, Smer smer)
 				{
-					double α = Math.toRadians(smer.uhol());
+					double α = toRadians(smer.uhol());
 					double Δx = poloha.polohaX() - aktuálneX;
 					double Δy = poloha.polohaY() - aktuálneY;
 					choď(rotovanéXRad(Δx, Δy, α),
@@ -13876,7 +14289,7 @@ TODO: na úvodnú stránku
 				 */
 				public void skočNaPootočený(Poloha poloha, double uhol)
 				{
-					double α = Math.toRadians(uhol);
+					double α = toRadians(uhol);
 					double Δx = poloha.polohaX() - aktuálneX;
 					double Δy = poloha.polohaY() - aktuálneY;
 					skoč(rotovanéXRad(Δx, Δy, α),
@@ -13907,7 +14320,7 @@ TODO: na úvodnú stránku
 				 */
 				public void skočNaPootočený(Poloha poloha, Smer smer)
 				{
-					double α = Math.toRadians(smer.uhol());
+					double α = toRadians(smer.uhol());
 					double Δx = poloha.polohaX() - aktuálneX;
 					double Δy = poloha.polohaY() - aktuálneY;
 					skoč(rotovanéXRad(Δx, Δy, α),
@@ -13937,7 +14350,7 @@ TODO: na úvodnú stránku
 				 */
 				public void choďPootočený(double Δx, double Δy, double uhol)
 				{
-					double α = Math.toRadians(uhol);
+					double α = toRadians(uhol);
 					choď(rotovanéXRad(Δx, Δy, α),
 						rotovanéYRad(Δx, Δy, α));
 				}
@@ -13965,7 +14378,7 @@ TODO: na úvodnú stránku
 				 */
 				public void choďPootočený(double Δx, double Δy, Smer smer)
 				{
-					double α = Math.toRadians(smer.uhol());
+					double α = toRadians(smer.uhol());
 					choď(rotovanéXRad(Δx, Δy, α),
 						rotovanéYRad(Δx, Δy, α));
 				}
@@ -13992,7 +14405,7 @@ TODO: na úvodnú stránku
 				 */
 				public void skočPootočený(double Δx, double Δy, double uhol)
 				{
-					double α = Math.toRadians(uhol);
+					double α = toRadians(uhol);
 					skoč(rotovanéXRad(Δx, Δy, α),
 						rotovanéYRad(Δx, Δy, α));
 				}
@@ -14020,7 +14433,7 @@ TODO: na úvodnú stránku
 				 */
 				public void skočPootočený(double Δx, double Δy, Smer smer)
 				{
-					double α = Math.toRadians(smer.uhol());
+					double α = toRadians(smer.uhol());
 					skoč(rotovanéXRad(Δx, Δy, α),
 						rotovanéYRad(Δx, Δy, α));
 				}
@@ -14742,12 +15155,12 @@ TODO: na úvodnú stránku
 					}
 
 					double novéX = aktuálneX
-						+ Math.sin(Math.toRadians(aktuálnyUhol)) * Δx
-						+ Math.cos(Math.toRadians(aktuálnyUhol)) * Δy;
+						+ sin(toRadians(aktuálnyUhol)) * Δx
+						+ cos(toRadians(aktuálnyUhol)) * Δy;
 
 					double novéY = aktuálneY
-						- Math.cos(Math.toRadians(aktuálnyUhol)) * Δx
-						+ Math.sin(Math.toRadians(aktuálnyUhol)) * Δy;
+						- cos(toRadians(aktuálnyUhol)) * Δx
+						+ sin(toRadians(aktuálnyUhol)) * Δy;
 
 					if (peroPoložené)
 					{
@@ -14911,12 +15324,12 @@ TODO: na úvodnú stránku
 					}
 
 					double novéX = aktuálneX
-						+ Math.sin(Math.toRadians(aktuálnyUhol)) * Δx
-						+ Math.cos(Math.toRadians(aktuálnyUhol)) * Δy;
+						+ sin(toRadians(aktuálnyUhol)) * Δx
+						+ cos(toRadians(aktuálnyUhol)) * Δy;
 
 					double novéY = aktuálneY
-						- Math.cos(Math.toRadians(aktuálnyUhol)) * Δx
-						+ Math.sin(Math.toRadians(aktuálnyUhol)) * Δy;
+						- cos(toRadians(aktuálnyUhol)) * Δx
+						+ sin(toRadians(aktuálnyUhol)) * Δy;
 
 					aktuálneX = novéX;
 					aktuálneY = novéY;
@@ -15039,19 +15452,19 @@ TODO: na úvodnú stránku
 					{
 						priemer = 2 * polomer;
 
-						prepočítanéX -= polomer * (1 - Math.cos(
-							Math.toRadians(aktuálnyUhol + 90)));
-						prepočítanéY -= polomer * (1 + Math.sin(
-							Math.toRadians(aktuálnyUhol + 90)));
+						prepočítanéX -= polomer * (1 - cos(
+							toRadians(aktuálnyUhol + 90)));
+						prepočítanéY -= polomer * (1 + sin(
+							toRadians(aktuálnyUhol + 90)));
 
 						oblúk = new Arc2D.Double(prepočítanéX, prepočítanéY,
 							priemer, priemer, aktuálnyUhol + 270, uhol,
 							Arc2D.OPEN);
 
 						// posuňVľavo…
-						aktuálneX += Math.cos(Math.toRadians(
+						aktuálneX += cos(toRadians(
 							aktuálnyUhol + 90)) * polomer;
-						aktuálneY += Math.sin(Math.toRadians(
+						aktuálneY += sin(toRadians(
 							aktuálnyUhol + 90)) * polomer;
 
 						// doľava…
@@ -15060,9 +15473,9 @@ TODO: na úvodnú stránku
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 
 						// posuňVpravo…
-						aktuálneX += Math.cos(Math.toRadians(
+						aktuálneX += cos(toRadians(
 							aktuálnyUhol - 90)) * polomer;
-						aktuálneY += Math.sin(Math.toRadians(
+						aktuálneY += sin(toRadians(
 							aktuálnyUhol - 90)) * polomer;
 					}
 					else
@@ -15070,19 +15483,19 @@ TODO: na úvodnú stránku
 						polomer = -polomer;
 						priemer = 2 * polomer;
 
-						prepočítanéX -= polomer * (1 - Math.cos(
-							Math.toRadians(aktuálnyUhol - 90)));
-						prepočítanéY -= polomer * (1 + Math.sin(
-							Math.toRadians(aktuálnyUhol - 90)));
+						prepočítanéX -= polomer * (1 - cos(
+							toRadians(aktuálnyUhol - 90)));
+						prepočítanéY -= polomer * (1 + sin(
+							toRadians(aktuálnyUhol - 90)));
 
 						oblúk = new Arc2D.Double(prepočítanéX, prepočítanéY,
 							priemer, priemer, aktuálnyUhol + 90, -uhol,
 							Arc2D.OPEN);
 
 						// posuňVpravo…
-						aktuálneX += Math.cos(Math.toRadians(
+						aktuálneX += cos(toRadians(
 							aktuálnyUhol - 90)) * polomer;
-						aktuálneY += Math.sin(Math.toRadians(
+						aktuálneY += sin(toRadians(
 							aktuálnyUhol - 90)) * polomer;
 
 						// doprava…
@@ -15091,19 +15504,19 @@ TODO: na úvodnú stránku
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 
 						// posuňVľavo…
-						aktuálneX += Math.cos(Math.toRadians(
+						aktuálneX += cos(toRadians(
 							aktuálnyUhol + 90)) * polomer;
-						aktuálneY += Math.sin(Math.toRadians(
+						aktuálneY += sin(toRadians(
 							aktuálnyUhol + 90)) * polomer;
 					}
 
 					/*
 					// Pôvodné správanie metódy:
 					double pôvodnýSmer = aktuálnyUhol;
-					double krok = (Math.PI * polomer) / 180.0;
+					double krok = (PI * polomer) / 180.0;
 					double alfa = uhol >= 0 ? 1 : -1;
 					double rotácia = alfa;
-					while (Math.abs(rotácia) <= Math.abs(uhol))
+					while (abs(rotácia) <= abs(uhol))
 					{
 						aktuálnyUhol -= alfa;
 						rotácia += alfa;
@@ -15175,11 +15588,11 @@ TODO: na úvodnú stránku
 				{
 					if (0 == uhol || 0 == jemnosť) return;
 					double pôvodnýSmer = aktuálnyUhol;
-					double krok = (Math.PI * polomer * jemnosť) / 180.0;
+					double krok = (PI * polomer * jemnosť) / 180.0;
 					double alfa = uhol >= 0 ? jemnosť : -jemnosť;
 					double rotácia = alfa;
 					poslednýUhol = aktuálnyUhol;
-					while (Math.abs(rotácia) <= Math.abs(uhol))
+					while (abs(rotácia) <= abs(uhol))
 					{
 						aktuálnyUhol -= alfa;
 						rotácia += alfa;
@@ -15266,19 +15679,19 @@ TODO: na úvodnú stránku
 					{
 						priemer = 2 * polomer;
 
-						prepočítanéX -= polomer * (1 - Math.cos(
-							Math.toRadians(aktuálnyUhol + 90)));
-						prepočítanéY -= polomer * (1 + Math.sin(
-							Math.toRadians(aktuálnyUhol + 90)));
+						prepočítanéX -= polomer * (1 - cos(
+							toRadians(aktuálnyUhol + 90)));
+						prepočítanéY -= polomer * (1 + sin(
+							toRadians(aktuálnyUhol + 90)));
 
 						oblúk = new Arc2D.Double(prepočítanéX, prepočítanéY,
 							priemer, priemer, aktuálnyUhol + 270, uhol,
 							Arc2D.OPEN);
 
 						// posuňVľavo…
-						aktuálneX += Math.cos(Math.toRadians(
+						aktuálneX += cos(toRadians(
 							aktuálnyUhol + 90)) * polomer;
-						aktuálneY += Math.sin(Math.toRadians(
+						aktuálneY += sin(toRadians(
 							aktuálnyUhol + 90)) * polomer;
 
 						// doľava…
@@ -15287,9 +15700,9 @@ TODO: na úvodnú stránku
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 
 						// posuňVpravo…
-						aktuálneX += Math.cos(Math.toRadians(
+						aktuálneX += cos(toRadians(
 							aktuálnyUhol - 90)) * polomer;
-						aktuálneY += Math.sin(Math.toRadians(
+						aktuálneY += sin(toRadians(
 							aktuálnyUhol - 90)) * polomer;
 					}
 					else
@@ -15297,19 +15710,19 @@ TODO: na úvodnú stránku
 						polomer = -polomer;
 						priemer = 2 * polomer;
 
-						prepočítanéX -= polomer * (1 - Math.cos(
-							Math.toRadians(aktuálnyUhol - 90)));
-						prepočítanéY -= polomer * (1 + Math.sin(
-							Math.toRadians(aktuálnyUhol - 90)));
+						prepočítanéX -= polomer * (1 - cos(
+							toRadians(aktuálnyUhol - 90)));
+						prepočítanéY -= polomer * (1 + sin(
+							toRadians(aktuálnyUhol - 90)));
 
 						oblúk = new Arc2D.Double(prepočítanéX, prepočítanéY,
 							priemer, priemer, aktuálnyUhol + 90, -uhol,
 							Arc2D.OPEN);
 
 						// posuňVpravo…
-						aktuálneX += Math.cos(Math.toRadians(
+						aktuálneX += cos(toRadians(
 							aktuálnyUhol - 90)) * polomer;
-						aktuálneY += Math.sin(Math.toRadians(
+						aktuálneY += sin(toRadians(
 							aktuálnyUhol - 90)) * polomer;
 
 						// doprava…
@@ -15318,9 +15731,9 @@ TODO: na úvodnú stránku
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 
 						// posuňVľavo…
-						aktuálneX += Math.cos(Math.toRadians(
+						aktuálneX += cos(toRadians(
 							aktuálnyUhol + 90)) * polomer;
-						aktuálneY += Math.sin(Math.toRadians(
+						aktuálneY += sin(toRadians(
 							aktuálnyUhol + 90)) * polomer;
 					}
 
@@ -15358,6 +15771,9 @@ TODO: na úvodnú stránku
 				 * ako pri metóde {@link #choďPoOblúku(double, double)
 				 * choďPoOblúku(uhol, polomer)}.</p>
 				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+				 * 
 				 * @param uhol uhol, o ktorý sa má robot otočiť okolo
 				 *     polomeru určeného veľkosťou robota
 				 * 
@@ -15378,6 +15794,9 @@ TODO: na úvodnú stránku
 				 * rovnaké informácie ako pri metóde
 				 * {@link #skočPoOblúku(double, double)
 				 * skočPoOblúku(uhol, polomer)}.</p>
+				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 				 * 
 				 * @param uhol uhol, o ktorý sa má robot otočiť okolo
 				 *     polomeru určeného veľkosťou robota
@@ -15401,6 +15820,9 @@ TODO: na úvodnú stránku
 				 * ako pri metóde {@link #choďPoOblúku(double, double)
 				 * choďPoOblúku(uhol, polomer)}.</p>
 				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+				 * 
 				 * @see #choďPoOblúku(double, double)
 				 * @see #veľkosť()
 				 * @see #uholOtáčania()
@@ -15420,6 +15842,9 @@ TODO: na úvodnú stránku
 				 * Ďalej platia rovnaké informácie ako pri metóde
 				 * {@link #skočPoOblúku(double, double)
 				 * skočPoOblúku(uhol, polomer)}.</p>
+				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 				 * 
 				 * @see #skočNaPoOblúku(double, double)
 				 * @see #veľkosť()
@@ -15441,6 +15866,9 @@ TODO: na úvodnú stránku
 				 * otáčať doprava. Inak platia rovnaké informácie
 				 * ako pri metóde {@link #choďPoOblúku(double, double)
 				 * choďPoOblúku(uhol, polomer)}.</p>
+				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 				 * 
 				 * @param uhol uhol, o ktorý sa má robot otočiť okolo
 				 *     polomeru určeného veľkosťou robota
@@ -15465,6 +15893,9 @@ TODO: na úvodnú stránku
 				 * robot bude otáčať doprava. Inak platia rovnaké informácie
 				 * ako pri metóde {@link #skočPoOblúku(double, double)
 				 * skočPoOblúku(uhol, polomer)}.</p>
+				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 				 * 
 				 * @param uhol uhol, o ktorý sa má robot otočiť okolo
 				 *     polomeru určeného veľkosťou robota
@@ -15492,6 +15923,9 @@ TODO: na úvodnú stránku
 				 * ako pri metóde {@link #choďPoOblúku(double, double)
 				 * choďPoOblúku(uhol, polomer)}.</p>
 				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+				 * 
 				 * @param vpravo ak je táto hodnota rovná {@code valtrue},
 				 *     tak sa robot bude otáčať doprava
 				 * 
@@ -15516,6 +15950,9 @@ TODO: na úvodnú stránku
 				 * platia rovnaké informácie ako pri metóde
 				 * {@link #skočPoOblúku(double, double)
 				 * skočPoOblúku(uhol, polomer)}.</p>
+				 * 
+				 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 				 * 
 				 * @param vpravo ak je táto hodnota rovná {@code valtrue},
 				 *     tak sa robot bude otáčať doprava
@@ -15610,7 +16047,7 @@ TODO: na úvodnú stránku
 					}
 
 					// Jeden pracovný uhol je uhol kolmý na cieľ
-					double pracovnýUhol1 = (90 + Math.toDegrees(Math.atan2(
+					double pracovnýUhol1 = (90 + toDegrees(atan2(
 						y - aktuálneY, x - aktuálneX))) % 360;
 					if (pracovnýUhol1 < 0) pracovnýUhol1 += 360;
 
@@ -15671,18 +16108,16 @@ TODO: na úvodnú stránku
 					// System.out.println("y0: " + y0);
 
 					// Podľa smeru sa prepočítajú súradnice druhého bodu
-					double x1 = x0 + Math.cos(Math.toRadians(pracovnýUhol1));
-					double y1 = y0 + Math.sin(Math.toRadians(pracovnýUhol1));
+					double x1 = x0 + cos(toRadians(pracovnýUhol1));
+					double y1 = y0 + sin(toRadians(pracovnýUhol1));
 
 					// System.out.println("x1: " + x1);
 					// System.out.println("y1: " + y1);
 
 					// Aktuálnu polohu máme, takže len podľa smeru prepočítame
 					// druhú súradnicu
-					double x2 = aktuálneX + Math.cos(
-						Math.toRadians(pracovnýUhol2));
-					double y2 = aktuálneY + Math.sin(
-						Math.toRadians(pracovnýUhol2));
+					double x2 = aktuálneX + cos(toRadians(pracovnýUhol2));
+					double y2 = aktuálneY + sin(toRadians(pracovnýUhol2));
 
 					// System.out.println("x2: " + x2);
 					// System.out.println("y2: " + y2);
@@ -15707,8 +16142,7 @@ TODO: na úvodnú stránku
 						// System.out.println("y3: " + y3);
 
 						// Vypočítame polomer kružnice oblúka
-						double polomer = Math.hypot(
-							x3 - aktuálneX, y3 - aktuálneY);
+						double polomer = hypot(x3 - aktuálneX, y3 - aktuálneY);
 
 						// System.out.println("polomer: " + polomer);
 
@@ -15717,7 +16151,7 @@ TODO: na úvodnú stránku
 						if (δ < 180)
 						{
 							// — uhol kreslenia oblúka —
-							double uhol = (Math.toDegrees(Math.atan2(y3 - y,
+							double uhol = (toDegrees(atan2(y3 - y,
 								x3 - x)) - pracovnýUhol2) % 360;
 							if (uhol < 0) uhol += 360;
 
@@ -15729,8 +16163,7 @@ TODO: na úvodnú stránku
 						{
 							// — uhol kreslenia oblúka —
 							double uhol = (180 + pracovnýUhol2 -
-								Math.toDegrees(Math.atan2(y3 - y,
-									x3 - x))) % 360;
+								toDegrees(atan2(y3 - y, x3 - x))) % 360;
 							if (uhol < 0) uhol += 360;
 
 							// System.out.println("uhol 2: " + uhol);
@@ -15824,7 +16257,7 @@ TODO: na úvodnú stránku
 					}
 
 					// Jeden pracovný uhol je uhol kolmý na cieľ
-					double pracovnýUhol1 = (90 + Math.toDegrees(Math.atan2(
+					double pracovnýUhol1 = (90 + toDegrees(atan2(
 						y - aktuálneY, x - aktuálneX))) % 360;
 					if (pracovnýUhol1 < 0) pracovnýUhol1 += 360;
 
@@ -15864,15 +16297,13 @@ TODO: na úvodnú stránku
 					double y0 = (y + aktuálneY) / 2;
 
 					// Podľa smeru sa prepočítajú súradnice druhého bodu
-					double x1 = x0 + Math.cos(Math.toRadians(pracovnýUhol1));
-					double y1 = y0 + Math.sin(Math.toRadians(pracovnýUhol1));
+					double x1 = x0 + cos(toRadians(pracovnýUhol1));
+					double y1 = y0 + sin(toRadians(pracovnýUhol1));
 
 					// Aktuálnu polohu máme, takže len podľa smeru prepočítame
 					// druhú súradnicu
-					double x2 = aktuálneX + Math.cos(
-						Math.toRadians(pracovnýUhol2));
-					double y2 = aktuálneY + Math.sin(
-						Math.toRadians(pracovnýUhol2));
+					double x2 = aktuálneX + cos(toRadians(pracovnýUhol2));
+					double y2 = aktuálneY + sin(toRadians(pracovnýUhol2));
 
 					try
 					{
@@ -15891,15 +16322,14 @@ TODO: na úvodnú stránku
 						}
 
 						// Vypočítame polomer kružnice oblúka
-						double polomer = Math.hypot(
-							x3 - aktuálneX, y3 - aktuálneY);
+						double polomer = hypot(x3 - aktuálneX, y3 - aktuálneY);
 
 						// Podľa toho, či je odchýlka vypočítaná vyššie menšia
 						// alebo väčšia než 180° nakreslíme iný typ oblúka
 						if (δ < 180)
 						{
 							// — uhol kreslenia oblúka —
-							double uhol = (Math.toDegrees(Math.atan2(y3 - y,
+							double uhol = (toDegrees(atan2(y3 - y,
 								x3 - x)) - pracovnýUhol2) % 360;
 							if (uhol < 0) uhol += 360;
 
@@ -15909,8 +16339,7 @@ TODO: na úvodnú stránku
 						{
 							// — uhol kreslenia oblúka —
 							double uhol = (180 + pracovnýUhol2 -
-								Math.toDegrees(Math.atan2(y3 - y,
-									x3 - x))) % 360;
+								toDegrees(atan2(y3 - y, x3 - x))) % 360;
 							if (uhol < 0) uhol += 360;
 
 							skočPoOblúku(uhol, -polomer);
@@ -17774,19 +18203,16 @@ TODO: na úvodnú stránku
 				private boolean overDosiahnutieCieľa()
 				{
 					/*!!!
-					if (Math.sqrt(Math.pow(cieľX - aktuálneX, 2) +
-						Math.pow(cieľY - aktuálneY, 2)) <=
-						rýchlosť)
+					if (sqrt(pow(cieľX - aktuálneX, 2) +
+						pow(cieľY - aktuálneY, 2)) <= rýchlosť)
 					*/
-					if (Math.hypot(cieľX - aktuálneX,
-						cieľY - aktuálneY) <= rýchlosť)
+					if (hypot(cieľX - aktuálneX, cieľY - aktuálneY) <= rýchlosť)
 					{
 						if (maximálnaUhlováRýchlosť != 0.0)
 						{
 							double β = smerNa(cieľX, cieľY);
-							if (Math.abs(aktuálnyUhol - β) <= 0.05 ||
-								Math.abs(360 + aktuálnyUhol - β) <=
-								0.05)
+							if (abs(aktuálnyUhol - β) <= 0.05 ||
+								abs(360 + aktuálnyUhol - β) <= 0.05)
 							{
 								poslednýUhol = aktuálnyUhol;
 								aktuálnyUhol = β;
@@ -18616,7 +19042,7 @@ TODO: na úvodnú stránku
 
 					if (Δx == 0 && Δy == 0) return 360;
 
-					double α = Math.toDegrees(Math.atan2(Δy, Δx));
+					double α = toDegrees(atan2(Δy, Δx));
 					if (α < 0) return 360 + α;
 					return α;
 				}
@@ -18767,7 +19193,7 @@ TODO: na úvodnú stránku
 					else
 					{
 						poslednýUhol = aktuálnyUhol;
-						aktuálnyUhol = Math.toDegrees(Math.atan2(Δy, Δx));
+						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
 
@@ -19048,7 +19474,7 @@ TODO: na úvodnú stránku
 							double x1 = Svet.prepočítajSpäťX(čítačIterátora[0]);
 							double y1 = Svet.prepočítajSpäťY(čítačIterátora[1]);
 
-							double vzdialenosť = Math.hypot(x0 - x1, y0 - y1);
+							double vzdialenosť = hypot(x0 - x1, y0 - y1);
 							if (vzdialenosť > zrnitosť)
 							{
 								// System.out.println("(" + x1 + ", " + y1 + " – " + vzdialenosť + ")");
@@ -19062,7 +19488,7 @@ TODO: na úvodnú stránku
 									double y3 = Svet.lineárnaInterpolácia(
 										y0, y1, t);
 
-									vzdialenosť = Math.hypot(x2 - x3, y2 - y3);
+									vzdialenosť = hypot(x2 - x3, y2 - y3);
 									if (vzdialenosť >= zrnitosť / 16.0)
 									{
 										// System.out.println("  " + x3 + ", " + y3 + " – " + vzdialenosť);
@@ -19076,7 +19502,7 @@ TODO: na úvodnú stránku
 									// }
 								}
 
-								vzdialenosť = Math.hypot(x2 - x1, y2 - y1);
+								vzdialenosť = hypot(x2 - x1, y2 - y1);
 								if (vzdialenosť >= zrnitosť / 16.0)
 								{
 									// System.out.println("  + " + x1 + ", " + y1 + " – " + vzdialenosť);
@@ -19628,7 +20054,7 @@ TODO: na úvodnú stránku
 							double x1 = Svet.prepočítajSpäťX(čítačIterátora[0]);
 							double y1 = Svet.prepočítajSpäťY(čítačIterátora[1]);
 
-							double vzdialenosť = Math.hypot(x0 - x1, y0 - y1);
+							double vzdialenosť = hypot(x0 - x1, y0 - y1);
 							if (vzdialenosť > zrnitosť)
 							{
 								// System.out.println("(" + x1 + ", " + y1 + " – " + vzdialenosť + ")");
@@ -19642,7 +20068,7 @@ TODO: na úvodnú stránku
 									double y3 = Svet.lineárnaInterpolácia(
 										y0, y1, t);
 
-									vzdialenosť = Math.hypot(x2 - x3, y2 - y3);
+									vzdialenosť = hypot(x2 - x3, y2 - y3);
 									if (vzdialenosť >= zrnitosť / 16.0)
 									{
 										// System.out.println("  " + x3 + ", " + y3 + " – " + vzdialenosť);
@@ -19662,7 +20088,7 @@ TODO: na úvodnú stránku
 									// }
 								}
 
-								vzdialenosť = Math.hypot(x2 - x1, y2 - y1);
+								vzdialenosť = hypot(x2 - x1, y2 - y1);
 								if (vzdialenosť >= zrnitosť / 16.0)
 								{
 									// System.out.println("  + " + x1 + ", " + y1 + " – " + vzdialenosť);
@@ -20148,12 +20574,12 @@ TODO: na úvodnú stránku
 					{
 						int najbližší = 0;
 						Bod bod = dráha.get(0);
-						double najmenšiaVzdialenosť = Math.hypot(
+						double najmenšiaVzdialenosť = hypot(
 							aktuálneX - bod.x, aktuálneY - bod.y);
 						for (int i = 1; i < dráha.size(); ++i)
 						{
 							bod = dráha.get(i);
-							double vzdialenosť = Math.hypot(
+							double vzdialenosť = hypot(
 								aktuálneX - bod.x, aktuálneY - bod.y);
 							if (vzdialenosť < najmenšiaVzdialenosť)
 							{
@@ -20323,7 +20749,7 @@ TODO: na úvodnú stránku
 					if (najbližší >= dráha.size()) return;
 
 					Bod bod = dráha.get(najbližší);
-					double najmenšiaVzdialenosť = Math.hypot(
+					double najmenšiaVzdialenosť = hypot(
 						aktuálneX - bod.x, aktuálneY - bod.y);
 
 					for (int i = najbližší + 1; i < dráha.size(); ++i)
@@ -20331,7 +20757,7 @@ TODO: na úvodnú stránku
 						if (kľúčovéFázy.contains(i)) continue;
 
 						bod = dráha.get(i);
-						double vzdialenosť = Math.hypot(
+						double vzdialenosť = hypot(
 							aktuálneX - bod.x, aktuálneY - bod.y);
 						if (vzdialenosť < najmenšiaVzdialenosť)
 						{
@@ -20400,14 +20826,14 @@ TODO: na úvodnú stránku
 					int najbližší = kľúčovéFázy.first();
 
 					Bod bod = dráha.get(najbližší);
-					double najmenšiaVzdialenosť = Math.hypot(
+					double najmenšiaVzdialenosť = hypot(
 						aktuálneX - bod.x, aktuálneY - bod.y);
 
 					Integer i = kľúčovéFázy.higher(najbližší);
 					while (null != i)
 					{
 						bod = dráha.get(i);
-						double vzdialenosť = Math.hypot(
+						double vzdialenosť = hypot(
 							aktuálneX - bod.x, aktuálneY - bod.y);
 
 						if (vzdialenosť < najmenšiaVzdialenosť)
@@ -20488,7 +20914,7 @@ TODO: na úvodnú stránku
 						if (kľúčovéFázy.contains(i)) continue;
 
 						Bod bod = dráha.get(i);
-						double vzdialenosť = Math.hypot(
+						double vzdialenosť = hypot(
 							aktuálneX - bod.x, aktuálneY - bod.y);
 
 						if (vzdialenosť < okruh)
@@ -20569,7 +20995,7 @@ TODO: na úvodnú stránku
 					while (null != i)
 					{
 						Bod bod = dráha.get(i);
-						double vzdialenosť = Math.hypot(
+						double vzdialenosť = hypot(
 							aktuálneX - bod.x, aktuálneY - bod.y);
 
 						if (vzdialenosť < okruh)
@@ -21082,11 +21508,11 @@ TODO: na úvodnú stránku
 												(2 * zrýchlenie);
 
 										/*!!!
-										if (Math.sqrt(Math.pow(cieľX -
-											aktuálneX, 2) + Math.pow(cieľY -
-												aktuálneY, 2)) < brzdnáDráha)
+										if (sqrt(pow(cieľX - aktuálneX, 2) +
+											pow(cieľY - aktuálneY, 2)) <
+											brzdnáDráha)
 										*/
-										if (Math.hypot(cieľX - aktuálneX,
+										if (hypot(cieľX - aktuálneX,
 											cieľY - aktuálneY) < brzdnáDráha)
 										{
 											zrýchlenie = -zrýchlenie;
@@ -21097,14 +21523,12 @@ TODO: na úvodnú stránku
 								overDosiahnutieCieľa();
 
 								/*
-								if (Math.sqrt(Math.pow(cieľX - aktuálneX, 2) +
-									Math.pow(cieľY - aktuálneY, 2)) <=
-									rýchlosť)
+								if (sqrt(pow(cieľX - aktuálneX, 2) +
+									pow(cieľY - aktuálneY, 2)) <= rýchlosť)
 								{
 									double β = smerNa(cieľX, cieľY);
-									if (Math.abs(aktuálnyUhol - β) <= 0.01 ||
-										Math.abs(360 + aktuálnyUhol - β) <=
-										0.01)
+									if (abs(aktuálnyUhol - β) <= 0.01 ||
+										abs(360 + aktuálnyUhol - β) <= 0.01)
 									{
 										poslednýUhol = aktuálnyUhol;
 										aktuálnyUhol = β;
@@ -23781,10 +24205,10 @@ TODO: na úvodnú stránku
 					// if (0 == praváHranica) praváHranica = 1;
 					// if (0 == hornáHranica) hornáHranica = 1;
 
-					this.ľaváHranica  = aktuálneX - Math.abs(ľaváHranica);
-					this.dolnáHranica = aktuálneY - Math.abs(dolnáHranica);
-					this.praváHranica = aktuálneX + Math.abs(praváHranica);
-					this.hornáHranica = aktuálneY + Math.abs(hornáHranica);
+					this.ľaváHranica  = aktuálneX - abs(ľaváHranica);
+					this.dolnáHranica = aktuálneY - abs(dolnáHranica);
+					this.praváHranica = aktuálneX + abs(praváHranica);
+					this.hornáHranica = aktuálneY + abs(hornáHranica);
 					aktuálneOhraničenie = spôsob;
 
 					// System.out.println("Aktuálne ohraničenie: " +
@@ -25330,7 +25754,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					elipsa = AffineTransform.getRotateInstance(-α,
 						prepočítanéX, prepočítanéY).
@@ -25418,7 +25842,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					elipsa = AffineTransform.getRotateInstance(-α,
 						prepočítanéX, prepočítanéY).
@@ -25569,7 +25993,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					if (0 != zaoblenieX || 0 != zaoblenieY)
 						štvorec = AffineTransform.getRotateInstance(-α,
@@ -25663,7 +26087,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					if (0 != zaoblenieX || 0 != zaoblenieY)
 						štvorec = AffineTransform.getRotateInstance(-α,
@@ -25834,7 +26258,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					if (0 != zaoblenieX || 0 != zaoblenieY)
 						obdĺžnik = AffineTransform.getRotateInstance(-α,
@@ -25942,7 +26366,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					if (0 != zaoblenieX || 0 != zaoblenieY)
 						obdĺžnik = AffineTransform.getRotateInstance(-α,
@@ -26197,6 +26621,9 @@ TODO: na úvodnú stránku
 			 * jazyk striktne rozlišuje kruh ako vyplnený tvar a kružnicu
 			 * ako nakreslenú čiaru ohraničujúcu tento vyplnený tvar.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @return objekt typu {@link Shape Shape} reprezentujúci
 			 *     kreslený útvar
 			 * 
@@ -26238,6 +26665,9 @@ TODO: na úvodnú stránku
 			 * {@linkplain Oblasť#zamestnaj(GRobot) zamestnaný} na účely
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @return objekt typu {@link Shape Shape} reprezentujúci
 			 *     kreslený útvar
@@ -26310,6 +26740,9 @@ TODO: na úvodnú stránku
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @return objekt typu {@link Shape Shape} reprezentujúci
 			 *     vypĺňaný útvar
 			 * 
@@ -26380,6 +26813,9 @@ TODO: na úvodnú stránku
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @param pomer pomer hlavnej a vedľajšej poloosi
 			 *     (šírky a výšky elipsy – {@code num2.0} znamená
 			 *     dvojnásobnú šírku, {@code num0.5} polovičnú a podobne)
@@ -26431,6 +26867,9 @@ TODO: na úvodnú stránku
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @param pomer pomer hlavnej a vedľajšej poloosi
 			 *     (šírky a výšky elipsy – {@code num2.0} znamená
 			 *     dvojnásobnú šírku, {@code num0.5} polovičnú a podobne)
@@ -26477,7 +26916,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					elipsa = AffineTransform.getRotateInstance(-α,
 						prepočítanéX, prepočítanéY).
@@ -26519,6 +26958,9 @@ TODO: na úvodnú stránku
 			 * {@linkplain Oblasť#zamestnaj(GRobot) zamestnaný} na účely
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @param pomer pomer hlavnej a vedľajšej poloosi
 			 *     (šírky a výšky elipsy – {@code num2.0} znamená
@@ -26567,7 +27009,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					elipsa = AffineTransform.getRotateInstance(-α,
 						prepočítanéX, prepočítanéY).
@@ -26628,6 +27070,9 @@ TODO: na úvodnú stránku
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @return objekt typu {@link Shape Shape} reprezentujúci
 			 *     kreslený útvar
 			 * 
@@ -26672,6 +27117,9 @@ TODO: na úvodnú stránku
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @return objekt typu {@link Shape Shape} reprezentujúci
 			 *     kreslený útvar
 			 * 
@@ -26715,7 +27163,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					elipsa = AffineTransform.getRotateInstance(-α,
 						prepočítanéX, prepočítanéY).
@@ -26752,6 +27200,9 @@ TODO: na úvodnú stránku
 			 * {@linkplain Oblasť#zamestnaj(GRobot) zamestnaný} na účely
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @return objekt typu {@link Shape Shape} reprezentujúci
 			 *     vypĺňaný útvar
@@ -26797,7 +27248,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					elipsa = AffineTransform.getRotateInstance(-α,
 						prepočítanéX, prepočítanéY).
@@ -26853,6 +27304,9 @@ TODO: na úvodnú stránku
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @return objekt typu {@link Shape Shape} reprezentujúci
 			 *     kreslený útvar
 			 * 
@@ -26897,6 +27351,9 @@ TODO: na úvodnú stránku
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @return objekt typu {@link Shape Shape} reprezentujúci
 			 *     kreslený útvar
 			 * 
@@ -26938,7 +27395,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					if (0 != zaoblenieX || 0 != zaoblenieY)
 						štvorec = AffineTransform.getRotateInstance(-α,
@@ -26983,6 +27440,9 @@ TODO: na úvodnú stránku
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @return objekt typu {@link Shape Shape} reprezentujúci
 			 *     vypĺňaný útvar
 			 * 
@@ -27025,7 +27485,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					if (0 != zaoblenieX || 0 != zaoblenieY)
 						štvorec = AffineTransform.getRotateInstance(-α,
@@ -27090,6 +27550,9 @@ TODO: na úvodnú stránku
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @param pomer pomer hlavnej a vedľajšej poloosi vpísanej
 			 *     elipsy (šírky a výšky obdĺžnika – {@code num2.0} znamená
 			 *     dvojnásobnú šírku, {@code num0.5} polovičnú a podobne)
@@ -27142,6 +27605,9 @@ TODO: na úvodnú stránku
 			 * {@linkplain Oblasť#zamestnaj(GRobot) zamestnaný} na účely
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @param pomer pomer hlavnej a vedľajšej poloosi vpísanej
 			 *     elipsy (šírky a výšky obdĺžnika – {@code num2.0} znamená
@@ -27203,7 +27669,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					if (0 != zaoblenieX || 0 != zaoblenieY)
 						obdĺžnik = AffineTransform.getRotateInstance(-α,
@@ -27255,6 +27721,9 @@ TODO: na úvodnú stránku
 			 * {@linkplain Oblasť#zamestnaj(GRobot) zamestnaný} na účely
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @param pomer pomer hlavnej a vedľajšej poloosi vpísanej
 			 *     elipsy (šírky a výšky obdĺžnika – {@code num2.0} znamená
@@ -27316,7 +27785,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					if (0 != zaoblenieX || 0 != zaoblenieY)
 						obdĺžnik = AffineTransform.getRotateInstance(-α,
@@ -27426,6 +27895,9 @@ TODO: na úvodnú stránku
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @return objekt typu {@link Shape Shape} reprezentujúci
 			 *     kreslený útvar
 			 * 
@@ -27483,7 +27955,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					if (0 != zaoblenieX || 0 != zaoblenieY)
 						obdĺžnik = AffineTransform.getRotateInstance(-α,
@@ -27531,6 +28003,9 @@ TODO: na úvodnú stránku
 			 * {@linkplain Oblasť#zamestnaj(GRobot) zamestnaný} na účely
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @return objekt typu {@link Shape Shape} reprezentujúci
 			 *     vypĺňaný útvar
@@ -27589,7 +28064,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					if (0 != zaoblenieX || 0 != zaoblenieY)
 						obdĺžnik = AffineTransform.getRotateInstance(-α,
@@ -27649,6 +28124,9 @@ TODO: na úvodnú stránku
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @return objekt typu {@link Shape Shape} reprezentujúci
 			 *     kreslený útvar
 			 * 
@@ -27689,6 +28167,9 @@ TODO: na úvodnú stránku
 			 * {@linkplain Oblasť#zamestnaj(GRobot) zamestnaný} na účely
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @return objekt typu {@link Shape Shape} reprezentujúci
 			 *     kreslený útvar
@@ -27743,6 +28224,9 @@ TODO: na úvodnú stránku
 			 * {@linkplain Oblasť#zamestnaj(GRobot) zamestnaný} na účely
 			 * tvorby {@linkplain Oblasť oblasti} alebo je {@linkplain 
 			 * #nekresliTvary() zakázané kreslenie tvarov}.</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @return objekt typu {@link Shape Shape} reprezentujúci
 			 *     vypĺňaný útvar
@@ -27842,6 +28326,9 @@ TODO: na úvodnú stránku
 			 * <p>(Pozri aj zmeny tvaru robota zachytené na obrázku v opise
 			 * metódy {@link #trojzubec(boolean) trojzubec(starý)}.)</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @return aktuálny {@linkplain Shape tvar} robota (v zmysle
 			 *     aktuálnych parametrov robota – polohy, smeru, veľkosti…;
 			 *     iba novú verziu – pozri aj obrázok v opise metódy
@@ -27894,6 +28381,9 @@ TODO: na úvodnú stránku
 			 * 1.75 – vľavo) a nový predvolený tvar robota
 			 * (vpravo)<br /><small>(šedé kružnice sú len
 			 * ilustračné)</small>.</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @param starý ak je hodnota parametera rovná {@code valtrue},
 			 *     tak táto metóda pracuje so starým tvarom robota (pozri
@@ -28071,7 +28561,7 @@ TODO: na úvodnú stránku
 						grafikaAktívnehoPlátna.fill(tvar);
 					else
 					{
-						double β = Math.toRadians(Svet.otočVýplňΑ);
+						double β = toRadians(Svet.otočVýplňΑ);
 						grafikaAktívnehoPlátna.rotate(-β,
 							Svet.otočVýplňX, Svet.otočVýplňY);
 						Shape s = AffineTransform.getRotateInstance(β,
@@ -28149,7 +28639,7 @@ TODO: na úvodnú stránku
 
 						if (0 != Svet.otočVýplňΑ)
 						{
-							β = Math.toRadians(Svet.otočVýplňΑ);
+							β = toRadians(Svet.otočVýplňΑ);
 							grafikaAktívnehoPlátna.rotate(-β,
 								Svet.otočVýplňX, Svet.otočVýplňY);
 							s = AffineTransform.getRotateInstance(β,
@@ -28260,7 +28750,7 @@ TODO: na úvodnú stránku
 							at.translate(-prepočítanéX, -prepočítanéY);
 						}
 
-						at.rotate(Math.toRadians(90 - aktuálnyUhol),
+						at.rotate(toRadians(90 - aktuálnyUhol),
 							prepočítanéX, prepočítanéY);
 
 						at.translate(aktuálneX, -aktuálneY);
@@ -28290,7 +28780,7 @@ TODO: na úvodnú stránku
 						at.translate(-prepočítanéX, -prepočítanéY);
 					}
 
-					at.rotate(Math.toRadians(90 - aktuálnyUhol),
+					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
 
 					at.translate(aktuálneX, -aktuálneY);
@@ -28355,7 +28845,7 @@ TODO: na úvodnú stránku
 							at.translate(-prepočítanéX, -prepočítanéY);
 						}
 
-						at.rotate(Math.toRadians(90 - aktuálnyUhol),
+						at.rotate(toRadians(90 - aktuálnyUhol),
 							prepočítanéX, prepočítanéY);
 
 						at.translate(aktuálneX, -aktuálneY);
@@ -28385,7 +28875,7 @@ TODO: na úvodnú stránku
 						at.translate(-prepočítanéX, -prepočítanéY);
 					}
 
-					at.rotate(Math.toRadians(90 - aktuálnyUhol),
+					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
 
 					at.translate(aktuálneX, -aktuálneY);
@@ -28470,7 +28960,7 @@ TODO: na úvodnú stránku
 
 					if (0 != Svet.otočVýplňΑ)
 					{
-						β = Math.toRadians(Svet.otočVýplňΑ);
+						β = toRadians(Svet.otočVýplňΑ);
 						grafikaAktívnehoPlátna.rotate(-β,
 							Svet.otočVýplňX, Svet.otočVýplňY);
 						s = AffineTransform.getRotateInstance(β,
@@ -28500,7 +28990,7 @@ TODO: na úvodnú stránku
 							at.translate(-prepočítanéX, -prepočítanéY);
 						}
 
-						at.rotate(Math.toRadians(90 - aktuálnyUhol),
+						at.rotate(toRadians(90 - aktuálnyUhol),
 							prepočítanéX, prepočítanéY);
 
 						at.translate(aktuálneX, -aktuálneY);
@@ -28541,7 +29031,7 @@ TODO: na úvodnú stránku
 						at.translate(-prepočítanéX, -prepočítanéY);
 					}
 
-					at.rotate(Math.toRadians(90 - aktuálnyUhol),
+					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
 
 					at.translate(aktuálneX, -aktuálneY);
@@ -28623,7 +29113,7 @@ TODO: na úvodnú stránku
 
 						if (0 != Svet.otočVýplňΑ)
 						{
-							β = Math.toRadians(Svet.otočVýplňΑ);
+							β = toRadians(Svet.otočVýplňΑ);
 							grafikaAktívnehoPlátna.rotate(-β,
 								Svet.otočVýplňX, Svet.otočVýplňY);
 							s = AffineTransform.getRotateInstance(β,
@@ -28662,7 +29152,7 @@ TODO: na úvodnú stránku
 									at.translate(-prepočítanéX, -prepočítanéY);
 								}
 
-								at.rotate(Math.toRadians(90 - aktuálnyUhol),
+								at.rotate(toRadians(90 - aktuálnyUhol),
 									prepočítanéX, prepočítanéY);
 
 								at.translate(aktuálneX, -aktuálneY);
@@ -28704,7 +29194,7 @@ TODO: na úvodnú stránku
 									at.translate(-prepočítanéX, -prepočítanéY);
 								}
 
-								at.rotate(Math.toRadians(90 - aktuálnyUhol),
+								at.rotate(toRadians(90 - aktuálnyUhol),
 									prepočítanéX, prepočítanéY);
 
 								at.translate(aktuálneX, -aktuálneY);
@@ -28746,7 +29236,7 @@ TODO: na úvodnú stránku
 							at.translate(-prepočítanéX, -prepočítanéY);
 						}
 
-						at.rotate(Math.toRadians(90 - aktuálnyUhol),
+						at.rotate(toRadians(90 - aktuálnyUhol),
 							prepočítanéX, prepočítanéY);
 
 						at.translate(aktuálneX, -aktuálneY);
@@ -28770,7 +29260,7 @@ TODO: na úvodnú stránku
 						at.translate(-prepočítanéX, -prepočítanéY);
 					}
 
-					at.rotate(Math.toRadians(90 - aktuálnyUhol),
+					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
 
 					at.translate(aktuálneX, -aktuálneY);
@@ -28805,9 +29295,9 @@ TODO: na úvodnú stránku
 			public boolean myšVKruhu(double polomer)
 			{
 				/*
-				return (Math.pow(ÚdajeUdalostí.súradnicaMyšiX - aktuálneX, 2) +
-					Math.pow(ÚdajeUdalostí.súradnicaMyšiY - aktuálneY, 2)) <=
-					// Math.pow(polomer /*+ (polomerPera / 2)* /, 2);
+				return (pow(ÚdajeUdalostí.súradnicaMyšiX - aktuálneX, 2) +
+					pow(ÚdajeUdalostí.súradnicaMyšiY - aktuálneY, 2)) <=
+					// pow(polomer /*+ (polomerPera / 2)* /, 2);
 					(polomer * polomer);
 				*/
 				double Δx = ÚdajeUdalostí.súradnicaMyšiX - aktuálneX;
@@ -28843,13 +29333,13 @@ TODO: na úvodnú stránku
 
 				// double polovicaHrúbkyPera = polomerPera / 2;
 
-				double α = Math.toRadians(90 - aktuálnyUhol);
+				double α = toRadians(90 - aktuálnyUhol);
 				double x1 = rotovanéXRad(x0, y0, α);
 				double y1 = rotovanéYRad(x0, y0, α);
 
 				/*!-!
-				return (Math.pow(x1 / (a /*+ polovicaHrúbkyPera* /), 2) +
-					Math.pow(y1 / (b /*+ polovicaHrúbkyPera* /), 2)) <= 1;
+				return (pow(x1 / (a /*+ polovicaHrúbkyPera* /), 2) +
+					pow(y1 / (b /*+ polovicaHrúbkyPera* /), 2)) <= 1;
 				*/
 
 				x1 /= a; y1 /= b; return (x1 * x1 + y1 * y1) <= 1;
@@ -28895,7 +29385,7 @@ TODO: na úvodnú stránku
 
 					// x₁ = x₀ . cos(α) − y₀ . sin(α)
 					// y₁ = x₀ . sin(α) + y₀ . cos(α)
-					double α = Math.toRadians(90 - aktuálnyUhol);
+					double α = toRadians(90 - aktuálnyUhol);
 					x1 = rotovanéXRad(x0, y0, α);
 					y1 = rotovanéYRad(x0, y0, α);
 
@@ -28906,8 +29396,8 @@ TODO: na úvodnú stránku
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = Math.abs(zaoblenieX) / 2;
-					double zy = Math.abs(zaoblenieY) / 2;
+					double zx = abs(zaoblenieX) / 2;
+					double zy = abs(zaoblenieY) / 2;
 					double Δzx = polomer - zx, Δzy = polomer - zy;
 
 					if (x1 > Δzx)
@@ -28986,7 +29476,7 @@ TODO: na úvodnú stránku
 					double x0 = ÚdajeUdalostí.súradnicaMyšiX - aktuálneX;
 					double y0 = ÚdajeUdalostí.súradnicaMyšiY - aktuálneY;
 
-					double α = Math.toRadians(90 - aktuálnyUhol);
+					double α = toRadians(90 - aktuálnyUhol);
 					x1 = rotovanéXRad(x0, y0, α);
 					y1 = rotovanéYRad(x0, y0, α);
 
@@ -28995,8 +29485,8 @@ TODO: na úvodnú stránku
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = Math.abs(zaoblenieX) / 2;
-					double zy = Math.abs(zaoblenieY) / 2;
+					double zx = abs(zaoblenieX) / 2;
+					double zy = abs(zaoblenieY) / 2;
 					double Δzx = a - zx, Δzy = b - zy;
 
 					if (x1 > Δzx)
@@ -29110,7 +29600,7 @@ TODO: na úvodnú stránku
 					at.translate(-prepočítanéX, -prepočítanéY);
 				}
 
-				at.rotate(Math.toRadians(90 - aktuálnyUhol),
+				at.rotate(toRadians(90 - aktuálnyUhol),
 					prepočítanéX, prepočítanéY);
 
 				at.translate(aktuálneX, -aktuálneY);
@@ -29130,6 +29620,9 @@ TODO: na úvodnú stránku
 			 * <p>Zistí, či sa aktuálne súradnice myši nachádzajú v kruhu so
 			 * stredom na aktuálnej pozícii robota a polomerom s {@linkplain 
 			 * #veľkosť(double) veľkosťou} robota.</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @return {@code valtrue} – áno; {@code valfalse} – nie
 			 * 
@@ -29160,6 +29653,9 @@ TODO: na úvodnú stránku
 			 * robota a s rozmermi podľa {@linkplain #veľkosť(double)
 			 * veľkosti} robota a zadaného pomeru poloosí.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @param pomer pomer veľkosť hlavnej a vedľajšej poloosi
 			 * @return {@code valtrue} – áno; {@code valfalse} – nie
 			 * 
@@ -29173,7 +29669,7 @@ TODO: na úvodnú stránku
 				double x0 = ÚdajeUdalostí.súradnicaMyšiX - aktuálneX;
 				double y0 = ÚdajeUdalostí.súradnicaMyšiY - aktuálneY;
 
-				double α = Math.toRadians(90 - aktuálnyUhol);
+				double α = toRadians(90 - aktuálnyUhol);
 				double x1 = rotovanéXRad(x0, y0, α);
 				double y1 = rotovanéYRad(x0, y0, α);
 
@@ -29192,6 +29688,9 @@ TODO: na úvodnú stránku
 			 * veľkosti} robota a vlastnosti robota {@link #pomer()
 			 * pomer}.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @return {@code valtrue} – áno; {@code valfalse} – nie
 			 * 
 			 * @see #myšVKruhu()
@@ -29204,7 +29703,7 @@ TODO: na úvodnú stránku
 				double x0 = ÚdajeUdalostí.súradnicaMyšiX - aktuálneX;
 				double y0 = ÚdajeUdalostí.súradnicaMyšiY - aktuálneY;
 
-				double α = Math.toRadians(90 - aktuálnyUhol);
+				double α = toRadians(90 - aktuálnyUhol);
 				double x1 = rotovanéXRad(x0, y0, α);
 				double y1 = rotovanéYRad(x0, y0, α);
 
@@ -29221,6 +29720,9 @@ TODO: na úvodnú stránku
 			 * stredom na aktuálnej pozícii robota, rotovanom v smere robota
 			 * a rozmerom podľa {@linkplain #veľkosť(double) veľkosti}
 			 * robota.</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @return {@code valtrue} – áno; {@code valfalse} – nie
 			 * 
@@ -29248,7 +29750,7 @@ TODO: na úvodnú stránku
 
 					// x₁ = x₀ . cos(α) − y₀ . sin(α)
 					// y₁ = x₀ . sin(α) + y₀ . cos(α)
-					double α = Math.toRadians(90 - aktuálnyUhol);
+					double α = toRadians(90 - aktuálnyUhol);
 					x1 = rotovanéXRad(x0, y0, α);
 					y1 = rotovanéYRad(x0, y0, α);
 
@@ -29259,8 +29761,8 @@ TODO: na úvodnú stránku
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = Math.abs(zaoblenieX) / 2;
-					double zy = Math.abs(zaoblenieY) / 2;
+					double zx = abs(zaoblenieX) / 2;
+					double zy = abs(zaoblenieY) / 2;
 					double Δzx = veľkosť - zx, Δzy = veľkosť - zy;
 
 					if (x1 > Δzx)
@@ -29307,6 +29809,9 @@ TODO: na úvodnú stránku
 			 * robota a s rozmermi podľa {@linkplain #veľkosť(double)
 			 * veľkosti} robota a zadaného pomeru strán.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @param pomer pomer veľkosť hlavnej a vedľajšej poloosi
 			 * @return {@code valtrue} – áno; {@code valfalse} – nie
 			 * 
@@ -29339,7 +29844,7 @@ TODO: na úvodnú stránku
 					double x0 = ÚdajeUdalostí.súradnicaMyšiX - aktuálneX;
 					double y0 = ÚdajeUdalostí.súradnicaMyšiY - aktuálneY;
 
-					double α = Math.toRadians(90 - aktuálnyUhol);
+					double α = toRadians(90 - aktuálnyUhol);
 					x1 = rotovanéXRad(x0, y0, α);
 					y1 = rotovanéYRad(x0, y0, α);
 
@@ -29350,8 +29855,8 @@ TODO: na úvodnú stránku
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = Math.abs(zaoblenieX) / 2;
-					double zy = Math.abs(zaoblenieY) / 2;
+					double zx = abs(zaoblenieX) / 2;
+					double zy = abs(zaoblenieY) / 2;
 					double Δzx = (veľkosť * pomer) - zx, Δzy = veľkosť - zy;
 
 					if (x1 > Δzx)
@@ -29400,6 +29905,9 @@ TODO: na úvodnú stránku
 			 * veľkosti} robota a vlastnosti robota {@link #pomer()
 			 * pomer}.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @return {@code valtrue} – áno; {@code valfalse} – nie
 			 * 
 			 * @see #myšVKruhu()
@@ -29433,7 +29941,7 @@ TODO: na úvodnú stránku
 					double x0 = ÚdajeUdalostí.súradnicaMyšiX - aktuálneX;
 					double y0 = ÚdajeUdalostí.súradnicaMyšiY - aktuálneY;
 
-					double α = Math.toRadians(90 - aktuálnyUhol);
+					double α = toRadians(90 - aktuálnyUhol);
 					x1 = rotovanéXRad(x0, y0, α);
 					y1 = rotovanéYRad(x0, y0, α);
 
@@ -29445,8 +29953,8 @@ TODO: na úvodnú stránku
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = Math.abs(zaoblenieX) / 2;
-					double zy = Math.abs(zaoblenieY) / 2;
+					double zx = abs(zaoblenieX) / 2;
+					double zy = abs(zaoblenieY) / 2;
 					double Δzx = (veľkosť * pomerVeľkosti) - zx,
 						Δzy = veľkosť - zy;
 
@@ -29486,14 +29994,16 @@ TODO: na úvodnú stránku
 			}
 
 			/** <p><a class="alias"></a> Alias pre {@link #myšVObdĺžniku() myšVObdĺžniku}.</p> */
-			public boolean mysVObdlzniku()
-			{ return myšVObdĺžniku(pomerVeľkosti); }
+			public boolean mysVObdlzniku() { return myšVObdĺžniku(); }
 
 			/**
 			 * <p>Zistí, či sa aktuálne súradnice myši nachádzajú v hviezde so
 			 * stredom na aktuálnej pozícii robota, rotovanej v smere robota
 			 * a rozmerom podľa {@linkplain #veľkosť(double) veľkosti}
 			 * robota.</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @return {@code valtrue} – áno; {@code valfalse} – nie
 			 * 
@@ -29537,9 +30047,9 @@ TODO: na úvodnú stránku
 			public boolean bodVKruhu(double súradnicaBoduX, double súradnicaBoduY, double polomer)
 			{
 				/*
-				return (Math.pow(súradnicaBoduX - aktuálneX, 2) +
-					Math.pow(súradnicaBoduY - aktuálneY, 2)) <=
-					// Math.pow(polomer /*+ (polomerPera / 2)* /, 2);
+				return (pow(súradnicaBoduX - aktuálneX, 2) +
+					pow(súradnicaBoduY - aktuálneY, 2)) <=
+					// pow(polomer /*+ (polomerPera / 2)* /, 2);
 					(polomer * polomer);
 				*/
 				double Δx = súradnicaBoduX - aktuálneX;
@@ -29566,9 +30076,9 @@ TODO: na úvodnú stránku
 				// public boolean bodVKruhu(Point2D bod, double polomer)
 				// {
 				// 	/*
-				// 	return (Math.pow(bod.getX() - aktuálneX, 2) +
-				// 		Math.pow(bod.getY() - aktuálneY, 2)) <=
-				// 		// Math.pow(polomer /*+ (polomerPera / 2)* /, 2);
+				// 	return (pow(bod.getX() - aktuálneX, 2) +
+				// 		pow(bod.getY() - aktuálneY, 2)) <=
+				// 		// pow(polomer /*+ (polomerPera / 2)* /, 2);
 				// 		(polomer * polomer);
 				// 	*/
 				// 	double Δx = bod.getX() - aktuálneX;
@@ -29598,9 +30108,9 @@ TODO: na úvodnú stránku
 			public boolean bodVKruhu(Poloha objekt, double polomer)
 			{
 				/*
-				return (Math.pow(iný.aktuálneX - aktuálneX, 2) +
-					Math.pow(iný.aktuálneY - aktuálneY, 2)) <=
-					// Math.pow(polomer /*+ (polomerPera / 2)* /, 2);
+				return (pow(iný.aktuálneX - aktuálneX, 2) +
+					pow(iný.aktuálneY - aktuálneY, 2)) <=
+					// pow(polomer /*+ (polomerPera / 2)* /, 2);
 					(polomer * polomer);
 				*/
 				double Δx = objekt.polohaX() - aktuálneX;
@@ -29638,13 +30148,13 @@ TODO: na úvodnú stránku
 
 				// double polovicaHrúbkyPera = polomerPera / 2;
 
-				double α = Math.toRadians(90 - aktuálnyUhol);
+				double α = toRadians(90 - aktuálnyUhol);
 				double x1 = rotovanéXRad(x0, y0, α);
 				double y1 = rotovanéYRad(x0, y0, α);
 
 				/*!-!
-				return (Math.pow(x1 / (a /*+ polovicaHrúbkyPera* /), 2) +
-					Math.pow(y1 / (b /*+ polovicaHrúbkyPera* /), 2)) <= 1;
+				return (pow(x1 / (a /*+ polovicaHrúbkyPera* /), 2) +
+					pow(y1 / (b /*+ polovicaHrúbkyPera* /), 2)) <= 1;
 				*/
 
 				x1 /= a; y1 /= b; return (x1 * x1 + y1 * y1) <= 1;
@@ -29677,13 +30187,13 @@ TODO: na úvodnú stránku
 
 				// double polovicaHrúbkyPera = polomerPera / 2;
 
-				double α = Math.toRadians(90 - aktuálnyUhol);
+				double α = toRadians(90 - aktuálnyUhol);
 				double x1 = rotovanéXRad(x0, y0, α);
 				double y1 = rotovanéYRad(x0, y0, α);
 
 				/*!-!
-				return (Math.pow(x1 / (a /*+ polovicaHrúbkyPera* /), 2) +
-					Math.pow(y1 / (b /*+ polovicaHrúbkyPera* /), 2)) <= 1;
+				return (pow(x1 / (a /*+ polovicaHrúbkyPera* /), 2) +
+					pow(y1 / (b /*+ polovicaHrúbkyPera* /), 2)) <= 1;
 				*/
 
 				x1 /= a; y1 /= b; return (x1 * x1 + y1 * y1) <= 1;
@@ -29731,7 +30241,7 @@ TODO: na úvodnú stránku
 
 					// x₁ = x₀ . cos(α) − y₀ . sin(α)
 					// y₁ = x₀ . sin(α) + y₀ . cos(α)
-					double α = Math.toRadians(90 - aktuálnyUhol);
+					double α = toRadians(90 - aktuálnyUhol);
 					x1 = rotovanéXRad(x0, y0, α);
 					y1 = rotovanéYRad(x0, y0, α);
 
@@ -29742,8 +30252,8 @@ TODO: na úvodnú stránku
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = Math.abs(zaoblenieX) / 2;
-					double zy = Math.abs(zaoblenieY) / 2;
+					double zx = abs(zaoblenieX) / 2;
+					double zy = abs(zaoblenieY) / 2;
 					double Δzx = polomer - zx, Δzy = polomer - zy;
 
 					if (x1 > Δzx)
@@ -29823,7 +30333,7 @@ TODO: na úvodnú stránku
 
 					// x₁ = x₀ . cos(α) − y₀ . sin(α)
 					// y₁ = x₀ . sin(α) + y₀ . cos(α)
-					double α = Math.toRadians(90 - aktuálnyUhol);
+					double α = toRadians(90 - aktuálnyUhol);
 					x1 = rotovanéXRad(x0, y0, α);
 					y1 = rotovanéYRad(x0, y0, α);
 
@@ -29834,8 +30344,8 @@ TODO: na úvodnú stránku
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = Math.abs(zaoblenieX) / 2;
-					double zy = Math.abs(zaoblenieY) / 2;
+					double zx = abs(zaoblenieX) / 2;
+					double zy = abs(zaoblenieY) / 2;
 					double Δzx = polomer - zx, Δzy = polomer - zy;
 
 					if (x1 > Δzx)
@@ -29920,7 +30430,7 @@ TODO: na úvodnú stránku
 					double x0 = súradnicaBoduX - aktuálneX;
 					double y0 = súradnicaBoduY - aktuálneY;
 
-					double α = Math.toRadians(90 - aktuálnyUhol);
+					double α = toRadians(90 - aktuálnyUhol);
 					x1 = rotovanéXRad(x0, y0, α);
 					y1 = rotovanéYRad(x0, y0, α);
 
@@ -29929,8 +30439,8 @@ TODO: na úvodnú stránku
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = Math.abs(zaoblenieX) / 2;
-					double zy = Math.abs(zaoblenieY) / 2;
+					double zx = abs(zaoblenieX) / 2;
+					double zy = abs(zaoblenieY) / 2;
 					double Δzx = a - zx, Δzy = b - zy;
 
 					if (x1 > Δzx)
@@ -30011,7 +30521,7 @@ TODO: na úvodnú stránku
 					double x0 = objekt.polohaX() - aktuálneX;
 					double y0 = objekt.polohaY() - aktuálneY;
 
-					double α = Math.toRadians(90 - aktuálnyUhol);
+					double α = toRadians(90 - aktuálnyUhol);
 					x1 = rotovanéXRad(x0, y0, α);
 					y1 = rotovanéYRad(x0, y0, α);
 
@@ -30020,8 +30530,8 @@ TODO: na úvodnú stránku
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = Math.abs(zaoblenieX) / 2;
-					double zy = Math.abs(zaoblenieY) / 2;
+					double zx = abs(zaoblenieX) / 2;
+					double zy = abs(zaoblenieY) / 2;
 					double Δzx = a - zx, Δzy = b - zy;
 
 					if (x1 > Δzx)
@@ -30202,6 +30712,9 @@ TODO: na úvodnú stránku
 			 * dovoľuje namiesto súradníc bodu použiť objekt:
 			 * {@link #bodVKruhu(Poloha) bodVKruhu(Poloha objekt)}</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @param súradnicaBoduX x-ová súradnica bodu
 			 * @param súradnicaBoduY y-ová súradnica bodu
 			 * @return {@code valtrue} – áno; {@code valfalse} – nie
@@ -30217,9 +30730,9 @@ TODO: na úvodnú stránku
 			public boolean bodVKruhu(double súradnicaBoduX, double súradnicaBoduY)
 			{
 				/*
-				return (Math.pow(súradnicaBoduX - aktuálneX, 2) +
-					Math.pow(súradnicaBoduY - aktuálneY, 2)) <=
-						// Math.pow(veľkosť, 2);
+				return (pow(súradnicaBoduX - aktuálneX, 2) +
+					pow(súradnicaBoduY - aktuálneY, 2)) <=
+						// pow(veľkosť, 2);
 						(veľkosť * veľkosť);
 				*/
 				double Δx = súradnicaBoduX - aktuálneX;
@@ -30248,9 +30761,9 @@ TODO: na úvodnú stránku
 				// public boolean bodVKruhu(Point2D bod)
 				// {
 				// 	/*
-				// 	return (Math.pow(bod.getX() - aktuálneX, 2) +
-				// 		Math.pow(bod.getY() - aktuálneY, 2)) <=
-				// 			// Math.pow(veľkosť, 2);
+				// 	return (pow(bod.getX() - aktuálneX, 2) +
+				// 		pow(bod.getY() - aktuálneY, 2)) <=
+				// 			// pow(veľkosť, 2);
 				// 			(veľkosť * veľkosť);
 				// 	*/
 				// 	double Δx = bod.getX() - aktuálneX;
@@ -30262,6 +30775,9 @@ TODO: na úvodnú stránku
 			 * <p>Funguje rovnako ako metóda {@link #bodVKruhu(double, double)
 			 * bodVKruhu(x, y)}, len namiesto súradníc bodu je použitá
 			 * poloha zadaného objektu…</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @param objekt objekt, ktorého poloha je použitá namiesto
 			 *     súradníc bodu
@@ -30278,9 +30794,9 @@ TODO: na úvodnú stránku
 			public boolean bodVKruhu(Poloha objekt)
 			{
 				/*
-				return (Math.pow(iný.aktuálneX - aktuálneX, 2) +
-					Math.pow(iný.aktuálneY - aktuálneY, 2)) <=
-						// Math.pow(veľkosť, 2);
+				return (pow(iný.aktuálneX - aktuálneX, 2) +
+					pow(iný.aktuálneY - aktuálneY, 2)) <=
+						// pow(veľkosť, 2);
 						(veľkosť * veľkosť);
 				*/
 				double Δx = objekt.polohaX() - aktuálneX;
@@ -30299,6 +30815,9 @@ TODO: na úvodnú stránku
 			 * dovoľuje namiesto súradníc bodu použiť objekt:
 			 * {@link #bodVElipse(Poloha, double) bodVElipse(Poloha objekt,
 			 * double pomer)}.</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @param súradnicaBoduX x-ová súradnica bodu
 			 * @param súradnicaBoduY y-ová súradnica bodu
@@ -30321,13 +30840,13 @@ TODO: na úvodnú stránku
 
 				// double polovicaHrúbkyPera = polomerPera / 2;
 
-				double α = Math.toRadians(90 - aktuálnyUhol);
+				double α = toRadians(90 - aktuálnyUhol);
 				double x1 = rotovanéXRad(x0, y0, α);
 				double y1 = rotovanéYRad(x0, y0, α);
 
 				/*!-!
-				return (Math.pow(x1 / (veľkosť * pomer), 2) +
-					Math.pow(y1 / veľkosť, 2)) <= 1;
+				return (pow(x1 / (veľkosť * pomer), 2) +
+					pow(y1 / veľkosť, 2)) <= 1;
 				*/
 
 				x1 /= (veľkosť * pomer);
@@ -30339,6 +30858,9 @@ TODO: na úvodnú stránku
 			 * <p>Funguje rovnako ako metóda {@link #bodVElipse(double, double,
 			 * double) bodVElipse(x, y, pomer)}, len namiesto súradníc bodu
 			 * je použitá poloha zadaného objektu…</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @param objekt objekt, ktorého poloha je použitá namiesto
 			 *     súradníc bodu
@@ -30360,13 +30882,13 @@ TODO: na úvodnú stránku
 
 				// double polovicaHrúbkyPera = polomerPera / 2;
 
-				double α = Math.toRadians(90 - aktuálnyUhol);
+				double α = toRadians(90 - aktuálnyUhol);
 				double x1 = rotovanéXRad(x0, y0, α);
 				double y1 = rotovanéYRad(x0, y0, α);
 
 				/*!-!
-				return (Math.pow(x1 / (veľkosť * pomer), 2) +
-					Math.pow(y1 / veľkosť, 2)) <= 1;
+				return (pow(x1 / (veľkosť * pomer), 2) +
+					pow(y1 / veľkosť, 2)) <= 1;
 				*/
 
 				x1 /= (veľkosť * pomer);
@@ -30382,6 +30904,9 @@ TODO: na úvodnú stránku
 			 * Nasledujúca metóda dovoľuje namiesto súradníc bodu použiť
 			 * objekt: {@link #bodVElipse(Poloha, double) bodVElipse(Poloha
 			 * objekt)}.</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @param súradnicaBoduX x-ová súradnica bodu
 			 * @param súradnicaBoduY y-ová súradnica bodu
@@ -30403,7 +30928,7 @@ TODO: na úvodnú stránku
 
 				// double polovicaHrúbkyPera = polomerPera / 2;
 
-				double α = Math.toRadians(90 - aktuálnyUhol);
+				double α = toRadians(90 - aktuálnyUhol);
 				double x1 = rotovanéXRad(x0, y0, α);
 				double y1 = rotovanéYRad(x0, y0, α);
 
@@ -30416,6 +30941,9 @@ TODO: na úvodnú stránku
 			 * <p>Funguje rovnako ako metóda {@link #bodVElipse(double,
 			 * double) bodVElipse(x, y)}, len namiesto súradníc bodu je
 			 * použitá poloha zadaného objektu…</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @param objekt objekt, ktorého poloha je použitá namiesto
 			 *     súradníc bodu
@@ -30436,7 +30964,7 @@ TODO: na úvodnú stránku
 
 				// double polovicaHrúbkyPera = polomerPera / 2;
 
-				double α = Math.toRadians(90 - aktuálnyUhol);
+				double α = toRadians(90 - aktuálnyUhol);
 				double x1 = rotovanéXRad(x0, y0, α);
 				double y1 = rotovanéYRad(x0, y0, α);
 
@@ -30452,6 +30980,9 @@ TODO: na úvodnú stránku
 			 * robota. Nasledujúca metóda dovoľuje namiesto súradníc bodu
 			 * použiť objekt:
 			 * {@link #bodVoŠtvorci(Poloha) bodVoŠtvorci(Poloha objekt)}</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @param súradnicaBoduX x-ová súradnica bodu
 			 * @param súradnicaBoduY y-ová súradnica bodu
@@ -30485,7 +31016,7 @@ TODO: na úvodnú stránku
 
 					// x₁ = x₀ . cos(α) − y₀ . sin(α)
 					// y₁ = x₀ . sin(α) + y₀ . cos(α)
-					double α = Math.toRadians(90 - aktuálnyUhol);
+					double α = toRadians(90 - aktuálnyUhol);
 					x1 = rotovanéXRad(x0, y0, α);
 					y1 = rotovanéYRad(x0, y0, α);
 
@@ -30496,8 +31027,8 @@ TODO: na úvodnú stránku
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = Math.abs(zaoblenieX) / 2;
-					double zy = Math.abs(zaoblenieY) / 2;
+					double zx = abs(zaoblenieX) / 2;
+					double zy = abs(zaoblenieY) / 2;
 					double Δzx = veľkosť - zx, Δzy = veľkosť - zy;
 
 					if (x1 > Δzx)
@@ -30543,6 +31074,9 @@ TODO: na úvodnú stránku
 			 * double) bodVoŠtvorci(x, y)}, len namiesto súradníc bodu je
 			 * použitá poloha zadaného objektu…</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @param objekt objekt, ktorého poloha je použitá namiesto
 			 *     súradníc bodu
 			 * @return {@code valtrue}/&#8203;{@code valfalse}
@@ -30574,7 +31108,7 @@ TODO: na úvodnú stránku
 
 					// x₁ = x₀ . cos(α) − y₀ . sin(α)
 					// y₁ = x₀ . sin(α) + y₀ . cos(α)
-					double α = Math.toRadians(90 - aktuálnyUhol);
+					double α = toRadians(90 - aktuálnyUhol);
 					x1 = rotovanéXRad(x0, y0, α);
 					y1 = rotovanéYRad(x0, y0, α);
 
@@ -30585,8 +31119,8 @@ TODO: na úvodnú stránku
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = Math.abs(zaoblenieX) / 2;
-					double zy = Math.abs(zaoblenieY) / 2;
+					double zx = abs(zaoblenieX) / 2;
+					double zy = abs(zaoblenieY) / 2;
 					double Δzx = veľkosť - zx, Δzy = veľkosť - zy;
 
 					if (x1 > Δzx)
@@ -30635,6 +31169,9 @@ TODO: na úvodnú stránku
 			 * dovoľuje namiesto súradníc bodu použiť objekt: {@link 
 			 * #bodVObdĺžniku(Poloha, double) bodVObdĺžniku(objekt, pomer)}.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @param súradnicaBoduX x-ová súradnica bodu
 			 * @param súradnicaBoduY y-ová súradnica bodu
 			 * @param pomer pomer šírky a výšky obdĺžnika
@@ -30673,7 +31210,7 @@ TODO: na úvodnú stránku
 					double x0 = súradnicaBoduX - aktuálneX;
 					double y0 = súradnicaBoduY - aktuálneY;
 
-					double α = Math.toRadians(90 - aktuálnyUhol);
+					double α = toRadians(90 - aktuálnyUhol);
 					x1 = rotovanéXRad(x0, y0, α);
 					y1 = rotovanéYRad(x0, y0, α);
 
@@ -30684,8 +31221,8 @@ TODO: na úvodnú stránku
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = Math.abs(zaoblenieX) / 2;
-					double zy = Math.abs(zaoblenieY) / 2;
+					double zx = abs(zaoblenieX) / 2;
+					double zy = abs(zaoblenieY) / 2;
 					double Δzx = (veľkosť * pomer) - zx, Δzy = veľkosť - zy;
 
 					if (x1 > Δzx)
@@ -30731,6 +31268,9 @@ TODO: na úvodnú stránku
 			 * double, double) bodVObdĺžniku(x, y, pomer)}, len namiesto
 			 * súradníc bodu je použitá poloha zadaného objektu…</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @param objekt objekt, ktorého poloha je použitá namiesto
 			 *     súradníc bodu
 			 * @param pomer pomer šírky a výšky obdĺžnika
@@ -30768,7 +31308,7 @@ TODO: na úvodnú stránku
 					double x0 = objekt.polohaX() - aktuálneX;
 					double y0 = objekt.polohaY() - aktuálneY;
 
-					double α = Math.toRadians(90 - aktuálnyUhol);
+					double α = toRadians(90 - aktuálnyUhol);
 					x1 = rotovanéXRad(x0, y0, α);
 					y1 = rotovanéYRad(x0, y0, α);
 
@@ -30779,8 +31319,8 @@ TODO: na úvodnú stránku
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = Math.abs(zaoblenieX) / 2;
-					double zy = Math.abs(zaoblenieY) / 2;
+					double zx = abs(zaoblenieX) / 2;
+					double zy = abs(zaoblenieY) / 2;
 					double Δzx = (veľkosť * pomer) - zx, Δzy = veľkosť - zy;
 
 					if (x1 > Δzx)
@@ -30830,6 +31370,9 @@ TODO: na úvodnú stránku
 			 * objekt: {@link #bodVObdĺžniku(Poloha)
 			 * bodVObdĺžniku(objekt)}.</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @param súradnicaBoduX x-ová súradnica bodu
 			 * @param súradnicaBoduY y-ová súradnica bodu
 			 * @return {@code valtrue} – áno; {@code valfalse} – nie
@@ -30869,7 +31412,7 @@ TODO: na úvodnú stránku
 					double x0 = súradnicaBoduX - aktuálneX;
 					double y0 = súradnicaBoduY - aktuálneY;
 
-					double α = Math.toRadians(90 - aktuálnyUhol);
+					double α = toRadians(90 - aktuálnyUhol);
 					x1 = rotovanéXRad(x0, y0, α);
 					y1 = rotovanéYRad(x0, y0, α);
 
@@ -30881,8 +31424,8 @@ TODO: na úvodnú stránku
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = Math.abs(zaoblenieX) / 2;
-					double zy = Math.abs(zaoblenieY) / 2;
+					double zx = abs(zaoblenieX) / 2;
+					double zy = abs(zaoblenieY) / 2;
 					double Δzx = (veľkosť * pomerVeľkosti) - zx,
 						Δzy = veľkosť - zy;
 
@@ -30929,6 +31472,9 @@ TODO: na úvodnú stránku
 			 * double) bodVObdĺžniku(x, y)}, len namiesto súradníc bodu je
 			 * použitá poloha zadaného objektu…</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @param objekt objekt, ktorého poloha je použitá namiesto
 			 *     súradníc bodu
 			 * @return {@code valtrue}/&#8203;{@code valfalse}
@@ -30967,7 +31513,7 @@ TODO: na úvodnú stránku
 					double x0 = objekt.polohaX() - aktuálneX;
 					double y0 = objekt.polohaY() - aktuálneY;
 
-					double α = Math.toRadians(90 - aktuálnyUhol);
+					double α = toRadians(90 - aktuálnyUhol);
 					x1 = rotovanéXRad(x0, y0, α);
 					y1 = rotovanéYRad(x0, y0, α);
 
@@ -30979,8 +31525,8 @@ TODO: na úvodnú stránku
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = Math.abs(zaoblenieX) / 2;
-					double zy = Math.abs(zaoblenieY) / 2;
+					double zx = abs(zaoblenieX) / 2;
+					double zy = abs(zaoblenieY) / 2;
 					double Δzx = (veľkosť * pomerVeľkosti) - zx,
 						Δzy = veľkosť - zy;
 
@@ -31031,6 +31577,9 @@ TODO: na úvodnú stránku
 			 * použiť objekt:
 			 * {@link #bodVHviezde(Poloha) bodVHviezde(Poloha objekt)}</p>
 			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @param súradnicaBoduX x-ová súradnica bodu
 			 * @param súradnicaBoduY y-ová súradnica bodu
 			 * @return {@code valtrue} – áno; {@code valfalse} – nie
@@ -31056,6 +31605,9 @@ TODO: na úvodnú stránku
 			 * <p>Funguje rovnako ako metóda {@link #bodVHviezde(double,
 			 * double) bodVHviezde(x, y)}, len namiesto súradníc bodu je
 			 * použitá poloha zadaného objektu…</p>
+			 * 
+			 * <p class="tip"><b>Informácia:</b> {@linkplain #mierka()
+			 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 			 * 
 			 * @param objekt objekt, ktorého poloha je použitá namiesto
 			 *     súradníc bodu
@@ -31292,7 +31844,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					grafikaAktívnehoPlátna.rotate(-α,
 						prepočítanéX, prepočítanéY);
@@ -31579,7 +32131,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					if (1.0 == mierka)
 						grafikaAktívnehoPlátna.rotate(-α,
@@ -31830,7 +32382,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					grafikaAktívnehoPlátna.rotate(-α,
 						prepočítanéX, prepočítanéY);
@@ -32226,7 +32778,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					if (1.0 == mierka)
 						grafikaAktívnehoPlátna.rotate(-α,
@@ -32511,7 +33063,7 @@ TODO: na úvodnú stránku
 					}
 					else
 					{
-						double α = Math.toRadians(aktuálnyUhol - 90);
+						double α = toRadians(aktuálnyUhol - 90);
 						transformácie.rotate(-α, prepočítanéX, prepočítanéY);
 
 						if (0 == (spôsobKreslenia & KRESLI_NA_STRED))
@@ -32581,7 +33133,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					grafikaAktívnehoPlátna.rotate(-α,
 						prepočítanéX, prepočítanéY);
@@ -32739,7 +33291,7 @@ TODO: na úvodnú stránku
 					}
 					else
 					{
-						double α = Math.toRadians(aktuálnyUhol - 90);
+						double α = toRadians(aktuálnyUhol - 90);
 						transformácie.rotate(-α, prepočítanéX, prepočítanéY);
 
 						if (0 == (spôsobKreslenia & KRESLI_NA_STRED))
@@ -32809,7 +33361,7 @@ TODO: na úvodnú stránku
 				}
 				else
 				{
-					double α = Math.toRadians(aktuálnyUhol - 90);
+					double α = toRadians(aktuálnyUhol - 90);
 
 					grafikaAktívnehoPlátna.rotate(-α,
 						prepočítanéX + Δx, prepočítanéY - Δy);
@@ -33057,8 +33609,7 @@ TODO: na úvodnú stránku
 					{
 						{@code kwdif} ({@link GRobot#SPÔSOB_ESCAPE SPÔSOB_ESCAPE} != spôsob)
 							upravujeSa.text = text;
-
-
+						<hr/>
 						{@code comm// Na tomto mieste by bolo vhodné implementovať mechanizmus}
 						{@code comm// pohybu po upravovaných inštanciách klávesom TAB (pohyb}
 						{@code comm// dopredu – SPÔSOB_TABULÁTOR == spôsob, pohyb dozadu –}
@@ -33067,8 +33618,7 @@ TODO: na úvodnú stránku
 						{@code comm// zahájiť úpravu nasledujúceho alebo predchádzajúceho prvku.}
 						{@code comm// Aby bol tento príklad kratší, tak podrobná implementácia}
 						{@code comm// tohto mechanizmu je uvedená nižšie, za týtmo príkladom…}
-
-
+						<hr/>
 						{@code comm// Nakreslí a ukončí sa úprava aktuálneho prvku}
 						upravujeSa.nakresli();
 						upravujeSa = {@code valnull};
@@ -34224,7 +34774,7 @@ TODO: na úvodnú stránku
 						at.translate(-prepočítanéX, -prepočítanéY);
 					}
 
-					at.rotate(Math.toRadians(90 - aktuálnyUhol),
+					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
 
 					at.translate(aktuálneX, -aktuálneY);
@@ -34288,7 +34838,7 @@ TODO: na úvodnú stránku
 						// System.out.println("mierka: " + mierka);
 					}
 
-					at.rotate(Math.toRadians(90 - aktuálnyUhol),
+					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
 
 					at.translate(aktuálneX, -aktuálneY);
@@ -34364,7 +34914,7 @@ TODO: na úvodnú stránku
 
 				if (0 != Svet.otočVýplňΑ)
 				{
-					β = Math.toRadians(Svet.otočVýplňΑ);
+					β = toRadians(Svet.otočVýplňΑ);
 					grafikaAktívnehoPlátna.rotate(-β,
 						Svet.otočVýplňX, Svet.otočVýplňY);
 					a = oblasť.createTransformedArea(
@@ -34393,7 +34943,7 @@ TODO: na úvodnú stránku
 						at.translate(-prepočítanéX, -prepočítanéY);
 					}
 
-					at.rotate(Math.toRadians(90 - aktuálnyUhol),
+					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
 
 					at.translate(aktuálneX, -aktuálneY);
@@ -34478,7 +35028,7 @@ TODO: na úvodnú stránku
 
 					if (0 != Svet.otočVýplňΑ)
 					{
-						β = Math.toRadians(Svet.otočVýplňΑ);
+						β = toRadians(Svet.otočVýplňΑ);
 						grafikaAktívnehoPlátna.rotate(-β,
 							Svet.otočVýplňX, Svet.otočVýplňY);
 						a = oblasť.createTransformedArea(
@@ -34516,7 +35066,7 @@ TODO: na úvodnú stránku
 								at.translate(-prepočítanéX, -prepočítanéY);
 							}
 
-							at.rotate(Math.toRadians(90 - aktuálnyUhol),
+							at.rotate(toRadians(90 - aktuálnyUhol),
 								prepočítanéX, prepočítanéY);
 
 							at.translate(aktuálneX, -aktuálneY);
@@ -34557,7 +35107,7 @@ TODO: na úvodnú stránku
 								at.translate(-prepočítanéX, -prepočítanéY);
 							}
 
-							at.rotate(Math.toRadians(90 - aktuálnyUhol),
+							at.rotate(toRadians(90 - aktuálnyUhol),
 								prepočítanéX, prepočítanéY);
 
 							at.translate(aktuálneX, -aktuálneY);
@@ -34639,7 +35189,7 @@ TODO: na úvodnú stránku
 					at.translate(-prepočítanéX, -prepočítanéY);
 				}
 
-				at.rotate(Math.toRadians(90 - aktuálnyUhol),
+				at.rotate(toRadians(90 - aktuálnyUhol),
 					prepočítanéX, prepočítanéY);
 
 				at.translate(aktuálneX, -aktuálneY);
@@ -34692,7 +35242,7 @@ TODO: na úvodnú stránku
 					at.translate(-prepočítanéX, -prepočítanéY);
 				}
 
-				at.rotate(Math.toRadians(90 - aktuálnyUhol),
+				at.rotate(toRadians(90 - aktuálnyUhol),
 					prepočítanéX, prepočítanéY);
 
 				at.translate(aktuálneX, -aktuálneY);
@@ -36894,8 +37444,8 @@ TODO: na úvodnú stránku
 		// Veľkosť robota, kolízna oblasť a detekcia kolízií
 
 			/**
-			 * <p><a class="getter"></a> Zistí aktuálny rozmer robota.
-			 * Veľkosť (rozmer) robota je číslo, ktoré (v základnom stave
+			 * <p><a class="getter"></a> Zistí aktuálnu veľkosť robota.
+			 * Veľkosť robota je číslo, ktoré (v základnom stave
 			 * robota) vymedzuje polomer kruhového priestoru so stredom na
 			 * súradniciach robota. Chápanie údaju o veľkosti môže
 			 * programátor upraviť preprogramovaním súvisiacich metód.
@@ -36908,10 +37458,15 @@ TODO: na úvodnú stránku
 			 * obrázkového tvaru robota} (pozri aj metódu {@link #mierka()
 			 * mierka}).</p>
 			 * 
+			 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+			 * upozorneniu v opise metódy {@link #rozmery(double, double)
+			 * rozmery}{@code (šírka, výška)}.</p>
+			 * 
 			 * @return veľkosť robota
 			 * 
 			 * @see #veľkosť(double)
 			 * @see #veľkosťDoma()
+			 * @see #pomerDoma()
 			 * @see #veľkosťPodľaMierky()
 			 * @see #mierka()
 			 */
@@ -36920,12 +37475,10 @@ TODO: na úvodnú stránku
 			/** <p><a class="alias"></a> Alias pre {@link #veľkosť() veľkosť}.</p> */
 			public double velkost() { return veľkosť; }
 
-			/** <p><a class="alias"></a> Alias pre {@link #veľkosť() veľkosť}.</p> */
-			public double rozmer() { return veľkosť; }
 
 			/**
-			 * <p><a class="setter"></a> Nastaví aktuálny rozmer robota.
-			 * Veľkosť (rozmer) robota je číslo, ktoré (v základnom stave
+			 * <p><a class="setter"></a> Nastaví novú veľkosť robota.
+			 * Veľkosť robota je číslo, ktoré (v základnom stave
 			 * robota) vymedzuje polomer kruhového priestoru so stredom na
 			 * súradniciach robota. Chápanie údaju o veľkosti môže
 			 * programátor upraviť preprogramovaním súvisiacich metód.
@@ -36938,12 +37491,17 @@ TODO: na úvodnú stránku
 			 * obrázkového tvaru robota} (pozri aj metódu {@link #mierka()
 			 * mierka}).</p>
 			 * 
+			 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+			 * upozorneniu v opise metódy {@link #rozmery(double, double)
+			 * rozmery}{@code (šírka, výška)}.</p>
+			 * 
 			 * @param veľkosť nová veľkosť robota (mala by byť väčšia ako
 			 *     nula, inak môže dôjsť k rôznym vedľajším efektom pri
 			 *     používaní robota)
 			 * 
 			 * @see #veľkosť()
 			 * @see #veľkosťDoma(Double)
+			 * @see #pomerDoma(Double)
 			 * @see #veľkosťPodľaMierky()
 			 * @see #mierka()
 			 */
@@ -36956,8 +37514,367 @@ TODO: na úvodnú stránku
 			/** <p><a class="alias"></a> Alias pre {@link #veľkosť(double) veľkosť}.</p> */
 			public void velkost(double veľkosť) { veľkosť(veľkosť); }
 
-			/** <p><a class="alias"></a> Alias pre {@link #veľkosť(double) veľkosť}.</p> */
-			public void rozmer(double veľkosť) { veľkosť(veľkosť); }
+
+			/**
+			 * <p><a class="getter"></a> Vráti aktuálnu šírku robota.</p>
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+			 * upozorneniu v opise metódy {@link #rozmery(double, double)
+			 * rozmery}{@code (šírka, výška)}.</p>
+			 * 
+			 * @return aktuálna šírka robota
+			 * 
+			 * @see #šírka(double)
+			 * @see #máŠírku(double)
+			 * @see #rozmery()
+			 */
+			public double šírka() { return 2.0 * veľkosť * pomerVeľkosti; }
+
+			/** <p><a class="alias"></a> Alias pre {@link #šírka() šírka}.</p> */
+			public double sirka() { return šírka(); }
+
+			/**
+			 * <p><a class="getter"></a> Vráti aktuálnu výšku robota.</p>
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+			 * upozorneniu v opise metódy {@link #rozmery(double, double)
+			 * rozmery}{@code (šírka, výška)}.</p>
+			 * 
+			 * @return aktuálna výška robota
+			 * 
+			 * @see #výška(double)
+			 * @see #máVýšku(double)
+			 * @see #rozmery()
+			 */
+			public double výška() { return 2.0 * veľkosť; }
+
+			/** <p><a class="alias"></a> Alias pre {@link #výška() výška}.</p> */
+			public double vyska() { return výška(); }
+
+
+			/**
+			 * <p><a class="setter"></a> Nastaví novú šírku robota.</p>
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+			 * upozorneniu v opise metódy {@link #rozmery(double, double)
+			 * rozmery}{@code (šírka, výška)}.</p>
+			 * 
+			 * @param šírka nová šírka robota
+			 * 
+			 * @see #šírka()
+			 * @see #máŠírku(double)
+			 * @see #rozmery()
+			 */
+			public void šírka(double šírka)
+			{
+				// TODO – otestuj
+				pomerVeľkosti = (šírka / 2.0) / veľkosť;
+				if (viditeľný) Svet.automatickéPrekreslenie();
+			}
+
+			/** <p><a class="alias"></a> Alias pre {@link #šírka(double) šírka}.</p> */
+			public void sirka(double šírka) { šírka(šírka); }
+
+			/**
+			 * <p><a class="setter"></a> Nastaví novú výšku robota.</p>
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+			 * upozorneniu v opise metódy {@link #rozmery(double, double)
+			 * rozmery}{@code (šírka, výška)}.</p>
+			 * 
+			 * @param výška nová výška robota
+			 * 
+			 * @see #výška()
+			 * @see #máVýšku(double)
+			 * @see #rozmery()
+			 */
+			public void výška(double výška)
+			{
+				// TODO – otestuj
+				double nováVeľkosť = výška / 2.0;
+				pomerVeľkosti = (veľkosť * pomerVeľkosti) / nováVeľkosť;
+				veľkosť = nováVeľkosť;
+				if (viditeľný) Svet.automatickéPrekreslenie();
+			}
+
+			/** <p><a class="alias"></a> Alias pre {@link #výška(double) výška}.</p> */
+			public void vyska(double výška) { výška(výška); }
+
+
+			/**
+			 * <p>Vráti objekt obsahujúci aktuálne hodnoty {@linkplain 
+			 * #výška() výšky} a {@linkplain #šírka() šírky} robota. (Ide
+			 * o prepočítané hodnoty – pozri poznámku nižšie.)</p>
+			 * 
+			 * <hr />
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+			 * upozorneniu v opise metódy {@link #rozmery(double, double)
+			 * rozmery}{@code (šírka, výška)}.</p>
+			 * 
+			 * <hr />
+			 * 
+			 * <p class="attention"><b>Upozornenie:</b> Do verzie 2.1
+			 * programovacieho rámca bola táto metóda aliasom metódy {@link 
+			 * #veľkosť() veľkosť}. (Z tohto vyjadrenia vyplýva, že
+			 * toto už viac neplatí.) Od uvedenej verzie je táto metóda
+			 * aliasom metódy {@link #rozmery() rozmery} (aby sa
+			 * zabránilo zmätkom s podobnosťou názvov).</p>
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Metóda pri každom volaní
+			 * vytvorí novú inštanciu triedy {@link Rozmery Rozmery}. (Z toho
+			 * vyplýva, že opakované a časté volanie tejto metódy je menej
+			 * efektívne v porovnaní s inými metódami na zisťovanie rozmerov –
+			 * znižuje výkon aplikácie.</p>
+			 * 
+			 * @return objekt vytvorený podľa aktuálnych rozmerov robota
+			 * 
+			 * @see #šírka()
+			 * @see #výška()
+			 * @see #rozmery()
+			 * @see #máŠírku(double)
+			 * @see #máVýšku(double)
+			 * @see #máRozmer(Rozmer)
+			 * @see #máRozmer(double, double)
+			 * @see #rozmer(Rozmer)
+			 */
+			public Rozmer rozmer()
+			{
+				// TODO:
+				// Počas vývoja padla otázka: Započítať do rozmerov aj mierku?
+				// Odpoveď prišla pomaly, ale nakoniec bolo rozhodnuté, že nie.
+				// Mohlo by to spôsobiť zmätok. Lepšie bude, ak bude vyrobená
+				// skupina metód typu výslednáŠírka… Pozor! Nie „skutočná“
+				// šírka. To by zase mohlo spôsobovať zmätok, lebo niekto by
+				// pod skutočnou mohol rozumieť pôvodnú.
+
+				// šírka × výška; RegEx: (?:[Šš]írka|výška)\(
+				return new Rozmery(2.0 * veľkosť * pomerVeľkosti,
+					2.0 * veľkosť);
+				// return veľkosť; // zastarané (deprecated)
+			}
+
+			/**
+			 * <p>Nastaví nové rozmery robota podľa zadanej implementácie
+			 * rozmeru.</p>
+			 * 
+			 * <hr />
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+			 * upozorneniu v opise metódy {@link #rozmery(double, double)
+			 * rozmery}{@code (šírka, výška)}.</p>
+			 * 
+			 * <hr />
+			 * 
+			 * <p class="attention"><b>Upozornenie:</b> Do verzie 2.1
+			 * programovacieho rámca bola táto metóda aliasom metódy {@link 
+			 * #veľkosť(double) veľkosť}. (Z tohto vyjadrenia vyplýva, že
+			 * toto už viac neplatí.) Od uvedenej verzie je táto metóda
+			 * aliasom metódy {@link #rozmery(Rozmer) rozmery} (aby sa
+			 * zabránilo zmätkom s podobnosťou názvov).</p>
+			 * 
+			 * @param rozmer inštancia obsahujúca nové rozmery robota
+			 * 
+			 * @see #šírka()
+			 * @see #výška()
+			 * @see #rozmery()
+			 * @see #máŠírku(double)
+			 * @see #máVýšku(double)
+			 * @see #máRozmer(Rozmer)
+			 * @see #máRozmer(double, double)
+			 * @see #rozmer()
+			 */
+			public void rozmer(Rozmer rozmer)
+			{
+				// TODO – otestuj
+				veľkosť = rozmer.výška() / 2.0;
+				pomerVeľkosti = (rozmer.šírka() / 2.0) / veľkosť;
+				if (viditeľný) Svet.automatickéPrekreslenie();
+			}
+
+
+			/**
+			 * <p>Zistí aktuálne rozmery robota.</p>
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+			 * upozorneniu v opise metódy {@link #rozmery(double, double)
+			 * rozmery}{@code (šírka, výška)}.</p>
+			 * 
+			 * @return objekt vytvorený podľa aktuálnych rozmerov robota
+			 * 
+			 * @see #šírka()
+			 * @see #výška()
+			 * @see #rozmer()
+			 * @see #rozmery()
+			 * @see #máŠírku(double)
+			 * @see #máVýšku(double)
+			 * @see #máRozmer(Rozmer)
+			 * @see #máRozmer(double, double)
+			 * @see #rozmery(double, double)
+			 * @see #rozmery(Rozmer)
+			 */
+			public Rozmery rozmery()
+			{
+				// TODO – otestuj
+				return new Rozmery(2.0 * veľkosť * pomerVeľkosti,
+					2.0 * veľkosť);
+			}
+
+
+			/**
+			 * <p>Nastaví nové rozmery robota.</p>
+			 * 
+			 * <p class="attention"><b>Upozornenie:</b> {@code currRozmery}
+			 * ({@linkplain #výška() výška} a {@linkplain #šírka() šírka})
+			 * robota sú takpovediac „tieňové“ vlastnosti. V skutočnosti sú
+			 * vnútorne tieto hodnoty premietané cez vlastnosti {@linkplain 
+			 * #veľkosť() veľkosti} a {@linkplain #pomer() pomeru} robota.
+			 * Pri nastavovaní rozmerov platí, že aktuálna veľkosť robota je
+			 * nastavená na polovicou zadanej výšky a aktuálny pomer veľkosti
+			 * robota je nastavený (vypočítaný) ako pomer (podiel) polovice
+			 * zadanej šírky a novej veľkosti (ktorá bola práve vypočítaná).
+			 * Podobne to platí naopak: výška je vypočítaná ako dvojnásobok
+			 * aktuálnej veľkosti robota a šírka je súčinom výšky (ktorá bola
+			 * práve vypočítaná) a pomeru veľkosti robota. Reálne nie sú
+			 * hodnoty výšky a šírky robota uchovávané. (Vždy ide
+			 * o prepočet.)</p>
+			 * 
+			 * @param šírka nová šírka robota
+			 * @param výška nová výška robota
+			 * 
+			 * @see #šírka()
+			 * @see #výška()
+			 * @see #rozmer()
+			 * @see #máŠírku(double)
+			 * @see #máVýšku(double)
+			 * @see #máRozmer(Rozmer)
+			 * @see #máRozmer(double, double)
+			 * @see #rozmery()
+			 * @see #rozmery(Rozmer)
+			 */
+			public void rozmery(double šírka, double výška)
+			{
+				// TODO – otestuj
+				veľkosť = výška / 2.0;
+				pomerVeľkosti = (šírka / 2.0) / veľkosť;
+				if (viditeľný) Svet.automatickéPrekreslenie();
+			}
+
+			/**
+			 * <p>Nastaví nové rozmery robota podľa zadanej implementácie
+			 * rozmeru.</p>
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
+			 * upozorneniu v opise metódy {@link #rozmery(double, double)
+			 * rozmery}{@code (šírka, výška)}.</p>
+			 * 
+			 * @param rozmer inštancia obsahujúca nové rozmery robota
+			 * 
+			 * @see #šírka()
+			 * @see #výška()
+			 * @see #rozmer()
+			 * @see #máŠírku(double)
+			 * @see #máVýšku(double)
+			 * @see #máRozmer(Rozmer)
+			 * @see #máRozmer(double, double)
+			 * @see #rozmery()
+			 * @see #rozmery(double, double)
+			 */
+			public void rozmery(Rozmer rozmer)
+			{
+				// TODO – otestuj
+				veľkosť = rozmer.výška() / 2.0;
+				pomerVeľkosti = (rozmer.šírka() / 2.0) / veľkosť;
+				if (viditeľný) Svet.automatickéPrekreslenie();
+			}
+
+
+			/**
+			 * <p>Zistí, či má robot zadanú šírku.</p>
+			 * 
+			 * @param šírka šírka, ktorá má byť porovnaná so šírkou robota
+			 * @return {@code valtrue} ak sa šírka robota zhoduje so
+			 *     zadanou šírkou, {@code valfalse} v opačnom prípade
+			 * 
+			 * @see #šírka()
+			 * @see #výška()
+			 * @see #rozmery()
+			 */
+			public boolean máŠírku(double šírka)
+			{ return (2.0 * veľkosť * pomerVeľkosti) == šírka; }
+
+			/** <p><a class="alias"></a> Alias pre {@link #máŠírku(double) máŠírku}.</p> */
+			public boolean maSirku(double šírka) { return máŠírku(šírka); }
+
+			/**
+			 * <p>Zistí, či má robot zadanú výšku.</p>
+			 * 
+			 * @param výška výška, ktorá má byť porovnaná s výškou robota
+			 * @return {@code valtrue} ak sa výška robota zhoduje so
+			 *     zadanou výškou, {@code valfalse} v opačnom prípade
+			 * 
+			 * @see #šírka()
+			 * @see #výška()
+			 * @see #rozmery()
+			 */
+			public boolean máVýšku(double výška)
+			{ return 2.0 * veľkosť == výška; }
+
+			/** <p><a class="alias"></a> Alias pre {@link #máVýšku(double) máVýšku}.</p> */
+			public boolean maVysku(double výška) { return máVýšku(výška); }
+
+
+			/**
+			 * <p>Overí, či sa rozmery robota a rozmery zadaného objektu
+			 * dokonale zhodujú. Ak je zistená zhoda, tak je výsledkom
+			 * {@code valtrue}, v opačnom prípade hodnota {@code valfalse}.</p>
+			 * 
+			 * @param rozmer iný objekt, ktorého rozmery majú byť porovnané
+			 *     s rozmermi robota
+			 * @return {@code valtrue} ak sa rozmery robota zhodujú s rozmermi
+			 *     zadaného objektu, {@code valfalse} v opačnom prípade
+			 * 
+			 * @see #šírka()
+			 * @see #výška()
+			 * @see #rozmery()
+			 */
+			public boolean máRozmer(Rozmer rozmer)
+			{
+				// TODO – otestuj – tiež máVýšku, máŠírku
+				if (rozmer instanceof GRobot)
+					return ((GRobot)rozmer).pomerVeľkosti == pomerVeľkosti &&
+						((GRobot)rozmer).veľkosť == veľkosť;
+				return rozmer.šírka() == (2.0 * veľkosť * pomerVeľkosti) &&
+					rozmer.výška() == (2.0 * veľkosť);
+			}
+
+			/** <p><a class="alias"></a> Alias pre {@link #máRozmer(Rozmer) máRozmer}.</p> */
+			public boolean maRozmer(Rozmer rozmer) { return máRozmer(rozmer); }
+
+
+			/**
+			 * <p>Overí, či sa rozmery robota dokonale zhodujú so zadanými
+			 * rozmermi. Ak je zistená zhoda, tak je výsledkom
+			 * {@code valtrue}, v opačnom prípade hodnota {@code valfalse}.</p>
+			 * 
+			 * @param šírka šírka porovnávaná so šírkou robota
+			 * @param výška výška porovnávaná s výškou robota
+			 * @return {@code valtrue} ak sa rozmery robota zhodujú so
+			 *     zadanými rozmermi, {@code valfalse} v opačnom prípade
+			 * 
+			 * @see #šírka()
+			 * @see #výška()
+			 * @see #rozmery()
+			 */
+			public boolean máRozmer(double šírka, double výška)
+			{
+				return (2.0 * veľkosť * pomerVeľkosti) == šírka &&
+					(2.0 * veľkosť) == výška;
+			}
+
+			/** <p><a class="alias"></a> Alias pre {@link #máRozmer(double, double) máRozmer}.</p> */
+			public boolean maRozmer(double šírka, double výška)
+			{ return máRozmer(šírka, výška); }
 
 
 			/**
@@ -36984,11 +37901,19 @@ TODO: na úvodnú stránku
 			/** <p><a class="alias"></a> Alias pre {@link #veľkosťPodľaMierky() veľkosťPodľaMierky}.</p> */
 			public void velkostPodlaMierky() { veľkosťPodľaMierky(); }
 
-			/** <p><a class="alias"></a> Alias pre {@link #veľkosťPodľaMierky() veľkosťPodľaMierky}.</p> */
-			public void rozmerPodľaMierky() { veľkosťPodľaMierky(); }
+			// /**
+			//  * <p><a class="alias"></a> Alias pre {@link #veľkosťPodľaMierky()
+			//  * veľkosťPodľaMierky}.</p>
+			//  * @deprecated
+			//  */
+			// @Deprecated public void rozmerPodľaMierky() { veľkosťPodľaMierky(); }
 
-			/** <p><a class="alias"></a> Alias pre {@link #veľkosťPodľaMierky() veľkosťPodľaMierky}.</p> */
-			public void rozmerPodlaMierky() { veľkosťPodľaMierky(); }
+			// /**
+			//  * <p><a class="alias"></a> Alias pre {@link #veľkosťPodľaMierky()
+			//  * veľkosťPodľaMierky}.</p>
+			//  * @deprecated
+			//  */
+			// @Deprecated public void rozmerPodlaMierky() { veľkosťPodľaMierky(); }
 
 			/**
 			 * <p>Nastaví veľkosť robota podľa aktuálnej {@linkplain 
@@ -37028,13 +37953,21 @@ TODO: na úvodnú stránku
 			public void velkostPodlaMierky(double zmena)
 			{ veľkosťPodľaMierky(zmena); }
 
-			/** <p><a class="alias"></a> Alias pre {@link #veľkosťPodľaMierky(double) veľkosťPodľaMierky}.</p> */
-			public void rozmerPodľaMierky(double zmena)
-			{ veľkosťPodľaMierky(zmena); }
+			// /**
+			//  * <p><a class="alias"></a> Alias pre {@link 
+			//  * #veľkosťPodľaMierky(double) veľkosťPodľaMierky}.</p>
+			//  * @deprecated
+			//  */
+			// @Deprecated public void rozmerPodľaMierky(double zmena)
+			// { veľkosťPodľaMierky(zmena); }
 
-			/** <p><a class="alias"></a> Alias pre {@link #veľkosťPodľaMierky(double) veľkosťPodľaMierky}.</p> */
-			public void rozmerPodlaMierky(double zmena)
-			{ veľkosťPodľaMierky(zmena); }
+			// /**
+			//  * <p><a class="alias"></a> Alias pre {@link 
+			//  * #veľkosťPodľaMierky(double) veľkosťPodľaMierky}.</p>
+			//  * @deprecated
+			//  */
+			// @Deprecated public void rozmerPodlaMierky(double zmena)
+			// { veľkosťPodľaMierky(zmena); }
 
 
 			/**
@@ -37050,11 +37983,18 @@ TODO: na úvodnú stránku
 			 * 
 			 * <p>Mierka pôvodne primárne slúžila na úpravu veľkosti obrázkov
 			 * pri ich kreslení robotom. Mierka ma vplyv aj na
-			 * kreslenie {@linkplain Oblasť oblastí} a {@linkplain Shpe tvarov
+			 * kreslenie {@linkplain Oblasť oblastí} a {@linkplain Shape tvarov
 			 * Javy} robotom. V tej súvislosti aj na zisťovanie prítomnosti
 			 * {@linkplain #bodVTvare(double, double, Shape) bodov v tvaroch}
 			 * a prípadne na ďalšie súvisiace vlastnosti/funkcie
 			 * programovacieho rámca.</p>
+			 * 
+			 * <p>Mierka nemá vplyv na veľkosť kreslenia tvarov robota
+			 * bezparametrickými verziami metód (napríklad {@link #kružnica()
+			 * kružnica()}), ani na mieru pohybu robota bezparametrickými
+			 * verziami metód pohybu (napríklad {@link #dopredu()
+			 * dopredu()}). Má vplyv iba na {@linkplain #vlastnýTvar(String)
+			 * veľkosť vlastného obrázkového tvaru robota.}</p>
 			 * 
 			 * @return aktuálna mierka robota
 			 * 
@@ -37086,19 +38026,24 @@ TODO: na úvodnú stránku
 
 			/**
 			 * <p><a class="getter"></a> Zistí aktuálnu hodnotu pomeru
-			 * rozmerov niektorých tvarov generovaných robotom. Ide o pomer
-			 * šírky a výšky tých tvarov, pri ktorých nie sú obidva tieto
-			 * rozmery zhodné, čiže {@linkplain #elipsa() elipsa}
-			 * a {@linkplain #obdĺžnik() obdĺžnik}.</p>
+			 * rozmerov (výšky a šírky) robota. Táto hodnota ovplyvňyje aj
+			 * pomer šírky a výšky tých tvarov, pri ktorých nemusia byť ich
+			 * rozmery (výška a šírka) zhodné, čiže napríklad 
+			 * {@linkplain #elipsa() elipsy} a {@linkplain #obdĺžnik()
+			 * obdĺžnika}.</p>
 			 * 
-			 * <p><b>Toto číslo má vplyv len na tie metódy generovania tvarov,
+			 * <p><b>Pomer má vplyv len na tie metódy generovania tvarov,
 			 * ktoré neprijímajú žiadny argument.</b> Výška tvaru je určená
 			 * {@linkplain #veľkosť() veľkosťou robota} a šírka je od nej
 			 * odvodená (vypočítaná podľa hodnoty pomeru). Predvolená hodnota
 			 * pomeru je {@code num1.0}, čiže generované tvary majú predvolene
 			 * rovnakú šírku a výšku. Ak sa hodnota pomeru zmení (napríklad)
 			 * na {@code num2.0}, tak tvary budú mať dvojnásobnú šírku, ak na
-			 * {@code num0.5}, tak polovičnú a tak ďalej.</p>
+			 * {@code num0.5}, tak polovičnú a tak ďalej.
+			 * <br /> <br />
+			 * V tejto súvislosti <b>venujte pozornosť upozorneniu v opise
+			 * metódy {@link #rozmery(double, double) rozmery}{@code (šírka,
+			 * výška)}.</b></p>
 			 * 
 			 * <p><image>pomery.png<alt/>Ukážy pomerov veľkostí.</image>Ukážky
 			 * pomerov veľkostí: vľavo „obdĺžnik“ s predvoleným pomerom
@@ -37111,8 +38056,7 @@ TODO: na úvodnú stránku
 			 * (200);\nobdĺžnik();\n\npomer(1);\npreskočVľavo(400);\nobdĺžnik
 			 * ();\n\nSvet.zbaľ();\npodlaha.uložObrázok("pomery.png"); -->
 			 * 
-			 * @return aktuálny pomer rozmerov niektorých tvarov generovaných
-			 *     robotom
+			 * @return aktuálny pomer rozmerov robota
 			 * 
 			 * @see #pomer(double)
 			 * @see #elipsa()
@@ -37122,26 +38066,39 @@ TODO: na úvodnú stránku
 			public double pomer() { return pomerVeľkosti; }
 
 			/**
-			 * <p><a class="setter"></a> Upraví aktuálny pomer rozmerov
-			 * niektorých tvarov generovaných robotom. Ide o pomer šírky
-			 * a výšky tých tvarov, pri ktorých nie sú obidva tieto rozmery
-			 * zhodné, čiže {@linkplain #elipsa() elipsa}
-			 * a {@linkplain #obdĺžnik() obdĺžnik}. <b>Toto číslo má vplyv len
-			 * na tie metódy generovania tvarov, ktoré neprijímajú žiadny
-			 * argument.</b> Rozmer dotknutých tvarov je, okrem tohto čísla,
-			 * určený {@linkplain #veľkosť() veľkosťou robota}. Ďalšie
-			 * informácie o význame a vplyve pomeru sú v opise metódy
-			 * {@link #pomer() pomer()}.</p>
+			 * <p><a class="setter"></a> Upraví aktuálny pomer rozmeru
+			 * robota, čo má priamy vplyv na generovanie niektorých tvarov
+			 * robotom.
+			 * <!--   -->
+			 * Ide o pomer šírky a výšky robota a v tej súvislosti tých
+			 * tvarov, pri ktorých nemusia byť obidva ich rozmery (výška
+			 * a šírka) zhodné, čiže napríklad {@linkplain #elipsa() elipsa}
+			 * a {@linkplain #obdĺžnik() obdĺžnik}.
+			 * <!--   -->
+			 * <b>Pomer má vplyv len na tie metódy generovania tvarov, ktoré
+			 * neprijímajú žiadny argument.</b> Rozmer dotknutých tvarov je,
+			 * okrem tohto čísla, určený {@linkplain #veľkosť() veľkosťou
+			 * robota}. Ďalšie informácie o význame a vplyve pomeru sú v opise
+			 * metódy {@link #pomer() pomer()}.</p>
 			 * 
-			 * @param pomer nový pomer rozmerov niektorých tvarov
-			 *     generovaných robotom
+			 * <p class="remark"><b>Poznámka:</b> Od verzie 2.1 je pomer
+			 * využívaný aj pri implementácii rozhrania {@link Rozmer Rozmer}.
+			 * V tejto súvislosti <b>venujte pozornosť upozorneniu v opise
+			 * metódy {@link #rozmery(double, double) rozmery}{@code (šírka,
+			 * výška)}.</b></p>
+			 * 
+			 * @param pomer nový pomer rozmerov robota
 			 * 
 			 * @see #pomer()
 			 * @see #elipsa()
 			 * @see #obdĺžnik()
 			 * @see #veľkosť()
 			 */
-			public void pomer(double pomer) { pomerVeľkosti = pomer; }
+			public void pomer(double pomer)
+			{
+				pomerVeľkosti = pomer;
+				if (viditeľný) Svet.automatickéPrekreslenie();
+			}
 
 
 			/**
@@ -37520,6 +38477,12 @@ TODO: na úvodnú stránku
 			 * {@linkplain #bodVOblasti(Poloha, Area) oblasti},
 			 * {@linkplain #bodVTvare(Poloha, Shape) tvare}…</p>
 			 * 
+			 * <p class="attention"><b>Upozornenie:</b> Ak má aspoň jeden
+			 * robot definovanú {@linkplain #kolíznaOblasť(Shape) kolíznu
+			 * oblasť}, tak je braná do úvahy aj {@linkplain #mierka()
+			 * mierka} robotov. V opačnom prípade nemá {@linkplain #mierka()
+			 * mierka} na funkciu tejto metódy vplyv.</p>
+			 * 
 			 * @param iný iný robot, ktorého vzájomnú kolíziu s týmto robotom
 			 *     chceme otestovať
 			 */
@@ -37560,7 +38523,7 @@ TODO: na úvodnú stránku
 						at.translate(-prepočítanéX, -prepočítanéY);
 					}
 
-					at.rotate(Math.toRadians(90 - aktuálnyUhol),
+					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
 
 					at.translate(aktuálneX, -aktuálneY);
@@ -37580,7 +38543,7 @@ TODO: na úvodnú stránku
 				else
 				{
 					AffineTransform at = new AffineTransform();
-					at.rotate(Math.toRadians(90 - iný.aktuálnyUhol),
+					at.rotate(toRadians(90 - iný.aktuálnyUhol),
 						Svet.prepočítajX(iný.aktuálneX), Svet.prepočítajY(iný.aktuálneY));
 					at.translate(iný.aktuálneX, -iný.aktuálneY);
 					b = iný.kolíznaOblasť.createTransformedArea(at);
@@ -37599,8 +38562,8 @@ TODO: na úvodnú stránku
 		// Meranie vzdialeností
 
 			/**
-			 * <p>Zistí, aká je vzdialenosť tohto robota od stredu súradnicovej
-			 * sústavy.</p>
+			 * <p>Zistí, aká je vzdialenosť tohto robota od stredu
+			 * súradnicovej sústavy.</p>
 			 * 
 			 * @return vzdialenosť robota od stredu súradnicovej sústavy
 			 * 
@@ -37612,13 +38575,11 @@ TODO: na úvodnú stránku
 			 */
 			public double vzdialenosť()
 			{
-				// return Math.sqrt(Math.pow(aktuálneX, 2) +
-				//	Math.pow(aktuálneY, 2));
+				// return sqrt(pow(aktuálneX, 2) + pow(aktuálneY, 2));
 				/*!!!
-				return Math.sqrt(aktuálneX * aktuálneX +
-					aktuálneY * aktuálneY);
+				return sqrt(aktuálneX * aktuálneX + aktuálneY * aktuálneY);
 				*/
-				return Math.hypot(aktuálneX, aktuálneY);
+				return hypot(aktuálneX, aktuálneY);
 			}
 
 			/** <p><a class="alias"></a> Alias pre {@link #vzdialenosť() vzdialenosť}.</p> */
@@ -37639,10 +38600,10 @@ TODO: na úvodnú stránku
 			public double vzdialenosťOd(double súradnicaBoduX, double súradnicaBoduY)
 			{
 				/*!!!
-				return Math.sqrt(Math.pow(súradnicaBoduX - aktuálneX, 2) +
-					Math.pow(súradnicaBoduY - aktuálneY, 2));
+				return sqrt(pow(súradnicaBoduX - aktuálneX, 2) +
+					pow(súradnicaBoduY - aktuálneY, 2));
 				*/
-				return Math.hypot(súradnicaBoduX - aktuálneX,
+				return hypot(súradnicaBoduX - aktuálneX,
 					súradnicaBoduY - aktuálneY);
 			}
 
@@ -37654,10 +38615,10 @@ TODO: na úvodnú stránku
 			public double vzdialenosťK(double súradnicaBoduX, double súradnicaBoduY)
 			{
 				/*!!!
-				return Math.sqrt(Math.pow(súradnicaBoduX - aktuálneX, 2) +
-					Math.pow(súradnicaBoduY - aktuálneY, 2));
+				return sqrt(pow(súradnicaBoduX - aktuálneX, 2) +
+					pow(súradnicaBoduY - aktuálneY, 2));
 				*/
-				return Math.hypot(súradnicaBoduX - aktuálneX,
+				return hypot(súradnicaBoduX - aktuálneX,
 					súradnicaBoduY - aktuálneY);
 			}
 
@@ -37681,10 +38642,10 @@ TODO: na úvodnú stránku
 			public double vzdialenosťOd(Poloha objekt)
 			{
 				/*!!!
-				return Math.sqrt(Math.pow(iný.aktuálneX - aktuálneX, 2) +
-					Math.pow(iný.aktuálneY - aktuálneY, 2));
+				return sqrt(pow(iný.aktuálneX - aktuálneX, 2) +
+					pow(iný.aktuálneY - aktuálneY, 2));
 				*/
-				return Math.hypot(objekt.polohaX() - aktuálneX,
+				return hypot(objekt.polohaX() - aktuálneX,
 					objekt.polohaY() - aktuálneY);
 			}
 
@@ -37695,10 +38656,10 @@ TODO: na úvodnú stránku
 			public double vzdialenosťK(Poloha objekt)
 			{
 				/*!!!
-				return Math.sqrt(Math.pow(iný.aktuálneX - aktuálneX, 2) +
-					Math.pow(iný.aktuálneY - aktuálneY, 2));
+				return sqrt(pow(iný.aktuálneX - aktuálneX, 2) +
+					pow(iný.aktuálneY - aktuálneY, 2));
 				*/
-				return Math.hypot(objekt.polohaX() - aktuálneX,
+				return hypot(objekt.polohaX() - aktuálneX,
 					objekt.polohaY() - aktuálneY);
 			}
 
@@ -37728,12 +38689,12 @@ TODO: na úvodnú stránku
 				Rectangle2D hranice = tvar.getBounds2D();
 
 				/*!!!
-				return Math.sqrt(Math.pow((Svet.prepočítajSpäťX(hranice.getX()) +
+				return sqrt(pow((Svet.prepočítajSpäťX(hranice.getX()) +
 					hranice.getWidth() / 2) - aktuálneX, 2) +
-					Math.pow((Svet.prepočítajSpäťY(hranice.getY()) -
+					pow((Svet.prepočítajSpäťY(hranice.getY()) -
 					hranice.getHeight() / 2) - aktuálneY, 2));
 				*/
-				return Math.hypot(
+				return hypot(
 					(Svet.prepočítajSpäťX(hranice.getX()) +
 						hranice.getWidth() / 2) - aktuálneX,
 					(Svet.prepočítajSpäťY(hranice.getY()) -
@@ -37749,12 +38710,12 @@ TODO: na úvodnú stránku
 				Rectangle2D hranice = tvar.getBounds2D();
 
 				/*!!!
-				return Math.sqrt(Math.pow((Svet.prepočítajSpäťX(hranice.getX()) +
+				return sqrt(pow((Svet.prepočítajSpäťX(hranice.getX()) +
 					hranice.getWidth() / 2) - aktuálneX, 2) +
-					Math.pow((Svet.prepočítajSpäťY(hranice.getY()) -
+					pow((Svet.prepočítajSpäťY(hranice.getY()) -
 					hranice.getHeight() / 2) - aktuálneY, 2));
 				*/
-				return Math.hypot(
+				return hypot(
 					(Svet.prepočítajSpäťX(hranice.getX()) +
 						hranice.getWidth() / 2) - aktuálneX,
 					(Svet.prepočítajSpäťY(hranice.getY()) -
@@ -37776,7 +38737,7 @@ TODO: na úvodnú stránku
 			 */
 			public double vzdialenosťOdMyši()
 			{
-				return Math.hypot(ÚdajeUdalostí.súradnicaMyšiX - aktuálneX,
+				return hypot(ÚdajeUdalostí.súradnicaMyšiX - aktuálneX,
 					ÚdajeUdalostí.súradnicaMyšiY - aktuálneY);
 			}
 
@@ -37786,7 +38747,7 @@ TODO: na úvodnú stránku
 			/** <p><a class="alias"></a> Alias pre {@link #vzdialenosťOdMyši() vzdialenosťOdMyši}.</p> */
 			public double vzdialenosťKMyši()
 			{
-				return Math.hypot(ÚdajeUdalostí.súradnicaMyšiX - aktuálneX,
+				return hypot(ÚdajeUdalostí.súradnicaMyšiX - aktuálneX,
 					ÚdajeUdalostí.súradnicaMyšiY - aktuálneY);
 			}
 
@@ -38277,8 +39238,17 @@ TODO: na úvodnú stránku
 				if (null != vlastnýTvarKreslenie)
 					vlastnýTvarKreslenie = null;
 				vlastnýTvarObrázok = obrázok;
-				if (upravVeľkosťRobota) veľkosť = (obrázok.getWidth(null) +
-					obrázok.getHeight(null)) / 4;
+				if (upravVeľkosťRobota)
+				{
+					// Zamietnutý spôsob. Teraz treba použiť aj pomerVeľkosti.:
+					// veľkosť = (obrázok.getWidth(null) +
+					// 	obrázok.getHeight(null)) / 4;
+
+					// ‼TODO‼ otestovať
+					veľkosť = (double)obrázok.getHeight(null) / 2.0;
+					pomerVeľkosti = ((double)obrázok.getWidth(null) / 2.0) /
+						veľkosť;
+				}
 				pôvodnáVeľkosť = veľkosť;
 				Svet.automatickéPrekreslenie();
 			}

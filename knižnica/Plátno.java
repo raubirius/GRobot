@@ -952,7 +952,9 @@ public class Plátno implements Priehľadnosť
 									{
 										AktívneSlovo aktívne =
 											(AktívneSlovo)slovo;
-										aktívneSlová.add(aktívne);
+
+										// (Pozri aktívneSlováFIX.)
+										// aktívneSlová.add(aktívne);
 
 										farbaAktívnehoSlova =
 											dajFarbuAktívnehoSlova(
@@ -1100,7 +1102,8 @@ public class Plátno implements Priehľadnosť
 
 						if (null != obsah.aktívneSlovo)
 						{
-							aktívneSlová.add(obsah.aktívneSlovo);
+							// (Pozri aktívneSlováFIX.)
+							// aktívneSlová.add(obsah.aktívneSlovo);
 
 							farbaAktívnehoSlova = dajFarbuAktívnehoSlova(
 								obsah.aktívneSlovo.identifikátor);
@@ -1159,6 +1162,30 @@ public class Plátno implements Priehľadnosť
 					x = x0 + odsadenieZľava;
 					aplikujOdsadeniaZľava = true;
 					x -= posunutieTextovX;
+				}
+			}
+
+			private void aktívneSlováFIX()
+			{
+				// Pokus o opravu zafarbovania aktívnych slov.
+				for (RiadokKonzoly riadok : riadky)
+				{
+					for (PrototypKonzoly prototyp : riadok)
+					{
+						if (vyhodnoťPríkaz(prototyp)) continue;
+						ObsahKonzoly obsah = dajObsah(prototyp);
+						if (null == obsah) continue;
+
+						if (null != obsah.slová)
+						{
+							for (Slovo slovo : obsah.slová)
+								if (slovo instanceof AktívneSlovo &&
+									0 != rozmeryPísma.stringWidth(slovo.slovo))
+									aktívneSlová.add((AktívneSlovo)slovo);
+						}
+						else if (null != obsah.aktívneSlovo)
+							aktívneSlová.add(obsah.aktívneSlovo);
+					}
 				}
 			}
 
@@ -1359,6 +1386,7 @@ public class Plátno implements Priehľadnosť
 						}
 					}
 
+					aktívneSlováFIX();
 					kresliTextyZalamované();
 				}
 				else
@@ -1446,10 +1474,12 @@ public class Plátno implements Priehľadnosť
 							x -= posunutieTextovX;
 						}
 
+						aktívneSlováFIX();
 						kresliTextyNezalamované();
 					}
 					else
 					{
+						aktívneSlováFIX();
 						for (RiadokKonzoly riadok : riadky)
 						{
 							for (PrototypKonzoly prototyp : riadok)
@@ -1482,7 +1512,8 @@ public class Plátno implements Priehľadnosť
 
 								if (null != obsah.aktívneSlovo)
 								{
-									aktívneSlová.add(obsah.aktívneSlovo);
+									// (Pozri aktívneSlováFIX.)
+									// aktívneSlová.add(obsah.aktívneSlovo);
 
 									farbaAktívnehoSlova =
 										dajFarbuAktívnehoSlova(
@@ -4307,8 +4338,8 @@ public class Plátno implements Priehľadnosť
 		 * stropu podľa zadaného objektu. Ak je zadaná pretypovaná hodnota
 		 * {@code (}{@link Farebnosť Farebnosť}{@code )}{@code valnull},
 		 * tak je farba pozadia označenia nastavená na
-		 * {@linkplain Farebnosť#svetložltá svetložltú}, ktorá je predvolenou farbou
-		 * pri štarte frameworku.</p>
+		 * {@linkplain Farebnosť#svetložltá svetložltú}, ktorá je predvolenou
+		 * farbou pri štarte programovacieho rámca (angl. frameworku).</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Predvolenú farbu pozadia a textu,
 		 * ktorý je označený je možné individuálne prekryť pre každý označený
@@ -5139,8 +5170,7 @@ public class Plátno implements Priehľadnosť
 				{@code kwdprivate} {@code kwdfinal} {@code typechar}[] samohlásky = {{@code srg'a'}, {@code srg'e'}, {@code srg'i'}, {@code srg'o'}, {@code srg'u'}},
 					spoluhlásky = {{@code srg'b'}, {@code srg'c'}, {@code srg'd'}, {@code srg'f'}, {@code srg'g'}, {@code srg'h'}, {@code srg'j'}, {@code srg'k'},
 						{@code srg'l'}, {@code srg'm'}, {@code srg'n'}, {@code srg'p'}, {@code srg'r'}, {@code srg's'}, {@code srg't'}, {@code srg'v'}, {@code srg'z'}};
-
-
+				<hr/>
 				{@code comm// Konštruktor:}
 				{@code kwdprivate} TestovanieOznačenia()
 				{
@@ -5206,8 +5236,7 @@ public class Plátno implements Priehľadnosť
 					{@code kwdelse} {@code kwdif} (posledné) text.{@link StringBuffer#append(char) append}({@code srg'.'});
 					{@code kwdelse} text.{@link StringBuffer#append(char) append}({@code srg' '});
 				}
-
-
+				<hr/>
 				{@code comm// ---------------- Obsluha udalostí ----------------}
 
 				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#klik() klik}()
@@ -5265,8 +5294,7 @@ public class Plátno implements Priehľadnosť
 						{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Texty boli vložené do schránky."});
 					}
 				}
-
-
+				<hr/>
 				{@code comm// Hlavná metóda:}
 				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}... args)
 				{
@@ -7114,14 +7142,99 @@ public class Plátno implements Priehľadnosť
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
+		 * <p>Tento príklad ukazuje najjednoduchší spôsob vytvorenia webového
+		 * odkazu priamo v rámci textov konzoly. (Je to len jedna z možností
+		 * využitia aktívneho slova.) Prejdením myšou nad odkaz sa zmení jeho
+		 * farba a kurzor myši. Kliknutím na odkaz sa otvorí zadaná webová
+		 * adresa (pozri v rámci príkladu).</p>
+		 * 
 		 * <pre CLASS="example">
-			«príklad – ospravedlňujeme sa, pracujeme na doplnení…»
-			<!-- TODO – otvorenie webového odkazu… -->
+			{@code kwdimport} knižnica.*;
+
+			{@code kwdpublic} {@code typeclass} OtvorWebovýOdkaz {@code kwdextends} {@link GRobot GRobot}
+			{
+				{@code kwdprivate} OtvorWebovýOdkaz()
+				{
+					{@code comm// Rozmer plátna = rozmer nultého zariadenia (obrazovky).}
+					{@code valsuper}({@link Svet Svet}.{@link Svet#šírkaZariadenia() šírkaZariadenia}(), {@link Svet Svet}.{@link Svet#výškaZariadenia() výškaZariadenia}());
+
+					{@code comm// Skrytie hlavného robota:}
+					{@link GRobot#skry() skry}();
+
+					{@code comm// Vypnutie automatického prekresľovania:}
+					{@link Svet Svet}.{@link Svet#nekresli() nekresli}();
+
+					{@code comm// Aktivovanie rozširujúcich funkcií konzoly stropu (v tomto}
+					{@code comm// príklade je to zbytočné, ale keby sme potrebovali vkladať}
+					{@code comm// viac textov, zišlo by sa to).}
+					{@link Svet Svet}.{@link Svet#skratkyStropu(boolean) skratkyStropu}({@code valtrue});
+					{@link Plátno strop}.{@link Plátno#automatickéZobrazovanieLíšt(boolean) automatickéZobrazovanieLíšt}({@code valtrue});
+
+					{@code comm// Vloženie textov konzoly (vrátane aktívneho „slova“ – to môže}
+					{@code comm// byť aj viac slov, ktoré bude fungovať ako webový odkaz):}
+					{@link Svet Svet}.{@link Svet#farbaTextu(java.awt.Color) farbaTextu}({@link Farebnosť#čierna čierna});
+					{@link Svet Svet}.{@link Svet#vypíš(Object...) vypíš}({@code srg"Toto: "});
+					{@link Svet Svet}.{@link Svet#farbaTextu(java.awt.Color) farbaTextu}({@link Farebnosť#atramentová atramentová});
+					{@link Svet Svet}.{@link Svet#vypíšAktívneSlovo(String, Object...) vypíšAktívneSlovo}({@code srg"https://pdf.truni.sk/"}, {@code srg"je webový odkaz."});
+					{@link Svet Svet}.{@link Svet#farbaTextu(java.awt.Color) farbaTextu}({@link Farebnosť#čierna čierna});
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object...) vypíšRiadok}({@code srg" Kliknutím na neho otvoríte stránku "} +
+						{@code srg"Pedagogickej fakulty TU."});
+
+					{@code comm// Spustenie časovača, v ktorom bude zabezpečené prekresľovanie}
+					{@code comm// plátna podľa potreby:}
+					{@link Svet Svet}.{@link Svet#spustiČasovač() spustiČasovač}();
+				}
+				<hr/>
+				{@code comm// V reakcii na tik je prekresľované plátno v prípade potreby:}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#tik() tik}()
+				{
+					{@code kwdif} ({@link Svet Svet}.{@link Svet#neboloPrekreslené() neboloPrekreslené}()) {@link Svet Svet}.{@link Svet#prekresli() prekresli}();
+				}
+				<hr/>
+				{@code comm// Ďalšie reakcie, ktorými je oživené fungovanie odkazu:}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#pohybMyši() pohybMyši}()
+				{
+					{@link String String} aktívneSlovo = {@link Svet Svet}.{@link Svet#myšVAktívnomSlove() myšVAktívnomSlove}();
+					{@code kwdif} ({@code valnull} == aktívneSlovo)
+						{@link Svet Svet}.{@link Svet#zmeňKurzorMyši(String) zmeňKurzorMyši}({@code srg"predvolený"});
+					{@code kwdelse}
+						{@link Svet Svet}.{@link Svet#zmeňKurzorMyši(String) zmeňKurzorMyši}({@code srg"ruka"});
+					{@link Svet Svet}.{@link Svet#žiadajPrekreslenie() žiadajPrekreslenie}();
+				}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#klik() klik}()
+				{
+					{@link String String} aktívneSlovo = {@link Svet Svet}.{@link Svet#myšVAktívnomSlove() myšVAktívnomSlove}();
+					{@code kwdif} ({@code valnull} != aktívneSlovo)
+					{
+						{@link String String} URL = aktívneSlovo;
+						{@code comm// (prípadné spracovanie)}
+						{@link Svet Svet}.{@link Svet#otvorWebovýOdkaz(String) otvorWebovýOdkaz}(URL);
+					}
+				}
+
+				{@code kwd@}Override {@code kwdpublic} java.awt.{@link Color Color} {@link GRobot#farbaAktívnehoSlova(String) farbaAktívnehoSlova}({@link String String} slovo)
+				{
+					{@link String String} aktívneSlovo = {@link Svet Svet}.{@link Svet#myšVAktívnomSlove() myšVAktívnomSlove}();
+					{@code kwdif} (slovo.{@link String#equals(Object) equals}(aktívneSlovo)) {@code kwdreturn} {@link Farebnosť#tmavoakvamarínová tmavoakvamarínová};
+					{@code kwdreturn} {@code valnull};
+				}
+				<hr/>
+				{@code comm// (Hlavná metóda – vstupný bod programu.)}
+				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
+				{
+					{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"OtvorWebovýOdkaz.cfg"});
+					{@code kwdnew} OtvorWebovýOdkaz();
+				}
+			}
 			</pre>
 		 * 
 		 * <p><b>Výsledok:</b></p>
 		 * 
-		 * <p><image>«názov».png<alt/></image>«Popis…»<!-- TODO -->.</p>
+		 * <p><image>otvor-webovy-odkaz.png<alt/>Ukážka okna s webovým
+		 * odkazom.</image>Ukážka výsledného okna.</p>
 		 * 
 		 * @param identifikátor identifikátor aktívneho slova, s pomocou
 		 *     ktorého bude toto slovo odlišované od ostatných aktívnych slov

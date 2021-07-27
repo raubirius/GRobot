@@ -5588,12 +5588,12 @@ public abstract class Skript
 	 * <a 
 	 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java"
 	 * target="_blank"><code>ExpressionProcessor</code></a>), ktorý
-	 * (syntakticky) nasleduje za znakom mriežky {@code #} (chybové kódy vnútorného
-	 * vyhodnocovača (matematických) výrazov nie sú uvedené v tejto
+	 * (syntakticky) nasleduje za znakom mriežky {@code #} (chybové kódy
+	 * vnútorného vyhodnocovača (matematických) výrazov nie sú uvedené v tejto
 	 * dokumentácii, ale syntax s mriežkou je bližšie spomenutá napríklad
 	 * v opise metódy {@link Svet#interaktívnyRežim(boolean)
 	 * Svet.interaktívnyRežim}; chybové kódy vyhodnocovača sú uvedené v <a
-	 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java#L284"
+	 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java#L312"
 	 * target="_blank">jeho zdrojovom kóde</a>).<!-- TODO možno ešte lepšie
 	 * zdokumentovať, ale na iných miestach --></p>
 	 * 
@@ -5745,7 +5745,7 @@ public abstract class Skript
 	 * </table>
 	 * 
 	 * <p>Texty chýb vyhodnocovača (matematických) výrazov sú uvedené v <a
-	 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java#L284"
+	 * href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/podpora/ExpressionProcessor.java#L312"
 	 * target="_blank">jeho zdrojovom kóde</a>.</p>
 	 * 
 	 * @return text ku kódu chyby

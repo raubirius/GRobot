@@ -135,8 +135,7 @@ import java.util.Vector;
 		{@code comm// Inštancia deja generujúca v strede obrázka plazmovú guľu}
 		{@code comm// s polomerom 100 bodov.}
 		{@code kwdprivate} {@link Runnable Runnable} dej = () -&gt; plazma.{@link Plazma#pridajZdroj(Poloha, double) pridajZdroj}({@link Poloha#stred stred}, {@code num100});
-
-
+		<hr/>
 		{@code comm// Konštruktor.}
 		{@code kwdprivate} ZákladnáPlazma()
 		{
@@ -144,8 +143,7 @@ import java.util.Vector;
 			{@link GRobot#skry() skry}();
 			{@link Svet Svet}.{@link Svet#spustiČasovač() spustiČasovač}();
 		}
-
-
+		<hr/>
 		{@code comm// Reakcia na kliknutie myšou.}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#klik() klik}()
 		{
@@ -171,8 +169,7 @@ import java.util.Vector;
 				{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
 			}
 		}
-
-
+		<hr/>
 		{@code comm// Hlavná metóda (vstupný bod programu).}
 		{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 		{
@@ -233,8 +230,7 @@ import java.util.Vector;
 				}
 			}
 		};
-
-
+		<hr/>
 		{@code comm// Konštruktor.}
 		{@code kwdprivate} Plamienok()
 		{
@@ -255,8 +251,7 @@ import java.util.Vector;
 			{@link GRobot#skry() skry}();
 			{@link Svet Svet}.{@link Svet#spustiČasovač() spustiČasovač}();
 		}
-
-
+		<hr/>
 		{@code comm// Reakcia na kliknutie myšou.}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#klik() klik}()
 		{
@@ -291,8 +286,7 @@ import java.util.Vector;
 				{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
 			}
 		}
-
-
+		<hr/>
 		{@code comm// Hlavná metóda (vstupný bod programu).}
 		{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 		{
@@ -893,8 +887,7 @@ public class Plazma
 			{@code comm// Inštancia deja generujúca v strede obrázka plazmovú guľôčku}
 			{@code comm// s polomerom 10 bodov.}
 			{@code kwdprivate} {@link Runnable Runnable} dej = () -&gt; plazma.{@link #pridajZdroj(Poloha, double) pridajZdroj}({@link Poloha#stred stred}, {@code num10});
-
-
+			<hr/>
 			{@code comm// Konštruktor.}
 			{@code kwdprivate} SmerováPlazma()
 			{
@@ -902,8 +895,7 @@ public class Plazma
 				{@link GRobot#skry() skry}();
 				{@link Svet Svet}.{@link Svet#spustiČasovač() spustiČasovač}();
 			}
-
-
+			<hr/>
 			{@code comm// Reakcia na kliknutie myšou.}
 			{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#klik() klik}()
 			{
@@ -945,8 +937,7 @@ public class Plazma
 					{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
 				}
 			}
-
-
+			<hr/>
 			{@code comm// Hlavná metóda (vstupný bod programu).}
 			{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 			{

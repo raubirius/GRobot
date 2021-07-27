@@ -158,8 +158,7 @@ import java.awt.geom.Rectangle2D;
 			{@link Oblasť Oblasť} horizont = horizont();
 			{@link Oblasť Oblasť} slnko = kružnicaNa({@code num280}, {@code num200}, {@code num80});
 			{@link Oblasť Oblasť} oblak = oblak();
-
-
+			<hr/>
 			{@code comm// (Všimnite si, že od oblasti zeme a oblohy musíme odčítať všetky}
 			{@code comm// také oblasti, ktoré ich prekrývajú, inak by šrafovanie zasiahlo}
 			{@code comm// aj do nich.)}
@@ -190,12 +189,10 @@ import java.awt.geom.Rectangle2D;
 			obloha.{@link #odober(Shape) odober}(krík3);
 			obloha.{@link #odober(Shape) odober}(slnko);
 			obloha.{@link #odober(Shape) odober}(oblak);
-
-
+			<hr/>
 			{@code comm// Pred šrafovaním položíme pero:}
 			{@link GRobot#položPero() položPero}();
-
-
+			<hr/>
 			{@code comm// A vyšrafujeme a obkreslíme jednotlivé oblasti:}
 			{@link GRobot#kresliDo(Shape) kresliDo}(koruna1);
 			šrafovanie3();
@@ -218,8 +215,7 @@ import java.awt.geom.Rectangle2D;
 			šrafovanie3();
 			{@link GRobot#kresliVšade() kresliVšade}();
 			kmeň2.{@link #kresli(GRobot) kresli}({@code valthis});
-
-
+			<hr/>
 			{@link GRobot#kresliDo(Shape) kresliDo}(krík1);
 			šrafovanie3();
 			šrafovanie4();
@@ -237,8 +233,7 @@ import java.awt.geom.Rectangle2D;
 			šrafovanie4();
 			{@link GRobot#kresliVšade() kresliVšade}();
 			krík3.{@link #kresli(GRobot) kresli}({@code valthis});
-
-
+			<hr/>
 			{@link GRobot#kresliDo(Shape) kresliDo}(zem);
 			šrafovanie1();
 			{@link GRobot#kresliVšade() kresliVšade}();
@@ -248,8 +243,7 @@ import java.awt.geom.Rectangle2D;
 			šrafovanie2();
 			{@link GRobot#kresliVšade() kresliVšade}();
 			obloha.{@link #kresli(GRobot) kresli}({@code valthis});
-
-
+			<hr/>
 			{@link GRobot#kresliDo(Shape) kresliDo}(slnko);
 			šrafovanie3();
 			{@link GRobot#kresliVšade() kresliVšade}();
@@ -259,13 +253,11 @@ import java.awt.geom.Rectangle2D;
 			šrafovanie4();
 			{@link GRobot#kresliVšade() kresliVšade}();
 			oblak.{@link #kresli(GRobot) kresli}({@code valthis});
-
-
+			<hr/>
 			{@code comm// Obrázok je hotový, spätne zapneme prekresľovanie:}
 			{@link Svet Svet}.{@link Svet#kresli() kresli}();
 		}
-
-
+		<hr/>
 		{@code comm// Šrafovanie vo vertikálnom (zvislom) smere.}
 		{@code comm// (Implementácia sa spolieha na presné rozmery plátna: 600 × 400 bodov.)}
 		{@code kwdprivate} {@code typevoid} šrafovanie1()
@@ -313,8 +305,7 @@ import java.awt.geom.Rectangle2D;
 				{@link GRobot#dopredu(double) dopredu}({@code num580});
 			}
 		}
-
-
+		<hr/>
 		{@code comm// Nasledujúca metóda slúži na vygenerovanie oblasti v tvare pootočenej}
 		{@code comm// elipsy (so stanovením jej rozmerov).}
 		{@code comm//   sx – x-ová súradnica stredu elipsy}
@@ -340,8 +331,7 @@ import java.awt.geom.Rectangle2D;
 			{@link GRobot#skočNa(double, double) skočNa}(sx, sy);
 			{@code kwdreturn} {@code kwdnew} {@link Oblasť#Oblasť(Shape) Oblasť}({@link GRobot#kružnica(double) kružnica}(r));
 		}
-
-
+		<hr/>
 		{@code comm// Nasledujúca metóda slúži na vygenerovanie tvaru nazvaného kmeň. Ide}
 		{@code comm// o tvar získaný odrezaním plôšok z dvoch protiľahlých strán obdĺžnika,}
 		{@code comm// pričom plôšky sú určené oblúčikmi tak, že v podstate vymedzujú}
@@ -398,8 +388,7 @@ import java.awt.geom.Rectangle2D;
 			{@link GRobot#uzavriCestu() uzavriCestu}();
 			{@code kwdreturn} {@code kwdnew} {@link Oblasť#Oblasť(Shape) Oblasť}({@link GRobot#cesta() cesta}());
 		}
-
-
+		<hr/>
 		{@code comm// Tvar horizontu je vytvorený napevno ako obdĺžnik, ktorý je o niečo}
 		{@code comm// širší ako šírka plátna, je tiež posunutý mierne pod úroveň rozmerov}
 		{@code comm// plátna a namiesto hornej strany má čiaru vytvorenú z niekoľkých}
@@ -461,8 +450,7 @@ import java.awt.geom.Rectangle2D;
 			{@code comm// Vrátenie výsledného tvaru oblaku:}
 			{@code kwdreturn} oblak;
 		}
-
-
+		<hr/>
 		{@code comm// Hlavná metóda.}
 		{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}... args)
 		{

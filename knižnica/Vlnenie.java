@@ -269,8 +269,7 @@ import knižnica.Poloha;
 			{@code comm// Spustenie časovača…}
 			{@link Svet Svet}.{@link Svet#spustiČasovač() spustiČasovač}();
 		}
-
-
+		<hr/>
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#aktivita() aktivita}()
 		{
 			{@code comm// Robot bude počas svojho pohybu vlniť prostredie s polomerom podľa}

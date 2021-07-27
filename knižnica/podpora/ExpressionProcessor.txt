@@ -1,0 +1,38 @@
+New functions from 8. 1. 2021:
+
+'ERR' – parse as error
+
+count(list) – number of items recursively; for number and string: −1 (i.e. abs(count(string or number)) == 1) 
+length(string) – for number: -1; for list: −1 − size(list)
+size(list) – number of items of this level; for number: number of integer digits; for string: -1
+
+—subset(start, ++end, strlst)—
+superseeded by two-indexed braces []…
+
+
+?parse(string)?
+
+
+decides:
+
+if(cond, exprT, exprF)
+
+
+creates list:
+
+for(var, list, expr)
+for(pair, list, expr)
+for(var, lo, hi, expr)
+for(var, start, end, step, expr)
+
+do(cond, expr)
+do(limit, cond, expr)
+
+
+———rejected———
+
+—if(cond, exprT)—
+
+—var(ID)—
+—var(ID, value)—
+

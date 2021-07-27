@@ -35,10 +35,19 @@ package knižnica;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.KeyboardFocusManager;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+import javax.swing.Action;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JViewport;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -156,6 +165,10 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 		vytvor(400, 300);
 	}
 
+	// Vlastnosti upravujúce fungovanie klávesov TAB a Enter:
+	private boolean zakážTabulátor = false;
+	private boolean zakážEnter = false;
+
 	private void vytvor(int vlastnáŠírka, int vlastnáVýška)
 	{
 		rolovanie = new RolovaniePoznámkovéhoBloku(this);
@@ -190,7 +203,11 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 							PoznámkovýBlok.this;
 
 						if (null != ObsluhaUdalostí.počúvadlo)
-							// ‼TODO‼ – Dočasné riešenia‼ Použiť tie z triedy GRobot‼
+							// ‼TODO‼ – Dočasné riešenia‼
+							// Použiť tie z triedy GRobot‼
+							// (Poznámka: 25. 7. 2021 – netuším, aká je
+							// táto pripomienka stará a ešte menej tuším,
+							// čo som ňou v čase jej vytvorenia myslel.)
 							synchronized (ÚdajeUdalostí.zámokUdalostí)
 							{
 								ObsluhaUdalostí.počúvadlo.aktiváciaOdkazu();
@@ -208,6 +225,68 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 							}
 					}
 				}
+			});
+
+		addKeyListener(new KeyListener()
+			{
+				public void keyPressed(KeyEvent e)
+				{
+					// TODO: Bolo by treba otestovať na macOS, lebo v tomto
+					// sú isté nekonzistencie v implementáciách…
+					if (zakážTabulátor && e.getKeyCode() == KeyEvent.VK_TAB &&
+						!e.isAltDown() && !e.isMetaDown())
+					{
+						e.consume();
+
+						final KeyboardFocusManager
+							manažér = KeyboardFocusManager.
+							getCurrentKeyboardFocusManager();
+
+						if (e.isShiftDown())
+						{
+							manažér.focusPreviousComponent();
+							SwingUtilities.invokeLater(() ->
+							{
+								if (manažér.getFocusOwner()
+									instanceof JScrollBar)
+									manažér.focusPreviousComponent();
+							});
+						}
+						else
+						{
+							manažér.focusNextComponent();
+							SwingUtilities.invokeLater(() ->
+							{
+								if (manažér.getFocusOwner()
+									instanceof JScrollBar)
+									manažér.focusNextComponent();
+							});
+						}
+					}
+					else if (zakážEnter && e.getKeyCode() ==
+						KeyEvent.VK_ENTER && !e.isAltDown() &&
+						!e.isControlDown() && !e.isMetaDown() &&
+						!e.isShiftDown())
+					{
+						Svet.KlávesováSkratka klávesováSkratka = null;
+						Object o = Svet.hlavnýPanel.getInputMap(JPanel.
+							// WHEN_IN_FOCUSED_WINDOW
+							WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).get(
+							KeyStroke.getKeyStrokeForEvent(e));
+						if (null != o)
+						{
+							Action a = Svet.hlavnýPanel.getActionMap().get(o);
+							if (a instanceof Svet.KlávesováSkratka)
+								klávesováSkratka = (Svet.KlávesováSkratka)a;
+						}
+						e.consume();
+						if (null != klávesováSkratka)
+							klávesováSkratka.actionPerformed(null);
+					}
+				}
+
+				public void keyReleased(KeyEvent e) {}
+				public void keyTyped(KeyEvent e) {}
 			});
 	}
 
@@ -985,6 +1064,86 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 		super.setVisible(visible);
 		rolovanie.setVisible(visible);
 	}
+
+
+	/**
+	 * <p><a class="setter"></a> Zakáže alebo povolí predvolenú funkciu
+	 * klávesu tabulátora pre tento poznámkový blok. Predvolene je hodnota
+	 * tejto vlastnosti nastavená na {@code valfalse} a kláves tabulátora
+	 * vkladá znak tabulátora do textu poznámkového bloku. Ak túto funkciu
+	 * zakážeme, tak kláves tabulátora bude plniť funkciu prechodu na ďalší
+	 * (prípadne so Shiftom predchádzajúci) komponent sveta.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Nastavenie tejto vlastnosti
+	 * neznamená, že tabulátor nemôže byť vložený do poznámkového bloku
+	 * iným spôsobom.</p>
+	 * 
+	 * @param zakážTabulátor {@code valtrue} ak má byť predvolená funkčnosť
+	 *     klávesu zakázaná; {@code valfalse} v opačnom prípade
+	 * 
+	 * @see #zakážTabulátor()
+	 */
+	public void zakážTabulátor(boolean zakážTabulátor)
+	{ this.zakážTabulátor = zakážTabulátor; }
+
+	/**
+	 * <p><a class="getter"></a> Zistí, či je zakázaná predvolená funkcia
+	 * tabulátora pre tento poznámkový blok.</p>
+	 * 
+	 * @return {@code valtrue} ak je predvolená funkčnosť klávesu zakázaná;
+	 *      {@code valfalse} v opačnom prípade
+	 * 
+	 * @see #zakážTabulátor(boolean)
+	 */
+	public boolean zakážTabulátor() { return zakážTabulátor; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #zakážTabulátor(boolean) zakážTabulátor}.</p> */
+	public void zakazTabulator(boolean zakážTabulátor)
+	{ zakážTabulátor(zakážTabulátor); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #zakážTabulátor() zakážTabulátor}.</p> */
+	public boolean zakazTabulator() { return zakážTabulátor(); }
+
+
+	/**
+	 * <p><a class="setter"></a> Zakáže alebo povolí predvolenú funkciu
+	 * klávesu {@code Enter} pre tento poznámkový blok. Predvolene je hodnota
+	 * tejto vlastnosti nastavená na {@code valfalse} a kláves {@code Enter}
+	 * vkladá nový riadok do textu poznámkového bloku. Ak túto vlastnosť
+	 * nastavíme na {@code valtrue}, tak {@code Enter} prestane túto funkciu
+	 * plniť. Ak v takom prípade pre kláves {@code Enter} definovaná {@link 
+	 * Svet#pridajKlávesovúSkratku(String, int, int) klávesová skratka sveta},
+	 * tak je vykonaný príkaz prislúchajúci tejto skratke.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Nastavenie tejto vlastnosti
+	 * neznamená, že nový riadok nemôže byť vložený do poznámkového bloku
+	 * iným spôsobom.</p>
+	 * 
+	 * @param zakážTabulátor {@code valtrue} ak má byť predvolená funkčnosť
+	 *     klávesu zakázaná; {@code valfalse} v opačnom prípade
+	 * 
+	 * @see #zakážEnter()
+	 */
+	public void zakážEnter(boolean zakážEnter)
+	{ this.zakážEnter = zakážEnter; }
+
+	/**
+	 * <p><a class="getter"></a> Zistí, či je zakázaná predvolená funkcia
+	 * klávesu {@code Enter} pre tento poznámkový blok</p>
+	 * 
+	 * @return {@code valtrue} ak je predvolená funkčnosť klávesu zakázaná;
+	 *     {@code valfalse} v opačnom prípade
+	 * 
+	 * @see #zakážEnter(boolean)
+	 */
+	public boolean zakážEnter() { return zakážEnter; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #zakážEnter(boolean) zakážEnter}.</p> */
+	public void zakazEnter(boolean zakážEnter)
+	{ zakážEnter(zakážEnter); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #zakážEnter() zakážEnter}.</p> */
+	public boolean zakazEnter() { return zakážEnter(); }
 
 
 	/**

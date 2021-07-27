@@ -43,10 +43,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.FileNotFoundException;
-
 import java.util.Locale;
 import java.util.TreeMap;
 import java.util.regex.Pattern;

@@ -161,8 +161,7 @@ import static java.lang.Math.*;
 				{@code valthis}.meno = meno;
 				SVGnaTvary(meno);
 			}
-
-
+			<hr/>
 			{@code comm// Metóda prevádzajúca tvary zo zadaného SVG súboru na tvary Javy.}
 			{@code kwdprivate} {@code typevoid} SVGnaTvary({@link String String} meno)
 			{
@@ -231,8 +230,7 @@ import static java.lang.Math.*;
 				{@code comm// aktuálnou mierkou robota:}
 				r.{@link GRobot#uhol(double) uhol}({@code num90});
 				r.{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}(r.{@link GRobot#mierka() mierka}());
-
-
+				<hr/>
 				{@code comm// Poznámka: Prispôsobenie (zmena) niektorých programátorom}
 				{@code comm//  vybraných farieb počas kreslenia ikoniek kolotoča je vhodné}
 				{@code comm//  potvrdiť práve na tomto mieste tak, že si farbu (alebo farby)}
@@ -250,8 +248,7 @@ import static java.lang.Math.*;
 
 				r.{@link GRobot#náhodnáFarba() náhodnáFarba}();
 				{@link Farba Farba} f = r.{@link GRobot#farba() farba}();
-
-
+				<hr/>
 				{@code typeint} i = {@code num0};
 				{@code kwdfor} ({@link Shape Shape} tvar : tvary)
 				{
@@ -286,8 +283,7 @@ import static java.lang.Math.*;
 				}
 			}
 		}
-
-
+		<hr/>
 		{@code comm// Konštruktor celého kolotoča.}
 		{@code kwdprivate} Kolotoč()
 		{
@@ -358,8 +354,7 @@ import static java.lang.Math.*;
 			{@link Svet Svet}.{@link Svet#nekresli() nekresli}();
 			{@link Svet Svet}.{@link Svet#spustiČasovač() spustiČasovač}();
 		}
-
-
+		<hr/>
 		{@code comm// Pomocné nástroje na definíciu a kreslenie (resp. skrývanie}
 		{@code comm// a zobrazovanie) osí.}
 		{@code comm// &#123;&#123;&#123;}
@@ -517,8 +512,7 @@ import static java.lang.Math.*;
 			{@code comm// hodnotami dĺžok.}
 			{@code kwdpublic} {@code typevoid} osi() { osi({@code num30}, {@code num30}, {@code num10}); }
 		{@code comm// &#125;&#125;&#125;}
-
-
+		<hr/>
 		{@code comm// Hromadné úpravy roja a jeho bodov. (Reset a hromadné transformácie}
 		{@code comm// používajúce vnútorné atribúty bodov, ktoré sú rezervované na tieto}
 		{@code comm// účely. Niektoré z týchto metód sú určené len pre pomocné režimy}
@@ -597,8 +591,7 @@ import static java.lang.Math.*;
 				prekresliRoj = {@code valtrue};
 			}
 		{@code comm// &#125;&#125;&#125;}
-
-
+		<hr/>
 		{@code comm// Ovládanie – režim ladenia.}
 		{@code comm// &#123;&#123;&#123;}
 			{@code comm// Atribúty súvisiace s režimom ladenia.}
@@ -795,8 +788,7 @@ import static java.lang.Math.*;
 			{
 				{@link GRobot#krúžok() krúžok}();
 			}
-
-
+			<hr/>
 			{@code comm// V tomto komentári sa nachádza krátka sekcia vytvorená na ladiace}
 			{@code comm// účely, ktorá pri pohybe kurzorom myši (výhradne pri pohybe kurzorom}
 			{@code comm// myši) overí prítomnosť kurzora nad niektorým bodom roja a v prípade}
@@ -835,8 +827,7 @@ import static java.lang.Math.*;
 			{@code comm// &#125;}
 
 		{@code comm// &#125;&#125;&#125;}
-
-
+		<hr/>
 		{@code comm// Pomocná metóda zisťujúca, ktorá ikonka je v popredí (podľa želaného}
 		{@code comm// uhla pootočenia roja podľa osi z, ktorý je uložený v prislúchajúcom}
 		{@code comm// atribúte tejto triedy).}
@@ -927,8 +918,7 @@ import static java.lang.Math.*;
 
 			{@code kwdif} ({@link Svet Svet}.{@link Svet#neboloPrekreslené() neboloPrekreslené}()) {@link Svet Svet}.{@link Svet#prekresli() prekresli}();
 		}
-
-
+		<hr/>
 		{@code comm// Hlavná metóda.}
 		{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 		{

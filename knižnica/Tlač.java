@@ -1,3 +1,4 @@
+
  /////////////////////////////////////////////////////////////////////////////
  // This source code is part of the graphical framework called “Programovací
  // rámec GRobot”. (The name is Slovak like the vast majority of own

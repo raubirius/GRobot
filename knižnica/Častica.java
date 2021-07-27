@@ -230,7 +230,7 @@ package knižnica;
  * metódy {@link Súbor#vnorMennýPriestorVlastností(String)
  * vnorMennýPriestorVlastností}</p>
  */
-public class Častica implements Poloha, Smer
+public class Častica implements Poloha, Smer, Rozmer
 {
 	/**
 	 * <p>Atribút súradnice x polohy častice.</p>
@@ -246,6 +246,16 @@ public class Častica implements Poloha, Smer
 	 * <p>Atribút smeru častice.</p>
 	 */
 	public double uhol = 90;
+
+	/**
+	 * <p>Atribút šírky častice. (Anglicky: <b>w</b>idth.)</p>
+	 */
+	public double w = 10;
+
+	/**
+	 * <p>Atribút výšky častice. (Anglicky: <b>h</b>eight.)</p>
+	 */
+	public double h = 10;
 
 	/** <p><a class="getter"></a> Metóda vráti súradnicu x polohy častice.</p> */
 	public double polohaX() { return x; }
@@ -362,6 +372,137 @@ public class Častica implements Poloha, Smer
 	 * @param uhol objekt určujúci nový uhol častice
 	 */
 	public void smer(Smer objekt) { uhol = objekt.uhol(); }
+
+
+	/**
+	 * <p><a class="getter"></a> Vráti aktuálnu šírku častice.</p>
+	 * 
+	 * @return aktuálna šírka častice
+	 */
+	public double šírka() { return w; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #šírka() šírka}.</p> */
+	public double sirka() { return šírka(); }
+
+	/**
+	 * <p><a class="getter"></a> Vráti aktuálnu výšku častice.</p>
+	 * 
+	 * @return aktuálna výška častice
+	 */
+	public double výška() { return h; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #výška() výška}.</p> */
+	public double vyska() { return výška(); }
+
+
+	/**
+	 * <p><a class="setter"></a> Nastaví novú šírku častice.</p>
+	 * 
+	 * @param šírka nová šírka častice
+	 */
+	public void šírka(double šírka) { w = šírka; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #šírka(double) šírka}.</p> */
+	public void sirka(double šírka) { šírka(šírka); }
+
+	/**
+	 * <p><a class="setter"></a> Nastaví novú výšku častice.</p>
+	 * 
+	 * @param výška nová výška častice
+	 */
+	public void výška(double výška) { h = výška; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #výška(double) výška}.</p> */
+	public void vyska(double výška) { výška(výška); }
+
+
+	/**
+	 * <p>Zistí aktuálne rozmery častice.</p>
+	 * 
+	 * @return objekt vytvorený podľa aktuálnych rozmerov častice
+	 */
+	public Rozmery rozmery() { return new Rozmery(w, h); }
+
+
+	/**
+	 * <p>Nastaví nové rozmery častice.</p>
+	 * 
+	 * @param šírka nová šírka častice
+	 * @param výška nová výška častice
+	 */
+	public void rozmery(double šírka, double výška)
+	{ w = šírka; h = výška; }
+
+	/**
+	 * <p>Nastaví nové rozmery častice podľa zadanej implementácie
+	 * rozmeru.</p>
+	 * 
+	 * @param rozmer inštancia obsahujúca nové rozmery častice
+	 */
+	public void rozmery(Rozmer rozmer)
+	{ w = rozmer.šírka(); h = rozmer.výška(); }
+
+
+	/**
+	 * <p>Zistí, či má častica zadanú šírku.</p>
+	 * 
+	 * @param šírka šírka, ktorá má byť porovnaná so šírkou častice
+	 * @return {@code valtrue} ak sa šírka častice zhoduje so
+	 *     zadanou šírkou, {@code valfalse} v opačnom prípade
+	 */
+	public boolean máŠírku(double šírka)
+	{ return w == šírka; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #máŠírku(double) máŠírku}.</p> */
+	public boolean maSirku(double šírka) { return máŠírku(šírka); }
+
+	/**
+	 * <p>Zistí, či má častica zadanú výšku.</p>
+	 * 
+	 * @param výška výška, ktorá má byť porovnaná s výškou častice
+	 * @return {@code valtrue} ak sa výška častice zhoduje so
+	 *     zadanou výškou, {@code valfalse} v opačnom prípade
+	 */
+	public boolean máVýšku(double výška)
+	{ return h == výška; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #máVýšku(double) máVýšku}.</p> */
+	public boolean maVysku(double výška) { return máVýšku(výška); }
+
+
+	/**
+	 * <p>Overí, či sa rozmery častice a rozmery zadaného objektu
+	 * dokonale zhodujú. Ak je zistená zhoda, tak je výsledkom
+	 * {@code valtrue}, v opačnom prípade hodnota {@code valfalse}.</p>
+	 * 
+	 * @param rozmer iný objekt, ktorého rozmery majú byť porovnané
+	 *     s rozmermi častice
+	 * @return {@code valtrue} ak sa rozmery častice zhodujú s rozmermi
+	 *     zadaného objektu, {@code valfalse} v opačnom prípade
+	 */
+	public boolean máRozmer(Rozmer rozmer)
+	{ return rozmer.šírka() == w && rozmer.výška() == h; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #máRozmer(Rozmer) máRozmer}.</p> */
+	public boolean maRozmer(Rozmer rozmer) { return máRozmer(rozmer); }
+
+
+	/**
+	 * <p>Overí, či sa rozmery častice dokonale zhodujú so zadanými
+	 * rozmermi. Ak je zistená zhoda, tak je výsledkom
+	 * {@code valtrue}, v opačnom prípade hodnota {@code valfalse}.</p>
+	 * 
+	 * @param šírka šírka porovnávaná so šírkou častice
+	 * @param výška výška porovnávaná s výškou častice
+	 * @return {@code valtrue} ak sa rozmery častice zhodujú so
+	 *     zadanými rozmermi, {@code valfalse} v opačnom prípade
+	 */
+	public boolean máRozmer(double šírka, double výška)
+	{ return w == šírka && h == výška; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #máRozmer(double, double) máRozmer}.</p> */
+	public boolean maRozmer(double šírka, double výška)
+	{ return máRozmer(šírka, výška); }
 
 
 	/**

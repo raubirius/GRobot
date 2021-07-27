@@ -246,8 +246,7 @@ import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
 		{@code comm//     sveta, to znamená – pred spustením konštruktora (pozri metódu main}
 		{@code comm//     nižšie).}
 		{@code comm//}
-
-
+		<hr/>
 		{@code comm// Definícia vlastných konfiguračných vlastností:}
 		{@code kwdprivate} {@code typeboolean} vlastnosť = {@code valfalse};         {@code comm// „skutočná“ vlastnosť}
 		{@code kwdprivate} {@code typeboolean} prečítanáVlastnosť = {@code valfalse}; {@code comm// „tieň“ – detektor zmien}
@@ -760,6 +759,8 @@ public class ObsluhaUdalostí
 	 * {@link ÚdajeUdalostí#aktivitaOkna() ÚdajeUdalostí.aktivitaOkna()}.</p>
 	 * 
 	 * @see GRobot#zavretie()
+	 * @see Svet#zavrieť()
+	 * @see Svet#koniec()
 	 */
 	public boolean zavretie() { return true; }
 
@@ -1229,8 +1230,7 @@ public class ObsluhaUdalostí
 				{@link Svet Svet}.{@link Svet#nekresli() nekresli}();
 				{@link GRobot#veľkosťDoma(Double) veľkosťDoma}({@link GRobot#veľkosť() veľkosť}());
 			}
-
-
+			<hr/>
 			{@code kwdprivate} {@link String String} názov = {@code valnull};
 			{@code kwdprivate} {@link Obrázok Obrázok} obrázok = {@code valnull};
 
@@ -1270,8 +1270,7 @@ public class ObsluhaUdalostí
 			{
 				otvor(súbor);
 			}
-
-
+			<hr/>
 			{@code kwdprivate} {@link Bod Bod} myš1 = {@code valnull};
 			{@code comm// private boolean skratkaPonuky = false;}
 			{@code comm// private boolean alt = false;}
@@ -1334,8 +1333,7 @@ public class ObsluhaUdalostí
 				{@link GRobot#veľkosť(double) veľkosť}(zmena);
 				obnov();
 			}
-
-
+			<hr/>
 			{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 			{
 				{@link Svet Svet}.{@link Svet#skry() skry}();

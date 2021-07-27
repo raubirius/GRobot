@@ -65,29 +65,29 @@ public interface Konštanty
 {
 	// Verzia a autor…
 
-		/** <p>Konštanta majoritnej verzie tohto robota.</p> */
+		/** <p>Konštanta majoritnej verzie tohto rámca.</p> */
 		public final static int majorVersion = 2;
-		/** <p>Konštanta minoritnej verzie tohto robota.</p> */
+		/** <p>Konštanta minoritnej verzie tohto rámca.</p> */
 		public final static int minorVersion = 10;
-		/** <p>Konštanta poznámky verzie tohto robota.</p> */
-		public final static String versionNote = " (2021-02-19)";
-		/** <p>Konštanta rozpätia rokov vývoja tejto verzie…
+		/** <p>Konštanta poznámky verzie tohto rámca.</p> */
+		public final static String versionNote = " (2021-07-27)";
+		/** <p>Konštanta rozpätia rokov vývoja tejto verzie rámca
 			(v podstate na účel výpisu copyrightu…)</p> */
 		public final static String years = "2010 – 2021";
-		/** <p>Konštanta rozpätia rokov a mesiacov vývoja tejto verzie…
+		/** <p>Konštanta rozpätia rokov a mesiacov vývoja tejto verzie rámca
 			(na účely automatického spracovania dokumentácie…)</p> */
-		public final static String yearsMonths = "august 2010 – február 2021";
+		public final static String yearsMonths = "august 2010 – júl 2021";
 		/** <p>Konštanta s menom hlavného (zatiaľ jediného) vývojára tejto
-			verzie… (v podstate na účel výpisu copyrightu… kto vie, či časom
-			pribudnú aj nejakí ďalší…)</p> */
+			verzie rámca (v podstate na účel výpisu copyrightu… kto vie, či
+			časom pribudnú aj nejakí ďalší…)</p> */
 		public final static String mainDeveloper = "Roman Horváth";
-		/** <p>Konštanta s menom a titulmi hlavného vývojára tejto verzie…
-			(na účely automatického spracovania dokumentácie…)</p> */
+		/** <p>Konštanta s menom a titulmi hlavného vývojára tejto verzie
+			rámca (na účely automatického spracovania dokumentácie…)</p> */
 		public final static String mainDeveloperTitled =
 			"Mgr. Ing. Roman Horváth, PhD.";
 
-		/** <p>Úplný reťazec poskytujúci informácie o tejto verzii
-			frameworku.</p> */
+		/** <p>Úplný reťazec poskytujúci informácie o tejto verzii rámca
+			(angl. frameworku).</p> */
 		public final static String versionString =
 			"Programovací rámec GRobot " + majorVersion + "." +
 			Integer.toString(minorVersion + 100).substring(1) +

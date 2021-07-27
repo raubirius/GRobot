@@ -133,17 +133,19 @@ import static knižnica.Konštanty.PRIPÁJANIE_SÚBOROV;
 		{@code kwdwhile} ({@code valnull} != (riadok = {@code currsúbor}.{@link #čítajRiadok() čítajRiadok}()))
 			{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"„"}, riadok, {@code srg"“"});
 	}
-	{@code kwdcatch} ({@link IOException IOException} e)   {@code comm// vyžaduje import java.io.IOException;}
-	{@code comm// alternatívne je možné použiť namiesto IOException všeobecný}
-	{@code comm// typ Exception, ktorý nevyžaduje žiadny import}
+	{@code kwdcatch} ({@link IOException IOException} e)   {@code comm// vyžaduje import java.io.IOException;}
+		{@code comm// alternatívne je možné použiť namiesto IOException všeobecný}
+		{@code comm// typ Exception, ktorý nevyžaduje žiadny import, ale potom by}
+		{@code comm// bolo vhodné vymazať nasledujúci blok catch (pretože sa}
+		{@code comm// stane zbytočným)}
 	{
 		{@code comm// Keby sme chceli text chyby vypísať na štandardný výstup,}
 		{@code comm// použili by sme:}
-		{@code comm//   System.out.println(e.getMessage());}
+		{@code comm//   System.out.println(e.getMessage());}
 
 		{@code comm// Keby sme chceli vypísať úplný výpis chybovej stopy na štandardný}
 		{@code comm// chybový výstup, použili by sme:}
-		{@code comm//   e.printStackTrace();}
+		{@code comm//   e.printStackTrace();}
 
 		{@code comm// Použijeme vnútornú konzolu robota na výpis textu chyby červenou}
 		{@code comm// farbou:}
@@ -152,9 +154,19 @@ import static knižnica.Konštanty.PRIPÁJANIE_SÚBOROV;
 		{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(e.{@link IOException#getMessage() getMessage}());
 		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}(záloha);
 	}
+	{@code kwdcatch} ({@link GRobotException GRobotException} e)   {@code comm// Táto výnimka vzniká napríklad ak súbor}
+		{@code comm// nejestvuje. To by sa v našom prípade nemalo stať, ale ak}
+		{@code comm// by ste chceli tento príklad „recyklovať“ na iné účely, mal}
+		{@code comm// by tam tento blok byť.}
+	{
+		{@link Farba Farba} záloha = {@link Svet Svet}.{@link Svet#farbaTextu() farbaTextu}();
+		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#červená červená});
+		{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(e.{@link IOException#getMessage() getMessage}());
+		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}(záloha);
+	}
 
-	{@code comm// Keby nastala chyba v predchádzajúcom bloku, súbor by nemusel byť korektne}
-	{@code comm// zavretý, preto ho zatvárame v samostatnom bloku try-catch}
+	{@code comm// Keby nastala chyba v predchádzajúcom bloku, súbor by nemusel byť}
+	{@code comm// korektne zavretý, preto ho zatvárame v samostatnom bloku try-catch}
 	{@code kwdtry}
 	{
 		{@code currsúbor}.{@link #zavri() zavri}();
@@ -220,13 +232,21 @@ import static knižnica.Konštanty.PRIPÁJANIE_SÚBOROV;
 		{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"."});
 	}
 	{@code kwdcatch} ({@link IOException IOException} e)   {@code comm// vyžaduje import java.io.IOException;}
-	{@code comm// alternatívne je možné použiť namiesto IOException všeobecný}
-	{@code comm// typ Exception, ktorý nevyžaduje žiadny import}
+		{@code comm// alternatívne je možné použiť namiesto IOException všeobecný}
+		{@code comm// typ Exception, ktorý nevyžaduje žiadny import, ale potom by}
+		{@code comm// bolo vhodné vymazať nasledujúci blok catch (pretože sa}
+		{@code comm// stane zbytočným)}
 	{
 		{@code comm// Nasledujúci príkaz vypíše zápis o prípadnej chybe na štandardný}
 		{@code comm// chybový výstup (System.err). Zápis by sa objavil v okne}
 		{@code comm// terminálu BlueJa.}
+		{@link System System}.{@link System#err err}.{@link java.io.PrintStream#print(String) print}({@code srg"IOException: "});
 		e.{@link IOException#printStackTrace() printStackTrace}();
+	}
+	{@code kwdcatch} ({@link GRobotException GRobotException} e)
+	{
+		{@link System System}.{@link System#err err}.{@link java.io.PrintStream#print(String) print}({@code srg"GRobotException: "});
+		e.{@link GRobotException#printStackTrace() printStackTrace}();
 	}
 	</pre>
  * 
@@ -301,9 +321,10 @@ import static knižnica.Konštanty.PRIPÁJANIE_SÚBOROV;
 		{@code currsúbor}.{@link #zapíšVlastnosť(String, Object) zapíšVlastnosť}({@code srg"pole"}, pole);
 	}
 	{@code kwdcatch} ({@link IOException IOException} e)   {@code comm// vyžaduje import java.io.IOException;}
-	{@code comm// alternatívne je možné použiť namiesto IOException všeobecný}
-	{@code comm// typ Exception, ktorý nevyžaduje žiadny import, ale potom by}
-	{@code comm// bolo treba vymazať blok catch (IllegalArgumentException…}
+		{@code comm// alternatívne je možné použiť namiesto IOException všeobecný}
+		{@code comm// typ Exception, ktorý nevyžaduje žiadny import, ale potom by}
+		{@code comm// bolo vhodné vymazať nasledujúce bloky catch (pretože sa}
+		{@code comm// stanú zbytočnými)}
 	{
 		{@code comm// Chyby vypíše červenou farbou…}
 		{@link Farba Farba} záloha = {@link Svet Svet}.{@link Svet#farbaTextu() farbaTextu}();
@@ -316,6 +337,13 @@ import static knižnica.Konštanty.PRIPÁJANIE_SÚBOROV;
 		{@link Farba Farba} záloha = {@link Svet Svet}.{@link Svet#farbaTextu() farbaTextu}();
 		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#červená červená});
 		{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(e.{@link IllegalArgumentException#getMessage() getMessage}());
+		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}(záloha);
+	}
+	{@code kwdcatch} ({@link GRobotException GRobotException} e)
+	{
+		{@link Farba Farba} záloha = {@link Svet Svet}.{@link Svet#farbaTextu() farbaTextu}();
+		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}({@link Farebnosť#červená červená});
+		{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(e.{@link GRobotException#getMessage() getMessage}());
 		{@link Svet Svet}.{@link Svet#farbaTextu(Color) farbaTextu}(záloha);
 	}
 	{@code kwdfinally}
@@ -2971,7 +2999,7 @@ public class Súbor implements Closeable
 		 * kopírovania môže vzniknúť výnimka, preto musí byť príkaz
 		 * uzavretý do bloku {@code try-catch} (pozri príklad pri {@link 
 		 * #kopíruj(String, String, boolean) kopíruj(zdroj, cieľ,
-		 * prepísať}).</p>
+		 * prepísať)}).</p>
 		 * 
 		 * @param zdroj názov (a cesta) zdrojového súboru
 		 * @param cieľ názov (a cesta) cieľového súboru
@@ -3508,7 +3536,7 @@ public class Súbor implements Closeable
 			{@code comm// Upozornenie! Tento príklad staticky importuje triedy Svet, ÚdajeUdalostí}
 			{@code comm// a Math. Je to ukážka toho, ako je možné zjednodušiť písanie kódu v Jave.}
 			{@code comm// Negatívnym dôsledkom je nižšia čitateľnosť kódu, pretože statické metódy}
-			{@code comm// týchto tried (čo sú v prípade uvedených tried prakticky všetky metódy)}
+			{@code comm// týchto tried (čo sú v prípade uvedených tried prakticky všetky ich metódy)}
 			{@code comm// nie sú jednoduchým spôsobom odlíšiteľné (nemajú prefix triedy).}
 
 			{@code kwdimport} knižnica.*;
@@ -3529,7 +3557,6 @@ public class Súbor implements Closeable
 				{@code kwdprivate} {@code typeclass} Miestnosť {@code kwdextends} {@link Častica Častica}
 				{
 					{@code kwdpublic} {@link String String} meno = {@code valnull};
-					{@code kwdpublic} {@code typedouble} šírka = {@code num10}, výška = {@code num10};
 
 					{@code comm// Prečítanie záznamu o miestnosti z konfiguračného súboru.}
 					{@code kwdpublic} {@code typevoid} čítajZoSúboru({@link Súbor Súbor} súbor, {@link String String} identifikátor)
@@ -3542,8 +3569,8 @@ public class Súbor implements Closeable
 							x = {@link Súbor súbor}.{@link Súbor#čítajVlastnosť(String, Double) čítajVlastnosť}({@code srg"x"}, x);
 							y = {@link Súbor súbor}.{@link Súbor#čítajVlastnosť(String, Double) čítajVlastnosť}({@code srg"y"}, y);
 							uhol = {@link Súbor súbor}.{@link Súbor#čítajVlastnosť(String, Double) čítajVlastnosť}({@code srg"uhol"}, uhol);
-							šírka = {@link Súbor súbor}.{@link Súbor#čítajVlastnosť(String, Double) čítajVlastnosť}({@code srg"šírka"}, šírka);
-							výška = {@link Súbor súbor}.{@link Súbor#čítajVlastnosť(String, Double) čítajVlastnosť}({@code srg"výška"}, výška);
+							w = {@link Súbor súbor}.{@link Súbor#čítajVlastnosť(String, Double) čítajVlastnosť}({@code srg"šírka"}, w);
+							h = {@link Súbor súbor}.{@link Súbor#čítajVlastnosť(String, Double) čítajVlastnosť}({@code srg"výška"}, h);
 						}
 						{@code kwdfinally}
 						{
@@ -3562,8 +3589,8 @@ public class Súbor implements Closeable
 							{@link Súbor súbor}.{@link Súbor#zapíšVlastnosť(String, Object) zapíšVlastnosť}({@code srg"x"}, x);
 							{@link Súbor súbor}.{@link Súbor#zapíšVlastnosť(String, Object) zapíšVlastnosť}({@code srg"y"}, y);
 							{@link Súbor súbor}.{@link Súbor#zapíšVlastnosť(String, Object) zapíšVlastnosť}({@code srg"uhol"}, uhol);
-							{@link Súbor súbor}.{@link Súbor#zapíšVlastnosť(String, Object) zapíšVlastnosť}({@code srg"šírka"}, šírka);
-							{@link Súbor súbor}.{@link Súbor#zapíšVlastnosť(String, Object) zapíšVlastnosť}({@code srg"výška"}, výška);
+							{@link Súbor súbor}.{@link Súbor#zapíšVlastnosť(String, Object) zapíšVlastnosť}({@code srg"šírka"}, w);
+							{@link Súbor súbor}.{@link Súbor#zapíšVlastnosť(String, Object) zapíšVlastnosť}({@code srg"výška"}, h);
 						}
 						{@code kwdfinally}
 						{
@@ -3702,7 +3729,7 @@ public class Súbor implements Closeable
 							{@code kwdfor} (Miestnosť miestnosť : miestnosti)
 							{
 								{@link GRobot#skočNa(Poloha) skočNa}(miestnosť);
-								{@code kwdif} ({@link GRobot#myšVObdĺžniku(double, double) myšVObdĺžniku}({@code num5} + miestnosť.šírka, {@code num5} + miestnosť.výška))
+								{@code kwdif} ({@link GRobot#myšVObdĺžniku(double, double) myšVObdĺžniku}({@code num5} + miestnosť.w, {@code num5} + miestnosť.h))
 								{
 									{@code valthis}.miestnosť = miestnosť;
 									režim = PRESUŇ_MIESTNOSŤ;
@@ -3725,8 +3752,8 @@ public class Súbor implements Closeable
 					{@code kwdcase} ŤAHAJ_MIESTNOSŤ:
 						{@code comm// Režim ťahania novej miestnosti – mení rozmery miestnosti.}
 						zaokrúhliMyš();
-						miestnosť.šírka = {@code num10} + {@link Math#abs(double) abs}(myšX &#45; myšZX);
-						miestnosť.výška = {@code num10} + {@link Math#abs(double) abs}(myšY &#45; myšZY);
+						miestnosť.w = {@code num10} + {@link Math#abs(double) abs}(myšX &#45; myšZX);
+						miestnosť.h = {@code num10} + {@link Math#abs(double) abs}(myšY &#45; myšZY);
 						{@link Svet#žiadajPrekreslenie() žiadajPrekreslenie}();
 						{@code kwdbreak};
 
@@ -3737,14 +3764,14 @@ public class Súbor implements Closeable
 						{
 							{@code comm// (Stlačenie klávesu Shift znamená zmenu rozmerov miestnosti.)}
 							{@code kwdif} (myšX &gt;= miestnosť.{@link Častica#x x})
-								miestnosť.šírka += myšX &#45; myšZX;
+								miestnosť.w += myšX &#45; myšZX;
 							{@code kwdelse}
-								miestnosť.šírka += myšZX &#45; myšX;
+								miestnosť.w += myšZX &#45; myšX;
 
 							{@code kwdif} (myšY &gt;= miestnosť.{@link Častica#y y})
-								miestnosť.výška += myšY &#45; myšZY;
+								miestnosť.h += myšY &#45; myšZY;
 							{@code kwdelse}
-								miestnosť.výška += myšZY &#45; myšY;
+								miestnosť.h += myšZY &#45; myšY;
 						}
 						{@code kwdelse}
 						{
@@ -3807,7 +3834,7 @@ public class Súbor implements Closeable
 						{
 							zaokrúhliMyš();
 							miestnosť = {@code kwdnew} Miestnosť();
-							miestnosť.šírka = {@code num20};
+							miestnosť.w = {@code num20};
 							miestnosť.{@link Častica#x x} = myšX;
 							miestnosť.{@link Častica#y y} = myšY;
 							premenuj(miestnosť);
@@ -3821,7 +3848,7 @@ public class Súbor implements Closeable
 							{@code kwdfor} (Miestnosť miestnosť : miestnosti)
 							{
 								{@link GRobot#skočNa(Poloha) skočNa}(miestnosť);
-								{@code kwdif} ({@link GRobot#myšVObdĺžniku(double, double) myšVObdĺžniku}({@code num5} + miestnosť.šírka, {@code num5} + miestnosť.výška))
+								{@code kwdif} ({@link GRobot#myšVObdĺžniku(double, double) myšVObdĺžniku}({@code num5} + miestnosť.w, {@code num5} + miestnosť.h))
 								{
 									{@code valthis}.miestnosť = miestnosť;
 									režim = UPRAV_MIESTNOSŤ;
@@ -3835,7 +3862,7 @@ public class Súbor implements Closeable
 					{@code kwdcase} UPRAV_MIESTNOSŤ:
 						{@link GRobot#skočNa(Poloha) skočNa}(miestnosť);
 						{@code comm// Kliknutie na označenú miestnosť spustí úpravu jej názvu.}
-						{@code kwdif} ({@link GRobot#myšVObdĺžniku(double, double) myšVObdĺžniku}({@code num5} + miestnosť.šírka, {@code num5} + miestnosť.výška))
+						{@code kwdif} ({@link GRobot#myšVObdĺžniku(double, double) myšVObdĺžniku}({@code num5} + miestnosť.w, {@code num5} + miestnosť.h))
 						{
 							premenuj(miestnosť);
 						}
@@ -3848,7 +3875,7 @@ public class Súbor implements Closeable
 							{@code kwdfor} (Miestnosť miestnosť : miestnosti)
 							{
 								{@link GRobot#skočNa(Poloha) skočNa}(miestnosť);
-								{@code kwdif} ({@link GRobot#myšVObdĺžniku(double, double) myšVObdĺžniku}({@code num5} + miestnosť.šírka, {@code num5} + miestnosť.výška))
+								{@code kwdif} ({@link GRobot#myšVObdĺžniku(double, double) myšVObdĺžniku}({@code num5} + miestnosť.w, {@code num5} + miestnosť.h))
 								{
 									{@code valthis}.miestnosť = miestnosť;
 									režim = UPRAV_MIESTNOSŤ;
@@ -3872,29 +3899,29 @@ public class Súbor implements Closeable
 						{@code kwdfor} (Miestnosť miestnosť : miestnosti)
 						{
 							{@link GRobot#skočNa(Poloha) skočNa}(miestnosť);
-							{@code kwdif} (miestnosť.šírka &lt; {@code num0.0}) miestnosť.šírka = {@code num0.0};
-							{@code kwdif} (miestnosť.výška &lt; {@code num0.0}) miestnosť.výška = {@code num0.0};
+							{@code kwdif} (miestnosť.w &lt; {@code num0.0}) miestnosť.w = {@code num0.0};
+							{@code kwdif} (miestnosť.h &lt; {@code num0.0}) miestnosť.h = {@code num0.0};
 							{@code kwdif} (miestnosť == {@code valthis}.miestnosť)
 							{
 								{@link GRobot#farba(Color) farba}({@link Farebnosť#oranžová oranžová});
-								{@code kwdif} ({@code num0.0} == miestnosť.šírka && {@code num0.0} == miestnosť.výška)
+								{@code kwdif} ({@code num0.0} == miestnosť.w && {@code num0.0} == miestnosť.h)
 									{@link GRobot#kruh(double) kruh}({@code num2.0});
 								{@code kwdelse}
-									{@link GRobot#kresliObdĺžnik(double, double) kresliObdĺžnik}(miestnosť.šírka, miestnosť.výška);
+									{@link GRobot#kresliObdĺžnik(double, double) kresliObdĺžnik}(miestnosť.w, miestnosť.h);
 								{@link GRobot#farba(Color) farba}({@link Farebnosť#čierna čierna});
 							}
-							{@code kwdelse} {@code kwdif} ({@code num0.0} == miestnosť.šírka && {@code num0.0} == miestnosť.výška)
+							{@code kwdelse} {@code kwdif} ({@code num0.0} == miestnosť.w && {@code num0.0} == miestnosť.h)
 								{@link GRobot#kruh(double) kruh}({@code num2.0});
 							{@code kwdelse}
-								{@link GRobot#kresliObdĺžnik(double, double) kresliObdĺžnik}(miestnosť.šírka, miestnosť.výška);
+								{@link GRobot#kresliObdĺžnik(double, double) kresliObdĺžnik}(miestnosť.w, miestnosť.h);
 						}
 
 						{@link GRobot#farba(Color) farba}({@link Farebnosť#biela biela});
 						{@code kwdfor} (Miestnosť miestnosť : miestnosti)
 						{
 							{@link GRobot#skočNa(Poloha) skočNa}(miestnosť);
-							{@code kwdif} ({@code num0.0} &lt;= miestnosť.šírka && {@code num0.0} &lt;= miestnosť.výška)
-								{@link GRobot#vyplňObdĺžnik(double, double) vyplňObdĺžnik}(miestnosť.šírka, miestnosť.výška);
+							{@code kwdif} ({@code num0.0} &lt;= miestnosť.w && {@code num0.0} &lt;= miestnosť.h)
+								{@link GRobot#vyplňObdĺžnik(double, double) vyplňObdĺžnik}(miestnosť.w, miestnosť.h);
 						}
 
 						{@link GRobot#farba(Color) farba}({@link Farebnosť#hnedá hnedá});
@@ -3951,10 +3978,10 @@ public class Súbor implements Closeable
 										b = miestnosť.{@link Častica#y y};
 										miestnosť.{@link Častica#x x} = b;
 										miestnosť.{@link Častica#y y} = -a;
-										a = miestnosť.šírka;
-										b = miestnosť.výška;
-										miestnosť.šírka = b;
-										miestnosť.výška = a;
+										a = miestnosť.w;
+										b = miestnosť.h;
+										miestnosť.w = b;
+										miestnosť.h = a;
 										{@code kwdif} ({@link ÚdajeUdalostí#klávesnica() klávesnica}().{@link java.awt.event.InputEvent#isShiftDown() isShiftDown}())
 											miestnosť.{@link Častica#uhol uhol} += {@code num90};
 									}
@@ -3971,10 +3998,10 @@ public class Súbor implements Closeable
 										b = miestnosť.{@link Častica#y y};
 										miestnosť.{@link Častica#x x} = -b;
 										miestnosť.{@link Častica#y y} = a;
-										a = miestnosť.šírka;
-										b = miestnosť.výška;
-										miestnosť.šírka = b;
-										miestnosť.výška = a;
+										a = miestnosť.w;
+										b = miestnosť.h;
+										miestnosť.w = b;
+										miestnosť.h = a;
 										{@code kwdif} ({@link ÚdajeUdalostí#klávesnica() klávesnica}().{@link java.awt.event.InputEvent#isShiftDown() isShiftDown}())
 											miestnosť.{@link Častica#uhol uhol} -= {@code num90};
 									}
@@ -4001,8 +4028,8 @@ public class Súbor implements Closeable
 											miestnosť.{@link Častica#y y} -= {@code num20.0};
 										{@code kwdelse}
 											miestnosť.{@link Častica#y y} += {@code num20.0};
-										miestnosť.šírka -= {@code num10.0};
-										miestnosť.výška -= {@code num10.0};
+										miestnosť.w -= {@code num10.0};
+										miestnosť.h -= {@code num10.0};
 									}
 									{@link Svet#žiadajPrekreslenie() žiadajPrekreslenie}();
 								}
@@ -4018,8 +4045,8 @@ public class Súbor implements Closeable
 											miestnosť.{@link Častica#y y} += {@code num20.0};
 										{@code kwdelse}
 											miestnosť.{@link Častica#y y} -= {@code num20.0};
-										miestnosť.šírka += {@code num10.0};
-										miestnosť.výška += {@code num10.0};
+										miestnosť.w += {@code num10.0};
+										miestnosť.h += {@code num10.0};
 									}
 									{@link Svet#žiadajPrekreslenie() žiadajPrekreslenie}();
 								}
@@ -4042,8 +4069,8 @@ public class Súbor implements Closeable
 											miestnosť.{@link Častica#y y} += {@code num20.0};
 										{@code kwdelse}
 											miestnosť.{@link Častica#y y} -= {@code num20.0};
-										miestnosť.šírka += {@code num10.0};
-										miestnosť.výška += {@code num10.0};
+										miestnosť.w += {@code num10.0};
+										miestnosť.h += {@code num10.0};
 									}
 									{@link Svet#žiadajPrekreslenie() žiadajPrekreslenie}();
 								}
@@ -4059,8 +4086,8 @@ public class Súbor implements Closeable
 											miestnosť.{@link Častica#y y} -= {@code num20.0};
 										{@code kwdelse}
 											miestnosť.{@link Častica#y y} += {@code num20.0};
-										miestnosť.šírka -= {@code num10.0};
-										miestnosť.výška -= {@code num10.0};
+										miestnosť.w -= {@code num10.0};
+										miestnosť.h -= {@code num10.0};
 									}
 									{@link Svet#žiadajPrekreslenie() žiadajPrekreslenie}();
 								}
@@ -4081,8 +4108,8 @@ public class Súbor implements Closeable
 										{
 											miestnosť.{@link Častica#x x} /= {@code num2.0};
 											miestnosť.{@link Častica#y y} /= {@code num2.0};
-											miestnosť.šírka /= {@code num2.0};
-											miestnosť.výška /= {@code num2.0};
+											miestnosť.w /= {@code num2.0};
+											miestnosť.h /= {@code num2.0};
 										}
 										{@link Svet#žiadajPrekreslenie() žiadajPrekreslenie}();
 									}
@@ -4093,8 +4120,8 @@ public class Súbor implements Closeable
 									{
 										miestnosť.{@link Častica#x x} *= {@code num2.0};
 										miestnosť.{@link Častica#y y} *= {@code num2.0};
-										miestnosť.šírka *= {@code num2.0};
-										miestnosť.výška *= {@code num2.0};
+										miestnosť.w *= {@code num2.0};
+										miestnosť.h *= {@code num2.0};
 									}
 									{@link Svet#žiadajPrekreslenie() žiadajPrekreslenie}();
 								}
@@ -4114,8 +4141,8 @@ public class Súbor implements Closeable
 									{
 										miestnosť.{@link Častica#x x} *= {@code num2.0};
 										miestnosť.{@link Častica#y y} *= {@code num2.0};
-										miestnosť.šírka *= {@code num2.0};
-										miestnosť.výška *= {@code num2.0};
+										miestnosť.w *= {@code num2.0};
+										miestnosť.h *= {@code num2.0};
 									}
 									{@link Svet#žiadajPrekreslenie() žiadajPrekreslenie}();
 								}
@@ -4128,8 +4155,8 @@ public class Súbor implements Closeable
 										{
 											miestnosť.{@link Častica#x x} /= {@code num2.0};
 											miestnosť.{@link Častica#y y} /= {@code num2.0};
-											miestnosť.šírka /= {@code num2.0};
-											miestnosť.výška /= {@code num2.0};
+											miestnosť.w /= {@code num2.0};
+											miestnosť.h /= {@code num2.0};
 										}
 										{@link Svet#žiadajPrekreslenie() žiadajPrekreslenie}();
 									}
@@ -4178,22 +4205,22 @@ public class Súbor implements Closeable
 							{@code kwdswitch} ({@link ÚdajeUdalostí#kláves() kláves}())
 							{
 							{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#HORE HORE}:
-								miestnosť.výška += {@code num10};
+								miestnosť.h += {@code num10};
 								{@link Svet#žiadajPrekreslenie() žiadajPrekreslenie}();
 								{@code kwdbreak};
 
 							{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#DOLE DOLE}:
-								miestnosť.výška -= {@code num10};
+								miestnosť.h -= {@code num10};
 								{@link Svet#žiadajPrekreslenie() žiadajPrekreslenie}();
 								{@code kwdbreak};
 
 							{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VPRAVO VPRAVO}:
-								miestnosť.šírka += {@code num10};
+								miestnosť.w += {@code num10};
 								{@link Svet#žiadajPrekreslenie() žiadajPrekreslenie}();
 								{@code kwdbreak};
 
 							{@code kwdcase} {@link Kláves Kláves}.{@link Kláves#VĽAVO VĽAVO}:
-								miestnosť.šírka -= {@code num10};
+								miestnosť.w -= {@code num10};
 								{@link Svet#žiadajPrekreslenie() žiadajPrekreslenie}();
 								{@code kwdbreak};
 							}
@@ -4829,7 +4856,7 @@ public class Súbor implements Closeable
 		 …
 		 * vrhne výnimku {@link GRobotException GRobotException} s jazykovým
 		 * identifikátorom {@code duplicateEntry} (Položka „<em>názov
-		 * položky</em>“ už v archíve jestvuje.
+		 * položky</em>“ už v archíve jestvuje.)
 
 		 * Hodnota {@code valnull} znamená, že prípadný pripojený archív má
 		 * byť od tohto súboru odpojený a súbor má opäť fungovať samostatne
