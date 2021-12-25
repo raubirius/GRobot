@@ -1398,7 +1398,7 @@ public class ObsluhaUdalostí
 	 * bloku. Nepotrebnými bonusmi v tomto príklade sú len zmena veľkosti
 	 * plátna (volaním nadradeného konštruktora robota – {@code valsuper}
 	 * v prvom riadku konštruktora odvodenej triedy), nastavenie
-	 * automatického rozťahovania (výšky a šírky) poznámkového bloku,
+	 * automatického rozťahovania (šírky a výšky) poznámkového bloku,
 	 * prípadne aj skrytie hlavného robota (podľa toho, za akú veľkú
 	 * prekážku považujeme jeho vizuálna prítomnosť na plátne).
 	 * Ostatné časti príkladu sú nevyhnutné.</p>

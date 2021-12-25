@@ -238,7 +238,7 @@ public class Rad
 	 * metódou {@link #krok(int) krok}.
 	 * 
 	 * <p>Vo všetkých prípadoch je nakoniec nastavená počiatočná hodnota
-	 * generátora a to na výslednú hodnotu spodnú hranicu.</p>
+	 * generátora a to na výslednú hodnotu spodnej hranice.</p>
 	 * 
 	 * @param spodnáHranica požadovaná spodná hranica radu (ak je väčšia od
 	 *     vrchnej hranice, tak sa stáva vrchnou hranicou)

@@ -310,7 +310,7 @@ import static knižnica.Konštanty.ZÁPIS_GIF_ANIMÁCIE;
  * 
  * @see Svet#priečinokObrázkov(String)
  */
-public class Obrázok extends BufferedImage implements Priehľadnosť
+public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 {
 	// Zoznam obrázkov prečítaných zo súboru
 
@@ -404,7 +404,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		private final static int počiatočnáVeľkosťZásobníka = 300000;
 		private static int[] zásobníkX = new int[počiatočnáVeľkosťZásobníka];
 		private static int[] zásobníkY = new int[počiatočnáVeľkosťZásobníka];
-		private static int[] zásobníkIndexov = new int[počiatočnáVeľkosťZásobníka];
+		private static int[] zásobníkIndexov =
+			new int[počiatočnáVeľkosťZásobníka];
 		private static int ukazovateľZásobníka = -1;
 
 		private static int[] údajeObrázka = null;
@@ -423,7 +424,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		{
 			zásobníkX = Arrays.copyOf(zásobníkX, zásobníkX.length * 2);
 			zásobníkY = Arrays.copyOf(zásobníkY, zásobníkY.length * 2);
-			zásobníkIndexov = Arrays.copyOf(zásobníkIndexov, zásobníkIndexov.length * 2);
+			zásobníkIndexov = Arrays.copyOf(zásobníkIndexov,
+				zásobníkIndexov.length * 2);
 		}
 
 		private static boolean vyberZoZásobníka()
@@ -1107,7 +1109,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		// už nebol vykonávaný prevod – čiže či už sa obrázok nenachádza
 		// v zozname prevedených obrázkov a až potom vyrobí novú
 		// prevedenú inštanciu, ktorú zároveň uloží do spomenutého zoznamu
-		/*packagePrivate*/ static BufferedImage preveďNaBufferedImage(Image obrázok)
+		/*packagePrivate*/ static BufferedImage preveďNaBufferedImage(
+			Image obrázok)
 		{
 			// Ak sem prišla inštancia BufferedImage, tak ju priamo
 			// posunieme ďalej:
@@ -1554,9 +1557,10 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * použitie. Nasledujúci príklad ukazuje, ako takýto súbor prečítať
 		 * a animovať s použitím programovacieho rámca GRobot.</p>
 		 * 
-		 * <p> <br /><a target="_blank" href="resources/srdce.gif">srdce.gif</a> –
-		 * animovaný obrázok na prevzatie, ktorý potrebuje tento príklad na to,
-		 * aby fungoval<br /> </p>
+		 * <p> <br /><a target="_blank"
+		 * href="resources/srdce.gif">srdce.gif</a> – animovaný obrázok na
+		 * prevzatie, ktorý potrebuje tento príklad na to, aby
+		 * fungoval<br /> </p>
 		 * 
 		 * <pre CLASS="example">
 			{@code kwdimport} knižnica.*;
@@ -1648,18 +1652,18 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * a pridáva snímky do prečítanej animácie dovtedy, kým jestvujú
 		 * súbory v neprerušenej sekvencii podľa určenej šablóny.</p>
 		 * 
-		 * <p class="remark"><b>Poznámka:</b> Metóda {@link #ulož(String, boolean)
-		 * ulož(súbor, prepísať)} dokáže vygenerovať len PNG sekvenciu, ale
-		 * táto metóda ({@code currčítaj(súbor)}) je schopná prečítať aj
-		 * sekvenciu vo formáte JPEG. JPEG je stratový formát a neumožňuje
-		 * ukladanie (polo)priehľadných bodov. Je však vhodný na ukladanie
-		 * fotografií, kde sa jeho kompresné artefakty vizuálne strácajú
-		 * (opticky zanikajú v grafickej komplikovanosti obrazu), čím sa lepšie
-		 * uplatňuje jeho kompresný benefit. JPEG sekvencie môžete použiť
-		 * na simulovanie prehrávania videa, ak takú sekvenciu vyrobíte
-		 * s použitím externého softvéru a zachováte pravidlá pomenovania
-		 * šablón s rozdielom prípony – namiesto {@code .png} musí byť uvedená
-		 * {@code .jpg} alebo {@code .jpeg}</p>
+		 * <p class="remark"><b>Poznámka:</b> Metóda {@link #ulož(String,
+		 * boolean) ulož(súbor, prepísať)} dokáže vygenerovať len PNG
+		 * sekvenciu, ale táto metóda ({@code currčítaj(súbor)}) je schopná
+		 * prečítať aj sekvenciu vo formáte JPEG. JPEG je stratový formát
+		 * a neumožňuje ukladanie (polo)priehľadných bodov. Je však vhodný na
+		 * ukladanie fotografií, kde sa jeho kompresné artefakty vizuálne
+		 * strácajú (opticky zanikajú v grafickej komplikovanosti obrazu),
+		 * čím sa lepšie uplatňuje jeho kompresný benefit. JPEG sekvencie
+		 * môžete použiť na simulovanie prehrávania videa, ak takú sekvenciu
+		 * vyrobíte s použitím externého softvéru a zachováte pravidlá
+		 * pomenovania šablón s rozdielom prípony – namiesto {@code .png}
+		 * musí byť uvedená {@code .jpg} alebo {@code .jpeg}</p>
 		 * 
 		 * <pre CLASS="example">
 			{@code kwdimport} knižnica.*;
@@ -1946,11 +1950,13 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 						synchronized (ÚdajeUdalostí.zámokUdalostí)
 						{
-							for (GRobot počúvajúci :
-								GRobot.počúvajúciSúbory)
+							int početPočúvajúcich =
+								GRobot.počúvajúciSúbory.size();
+							for (int j = 0; j < početPočúvajúcich; ++j)
 							{
-								počúvajúci.sekvencia(
-									ČÍTANIE_PNG_SEKVENCIE,
+								GRobot počúvajúci =
+									GRobot.počúvajúciSúbory.get(j);
+								počúvajúci.sekvencia(ČÍTANIE_PNG_SEKVENCIE,
 									menoSúboru, obrázokZoSúboru, i, n);
 							}
 						}
@@ -2009,11 +2015,13 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 							synchronized (ÚdajeUdalostí.zámokUdalostí)
 							{
-								for (GRobot počúvajúci :
-									GRobot.počúvajúciSúbory)
+								int početPočúvajúcich =
+									GRobot.počúvajúciSúbory.size();
+								for (int j = 0; j < početPočúvajúcich; ++j)
 								{
-									počúvajúci.sekvencia(
-										ČÍTANIE_PNG_SEKVENCIE,
+									GRobot počúvajúci =
+										GRobot.počúvajúciSúbory.get(j);
+									počúvajúci.sekvencia(ČÍTANIE_PNG_SEKVENCIE,
 										menoSúboru, obrázokZoSúboru, i, n);
 								}
 							}
@@ -2036,9 +2044,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 								synchronized (ÚdajeUdalostí.zámokUdalostí)
 								{
-									for (GRobot počúvajúci :
-										GRobot.počúvajúciSúbory)
+									int početPočúvajúcich =
+										GRobot.počúvajúciSúbory.size();
+									for (int j = 0; j < početPočúvajúcich; ++j)
 									{
+										GRobot počúvajúci =
+											GRobot.počúvajúciSúbory.get(j);
 										počúvajúci.sekvencia(
 											CHYBA_ČÍTANIA_PNG_SEKVENCIE,
 											menoSúboru, null, i, n);
@@ -2129,9 +2140,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 								synchronized (ÚdajeUdalostí.zámokUdalostí)
 								{
-									for (GRobot počúvajúci :
-										GRobot.počúvajúciSúbory)
+									int početPočúvajúcich =
+										GRobot.počúvajúciSúbory.size();
+									for (int j = 0; j < početPočúvajúcich; ++j)
 									{
+										GRobot počúvajúci =
+											GRobot.počúvajúciSúbory.get(j);
 										počúvajúci.sekvencia(
 											ČÍTANIE_GIF_ANIMÁCIE,
 											súbor, snímka, i - 1, n);
@@ -2178,56 +2192,141 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 	// Rozmery a grafika
 
 		/**
-		 * <p>Vráti šírku obrázka. Ide o rovnaký údaj, aký je uložený v konštante
-		 * {@link #šírka šírka}.</p>
+		 * <p>Vráti šírku obrázka. Ide prakticky o rovnaký údaj, aký je
+		 * uložený v konštante {@link #šírka šírka}, ibaže vo forme reálneho
+		 * čísla, keďže inde zároveň o implementáciu metódy rozhrania
+		 * {@link Rozmer Rozmer}.</p>
 		 * 
 		 * @return šírka obrázka
 		 */
-		public int šírka() { return getWidth(); }
+		public double šírka() { return getWidth(); }
 
 		/** <p><a class="alias"></a> Alias pre {@link #šírka() šírka}.</p> */
-		public int sirka() { return getWidth(); }
+		public double sirka() { return getWidth(); }
 
 		/**
-		 * <p>Vráti šírku obrázka. Ide o rovnaký údaj, aký je uložený v konštante
-		 * {@link #výška výška}.</p>
+		 * <p>Vráti šírku obrázka. Ide prakticky o rovnaký údaj, aký je
+		 * uložený v konštante {@link #výška výška}, ibaže vo forme reálneho
+		 * čísla, keďže inde zároveň o implementáciu metódy rozhrania
+		 * {@link Rozmer Rozmer}.</p>
 		 * 
 		 * @return výška obrázka
 		 */
-		public int výška() { return getHeight(); }
+		public double výška() { return getHeight(); }
 
 		/** <p><a class="alias"></a> Alias pre {@link #výška() výška}.</p> */
-		public int vyska() { return getHeight(); }
+		public double vyska() { return getHeight(); }
+
 
 		/**
-		 * <p>Vráti objekt grafiky obrázka (pre potreby kreslenia do obrázka).
-		 * Robot má dostatok nástrojov (metód) na kreslenie. Ak potrebujete
-		 * priamy prístup ku {@linkplain Graphics2D grafickému objektu
-		 * obrázka} (a využívať jeho metódy – ide o triedu {@link Graphics2D
-		 * Graphics2D}), použite na prístup k nemu túto metódu alebo
-		 * konštantu {@link #grafika grafika}, ktorá obsahuje rovnaký
-		 * objekt, aký vracia táto metóda. Používajte tento objekt
-		 * ojedinele, pretože inštancie triedy obrázok mierne prispôsobujú
-		 * svoj súradnicový priestor, aby boli lepšie použiteľné v prostredí
-		 * programovacieho rámca grafického robota.</p>
+		 * <p>Implementácia metódy rozhrania {@link Rozmer Rozmer} určenej
+		 * na nastavenie šírky obrázka. Keďže je však obrázok rozmerovo
+		 * nemenný (angl. immutable), produkuje táto metóda vždy výnimku
+		 * {@link GRobotException GRobotException} s identifikátorom
+		 * {@code imageSizeImmutable}.</p>
 		 * 
-		 * <p>(Na spresnenie: Súradnicový priestor obrázka je posunutý tak,
-		 * aby počiatok súradnicovej sústavy programovacieho rámca GRobot
-		 * ležal v strede obrázka. Predpokladá sa totiž, že všetky objekty
-		 * tvarov určené na nakreslenie do obrázka budú generované robotom
-		 * a ten generuje tvary tak, aby boli priamo použiteľné
-		 * v súradnicovom priestore Javy, ibaže v prepočte vzhľadom
-		 * k rozmerom plátien, preto má obrázok svoj priestor posunutý.
-		 * Viac sa o súradnicových priestoroch píše napríklad v opisoch
-		 * metód {@link GRobot#cesta() GRobot.cesta()},
-		 * {@link SVGPodpora#zapíš(String, String, boolean)
-		 * SVGpodpora.zapíš(…)}, {@link SVGPodpora#čítaj(String)
-		 * SVGpodpora.čítaj(meno)} a tiež priebežne v celej dokumentácii.)</p>
-		 * 
-		 * @return objekt typu {@link Graphics2D Graphics2D} – grafika
-		 *     obrázka
+		 * @throws GRobotException vždy – obrázok je rozmerovo nemenný
+		 *     (identifikátor {@code imageSizeImmutable})
 		 */
-		public Graphics2D grafika() { return grafika; }
+		public void šírka(double šírka) { throw new GRobotException(
+			"Rozmery obrázka nie je možné zmeniť.", "imageSizeImmutable"); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #šírka(double) šírka}.</p> */
+		public void sirka(double šírka) { šírka(šírka); }
+
+		/**
+		 * <p>Implementácia metódy rozhrania {@link Rozmer Rozmer} určenej
+		 * na nastavenie výšky obrázka. Keďže je však obrázok rozmerovo
+		 * nemenný (angl. immutable), produkuje táto metóda vždy výnimku
+		 * {@link GRobotException GRobotException} s identifikátorom
+		 * {@code imageSizeImmutable}.</p>
+		 * 
+		 * @throws GRobotException vždy – obrázok je rozmerovo nemenný
+		 *     (identifikátor {@code imageSizeImmutable})
+		 */
+		public void výška(double výška) { throw new GRobotException(
+			"Rozmery obrázka nie je možné zmeniť.", "imageSizeImmutable"); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #výška(double) šírka}.</p> */
+		public void vyska(double výška) { výška(výška); }
+
+
+		/**
+		 * <p>Vráti rozmery obrázka v implementácii rozhrania {@link Rozmer
+		 * Rozmer}. Konkrétne ide o inštanciu triedy {@link Rozmery
+		 * Rozmery}.</p>
+		 * 
+		 * @return inštancia rozmerov tohto obrázka
+		 */
+		public Rozmer rozmery() { return new Rozmery(šírka, výška); }
+
+		/**
+		 * <p>Implementácia metódy rozhrania {@link Rozmer Rozmer} určenej
+		 * na nastavenie obidvoch rozmerov obrázka. Keďže je však obrázok
+		 * rozmerovo nemenný (angl. immutable), produkuje táto metóda vždy
+		 * výnimku {@link GRobotException GRobotException} s identifikátorom
+		 * {@code imageSizeImmutable}.</p>
+		 * 
+		 * @throws GRobotException vždy – obrázok je rozmerovo nemenný
+		 *     (identifikátor {@code imageSizeImmutable})
+		 */
+		public void rozmery(Rozmer rozmer) { throw new GRobotException(
+			"Rozmery obrázka nie je možné zmeniť.", "imageSizeImmutable"); }
+
+
+		/**
+		 * <p>Overí zhodu šírky obrázka so zadanou hodnotou.</p>
+		 * 
+		 * @param šírka hodnota šírky na porovnanie
+		 * @return {@code valtrue} ak sa šírka obrázka zhoduje so
+		 *     zadanou hodnotou, {@code valfalse} v opačnom prípade
+		 */
+		public boolean máŠírku(double šírka) { return this.šírka == šírka; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #máŠírku(double) máŠírku}.</p> */
+		public boolean maSirku(double šírka) { return máŠírku(šírka); }
+
+		/**
+		 * <p>Overí zhodu výšky obrázka so zadanou hodnotou.</p>
+		 * 
+		 * @param výška hodnota výšky na porovnanie
+		 * @return {@code valtrue} ak sa výška obrázka zhoduje so
+		 *     zadanou hodnotou, {@code valfalse} v opačnom prípade
+		 */
+		public boolean máVýšku(double výška) { return this.výška == výška; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #máVýšku(double) máVýšku}.</p> */
+		public boolean maVysku(double výška) { return máVýšku(výška); }
+
+		/**
+		 * <p>Overí zhodu rozmerov obrázka so zadanými rozmermi.</p>
+		 * 
+		 * @param šírka hodnota šírky na porovnanie
+		 * @param výška hodnota výšky na porovnanie
+		 * @return {@code valtrue} ak sa rozmery obrázka zhodujú so
+		 *     zadanými rozmermi, {@code valfalse} v opačnom prípade
+		 */
+		public boolean máRozmer(double šírka, double výška)
+		{ return this.šírka == šírka && this.výška == výška; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #máRozmer(double, double) máRozmer}.</p> */
+		public boolean maRozmer(double šírka, double výška)
+		{ return máRozmer(šírka, výška); }
+
+		/**
+		 * <p>Overí zhodu rozmerov obrázka s rozmermi zadaného objektu.</p>
+		 * 
+		 * @param rozmer iný objekt, ktorého rozmery majú byť porovnané
+		 *     s rozmermi obrázka
+		 * @return {@code valtrue} ak sa rozmery obrázka zhodujú s rozmermi
+		 *     zadaného objektu, {@code valfalse} v opačnom prípade
+		 */
+		public boolean máRozmer(Rozmer rozmer)
+		{ return rozmer.šírka() == šírka && rozmer.výška() == výška; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #máRozmer(Rozmer) máRozmer}.</p> */
+		public boolean maRozmer(Rozmer rozmer) { return máRozmer(rozmer); }
+
 
 		/**
 		 * <p>Vyrobí nový novú verziu tohto obrázka, ktorej zmení veľkosť podľa
@@ -2323,6 +2422,66 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 			return new Obrázok(getScaledInstance((int)(šírka * mierka),
 				(int)(výška * mierka), Image.SCALE_SMOOTH));
 		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #zmeňVeľkosť(double) zmeňVeľkosť}.</p> */
+		public Obrazok zmenVelkost(double mierka)
+		{
+			return new Obrazok(getScaledInstance((int)(šírka * mierka),
+				(int)(výška * mierka), Image.SCALE_SMOOTH));
+		}
+
+		/**
+		 * <p>Vyrobí nový novú verziu tohto obrázka, ktorej zmení veľkosť podľa
+		 * zadaných rozmerov.</p>
+		 * 
+		 * @param nováŠírka šírka novej verzie obrázka
+		 * @param nováVýška šírka novej verzie obrázka
+		 * @return nová verzia obrázka (v novom objekte typu
+		 *     {@link Obrázok Obrázok})
+		 */
+		public Obrázok zmeňVeľkosť(int nováŠírka, int nováVýška)
+		{
+			return new Obrázok(getScaledInstance(nováŠírka, nováVýška,
+				Image.SCALE_SMOOTH));
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #zmeňVeľkosť(int, int) zmeňVeľkosť}.</p> */
+		public Obrazok zmenVelkost(int nováŠírka, int nováVýška)
+		{
+			return new Obrazok(getScaledInstance(nováŠírka, nováVýška,
+				Image.SCALE_SMOOTH));
+		}
+
+
+		/**
+		 * <p>Vráti objekt grafiky obrázka (pre potreby kreslenia do obrázka).
+		 * Robot má dostatok nástrojov (metód) na kreslenie. Ak potrebujete
+		 * priamy prístup ku {@linkplain Graphics2D grafickému objektu
+		 * obrázka} (a využívať jeho metódy – ide o triedu {@link Graphics2D
+		 * Graphics2D}), použite na prístup k nemu túto metódu alebo
+		 * konštantu {@link #grafika grafika}, ktorá obsahuje rovnaký
+		 * objekt, aký vracia táto metóda. Používajte tento objekt
+		 * ojedinele, pretože inštancie triedy obrázok mierne prispôsobujú
+		 * svoj súradnicový priestor, aby boli lepšie použiteľné v prostredí
+		 * programovacieho rámca grafického robota.</p>
+		 * 
+		 * <p>(Na spresnenie: Súradnicový priestor obrázka je posunutý tak,
+		 * aby počiatok súradnicovej sústavy programovacieho rámca GRobot
+		 * ležal v strede obrázka. Predpokladá sa totiž, že všetky objekty
+		 * tvarov určené na nakreslenie do obrázka budú generované robotom
+		 * a ten generuje tvary tak, aby boli priamo použiteľné
+		 * v súradnicovom priestore Javy, ibaže v prepočte vzhľadom
+		 * k rozmerom plátien, preto má obrázok svoj priestor posunutý.
+		 * Viac sa o súradnicových priestoroch píše napríklad v opisoch
+		 * metód {@link GRobot#cesta() GRobot.cesta()},
+		 * {@link SVGPodpora#zapíš(String, String, boolean)
+		 * SVGpodpora.zapíš(…)}, {@link SVGPodpora#čítaj(String)
+		 * SVGpodpora.čítaj(meno)} a tiež priebežne v celej dokumentácii.)</p>
+		 * 
+		 * @return objekt typu {@link Graphics2D Graphics2D} – grafika
+		 *     obrázka
+		 */
+		public Graphics2D grafika() { return grafika; }
 
 		/**
 		 * <p>Zruší oblasť na obmedzenie kreslenia na tento obrázok.</p>
@@ -2423,40 +2582,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 			}
 		}
 
-		/** <p><a class="alias"></a> Alias pre {@link #zmeňVeľkosť(double) zmeňVeľkosť}.</p> */
-		public Obrazok zmenVelkost(double mierka)
-		{
-			return new Obrazok(getScaledInstance((int)(šírka * mierka),
-				(int)(výška * mierka), Image.SCALE_SMOOTH));
-		}
-
-		/**
-		 * <p>Vyrobí nový novú verziu tohto obrázka, ktorej zmení veľkosť podľa
-		 * zadaných rozmerov.</p>
-		 * 
-		 * @param nováŠírka šírka novej verzie obrázka
-		 * @param nováVýška šírka novej verzie obrázka
-		 * @return nová verzia obrázka (v novom objekte typu
-		 *     {@link Obrázok Obrázok})
-		 */
-		public Obrázok zmeňVeľkosť(int nováŠírka, int nováVýška)
-		{
-			return new Obrázok(getScaledInstance(nováŠírka, nováVýška,
-				Image.SCALE_SMOOTH));
-		}
-
-		/** <p><a class="alias"></a> Alias pre {@link #zmeňVeľkosť(int, int) zmeňVeľkosť}.</p> */
-		public Obrazok zmenVelkost(int nováŠírka, int nováVýška)
-		{
-			return new Obrazok(getScaledInstance(nováŠírka, nováVýška,
-				Image.SCALE_SMOOTH));
-		}
-
 
 	// Okraje
 
 		/**
-		 * <p><a class="getter"></a> Zistí najmenšiu x-ovú súradnicu obrázka.</p>
+		 * <p><a class="getter"></a> Zistí najmenšiu x-ovú súradnicu
+		 * obrázka.</p>
 		 * 
 		 * @return najmenšia x-ová súradnica obrázka
 		 * 
@@ -2476,7 +2607,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		public double minimalneX() { return -šírka / 2; }
 
 		/**
-		 * <p><a class="getter"></a> Zistí najmenšiu y-ovú súradnicu obrázka.</p>
+		 * <p><a class="getter"></a> Zistí najmenšiu y-ovú súradnicu
+		 * obrázka.</p>
 		 * 
 		 * @return najmenšia y-ová súradnica obrázka
 		 * 
@@ -2496,7 +2628,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		public double minimalneY() { return -(výška - 1) / 2; }
 
 		/**
-		 * <p><a class="getter"></a> Zistí najväčšiu x-ovú súradnicu obrázka.</p>
+		 * <p><a class="getter"></a> Zistí najväčšiu x-ovú súradnicu
+		 * obrázka.</p>
 		 * 
 		 * @return najväčšia x-ová súradnica obrázka
 		 * 
@@ -2516,7 +2649,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		public double maximalneX() { return (šírka - 1) / 2; }
 
 		/**
-		 * <p><a class="getter"></a> Zistí najväčšiu y-ovú súradnicu obrázka.</p>
+		 * <p><a class="getter"></a> Zistí najväčšiu y-ovú súradnicu
+		 * obrázka.</p>
 		 * 
 		 * @return najväčšia y-ová súradnica obrázka
 		 * 
@@ -3114,7 +3248,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		*/
 
 		/**
-		 * <p>Vyplní obrázok farbou zadanou prostredníctvom farebných zložiek.</p>
+		 * <p>Vyplní obrázok farbou zadanou prostredníctvom farebných
+		 * zložiek.</p>
 		 * 
 		 * @param r červená zložka farby; celé číslo v rozsahu 0 – 255
 		 * @param g zelená zložka farby; celé číslo v rozsahu 0 – 255
@@ -3367,8 +3502,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		// { kresli(bod.getX(), bod.getY(), súbor); }
 
 		/**
-		 * <p>Nakreslí do tohto obrázka obrázok zo zadaného súboru, obrázok bude
-		 * posunutý o súradnice určené polohou zadaného objektu.</p>
+		 * <p>Nakreslí do tohto obrázka obrázok zo zadaného súboru, obrázok
+		 * bude posunutý o súradnice určené polohou zadaného objektu.</p>
 		 * 
 		 * @param objekt objekt, ktorého súradnice určia posunutie obrázka
 		 * @param súbor názov súboru s obrázkom
@@ -3397,7 +3532,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 		/**
 		 * <p>Nakreslí do tohto obrázka zadaný obrázok, pričom ho posunie
-		 * od stredu o zadané súradnice v horizontálnom a vertikálnom smere.</p>
+		 * od stredu o zadané súradnice v horizontálnom a vertikálnom
+		 * smere.</p>
 		 * 
 		 * @param x posun od stredu v horizontálnom smere
 		 * @param y posun od stredu vo vertikálnom smere
@@ -3437,8 +3573,9 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 
 		/**
-		 * <p>Vyplní obrázok zadanou textúrou. Textúra je súbor s obrázkom, ktorý
-		 * bude použitý na dlaždicové vyplnenie celej plochy tohto obrázka.</p>
+		 * <p>Vyplní obrázok zadanou textúrou. Textúra je súbor s obrázkom,
+		 * ktorý bude použitý na dlaždicové vyplnenie celej plochy tohto
+		 * obrázka.</p>
 		 * 
 		 * <p>Obrázok prečítaný zo súboru je chápaný ako zdroj a po
 		 * prečítaní zostane uložený vo vnútornej pamäti sveta. Z nej
@@ -3482,7 +3619,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 			else
 			{
 				double β = Math.toRadians(Svet.otočVýplňΑ);
-				grafika.rotate(-β, Svet.otočVýplňX + posunX, Svet.otočVýplňY + posunY);
+				grafika.rotate(-β, Svet.otočVýplňX + posunX,
+					Svet.otočVýplňY + posunY);
 
 				Shape s = AffineTransform.getRotateInstance(β,
 					Svet.otočVýplňX + posunX, Svet.otočVýplňY + posunY).
@@ -3491,7 +3629,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 				// grafika.fillRect(0, 0, šírka, výška);
 				grafika.fill(s);
 
-				grafika.rotate(β, Svet.otočVýplňX + posunX, Svet.otočVýplňY + posunY);
+				grafika.rotate(β, Svet.otočVýplňX + posunX,
+					Svet.otočVýplňY + posunY);
 			}
 
 			grafika.translate(posunX, posunY);
@@ -4792,7 +4931,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * rôznych úrovní jasu a kontrastu.</image></td><td rowspan="7"
 		 * style="text-align: left"><svg width="25px" height="200px"
 		 * style="background: none"><g><text transform="rotate(-90)
-		 * translate(-180, 15)">rôzne úrovne kontrastu</text></g></svg></td></tr>
+		 * translate(-180, 15)">rôzne úrovne
+		 * kontrastu</text></g></svg></td></tr>
 		 * <tr><td style="height: 80px; text-align: right; padding-right:
 		 * 5px">-160,0</td></tr>
 		 * <tr><td style="height: 80px; text-align: right; padding-right:
@@ -4836,7 +4976,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * úrovní jasu a kontrastu.</image></td><td rowspan="7"
 		 * style="text-align: left"><svg width="25px" height="200px"
 		 * style="background: none"><g><text transform="rotate(-90)
-		 * translate(-180, 15)">rôzne úrovne kontrastu</text></g></svg></td></tr>
+		 * translate(-180, 15)">rôzne úrovne
+		 * kontrastu</text></g></svg></td></tr>
 		 * <tr><td style="height: 80px; text-align: right; padding-right:
 		 * 5px">-160,0</td></tr>
 		 * <tr><td style="height: 80px; text-align: right; padding-right:
@@ -4866,7 +5007,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * <tr><td><image>ciarky-s-dierami.png<alt/></image></td>
 		 * <td><image>ciarky-bez-dier.png<alt/></image></td>
 		 * <td><image>ciarky-bez-dier-zvyraznene.png<alt/></image></td></tr>
-		 * <tr><td style="text-align: center">a)</td><td style="text-align: center">b)</td><td style="text-align: center">c)</td></tr></table>
+		 * <tr><td style="text-align: center">a)</td><td style="text-align:
+		 * center">b)</td><td style="text-align: center">c)</td></tr></table>
 		 * 
 		 * <p class="image">Ukážka vplyvu metódy {@link 
 		 * #upravJasKontrast(double, double) upravJasKontrast} na priehľadné
@@ -5002,8 +5144,9 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * hodnôt sa nachádza v rozmedzí 0,01 – 7,99.</p>
 		 * 
 		 * <p>Nasledujúci obrázok ukazuje vplyv rôznych úrovní gama korekcie
-		 * na dvoch obrázkoch, ktoré sú k dispozícii na prevzatie v opise metódy
-		 * {@link #upravJasKontrast(double, double) upravJasKontrast}.</p>
+		 * na dvoch obrázkoch, ktoré sú k dispozícii na prevzatie v opise
+		 * metódy {@link #upravJasKontrast(double, double)
+		 * upravJasKontrast}.</p>
 		 * 
 		 * <p><image>glines-trunk-trees+sky.jpeg<alt/>Ukážka škály úpravy
 		 * dvoch obrázkov gama korekciou.</image>Úprava dvoch obrázkov gama
@@ -5081,8 +5224,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * Processing Algorithms Part 6: Gamma Correction.</em> Dreamland
 		 * Fantasy Studios, 2008, 2010. Citované: 2018.</a></li></ul>
 		 * 
-		 * @param γ hodnota, ktorá určí mieru korekcie intenzity farieb obrázka;
-		 *     vhodný rozsah hodnôt je zhruba v rozmedzí 0,01 – 7,99
+		 * @param γ hodnota, ktorá určí mieru korekcie intenzity farieb
+		 *     obrázka; vhodný rozsah hodnôt je zhruba v rozmedzí 0,01 – 7,99
 		 */
 		public void gamaKorekcia(double γ)
 		{
@@ -5834,7 +5977,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 					getDataBuffer()).getData();
 
 			if (null == osvetlenie.údajeObrázka)
-				osvetlenie.údajeObrázka = ((DataBufferInt)osvetlenie.getRaster().
+				osvetlenie.údajeObrázka =
+					((DataBufferInt)osvetlenie.getRaster().
 					getDataBuffer()).getData();
 
 			for (int i = 0; i < údajeObrázka.length; ++i)
@@ -5859,7 +6003,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		/**
 		 * <p>Táto metóda použije na obrázok zadaný v prvom parametri
 		 * ({@code grafika}) svetelnú masku zadanú v druhom parametri
-		 * ({@code osvetlenie}) a výsledok zlúči do tenjo ({@code valthis})
+		 * ({@code osvetlenie}) a výsledok zlúči do tejto ({@code valthis})
 		 * inštancie obrázka. Svetelný filter môže obsahovať ľubovoľné
 		 * farby. Pravidlom je, že zložka s hodnotou {@code num0x80} je
 		 * neutrálna, hodnoty zložiek pod touto hranicou výsledný obrázok
@@ -5980,7 +6124,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 					getDataBuffer()).getData();
 
 			if (null == osvetlenie.údajeObrázka)
-				osvetlenie.údajeObrázka = ((DataBufferInt)osvetlenie.getRaster().
+				osvetlenie.údajeObrázka =
+					((DataBufferInt)osvetlenie.getRaster().
 					getDataBuffer()).getData();
 
 			for (int i = 0; i < údajeObrázka.length; ++i)
@@ -6655,7 +6800,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 	// Priehľadnosť
 
 		/**
-		 * <p><a class="getter"></a> Zistí aktuálnu úroveň priehľadnosti tohto obrázka.</p>
+		 * <p><a class="getter"></a> Zistí aktuálnu úroveň priehľadnosti
+		 * tohto obrázka.</p>
 		 * 
 		 * @return aktuálna úroveň priehľadnosti tohto obrázka
 		 * 
@@ -6960,7 +7106,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * <p>Sekvenciu súborov vo formáte PNG vytvoríte, ak namiesto názvu
 		 * súboru zadáte šablónu v nasledujúcom tvare:</p>
 		 * 
-		 * <p>    <em>«prefix»</em><code>*</code>[<em>«ľubovoľné znaky»</em><code>*</code>]<em>«postfix»</em><code>.png</code></p>
+		 * <p>    <em>«prefix»</em><code>*</code>[<em>«ľubovoľné
+		 * znaky»</em><code>*</code>]<em>«postfix»</em><code>.png</code></p>
 		 * 
 		 * <p>Príklady platných šablón a ukážky názvov prvých dvoch
 		 * a niekoľkých ďalších náhodne zvolených súborov snímok v animovanej
@@ -7336,7 +7483,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 		 * Prvý súbor bude mať názov <code>nahodne-ciary-001.png</code>
 		 * a posledný <code>nahodne-ciary-251.png</code>.</p>
 		 * 
-		 * <p>Po dokončení bude v okne aplikácie spustená vytvorená animácia.</p>
+		 * <p>Po dokončení bude v okne aplikácie spustená vytvorená
+		 * animácia.</p>
 		 * 
 		 * <table class="centered"><tr>
 		 * <td><image>sekvencia-png-1.gif<alt/>Sekvencia 1.</image></td>
@@ -7451,9 +7599,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 						synchronized (ÚdajeUdalostí.zámokUdalostí)
 						{
-							for (GRobot počúvajúci :
-								GRobot.počúvajúciSúbory)
+							int početPočúvajúcich =
+								GRobot.počúvajúciSúbory.size();
+							for (int i = 0; i < početPočúvajúcich; ++i)
 							{
+								GRobot počúvajúci =
+									GRobot.počúvajúciSúbory.get(i);
 								počúvajúci.sekvencia(
 									ZÁPIS_PNG_SEKVENCIE,
 									this, menoSúboru, 0, 0);
@@ -7498,9 +7649,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 							synchronized (ÚdajeUdalostí.zámokUdalostí)
 							{
-								for (GRobot počúvajúci :
-									GRobot.počúvajúciSúbory)
+								int početPočúvajúcich =
+									GRobot.počúvajúciSúbory.size();
+								for (int j = 0; j < početPočúvajúcich; ++j)
 								{
+									GRobot počúvajúci =
+										GRobot.počúvajúciSúbory.get(j);
 									počúvajúci.sekvencia(
 										ZÁPIS_PNG_SEKVENCIE,
 										snímka, menoSúboru, i + 1, n);
@@ -7600,11 +7754,13 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 								synchronized (ÚdajeUdalostí.zámokUdalostí)
 								{
-									for (GRobot počúvajúci :
-										GRobot.počúvajúciSúbory)
+									int početPočúvajúcich =
+										GRobot.počúvajúciSúbory.size();
+									for (int j = 0; j < početPočúvajúcich; ++j)
 									{
-										počúvajúci.sekvencia(
-											ZÁPIS_GIF_ANIMÁCIE,
+										GRobot počúvajúci =
+											GRobot.počúvajúciSúbory.get(j);
+										počúvajúci.sekvencia(ZÁPIS_GIF_ANIMÁCIE,
 											snímka, súbor, i + 1, n);
 									}
 								}
@@ -8008,13 +8164,13 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 				vlnenie = new Vlnenie(this, 26);
 				vlnenie.posun(posunX, posunY);
 				Vlnenie.vlnenia.add(vlnenie);
-				Svet.spustiČasovač();
 			}
 			else
 			{
 				vlnenie.upokojHladinu();
 				vlnenie.útlm(26);
 			}
+			Svet.spustiČasovač();
 			vlnenie.aktivuj();
 		}
 
@@ -8076,13 +8232,13 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 				vlnenie = new Vlnenie(this, 26);
 				vlnenie.posun(posunX, posunY);
 				Vlnenie.vlnenia.add(vlnenie);
-				if (ajČasovač) Svet.spustiČasovač();
 			}
 			else
 			{
 				vlnenie.upokojHladinu();
 				vlnenie.útlm(26);
 			}
+			if (ajČasovač) Svet.spustiČasovač();
 			vlnenie.aktivuj();
 		}
 
@@ -8142,13 +8298,13 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 				vlnenie = new Vlnenie(this, útlm);
 				vlnenie.posun(posunX, posunY);
 				Vlnenie.vlnenia.add(vlnenie);
-				Svet.spustiČasovač();
 			}
 			else
 			{
 				vlnenie.upokojHladinu();
 				vlnenie.útlm(útlm);
 			}
+			Svet.spustiČasovač();
 			vlnenie.aktivuj();
 		}
 
@@ -8214,13 +8370,13 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 				vlnenie = new Vlnenie(this, útlm);
 				vlnenie.posun(posunX, posunY);
 				Vlnenie.vlnenia.add(vlnenie);
-				if (ajČasovač) Svet.spustiČasovač();
 			}
 			else
 			{
 				vlnenie.upokojHladinu();
 				vlnenie.útlm(útlm);
 			}
+			if (ajČasovač) Svet.spustiČasovač();
 			vlnenie.aktivuj();
 		}
 
@@ -8252,12 +8408,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 	// Animácia
 
 		// Táto vnútorná súkromná trieda uchováva informácie o jedninej snímke
-		// animácie tohto obrázka
+		// animácie tohto obrázka.
 		private class Snímka extends BufferedImage
 		{
 			/**
-			 * <p>Tento atribút reprezentuje individuálnu dĺžku zobrazenia tejto
-			 * snímky. (Je verejne upravovateľný.)</p>
+			 * <p>Tento atribút reprezentuje individuálnu dĺžku zobrazenia
+			 * tejto snímky. (Je verejne upravovateľný.)</p>
 			 */
 			public int trvanie;
 
@@ -9680,8 +9836,10 @@ public class Obrázok extends BufferedImage implements Priehľadnosť
 
 				synchronized (ÚdajeUdalostí.zámokUdalostí)
 				{
-					for (GRobot počúvajúci : GRobot.počúvajúciSystém)
+					int početPočúvajúcich = GRobot.počúvajúciSystém.size();
+					for (int i = 0; i < početPočúvajúcich; ++i)
 					{
+						GRobot počúvajúci = GRobot.počúvajúciSystém.get(i);
 						počúvajúci.zastavenieAnimácie(this);
 						počúvajúci.zastavenieAnimacie(this);
 					}

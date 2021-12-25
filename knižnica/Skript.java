@@ -859,9 +859,8 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
  * ktoré s ním úzko súvisia sú rozmiestnené na viacerých miestach
  * dokumentácie. Užitočné príklady použitia nájdete napríklad […]</p -->
  * 
- * <!-- TODO: Buď vyrobiť nejaký komplexný príklad použitia, alebo sa
- * aspoň podrobne odkázať na rôzne príklady použitia v rámci celej
- * dokumentácie. -->
+ * <!-- TODO: Zvážiť výrobu komplexnňeho príkladu použitia (vyššie sa
+ * aspoň odkazujem na príklady použitia v rámci dokumentácie). -->
  * 
 <!--
 Všetky kľúčové slová:
@@ -1088,7 +1087,8 @@ public abstract class Skript
 			String / String – rozdelenie na časti (zoznam) podľa „menovateľa“
 			String % String – ako „podiel,“ ale zostane „zvyšok“ – čiže
 				zoznam obsahujúci nula, jeden až viacero prvkov „menovateľa,“
-				podľa počtu ich výskytu v pôvodnom reťazci
+				podľa počtu ich výskytu v pôvodnom reťazci (hlbší zmysel by
+				to malo pri menovateli vo forme regulárneho výrazu)
 
 			…
 		TODO */

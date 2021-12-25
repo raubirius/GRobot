@@ -257,7 +257,7 @@ public class KontextováPonuka extends JPopupMenu
 	/**
 	 * <p>Vytvorí novú ponuku zo zadaných položiek. Využiteľné na vytváranie
 	 * kaskádových ponúk. Ak je niektorá zo zadaných položiek {@code 
-	 * valnull}, je do ponuky vložený oddeľovač.</p>
+	 * valnull}, tak je do ponuky vložený oddeľovač.</p>
 	 * 
 	 * @param text text položky novej vnorenej ponuky
 	 * @param položky zoznam položiek

@@ -516,9 +516,10 @@ public class Spojenie
 
 		synchronized (ÚdajeUdalostí.zámokUdalostí)
 		{
-			for (GRobot počúvajúci :
-				GRobot.počúvajúciSúbory)
+			int početPočúvajúcich = GRobot.počúvajúciSúbory.size();
+			for (int i = 0; i < početPočúvajúcich; ++i)
 			{
+				GRobot počúvajúci = GRobot.počúvajúciSúbory.get(i);
 				počúvajúci.sekvencia(typTransferu,
 					sekvenciaTransferuZdroj, sekvenciaTransferuCieľ,
 					sekvenciaTransferuStav, sekvenciaTransferuCelkovo);

@@ -238,6 +238,12 @@ import static java.util.Calendar.*;
  * (<em>«súbor»</em>) zlyhal z dôvodu nenájdenia súboru. Názov súboru je
  * zistiteľný metódou {@link #getParameter() getParameter}.</td></tr>
  * 
+ * <tr><td><code>imageSizeImmutable</code></td><td>Rozmery obrázka
+ * nie je možné zmeniť.</td><td>Vzniká pri pokuse o zmenu rozmerov
+ * obrázka. (Pozri napríklad {@link Obrázok#šírka(double) šírka(šírka))},
+ * {@link Obrázok#výška(double) výška(výška))} alebo {@link 
+ * Obrázok#rozmery(Rozmer) rozmery(rozmer)})</td></tr>
+ * 
  * <tr><td><code>imageSizeMismatch</code></td><td>Rozmery obrázokov
  * svetelnej operácie sa nezhodujú.</td><td>Vzniká pri pokuse o vykonanie
  * svetelnej operácie (pozri {@link Obrázok#svetlo(Obrázok, Obrázok)
@@ -809,8 +815,10 @@ public class GRobotException extends RuntimeException
 
 		synchronized (ÚdajeUdalostí.zámokUdalostí)
 		{
-			for (GRobot počúvajúci : GRobot.počúvajúciSystém)
+			int početPočúvajúcich = GRobot.počúvajúciSystém.size();
+			for (int i = 0; i < početPočúvajúcich; ++i)
 			{
+				GRobot počúvajúci = GRobot.počúvajúciSystém.get(i);
 				počúvajúci.vzniklaChyba(chyba);
 			}
 		}

@@ -2,11 +2,10 @@
 package knižnica.podpora;
 
 // Toto je jedna z externých podporných tried, ku ktorým nie je priamo
-// vyhotovená dokumentácia. Je to obojsmerná mapa slúžiaca napríklad na
-// vytvorenie slovníka. Ten môže byť použitý rôzne. Rámec ho vnútorne
-// používa na preklad direktív a hodnôt konfiguračných súborov, ktorých
-// predvolené tvary by inak nebolo možné zmeniť. Licencia a zdroje sú
-// uvedené nižšie v anglickom jazyku.
+// vyhotovená dokumentácia. Je to panel implementujúci zoznam rádiových
+// tlačidiel vytváraný z hodnôt zadaného vymenovacieho údajového typu
+// Javy (Enum). Rámec ho používa v rámci komunikačných dialógov Sveta.
+// Licencia a zdroje sú uvedené nižšie v anglickom jazyku.
 // 
 // (Above Slovak note tells the students the basics about this class and its
 // licensing. — This source code is released under the same terms as the whole

@@ -3459,7 +3459,8 @@ public class SVGPodpora
 	 * <p>Nasledujúci príklad ukazuje spôsob použitia tejto metódy na
 	 * pridanie takých transformácií (vo forme objektov triedy
 	 * {@link AffineTransform AffineTransform}) všetkým tvarom kresby,
-	 * ktoré ju posunú do stredu súradnicovej sústavy robota:</p>
+	 * ktoré ju posunú do stredu súradnicovej sústavy sveta (programovacieho
+	 * rámca):</p>
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Tento príklad vyžaduje
 	 * importovanie triedy Javy {@link java.awt.geom.AffineTransform}.</p>
@@ -5350,7 +5351,10 @@ public class SVGPodpora
 
 		// Vytvorenie tvaru textu a jeho pridanie medzi SVG definície:
 		Tvar záznam = new Tvar(new SimpleTextShape(prepočítanéX,
-			prepočítanéY, tvorca.aktuálnePísmo, text, Svet.grafikaSveta1),
+			prepočítanéY, tvorca.aktuálnePísmo, text
+				.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
+				.replaceAll(">", "&gt;").replaceAll("'", "&apos;")
+				.replaceAll("\"", "&quot;"), Svet.grafikaSveta1),
 			zoznam);
 		tvary.add(záznam);
 	}
@@ -7433,9 +7437,14 @@ public class SVGPodpora
 		try
 		{
 			if (null == xmlVstup) xmlVstup = XMLInputFactory.newFactory();
-			čítanie = xmlVstup.createXMLStreamReader(
-				new ByteArrayInputStream(("<svg>" + xmlSVG +
-					"</svg>").getBytes("UTF-8")), "UTF-8");
+			if (-1 == xmlSVG.indexOf("<svg"))
+				čítanie = xmlVstup.createXMLStreamReader(
+					new ByteArrayInputStream(("<svg>" + xmlSVG +
+						"</svg>").getBytes("UTF-8")), "UTF-8");
+			else
+				čítanie = xmlVstup.createXMLStreamReader(
+					new ByteArrayInputStream(xmlSVG.
+						getBytes("UTF-8")), "UTF-8");
 		}
 		catch (Exception e)
 		{

@@ -29,8 +29,10 @@
 
 package knižnica;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Font;
 import java.awt.FontMetrics;
 
 import java.awt.image.BufferedImage;
@@ -179,7 +181,7 @@ import java.util.Vector;
 
 			{@code comm// Blok textu rozbijeme na slová vopred, aby sme mohli upraviť}
 			{@code comm// jeho vlastnosti (v tomto prípade len jemné zriedenie riadkovania):}
-			{@code currTlač}.{@link BlokSlov BlokSlov} blokSlov = {@code currTlač}.{@link Tlač#rozbiNaSlová(Graphics, CharSequence, int) rozbiNaSlová}(
+			{@code currTlač}.{@link BlokSlov BlokSlov} blokSlov = tlač.{@link Tlač#rozbiNaSlová(Graphics, CharSequence, int) rozbiNaSlová}(
 				{@link GRobot#grafika() grafika}(), text, {@code num2} * šírka);
 			blokSlov.{@link BlokSlov#riadkovanie riadkovanie} = {@code num1.15};
 
@@ -194,7 +196,7 @@ import java.util.Vector;
 			{@code comm//   • kreslenie textov presahujúcich spodný okraj obdĺžnika je}
 			{@code comm//     zamedzené hodotnou true predposledného parametra (nekresliMimo)}
 			{@code comm//   • a začína sa prvým riadkom (index 0 v posledom parametri).}
-			{@code typeint} i = {@code currTlač}.{@link #kresliTextDo(Graphics, CharSequence, int, int, int, int, BlokSlov, boolean, int) kresliTextDo}({@link GRobot#grafika() grafika}(), {@code valnull},
+			{@code typeint} i = tlač.{@link #kresliTextDo(Graphics, CharSequence, int, int, int, int, BlokSlov, boolean, int) kresliTextDo}({@link GRobot#grafika() grafika}(), {@code valnull},
 				({@code typeint}){@link Svet Svet}.{@link Svet#prepočítajX(double) prepočítajX}({@link GRobot#polohaX() polohaX}() - šírka),
 				({@code typeint}){@link Svet Svet}.{@link Svet#prepočítajY(double) prepočítajY}({@link GRobot#polohaY() polohaY}() + výška),
 				{@code num2} * šírka, {@code num2} * výška, blokSlov, {@code valtrue}, {@code num0});
@@ -292,20 +294,27 @@ import java.util.Vector;
 public abstract class Tlač implements Printable, Pageable
 {
 	/**
-	 * <p>Konštanta, násobenie ktorou prepočíta palce na tlačové body.
-	 * Príklad: Výsledkom {@code num1.0}{@code  * }{@link Tlač Tlač}{@code 
-	 * .}{@code currinch} bude posun v bodoch ekvivalentný jednému palcu.
-	 * (Poznámka: Prirodzene, delenie touto konštantou prepočíta body na
-	 * palce.)</p>
+	 * <p>Konštanta, násobenie ktorou prepočíta palce na tlačové body.</p>
+	 * 
+	 * <p><b>Príklad:</b> Výsledkom {@code num1.0}{@code  * }{@link Tlač
+	 * Tlač}{@code .}{@code currinch} bude posun v bodoch ekvivalentný
+	 * jednému palcu.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Prirodzene, delenie touto
+	 * konštantou prepočíta body na palce.)</p>
 	 */
 	public final static double inch = 72.0;
 
 	/**
-	 * <p>Konštanta, násobenie ktorou prepočíta centimetre na tlačové body.
-	 * Príklad: Výsledkom {@code num1.0}{@code  * }{@link Tlač Tlač}{@code 
-	 * .}{@code currcm} bude posun v bodoch ekvivalentný jednému centimetru.
-	 * (Poznámka: Prirodzene, delenie touto konštantou prepočíta body na
-	 * centimetre.)</p>
+	 * <p>Konštanta, násobenie ktorou prepočíta centimetre na tlačové
+	 * body.</p>
+	 * 
+	 * <p><b>Príklad:</b> Výsledkom {@code num1.0}{@code  * }{@link Tlač
+	 * Tlač}{@code .}{@code currcm} bude posun v bodoch ekvivalentný
+	 * jednému centimetru.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Prirodzene, delenie touto
+	 * konštantou prepočíta body na centimetre.</p>
 	 */
 	public final static double cm = 72.0 / 2.54;
 
@@ -456,17 +465,6 @@ public abstract class Tlač implements Printable, Pageable
 		// Overenie, či stránka jestvuje:
 		if (page < 0 || page >= početStrán) return NO_SUCH_PAGE;
 
-		/*{
-			// TEST…
-			System.out.println("Žiadam formát…");
-			PageFormat pf2 = nastavenieStrany(page);
-			if (null != pf2)
-			{
-				System.out.println("Formát bol zmenený…");
-				pf = úloha.defaultPage(pf2);
-			}
-		}*/
-
 		GRobot.ZálohaVlastností záloha = new GRobot.ZálohaVlastností(robot);
 
 		try
@@ -500,31 +498,7 @@ public abstract class Tlač implements Printable, Pageable
 			robot.obrázokAktívnehoPlátna = obrázok;
 			Graphics2D grafika = robot.grafikaAktívnehoPlátna = (Graphics2D)g;
 			grafika.translate(pf.getImageableX(), pf.getImageableY());
-
-			/*double posunX = -(Plátno.šírkaPlátna / 2) + (šírka / 2);
-			double posunY = -(Plátno.výškaPlátna / 2) + (výška / 2);*/
 			grafika.translate(obrázok.posunX, obrázok.posunY);
-
-			// System.out.println("\nPage format:");
-			// System.out.println("pf.getImageableX(): " +
-			// 	pf.getImageableX());
-			// System.out.println("pf.getImageableY(): " +
-			// 	pf.getImageableY());
-			// System.out.println("pf.getImageableWidth(): " +
-			// 	pf.getImageableWidth());
-			// System.out.println("pf.getImageableHeight(): " +
-			// 	pf.getImageableHeight());
-
-			// Paper p = pf.getPaper();
-			// System.out.println("\nPaper format:");
-			// System.out.println("p.getImageableX(): " +
-			// 	p.getImageableX());
-			// System.out.println("p.getImageableY(): " +
-			// 	p.getImageableY());
-			// System.out.println("p.getImageableWidth(): " +
-			// 	p.getImageableWidth());
-			// System.out.println("p.getImageableHeight(): " +
-			// 	p.getImageableHeight());
 
 			// Rendrovanie stránky:
 			kresli(page, pf);
@@ -838,30 +812,160 @@ public abstract class Tlač implements Printable, Pageable
 
 
 	/**
-	 * <p>Táto trieda slúži na uchovávanie slov bloku textu, ktorý bol
-	 * {@linkplain #rozbiNaSlová(Graphics, CharSequence, int) rozbitý}
-	 * na {@linkplain #kresliTextDo(Graphics, CharSequence, int, int,
-	 * int, int, BlokSlov, boolean, int) nakreslenie.}</p>
+	 * <p>Metóda určená na prekrytie. Táto metóda je volaná metódou {@link 
+	 * #rozbiNaSlová(Graphics, CharSequence, int) rozbiNaSlová} v prípade
+	 * výskytu špeciálneho riadiaceho znaku (ASCII 1), ktorý má v tomto
+	 * prípade význam „zmeň atribúty.“ Prijíma takmer rovnaké parametre ako
+	 * metóda {@link #rozbiNaSlová(Graphics, CharSequence, int) rozbiNaSlová}
+	 * s výnimkou posledného, ktorý v prípade tejto metódy značí aktuálnu
+	 * polohu spracovania sekvencie znakov. Návratovou hodnotou tejto metódy
+	 * je buď nová farba textu, alebo hodnota {@code valnull}, ktorá znamená,
+	 * že farba textu nebude zmenená. V sekvencii sú za sebou volané tieto
+	 * tri metódy:</p>
 	 * 
-	 * <p>{@linkplain BlokSlov Blok} pozostáva z {@linkplain RiadokSlov
-	 * riadkov} a riadky pozostávajú zo {@linkplain Slovo slov.}
-	 * {@linkplain #rozbiNaSlová(Graphics, CharSequence, int) Rozbitie textu
-	 * na slová} môže byť vykonané vopred (s cieľom úpravy/prispôsobenia
-	 * generovaného bloku) alebo automaticky, vnútorne metódou {@link 
-	 * #kresliTextDo(Graphics, CharSequence, int, int, int, int, BlokSlov,
-	 * boolean, int) kresliTextDo}. Na kreslenie bloku má vplyv hodnota
-	 * tejto premennej: {@link #SNR SNR} („spojovník na riadku“).
+	 * <ul>
+	 * <li>{@link #dajFarbu(Graphics2D g2d, CharSequence chs, int poloha)
+	 * dajFarbu} <small>(táto metóda)</small></li>
+	 * <li>{@link #dajFont(Graphics2D g2d, CharSequence chs, int poloha)
+	 * dajFont}</li>
+	 * <li>{@link #dajPosun(Graphics2D g2d, CharSequence chs, int poloha)
+	 * dajPosun}</li>
+	 * </ul>
+	 * 
+	 * <p>Ich účel je obdobný, len v prípade poslednej nahrádza význam
+	 * hodnoty {@code valnull} číselná hodnota {@code num0}.</p>
+	 * 
+	 * @param g grafický kontext
+	 * @param chs reťazec na rozbitie
+	 * @param poloha aktuálna poloha spracovania reťazca {@code chs}
+	 * @return nová farba textu alebo {@code valnull}
+	 * 
+	 * @see 	#dajFarbu(Graphics2D g2d, CharSequence chs, int poloha)
+	 * @see #dajFont(Graphics2D g2d, CharSequence chs, int poloha)
+	 * @see #dajPosun(Graphics2D g2d, CharSequence chs, int poloha)
 	 */
-	public static class Slovo
+	public abstract Color dajFarbu(Graphics2D g2d, CharSequence chs, int poloha);
+
+	/**
+	 * <p>Metóda určená na prekrytie. Táto metóda je volaná metódou {@link 
+	 * #rozbiNaSlová(Graphics, CharSequence, int) rozbiNaSlová} v prípade
+	 * výskytu špeciálneho riadiaceho znaku (ASCII 1), ktorý má v tomto
+	 * prípade význam „zmeň atribúty.“ Prijíma takmer rovnaké parametre ako
+	 * metóda {@link #rozbiNaSlová(Graphics, CharSequence, int) rozbiNaSlová}
+	 * s výnimkou posledného, ktorý v prípade tejto metódy značí aktuálnu
+	 * polohu spracovania sekvencie znakov. Návratovou hodnotou tejto metódy
+	 * je buď nový font platný pre ďalší text, alebo hodnota {@code valnull},
+	 * ktorá znamená, že font sa nemení. V sekvencii sú za sebou volané tieto
+	 * tri metódy:</p>
+	 * 
+	 * <ul>
+	 * <li>{@link #dajFarbu(Graphics2D g2d, CharSequence chs, int poloha)
+	 * dajFarbu}</li>
+	 * <li>{@link #dajFont(Graphics2D g2d, CharSequence chs, int poloha)
+	 * dajFont} <small>(táto metóda)</small></li>
+	 * <li>{@link #dajPosun(Graphics2D g2d, CharSequence chs, int poloha)
+	 * dajPosun}</li>
+	 * </ul>
+	 * 
+	 * <p>Ich účel je obdobný, len v prípade poslednej nahrádza význam
+	 * hodnoty {@code valnull} číselná hodnota {@code num0}.</p>
+	 * 
+	 * @param g grafický kontext
+	 * @param chs reťazec na rozbitie
+	 * @param poloha aktuálna poloha spracovania reťazca {@code chs}
+	 * @return nový font alebo {@code valnull}
+	 * 
+	 * @see 	#dajFarbu(Graphics2D g2d, CharSequence chs, int poloha)
+	 * @see #dajFont(Graphics2D g2d, CharSequence chs, int poloha)
+	 * @see #dajPosun(Graphics2D g2d, CharSequence chs, int poloha)
+	 */
+	public abstract Font dajFont(Graphics2D g2d, CharSequence chs, int poloha);
+
+	/**
+	 * <p>Metóda určená na prekrytie. Táto metóda je volaná metódou {@link 
+	 * #rozbiNaSlová(Graphics, CharSequence, int) rozbiNaSlová} v prípade
+	 * výskytu špeciálneho riadiaceho znaku (ASCII 1), ktorý má v tomto
+	 * prípade význam „zmeň atribúty.“ Prijíma takmer rovnaké parametre ako
+	 * metóda {@link #rozbiNaSlová(Graphics, CharSequence, int) rozbiNaSlová}
+	 * s výnimkou posledného, ktorý v prípade tejto metódy značí aktuálnu
+	 * polohu spracovania sekvencie znakov. Návratovou hodnotou tejto metódy
+	 * je zmena vertikálnej polohy text na riadku. Logicky, {@code num0}
+	 * znamená, že poloha textu sa nemení. V sekvencii sú za sebou volané
+	 * tieto tri metódy:</p>
+	 * 
+	 * <ul>
+	 * <li>{@link #dajFarbu(Graphics2D g2d, CharSequence chs, int poloha)
+	 * dajFarbu}</li>
+	 * <li>{@link #dajFont(Graphics2D g2d, CharSequence chs, int poloha)
+	 * dajFont}</li>
+	 * <li>{@link #dajPosun(Graphics2D g2d, CharSequence chs, int poloha)
+	 * dajPosun} <small>(táto metóda)</small></li>
+	 * </ul>
+	 * 
+	 * @param g grafický kontext
+	 * @param chs reťazec na rozbitie
+	 * @param poloha aktuálna poloha spracovania reťazca {@code chs}
+	 * @return posunutie textov na riadku
+	 * 
+	 * @see 	#dajFarbu(Graphics2D g2d, CharSequence chs, int poloha)
+	 * @see #dajFont(Graphics2D g2d, CharSequence chs, int poloha)
+	 * @see #dajPosun(Graphics2D g2d, CharSequence chs, int poloha)
+	 */
+	public abstract int dajPosun(Graphics2D g2d, CharSequence chs, int poloha);
+
+
+	/**
+	 * <p>TODO</p>
+	 */
+	public class Parametre
 	{
 		/**
-		 * <p>Znenie tohto slova.</p>
+		 * <p>TODO</p>
 		 */
-		public final String slovo;
+		public final Color farba;
 
 		/**
-		 * <p>Šírka tohto slova v pixeloch. Je vypočítaná podľa fontu, ktorý
-		 * bol aktívny v čase spracovania tohto slova.</p>
+		 * <p>TODO</p>
+		 */
+		public final Font font;
+
+		/**
+		 * <p>TODO. Hodnota tohto atribútu má význam relatívnej ??? TODO</p>
+		 */
+		public final int posun;
+
+		/**
+		 * <p>TODO</p>
+		 */
+		public Parametre(Color farba, Font font, int posun)
+		{
+			this.farba = farba;
+			this.font  = font;
+			this.posun = posun;
+		}
+	}
+
+	/**
+	 * <p>Táto trieda slúži na uchovanie fragmentu slova. Cieľom je
+	 * umožniť zmenu paramterov textu na ľuvovoľnom mieste (aj uprostred
+	 * slova). Zoznam fragmentov uložených v triede {@link Slovo Slovo}
+	 * je považovaný za jedno slovo. (Zoznam triedy {@link Slovo Slovo}
+	 * však často obsahuje jediný fragment, takže vo väčšine prípadov
+	 * obsah inštancie tejto triedy len jemne rozširuje obsah inštancie
+	 * triedy {@link Slovo Slovo}.)</p>
+	 */
+	public class Fragment
+	{
+		/**
+		 * <p>Znenie tohto fragmentu slova.</p>
+		 */
+		public final String fragment;
+
+		/**
+		 * <p>Šírka tohto fragmentu slova v pixeloch. Je vypočítaná podľa
+		 * fontu, ktorý bol aktívny v čase vytvorenia tohto fragmentu.<!--
+		 * TODO; Malo pôvodne byť: ktorý je uchovaný popri tomto fragmente.
+		 * Je to ok? --></p>
 		 */
 		public final int šírka;
 
@@ -869,15 +973,128 @@ public abstract class Tlač implements Printable, Pageable
 		public final int sirka;
 
 		/**
-		 * <p>Úplný konštruktor slova.</p>
-		 * 
-		 * @param slovo znenie slova
-		 * @param šírka šírka slova v pixeloch
+		 * <p>Parametre (atribúty) tohto textového fragmentu. Hodnota
+		 * {@code valnull} znamená, že žiadny z atribútov sa oproti
+		 * predchádzajúcemu fragmentu nezmenil.</p>
 		 */
-		public Slovo(String slovo, int šírka)
+		public final Parametre parametre;
+
+		/**
+		 * <p>Konštruktor fragmentu slova, ktorý neupravuje žiadny atribút
+		 * textu – parametre sú rovné {@code valnull}.</p>
+		 * 
+		 * @param fragment znenie fragmentu slova
+		 * @param šírka šírka fragmentu slova v pixeloch
+		 */
+		public Fragment(String fragment, int šírka)
 		{
-			this.slovo = slovo;
+			this.fragment = fragment;
 			this.šírka = sirka = šírka;
+			parametre = null;
+		}
+
+		/**
+		 * <p>Úplný konštruktor fragmentu slova.</p>
+		 * 
+		 * @param fragment znenie fragmentu slova
+		 * @param šírka šírka fragmentu slova v pixeloch
+		 * @param parametre parametre (atribúty) tohto fragmentu textu
+		 */
+		public Fragment(String fragment, int šírka, Parametre parametre)
+		{
+			this.fragment = fragment;
+			this.šírka = sirka = šírka;
+			this.parametre = parametre;
+		}
+	}
+
+	/**
+	 * <p>Táto trieda slúži na uchovávanie slov bloku textu, ktorý bol
+	 * {@linkplain #rozbiNaSlová(Graphics, CharSequence, int) rozbitý}
+	 * na {@linkplain #kresliTextDo(Graphics, CharSequence, int, int,
+	 * int, int, BlokSlov, boolean, int) nakreslenie.}</p>
+	 * 
+	 * <p>{@linkplain BlokSlov Blok} pozostáva z {@linkplain RiadokSlov
+	 * riadkov}, riadky pozostávajú zo {@linkplain Slovo slov} a slová sú
+	 * jemnejšie rozdelené na {@linkplain Fragment fragmenty} (jeden alebo
+	 * viaceré), ktoré obsahujú atribúty (pomenované ako {@linkplain 
+	 * Parametre parametre}).
+	 * <!-- -->
+	 * {@linkplain #rozbiNaSlová(Graphics, CharSequence, int) Rozbitie textu
+	 * na slová} môže byť vykonané vopred (s cieľom úpravy/prispôsobenia
+	 * generovaného bloku) alebo automaticky, vnútorne metódou {@link 
+	 * #kresliTextDo(Graphics, CharSequence, int, int, int, int, BlokSlov,
+	 * boolean, int) kresliTextDo}. Na kreslenie bloku má vplyv hodnota
+	 * tejto premennej: {@link #SNR SNR} („spojovník na riadku“).</p>
+	 */
+	@SuppressWarnings("serial")
+	public class Slovo extends Vector<Fragment>
+	{
+		/**
+		 * <p>Konštruktor slova vkladajúci prvý fragment, ktorý neupravuje
+		 * žiadny atribút textu.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Prvý fragment je vo väčšine
+		 * prípadov zároveň jediný fragment, ale korektné slovo musí
+		 * obsahovať aspoň jeden fragment (aj keď to táto trieda
+		 * nekontroluje).</p>
+		 * 
+		 * @param fragment znenie prvého fragmentu slova
+		 * @param šírka šírka fragmentu slova v pixeloch
+		 */
+		public Slovo(String fragment, int šírka)
+		{
+			this.add(new Fragment(fragment, šírka));
+		}
+
+		/**
+		 * <p>Konštruktor slova vkladajúci prvý fragment, ktorý upravuje
+		 * aspoň jeden atribút textu. Atribúty sú ukladané v inštancii
+		 * triedy {@link Parametre Parametre}.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Prvý fragment je vo väčšine
+		 * prípadov zároveň jediný fragment, ale korektné slovo musí
+		 * obsahovať aspoň jeden fragment (aj keď to táto trieda
+		 * nekontroluje).</p>
+		 * 
+		 * @param fragment znenie prvého fragmentu slova
+		 * @param šírka šírka fragmentu slova v pixeloch
+		 * @param parametre parametre (atribúty) tohto fragmentu textu
+		 */
+		public Slovo(String fragment, int šírka, Parametre parametre)
+		{
+			this.add(new Fragment(fragment, šírka, parametre));
+		}
+
+		/**
+		 * <p>Šírka tohto slova v pixeloch. Je vypočítaná ako suma šírok
+		 * všetkých fragmentov, ktoré toto slovo obsahuje.</p>
+		 * 
+		 * @return vypočítaná šírka tohto slova (v pixeloch)
+		 */
+		public int šírka() // TODO optimalizuj
+		{
+			int suma = 0;
+			for (Fragment fragment : this)
+				suma += fragment.šírka;
+			return suma;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #šírka() šírka}.</p> */
+		public int sirka() { return šírka(); };
+
+		/**
+		 * <p>Textový obsah tohto slova. Je zostavený ako zlúčenie textových
+		 * obsahov všetkých fragmentov, ktoré toto slovo obsahuje.</p>
+		 * 
+		 * @return textový obsah tohto slova
+		 */
+		public String slovo() // TODO optimalizuj
+		{
+			StringBuffer sb = new StringBuffer();
+			for (Fragment fragment : this)
+				sb.append(fragment.fragment);
+			return sb.toString();
 		}
 	}
 
@@ -897,7 +1114,7 @@ public abstract class Tlač implements Printable, Pageable
 	 * tejto premennej: {@link #SNR SNR} („spojovník na riadku“).
 	 */
 	@SuppressWarnings("serial")
-	public static class RiadokSlov extends Vector<Slovo>
+	public class RiadokSlov extends Vector<Slovo>
 	{
 		/**
 		 * <p>Spôsob zarovnania tohto riadka. Nula znamená na stred, kladné
@@ -954,7 +1171,7 @@ public abstract class Tlač implements Printable, Pageable
 	 * tejto premennej: {@link #SNR SNR} („spojovník na riadku“).
 	 */
 	@SuppressWarnings("serial")
-	public static class BlokSlov extends Vector<RiadokSlov>
+	public class BlokSlov extends Vector<RiadokSlov>
 	{
 		/**
 		 * <p>Riadkovanie tohto bloku slov. Predvolená je hodnota
@@ -1028,12 +1245,13 @@ public abstract class Tlač implements Printable, Pageable
 
 
 	/**
-	 * <p>Ak je táto konštanta rovná {@code valtrue} (predvolene), tak sa
-	 * pri {@linkplain #rozbiNaSlová(Graphics, CharSequence, int) rozbíjaní
-	 * textu na slová} v prípade výskytu klasického spojovníka na konci
-	 * riadka automaticky pridá pevný spojovník na začiatok nového riadka.</p>
+	 * <p>Ak je hodnota tohto atribútu rovná {@code valtrue} (predvolene),
+	 * tak sa pri {@linkplain #rozbiNaSlová(Graphics, CharSequence, int)
+	 * rozbíjaní textu na slová} v prípade výskytu klasického spojovníka
+	 * na konci aktuálneho riadka automaticky pridá nový pevný spojovník
+	 * na začiatok nového riadka.</p>
 	 */
-	public static boolean SNR = true;
+	public boolean SNR = true;
 
 	/**
 	 * <p>Rozbije zadaný text do bloku textu podľa metriky aktuálneho
@@ -1055,7 +1273,7 @@ public abstract class Tlač implements Printable, Pageable
 	 * @param šírka maximálna šírka textu na riadku
 	 * @return blok textu rozbitého na riadky a slová
 	 */
-	public static BlokSlov rozbiNaSlová(Graphics g,
+	public BlokSlov rozbiNaSlová(Graphics g,
 		CharSequence chs, int šírkaRiadka)
 	{
 		// Inicializácia niektorých objektov.
@@ -1076,23 +1294,92 @@ public abstract class Tlač implements Printable, Pageable
 
 		Slovo poslednéSlovo = null;
 		// Minitabuľka:
-		//    Spojovník: -	U+002D	&#45;
-		//    Spojovník: ‐	U+2010	&#8208;
+		//    Spojovník1: -	U+002D	&#45;
+		//    Spojovník2: ‐	U+2010	&#8208;
 		//    Voliteľné rozdelenie: ­	U+00AD	&#173; &shy;
 		//    	(soft hyphen/syllable hyphen – SHY)
 		//    	TeX and LaTeX: \-
 		//    Pevný spojovník: ‑	U+2011	&#8209; („nbhy“)
 		//    Medzera s nulovou šírkou: ​	U+200B	&#8203;
 
+		// Táto inštancia sa použije len v prípade, že je požadovaná zmena.
+		Parametre parametre = null;
+
 		for (int i = 0; i <= dĺžka; ++i)
 		{
 			char znak = i < dĺžka ? chs.charAt(i) : '\n';
-			if (' ' >= znak || '-' == znak || '‐' == znak || '­' == znak ||
-				'​' == znak)
+			if (' ' >= znak || // (klasická medzera a riadiace znaky)
+				'-' == znak || // spojovník1 (U+002D, &#45)
+				'‐' == znak || // spojovník2 (U+2010, &#8208)
+				'­' == znak || // voliteľné rozdelenie (U+00AD, &#173; &shy)
+				'​' == znak)   // medzera s nulovou šírkou: (U+200B, &#8203)
 			{
-				if (' ' < znak) sb.append(znak);
+				if (1 == znak) // Vyžiada zmenu parametrov.
+				{
+					// Parametre sú v súčasnosti: farba, font a vertikálna
+					// odchýlka textu:
+					Color farba = dajFarbu(g2d, chs, i);
+					Font font = dajFont(g2d, chs, i);
+					int posun = dajPosun(g2d, chs, i);
 
+					// TODO – dokončiť a otestovať
+					if (null != farba || null != font || 0 != posun)
+					{
+						// ***TODO***
+						// Vytvorí z aktuálneho reťazca (sb) nový fragment
+						// a uloží ho do aktuálneho slova.
+						// (Nemá zmysel vytvárať fragment z prázdneho
+						// reťazca. Ak nejestvuje aktuálne slovo, treba
+						// ho vytvoriť – priamo s novým fragmentom.)
+
+						// ***TODO***
+						// Uloží aktuálne parametre do zásobníka. (Bude ich
+						// treba na funkciu ASCII 2 – pozri nižšie.)
+
+						// Vytvorí nové parametre. Tie budú použité pri
+						// vytvorení najbližšieho fragmentu.
+						parametre = new Parametre(farba, font, posun);
+					}
+					else
+					{
+						// ***TODO***
+						// Signálom toho, že nenastala žiadna zmena bude
+						// uloženie záznamu s hodnotou null.
+					}
+					continue;
+				}
+				else if (2 == znak) // Vyberie uložené parametre zo zásobníka.
+				{
+					// ***TODO***
+					// Vybratím parametrov sa vytvorí priestor na nový
+					// fragment.
+
+					// ***TODO***
+					// („spotrebovanie“ sb, pozri hore; nemá zmysel, ak sú
+					// vybraté parametre rovné null.)
+
+					continue;
+				}
+				else if ('\n' == znak || '\r' == znak)
+				{
+					// Odfiltrovanie znakov nového riadka a zalomenia riadka,
+					// aby sa nepridal do reťazca (nemajú tam čo hľadať).
+
+					// Je tým zároveň rezervovaný priestor na prípadné
+					// spracovanie (v budúcnosti).
+				}
+				else if ('\t' == znak)
+				{
+					// (Tabulátor je zatiaľ spracovaný ako medzera.)
+				}
+				// Ostatné riadiace znaky (okrem medzery) sa pridajú do
+				// reťazca:
+				else if (' ' < znak) sb.append(znak);
+
+				// Prevedie sb na text (ktorý bude pridávaný na riadok)
+				// a vymaže jeho obsah (už ho nebude treba).
 				String text = sb.toString();
+				sb.setLength(0);
 
 				// Zisti šírku aktuálneho textu (slova alebo viacerých slov
 				// oddelených pevnou medzerou).
@@ -1102,31 +1389,55 @@ public abstract class Tlač implements Printable, Pageable
 				// tak sa posunieme na ďalší riadok.
 				if (aktuálneX + šírkaTextu >= šírkaRiadka)
 				{
-					if (null != poslednéSlovo &&
-						!poslednéSlovo.slovo.isEmpty())
+					if (null != poslednéSlovo)
 					{
-						char poslednýZnak = poslednéSlovo.slovo.charAt(
-							poslednéSlovo.slovo.length() - 1);
-						if (SNR &&
-							('-' == poslednýZnak || '‐' == poslednýZnak))
-						{
-							// Vloží „nbhy“ (&#8209;) na začiatok
-							// nasledujúceho riadka.
-							text = '‑' + text;
-							šírkaTextu = fm.stringWidth(text);
-						}
-						else if ('​' == poslednýZnak)
-						{
-							// Odstráni nulovú medzeru aj na konci riadka.
-							String novýText = poslednéSlovo.slovo.substring(0,
-								poslednéSlovo.slovo.length() - 1);
-							int šírkaNovéhoTextu = fm.stringWidth(novýText);
-							Slovo novéSlovo = new Slovo(
-								novýText, šírkaNovéhoTextu);
+						String obsahPoslednéhoSlova =
+							poslednéSlovo.slovo();
 
-							riadokSlov.removeElement(poslednéSlovo);
-							riadokSlov.add(novéSlovo);
-							poslednéSlovo = novéSlovo;
+						if (!obsahPoslednéhoSlova.isEmpty())
+						{
+							char poslednýZnak = obsahPoslednéhoSlova.charAt(
+								obsahPoslednéhoSlova.length() - 1);
+
+							if (SNR && (
+								'-' == poslednýZnak ||
+									// spojovník1 (U+002D, &#45)
+								'‐' == poslednýZnak))
+									// spojovník2 (U+2010, &#8208)
+							{
+								// Vloží „nbhy“ (&#8209;) na začiatok
+								// nasledujúceho riadka.
+								text = '‑' + text;
+								šírkaTextu = fm.stringWidth(text);
+							}
+							else if ('​' == poslednýZnak)
+								// medzera s nulovou šírkou: (U+200B, &#8203)
+							{
+								// ***TODO***
+								// Nahradenie posledného fragmentu slova.
+								// ***TODO***
+								// (nie celého slova)
+
+								// ***TODO***
+								// › Urob na to metódu? ‹
+
+								// Odstráni nulovú medzeru aj na konci
+								// riadka.
+								String novýText = obsahPoslednéhoSlova.
+									substring(0, obsahPoslednéhoSlova.
+										length() - 1);
+								int šírkaNovéhoTextu =
+									fm.stringWidth(novýText);
+
+								/**/
+								Slovo novéSlovo = new Slovo(
+									novýText, šírkaNovéhoTextu);
+								riadokSlov.removeElement(poslednéSlovo);
+								riadokSlov.add(novéSlovo);
+								/**/
+
+								poslednéSlovo = novéSlovo;
+							}
 						}
 					}
 
@@ -1136,57 +1447,129 @@ public abstract class Tlač implements Printable, Pageable
 				}
 				else
 				{
-					if (null != poslednéSlovo &&
-						!poslednéSlovo.slovo.isEmpty())
+					if (null != poslednéSlovo)
 					{
-						char poslednýZnak = poslednéSlovo.slovo.charAt(
-							poslednéSlovo.slovo.length() - 1);
+						String obsahPoslednéhoSlova =
+							poslednéSlovo.slovo();
 
-						if ('­' == poslednýZnak || '​' == poslednýZnak)
+						if (!obsahPoslednéhoSlova.isEmpty())
 						{
-							// Odstráni &shy; ak nie je na konci riadka
-							// a nulovú medzeru (v tejto časti „v strede“
-							// riadka, vyššie aj na konci).
-							text = poslednéSlovo.slovo.substring(0,
-								poslednéSlovo.slovo.length() - 1) + text;
-							šírkaTextu = fm.stringWidth(text);
-							riadokSlov.removeElement(poslednéSlovo);
-							aktuálneX -= poslednéSlovo.šírka + šírkaMedzery;
-						}
-						else if ('-' == poslednýZnak || '‐' == poslednýZnak)
-						{
-							// Spojí toto slovo s predchádzajúcim slovom.
-							// Obidva znaky sú viditeľné spojovníky, ktoré
-							// tam zostávajú (dĺžka sa nemení).
-							text = poslednéSlovo.slovo + text;
-							šírkaTextu = fm.stringWidth(text);
-							riadokSlov.removeElement(poslednéSlovo);
-							aktuálneX -= poslednéSlovo.šírka + šírkaMedzery;
+							// Kontroly, či sa toto slovo pripájané na
+							// riadok nemá zlúčiť s predchádzajúcim slovom
+							// na riadku. To sa stáva v prípade prítomnosti
+							// špeciálnych znakov, ku ktorým sa radia
+							// voliteľné rozdelenia a spojovníky.
+
+							char poslednýZnak = obsahPoslednéhoSlova.charAt(
+								obsahPoslednéhoSlova.length() - 1);
+
+							if ('­' == poslednýZnak ||
+									// voliteľné rozdelenie (U+00AD,
+									// &#173; &shy)
+								'​' == poslednýZnak)
+									// medzera s nulovou šírkou: (U+200B,
+									// &#8203)
+							{
+								// ***TODO***
+								// Nahradenie posledného fragmentu slova.
+								// ***TODO***
+								// (nie celého slova)
+
+								// ***TODO***
+								// › Urob na to metódu? ‹
+
+								// Odstráni &shy; ak nie je na konci riadka
+								// a nulovú medzeru (v tejto časti „v strede“
+								// riadka, vyššie aj na konci).
+								text = obsahPoslednéhoSlova.substring(0,
+									obsahPoslednéhoSlova.length() - 1) +
+									text;
+
+								/**/
+								šírkaTextu = fm.stringWidth(text);
+								riadokSlov.removeElement(poslednéSlovo);
+								/**/
+								// (na riadok sa to pridáva nižšie)
+
+								aktuálneX -= poslednéSlovo.šírka() +
+									šírkaMedzery;
+							}
+							else if (
+								'-' == poslednýZnak ||
+									// spojovník1 (U+002D, &#45)
+								'‐' == poslednýZnak)
+									// spojovník2 (U+2010, &#8208)
+							{
+								// ***TODO***
+								// Nahradenie posledného fragmentu slova.
+								// ***TODO***
+								// (nie celého slova a nie vytvorenie nového
+								// fragmentu, lebo by to nemuselo pekne
+								// nakresliť)
+
+								// Spojí toto slovo s predchádzajúcim
+								// slovom. Obidva znaky sú viditeľné
+								// spojovníky, ktoré tam zostávajú (dĺžka
+								// sa nemení).
+								text = obsahPoslednéhoSlova + text;
+								šírkaTextu = fm.stringWidth(text);
+								riadokSlov.removeElement(poslednéSlovo);
+								aktuálneX -= poslednéSlovo.šírka() +
+									šírkaMedzery;
+							}
 						}
 					}
 				}
 
-				sb.setLength(0);
 
-				// Ak text neobsahuje pevnú medzeru, tak sa pridá ako jedno
-				// slovo.
-				if (-1 == text.indexOf(' '))
+				// ***TODO***
+				// › Urobiť na toto metódu? ‹
+				// 
+					// private void RiadokSlov.pridajText(final String text,
+					// 	final Graphics2D g2d);
+					// 
+					// Metódu bude tiež treba pri zmene atribútov, lebo aj
+					// tam sa pridávajú slová na riadok. Revidovať kód tejto
+					// metódy a skúsiť vyšpecifikovať ďalších kandidátov na
+					// refaktoring do metód tried systému rozbíjania.
+				// 
+				// Asi to zamietnem. Nedáva to zmysel. Metódy by síce nemal
+				// byť dlhé, je to proti OOP, ale… nedáva to zmysel…
+				if (-1 == text.indexOf(' ')) // (pevná medzera)
 				{
+					// Ak text neobsahuje pevnú medzeru, tak sa pridá ako
+					// jedno slovo.
+
+					// ***TODO***
+					// Ak jestvujú parametre, treba pridať k slovu nový fragment…
+					// Parametre treba „spotrebovať“.
+
 					poslednéSlovo = new Slovo(text, šírkaTextu);
 					riadokSlov.add(poslednéSlovo);
 				}
 				else
 				{
-					// V opačnom prípade sa podľa pevných medzier rozbije
-					// na fragmenty a tie sa pridajú ako slová.
-					String[] fragmenty = text.split(" ");
-					for (String fragment : fragmenty)
+					// ***TODO***
+					// Ak jestvujú parametre, treba prvý črep pridať ako nový fragment k poslednému slovu (?? isto ??)…
+					// Parametre treba „spotrebovať“.
+
+					// V opačnom prípade sa text rozbije na črepy podľa
+					// pevných medzier a tie sa pridajú ako samostatné
+					// slová. Dôvodom tohto riešenia je to, aby pevné
+					// medzery mali flexibilnú šírku pri zarovnávaní
+					// na riadku podľa okrajov.
+					// ———
+					// (Skôr sa to nedalo spraviť. Pevné medzery museli
+					// tvoriť s aktuálnym slovom jeden nedeliteľný blok…)
+					String[] črepy = text.split(" ");
+					for (String črep : črepy)
 					{
-						int šírkaFragmentu = fm.stringWidth(fragment);
-						poslednéSlovo = new Slovo(fragment, šírkaFragmentu);
+						int šírkaČrepu = fm.stringWidth(črep);
+						poslednéSlovo = new Slovo(črep, šírkaČrepu);
 						riadokSlov.add(poslednéSlovo);
 					}
 				}
+
 
 				// Ak je aktuálny znak znakom nového riadka (alebo zalomenia
 				// riadka), tak sa po tomto slove posunieme na ďalší riadok.
@@ -1206,6 +1589,7 @@ public abstract class Tlač implements Printable, Pageable
 			}
 			else
 			{
+				// (Všetky ostatné znaky sú pridávané do reťazca.)
 				sb.append(znak);
 			}
 		}
@@ -1214,7 +1598,7 @@ public abstract class Tlač implements Printable, Pageable
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #rozbiNaSlová(Graphics, CharSequence, int) rozbiNaSlová}.</p> */
-	public static BlokSlov rozbiNaSlova(Graphics g,
+	public BlokSlov rozbiNaSlova(Graphics g,
 		CharSequence chs, int šírkaRiadka)
 	{ return rozbiNaSlová(g, chs, šírkaRiadka); }
 
@@ -1260,7 +1644,7 @@ public abstract class Tlač implements Printable, Pageable
 	 *     (zadanú v parametri {@code výška}); hodnota -1 znamená, že táto
 	 *     situácia nenastala
 	 */
-	public static int kresliTextDo(Graphics g, CharSequence chs,
+	public int kresliTextDo(Graphics g, CharSequence chs,
 		int x, int y, int šírka, int výška, BlokSlov blokSlov,
 		boolean nekresliMimo, int začniRiadkom)
 	{
@@ -1314,8 +1698,9 @@ public abstract class Tlač implements Printable, Pageable
 			double zvyšok = šírka, šírkaRiadka = -šírkaMedzery;
 			for (Slovo slovo : riadokSlov)
 			{
-				zvyšok -= slovo.šírka;
-				šírkaRiadka += slovo.šírka + šírkaMedzery;
+				int šírkaSlova = slovo.šírka();
+				zvyšok -= šírkaSlova;
+				šírkaRiadka += šírkaSlova + šírkaMedzery;
 			}
 
 			double Δm = ((zvyšok > 0) && (riadokSlov.size() > 1) &&
@@ -1331,8 +1716,14 @@ public abstract class Tlač implements Printable, Pageable
 
 			for (Slovo slovo : riadokSlov)
 			{
-				g2d.drawString(slovo.slovo, (int)aktuálneX, (int)aktuálneY);
-				aktuálneX += slovo.šírka + Δm;
+				for (Fragment fragment : slovo)
+				{
+					// TODO —zmeny fontov a použitie ďalších atribútov— TODO
+					g2d.drawString(fragment.fragment,
+						(int)aktuálneX, (int)aktuálneY);
+					aktuálneX += fragment.šírka;
+				}
+				aktuálneX += Δm;
 			}
 
 			aktuálneY += výškaRiadka + riadokSlov.medzeraZa;

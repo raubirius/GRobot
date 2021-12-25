@@ -53,11 +53,22 @@ import static java.util.Calendar.*;
 
 /**
  * <p>Táto trieda slúži na prácu s údajovými archívmi vo formáte ZIP.
- * Poskytuje programátorské rozhranie na čo najjednoduchšie vytvorenie
- * archívu jeho zápis, čítanie alebo analýzu. Programovací rámec umožňuje
- * prepojenie iných súčastí (napríklad {@linkplain Súbor súboru}) s archívom
- * a tým ešte väčšmi zjednodušiť prácu s ním. (Pozri príklad na konci
- * tohto opisu.)</p>
+ * Vnútorne používa mierne prispôsobený balíček <a
+ * href="https://ant.apache.org/manual/api/org/apache/tools/zip/package-summary.html"
+ * target="_blank"><code>org.apache.tools.zip</code></a> (ktorý je
+ * zameraný práve na prácu so ZIP archívmi) projektu <a
+ * href="https://ant.apache.org/" target="_blank">Apache Ant</a>. Balíček
+ * je uvoľnený pod podmienkami licencie <a target="_blank"
+ * href="resources/apache-licence-2.0.html">Apache License – Version 2.0,
+ * January 2004.</a></p>
+ * 
+ * <!-- TODO vyrobiť HTML verziu Apache Ant licencie a pripojiť sem. -->
+ * 
+ * <p>Trieda {@code currArchív} poskytuje programátorské rozhranie na čo
+ * najjednoduchšie vytvorenie archívu jeho zápis, čítanie alebo analýzu.
+ * Programovací rámec umožňuje prepojenie iných súčastí (napríklad
+ * {@linkplain Súbor súboru}) s archívom a tým ešte väčšmi zjednodušiť
+ * prácu s ním. (Pozri príklad na konci tohto opisu.)</p>
  * 
  * <p>Trieda je navrhnutá tak, aby bolo jej používanie čo najintuitívnejšie.
  * Napríklad, ak máme jestvujúci archív, rozbaliť ho (aj s výpisom počtu

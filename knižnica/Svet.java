@@ -133,6 +133,7 @@ import javax.swing.JFrame;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -150,6 +151,7 @@ import javax.imageio.ImageIO;
 
 import knižnica.podpora.BeepChannel;
 import knižnica.podpora.EnumRadioPanel;
+import knižnica.podpora.VectorListPanel;
 import knižnica.podpora.ExecuteShellCommand;
 import knižnica.podpora.PerlinNoise;
 import knižnica.podpora.ReadStandardInput;
@@ -518,8 +520,10 @@ public final class Svet extends JFrame
 					{
 						boolean žiadnaZmena = true;
 
-						for (GRobot počúvajúci : GRobot.počúvajúciSúbory)
+						int početPočúvajúcich = GRobot.počúvajúciSúbory.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.počúvajúciSúbory.get(i);
 							if (počúvajúci.konfiguráciaZmenená() ||
 								počúvajúci.konfiguraciaZmenena())
 							{
@@ -729,8 +733,10 @@ public final class Svet extends JFrame
 								zapisKonfiguraciu(konfiguračnýSúbor);
 						}
 
-						for (GRobot počúvajúci : GRobot.počúvajúciSúbory)
+						int početPočúvajúcich = GRobot.počúvajúciSúbory.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.počúvajúciSúbory.get(i);
 							počúvajúci.zapíšKonfiguráciu(konfiguračnýSúbor);
 							počúvajúci.zapisKonfiguraciu(konfiguračnýSúbor);
 						}
@@ -944,8 +950,12 @@ public final class Svet extends JFrame
 								ObsluhaUdalostí.počúvadlo.tahanieSuborov();
 							}
 
-							for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+							int početPočúvajúcich =
+								GRobot.počúvajúciRozhranie.size();
+							for (int i = 0; i < početPočúvajúcich; ++i)
 							{
+								GRobot počúvajúci =
+									GRobot.počúvajúciRozhranie.get(i);
 								počúvajúci.ťahanieSúborov();
 								počúvajúci.tahanieSuborov();
 							}
@@ -999,9 +1009,13 @@ public final class Svet extends JFrame
 												pustenieSuboru(menoSúboru);
 										}
 
-										for (GRobot počúvajúci :
-											GRobot.počúvajúciRozhranie)
+										int početPočúvajúcich =
+											GRobot.počúvajúciRozhranie.size();
+										for (int i = 0; i <
+											početPočúvajúcich; ++i)
 										{
+											GRobot počúvajúci = GRobot.
+												počúvajúciRozhranie.get(i);
 											počúvajúci.pustenieSúboru(
 												menoSúboru);
 											počúvajúci.pustenieSuboru(
@@ -1301,8 +1315,10 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciSystém)
+						int početPočúvajúcich = GRobot.počúvajúciSystém.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.počúvajúciSystém.get(i);
 							počúvajúci.spracujRiadokVstupu(riadokVstupu);
 						}
 					}
@@ -1324,8 +1340,10 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciSystém)
+						int početPočúvajúcich = GRobot.počúvajúciSystém.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.počúvajúciSystém.get(i);
 							počúvajúci.koniecVstupu();
 						}
 					}
@@ -1546,7 +1564,7 @@ public final class Svet extends JFrame
 				// s dvojnásobným rozlíšením v tvare:
 				//     «názov-súboru» 2.«príp»,
 				// kde «názov-súboru» je pôvodný názov súboru obrázka,
-				// «príp» je prípona súboru (jpg, png, gif…) a  2 je reťazec,
+				// «príp» je prípona súboru (jpg, png, gif…) a 2 je reťazec,
 				// ktorý treba pripojiť za pôvodný názov súboru, aby ho rámec
 				// vedel identifikovať.
 				// 
@@ -1601,8 +1619,12 @@ public final class Svet extends JFrame
 
 						synchronized (ÚdajeUdalostí.zámokUdalostí)
 						{
-							for (GRobot počúvajúci : GRobot.počúvajúciSystém)
+							int početPočúvajúcich =
+								GRobot.počúvajúciSystém.size();
+							for (int i = 0; i < početPočúvajúcich; ++i)
 							{
+								GRobot počúvajúci = GRobot.
+									počúvajúciSystém.get(i);
 								počúvajúci.ukončenie();
 								počúvajúci.ukoncenie();
 							}
@@ -2112,8 +2134,10 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciMyš)
+						int početPočúvajúcich = GRobot.počúvajúciMyš.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.počúvajúciMyš.get(i);
 							počúvajúci.klik();
 						}
 					}
@@ -2202,8 +2226,10 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciMyš)
+						int početPočúvajúcich = GRobot.počúvajúciMyš.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.počúvajúciMyš.get(i);
 							počúvajúci.stlačenieTlačidlaMyši();
 							počúvajúci.stlacenieTlacidlaMysi();
 						}
@@ -2256,8 +2282,10 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciMyš)
+						int početPočúvajúcich = GRobot.počúvajúciMyš.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.počúvajúciMyš.get(i);
 							počúvajúci.uvoľnenieTlačidlaMyši();
 							počúvajúci.uvolnenieTlacidlaMysi();
 						}
@@ -2300,8 +2328,10 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciMyš)
+						int početPočúvajúcich = GRobot.počúvajúciMyš.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.počúvajúciMyš.get(i);
 							počúvajúci.pohybMyši();
 							počúvajúci.pohybMysi();
 						}
@@ -2367,8 +2397,10 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciMyš)
+						int početPočúvajúcich = GRobot.počúvajúciMyš.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.počúvajúciMyš.get(i);
 							počúvajúci.ťahanieMyšou();
 							počúvajúci.tahanieMysou();
 						}
@@ -2428,8 +2460,10 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciMyš)
+						int početPočúvajúcich = GRobot.počúvajúciMyš.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.počúvajúciMyš.get(i);
 							počúvajúci.rolovanieKolieskomMyši();
 							počúvajúci.rolovanieKolieskomMysi();
 						}
@@ -2453,8 +2487,12 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciKlávesnicu)
+						int početPočúvajúcich =
+							GRobot.počúvajúciKlávesnicu.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci =
+								GRobot.počúvajúciKlávesnicu.get(i);
 							počúvajúci.stlačenieKlávesu();
 							počúvajúci.stlacenieKlavesu();
 						}
@@ -2478,8 +2516,12 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciKlávesnicu)
+						int početPočúvajúcich =
+							GRobot.počúvajúciKlávesnicu.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci =
+								GRobot.počúvajúciKlávesnicu.get(i);
 							počúvajúci.uvoľnenieKlávesu();
 							počúvajúci.uvolnenieKlavesu();
 						}
@@ -2509,8 +2551,12 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciKlávesnicu)
+						int početPočúvajúcich =
+							GRobot.počúvajúciKlávesnicu.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.
+								počúvajúciKlávesnicu.get(i);
 							počúvajúci.zadanieZnaku();
 						}
 					}
@@ -2541,8 +2587,10 @@ public final class Svet extends JFrame
 
 				synchronized (ÚdajeUdalostí.zámokUdalostí)
 				{
-					for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+					int početPočúvajúcich = GRobot.počúvajúciRozhranie.size();
+					for (int i = 0; i < početPočúvajúcich; ++i)
 					{
+						GRobot počúvajúci = GRobot.počúvajúciRozhranie.get(i);
 						počúvajúci.skrytieOkna();
 					}
 				}
@@ -2560,8 +2608,10 @@ public final class Svet extends JFrame
 
 				synchronized (ÚdajeUdalostí.zámokUdalostí)
 				{
-					for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+					int početPočúvajúcich = GRobot.počúvajúciRozhranie.size();
+					for (int i = 0; i < početPočúvajúcich; ++i)
 					{
+						GRobot počúvajúci = GRobot.počúvajúciRozhranie.get(i);
 						počúvajúci.zobrazenieOkna();
 					}
 				}
@@ -2579,8 +2629,10 @@ public final class Svet extends JFrame
 
 				synchronized (ÚdajeUdalostí.zámokUdalostí)
 				{
-					for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+					int početPočúvajúcich = GRobot.počúvajúciRozhranie.size();
+					for (int i = 0; i < početPočúvajúcich; ++i)
 					{
+						GRobot počúvajúci = GRobot.počúvajúciRozhranie.get(i);
 						počúvajúci.presunutieOkna();
 					}
 				}
@@ -2601,8 +2653,10 @@ public final class Svet extends JFrame
 
 				synchronized (ÚdajeUdalostí.zámokUdalostí)
 				{
-					for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+					int početPočúvajúcich = GRobot.počúvajúciRozhranie.size();
+					for (int i = 0; i < početPočúvajúcich; ++i)
 					{
+						GRobot počúvajúci = GRobot.počúvajúciRozhranie.get(i);
 						počúvajúci.zmenaVeľkostiOkna();
 						počúvajúci.zmenaVelkostiOkna();
 					}
@@ -2641,8 +2695,10 @@ public final class Svet extends JFrame
 
 				synchronized (ÚdajeUdalostí.zámokUdalostí)
 				{
-					for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+					int početPočúvajúcich = GRobot.počúvajúciRozhranie.size();
+					for (int i = 0; i < početPočúvajúcich; ++i)
 					{
+						GRobot počúvajúci = GRobot.počúvajúciRozhranie.get(i);
 						počúvajúci.aktiváciaOkna();
 						počúvajúci.aktivaciaOkna();
 					}
@@ -2664,8 +2720,10 @@ public final class Svet extends JFrame
 
 				synchronized (ÚdajeUdalostí.zámokUdalostí)
 				{
-					for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+					int početPočúvajúcich = GRobot.počúvajúciRozhranie.size();
+					for (int i = 0; i < početPočúvajúcich; ++i)
 					{
+						GRobot počúvajúci = GRobot.počúvajúciRozhranie.get(i);
 						počúvajúci.deaktiváciaOkna();
 						počúvajúci.deaktivaciaOkna();
 					}
@@ -2691,8 +2749,10 @@ public final class Svet extends JFrame
 
 				synchronized (ÚdajeUdalostí.zámokUdalostí)
 				{
-					for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+					int početPočúvajúcich = GRobot.počúvajúciRozhranie.size();
+					for (int i = 0; i < početPočúvajúcich; ++i)
 					{
+						GRobot počúvajúci = GRobot.počúvajúciRozhranie.get(i);
 						počúvajúci.otvorenie();
 					}
 				}
@@ -2717,8 +2777,10 @@ public final class Svet extends JFrame
 
 				synchronized (ÚdajeUdalostí.zámokUdalostí)
 				{
-					for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+					int početPočúvajúcich = GRobot.počúvajúciRozhranie.size();
+					for (int i = 0; i < početPočúvajúcich; ++i)
 					{
+						GRobot počúvajúci = GRobot.počúvajúciRozhranie.get(i);
 						if (!počúvajúci.zavretie())
 							zavrieť = false;
 						if (!počúvajúci.zatvorenie())
@@ -2771,8 +2833,12 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+						int početPočúvajúcich =
+							GRobot.počúvajúciRozhranie.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.
+								počúvajúciRozhranie.get(i);
 							počúvajúci.minimalizovanie();
 						}
 					}
@@ -2791,8 +2857,12 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+						int početPočúvajúcich =
+							GRobot.počúvajúciRozhranie.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.
+								počúvajúciRozhranie.get(i);
 							počúvajúci.maximalizovanie();
 						}
 					}
@@ -2811,8 +2881,12 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+						int početPočúvajúcich =
+							GRobot.počúvajúciRozhranie.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.
+								počúvajúciRozhranie.get(i);
 							počúvajúci.obnovenie();
 						}
 					}
@@ -2959,8 +3033,8 @@ public final class Svet extends JFrame
 				{@link Svet Svet}.{@link Svet#koniec() koniec}();
 			}
 			</pre>
-		 * @return ak je zadaná verzia zhodná s aktuálnou, je vrátená
-		 *     hodnota 0; ak je aktuálna verzia nižšia, než zadaná, je
+		 * @return ak je zadaná verzia zhodná s aktuálnou, tak je vrátená
+		 *     hodnota 0; ak je aktuálna verzia nižšia, než zadaná, tak je
 		 *     vrátená záporná hodnota, inak kladná
 		 */
 		public static int verzia(int hlavná, int vedľajšia)
@@ -3011,7 +3085,7 @@ public final class Svet extends JFrame
 		 * počas {@linkplain GRobot#prijatieVýzvy(GRobot, int) spracovania
 		 * výzviev}, dôjde z technických príčin k opätovnému spusteniu
 		 * posielania výziev (inak povedané – posielanie výziev sa
-		 * „reštartuje“). To znamená, že niektoré roboty budú vyzvaní dva
+		 * „reštartuje“). To znamená, že niektoré roboty budú vyzvané dva
 		 * alebo viac ráz. Buďte preto opatrní so zmenami poradia v rámci
 		 * spracovania výziev, aby ste nespôsobili vznik nekonečného
 		 * cyklu… (Rovnaký efekt má prípadné vytvorenie nového robota,
@@ -3090,7 +3164,7 @@ public final class Svet extends JFrame
 		 * počas {@linkplain GRobot#prijatieVýzvy(GRobot, int) spracovania
 		 * výzviev}, dôjde z technických príčin k opätovnému spusteniu
 		 * posielania výziev (inak povedané – posielanie výziev sa
-		 * „reštartuje“). To znamená, že niektoré roboty budú vyzvaní dva
+		 * „reštartuje“). To znamená, že niektoré roboty budú vyzvané dva
 		 * alebo viac ráz. Buďte preto opatrní so zmenami poradia v rámci
 		 * spracovania výziev, aby ste nespôsobili vznik nekonečného
 		 * cyklu… (Rovnaký efekt má prípadné vytvorenie nového robota,
@@ -3177,7 +3251,7 @@ public final class Svet extends JFrame
 		 * počas {@linkplain GRobot#prijatieVýzvy(GRobot, int) spracovania
 		 * výzviev}, dôjde z technických príčin k opätovnému spusteniu
 		 * posielania výziev (inak povedané – posielanie výziev sa
-		 * „reštartuje“). To znamená, že niektoré roboty budú vyzvaní dva
+		 * „reštartuje“). To znamená, že niektoré roboty budú vyzvané dva
 		 * alebo viac ráz. Buďte preto opatrní so zmenami poradia v rámci
 		 * spracovania výziev, aby ste nespôsobili vznik nekonečného
 		 * cyklu… (Rovnaký efekt má prípadné vytvorenie nového robota,
@@ -7869,8 +7943,12 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+						int početPočúvajúcich =
+							GRobot.počúvajúciRozhranie.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.
+								počúvajúciRozhranie.get(i);
 							počúvajúci.prekreslenie();
 						}
 					}
@@ -7926,8 +8004,12 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+						int početPočúvajúcich =
+							GRobot.počúvajúciRozhranie.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.
+								počúvajúciRozhranie.get(i);
 							počúvajúci.dokreslenie();
 						}
 					}
@@ -7980,6 +8062,7 @@ public final class Svet extends JFrame
 		 * @see #pridajPoložkuHlavnejPonuky(String)
 		 * @see #pridajPoložkuHlavnejPonuky(String, int)
 		 * @see #pridajPoložkuPonuky(String)
+		 * @see #pridajVnorenúPonuku(String, JMenuItem...)
 		 * @see #pridajOddeľovačPonuky()
 		 */
 		public static void vymažPonuku()
@@ -8025,6 +8108,7 @@ public final class Svet extends JFrame
 		 * @see #vymažPonuku()
 		 * @see #pridajPoložkuHlavnejPonuky(String, int)
 		 * @see #pridajPoložkuPonuky(String)
+		 * @see #pridajVnorenúPonuku(String, JMenuItem...)
 		 * @see #pridajOddeľovačPonuky()
 		 */
 		public static void pridajPoložkuHlavnejPonuky(String text)
@@ -8080,6 +8164,7 @@ public final class Svet extends JFrame
 		 * @see #vymažPonuku()
 		 * @see #pridajPoložkuHlavnejPonuky(String)
 		 * @see #pridajPoložkuPonuky(String, int)
+		 * @see #pridajVnorenúPonuku(String, JMenuItem...)
 		 * @see #pridajOddeľovačPonuky()
 		 */
 		public static void pridajPoložkuHlavnejPonuky(String text,
@@ -8142,6 +8227,7 @@ public final class Svet extends JFrame
 		 * @see #vymažPonuku()
 		 * @see #pridajPoložkuPonuky(String, int)
 		 * @see #pridajPoložkuPonuky(String, int, int)
+		 * @see #pridajVnorenúPonuku(String, JMenuItem...)
 		 * @see #pridajOddeľovačPonuky()
 		 * @see #pridajPoložkuPonukyVymazať()
 		 * @see #pridajPoložkuPonukyPrekresliť()
@@ -8182,6 +8268,7 @@ public final class Svet extends JFrame
 		 * @see #vymažPonuku()
 		 * @see #pridajPoložkuPonuky(String)
 		 * @see #pridajPoložkuPonuky(String, int, int)
+		 * @see #pridajVnorenúPonuku(String, JMenuItem...)
 		 * @see #pridajOddeľovačPonuky()
 		 * @see #pridajPoložkuPonukyVymazať()
 		 * @see #pridajPoložkuPonukyPrekresliť()
@@ -8226,6 +8313,7 @@ public final class Svet extends JFrame
 		 * @see #vymažPonuku()
 		 * @see #pridajPoložkuPonuky(String)
 		 * @see #pridajPoložkuPonuky(String, int)
+		 * @see #pridajVnorenúPonuku(String, JMenuItem...)
 		 * @see #pridajOddeľovačPonuky()
 		 * @see #pridajPoložkuPonukyVymazať()
 		 * @see #pridajPoložkuPonukyPrekresliť()
@@ -8249,6 +8337,63 @@ public final class Svet extends JFrame
 		}
 
 		/**
+		 * <p>Vytvorí a pridá do hlavnej ponuky vnorenú ponuku zo zadaných
+		 * položiek. Táto metóda bola pridaná podľa vzoru metódy {@link 
+		 * KontextováPonuka#pridajPonuku(String, JMenuItem[])
+		 * KontextováPonuka.pridajPonuku(text, položky)} na umožnenie vkladania
+		 * kaskádových ponúk do hlavnej ponuky. A táto metóda tiež pracuje
+		 * s rovnakými pravidlami ako uvedená metóda.</p>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b> Do vnorenej ponuky nie je
+		 * možné vkladať inštancie triedy {@link PoložkaPonuky PoložkaPonuky},
+		 * pretože tie sú implementované tak, aby sa automaticky pri svojom
+		 * vytvorení pridávali do hlavnej ponuky sveta. Je však možné použiť
+		 * inštancie triedy {@link KontextováPoložka KontextováPoložka}. To
+		 * má však prirodzený dôsledok, že voľbu takejto položky neobsluhujeme
+		 * v rámci reakcie {@link ObsluhaUdalostí#voľbaPoložkyPonuky()
+		 * voľbaPoložkyPonuky}, ale {@link 
+		 * ObsluhaUdalostí#voľbaKontextovejPoložky()
+		 * voľbaKontextovejPoložky}.</p>
+		 * 
+		 * <p>Ak má niektorá zo položiek zadaných v zozname parametrov
+		 * {@code položky} hodnotu {@code valnull}, tak je do ponuky vložený
+		 * oddeľovač.</p>
+		 * 
+		 * @param text text položky vnorenej ponuky
+		 * @param položky zoznam položiek
+		 * @return vytvorená (a pridaná) ponuka
+		 * 
+		 * @see PoložkaPonuky
+		 * @see #vymažPonuku()
+		 * @see #pridajPoložkuHlavnejPonuky(String)
+		 * @see #pridajPoložkuPonuky(String)
+		 * @see #pridajOddeľovačPonuky()
+		 */
+		public static JMenu pridajVnorenúPonuku(String text,
+			JMenuItem... položky)
+		{
+			if (!inicializované) return null;
+
+			JMenu položkaHlavnejPonuky = svet.
+				getJMenuBar().getMenu(aktuálnaPonuka);
+
+			if (null != položkaHlavnejPonuky)
+			{
+				ponukaVPôvodnomStave = false;
+				JMenu vnorenáPoložka = KontextováPonuka.
+					vytvorPonuku(text, položky);
+				položkaHlavnejPonuky.add(vnorenáPoložka, aktuálnaPoložka++);
+				return vnorenáPoložka;
+			}
+
+			return null;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #pridajVnorenúPonuku(String, JMenuItem...) pridajVnorenúPonuku}.</p> */
+		public static JMenu pridajVnorenuPonuku(String text, JMenuItem... položky)
+		{ return pridajVnorenúPonuku(text, položky); }
+
+		/**
 		 * <p>Pridá do hlavnej ponuky oddeľovač. Štandardne je oddeľovač pridaný
 		 * za prvé dve predvolené položky ponuky. Toto správanie nie je možné
 		 * potlačiť, iba ak by ponuka bola najskôr vymazaná a znova vytvorená
@@ -8259,6 +8404,7 @@ public final class Svet extends JFrame
 		 * @see #vymažPonuku()
 		 * @see #pridajPoložkuHlavnejPonuky(String)
 		 * @see #pridajPoložkuPonuky(String)
+		 * @see #pridajVnorenúPonuku(String, JMenuItem...)
 		 */
 		public static void pridajOddeľovačPonuky()
 		{
@@ -9437,8 +9583,12 @@ public final class Svet extends JFrame
 
 						synchronized (ÚdajeUdalostí.zámokUdalostí)
 						{
-							for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+							int početPočúvajúcich =
+								GRobot.počúvajúciRozhranie.size();
+							for (int i = 0; i < početPočúvajúcich; ++i)
 							{
+								GRobot počúvajúci = GRobot.
+									počúvajúciRozhranie.get(i);
 								počúvajúci.voľbaSystémovejPoložky();
 								počúvajúci.volbaSystemovejPolozky();
 							}
@@ -9678,8 +9828,12 @@ public final class Svet extends JFrame
 
 								synchronized (ÚdajeUdalostí.zámokUdalostí)
 								{
-									for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+									int početPočúvajúcich =
+										GRobot.počúvajúciRozhranie.size();
+									for (int i = 0; i < početPočúvajúcich; ++i)
 									{
+										GRobot počúvajúci = GRobot.
+											počúvajúciRozhranie.get(i);
 										počúvajúci.voľbaSystémovejIkony();
 										počúvajúci.volbaSystemovejIkony();
 									}
@@ -12620,8 +12774,9 @@ public final class Svet extends JFrame
 				</pre>
 			 * 
 			 * <p class="attention"><b>Upozornenie:</b> Spracovanie
-			 * presmerovania musí byť rýchle, inak môže nastávať „strácanie
-			 * sa“ údajov z toku v dôsledku preplnenia zásobníkov.</p>
+			 * presmerovania musí byť dostatočne rýchle, inak môže nastávať
+			 * „strácanie sa“ údajov z toku v dôsledku preplnenia
+			 * zásobníkov.</p>
 			 */
 			public static interface PresmerovanieVýstupu
 			{
@@ -13212,8 +13367,10 @@ public final class Svet extends JFrame
 
 				synchronized (ÚdajeUdalostí.zámokUdalostí)
 				{
-					for (GRobot počúvajúci : GRobot.počúvajúciSystém)
+					int početPočúvajúcich = GRobot.počúvajúciSystém.size();
+					for (int i = 0; i < početPočúvajúcich; ++i)
 					{
+						GRobot počúvajúci = GRobot.počúvajúciSystém.get(i);
 						počúvajúci.ukončenieProcesu(this, návratovýKód);
 						počúvajúci.ukoncenieProcesu(this, návratovýKód);
 					}
@@ -14291,6 +14448,12 @@ public final class Svet extends JFrame
 		 * a s možnosťou zadania (zmeny) uhla prostredníctvom vstupného
 		 * poľa,</li>
 		 * 
+		 * <!-- TODO doplniť možnosť vloženia Vectora/Zoznamu fungujúceho
+		 * podobne ako Enum, ale umožňujúceho vkladať dynamicky sa meniaci
+		 * zoznam položiek. Bude podporovať zobrazenie obrázkov Vector<Image>
+		 * (resp. Zoznam<Obrazok>). Ostatné objekty budú (asi) konvertované
+		 * na texty štandardnou metódou toString(). -->
+		 * 
 		 * <li>hodnota inštancie údajového typu {@link Enum Enum} – čiže
 		 * prvok enumeračného údajového typu; ktorý spôsobí, že na určenej
 		 * pozícii dialógu bude zobrazený panel so zoznamom rádiových
@@ -14298,6 +14461,21 @@ public final class Svet extends JFrame
 		 * typu, pričom zadaná hodnota bude použitá na určenie aktuálne
 		 * zvoleného rádiového tlačidla (aktuálne zvolenej hodnoty v rámci
 		 * skupiny týchto tlačidiel),</li>
+		 * 
+		 * <li>inštancia netriedeného zoznamu Javy ({@link Vector Vector},
+		 * resp. odvodeného, napr. {@link Zoznam Zoznam}), ktorá spôsobí, že
+		 * na určenej pozícii bude zobrazený zoznam položiek vytvorený
+		 * z objektov zoznamu (okrem prvej položky) prevedených na reťazce;
+		 * výnimku tvorí typový zoznam objektov {@link Image Image} (resp.
+		 * odvodených, napr. {@link Obrázok Obrázok}; opäť, okrem prvej
+		 * položky), ktorý spôsobí zobrazenie obrázkového zoznamu; pozor,
+		 * prvá položka zoznamu je rezervovaná na zadanie a prevzatie voľby
+		 * zoznamu; táto položka je pri tvorbe zoznamu použitá na výber
+		 * predvolenej položky zoznamu spomedzi ostatných položiek a po
+		 * návrate je zmenená podľa voľby používateľa, čiže jej hodnota
+		 * (ktorá je zmenená/nahradená aj v pôvodnom zozname) určuje
+		 * používateľom zvolenú položku (hodnota {@code valnull} znamená,
+		 * že používateľ nezvolil žiadnu položku alebo výber zrušil),</li>
 		 * 
 		 * <li>hodnota údajového typu {@link Character Character},
 		 * ktorá má špeciálny význam – je rezervovaná na vkladanie riadiacich
@@ -14321,7 +14499,9 @@ public final class Svet extends JFrame
 		 * 
 		 * <p>Ku každému prvku poľa {@code údaje} musí byť zadaný
 		 * korešpondujúci prvok poľa {@code popisy}, ktorý určí popis
-		 * komponentu. Výnimku tvoria znaky nových riadkov (bod 3. vyššie),
+		 * komponentu. Výnimku tvoria znaky nových riadkov (bod 9.<!-- TODO
+		 * vždy aktualizovať číslo podľa toho, kde sa nachádza opis funkcie
+		 * \n nových riadkov --> vyššie),
 		 * ktoré nesmú mať zadaný korešpondujúci reťazec – pri ňom treba zadať
 		 * namiesto platného reťazca hodnotu {@code valnull}, pretože platný
 		 * reťazec by sa automaticky priradil k ďalšiemu komponentu v dialógu,
@@ -14460,6 +14640,7 @@ public final class Svet extends JFrame
 		 * @see #upravReálneČíslo(double, String, String)
 		 * @see #dialóg(String[], Object[])
 		 */
+		@SuppressWarnings("unchecked")
 		public static boolean dialóg(String[] popisy, Object[] údaje,
 			String titulok)
 		{
@@ -14569,6 +14750,10 @@ public final class Svet extends JFrame
 					{
 						početKomponentov += 2;
 					}
+					else if (údaj instanceof Vector)
+					{
+						početKomponentov += 2;
+					}
 					else if (údaj instanceof Character)
 					{
 						++poslednýPanel;
@@ -14654,7 +14839,10 @@ public final class Svet extends JFrame
 						{
 							RobotTextField text =
 								textovéRiadkyDialógu.get(poslednýText++);
-							text.setText(formát.format((Double)údaj));
+							if (Double.isNaN((Double)údaj))
+								text.setText("");
+							else
+								text.setText(formát.format((Double)údaj));
 
 							if (j < popisy.length && null != popisy[j])
 							{
@@ -14763,6 +14951,25 @@ public final class Svet extends JFrame
 							aktívnyPanel.add(panel);
 							indexyZdrojov[i] = i;
 						}
+						else if (údaj instanceof Vector)
+						{
+							VectorListPanel panel =
+								new VectorListPanel((Vector)údaj);
+
+							// TODO – využiť title?
+							if (j < popisy.length && null != popisy[j])
+							{
+								if (popisyDialógu.size() < (l + 1))
+									popisyDialógu.add(new JLabel());
+								JLabel popis = popisyDialógu.get(l++);
+								popis.setText(popisy[j]);
+								aktívnyPanel.add(popis);
+							}
+
+							komponentyÚdajov[i] = panel;
+							aktívnyPanel.add(panel);
+							indexyZdrojov[i] = i;
+						}
 						else if (údaj instanceof Character)
 						{
 							if (riadok == (Character)údaj)
@@ -14827,7 +15034,10 @@ public final class Svet extends JFrame
 					{
 						RobotTextField text =
 							textovéRiadkyDialógu.get(poslednýText++);
-						text.setText(formát.format((Double)údaj));
+						if (Double.isNaN((Double)údaj))
+							text.setText("");
+						else
+							text.setText(formát.format((Double)údaj));
 
 						if (i < popisy.length && null != popisy[i])
 							komponentyÚdajov[j] = popisy[i];
@@ -14912,6 +15122,20 @@ public final class Svet extends JFrame
 						indexyZdrojov[i] = j + 1;
 						j += 2;
 					}
+					else if (údaj instanceof Vector)
+					{
+						VectorListPanel panel =
+							new VectorListPanel((Vector)údaj);
+
+						if (i < popisy.length && null != popisy[i])
+							komponentyÚdajov[j] = popisy[i];
+						else
+							komponentyÚdajov[j] = "";
+						komponentyÚdajov[j + 1] = panel;
+
+						indexyZdrojov[i] = j + 1;
+						j += 2;
+					}
 					else indexyZdrojov[i] = -1;
 					++i;
 				}
@@ -14970,6 +15194,13 @@ public final class Svet extends JFrame
 					{
 						údaje[i] = ((EnumRadioPanel)komponentyÚdajov
 							[indexyZdrojov[i]]).getSelection();
+						komponentyÚdajov[indexyZdrojov[i]] = null;
+					}
+					else if (údaj instanceof Vector)
+					{
+						((Vector)údaj).set(0, ((VectorListPanel)
+							komponentyÚdajov[indexyZdrojov[i]]).list.
+							getSelectedValue());
 						komponentyÚdajov[indexyZdrojov[i]] = null;
 					}
 					++i;
@@ -16057,8 +16288,12 @@ public final class Svet extends JFrame
 
 						synchronized (ÚdajeUdalostí.zámokUdalostí)
 						{
-							for (GRobot počúvajúci : GRobot.počúvajúciSystém)
+							int početPočúvajúcich =
+								GRobot.počúvajúciSystém.size();
+							for (int i = 0; i < početPočúvajúcich; ++i)
 							{
+								GRobot počúvajúci = GRobot.
+									počúvajúciSystém.get(i);
 								počúvajúci.spracovaniePríkazu();
 								počúvajúci.spracovaniePrikazu();
 							}
@@ -16080,8 +16315,10 @@ public final class Svet extends JFrame
 
 			synchronized (ÚdajeUdalostí.zámokUdalostí)
 			{
-				for (GRobot počúvajúci : GRobot.počúvajúciVstupnýRiadok)
+				int početPočúvajúcich = GRobot.počúvajúciVstupnýRiadok.size();
+				for (int i = 0; i < početPočúvajúcich; ++i)
 				{
+					GRobot počúvajúci = GRobot.počúvajúciVstupnýRiadok.get(i);
 					počúvajúci.potvrdenieÚdajov();
 					počúvajúci.potvrdenieUdajov();
 					počúvajúci.potvrdenieVstupu();
@@ -16132,8 +16369,10 @@ public final class Svet extends JFrame
 
 			synchronized (ÚdajeUdalostí.zámokUdalostí)
 			{
-				for (GRobot počúvajúci : GRobot.počúvajúciVstupnýRiadok)
+				int početPočúvajúcich = GRobot.počúvajúciVstupnýRiadok.size();
+				for (int i = 0; i < početPočúvajúcich; ++i)
 				{
+					GRobot počúvajúci = GRobot.počúvajúciVstupnýRiadok.get(i);
 					počúvajúci.zrušenieÚdajov();
 					počúvajúci.zrusenieUdajov();
 					počúvajúci.zrušenieVstupu();
@@ -16717,7 +16956,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Vráti reťazec, ktorý obsahoval vstupný riadok tesne pred zrušením
-		 * klávesom {@code Esc}.</p>
+		 * klávesom {@code Escape}.</p>
 		 * 
 		 * @return objekt typu {@link java.lang.String String} obsahujúci
 		 *     text vstupného riadka pred zrušením
@@ -28180,8 +28419,12 @@ public final class Svet extends JFrame
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+						int početPočúvajúcich =
+							GRobot.počúvajúciRozhranie.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci = GRobot.
+								počúvajúciRozhranie.get(i);
 							// Podobné ako: zadanieZnaku()
 							počúvajúci.klávesováSkratka();
 							počúvajúci.klavesovaSkratka();

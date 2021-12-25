@@ -45,7 +45,15 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 
 import java.awt.image.BufferedImage;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
+
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
+
+import knižnica.podpora.SVGClip;
 
 // ------------------------- //
 //  *** Trieda Schránka ***  //
@@ -92,19 +100,26 @@ import java.io.IOException;
  */
 public class Schránka
 {
-	// Zatiaľ sa z časových dôvodov nepodarilo doriešiť transfer vektorových
-	// tvarov cez schránku OS. *** Súčasný stav *** Stiahol som originál aj
-	// extrahovanú verziu schránky z knižnice JSesh: http://comp.
-	// qenherkhopeshef.org/blog/jvectcutandpaste, https://codeload.github.
-	// com/rosmord/jvectclipboard/zip/master, ale:
+	// Toto sa podarilo vyriešiť až na Vianoce roku 2021 a nakoniec to šlo
+	// úplne inak (vďaka tomu, že medzitým to niekto dosť významne posunul
+	// vo fórach, takže som si to už len trochu prispôsobil a „doťukol“ –
+	// síce som spočiatku pol roka čakal na odpoveď, ktorá neprichádzala,
+	// ale potom som našiel riešenie aj bez nej):
 	// 
-	// Bude treba odstrániť závislosť „lowagie,“ ktorá súvisí s prácou s PDF
-	// súbormi, pretože „lowagie classes have been deprecated in 2012 and
-	// should no longer be used both for technical as well as legal
-	// reasons“ (https://www.lowagie.com/iText, https://itextpdf.com/en/
-	// resources/faq/legal/itext-5-legacy/can-itext-217-itextsharp-416-or-
-	// earlier-be-used-commercially), ale myslím si, že sa vieme bez PDF
-	// transferu zaobísť. (TODO)
+	// | Zatiaľ sa z časových dôvodov nepodarilo doriešiť transfer vektorových
+	// | tvarov cez schránku OS. *** História stavu *** Stiahol som originál
+	// | aj extrahovanú verziu schránky z knižnice JSesh: http://comp.
+	// | qenherkhopeshef.org/blog/jvectcutandpaste, https://codeload.github.
+	// | com/rosmord/jvectclipboard/zip/master, ale:
+	// | 
+	// | Bude treba odstrániť závislosť „lowagie,“ ktorá súvisí s prácou s PDF
+	// | súbormi, pretože „lowagie classes have been deprecated in 2012 and
+	// | should no longer be used both for technical as well as legal
+	// | reasons“ (https://www.lowagie.com/iText, https://itextpdf.com/en/
+	// | resources/faq/legal/itext-5-legacy/can-itext-217-itextsharp-416-or-
+	// | earlier-be-used-commercially), ale myslím si, že sa vieme bez PDF
+	// | transferu zaobísť.
+
 
 	// Táto trieda uchováva obrazovú informáciu počas prítomnosti
 	// v schránke
@@ -196,6 +211,7 @@ public class Schránka
 	/**
 	 * <p>Vloží do schránky zadaný text.</p>
 	 * 
+	 * @param reťazec text na vloženie do schránky
 	 * @return {@code valtrue} ak bola operácia úspešná
 	 */
 	public static boolean text(String reťazec)
@@ -280,6 +296,8 @@ public class Schránka
 	 * v schránke len počas činnosti aplikácie robota. Po zatvorení
 	 * okna sveta, je obrázok zo schránky odstránený.</p>
 	 * 
+	 * @param obrázok rastrový obrázok; môže byť aj objekt typu {@link 
+	 *     Obrázok Obrázok}
 	 * @return {@code valtrue} ak bola operácia úspešná
 	 */
 	public static boolean obrázok(Image obrázok)
@@ -299,7 +317,129 @@ public class Schránka
 		return false;
 	}
 
+	// Pomocná metóda na importovanie SVG kresby.
+	private static String inputStreamToString(Object obj)
+	{
+		if (obj instanceof InputStream)
+			return new BufferedReader(new InputStreamReader(
+				(InputStream)obj, StandardCharsets.UTF_8)).lines().
+					collect(Collectors.joining("\n"));
+		return null;
+	}
+
 	/** <p><a class="alias"></a> Alias pre {@link #obrázok(Image) obrázok}.</p> */
 	public static boolean obrazok(Image obrázok)
 	{ return obrázok(obrázok); }
+
+	/**
+	 * <p>Prevezme zo schránky kresbu vo formáte SVG, ak schránka obsahuje
+	 * informáciu v tomto formáte. V prípade úspešného prevzatia kresby zo
+	 * schránky vráti metóda nový objekt typu {@link SVGPodpora SVGPodpora},
+	 * ktorý bude obsahovať objekty rozpoznané z SVG definície, ktorá bola
+	 * uložená v schránke. V opačnom prípade vráti táto metóda hodnotu
+	 * {@code valnull}.</p>
+	 * 
+	 * @return nový objekt typu {@link SVGPodpora SVGPodpora} s rozpoznanými
+	 *     grafickými objektmi z SVG definície v schránke alebo
+	 *     {@code valnull}, ak schránka neobsahovala relevantnú informáciu
+	 */
+	public static SVGPodpora kresba()
+	{
+		String kresba = null;
+		SVGPodpora prevzatáKresba = null;
+		obsahSchránky = schránka.getContents(null);
+
+		if (null != obsahSchránky)
+		{
+			if (obsahSchránky.isDataFlavorSupported(
+				SVGClip.svgFlavor))
+			{
+				try
+				{
+					kresba = inputStreamToString(obsahSchránky.
+						getTransferData(SVGClip.svgFlavor));
+				}
+				catch (UnsupportedFlavorException | IOException e)
+				{
+					GRobotException.vypíšChybovéHlásenia(e);
+				}
+			}
+			else if (obsahSchránky.isDataFlavorSupported(
+				SVGClip.inkscapeFlavor))
+			{
+				try
+				{
+					kresba = inputStreamToString(obsahSchránky.
+						getTransferData(SVGClip.inkscapeFlavor));
+				}
+				catch (UnsupportedFlavorException | IOException e)
+				{
+					GRobotException.vypíšChybovéHlásenia(e);
+				}
+			}
+			else
+			{
+				try
+				{
+					DataFlavor[] flavors = schránka.getAvailableDataFlavors();
+
+					for (DataFlavor flavor : flavors)
+					{
+						if (flavor.equals(SVGClip.svgFlavor))
+						{
+							kresba = inputStreamToString(schránka.
+								getData(SVGClip.svgFlavor));
+						}
+						else if (flavor.equals(SVGClip.inkscapeFlavor))
+						{
+							kresba = inputStreamToString(schránka.
+								getData(SVGClip.inkscapeFlavor));
+						}
+					}
+				}
+				catch (UnsupportedFlavorException | IOException e)
+				{
+					GRobotException.vypíšChybovéHlásenia(e);
+				}
+			}
+		}
+
+		if (null != kresba)
+		{
+			prevzatáKresba = new SVGPodpora();
+			try
+			{
+				prevzatáKresba.pridajSVG(kresba);
+			}
+			catch (GRobotException e)
+			{
+				GRobotException.vypíšChybovéHlásenia(e);
+			}
+		}
+
+		return prevzatáKresba;
+	}
+
+	/**
+	 * <p>Vloží do schránky kresbu v SVG formáte zadanú vo forme objektu
+	 * {@link SVGPodpora SVGPodpora}.</p>
+	 * 
+	 * @param svgPodpora inštancia triedy {@link SVGPodpora SVGPodpora}
+	 * @return {@code valtrue} ak bola operácia úspešná
+	 */
+	public static boolean kresba(SVGPodpora svgPodpora)
+	{
+		try
+		{
+			SVGClip klipKresby = new SVGClip(svgPodpora.dajSVG());
+			schránka.setContents(klipKresby, poslucháč);
+			return true;
+		}
+		catch (IllegalStateException | IOException e)
+		{
+			GRobotException.vypíšChybovéHlásenia(e);
+		}
+
+		return false;
+	}
 }

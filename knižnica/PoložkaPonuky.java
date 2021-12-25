@@ -181,8 +181,12 @@ public class PoložkaPonuky extends JMenuItem
 
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+						int početPočúvajúcich =
+							GRobot.počúvajúciRozhranie.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 						{
+							GRobot počúvajúci =
+								GRobot.počúvajúciRozhranie.get(i);
 							počúvajúci.voľbaPoložkyPonuky();
 							počúvajúci.volbaPolozkyPonuky();
 						}

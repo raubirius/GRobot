@@ -91,7 +91,7 @@ import javax.swing.event.ChangeEvent;
  * GRobot. Účelom tejto triedy je zlepšenie vnútornej kompatibility
  * v programovacom rámci GRobot. Niektoré metódy s návratovou hodnotou
  * {@link Rozmer Rozmer} v skutočnosti vracajú objekt typu
- * {@code currBod}.</p>
+ * {@code currRozmery}.</p>
  */
 public class Rozmery extends Dimension2D implements Rozmer
 {
@@ -585,7 +585,7 @@ public class Rozmery extends Dimension2D implements Rozmer
 	{ return reťazecNaDimension2D(text); }
 
 
-	// Skopírované z triedy Bod. Zatiaľ nevyužité.
+	// TODO – otestovať:
 
 	/**
 	 * <p>Zistí, či je zadaný reťazec v rozpoznateľnom formáte

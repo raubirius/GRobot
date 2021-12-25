@@ -431,7 +431,7 @@ public class Bod extends Point2D implements Poloha
 
 	/**
 	 * <p>Pootočí súradnice tohto bodu okolo stredu súradnicovej sústavy
-	 * s zadaný uhol.</p>
+	 * o zadaný uhol.</p>
 	 * 
 	 * @param uhol uhol pootočenia
 	 * 
@@ -510,7 +510,7 @@ public class Bod extends Point2D implements Poloha
 
 	/**
 	 * <p>Pootočí súradnice tohto bodu okolo stredu súradnicovej sústavy
-	 * s zadaný uhol.</p>
+	 * o zadaný uhol.</p>
 	 * 
 	 * @param uhol uhol pootočenia
 	 * 

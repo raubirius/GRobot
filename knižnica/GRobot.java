@@ -84,6 +84,8 @@ import static java.lang.Math.abs;
 import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 import static java.lang.Math.hypot;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static java.lang.Math.PI;
 import static java.lang.Math.pow;
 import static java.lang.Math.sin;
@@ -900,6 +902,13 @@ Toto bolo presunuté na úvodnú stránku:
 			// napr. elipsy a obdĺžnika), ktoré neprijímajú žiadny argument).
 			private double pomerVeľkosti = 1.0;
 
+			// Hodnota „pôvodného pomeru veľkosti robota“ (v skutočnosti
+			// „naposledy zapamätaného pomeru veľkosti robota“) podľa ktorého
+			// sa prepočítava aktuálna mierka pomeru veľkosti robota. Tento
+			// atribút je menovateľom mierky pomeru a aktuálny pomer veľkosti
+			// (atribút vyššie) je čitateľom tejto mierky.
+			private double pôvodnýPomer = 1.0;
+
 			// Horizontálne a vertikálne zaoblenie rohov štvorcov
 			// a obdĺžnikov.
 			private double zaoblenieX = 0.0;
@@ -1569,8 +1578,69 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 				}
 
-				// Značka kreslená na začiatku a konci čiary
+				// Značka kreslená na začiatku a konci čiary:
 				private ZnačkaČiary značkaZačiatku = null, značkaKonca = null;
+
+				/**
+				 * <p>Parametre rôzneho druhu asociované s touto spojnicou.</p>
+				 * 
+				 * <p>Na mierne zjednodušenie práce s touto mapou boli
+				 * definované dve metódy spojnice: {@link #parameter(String)
+				 * parameter(index)} a {@link #parameter(String, Object)
+				 * parameter(index, hodnota)}.</p>
+				 */
+				public final TreeMap<String, Object> parametre = new TreeMap<>();
+
+				/**
+				 * <p>Vráti hodnotu parametra asociovanú so zadaným indexom.
+				 * Ak je hodnota indexu rovná {@code valnull}, tak metóda
+				 * vráti {@code valnull}. Ak parameter nie je definovaný, tak
+				 * metóda tiež vráti {@code valnull}.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Keďže prístup
+				 * k {@linkplain #parametre mape parametrov spojnice} je
+				 * verejný, programátor môže do nej vkladať ľubovoľné hodnoty
+				 * parametrov, vrátane prázdnych ({@code valnull}). Stavy,
+				 * kedy parameter nejestvuje a kedy je jeho hodnota rovná
+				 * {@code valnull} nie je možné touto metódou rozlíšiť. Na to
+				 * treba použiť metódu {@link TreeMap#containsKey(Object)
+				 * parameter.containsKey(index)}.</p>
+				 * 
+				 * @param index index asociovaný s hodnotou parametra
+				 * @return hodnota parametra, ak je nastavená alebo
+				 *     {@code valnull}
+				 */
+				public Object parameter(String index)
+				{
+					if (null == index) return null;
+					return parametre.get(index);
+				}
+
+				/**
+				 * <p>Nastaví alebo vymaže hodnotu parametra asociovanú so
+				 * zadaným indexom. Ak je hodnota indexu rovná {@code valnull},
+				 * tak metóda nevykoná nič. Ak je hodnota parametra rovná
+				 * {@code valnull}, tak ho metóda zo zoznamu parametrov
+				 * vymaže.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Prístup
+				 * k {@linkplain #parametre mape parametrov spojnice} je
+				 * verejný. Vďaka tomu môže do nej programátor vkladať
+				 * ľubovoľné hodnoty parametrov, vrátane prázdnych
+				 * ({@code valnull}), avšak potom sa musí riadiť pravidlami
+				 * práce s mapou {@link TreeMap TreeMap}.</p>
+				 * 
+				 * @param index index asociovaný s hodnotou parametra
+				 * @param hodnota nová hodnota parametra, ak má byť parameter
+				 *     nastavený alebo {@code valnull}, ak má byť parameter
+				 *     vymazaný
+				 */
+				public void parameter(String index, Object hodnota)
+				{
+					if (null == index) return;
+					if (null == hodnota) parametre.remove(index);
+					else parametre.put(index, hodnota);
+				}
 
 
 				/**
@@ -2372,7 +2442,7 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 				/**
-				 * <p>Vráti inštanciu cieľového robota, čiže toho, od ktorého
+				 * <p>Vráti inštanciu zdrojového robota, čiže toho, od ktorého
 				 * smeruje táto spojnica.</p>
 				 * 
 				 * @return inštancia zdrojového robota – toho, od ktorého
@@ -3306,6 +3376,9 @@ Toto bolo presunuté na úvodnú stránku:
 			// Príznak aktivácie interaktívneho režimu pre tento robot
 			/*packagePrivate*/ boolean interaktívnyRežim = false;
 
+			// Vymenovanie a atribút komunikujúci s SVG podporou
+			/*packagePrivate*/ enum TypTvaru { NIČ, VÝPLŇ, OBRYS }
+			/*packagePrivate*/ TypTvaru poslednýTypTvaru = TypTvaru.NIČ;
 
 
 		// Vnútorné zoznamy
@@ -4317,7 +4390,8 @@ Toto bolo presunuté na úvodnú stránku:
 						dajRelevantnýRaster(vlastnýTvarObrázok);
 
 					if (90.0 == (aktuálnyUhol + pootočenieTvaru) &&
-						pôvodnáVeľkosť == veľkosť)
+						pôvodnáVeľkosť == veľkosť &&
+						pôvodnýPomer == pomerVeľkosti)
 					{
 						if (relevantný instanceof Obrázok)
 							((Obrázok)relevantný).kresliNaStred(
@@ -4328,7 +4402,8 @@ Toto bolo presunuté na úvodnú stránku:
 								(int)(prepočítanéY - (výškaObrázka / 2.0)),
 								null);
 					}
-					else if (pôvodnáVeľkosť == veľkosť)
+					else if (pôvodnáVeľkosť == veľkosť &&
+						pôvodnýPomer == pomerVeľkosti)
 					{
 						double α = toRadians(aktuálnyUhol +
 							pootočenieTvaru - 90);
@@ -4353,11 +4428,13 @@ Toto bolo presunuté na úvodnú stránku:
 						double α = toRadians(aktuálnyUhol +
 							pootočenieTvaru - 90);
 						double s = veľkosť / pôvodnáVeľkosť;
+						double t = s * (pomerVeľkosti / pôvodnýPomer);
 
-						prepočítanéX /= s;
+						/* Zlý spôsob
+						prepočítanéX /= t;
 						prepočítanéY /= s;
 
-						grafika.scale(s, s);
+						grafika.scale(s, t);
 						grafika.rotate(-α, prepočítanéX, prepočítanéY);
 
 						if (relevantný instanceof Obrázok)
@@ -4368,6 +4445,22 @@ Toto bolo presunuté na úvodnú stránku:
 								(int)(prepočítanéX - (šírkaObrázka / 2.0)),
 								(int)(prepočítanéY - (výškaObrázka / 2.0)),
 								null);
+						*/
+
+						// TODO — poriadne otestuj všetky vetvy tohto kreslenia,
+						// lebo táto vyzerá, že konečne funguje, ale „trafil“
+						// som to „na náhodu“ a na otestovanie ostatných vetiev
+						// nebol čas…
+
+						grafika.translate(prepočítanéX, prepočítanéY);
+						grafika.rotate(-α); grafika.scale(s, t);
+						grafika.translate(šírkaObrázka / -2.0,
+							výškaObrázka / -2.0);
+
+						if (relevantný instanceof Obrázok)
+							((Obrázok)relevantný).kresliNa(0, 0, grafika);
+						else
+							grafika.drawImage(relevantný, 0, 0, null);
 
 						grafika.setTransform(transformácie);
 					}
@@ -4429,6 +4522,7 @@ Toto bolo presunuté na úvodnú stránku:
 				double zaoblenieX_Záloha = robot.zaoblenieX;
 				double zaoblenieY_Záloha = robot.zaoblenieY;
 				double pôvodnáVeľkosť_Záloha = robot.pôvodnáVeľkosť;
+				double pôvodnýPomer_Záloha = robot.pôvodnýPomer;
 				double pootočenieTvaru_Záloha = robot.pootočenieTvaru;
 
 
@@ -4495,6 +4589,7 @@ Toto bolo presunuté na úvodnú stránku:
 				robot.zaoblenieX = zaoblenieX_Záloha;
 				robot.zaoblenieY = zaoblenieY_Záloha;
 				robot.pôvodnáVeľkosť = pôvodnáVeľkosť_Záloha;
+				robot.pôvodnýPomer = pôvodnýPomer_Záloha;
 				robot.pootočenieTvaru = pootočenieTvaru_Záloha;
 
 				robot.spôsobKreslenia = spôsobKreslenia_Záloha;
@@ -4820,6 +4915,7 @@ Toto bolo presunuté na úvodnú stránku:
 				double zaoblenieX_Záloha;
 				double zaoblenieY_Záloha;
 				double pôvodnáVeľkosť_Záloha;
+				double pôvodnýPomer_Záloha;
 				double pootočenieTvaru_Záloha;
 
 				void zálohuj()
@@ -4869,6 +4965,7 @@ Toto bolo presunuté na úvodnú stránku:
 					zaoblenieX_Záloha = robot.zaoblenieX;
 					zaoblenieY_Záloha = robot.zaoblenieY;
 					pôvodnáVeľkosť_Záloha = robot.pôvodnáVeľkosť;
+					pôvodnýPomer_Záloha = robot.pôvodnýPomer;
 					pootočenieTvaru_Záloha = robot.pootočenieTvaru;
 				}
 
@@ -4915,6 +5012,7 @@ Toto bolo presunuté na úvodnú stránku:
 					robot.zaoblenieX = zaoblenieX_Záloha;
 					robot.zaoblenieY = zaoblenieY_Záloha;
 					robot.pôvodnáVeľkosť = pôvodnáVeľkosť_Záloha;
+					robot.pôvodnýPomer = pôvodnýPomer_Záloha;
 					robot.pootočenieTvaru = pootočenieTvaru_Záloha;
 
 					robot.spôsobKreslenia = spôsobKreslenia_Záloha;
@@ -6278,7 +6376,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 *     aktuálneho ťahu robota
 				 */
 				public Shape tvarPodľaČiary(Shape tvar)
-				{ return čiara.createStrokedShape(tvar); }
+				{ poslednýTypTvaru = TypTvaru.NIČ; return čiara.createStrokedShape(tvar); }
 
 				/** <p><a class="alias"></a> Alias pre {@link #tvarPodľaČiary(Shape) tvarPodľaČiary}.</p> */
 				public Shape tvarPodlaCiary(Shape tvar)
@@ -8364,8 +8462,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 				/**
-				 * <p>Zmení veľkosť robota na náhodnú v rozmedzí veľkosti,
-				 * ktorú by mal pri hodnote mierky {@code num1.0}
+				 * <p>Zmení veľkosť robota na náhodnú hodnotu v rozmedzí
+				 * veľkosti, ktorú by mal pri hodnote mierky {@code num1.0}
 				 * a násobkom tejto hodnoty o zadanú mieru.</p>
 				 * 
 				 * @param miera miera zmeny veľkosti v porovnaní s takou
@@ -8385,7 +8483,79 @@ Toto bolo presunuté na úvodnú stránku:
 				public void nahodnaVelkost(double miera)
 				{ náhodnáVeľkosť(miera); }
 
-				// TODO: náhodnýPomer – rozptyl (??), náhodnýRozmer
+				// TODO – otestuj!!
+
+				/**
+				 * <p>Zmení pomer veľkosti robota na náhodnú hodnotu
+				 * v rozmedzí pomeru veľkosti, ktorú by mal pri hodnote
+				 * mierky pomeru {@code num1.0} a násobkom tejto hodnoty
+				 * o zadanú mieru.</p>
+				 * 
+				 * @param miera miera zmeny pomeru veľkosti v porovnaní
+				 *     s takou hodnotou pomeru veľkosti, ktorú by mal robot
+				 *     pri hodnote mierky pomeru {@code num1.0}
+				 */
+				public void náhodnýPomer(double miera)
+				{
+					pomerVeľkosti = Svet.náhodnéCeléČíslo((long)pôvodnýPomer,
+						(long)(pôvodnýPomer * miera));
+					if (viditeľný) Svet.automatickéPrekreslenie();
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #náhodnýPomer(double miera) náhodnýPomer}.</p> */
+				public void nahodnyPomer(double miera) { náhodnýPomer(miera); }
+
+				/**
+				 * <p>Zmení rozmer robota na náhodnú hodnotu v rozmedzí
+				 * veľkosti a pomeru veľkosti, ktoré by mal pri hodnotách
+				 * mierok veľkosti a pomeru veľkosti {@code num1.0}
+				 * a násobkov týchto hodnôt o zadanú mieru.</p>
+				 * 
+				 * @param miera miera zmeny rozmeru veľkosti v porovnaní
+				 *     s takou hodnotou rozmeru veľkosti, ktorú by mal robot
+				 *     pri hodnote mierky rozmeru {@code num1.0}
+				 */
+				public void náhodnýRozmer(double miera)
+				{
+					veľkosť = Svet.náhodnéCeléČíslo((long)pôvodnáVeľkosť,
+						(long)(pôvodnáVeľkosť * miera));
+					pomerVeľkosti = Svet.náhodnéCeléČíslo((long)pôvodnýPomer,
+						(long)(pôvodnýPomer * miera));
+					if (viditeľný) Svet.automatickéPrekreslenie();
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #náhodnýRozmer(double miera) náhodnýRozmer}.</p> */
+				public void nahodnyRozmer(double miera) { náhodnýRozmer(miera); }
+
+				/**
+				 * <p>Zmení rozmer robota na náhodnú hodnotu v rozmedzí
+				 * veľkosti a pomeru veľkosti, ktoré by mal pri hodnotách
+				 * mierok veľkosti a pomeru veľkosti {@code num1.0}
+				 * a násobkov týchto hodnôt o zadané miery prislúchajúcich
+				 * údajov.</p>
+				 * 
+				 * @param mieraVeľkosti miera zmeny veľkosti v porovnaní
+				 *     s takou hodnotou veľkosti, ktorú by mal robot pri
+				 *     hodnote mierky {@code num1.0}
+				 * @param mieraPomeru miera zmeny pomeru veľkosti v porovnaní
+				 *     s takou hodnotou pomeru veľkosti, ktorú by mal robot
+				 *     pri hodnote mierky pomeru {@code num1.0}
+				 */
+				public void náhodnýRozmer(double mieraVeľkosti,
+					double mieraPomeru)
+				{
+					veľkosť = Svet.náhodnéCeléČíslo((long)pôvodnáVeľkosť,
+						(long)(pôvodnáVeľkosť * mieraVeľkosti));
+					pomerVeľkosti = Svet.náhodnéCeléČíslo((long)pôvodnýPomer,
+						(long)(pôvodnýPomer * mieraPomeru));
+					if (viditeľný) Svet.automatickéPrekreslenie();
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #náhodnýRozmer(double mieraVeľkosti, double mieraPomeru) náhodnýRozmer}.</p> */
+				public void nahodnyRozmer(double mieraVeľkosti,
+					double mieraPomeru)
+				{ náhodnýRozmer(mieraVeľkosti, mieraPomeru); }
+
 
 				/**
 				 * <p>Zistí poslednú x-ovú súradnicu robota. Táto hodnota sa
@@ -9195,7 +9365,7 @@ Toto bolo presunuté na úvodnú stránku:
 				/**
 				 * <p>Presne ako {@link #domov() domov}, len s tým rozdielom,
 				 * že robotu nastaví novú štartovaciu pozíciu, smer
-				 * a rozmer (resp. domovskú veľkosť a domovský pomer veľkostí
+				 * a rozmer (resp. domovskú veľkosť a domovský pomer veľkosti
 				 * robota).</p>
 				 * 
 				 * <p class="remark"><b>Poznámka:</b> Počas kreslenia
@@ -9218,7 +9388,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * rozmery}{@code (šírka, výška)}. To znamená, že volanie
 				 * tejto metódy zmení nastavenia {@linkplain 
 				 * #veľkosťDoma(Double) veľkosti doma} a {@linkplain 
-				 * #pomerDoma(Double) pomeru veľkostí doma.}</p>
+				 * #pomerDoma(Double) pomeru veľkosti doma.}</p>
 				 * 
 				 * @param častica častica určujúca nové súradnice
 				 *     domovskej pozície (v súradnicovom priestore rámca)
@@ -9243,7 +9413,8 @@ Toto bolo presunuté na úvodnú stránku:
 					if (kreslímVlastnýTvar) return;
 
 					veľkosť = veľkosťDoma = častica.výška() / 2.0;
-					pomerVeľkosti = pomerDoma =
+					if (0 == veľkosť) pomerVeľkosti = 0;
+					else pomerVeľkosti = pomerDoma =
 						(častica.šírka() / 2.0) / veľkosť;
 
 					vymažPôsobisko();
@@ -10648,7 +10819,7 @@ Toto bolo presunuté na úvodnú stránku:
 
 				/**
 				 * <p>Zistí, či a ako sa budú meniť rozmery ({@linkplain 
-				 * #výška() výšky} a {@linkplain #šírka() šírky} robota po
+				 * #šírka() šírky} a {@linkplain #výška() výšky} robota po
 				 * prechode na domovskú pozíciu. V skutočnosti (pozri poznámku
 				 * nižšie) ide o prepočítané hodnoty dvoch iných vlastností:
 				 * {@link #veľkosťDoma() veľkosťDoma} a {@link #pomerDoma()
@@ -10733,8 +10904,8 @@ Toto bolo presunuté na úvodnú stránku:
 				{ pomerDoma = novýPomer; }
 
 				/**
-				 * <p>Nastaví alebo zruší nastavovanie zmeny rozmerov (výšky
-				 * a šírky) robota po prechode na domovskú pozíciu.
+				 * <p>Nastaví alebo zruší nastavovanie zmeny rozmerov (šírky
+				 * a výšky) robota po prechode na domovskú pozíciu.
 				 * V skutočnosti nastavuje táto metóda hodnoty dvojice
 				 * vlastností {@link #veľkosťDoma(Double) veľkosťDoma}
 				 * a {@link #pomerDoma(Double) pomerDoma}. Ich hodnoty sú
@@ -10768,7 +10939,8 @@ Toto bolo presunuté na úvodnú stránku:
 					else
 					{
 						veľkosťDoma = novýRozmer.výška() / 2.0;
-						pomerDoma = (novýRozmer.šírka() / 2.0) / veľkosťDoma;
+						if (0 == veľkosťDoma) pomerDoma = 0.0;
+						else pomerDoma = (novýRozmer.šírka() / 2.0) / veľkosťDoma;
 					}
 				}
 
@@ -10792,8 +10964,8 @@ Toto bolo presunuté na úvodnú stránku:
 				public void zachovajVelkostDoma() { veľkosťDoma = null; }
 
 				/**
-				 * <p>Po použití tejto metódy nebude pomer veľkostí robota
-				 * (výšky a šírky) pri použití niektorej modifikácie metódy
+				 * <p>Po použití tejto metódy nebude pomer veľkosti robota
+				 * (šírky a výšky) pri použití niektorej modifikácie metódy
 				 * {@link #domov() domov} ovplyvňovaný.</p>
 				 * 
 				 * <p class="remark"><b>Poznámka:</b> Venujte pozornosť
@@ -11328,6 +11500,8 @@ Toto bolo presunuté na úvodnú stránku:
 							zaoblenieY));
 						pôvodnáVeľkosť = súbor.čítajVlastnosť(
 							"pôvodnáVeľkosť", pôvodnáVeľkosť);
+						pôvodnýPomer = súbor.čítajVlastnosť(
+							"pôvodnýPomer", pôvodnýPomer);
 						priehľadnosť = súbor.čítajVlastnosť("priehľadnosť",
 							// Double.valueOf(priehľadnosť)).floatValue();
 							priehľadnosť);
@@ -11716,6 +11890,7 @@ Toto bolo presunuté na úvodnú stránku:
 						súbor.zapíšVlastnosť("zaoblenieX", zaoblenieX);
 						súbor.zapíšVlastnosť("zaoblenieY", zaoblenieY);
 						súbor.zapíšVlastnosť("pôvodnáVeľkosť", pôvodnáVeľkosť);
+						súbor.zapíšVlastnosť("pôvodnýPomer", pôvodnýPomer);
 						súbor.zapíšVlastnosť("priehľadnosť",
 							Double.valueOf(priehľadnosť));
 						súbor.zapíšVlastnosť("vyplnený", vyplnený);
@@ -21769,7 +21944,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * spracovania výzviev}, dôjde z technických príčin
 				 * k opätovnému spusteniu posielania výziev (inak povedané –
 				 * posielanie výziev sa „reštartuje“). To znamená, že niektoré
-				 * roboty budú vyzvaní dva alebo viac ráz. Buďte preto opatrní
+				 * roboty budú vyzvané dva alebo viac ráz. Buďte preto opatrní
 				 * so zmenami poradia v rámci spracovania výziev, aby ste
 				 * nespôsobili vznik nekonečného cyklu… (Rovnaký efekt má
 				 * prípadné vytvorenie nového robota, resp. ľubovoľnej
@@ -21851,7 +22026,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * spracovania výzviev}, dôjde z technických príčin
 				 * k opätovnému spusteniu posielania výziev (inak povedané –
 				 * posielanie výziev sa „reštartuje“). To znamená, že niektoré
-				 * roboty budú vyzvaní dva alebo viac ráz. Buďte preto opatrní
+				 * roboty budú vyzvané dva alebo viac ráz. Buďte preto opatrní
 				 * so zmenami poradia v rámci spracovania výziev, aby ste
 				 * nespôsobili vznik nekonečného cyklu… (Rovnaký efekt má
 				 * prípadné vytvorenie nového robota, resp. ľubovoľnej
@@ -21943,7 +22118,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * spracovania výzviev}, dôjde z technických príčin
 				 * k opätovnému spusteniu posielania výziev (inak povedané –
 				 * posielanie výziev sa „reštartuje“). To znamená, že niektoré
-				 * roboty budú vyzvaní dva alebo viac ráz. Buďte preto opatrní
+				 * roboty budú vyzvané dva alebo viac ráz. Buďte preto opatrní
 				 * so zmenami poradia v rámci spracovania výziev, aby ste
 				 * nespôsobili vznik nekonečného cyklu… (Rovnaký efekt má
 				 * prípadné vytvorenie nového robota, resp. ľubovoľnej
@@ -25542,6 +25717,8 @@ Toto bolo presunuté na úvodnú stránku:
 					"negativeRadius", "circle",
 					new IllegalArgumentException());
 
+				poslednýTypTvaru = TypTvaru.OBRYS;
+
 				Shape kružnica = new Ellipse2D.Double(
 					Svet.prepočítajX(aktuálneX) - polomer,
 					Svet.prepočítajY(aktuálneY) - polomer,
@@ -25619,6 +25796,8 @@ Toto bolo presunuté na úvodnú stránku:
 					"Polomer kruhu nesmie byť záporný!",
 					"negativeRadius", "filledCircle",
 					new IllegalArgumentException());
+
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 				Shape kruh = new Ellipse2D.Double(
 					Svet.prepočítajX(aktuálneX) - polomer,
@@ -25740,6 +25919,8 @@ Toto bolo presunuté na úvodnú stránku:
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
+				poslednýTypTvaru = TypTvaru.OBRYS;
+
 				Shape elipsa;
 
 				if (90.0 == aktuálnyUhol || 270.0 == aktuálnyUhol)
@@ -25827,6 +26008,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
+
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 				Shape elipsa;
 
@@ -25975,9 +26158,10 @@ Toto bolo presunuté na úvodnú stránku:
 					"negativeRadius", "incircle",
 					new IllegalArgumentException());
 
-
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
+
+				poslednýTypTvaru = TypTvaru.OBRYS;
 
 				Shape štvorec;
 
@@ -26072,6 +26256,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
+
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 				Shape štvorec;
 
@@ -26234,6 +26420,8 @@ Toto bolo presunuté na úvodnú stránku:
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
+				poslednýTypTvaru = TypTvaru.OBRYS;
+
 				Shape obdĺžnik;
 
 				if (90.0 == aktuálnyUhol || 270.0 == aktuálnyUhol)
@@ -26341,6 +26529,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
+
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 				Shape obdĺžnik;
 
@@ -26504,6 +26694,8 @@ Toto bolo presunuté na úvodnú stránku:
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
+				poslednýTypTvaru = TypTvaru.OBRYS;
+
 				Shape hviezda = this.hviezda.daj(polomer);
 
 				if (kresliTvary)
@@ -26564,6 +26756,8 @@ Toto bolo presunuté na úvodnú stránku:
 					"Polomer opísanej kružnice nesmie byť záporný!",
 					"negativeRadius", "circumcircle",
 					new IllegalArgumentException());
+
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 				Shape hviezda = this.hviezda.daj(polomer);
 
@@ -26694,6 +26888,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public Shape kružnica()
 			{
+				poslednýTypTvaru = TypTvaru.OBRYS;
+
 				Shape kružnica = new Ellipse2D.Double(
 					Svet.prepočítajX(aktuálneX) - veľkosť,
 					Svet.prepočítajY(aktuálneY) - veľkosť,
@@ -26768,6 +26964,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public Shape kruh()
 			{
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
+
 				Shape kruh = new Ellipse2D.Double(
 					Svet.prepočítajX(aktuálneX) - veľkosť,
 					Svet.prepočítajY(aktuálneY) - veľkosť,
@@ -26900,6 +27098,8 @@ Toto bolo presunuté na úvodnú stránku:
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
+				poslednýTypTvaru = TypTvaru.OBRYS;
+
 				Shape elipsa;
 
 				if (90.0 == aktuálnyUhol || 270.0 == aktuálnyUhol)
@@ -26992,6 +27192,8 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
+
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 				Shape elipsa;
 
@@ -27147,6 +27349,8 @@ Toto bolo presunuté na úvodnú stránku:
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
+				poslednýTypTvaru = TypTvaru.OBRYS;
+
 				Shape elipsa;
 
 				if (90.0 == aktuálnyUhol || 270.0 == aktuálnyUhol)
@@ -27231,6 +27435,8 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
+
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 				Shape elipsa;
 
@@ -27381,6 +27587,8 @@ Toto bolo presunuté na úvodnú stránku:
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
+				poslednýTypTvaru = TypTvaru.OBRYS;
+
 				Shape štvorec;
 
 				if (aktuálnyUhol % 90.0 == 0)
@@ -27470,6 +27678,8 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
+
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 				Shape štvorec;
 
@@ -27640,6 +27850,8 @@ Toto bolo presunuté na úvodnú stránku:
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
+				poslednýTypTvaru = TypTvaru.OBRYS;
+
 				Shape obdĺžnik;
 
 				if (90.0 == aktuálnyUhol || 270.0 == aktuálnyUhol)
@@ -27755,6 +27967,8 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
+
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 				Shape obdĺžnik;
 
@@ -27926,6 +28140,8 @@ Toto bolo presunuté na úvodnú stránku:
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
+				poslednýTypTvaru = TypTvaru.OBRYS;
+
 				Shape obdĺžnik;
 
 				if (90.0 == aktuálnyUhol || 270.0 == aktuálnyUhol)
@@ -28034,6 +28250,8 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
+
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 				Shape obdĺžnik;
 
@@ -28196,6 +28414,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public Shape kresliHviezdu()
 			{
+				poslednýTypTvaru = TypTvaru.OBRYS;
+
 				Shape hviezda = this.hviezda.daj(veľkosť);
 
 				if (kresliTvary)
@@ -28253,6 +28473,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public Shape vyplňHviezdu()
 			{
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
+
 				Shape hviezda = this.hviezda.daj(veľkosť);
 
 				if (kresliTvary)
@@ -28338,6 +28560,7 @@ Toto bolo presunuté na úvodnú stránku:
 			public Shape trojzubec()
 			{
 				prepočítajPolygón();
+				poslednýTypTvaru = TypTvaru.NIČ;
 
 				if (!kresliTvary) return new Polygon(fx, fy, 7);
 
@@ -28399,6 +28622,7 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				if (starý) starýPolygón();
 				else prepočítajPolygón();
+				poslednýTypTvaru = TypTvaru.NIČ;
 
 				if (!kresliTvary) return new Polygon(fx, fy, 7);
 
@@ -28453,6 +28677,7 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				if (kresliTvary)
 				{
+					poslednýTypTvaru = TypTvaru.OBRYS;
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
@@ -28488,6 +28713,7 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				if (kresliTvary)
 				{
+					poslednýTypTvaru = TypTvaru.VÝPLŇ;
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
@@ -28556,6 +28782,8 @@ Toto bolo presunuté na úvodnú stránku:
 							Svet.posuňVýplňX, Svet.posuňVýplňY,
 							obrázok.getWidth()  * Svet.mierkaVýplneX,
 							obrázok.getHeight() * Svet.mierkaVýplneY)));
+
+					poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 					if (0 == Svet.otočVýplňΑ)
 						grafikaAktívnehoPlátna.fill(tvar);
@@ -28626,6 +28854,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 					float priehľadnosť = (obrázok instanceof Obrázok) ?
 						((Obrázok)obrázok).priehľadnosť : 1.0f;
+
+					poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 					if (priehľadnosť > 0)
 					{
@@ -28728,9 +28958,12 @@ Toto bolo presunuté na úvodnú stránku:
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 
+					poslednýTypTvaru = TypTvaru.OBRYS;
+
 					if (!upravRobotom || (aktuálnyUhol == 90 &&
 						aktuálneX == 0 && aktuálneY == 0 &&
-						pôvodnáVeľkosť == veľkosť))
+						pôvodnáVeľkosť == veľkosť &&
+						pôvodnýPomer == pomerVeľkosti))
 					{
 						grafikaAktívnehoPlátna.draw(tvar);
 						aktualizujPôsobisko(tvar.getBounds2D());
@@ -28742,16 +28975,46 @@ Toto bolo presunuté na úvodnú stránku:
 						double prepočítanéX = Svet.prepočítajX(aktuálneX);
 						double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-						if (pôvodnáVeľkosť != veľkosť)
+						/*
+						if (pôvodnáVeľkosť != veľkosť ||
+							pôvodnýPomer != pomerVeľkosti)
 						{
 							double mierka = veľkosť / pôvodnáVeľkosť;
+							double mierkaX = mierka * (pomerVeľkosti /
+								pôvodnýPomer);
 							at.translate(prepočítanéX, prepočítanéY);
-							at.scale(mierka, mierka);
+							at.scale(mierkaX, mierka);
 							at.translate(-prepočítanéX, -prepočítanéY);
 						}
 
 						at.rotate(toRadians(90 - aktuálnyUhol),
 							prepočítanéX, prepočítanéY);
+
+						at.translate(aktuálneX, -aktuálneY);
+						tvar = at.createTransformedShape(tvar);
+						*/
+
+						// TODO: (Asi vymazať spôsob v komentári vyššie?) Pri
+						// používaní tejto metódy som zistil, že transformácie
+						// rotácie a zmeny mierky musia byť vymenené, inak
+						// vznikalo skosenie tvaru pri nerovnomernej mierke
+						// (rozdielnej v dvoch osiach; pretože mierka sa
+						// postupne „otáčala,“ až sa pri 90° „vymenila“ –>
+						// x za y a tak to šlo dookola).
+
+						at.rotate(toRadians(90 - aktuálnyUhol),
+							prepočítanéX, prepočítanéY);
+
+						if (pôvodnáVeľkosť != veľkosť ||
+							pôvodnýPomer != pomerVeľkosti)
+						{
+							double mierka = veľkosť / pôvodnáVeľkosť;
+							double mierkaX = mierka * (pomerVeľkosti /
+								pôvodnýPomer);
+							at.translate(prepočítanéX, prepočítanéY);
+							at.scale(mierkaX, mierka);
+							at.translate(-prepočítanéX, -prepočítanéY);
+						}
 
 						at.translate(aktuálneX, -aktuálneY);
 						tvar = at.createTransformedShape(tvar);
@@ -28765,23 +29028,27 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 				else if (upravRobotom && (aktuálnyUhol != 90 ||
 					aktuálneX != 0 || aktuálneY != 0 ||
-					pôvodnáVeľkosť != veľkosť))
+					pôvodnáVeľkosť != veľkosť ||
+					pôvodnýPomer != pomerVeľkosti))
 				{
 					AffineTransform at = new AffineTransform();
 
 					double prepočítanéX = Svet.prepočítajX(aktuálneX);
 					double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-					if (pôvodnáVeľkosť != veľkosť)
-					{
-						double mierka = veľkosť / pôvodnáVeľkosť;
-						at.translate(prepočítanéX, prepočítanéY);
-						at.scale(mierka, mierka);
-						at.translate(-prepočítanéX, -prepočítanéY);
-					}
-
 					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
+
+					if (pôvodnáVeľkosť != veľkosť ||
+						pôvodnýPomer != pomerVeľkosti)
+					{
+						double mierka = veľkosť / pôvodnáVeľkosť;
+						double mierkaX = mierka * (pomerVeľkosti /
+							pôvodnýPomer);
+						at.translate(prepočítanéX, prepočítanéY);
+						at.scale(mierkaX, mierka);
+						at.translate(-prepočítanéX, -prepočítanéY);
+					}
 
 					at.translate(aktuálneX, -aktuálneY);
 					tvar = at.createTransformedShape(tvar);
@@ -28823,9 +29090,12 @@ Toto bolo presunuté na úvodnú stránku:
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
+					poslednýTypTvaru = TypTvaru.VÝPLŇ;
+
 					if (!upravRobotom || (aktuálnyUhol == 90 &&
 						aktuálneX == 0 && aktuálneY == 0 &&
-						pôvodnáVeľkosť == veľkosť))
+						pôvodnáVeľkosť == veľkosť &&
+						pôvodnýPomer == pomerVeľkosti))
 					{
 						grafikaAktívnehoPlátna.fill(tvar);
 						aktualizujPôsobisko(tvar.getBounds2D());
@@ -28837,16 +29107,19 @@ Toto bolo presunuté na úvodnú stránku:
 						double prepočítanéX = Svet.prepočítajX(aktuálneX);
 						double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-						if (pôvodnáVeľkosť != veľkosť)
-						{
-							double mierka = veľkosť / pôvodnáVeľkosť;
-							at.translate(prepočítanéX, prepočítanéY);
-							at.scale(mierka, mierka);
-							at.translate(-prepočítanéX, -prepočítanéY);
-						}
-
 						at.rotate(toRadians(90 - aktuálnyUhol),
 							prepočítanéX, prepočítanéY);
+
+						if (pôvodnáVeľkosť != veľkosť ||
+							pôvodnýPomer != pomerVeľkosti)
+						{
+							double mierka = veľkosť / pôvodnáVeľkosť;
+							double mierkaX = mierka * (pomerVeľkosti /
+								pôvodnýPomer);
+							at.translate(prepočítanéX, prepočítanéY);
+							at.scale(mierkaX, mierka);
+							at.translate(-prepočítanéX, -prepočítanéY);
+						}
 
 						at.translate(aktuálneX, -aktuálneY);
 						tvar = at.createTransformedShape(tvar);
@@ -28860,23 +29133,27 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 				else if (upravRobotom && (aktuálnyUhol != 90 ||
 					aktuálneX != 0 || aktuálneY != 0 ||
-					pôvodnáVeľkosť != veľkosť))
+					pôvodnáVeľkosť != veľkosť ||
+					pôvodnýPomer != pomerVeľkosti))
 				{
 					AffineTransform at = new AffineTransform();
 
 					double prepočítanéX = Svet.prepočítajX(aktuálneX);
 					double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-					if (pôvodnáVeľkosť != veľkosť)
-					{
-						double mierka = veľkosť / pôvodnáVeľkosť;
-						at.translate(prepočítanéX, prepočítanéY);
-						at.scale(mierka, mierka);
-						at.translate(-prepočítanéX, -prepočítanéY);
-					}
-
 					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
+
+					if (pôvodnáVeľkosť != veľkosť ||
+						pôvodnýPomer != pomerVeľkosti)
+					{
+						double mierka = veľkosť / pôvodnáVeľkosť;
+						double mierkaX = mierka * (pomerVeľkosti /
+							pôvodnýPomer);
+						at.translate(prepočítanéX, prepočítanéY);
+						at.scale(mierkaX, mierka);
+						at.translate(-prepočítanéX, -prepočítanéY);
+					}
 
 					at.translate(aktuálneX, -aktuálneY);
 					tvar = at.createTransformedShape(tvar);
@@ -28956,6 +29233,8 @@ Toto bolo presunuté na úvodnú stránku:
 							obrázok.getWidth()  * Svet.mierkaVýplneX,
 							obrázok.getHeight() * Svet.mierkaVýplneY)));
 
+					poslednýTypTvaru = TypTvaru.VÝPLŇ;
+
 					Shape s = tvar; double β = 0.0;
 
 					if (0 != Svet.otočVýplňΑ)
@@ -28970,7 +29249,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 					if (!upravRobotom || (aktuálnyUhol == 90 &&
 						aktuálneX == 0 && aktuálneY == 0 &&
-						pôvodnáVeľkosť == veľkosť))
+						pôvodnáVeľkosť == veľkosť &&
+						pôvodnýPomer == pomerVeľkosti))
 					{
 						grafikaAktívnehoPlátna.fill(s);
 						aktualizujPôsobisko(tvar.getBounds2D());
@@ -28982,16 +29262,19 @@ Toto bolo presunuté na úvodnú stránku:
 						double prepočítanéX = Svet.prepočítajX(aktuálneX);
 						double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-						if (pôvodnáVeľkosť != veľkosť)
-						{
-							double mierka = veľkosť / pôvodnáVeľkosť;
-							at.translate(prepočítanéX, prepočítanéY);
-							at.scale(mierka, mierka);
-							at.translate(-prepočítanéX, -prepočítanéY);
-						}
-
 						at.rotate(toRadians(90 - aktuálnyUhol),
 							prepočítanéX, prepočítanéY);
+
+						if (pôvodnáVeľkosť != veľkosť ||
+							pôvodnýPomer != pomerVeľkosti)
+						{
+							double mierka = veľkosť / pôvodnáVeľkosť;
+							double mierkaX = mierka * (pomerVeľkosti /
+								pôvodnýPomer);
+							at.translate(prepočítanéX, prepočítanéY);
+							at.scale(mierkaX, mierka);
+							at.translate(-prepočítanéX, -prepočítanéY);
+						}
 
 						at.translate(aktuálneX, -aktuálneY);
 						tvar = at.createTransformedShape(tvar);
@@ -29016,23 +29299,29 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 				else if (upravRobotom && (aktuálnyUhol != 90 ||
 					aktuálneX != 0 || aktuálneY != 0 ||
-					pôvodnáVeľkosť != veľkosť))
+					pôvodnáVeľkosť != veľkosť ||
+					pôvodnýPomer != pomerVeľkosti))
 				{
 					AffineTransform at = new AffineTransform();
 
 					double prepočítanéX = Svet.prepočítajX(aktuálneX);
 					double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-					if (pôvodnáVeľkosť != veľkosť)
-					{
-						double mierka = veľkosť / pôvodnáVeľkosť;
-						at.translate(prepočítanéX, prepočítanéY);
-						at.scale(mierka, mierka);
-						at.translate(-prepočítanéX, -prepočítanéY);
-					}
+					poslednýTypTvaru = TypTvaru.NIČ;
 
 					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
+
+					if (pôvodnáVeľkosť != veľkosť ||
+						pôvodnýPomer != pomerVeľkosti)
+					{
+						double mierka = veľkosť / pôvodnáVeľkosť;
+						double mierkaX = mierka * (pomerVeľkosti /
+							pôvodnýPomer);
+						at.translate(prepočítanéX, prepočítanéY);
+						at.scale(mierkaX, mierka);
+						at.translate(-prepočítanéX, -prepočítanéY);
+					}
 
 					at.translate(aktuálneX, -aktuálneY);
 					tvar = at.createTransformedShape(tvar);
@@ -29101,6 +29390,8 @@ Toto bolo presunuté na úvodnú stránku:
 					float priehľadnosť = (obrázok instanceof Obrázok) ?
 						((Obrázok)obrázok).priehľadnosť : 1.0f;
 
+					poslednýTypTvaru = TypTvaru.VÝPLŇ;
+
 					if (priehľadnosť > 0)
 					{
 						grafikaAktívnehoPlátna.setPaint(
@@ -29132,7 +29423,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 							if (!upravRobotom || (aktuálnyUhol == 90 &&
 								aktuálneX == 0 && aktuálneY == 0 &&
-								pôvodnáVeľkosť == veľkosť))
+								pôvodnáVeľkosť == veľkosť &&
+								pôvodnýPomer == pomerVeľkosti))
 							{
 								grafikaAktívnehoPlátna.fill(s);
 								aktualizujPôsobisko(tvar.getBounds2D());
@@ -29144,16 +29436,19 @@ Toto bolo presunuté na úvodnú stránku:
 								double prepočítanéX = Svet.prepočítajX(aktuálneX);
 								double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-								if (pôvodnáVeľkosť != veľkosť)
-								{
-									double mierka = veľkosť / pôvodnáVeľkosť;
-									at.translate(prepočítanéX, prepočítanéY);
-									at.scale(mierka, mierka);
-									at.translate(-prepočítanéX, -prepočítanéY);
-								}
-
 								at.rotate(toRadians(90 - aktuálnyUhol),
 									prepočítanéX, prepočítanéY);
+
+								if (pôvodnáVeľkosť != veľkosť ||
+									pôvodnýPomer != pomerVeľkosti)
+								{
+									double mierka = veľkosť / pôvodnáVeľkosť;
+									double mierkaX = mierka * (pomerVeľkosti /
+										pôvodnýPomer);
+									at.translate(prepočítanéX, prepočítanéY);
+									at.scale(mierkaX, mierka);
+									at.translate(-prepočítanéX, -prepočítanéY);
+								}
 
 								at.translate(aktuálneX, -aktuálneY);
 								tvar = at.createTransformedShape(tvar);
@@ -29174,7 +29469,8 @@ Toto bolo presunuté na úvodnú stránku:
 						{
 							if (!upravRobotom || (aktuálnyUhol == 90 &&
 								aktuálneX == 0 && aktuálneY == 0 &&
-								pôvodnáVeľkosť == veľkosť))
+								pôvodnáVeľkosť == veľkosť &&
+								pôvodnýPomer == pomerVeľkosti))
 							{
 								grafikaAktívnehoPlátna.fill(s);
 								aktualizujPôsobisko(tvar.getBounds2D());
@@ -29186,16 +29482,19 @@ Toto bolo presunuté na úvodnú stránku:
 								double prepočítanéX = Svet.prepočítajX(aktuálneX);
 								double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-								if (pôvodnáVeľkosť != veľkosť)
-								{
-									double mierka = veľkosť / pôvodnáVeľkosť;
-									at.translate(prepočítanéX, prepočítanéY);
-									at.scale(mierka, mierka);
-									at.translate(-prepočítanéX, -prepočítanéY);
-								}
-
 								at.rotate(toRadians(90 - aktuálnyUhol),
 									prepočítanéX, prepočítanéY);
+
+								if (pôvodnáVeľkosť != veľkosť ||
+									pôvodnýPomer != pomerVeľkosti)
+								{
+									double mierka = veľkosť / pôvodnáVeľkosť;
+									double mierkaX = mierka * (pomerVeľkosti /
+										pôvodnýPomer);
+									at.translate(prepočítanéX, prepočítanéY);
+									at.scale(mierkaX, mierka);
+									at.translate(-prepočítanéX, -prepočítanéY);
+								}
 
 								at.translate(aktuálneX, -aktuálneY);
 								tvar = at.createTransformedShape(tvar);
@@ -29221,23 +29520,27 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 					else if (upravRobotom && (aktuálnyUhol != 90 ||
 						aktuálneX != 0 || aktuálneY != 0 ||
-						pôvodnáVeľkosť != veľkosť))
+						pôvodnáVeľkosť != veľkosť ||
+						pôvodnýPomer != pomerVeľkosti))
 					{
 						AffineTransform at = new AffineTransform();
 
 						double prepočítanéX = Svet.prepočítajX(aktuálneX);
 						double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-						if (pôvodnáVeľkosť != veľkosť)
-						{
-							double mierka = veľkosť / pôvodnáVeľkosť;
-							at.translate(prepočítanéX, prepočítanéY);
-							at.scale(mierka, mierka);
-							at.translate(-prepočítanéX, -prepočítanéY);
-						}
-
 						at.rotate(toRadians(90 - aktuálnyUhol),
 							prepočítanéX, prepočítanéY);
+
+						if (pôvodnáVeľkosť != veľkosť ||
+							pôvodnýPomer != pomerVeľkosti)
+						{
+							double mierka = veľkosť / pôvodnáVeľkosť;
+							double mierkaX = mierka * (pomerVeľkosti /
+								pôvodnýPomer);
+							at.translate(prepočítanéX, prepočítanéY);
+							at.scale(mierkaX, mierka);
+							at.translate(-prepočítanéX, -prepočítanéY);
+						}
 
 						at.translate(aktuálneX, -aktuálneY);
 						tvar = at.createTransformedShape(tvar);
@@ -29245,23 +29548,31 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 				else if (upravRobotom && (aktuálnyUhol != 90 ||
 					aktuálneX != 0 || aktuálneY != 0 ||
-					pôvodnáVeľkosť != veľkosť))
+					pôvodnáVeľkosť != veľkosť ||
+					pôvodnýPomer != pomerVeľkosti))
 				{
 					AffineTransform at = new AffineTransform();
 
 					double prepočítanéX = Svet.prepočítajX(aktuálneX);
 					double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-					if (pôvodnáVeľkosť != veľkosť)
-					{
-						double mierka = veľkosť / pôvodnáVeľkosť;
-						at.translate(prepočítanéX, prepočítanéY);
-						at.scale(mierka, mierka);
-						at.translate(-prepočítanéX, -prepočítanéY);
-					}
+					poslednýTypTvaru = TypTvaru.NIČ;
+						// TODO toto napojiť na SVGPodporu‼‼
+						// (over, či to je všade, kde má byť)
 
 					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
+
+					if (pôvodnáVeľkosť != veľkosť ||
+						pôvodnýPomer != pomerVeľkosti)
+					{
+						double mierka = veľkosť / pôvodnáVeľkosť;
+						double mierkaX = mierka * (pomerVeľkosti /
+							pôvodnýPomer);
+						at.translate(prepočítanéX, prepočítanéY);
+						at.scale(mierkaX, mierka);
+						at.translate(-prepočítanéX, -prepočítanéY);
+					}
 
 					at.translate(aktuálneX, -aktuálneY);
 					tvar = at.createTransformedShape(tvar);
@@ -29396,8 +29707,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = abs(zaoblenieX) / 2;
-					double zy = abs(zaoblenieY) / 2;
+					double zx = min(abs(zaoblenieX), 2 * polomer) / 2;
+					double zy = min(abs(zaoblenieY), 2 * polomer) / 2;
 					double Δzx = polomer - zx, Δzy = polomer - zy;
 
 					if (x1 > Δzx)
@@ -29485,8 +29796,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = abs(zaoblenieX) / 2;
-					double zy = abs(zaoblenieY) / 2;
+					double zx = min(abs(zaoblenieX), 2 * a) / 2;
+					double zy = min(abs(zaoblenieY), 2 * b) / 2;
 					double Δzx = a - zx, Δzy = b - zy;
 
 					if (x1 > Δzx)
@@ -29582,7 +29893,8 @@ Toto bolo presunuté na úvodnú stránku:
 			public boolean myšVOblasti(Area oblasť)
 			{
 				if (aktuálnyUhol == 90 && aktuálneX == 0 &&
-					aktuálneY == 0 && pôvodnáVeľkosť == veľkosť)
+					aktuálneY == 0 && pôvodnáVeľkosť == veľkosť &&
+					pôvodnýPomer == pomerVeľkosti)
 					return oblasť.contains(
 						Svet.prepočítajX(ÚdajeUdalostí.súradnicaMyšiX),
 						Svet.prepočítajY(ÚdajeUdalostí.súradnicaMyšiY));
@@ -29592,16 +29904,19 @@ Toto bolo presunuté na úvodnú stránku:
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-				if (pôvodnáVeľkosť != veľkosť)
-				{
-					double mierka = veľkosť / pôvodnáVeľkosť;
-					at.translate(prepočítanéX, prepočítanéY);
-					at.scale(mierka, mierka);
-					at.translate(-prepočítanéX, -prepočítanéY);
-				}
-
 				at.rotate(toRadians(90 - aktuálnyUhol),
 					prepočítanéX, prepočítanéY);
+
+				if (pôvodnáVeľkosť != veľkosť ||
+					pôvodnýPomer != pomerVeľkosti)
+				{
+					double mierka = veľkosť / pôvodnáVeľkosť;
+					double mierkaX = mierka * (pomerVeľkosti /
+						pôvodnýPomer);
+					at.translate(prepočítanéX, prepočítanéY);
+					at.scale(mierkaX, mierka);
+					at.translate(-prepočítanéX, -prepočítanéY);
+				}
 
 				at.translate(aktuálneX, -aktuálneY);
 				Area a = oblasť.createTransformedArea(at);
@@ -29666,6 +29981,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public boolean myšVElipse(double pomer)
 			{
+				if (0 == pomer || 0 == veľkosť) return false;
+
 				double x0 = ÚdajeUdalostí.súradnicaMyšiX - aktuálneX;
 				double y0 = ÚdajeUdalostí.súradnicaMyšiY - aktuálneY;
 
@@ -29700,6 +30017,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public boolean myšVElipse()
 			{
+				if (0 == pomerVeľkosti || 0 == veľkosť) return false;
+
 				double x0 = ÚdajeUdalostí.súradnicaMyšiX - aktuálneX;
 				double y0 = ÚdajeUdalostí.súradnicaMyšiY - aktuálneY;
 
@@ -29761,8 +30080,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = abs(zaoblenieX) / 2;
-					double zy = abs(zaoblenieY) / 2;
+					double zx = min(abs(zaoblenieX), 2 * veľkosť) / 2;
+					double zy = min(abs(zaoblenieY), 2 * veľkosť) / 2;
 					double Δzx = veľkosť - zx, Δzy = veľkosť - zy;
 
 					if (x1 > Δzx)
@@ -29855,8 +30174,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = abs(zaoblenieX) / 2;
-					double zy = abs(zaoblenieY) / 2;
+					double zx = min(abs(zaoblenieX), 2 * veľkosť * pomer) / 2;
+					double zy = min(abs(zaoblenieY), 2 * veľkosť) / 2;
 					double Δzx = (veľkosť * pomer) - zx, Δzy = veľkosť - zy;
 
 					if (x1 > Δzx)
@@ -29953,8 +30272,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = abs(zaoblenieX) / 2;
-					double zy = abs(zaoblenieY) / 2;
+					double zx = min(abs(zaoblenieX), 2 * veľkosť * pomerVeľkosti) / 2;
+					double zy = min(abs(zaoblenieY), 2 * veľkosť) / 2;
 					double Δzx = (veľkosť * pomerVeľkosti) - zx,
 						Δzy = veľkosť - zy;
 
@@ -30252,8 +30571,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = abs(zaoblenieX) / 2;
-					double zy = abs(zaoblenieY) / 2;
+					double zx = min(abs(zaoblenieX), 2 * polomer) / 2;
+					double zy = min(abs(zaoblenieY), 2 * polomer) / 2;
 					double Δzx = polomer - zx, Δzy = polomer - zy;
 
 					if (x1 > Δzx)
@@ -30344,8 +30663,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = abs(zaoblenieX) / 2;
-					double zy = abs(zaoblenieY) / 2;
+					double zx = min(abs(zaoblenieX), 2 * polomer) / 2;
+					double zy = min(abs(zaoblenieY), 2 * polomer) / 2;
 					double Δzx = polomer - zx, Δzy = polomer - zy;
 
 					if (x1 > Δzx)
@@ -30439,8 +30758,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = abs(zaoblenieX) / 2;
-					double zy = abs(zaoblenieY) / 2;
+					double zx = min(abs(zaoblenieX), 2 * a) / 2;
+					double zy = min(abs(zaoblenieY), 2 * b) / 2;
 					double Δzx = a - zx, Δzy = b - zy;
 
 					if (x1 > Δzx)
@@ -30530,8 +30849,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = abs(zaoblenieX) / 2;
-					double zy = abs(zaoblenieY) / 2;
+					double zx = min(abs(zaoblenieX), 2 * a) / 2;
+					double zy = min(abs(zaoblenieY), 2 * b) / 2;
 					double Δzx = a - zx, Δzy = b - zy;
 
 					if (x1 > Δzx)
@@ -30835,6 +31154,8 @@ Toto bolo presunuté na úvodnú stránku:
 			public boolean bodVElipse(double súradnicaBoduX,
 				double súradnicaBoduY, double pomer)
 			{
+				if (0 == pomer || 0 == veľkosť) return false;
+
 				double x0 = súradnicaBoduX - aktuálneX;
 				double y0 = súradnicaBoduY - aktuálneY;
 
@@ -30877,6 +31198,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public boolean bodVElipse(Poloha objekt, double pomer)
 			{
+				if (0 == pomer || 0 == veľkosť) return false;
+
 				double x0 = objekt.polohaX() - aktuálneX;
 				double y0 = objekt.polohaY() - aktuálneY;
 
@@ -30923,6 +31246,8 @@ Toto bolo presunuté na úvodnú stránku:
 			public boolean bodVElipse(double súradnicaBoduX,
 				double súradnicaBoduY)
 			{
+				if (0 == pomerVeľkosti || 0 == veľkosť) return false;
+
 				double x0 = súradnicaBoduX - aktuálneX;
 				double y0 = súradnicaBoduY - aktuálneY;
 
@@ -30959,6 +31284,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public boolean bodVElipse(Poloha objekt)
 			{
+				if (0 == pomerVeľkosti || 0 == veľkosť) return false;
+
 				double x0 = objekt.polohaX() - aktuálneX;
 				double y0 = objekt.polohaY() - aktuálneY;
 
@@ -31027,8 +31354,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = abs(zaoblenieX) / 2;
-					double zy = abs(zaoblenieY) / 2;
+					double zx = min(abs(zaoblenieX), 2 * veľkosť) / 2;
+					double zy = min(abs(zaoblenieY), 2 * veľkosť) / 2;
 					double Δzx = veľkosť - zx, Δzy = veľkosť - zy;
 
 					if (x1 > Δzx)
@@ -31119,8 +31446,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = abs(zaoblenieX) / 2;
-					double zy = abs(zaoblenieY) / 2;
+					double zx = min(abs(zaoblenieX), 2 * veľkosť) / 2;
+					double zy = min(abs(zaoblenieY), 2 * veľkosť) / 2;
 					double Δzx = veľkosť - zx, Δzy = veľkosť - zy;
 
 					if (x1 > Δzx)
@@ -31221,8 +31548,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = abs(zaoblenieX) / 2;
-					double zy = abs(zaoblenieY) / 2;
+					double zx = min(abs(zaoblenieX), 2 * veľkosť * pomer) / 2;
+					double zy = min(abs(zaoblenieY), 2 * veľkosť) / 2;
 					double Δzx = (veľkosť * pomer) - zx, Δzy = veľkosť - zy;
 
 					if (x1 > Δzx)
@@ -31319,8 +31646,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = abs(zaoblenieX) / 2;
-					double zy = abs(zaoblenieY) / 2;
+					double zx = min(abs(zaoblenieX), 2 * veľkosť * pomer) / 2;
+					double zy = min(abs(zaoblenieY), 2 * veľkosť) / 2;
 					double Δzx = (veľkosť * pomer) - zx, Δzy = veľkosť - zy;
 
 					if (x1 > Δzx)
@@ -31424,8 +31751,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = abs(zaoblenieX) / 2;
-					double zy = abs(zaoblenieY) / 2;
+					double zx = min(abs(zaoblenieX), 2 * veľkosť * pomerVeľkosti) / 2;
+					double zy = min(abs(zaoblenieY), 2 * veľkosť) / 2;
 					double Δzx = (veľkosť * pomerVeľkosti) - zx,
 						Δzy = veľkosť - zy;
 
@@ -31525,8 +31852,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (jeV && 0 != zaoblenieX && 0 != zaoblenieY)
 				{
-					double zx = abs(zaoblenieX) / 2;
-					double zy = abs(zaoblenieY) / 2;
+					double zx = min(abs(zaoblenieX), 2 * veľkosť * pomerVeľkosti) / 2;
+					double zy = min(abs(zaoblenieY), 2 * veľkosť) / 2;
 					double Δzx = (veľkosť * pomerVeľkosti) - zx,
 						Δzy = veľkosť - zy;
 
@@ -31665,11 +31992,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see GRobot#obrázok(String, int, double, double, double)
 			 */
 			public void obrázok(String súbor)
-			{ obrázok(súbor, spôsobKreslenia, veľkosť / pôvodnáVeľkosť); }
+			{ obrázok(súbor, spôsobKreslenia, 0, 0, (veľkosť / pôvodnáVeľkosť) *
+				(pomerVeľkosti / pôvodnýPomer), veľkosť / pôvodnáVeľkosť); }
 
 			/** <p><a class="alias"></a> Alias pre {@link #obrázok(String) obrázok}.</p> */
 			public void obrazok(String súbor)
-			{ obrázok(súbor, spôsobKreslenia, veľkosť / pôvodnáVeľkosť); }
+			{ obrázok(súbor, spôsobKreslenia, 0, 0, (veľkosť / pôvodnáVeľkosť) *
+				(pomerVeľkosti / pôvodnýPomer), veľkosť / pôvodnáVeľkosť); }
 
 			/**
 			 * <p>Nakreslí obrázok na pozícii robota podľa aktuálneho spôsobu
@@ -31732,11 +32061,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see GRobot#obrázok(String, int, double, double, double)
 			 */
 			public void obrázok(String súbor, int spôsobKreslenia)
-			{ obrázok(súbor, spôsobKreslenia, veľkosť / pôvodnáVeľkosť); }
+			{ obrázok(súbor, spôsobKreslenia, 0, 0, (veľkosť / pôvodnáVeľkosť) *
+				(pomerVeľkosti / pôvodnýPomer), veľkosť / pôvodnáVeľkosť); }
 
 			/** <p><a class="alias"></a> Alias pre {@link #obrázok(String, int) obrázok}.</p> */
 			public void obrazok(String súbor, int spôsobKreslenia)
-			{ obrázok(súbor, spôsobKreslenia, veľkosť / pôvodnáVeľkosť); }
+			{ obrázok(súbor, spôsobKreslenia, 0, 0, (veľkosť / pôvodnáVeľkosť) *
+				(pomerVeľkosti / pôvodnýPomer), veľkosť / pôvodnáVeľkosť); }
 
 			/**
 			 * <p>Nakreslí obrázok na pozícii robota podľa zadaného spôsobu
@@ -31944,11 +32275,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see GRobot#obrázok(String, int, double, double, double)
 			 */
 			public void obrázok(String súbor, double Δx, double Δy)
-			{ obrázok(súbor, spôsobKreslenia, Δx, Δy, veľkosť / pôvodnáVeľkosť); }
+			{ obrázok(súbor, spôsobKreslenia, Δx, Δy, (veľkosť / pôvodnáVeľkosť) *
+				(pomerVeľkosti / pôvodnýPomer), veľkosť / pôvodnáVeľkosť); }
 
 			/** <p><a class="alias"></a> Alias pre {@link #obrázok(String, double, double) obrázok}.</p> */
 			public void obrazok(String súbor, double Δx, double Δy)
-			{ obrázok(súbor, spôsobKreslenia, Δx, Δy, veľkosť / pôvodnáVeľkosť); }
+			{ obrázok(súbor, spôsobKreslenia, Δx, Δy, (veľkosť / pôvodnáVeľkosť) *
+				(pomerVeľkosti / pôvodnýPomer), veľkosť / pôvodnáVeľkosť); }
 
 			/**
 			 * <p>Nakreslí obrázok v {@linkplain #mierka() mierke robota} na
@@ -31977,12 +32310,14 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public void obrázok(String súbor, int spôsobKreslenia,
 				double Δx, double Δy)
-			{ obrázok(súbor, spôsobKreslenia, Δx, Δy, veľkosť / pôvodnáVeľkosť); }
+			{ obrázok(súbor, spôsobKreslenia, Δx, Δy, (veľkosť / pôvodnáVeľkosť) *
+				(pomerVeľkosti / pôvodnýPomer), veľkosť / pôvodnáVeľkosť); }
 
 			/** <p><a class="alias"></a> Alias pre {@link #obrázok(String, int, double, double) obrázok}.</p> */
 			public void obrazok(String súbor, int spôsobKreslenia,
 				double Δx, double Δy)
-			{ obrázok(súbor, spôsobKreslenia, Δx, Δy, veľkosť / pôvodnáVeľkosť); }
+			{ obrázok(súbor, spôsobKreslenia, Δx, Δy, (veľkosť / pôvodnáVeľkosť) *
+				(pomerVeľkosti / pôvodnýPomer), veľkosť / pôvodnáVeľkosť); }
 
 
 			/**
@@ -32019,7 +32354,6 @@ Toto bolo presunuté na úvodnú stránku:
 			public void obrazok(String súbor, double Δx, double Δy,
 				double mierka)
 			{ obrázok(súbor, spôsobKreslenia, Δx, Δy, mierka); }
-
 
 
 			/**
@@ -32241,11 +32575,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 *     nájdený
 			 */
 			public void obrázok(Image obrázok)
-			{ obrázok(obrázok, spôsobKreslenia, veľkosť / pôvodnáVeľkosť); }
+			{ obrázok(obrázok, spôsobKreslenia, 0, 0, (veľkosť / pôvodnáVeľkosť) *
+				(pomerVeľkosti / pôvodnýPomer), veľkosť / pôvodnáVeľkosť); }
 
 			/** <p><a class="alias"></a> Alias pre {@link #obrázok(Image) obrázok}.</p> */
 			public void obrazok(Image obrázok)
-			{ obrázok(obrázok, spôsobKreslenia, veľkosť / pôvodnáVeľkosť); }
+			{ obrázok(obrázok, spôsobKreslenia, 0, 0, (veľkosť / pôvodnáVeľkosť) *
+				(pomerVeľkosti / pôvodnýPomer), veľkosť / pôvodnáVeľkosť); }
 
 			/**
 			 * <p>Nakreslí obrázok na pozícii robota podľa aktuálneho spôsobu
@@ -32290,11 +32626,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 *     nebol nájdený
 			 */
 			public void obrázok(Image obrázok, int spôsobKreslenia)
-			{ obrázok(obrázok, spôsobKreslenia, veľkosť / pôvodnáVeľkosť); }
+			{ obrázok(obrázok, spôsobKreslenia, 0, 0, (veľkosť / pôvodnáVeľkosť) *
+				(pomerVeľkosti / pôvodnýPomer), veľkosť / pôvodnáVeľkosť); }
 
 			/** <p><a class="alias"></a> Alias pre {@link #obrázok(Image, int) obrázok}.</p> */
 			public void obrazok(Image obrázok, int spôsobKreslenia)
-			{ obrázok(obrázok, spôsobKreslenia, veľkosť / pôvodnáVeľkosť); }
+			{ obrázok(obrázok, spôsobKreslenia, 0, 0, (veľkosť / pôvodnáVeľkosť) *
+				(pomerVeľkosti / pôvodnýPomer), veľkosť / pôvodnáVeľkosť); }
 
 			/**
 			 * <p>Nakreslí obrázok na pozícii robota podľa zadaného spôsobu
@@ -32484,11 +32822,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 *     nebol nájdený
 			 */
 			public void obrázok(Image obrázok, double Δx, double Δy)
-			{ obrázok(obrázok, spôsobKreslenia, Δx, Δy, veľkosť / pôvodnáVeľkosť); }
+			{ obrázok(obrázok, spôsobKreslenia, Δx, Δy, (veľkosť / pôvodnáVeľkosť) *
+				(pomerVeľkosti / pôvodnýPomer), veľkosť / pôvodnáVeľkosť); }
 
 			/** <p><a class="alias"></a> Alias pre {@link #obrázok(Image, double, double) obrázok}.</p> */
 			public void obrazok(Image obrázok, double Δx, double Δy)
-			{ obrázok(obrázok, spôsobKreslenia, Δx, Δy, veľkosť / pôvodnáVeľkosť); }
+			{ obrázok(obrázok, spôsobKreslenia, Δx, Δy, (veľkosť / pôvodnáVeľkosť) *
+				(pomerVeľkosti / pôvodnýPomer), veľkosť / pôvodnáVeľkosť); }
 
 
 			/**
@@ -32542,12 +32882,14 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public void obrázok(Image obrázok, int spôsobKreslenia,
 				double Δx, double Δy)
-			{ obrázok(obrázok, spôsobKreslenia, Δx, Δy, veľkosť / pôvodnáVeľkosť); }
+			{ obrázok(obrázok, spôsobKreslenia, Δx, Δy, (veľkosť / pôvodnáVeľkosť) *
+				(pomerVeľkosti / pôvodnýPomer), veľkosť / pôvodnáVeľkosť); }
 
 			/** <p><a class="alias"></a> Alias pre {@link #obrázok(Image, int, double, double) obrázok}.</p> */
 			public void obrazok(Image obrázok, int spôsobKreslenia,
 				double Δx, double Δy)
-			{ obrázok(obrázok, spôsobKreslenia, Δx, Δy, veľkosť / pôvodnáVeľkosť); }
+			{ obrázok(obrázok, spôsobKreslenia, Δx, Δy, (veľkosť / pôvodnáVeľkosť) *
+				(pomerVeľkosti / pôvodnýPomer), veľkosť / pôvodnáVeľkosť); }
 
 			/**
 			 * <p>Nakreslí obrázok na pozícii robota podľa zadaného spôsobu
@@ -32880,6 +33222,426 @@ Toto bolo presunuté na úvodnú stránku:
 			{ obrázok(obrázok, spôsobKreslenia, Δx, Δy, mierka); }
 
 
+			// Táto verzia nemôže byť definovaná, lebo koliduje s verziou
+			// … Δx, Δy …
+			// public void obrázok(String súbor, int spôsobKreslenia,
+			// 	double mierkaX, double mierkaY)
+
+
+			/**
+			 * <p>Nakreslí obrázok na pozícii robota podľa zadaného spôsobu
+			 * kreslenia s vysunutím stredu otáčania o zadané odchýlky Δx a Δy.
+			 * Odchýlky otáčania sú upravené podľa zadanej mierky.</p>
+			 * 
+			 * <p>Obrázok prečítaný zo súboru je chápaný ako zdroj a po
+			 * prečítaní zostane uložený vo vnútornej pamäti sveta. Z nej
+			 * môže byť v prípade potreby (napríklad ak sa obsah súboru na
+			 * disku zmenil) odstránený metódou {@link Svet#uvoľni(String)
+			 * Svet.uvoľni(názovZdroja)}. (Táto informácia je platná pre
+			 * všetky metódy pracujúce s obrázkami alebo zvukmi, ktoré
+			 * prijímajú názov súboru ako parameter.)</p>
+			 * 
+			 * @param súbor názov súboru s obrázkom, ktorý má byť
+			 *     vykreslený
+			 * @param spôsobKreslenia môže byť buď hodnota {@link 
+			 *     #KRESLI_PRIAMO}, alebo kombinácia hodnôt {@link 
+			 *     #KRESLI_NA_STRED} a {@link #KRESLI_ROTOVANÉ}.
+			 * @param Δx vysunutie stredu otáčania v smere osi x
+			 * @param Δy vysunutie stredu otáčania v smere osi y
+			 * @param mierkaX určuje mierku šírky obrázka
+			 * @param mierkaY určuje mierku šírky obrázka
+			 * 
+			 * @throws GRobotException ak je obrázok poškodený alebo nebol
+			 *     nájdený
+			 * 
+			 * @see Svet#priečinokObrázkov(String)
+			 * @see GRobot#obrázok(String)
+			 * @see GRobot#obrázok(String, double)
+			 * @see GRobot#obrázok(String, double, double)
+			 * @see GRobot#obrázok(String, double, double, double)
+			 * @see GRobot#obrázok(String, int)
+			 * @see GRobot#obrázok(String, int, double)
+			 * @see GRobot#obrázok(String, int, double, double)
+			 */
+			public void obrázok(String súbor, int spôsobKreslenia,
+				double Δx, double Δy, double mierkaX, double mierkaY)
+			{
+				Image obrázok = Obrázok.súborNaObrázok(súbor);
+
+				double prepočítanéX = Svet.prepočítajX(aktuálneX);
+				double prepočítanéY = Svet.prepočítajY(aktuálneY);
+
+				int šírkaObrázka = obrázok.getWidth(null);
+				int výškaObrázka = obrázok.getHeight(null);
+				if (šírkaObrázka < 0 || výškaObrázka < 0)
+					throw new GRobotException("Obrázok „" + súbor +
+						"“ je poškodený!", "imageFileBroken", súbor);
+
+				int šírkaVMierke = šírkaObrázka;
+				int výškaVMierke = výškaObrázka;
+
+				AffineTransform transformácie =
+					grafikaAktívnehoPlátna.getTransform();
+
+				if ((90.0 == aktuálnyUhol) ||
+					(0 == (spôsobKreslenia & KRESLI_ROTOVANÉ)))
+				{
+					if (1.0 != mierkaX || 1.0 != mierkaY)
+					{
+						grafikaAktívnehoPlátna.scale(mierkaX, mierkaY);
+						prepočítanéX /= mierkaX;
+						prepočítanéY /= mierkaY;
+						šírkaVMierke *= mierkaX;
+						výškaVMierke *= mierkaY;
+					}
+
+					if (0 == (spôsobKreslenia & KRESLI_NA_STRED))
+					{
+						aktualizujPôsobisko(
+							aktuálneX,
+							aktuálneY - výškaVMierke,
+							aktuálneX + šírkaVMierke,
+							aktuálneY);
+
+						// Obrázok zo súboru nikdy nebude inštanciou triedy
+						// Obrázok, preto môžeme tento test vynechať.
+						/*if (obrázok instanceof Obrázok)
+							((Obrázok)obrázok).
+								kresliNa((int)prepočítanéX,
+									(int)prepočítanéY,
+									grafikaAktívnehoPlátna);
+						else*/
+							grafikaAktívnehoPlátna.drawImage(obrázok,
+								(int)prepočítanéX, (int)prepočítanéY, null);
+					}
+					else
+					{
+						aktualizujPôsobisko(
+							aktuálneX - (šírkaVMierke / 2.0),
+							aktuálneY - (výškaVMierke / 2.0),
+							aktuálneX + (šírkaVMierke / 2.0),
+							aktuálneY + (výškaVMierke / 2.0));
+
+						/*if (obrázok instanceof Obrázok)
+							((Obrázok)obrázok).
+								kresliNaStred((int)prepočítanéX,
+									(int)prepočítanéY,
+									grafikaAktívnehoPlátna);
+						else*/
+							grafikaAktívnehoPlátna.drawImage(obrázok,
+								(int)(prepočítanéX - (šírkaObrázka / 2.0)),
+								(int)(prepočítanéY - (výškaObrázka / 2.0)),
+								null);
+					}
+				}
+				else
+				{
+					double α = toRadians(aktuálnyUhol - 90);
+
+					if (1.0 == mierkaX && 1.0 == mierkaY)
+						grafikaAktívnehoPlátna.rotate(-α,
+							prepočítanéX + Δx, prepočítanéY - Δy);
+					else
+						grafikaAktívnehoPlátna.rotate(-α,
+							prepočítanéX + (Δx / mierkaX),
+							prepočítanéY - (Δy / mierkaY));
+
+					if (1.0 != mierkaX || 1.0 != mierkaY)
+					{
+						grafikaAktívnehoPlátna.scale(mierkaX, mierkaY);
+						prepočítanéX /= mierkaX;
+						prepočítanéY /= mierkaY;
+						šírkaVMierke *= mierkaX;
+						výškaVMierke *= mierkaY;
+					}
+
+					if (0 == (spôsobKreslenia & KRESLI_NA_STRED))
+					{
+						double x0 = 0;
+						double y0 = -výškaVMierke;
+						double x1 =  šírkaVMierke;
+						double y1 = 0;
+						double x2 = -Δx;
+						double y2 = -Δy;
+						double x3 = aktuálneX + Δx +
+							rotovanéXRad(x2, y2, α);
+						double y3 = aktuálneY + Δy +
+							rotovanéYRad(x2, y2, α);
+
+						aktualizujPôsobisko(
+							x3 + rotovanéXRad(x0, y0, α),
+							y3 + rotovanéYRad(x0, y0, α));
+
+						aktualizujPôsobisko(
+							x3 + rotovanéXRad(x0, y1, α),
+							y3 + rotovanéYRad(x0, y1, α));
+
+						aktualizujPôsobisko(
+							x3 + rotovanéXRad(x1, y0, α),
+							y3 + rotovanéYRad(x1, y0, α));
+
+						aktualizujPôsobisko(
+							x3 + rotovanéXRad(x1, y1, α),
+							y3 + rotovanéYRad(x1, y1, α));
+
+						grafikaAktívnehoPlátna.drawImage(obrázok,
+							(int)prepočítanéX, (int)prepočítanéY, null);
+					}
+					else
+					{
+						double x0 = -šírkaVMierke / 2.0;
+						double y0 = -výškaVMierke / 2.0;
+						double x1 =  šírkaVMierke / 2.0;
+						double y1 =  výškaVMierke / 2.0;
+						double x2 = -Δx;
+						double y2 = -Δy;
+						double x3 = aktuálneX + Δx +
+							rotovanéXRad(x2, y2, α);
+						double y3 = aktuálneY + Δy +
+							rotovanéYRad(x2, y2, α);
+
+						aktualizujPôsobisko(
+							x3 + rotovanéXRad(x0, y0, α),
+							y3 + rotovanéYRad(x0, y0, α));
+
+						aktualizujPôsobisko(
+							x3 + rotovanéXRad(x0, y1, α),
+							y3 + rotovanéYRad(x0, y1, α));
+
+						aktualizujPôsobisko(
+							x3 + rotovanéXRad(x1, y0, α),
+							y3 + rotovanéYRad(x1, y0, α));
+
+						aktualizujPôsobisko(
+							x3 + rotovanéXRad(x1, y1, α),
+							y3 + rotovanéYRad(x1, y1, α));
+
+						grafikaAktívnehoPlátna.drawImage(obrázok,
+							(int)(prepočítanéX - (šírkaObrázka / 2.0)),
+							(int)(prepočítanéY - (výškaObrázka / 2.0)),
+							null);
+					}
+				}
+
+				grafikaAktívnehoPlátna.setTransform(transformácie);
+				Svet.automatickéPrekreslenie();
+			}
+
+			/** <p><a class="alias"></a> Alias pre {@link #obrázok(String, int, double, double, double, double) obrázok}.</p> */
+			public void obrazok(String súbor, int spôsobKreslenia,
+				double Δx, double Δy, double mierkaX, double mierkaY)
+			{ obrázok(súbor, spôsobKreslenia, Δx, Δy, mierkaX, mierkaY); }
+
+
+			// Táto verzia nemôže byť definovaná, lebo koliduje s verziou
+			// … Δx, Δy …
+			// public void obrázok(Image obrázok, int spôsobKreslenia,
+			// 	double mierkaX, double mierkaY)
+
+
+			/**
+			 * <p>Nakreslí obrázok na pozícii robota podľa zadaného spôsobu
+			 * kreslenia s vysunutím stredu otáčania o zadané odchýlky Δx a Δy.
+			 * Obrázok je všeobecný typ {@link Image Image}, za ktorý môže byť
+			 * dosadený aj objekt typu {@link Obrázok Obrázok}.
+			 * Odchýlky otáčania sú upravené podľa mierky.</p>
+			 * 
+			 * @param obrázok obrázok, ktorý má byť vykreslený
+			 * @param spôsobKreslenia môže byť buď hodnota {@link 
+			 *     #KRESLI_PRIAMO}, alebo kombinácia hodnôt {@link 
+			 *     #KRESLI_NA_STRED} a {@link #KRESLI_ROTOVANÉ}.
+			 * @param Δx vysunutie stredu otáčania v smere osi x
+			 * @param Δy vysunutie stredu otáčania v smere osi y
+			 * @param mierkaX určuje mierku šírky obrázka
+			 * @param mierkaY určuje mierku výšky obrázka
+			 * 
+			 * @throws GRobotException ak je obrázok poškodený alebo
+			 *     nebol nájdený
+			 */
+			public void obrázok(Image obrázok, int spôsobKreslenia,
+				double Δx, double Δy, double mierkaX, double mierkaY)
+			{
+				double prepočítanéX = Svet.prepočítajX(aktuálneX);
+				double prepočítanéY = Svet.prepočítajY(aktuálneY);
+
+				int šírkaObrázka = obrázok.getWidth(null);
+				int výškaObrázka = obrázok.getHeight(null);
+				if (šírkaObrázka < 0 || výškaObrázka < 0)
+					throw new GRobotException("Obrázok je poškodený!",
+						"imageBroken");
+
+				int šírkaVMierke = šírkaObrázka;
+				int výškaVMierke = výškaObrázka;
+
+				AffineTransform transformácie =
+					grafikaAktívnehoPlátna.getTransform();
+
+				Image relevantný = Obrázok.dajRelevantnýRaster(obrázok);
+
+				if ((90.0 == aktuálnyUhol) ||
+					(0 == (spôsobKreslenia & KRESLI_ROTOVANÉ)))
+				{
+					if (1.0 != mierkaX || 1.0 != mierkaY)
+					{
+						grafikaAktívnehoPlátna.scale(mierkaX, mierkaY);
+						prepočítanéX /= mierkaX;
+						prepočítanéY /= mierkaY;
+						šírkaVMierke *= mierkaX;
+						výškaVMierke *= mierkaY;
+					}
+
+					if (0 == (spôsobKreslenia & KRESLI_NA_STRED))
+					{
+						aktualizujPôsobisko(
+							aktuálneX,
+							aktuálneY - výškaVMierke,
+							aktuálneX + šírkaVMierke,
+							aktuálneY);
+
+						if (relevantný instanceof Obrázok)
+							((Obrázok)relevantný).
+								kresliNa((int)prepočítanéX,
+									(int)prepočítanéY,
+									grafikaAktívnehoPlátna);
+						else
+							grafikaAktívnehoPlátna.drawImage(relevantný,
+								(int)(prepočítanéX),
+								(int)(prepočítanéY),
+								null);
+					}
+					else
+					{
+						aktualizujPôsobisko(
+							aktuálneX - (šírkaVMierke / 2.0),
+							aktuálneY - (výškaVMierke / 2.0),
+							aktuálneX + (šírkaVMierke / 2.0),
+							aktuálneY + (výškaVMierke / 2.0));
+
+						if (relevantný instanceof Obrázok)
+							((Obrázok)relevantný).
+								kresliNaStred((int)prepočítanéX,
+									(int)prepočítanéY,
+									grafikaAktívnehoPlátna);
+						else
+							grafikaAktívnehoPlátna.drawImage(relevantný,
+								(int)(prepočítanéX - (šírkaObrázka / 2.0)),
+								(int)(prepočítanéY - (výškaObrázka / 2.0)),
+								null);
+					}
+				}
+				else
+				{
+					double α = toRadians(aktuálnyUhol - 90);
+
+					if (1.0 == mierkaX && 1.0 == mierkaY)
+						grafikaAktívnehoPlátna.rotate(-α,
+							prepočítanéX + Δx, prepočítanéY - Δy);
+					else
+						grafikaAktívnehoPlátna.rotate(-α,
+							prepočítanéX + (Δx / mierkaX),
+							prepočítanéY - (Δy / mierkaY));
+
+					if (1.0 != mierkaX || 1.0 != mierkaY)
+					{
+						grafikaAktívnehoPlátna.scale(mierkaX, mierkaY);
+						prepočítanéX /= mierkaX;
+						prepočítanéY /= mierkaY;
+						šírkaVMierke *= mierkaX;
+						výškaVMierke *= mierkaY;
+					}
+
+					if (0 == (spôsobKreslenia & KRESLI_NA_STRED))
+					{
+						double x0 = 0;
+						double y0 = -výškaVMierke;
+						double x1 =  šírkaVMierke;
+						double y1 = 0;
+						double x2 = -Δx;
+						double y2 = -Δy;
+						double x3 = aktuálneX + Δx +
+							rotovanéXRad(x2, y2, α);
+						double y3 = aktuálneY + Δy +
+							rotovanéYRad(x2, y2, α);
+
+						aktualizujPôsobisko(
+							x3 + rotovanéXRad(x0, y0, α),
+							y3 + rotovanéYRad(x0, y0, α));
+
+						aktualizujPôsobisko(
+							x3 + rotovanéXRad(x0, y1, α),
+							y3 + rotovanéYRad(x0, y1, α));
+
+						aktualizujPôsobisko(
+							x3 + rotovanéXRad(x1, y0, α),
+							y3 + rotovanéYRad(x1, y0, α));
+
+						aktualizujPôsobisko(
+							x3 + rotovanéXRad(x1, y1, α),
+							y3 + rotovanéYRad(x1, y1, α));
+
+						if (relevantný instanceof Obrázok)
+							((Obrázok)relevantný).
+								kresliNa((int)prepočítanéX,
+									(int)prepočítanéY,
+									grafikaAktívnehoPlátna);
+						else
+							grafikaAktívnehoPlátna.drawImage(relevantný,
+								(int)(prepočítanéX),
+								(int)(prepočítanéY),
+								null);
+					}
+					else
+					{
+						double x0 = -šírkaVMierke / 2.0;
+						double y0 = -výškaVMierke / 2.0;
+						double x1 =  šírkaVMierke / 2.0;
+						double y1 =  výškaVMierke / 2.0;
+						double x2 = -Δx;
+						double y2 = -Δy;
+						double x3 = aktuálneX + Δx +
+							rotovanéXRad(x2, y2, α);
+						double y3 = aktuálneY + Δy +
+							rotovanéYRad(x2, y2, α);
+
+						aktualizujPôsobisko(
+							x3 + rotovanéXRad(x0, y0, α),
+							y3 + rotovanéYRad(x0, y0, α));
+
+						aktualizujPôsobisko(
+							x3 + rotovanéXRad(x0, y1, α),
+							y3 + rotovanéYRad(x0, y1, α));
+
+						aktualizujPôsobisko(
+							x3 + rotovanéXRad(x1, y0, α),
+							y3 + rotovanéYRad(x1, y0, α));
+
+						aktualizujPôsobisko(
+							x3 + rotovanéXRad(x1, y1, α),
+							y3 + rotovanéYRad(x1, y1, α));
+
+						if (relevantný instanceof Obrázok)
+							((Obrázok)relevantný).
+								kresliNaStred((int)prepočítanéX,
+									(int)prepočítanéY,
+									grafikaAktívnehoPlátna);
+						else
+							grafikaAktívnehoPlátna.drawImage(relevantný,
+								(int)(prepočítanéX - (šírkaObrázka / 2.0)),
+								(int)(prepočítanéY - (výškaObrázka / 2.0)),
+								null);
+					}
+				}
+
+				grafikaAktívnehoPlátna.setTransform(transformácie);
+				Svet.automatickéPrekreslenie();
+			}
+
+			/** <p><a class="alias"></a> Alias pre {@link #obrázok(Image, int, double, double, double, double) obrázok}.</p> */
+			public void obrazok(Image obrázok, int spôsobKreslenia,
+				double Δx, double Δy, double mierkaX, double mierkaY)
+			{ obrázok(obrázok, spôsobKreslenia, Δx, Δy, mierkaX, mierkaY); }
+
+
 		// Text
 
 			/**
@@ -33080,8 +33842,11 @@ Toto bolo presunuté na úvodnú stránku:
 						}
 					}
 
+					poslednýTypTvaru = TypTvaru.NIČ;
 					return rozloženieTextu.getOutline(transformácie);
 				}
+
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 				// grafikaAktívnehoPlátna.setColor(farbaRobota);
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
@@ -33308,8 +34073,11 @@ Toto bolo presunuté na úvodnú stránku:
 						}
 					}
 
+					poslednýTypTvaru = TypTvaru.NIČ;
 					return rozloženieTextu.getOutline(transformácie);
 				}
+
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 				// grafikaAktívnehoPlátna.setColor(farbaRobota);
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
@@ -34089,6 +34857,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public void vyplňCestu()
 			{
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 				/*
 				 * @throws RuntimeException ak cesta nejestvuje
 				if (0 == cesta.npoints) throw new RuntimeException("Cesta " +
@@ -34162,6 +34931,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public void kresliCestu()
 			{
+				poslednýTypTvaru = TypTvaru.OBRYS;
 				/*
 				 * @throws RuntimeException ak cesta nejestvuje
 				if (0 == cesta.npoints) throw new RuntimeException("Cesta " +
@@ -34209,6 +34979,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public void obkresliCestu()
 			{
+				poslednýTypTvaru = TypTvaru.OBRYS;
 				/*
 				 * @throws RuntimeException ak cesta nejestvuje
 				if (0 == cesta.npoints) throw new RuntimeException("Cesta " +
@@ -34413,6 +35184,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public Shape cesta()
 			{
+				poslednýTypTvaru = TypTvaru.NIČ;
 				/*
 				 * @throws RuntimeException ak cesta nejestvuje
 				if (0 == cesta.npoints) throw new RuntimeException("Cesta " +
@@ -34754,7 +35526,8 @@ Toto bolo presunuté na úvodnú stránku:
 				grafikaAktívnehoPlátna.setStroke(čiara);
 
 				if (aktuálnyUhol == 90 && aktuálneX == 0 &&
-					aktuálneY == 0 && pôvodnáVeľkosť == veľkosť)
+					aktuálneY == 0 && pôvodnáVeľkosť == veľkosť &&
+					pôvodnýPomer == pomerVeľkosti)
 				{
 					grafikaAktívnehoPlátna.draw(oblasť);
 					aktualizujPôsobisko(oblasť.getBounds2D());
@@ -34766,16 +35539,19 @@ Toto bolo presunuté na úvodnú stránku:
 					double prepočítanéX = Svet.prepočítajX(aktuálneX);
 					double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-					if (pôvodnáVeľkosť != veľkosť)
-					{
-						double mierka = veľkosť / pôvodnáVeľkosť;
-						at.translate(prepočítanéX, prepočítanéY);
-						at.scale(mierka, mierka);
-						at.translate(-prepočítanéX, -prepočítanéY);
-					}
-
 					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
+
+					if (pôvodnáVeľkosť != veľkosť ||
+						pôvodnýPomer != pomerVeľkosti)
+					{
+						double mierka = veľkosť / pôvodnáVeľkosť;
+						double mierkaX = mierka * (pomerVeľkosti /
+							pôvodnýPomer);
+						at.translate(prepočítanéX, prepočítanéY);
+						at.scale(mierkaX, mierka);
+						at.translate(-prepočítanéX, -prepočítanéY);
+					}
 
 					at.translate(aktuálneX, -aktuálneY);
 					Area a = oblasť.createTransformedArea(at);
@@ -34815,7 +35591,8 @@ Toto bolo presunuté na úvodnú stránku:
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
 				if (aktuálnyUhol == 90 && aktuálneX == 0 &&
-					aktuálneY == 0 && pôvodnáVeľkosť == veľkosť)
+					aktuálneY == 0 && pôvodnáVeľkosť == veľkosť &&
+					pôvodnýPomer == pomerVeľkosti)
 				{
 					grafikaAktívnehoPlátna.fill(oblasť);
 					aktualizujPôsobisko(oblasť.getBounds2D());
@@ -34829,17 +35606,20 @@ Toto bolo presunuté na úvodnú stránku:
 					double prepočítanéX = Svet.prepočítajX(aktuálneX);
 					double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-					if (pôvodnáVeľkosť != veľkosť)
+					at.rotate(toRadians(90 - aktuálnyUhol),
+						prepočítanéX, prepočítanéY);
+
+					if (pôvodnáVeľkosť != veľkosť ||
+						pôvodnýPomer != pomerVeľkosti)
 					{
 						double mierka = veľkosť / pôvodnáVeľkosť;
+						double mierkaX = mierka * (pomerVeľkosti /
+							pôvodnýPomer);
 						at.translate(prepočítanéX, prepočítanéY);
-						at.scale(mierka, mierka);
+						at.scale(mierkaX, mierka);
 						at.translate(-prepočítanéX, -prepočítanéY);
 						// System.out.println("mierka: " + mierka);
 					}
-
-					at.rotate(toRadians(90 - aktuálnyUhol),
-						prepočítanéX, prepočítanéY);
 
 					at.translate(aktuálneX, -aktuálneY);
 					Area a = oblasť.createTransformedArea(at);
@@ -34923,7 +35703,8 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 
 				if (aktuálnyUhol == 90 && aktuálneX == 0 &&
-					aktuálneY == 0 && pôvodnáVeľkosť == veľkosť)
+					aktuálneY == 0 && pôvodnáVeľkosť == veľkosť &&
+					pôvodnýPomer == pomerVeľkosti)
 				{
 					grafikaAktívnehoPlátna.fill(a);
 					aktualizujPôsobisko(oblasť.getBounds2D());
@@ -34935,16 +35716,19 @@ Toto bolo presunuté na úvodnú stránku:
 					double prepočítanéX = Svet.prepočítajX(aktuálneX);
 					double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-					if (pôvodnáVeľkosť != veľkosť)
-					{
-						double mierka = veľkosť / pôvodnáVeľkosť;
-						at.translate(prepočítanéX, prepočítanéY);
-						at.scale(mierka, mierka);
-						at.translate(-prepočítanéX, -prepočítanéY);
-					}
-
 					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
+
+					if (pôvodnáVeľkosť != veľkosť ||
+						pôvodnýPomer != pomerVeľkosti)
+					{
+						double mierka = veľkosť / pôvodnáVeľkosť;
+						double mierkaX = mierka * (pomerVeľkosti /
+							pôvodnýPomer);
+						at.translate(prepočítanéX, prepočítanéY);
+						at.scale(mierkaX, mierka);
+						at.translate(-prepočítanéX, -prepočítanéY);
+					}
 
 					at.translate(aktuálneX, -aktuálneY);
 					oblasť = oblasť.createTransformedArea(at);
@@ -35046,7 +35830,8 @@ Toto bolo presunuté na úvodnú stránku:
 								priehľadnosť));
 
 						if (aktuálnyUhol == 90 && aktuálneX == 0 &&
-							aktuálneY == 0 && pôvodnáVeľkosť == veľkosť)
+							aktuálneY == 0 && pôvodnáVeľkosť == veľkosť &&
+							pôvodnýPomer == pomerVeľkosti)
 						{
 							grafikaAktívnehoPlátna.fill(a);
 							aktualizujPôsobisko(oblasť.getBounds2D());
@@ -35058,16 +35843,19 @@ Toto bolo presunuté na úvodnú stránku:
 							double prepočítanéX = Svet.prepočítajX(aktuálneX);
 							double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-							if (pôvodnáVeľkosť != veľkosť)
-							{
-								double mierka = veľkosť / pôvodnáVeľkosť;
-								at.translate(prepočítanéX, prepočítanéY);
-								at.scale(mierka, mierka);
-								at.translate(-prepočítanéX, -prepočítanéY);
-							}
-
 							at.rotate(toRadians(90 - aktuálnyUhol),
 								prepočítanéX, prepočítanéY);
+
+							if (pôvodnáVeľkosť != veľkosť ||
+								pôvodnýPomer != pomerVeľkosti)
+							{
+								double mierka = veľkosť / pôvodnáVeľkosť;
+								double mierkaX = mierka * (pomerVeľkosti /
+									pôvodnýPomer);
+								at.translate(prepočítanéX, prepočítanéY);
+								at.scale(mierkaX, mierka);
+								at.translate(-prepočítanéX, -prepočítanéY);
+							}
 
 							at.translate(aktuálneX, -aktuálneY);
 							oblasť = oblasť.createTransformedArea(at);
@@ -35087,7 +35875,8 @@ Toto bolo presunuté na úvodnú stránku:
 					else
 					{
 						if (aktuálnyUhol == 90 && aktuálneX == 0 &&
-							aktuálneY == 0 && pôvodnáVeľkosť == veľkosť)
+							aktuálneY == 0 && pôvodnáVeľkosť == veľkosť &&
+							pôvodnýPomer == pomerVeľkosti)
 						{
 							grafikaAktívnehoPlátna.fill(a);
 							aktualizujPôsobisko(oblasť.getBounds2D());
@@ -35099,16 +35888,19 @@ Toto bolo presunuté na úvodnú stránku:
 							double prepočítanéX = Svet.prepočítajX(aktuálneX);
 							double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-							if (pôvodnáVeľkosť != veľkosť)
-							{
-								double mierka = veľkosť / pôvodnáVeľkosť;
-								at.translate(prepočítanéX, prepočítanéY);
-								at.scale(mierka, mierka);
-								at.translate(-prepočítanéX, -prepočítanéY);
-							}
-
 							at.rotate(toRadians(90 - aktuálnyUhol),
 								prepočítanéX, prepočítanéY);
+
+							if (pôvodnáVeľkosť != veľkosť ||
+								pôvodnýPomer != pomerVeľkosti)
+							{
+								double mierka = veľkosť / pôvodnáVeľkosť;
+								double mierkaX = mierka * (pomerVeľkosti /
+									pôvodnýPomer);
+								at.translate(prepočítanéX, prepočítanéY);
+								at.scale(mierkaX, mierka);
+								at.translate(-prepočítanéX, -prepočítanéY);
+							}
 
 							at.translate(aktuálneX, -aktuálneY);
 							oblasť = oblasť.createTransformedArea(at);
@@ -35172,7 +35964,8 @@ Toto bolo presunuté na úvodnú stránku:
 				double súradnicaBoduY, Area oblasť)
 			{
 				if (aktuálnyUhol == 90 && aktuálneX == 0 &&
-					aktuálneY == 0 && pôvodnáVeľkosť == veľkosť)
+					aktuálneY == 0 && pôvodnáVeľkosť == veľkosť &&
+					pôvodnýPomer == pomerVeľkosti)
 					return oblasť.contains(Svet.prepočítajX(súradnicaBoduX),
 						Svet.prepočítajY(súradnicaBoduY));
 
@@ -35181,16 +35974,19 @@ Toto bolo presunuté na úvodnú stránku:
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-				if (pôvodnáVeľkosť != veľkosť)
-				{
-					double mierka = veľkosť / pôvodnáVeľkosť;
-					at.translate(prepočítanéX, prepočítanéY);
-					at.scale(mierka, mierka);
-					at.translate(-prepočítanéX, -prepočítanéY);
-				}
-
 				at.rotate(toRadians(90 - aktuálnyUhol),
 					prepočítanéX, prepočítanéY);
+
+				if (pôvodnáVeľkosť != veľkosť ||
+					pôvodnýPomer != pomerVeľkosti)
+				{
+					double mierka = veľkosť / pôvodnáVeľkosť;
+					double mierkaX = mierka * (pomerVeľkosti /
+						pôvodnýPomer);
+					at.translate(prepočítanéX, prepočítanéY);
+					at.scale(mierkaX, mierka);
+					at.translate(-prepočítanéX, -prepočítanéY);
+				}
 
 				at.translate(aktuálneX, -aktuálneY);
 				Area a = oblasť.createTransformedArea(at);
@@ -35225,7 +36021,8 @@ Toto bolo presunuté na úvodnú stránku:
 			public boolean bodVOblasti(Poloha objekt, Area oblasť)
 			{
 				if (aktuálnyUhol == 90 && aktuálneX == 0 &&
-					aktuálneY == 0 && pôvodnáVeľkosť == veľkosť)
+					aktuálneY == 0 && pôvodnáVeľkosť == veľkosť &&
+					pôvodnýPomer == pomerVeľkosti)
 					return oblasť.contains(Svet.prepočítajX(objekt.polohaX()),
 						Svet.prepočítajY(objekt.polohaY()));
 
@@ -35234,16 +36031,19 @@ Toto bolo presunuté na úvodnú stránku:
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-				if (pôvodnáVeľkosť != veľkosť)
-				{
-					double mierka = veľkosť / pôvodnáVeľkosť;
-					at.translate(prepočítanéX, prepočítanéY);
-					at.scale(mierka, mierka);
-					at.translate(-prepočítanéX, -prepočítanéY);
-				}
-
 				at.rotate(toRadians(90 - aktuálnyUhol),
 					prepočítanéX, prepočítanéY);
+
+				if (pôvodnáVeľkosť != veľkosť ||
+					pôvodnýPomer != pomerVeľkosti)
+				{
+					double mierka = veľkosť / pôvodnáVeľkosť;
+					double mierkaX = mierka * (pomerVeľkosti /
+						pôvodnýPomer);
+					at.translate(prepočítanéX, prepočítanéY);
+					at.scale(mierkaX, mierka);
+					at.translate(-prepočítanéX, -prepočítanéY);
+				}
 
 				at.translate(aktuálneX, -aktuálneY);
 				Area a = oblasť.createTransformedArea(at);
@@ -35257,11 +36057,12 @@ Toto bolo presunuté na úvodnú stránku:
 
 			/**
 			 * <p><a class="setter"></a> Preradí tento robot do vrstvy
-			 * s určeným poradovým
-			 * číslom. Vrstva je symbolická hodnota ovplyvňujúca poradie
-			 * kreslenia robotov. Zmenou hodnoty vrstvy sa nezmení
-			 * umiestnenie robota v rámci vnútorného zoznamu robotov. Vrstva
-			 * ovplyvňuje poradie kreslenia všetkých robotov, pričom poradie
+			 * s určeným poradovým číslom. Vrstva môže byť chápaná ako
+			 * symbolická hodnota, ktorá ovplyvňuje poradie kreslenia
+			 * robotov (podrobnosti sú v opise metódy {@link #vrstva()
+			 * vrstva()}). Zmenou hodnoty vrstvy sa nezmení umiestnenie
+			 * robota v rámci vnútorného zoznamu robotov. Vrstva ovplyvňuje
+			 * poradie kreslenia v rámci všetkých robotov, pričom poradie
 			 * kreslenia robotov umiestnených v rovnakej vrstve je určené
 			 * poradím vo vnútornom zozname robotov.</p>
 			 * 
@@ -35277,6 +36078,7 @@ Toto bolo presunuté na úvodnú stránku:
 			/**
 			 * <p><a class="getter"></a> Vráti poradové číslo vrstvy kreslenia,
 			 * v ktorej je umiestnený tento robot.
+			 * 
 			 * Predvolené číslo vrstvy je {@code num0}. Stúpajúca hodnota
 			 * čísla vrstvy znamená neskoršie kreslenie, čiže „zobrazenie
 			 * (robota, resp. ním reprezentovaného objektu) viac v popredí.“
@@ -35289,7 +36091,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 * <p>Desať robotov v kruhu je po spustení kreslených v tom poradí,
 			 * ako boli vytvorené. Kliknutie ľavým tlačidlom myši „priblíži“
 			 * robot (presunie ho do vyššej vrstvy) a kliknutie iným
-			 * (predpokladajme, že pravým) tlačidlom vykoná opak.</p>
+			 * (predpokladajme, že pravým, ale môže to byť aj stredné)
+			 * tlačidlom vykoná opak.</p>
 			 * 
 			 * <pre CLASS="example">
 				{@code kwdimport} knižnica.*;
@@ -35747,6 +36550,10 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see #zrušSpojnicu(GRobot)
 			 * @see #zrušSpojnice()
 			 * @see #jeSpojnica(GRobot)
+			 * @see #spojniceZ()
+			 * @see #spojniceDo()
+			 * @see #súSpojniceZ()
+			 * @see #súSpojniceDo()
 			 */
 			public Spojnica dajSpojnicu(GRobot cieľ)
 			{
@@ -37426,6 +38233,10 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see #kopírujSpojnice(GRobot)
 			 * @see #zrušSpojnicu(GRobot)
 			 * @see #zrušSpojnice()
+			 * @see #spojniceZ()
+			 * @see #spojniceDo()
+			 * @see #súSpojniceZ()
+			 * @see #súSpojniceDo()
 			 */
 			public boolean jeSpojnica(GRobot cieľ)
 			{
@@ -37439,6 +38250,96 @@ Toto bolo presunuté na úvodnú stránku:
 
 			/** <p><a class="alias"></a> Alias pre {@link #jeSpojnica(GRobot) jeSpojnica}.</p> */
 			public boolean maSpojnicu(GRobot cieľ) { return jeSpojnica(cieľ); }
+
+			/**
+			 * <p>Vytvorí zoznam všetkých spojníc smerujúcich z tohto
+			 * robota.</p>
+			 * 
+			 * @return zoznam spojníc smerujúcich z tohto robota
+			 * 
+			 * @see #dajSpojnicu(GRobot)
+			 * @see #spojniceDo()
+			 * @see #súSpojniceZ()
+			 * @see #súSpojniceDo()
+			 * @see #jeSpojnica(GRobot)
+			 */
+			public Spojnica[] spojniceZ()
+			{
+				Spojnica[] zoznam = new Spojnica[spojnice.size()];
+				return spojnice.toArray(zoznam);
+			}
+
+			/**
+			 * <p>Vytvorí zoznam všetkých spojníc smerujúcich do tohto
+			 * robota.</p>
+			 * 
+			 * @return zoznam spojníc smerujúcich do tohto robota
+			 * 
+			 * @see #dajSpojnicu(GRobot)
+			 * @see #spojniceZ()
+			 * @see #súSpojniceZ()
+			 * @see #súSpojniceDo()
+			 * @see #jeSpojnica(GRobot)
+			 */
+			public Spojnica[] spojniceDo()
+			{
+				Vector<Spojnica> spojnice = new Vector<>();
+				try
+				{
+					for (GRobot partner : zoznamRobotov)
+						for (Spojnica spojnica : partner.spojnice)
+							if (spojnica.cieľ == this) spojnice.add(spojnica);
+
+					Spojnica[] zoznam = new Spojnica[spojnice.size()];
+					return spojnice.toArray(zoznam);
+				}
+				finally
+				{
+					spojnice.clear();
+					spojnice = null;
+				}
+			}
+
+			/**
+			 * <p>Overí, či jestvuje aspoň jedna spojnica smerujúca z tohto
+			 * robota. Niekedy je užitočné rýchlo overiť túto informáciu bez
+			 * zbytočného vytvárania inštancií zoznamov.</p>
+			 * 
+			 * @return {@code valtrue}, ak jestvuje aspoň jedna spojnica
+			 *     smerujúca z tohto robota
+			 * 
+			 * @see #dajSpojnicu(GRobot)
+			 * @see #spojniceZ()
+			 * @see #spojniceDo()
+			 * @see #súSpojniceDo()
+			 * @see #jeSpojnica(GRobot)
+			 */
+			public boolean súSpojniceZ() { return !spojnice.isEmpty(); }
+
+			/** <p><a class="alias"></a> Alias pre {@link #súSpojniceZ() súSpojniceZ}.</p> */
+			public boolean suSpojniceZ() { return súSpojniceZ(); }
+
+			/**
+			 * <p>Overí, či jestvuje aspoň jedna spojnica smerujúca do tohto
+			 * robota. Niekedy je užitočné rýchlo overiť túto informáciu bez
+			 * zbytočného vytvárania inštancií zoznamov.</p>
+			 * 
+			 * @see #dajSpojnicu(GRobot)
+			 * @see #spojniceZ()
+			 * @see #spojniceDo()
+			 * @see #súSpojniceZ()
+			 * @see #jeSpojnica(GRobot)
+			 */
+			public boolean súSpojniceDo()
+			{
+				for (GRobot partner : zoznamRobotov)
+					for (Spojnica spojnica : partner.spojnice)
+						if (spojnica.cieľ == this) return true;
+				return false;
+			}
+
+			/** <p><a class="alias"></a> Alias pre {@link #súSpojniceDo() súSpojniceDo}.</p> */
+			public boolean suSpojniceDo() { return súSpojniceDo(); }
 
 
 		// Veľkosť robota, kolízna oblasť a detekcia kolízií
@@ -37568,7 +38469,8 @@ Toto bolo presunuté na úvodnú stránku:
 			public void šírka(double šírka)
 			{
 				// TODO – otestuj
-				pomerVeľkosti = (šírka / 2.0) / veľkosť;
+				if (0 == veľkosť) pomerVeľkosti = 0;
+				else pomerVeľkosti = (šírka / 2.0) / veľkosť;
 				if (viditeľný) Svet.automatickéPrekreslenie();
 			}
 
@@ -37592,7 +38494,8 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				// TODO – otestuj
 				double nováVeľkosť = výška / 2.0;
-				pomerVeľkosti = (veľkosť * pomerVeľkosti) / nováVeľkosť;
+				if (0 == nováVeľkosť) pomerVeľkosti = 0;
+				else pomerVeľkosti = (veľkosť * pomerVeľkosti) / nováVeľkosť;
 				veľkosť = nováVeľkosť;
 				if (viditeľný) Svet.automatickéPrekreslenie();
 			}
@@ -37602,9 +38505,9 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 			/**
-			 * <p>Vráti objekt obsahujúci aktuálne hodnoty {@linkplain 
-			 * #výška() výšky} a {@linkplain #šírka() šírky} robota. (Ide
-			 * o prepočítané hodnoty – pozri poznámku nižšie.)</p>
+			 * <p>Vráti objekt obsahujúci aktuálne hodnoty
+			 * {@linkplain #šírka() šírky} a {@linkplain #výška() výšky}
+			 * robota. (Ide o prepočítané hodnoty – pozri poznámku nižšie.)</p>
 			 * 
 			 * <hr />
 			 * 
@@ -37640,13 +38543,16 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public Rozmer rozmer()
 			{
-				// TODO:
-				// Počas vývoja padla otázka: Započítať do rozmerov aj mierku?
-				// Odpoveď prišla pomaly, ale nakoniec bolo rozhodnuté, že nie.
-				// Mohlo by to spôsobiť zmätok. Lepšie bude, ak bude vyrobená
-				// skupina metód typu výslednáŠírka… Pozor! Nie „skutočná“
-				// šírka. To by zase mohlo spôsobovať zmätok, lebo niekto by
-				// pod skutočnou mohol rozumieť pôvodnú.
+				// TODO (intro):
+				// Počas vývoja padla otázka: Započítať do rozmerov aj
+				// mierku? Odpoveď prišla pomaly, ale nakoniec bolo
+				// rozhodnuté, že nie. Mohlo by to spôsobiť zmätok.
+				// 
+				// TODO (real):
+				// Lepšie bude, ak bude vyrobená skupina metód typu
+				// výslednáŠírka… Pozor! Nie „skutočná“ šírka. To by zase
+				// mohlo spôsobovať zmätok, lebo niekto by pod „skutočnou“
+				// mohol rozumieť práve tú pôvodnú.
 
 				// šírka × výška; RegEx: (?:[Šš]írka|výška)\(
 				return new Rozmery(2.0 * veľkosť * pomerVeľkosti,
@@ -37688,7 +38594,8 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				// TODO – otestuj
 				veľkosť = rozmer.výška() / 2.0;
-				pomerVeľkosti = (rozmer.šírka() / 2.0) / veľkosť;
+				if (0 == veľkosť) pomerVeľkosti = 0;
+				else pomerVeľkosti = (rozmer.šírka() / 2.0) / veľkosť;
 				if (viditeľný) Svet.automatickéPrekreslenie();
 			}
 
@@ -37725,7 +38632,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * <p>Nastaví nové rozmery robota.</p>
 			 * 
 			 * <p class="attention"><b>Upozornenie:</b> {@code currRozmery}
-			 * ({@linkplain #výška() výška} a {@linkplain #šírka() šírka})
+			 * ({@linkplain #šírka() šírka} a {@linkplain #výška() výška})
 			 * robota sú takpovediac „tieňové“ vlastnosti. V skutočnosti sú
 			 * vnútorne tieto hodnoty premietané cez vlastnosti {@linkplain 
 			 * #veľkosť() veľkosti} a {@linkplain #pomer() pomeru} robota.
@@ -37735,9 +38642,24 @@ Toto bolo presunuté na úvodnú stránku:
 			 * zadanej šírky a novej veľkosti (ktorá bola práve vypočítaná).
 			 * Podobne to platí naopak: výška je vypočítaná ako dvojnásobok
 			 * aktuálnej veľkosti robota a šírka je súčinom výšky (ktorá bola
-			 * práve vypočítaná) a pomeru veľkosti robota. Reálne nie sú
-			 * hodnoty výšky a šírky robota uchovávané. (Vždy ide
+			 * práve vypočítaná) a pomeru veľkosti robota. Reálne <b>nie
+			 * sú</b> hodnoty šírky a výšky robota uchovávané. (Vždy ide
 			 * o prepočet.)</p>
+			 * 
+			 * <p><b>Vzorce prepočtov:</b></p>
+			 * 
+			 * <pre CLASS="example">
+				{@code comm// Prepočet šírky a výšky na veľkosť a pomer veľkosti}
+				{@code comm// (pozor, v druhom riadku je použitá vypočítaná}
+				{@code comm// hodnota z prvého riadka):}
+				veľkosť = výška / {@code num2.0};
+				pomerVeľkosti = (šírka / {@code num2.0}) / veľkosť;
+					{@code comm// (Poznámka: Ak je veľkosť nulová, tak je aj pomer nastavený na nulu.)}
+
+				{@code comm// Prepočet veľkosti a pomeru veľkosti na šírku a výšku:}
+				šírka = {@code num2.0} * veľkosť * pomerVeľkosti;
+				výška = {@code num2.0} * veľkosť;
+			 </pre>
 			 * 
 			 * @param šírka nová šírka robota
 			 * @param výška nová výška robota
@@ -37756,7 +38678,8 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				// TODO – otestuj
 				veľkosť = výška / 2.0;
-				pomerVeľkosti = (šírka / 2.0) / veľkosť;
+				if (0 == veľkosť) pomerVeľkosti = 0;
+				else pomerVeľkosti = (šírka / 2.0) / veľkosť;
 				if (viditeľný) Svet.automatickéPrekreslenie();
 			}
 
@@ -37784,7 +38707,8 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				// TODO – otestuj
 				veľkosť = rozmer.výška() / 2.0;
-				pomerVeľkosti = (rozmer.šírka() / 2.0) / veľkosť;
+				if (0 == veľkosť) pomerVeľkosti = 0;
+				else pomerVeľkosti = (rozmer.šírka() / 2.0) / veľkosť;
 				if (viditeľný) Svet.automatickéPrekreslenie();
 			}
 
@@ -37887,7 +38811,6 @@ Toto bolo presunuté na úvodnú stránku:
 			 * (a {@linkplain #mierka() mierka} sa zresetuje na hodnotu
 			 * {@code num1.0}).</p>
 			 * 
-			 * @see #veľkosťPodľaMierky()
 			 * @see #veľkosťPodľaMierky(double)
 			 * @see #veľkosť()
 			 * @see #mierka()
@@ -37938,7 +38861,6 @@ Toto bolo presunuté na úvodnú stránku:
 			 *     robota
 			 * 
 			 * @see #veľkosťPodľaMierky()
-			 * @see #veľkosťPodľaMierky(double)
 			 * @see #veľkosť()
 			 * @see #mierka()
 			 */
@@ -37971,6 +38893,69 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 			/**
+			 * <p>Nastaví pomer veľkosti robota podľa aktuálnej {@linkplain 
+			 * #mierkaPomeru() mierky pomeru} tak, aby sa hodnota {@linkplain 
+			 * #mierkaPomeru() mierky pomeru} vyrovnala na {@code num1.0}. (Ak
+			 * bola mierka pomeru už predtým jednotková, volanie metódy nebude
+			 * mať žiadny efekt.) Ak mala {@linkplain #mierkaPomeru() mierka
+			 * pomeru} napríklad hodnotu {@code num2.0}, tak sa pomer veľkosti
+			 * robota zdvojnásobí (a {@linkplain #mierkaPomeru() mierka
+			 * pomeru} sa zresetuje na hodnotu {@code num1.0}).</p>
+			 * 
+			 * @see #pomerPodľaMierky(double)
+			 * @see #pomer()
+			 * @see #mierkaPomeru()
+			 */
+			public void pomerPodľaMierky()
+			{
+				pomerVeľkosti = pôvodnýPomer;
+				if (viditeľný) Svet.automatickéPrekreslenie();
+			}
+
+			/** <p><a class="alias"></a> Alias pre {@link #pomerPodľaMierky() pomerPodľaMierky}.</p> */
+			public void pomerPodlaMierky() { pomerPodľaMierky(); }
+
+
+			/**
+			 * <p>Nastaví pomer veľkosti robota podľa aktuálnej {@linkplain 
+			 * #mierkaPomeru() mierky pomeru} tak, aby nová hodnota
+			 * {@linkplain #mierkaPomeru() mierky pomeru} nadobudla zadanú
+			 * hodnotu.</p>
+			 * 
+			 * <p>Ak je napríklad hodnota {@linkplain #mierkaPomeru() mierky
+			 * pomeru} rovná {@code num2.0}, {@linkplain #pomer() pomer
+			 * veľkosti robota} sa rovná {@code num20.0} a zadaná hodnota je
+			 * rovná {@code num3.0}, tak nová {@linkplain #pomer() pomeru
+			 * veľkosti robota} bude {@code num30.0} a {@linkplain 
+			 * #mierkaPomeru() mierka pomeru} {@code num3.0}.</p>
+			 * 
+			 * <p>Alebo napríklad hodnota {@linkplain #mierkaPomeru() mierky
+			 * pomeru} sa rovná {@code num4.0}, {@linkplain #pomer() pomer
+			 * veľkosti robota} je rovný {@code num25.0} a zadaná hodnota
+			 * zmeny je {@code num6.0}, tak nová hodnota {@linkplain #pomer()
+			 * pomeru veľkosti robota} bude rovná {@code num37.5} (a nová
+			 * hodnota {@linkplain #mierkaPomeru() mierky pomeru}
+			 * {@code num6.0}).</p>
+			 * 
+			 * @param zmena hodnota, ktorú má mať mierka pomeru po korekcii
+			 *     pomeru veľkosti robota
+			 * 
+			 * @see #pomerPodľaMierky()
+			 * @see #pomer()
+			 * @see #mierkaPomeru()
+			 */
+			public void pomerPodľaMierky(double zmena)
+			{
+				pomerVeľkosti = pôvodnýPomer * zmena;
+				if (viditeľný) Svet.automatickéPrekreslenie();
+			}
+
+			/** <p><a class="alias"></a> Alias pre {@link #pomerPodľaMierky(double) pomerPodľaMierky}.</p> */
+			public void pomerPodlaMierky(double zmena)
+			{ pomerPodľaMierky(zmena); }
+
+
+			/**
 			 * <p><a class="getter"></a> Zistí aktuálnu hodnotu mierky robota.
 			 * Táto hodnota je prepočítavaná vnútorne. Na mierku má vplyv aj
 			 * zmena hodnoty {@linkplain #veľkosť() veľkosti robota}
@@ -37982,7 +38967,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * obrázkového tvaru robota}.</p>
 			 * 
 			 * <p>Mierka pôvodne primárne slúžila na úpravu veľkosti obrázkov
-			 * pri ich kreslení robotom. Mierka ma vplyv aj na
+			 * pri ich kreslení robotom. Mierka má vplyv aj na
 			 * kreslenie {@linkplain Oblasť oblastí} a {@linkplain Shape tvarov
 			 * Javy} robotom. V tej súvislosti aj na zisťovanie prítomnosti
 			 * {@linkplain #bodVTvare(double, double, Shape) bodov v tvaroch}
@@ -38025,10 +39010,67 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 			/**
+			 * <p><a class="getter"></a> Zistí aktuálnu hodnotu mierky pomeru
+			 * veľkosti robota. Táto hodnota je prepočítavaná vnútorne. Na
+			 * mierku pomeru veľkosti má vplyv aj zmena hodnoty {@linkplain 
+			 * #pomer() pomeru veľkosti robota} (<small>pretože mierka pomeru
+			 * veľkosti je v skutočnosti pomerom aktuálneho pomeru veľkosti
+			 * robota a pomeru, ktorý mal nastavený pri svojom vytvorení,
+			 * resete mierky pomeru alebo pri poslednej {@linkplain 
+			 * #mierkaPomeru(double) zmene mierky pomeru}</small>). Mierka sa
+			 * resetuje pri zmene {@linkplain #vlastnýTvar(String) vlastného
+			 * obrázkového tvaru robota}.</p>
+			 * 
+			 * <p>Táto mierka ovplyvňuje aj rozmery obrázkov pri ich kreslení
+			 * robotom. Má vplyv aj na kreslenie {@linkplain Oblasť oblastí}
+			 * a {@linkplain Shape tvarov Javy} robotom. V tej súvislosti aj
+			 * na zisťovanie prítomnosti {@linkplain #bodVTvare(double,
+			 * double, Shape) bodov v tvaroch}<!-- TODO – fakt? overiť…-->
+			 * a prípadne na ďalšie súvisiace vlastnosti/funkcie
+			 * programovacieho rámca.</p>
+			 * 
+			 * <p>Táto mierka nemá vplyv na rozmery kreslenia tvarov robota
+			 * bezparametrickými verziami metód (napríklad {@link #kružnica()
+			 * kružnica()}), ani na mieru pohybu robota bezparametrickými
+			 * verziami metód pohybu (napríklad {@link #dopredu()
+			 * dopredu()}). Má vplyv iba na {@linkplain #vlastnýTvar(String)
+			 * rozmer vlastného obrázkového tvaru robota.}</p>
+			 * 
+			 * @return aktuálna mierka pomeru veľkosti robota
+			 * 
+			 * @see #mierkaPomeru(double)
+			 * @see #pomer()
+			 * @see #pomerPodľaMierky()
+			 */
+			public double mierkaPomeru()
+			{ return pomerVeľkosti / pôvodnýPomer; }
+
+			/**
+			 * <p><a class="setter"></a> Upraví aktuálnu mierku pomeru
+			 * veľkosti tohto robota. Táto hodnota je prepočítavaná vnútorne.
+			 * Má na ňu vplyv aj zmena hodnoty {@linkplain #pomer() pomeru
+			 * veľkosti robota}. Ďalšie informácie o význame a vplyve tejto
+			 * mierky sú v opise metódy {@link #mierkaPomeru()
+			 * mierkaPomeru()}.</p>
+			 * 
+			 * @param mierka nová mierka pomeru veľkosti robota
+			 * 
+			 * @see #mierkaPomeru()
+			 * @see #pomer()
+			 * @see #pomerPodľaMierky()
+			 */
+			public void mierkaPomeru(double mierka)
+			{
+				pôvodnýPomer = pomerVeľkosti / mierka;
+				Svet.automatickéPrekreslenie();
+			}
+
+
+			/**
 			 * <p><a class="getter"></a> Zistí aktuálnu hodnotu pomeru
-			 * rozmerov (výšky a šírky) robota. Táto hodnota ovplyvňyje aj
+			 * rozmerov (šírky a výšky) robota. Táto hodnota ovplyvňyje aj
 			 * pomer šírky a výšky tých tvarov, pri ktorých nemusia byť ich
-			 * rozmery (výška a šírka) zhodné, čiže napríklad 
+			 * rozmery (šírky a výšky) zhodné, čiže napríklad 
 			 * {@linkplain #elipsa() elipsy} a {@linkplain #obdĺžnik()
 			 * obdĺžnika}.</p>
 			 * 
@@ -38071,8 +39113,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 * robotom.
 			 * <!--   -->
 			 * Ide o pomer šírky a výšky robota a v tej súvislosti tých
-			 * tvarov, pri ktorých nemusia byť obidva ich rozmery (výška
-			 * a šírka) zhodné, čiže napríklad {@linkplain #elipsa() elipsa}
+			 * tvarov, pri ktorých nemusia byť obidva ich rozmery (šírka
+			 * a výška) zhodné, čiže napríklad {@linkplain #elipsa() elipsa}
 			 * a {@linkplain #obdĺžnik() obdĺžnik}.
 			 * <!--   -->
 			 * <b>Pomer má vplyv len na tie metódy generovania tvarov, ktoré
@@ -38499,7 +39541,8 @@ Toto bolo presunuté na úvodnú stránku:
 				Area a, b;
 
 				if (aktuálnyUhol == 90 && aktuálneX == 0 &&
-					aktuálneY == 0 && pôvodnáVeľkosť == veľkosť)
+					aktuálneY == 0 && pôvodnáVeľkosť == veľkosť &&
+					pôvodnýPomer == pomerVeľkosti)
 				{
 					a = (null == kolíznaOblasť) ?
 						new Area(new Ellipse2D.Double(
@@ -38515,16 +39558,19 @@ Toto bolo presunuté na úvodnú stránku:
 					double prepočítanéX = Svet.prepočítajX(aktuálneX);
 					double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-					if (pôvodnáVeľkosť != veľkosť)
-					{
-						double mierka = veľkosť / pôvodnáVeľkosť;
-						at.translate(prepočítanéX, prepočítanéY);
-						at.scale(mierka, mierka);
-						at.translate(-prepočítanéX, -prepočítanéY);
-					}
-
 					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
+
+					if (pôvodnáVeľkosť != veľkosť ||
+						pôvodnýPomer != pomerVeľkosti)
+					{
+						double mierka = veľkosť / pôvodnáVeľkosť;
+						double mierkaX = mierka * (pomerVeľkosti /
+							pôvodnýPomer);
+						at.translate(prepočítanéX, prepočítanéY);
+						at.scale(mierkaX, mierka);
+						at.translate(-prepočítanéX, -prepočítanéY);
+					}
 
 					at.translate(aktuálneX, -aktuálneY);
 					a = kolíznaOblasť.createTransformedArea(at);
@@ -39068,6 +40114,7 @@ Toto bolo presunuté na úvodnú stránku:
 					vlastnýTvarKreslenie = null;
 				vlastnýTvarObrázok = Obrázok.súborNaObrázok(súbor);
 				pôvodnáVeľkosť = veľkosť;
+				pôvodnýPomer = pomerVeľkosti;
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -39121,6 +40168,7 @@ Toto bolo presunuté na úvodnú stránku:
 					vlastnýTvarKreslenie = null;
 				vlastnýTvarObrázok = obrázok;
 				pôvodnáVeľkosť = veľkosť;
+				pôvodnýPomer = pomerVeľkosti;
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -39135,7 +40183,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * Ak je parameter {@code upravVeľkosťRobota} rovný
 			 * {@code valtrue}, tak bude zároveň upravená
 			 * {@link #veľkosť(double) veľkosť} robota a to tak, aby
-			 * zodpovedala priemeru výšky a šírky obrázka.</p>
+			 * zodpovedala priemeru šírky a výšky obrázka.</p>
 			 * 
 			 * <p class="tip"><b>Tip:</b> Ak chcete kombinovať vlastné
 			 * kreslenie tvaru s obrázkami, použite iba {@linkplain 
@@ -39158,8 +40206,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 *     namiesto predvoleného tvaru robota
 			 * @param upravVeľkosťRobota hodnota {@code valtrue} určuje, že
 			 *     pred nastavením vlastného tvaru obrázka robota má byť
-			 *     upravená jeho veľkosť tak, aby zodpovedala priemeru výšky
-			 *     a šírky obrázka
+			 *     upravená jeho veľkosť tak, aby zodpovedala priemeru šírky
+			 *     a výšky obrázka
 			 * 
 			 * @throws GRobotException ak súbor s obrázkom nebol nájdený
 			 * 
@@ -39180,15 +40228,25 @@ Toto bolo presunuté na úvodnú stránku:
 				if (null != vlastnýTvarKreslenie)
 					vlastnýTvarKreslenie = null;
 				vlastnýTvarObrázok = Obrázok.súborNaObrázok(súbor);
-				if (upravVeľkosťRobota) veľkosť =
-					(vlastnýTvarObrázok.getWidth(null) +
-					vlastnýTvarObrázok.getHeight(null)) / 4;
+				if (upravVeľkosťRobota)
+				{
+					// veľkosť = (vlastnýTvarObrázok.getWidth(null) +
+					// 	vlastnýTvarObrázok.getHeight(null)) / 4;
+					// toto už nie takto, treba upraviť výšku a šírku
+
+					// ‼TODO‼ otestovať
+					veľkosť = vlastnýTvarObrázok.getHeight(null) / 2.0;
+					if (0 == veľkosť) pomerVeľkosti = 0;
+					else pomerVeľkosti = (vlastnýTvarObrázok.getWidth(null) /
+						2.0) / veľkosť;
+				}
 
 				// System.out.println(vlastnýTvarObrázok.getWidth(null));
 				// System.out.println(vlastnýTvarObrázok.getHeight(null));
 				// System.out.println(veľkosť);
 
 				pôvodnáVeľkosť = veľkosť;
+				pôvodnýPomer = pomerVeľkosti;
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -39204,7 +40262,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * Ak je parameter {@code upravVeľkosťRobota} rovný
 			 * {@code valtrue}, tak bude zároveň upravená
 			 * {@link #veľkosť(double) veľkosť} robota a to tak, aby
-			 * zodpovedala priemeru výšky a šírky obrázka.</p>
+			 * zodpovedala priemeru šírky a výšky obrázka.</p>
 			 * 
 			 * <p class="tip"><b>Tip:</b> Ak chcete kombinovať vlastné
 			 * kreslenie tvaru s obrázkami, použite iba {@linkplain 
@@ -39219,8 +40277,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 *     predvoleného tvaru robota
 			 * @param upravVeľkosťRobota hodnota {@code valtrue} určuje, že
 			 *     pred nastavením vlastného tvaru obrázka robota má byť
-			 *     upravená jeho veľkosť tak, aby zodpovedala priemeru výšky
-			 *     a šírky obrázka
+			 *     upravená jeho veľkosť tak, aby zodpovedala priemeru šírky
+			 *     a výšky obrázka
 			 * 
 			 * @see #kresliTvar()
 			 * @see #predvolenýTvar()
@@ -39240,16 +40298,19 @@ Toto bolo presunuté na úvodnú stránku:
 				vlastnýTvarObrázok = obrázok;
 				if (upravVeľkosťRobota)
 				{
-					// Zamietnutý spôsob. Teraz treba použiť aj pomerVeľkosti.:
+					// Zastaraný spôsob (teraz treba použiť aj pomerVeľkosti):
+					// 
 					// veľkosť = (obrázok.getWidth(null) +
 					// 	obrázok.getHeight(null)) / 4;
 
 					// ‼TODO‼ otestovať
 					veľkosť = (double)obrázok.getHeight(null) / 2.0;
-					pomerVeľkosti = ((double)obrázok.getWidth(null) / 2.0) /
-						veľkosť;
+					if (0 == veľkosť) pomerVeľkosti = 0;
+					else pomerVeľkosti = ((double)obrázok.getWidth(null) /
+						2.0) / veľkosť;
 				}
 				pôvodnáVeľkosť = veľkosť;
+				pôvodnýPomer = pomerVeľkosti;
 				Svet.automatickéPrekreslenie();
 			}
 

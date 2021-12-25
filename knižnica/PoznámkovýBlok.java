@@ -205,6 +205,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 						if (null != ObsluhaUdalostí.počúvadlo)
 							// ‼TODO‼ – Dočasné riešenia‼
 							// Použiť tie z triedy GRobot‼
+							// 
 							// (Poznámka: 25. 7. 2021 – netuším, aká je
 							// táto pripomienka stará a ešte menej tuším,
 							// čo som ňou v čase jej vytvorenia myslel.)
@@ -216,9 +217,12 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 
 							synchronized (ÚdajeUdalostí.zámokUdalostí)
 							{
-								for (GRobot počúvajúci :
-									GRobot.počúvajúciRozhranie)
+								int početPočúvajúcich =
+									GRobot.počúvajúciRozhranie.size();
+								for (int i = 0; i < početPočúvajúcich; ++i)
 								{
+									GRobot počúvajúci =
+										GRobot.počúvajúciRozhranie.get(i);
 									počúvajúci.aktiváciaOdkazu();
 									počúvajúci.aktivaciaOdkazu();
 								}
@@ -292,7 +296,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 
 
 	// Umiestnenie poznámkového bloku na základe súkromných parametrov –
-	// použité v metóde rozmiestňovania komponentov: Svet.hlavnýPanel.doLayout()
+	// použité v metóde rozmiestňovania komponentov:
+	//    Svet.hlavnýPanel.doLayout()
 	/*packagePrivate*/ void umiestni(int x1, int y1, int šírka1, int výška1)
 	{
 		int x2 = x1 + x, y2 = y1 + y, šírka2 = šírka, výška2 = výška;
@@ -369,7 +374,9 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 		else if (8 == (prilepenieRoztiahnutie & 12))
 			y2 -= ((výška - výška1) / 2);
 
-		setBounds(0, 0, šírka2, výška2);//‼TODO
+		setBounds(0, 0, šírka2, výška2); // TODO – poznámka 28. 11. 2021 –
+			// netuším, aká je táto pripomienka stará a už netuším, čo mala
+			// (v čase jej vytvorenia) označovať.
 		rolovanie.setBounds(x2, y2, šírka2, výška2);
 	}
 
@@ -471,6 +478,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 		// (Ak sa dá, tak aj štandardný výstup…)
 		// S plátnom sa to dá aj obojsmerne – aj v plátne môže byť metóda
 		// presmerujKonzoluDo(PoznámkovýBlok …)
+		// V konzole sa pracuje s prúdmi. To by sa dalo využiť.
 
 
 	/**

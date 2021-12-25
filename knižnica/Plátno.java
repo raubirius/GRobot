@@ -457,8 +457,10 @@ public class Plátno implements Priehľadnosť
 				if (null != zistenie) výsledok = zistenie;
 			}
 
-			for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+			int početPočúvajúcich = GRobot.počúvajúciRozhranie.size();
+			for (int i = 0; i < početPočúvajúcich; ++i)
 			{
+				GRobot počúvajúci = GRobot.počúvajúciRozhranie.get(i);
 				zistenie = počúvajúci.farbaAktívnehoSlova(slovo);
 				if (null != zistenie) výsledok = zistenie;
 				zistenie = počúvajúci.farbaAktivnehoSlova(slovo);
@@ -728,7 +730,7 @@ public class Plátno implements Priehľadnosť
 				// Nejako to blbne, jednoduchšie to bude bez toho:
 				// if (null != zvislá && zvislá.isVisible())
 				// 	pravýOkraj = zvislá.pôvodnýOkraj - zvislá.šírka;
-				// TODO: stále? (nemám na to nervy ani čas…)
+				// TODO: stále? (nemám na to nervy už…)
 				// if (null != vodorovná && vodorovná.isVisible())
 				// 	dolnýOkraj = vodorovná.pôvodnýOkraj - vodorovná.výška;
 
@@ -1167,6 +1169,15 @@ public class Plátno implements Priehľadnosť
 
 			private void aktívneSlováFIX()
 			{
+				Color zálohaFarby = grafikaKonzoly.getColor();
+
+				// int zálohaOdsadeniaPrvého = odsadeniePrvého;
+				int zálohaOdsadeniaZľava = odsadenieZľava;
+				int zálohaOdsadeniaSprava = odsadenieSprava;
+
+				int zálohaX = x;
+				int zálohaY = y;
+
 				// Pokus o opravu zafarbovania aktívnych slov.
 				for (RiadokKonzoly riadok : riadky)
 				{
@@ -1187,6 +1198,15 @@ public class Plátno implements Priehľadnosť
 							aktívneSlová.add(obsah.aktívneSlovo);
 					}
 				}
+
+				// odsadeniePrvého = zálohaOdsadeniaPrvého;
+				odsadenieZľava = zálohaOdsadeniaZľava;
+				odsadenieSprava = zálohaOdsadeniaSprava;
+
+				x = zálohaX;
+				y = zálohaY;
+
+				grafikaKonzoly.setColor(zálohaFarby);
 			}
 
 			private void prekresli(Graphics2D grafika)
@@ -1973,7 +1993,8 @@ public class Plátno implements Priehľadnosť
 								}
 								početZnakov += obsah.obsah.length();
 
-								while (tabPos != -1 && tabPos < newLine)
+								while (tabPos != -1 &&
+									(tabPos < newLine || -1 == newLine))
 								{
 									switch ((početZnakov + tabPos) % 4)
 									{
@@ -2019,7 +2040,8 @@ public class Plátno implements Priehľadnosť
 								// ďalšie riadky
 								tabPos = naPridanie.indexOf("\t");
 								newLine = naPridanie.indexOf("\n");
-								while (tabPos != -1 && tabPos < newLine)
+								while (tabPos != -1 &&
+									(tabPos < newLine || -1 == newLine))
 								{
 									switch (tabPos % 4)
 									{
@@ -8745,8 +8767,10 @@ public class Plátno implements Priehľadnosť
 
 				synchronized (ÚdajeUdalostí.zámokUdalostí)
 				{
-					for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+					int početPočúvajúcich = GRobot.počúvajúciRozhranie.size();
+					for (int i = 0; i < početPočúvajúcich; ++i)
 					{
+						GRobot počúvajúci = GRobot.počúvajúciRozhranie.get(i);
 						ÚdajeUdalostí.poslednéVymazanéPlátno = this;
 						počúvajúci.vymazanie();
 					}
@@ -8897,8 +8921,10 @@ public class Plátno implements Priehľadnosť
 
 				synchronized (ÚdajeUdalostí.zámokUdalostí)
 				{
-					for (GRobot počúvajúci : GRobot.počúvajúciRozhranie)
+					int početPočúvajúcich = GRobot.počúvajúciRozhranie.size();
+					for (int i = 0; i < početPočúvajúcich; ++i)
 					{
+						GRobot počúvajúci = GRobot.počúvajúciRozhranie.get(i);
 						ÚdajeUdalostí.poslednéVymazanéPlátno = this;
 						počúvajúci.vymazanie();
 					}

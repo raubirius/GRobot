@@ -905,10 +905,10 @@ public class Súbor implements Closeable
 
 			if (obj instanceof Vlastnosť)
 			{
-				Vlastnosť oth = (Vlastnosť)obj;
-				if (null == názov && null == oth.názov) return true;
-				if (null == názov || null == oth.názov) return false;
-				return názov.equals(oth.názov); // TODO: zvážiť použitie IgnoreCase (možno by to malo byť voliteľné)
+				Vlastnosť iná = (Vlastnosť)obj;
+				if (null == názov && null == iná.názov) return true;
+				if (null == názov || null == iná.názov) return false;
+				return názov.equals(iná.názov); // TODO: zvážiť použitie IgnoreCase (možno by to malo byť voliteľné)
 			}
 
 			if (obj instanceof CharSequence)
@@ -1132,8 +1132,8 @@ public class Súbor implements Closeable
 
 			if (obj instanceof Sekcia)
 			{
-				Sekcia oth = (Sekcia)obj;
-				return názov.equals(oth.názov);
+				Sekcia iná = (Sekcia)obj;
+				return názov.equals(iná.názov);
 			}
 
 			if (obj instanceof CharSequence)
@@ -2757,8 +2757,10 @@ public class Súbor implements Closeable
 
 			synchronized (ÚdajeUdalostí.zámokUdalostí)
 			{
-				for (GRobot počúvajúci : GRobot.počúvajúciSúbory)
+				int početPočúvajúcich = GRobot.počúvajúciSúbory.size();
+				for (int i = 0; i < početPočúvajúcich; ++i)
 				{
+					GRobot počúvajúci = GRobot.počúvajúciSúbory.get(i);
 					počúvajúci.sekvencia(POROVNANIE_SÚBOROV,
 						názov1, názov2, fáza, celkovo);
 				}
@@ -2795,8 +2797,12 @@ public class Súbor implements Closeable
 
 						synchronized (ÚdajeUdalostí.zámokUdalostí)
 						{
-							for (GRobot počúvajúci : GRobot.počúvajúciSúbory)
+							int početPočúvajúcich =
+								GRobot.počúvajúciSúbory.size();
+							for (int i = 0; i < početPočúvajúcich; ++i)
 							{
+								GRobot počúvajúci =
+									GRobot.počúvajúciSúbory.get(i);
 								počúvajúci.sekvencia(POROVNANIE_SÚBOROV,
 									názov1, názov2, fáza, celkovo);
 							}
@@ -2966,8 +2972,10 @@ public class Súbor implements Closeable
 
 				synchronized (ÚdajeUdalostí.zámokUdalostí)
 				{
-					for (GRobot počúvajúci : GRobot.počúvajúciSúbory)
+					int početPočúvajúcich = GRobot.počúvajúciSúbory.size();
+					for (int i = 0; i < početPočúvajúcich; ++i)
 					{
+						GRobot počúvajúci = GRobot.počúvajúciSúbory.get(i);
 						počúvajúci.sekvencia(KOPÍROVANIE_SÚBOROV,
 							zdroj, cieľ, fáza, celkovo);
 					}
@@ -3119,8 +3127,10 @@ public class Súbor implements Closeable
 
 				synchronized (ÚdajeUdalostí.zámokUdalostí)
 				{
-					for (GRobot počúvajúci : GRobot.počúvajúciSúbory)
+					int početPočúvajúcich = GRobot.počúvajúciSúbory.size();
+					for (int i = 0; i < početPočúvajúcich; ++i)
 					{
+						GRobot počúvajúci = GRobot.počúvajúciSúbory.get(i);
 						počúvajúci.sekvencia(PRIPÁJANIE_SÚBOROV,
 							zdroj, cieľ, fáza, celkovo);
 					}
