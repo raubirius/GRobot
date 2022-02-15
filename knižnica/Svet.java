@@ -124,7 +124,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import java.util.regex.Pattern;
+// import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -138,6 +138,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
@@ -1374,8 +1375,14 @@ public final class Svet extends JFrame
 
 				// Nastavenie systémového Look&Feel:
 				try { UIManager.setLookAndFeel(UIManager.
-					getSystemLookAndFeelClassName()); }
-				catch (Exception e)
+					getSystemLookAndFeelClassName());
+					// Tento „hack“ je tu z dôvodu zabránenia zmeny nastavení
+					// vzhľadu prvkov rámca po dodatočnej iniciali dialógov
+					// na otvorenie/uloženie údajov… (V jednom projekte mi to
+					// rozhodilo celé používateľské rozhranie. Strašné…)
+					javax.swing.plaf.FileChooserUI ui =
+						new javax.swing.JFileChooser().getUI();
+				} catch (Exception e)
 				{ GRobotException.vypíšChybovéHlásenia(e, true); }
 
 				// Vymaž grafiku plátien a inicializuj konzoly
@@ -13818,11 +13825,17 @@ public final class Svet extends JFrame
 			}
 			</pre>
 		 * </td><td><table>
-		 * <tr><td><image>citajRetazec.png<alt/></image></td></tr>
-		 * <tr><td><image>citajRetazecOK.png<alt/></image></td></tr>
-		 * <tr><td><image>citajRetazecCancel.png<alt/></image></td></tr>
+		 * <tr><td><image>zadaj-retazec-windows.png<alt/></image></td></tr>
+		 * <tr><td><image>zadaj-retazec-ok-windows.png<alt/></image></td></tr>
+		 * <tr><td><image>zadaj-retazec-cancel-windows.png<alt/></image></td></tr>
 		 * <tr><td><p class="image">Ukážky možného vzhľadu dialógov
-		 * zobrazených<br />počas vykonávania tohto príkladu.</p></td></tr>
+		 * zobrazených<br />počas vykonávania tohto príkladu (Windows).</p></td></tr>
+		 * </table></td><td><table>
+		 * <tr><td><image>zadaj-retazec-macos.png<alt/></image></td></tr>
+		 * <tr><td><image>zadaj-retazec-ok-macos.png<alt/></image></td></tr>
+		 * <tr><td><image>zadaj-retazec-cancel-macos.png<alt/></image></td></tr>
+		 * <tr><td><p class="image">Ukážky možného vzhľadu dialógov
+		 * zobrazených<br />počas vykonávania tohto príkladu (macOS).</p></td></tr>
 		 * </table></td></tr></table>
 		 * 
 		 * @param výzva text výzvy
@@ -13962,6 +13975,13 @@ public final class Svet extends JFrame
 		 * zadanie údajov (očakávaný je celočíselný údaj). Pozri príklad pri
 		 * {@link #zadajCeléČíslo(String, String) zadajCeléČíslo}.</p>
 		 * 
+		 * <table class="centered">
+		 * <tr><td><p><image>zadaj-cele-cislo-1-windows.png<alt/>Ukážka
+		 * dialógu.</image>Ukážka dialógu (Windows).</p></td>
+		 * <td><p><image>zadaj-cele-cislo-1-macos.png<alt/>Ukážka
+		 * dialógu.</image></td>Ukážka dialógu (macOS).</p></tr>
+		 * </table>
+		 * 
 		 * @param výzva text výzvy
 		 * @return objekt {@link Long} s celočíselnou hodnotou, ktorú zadal
 		 *     používateľ, alebo {@code valnull} ak používateľ dialóg zrušil
@@ -14012,11 +14032,17 @@ public final class Svet extends JFrame
 				{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Vstup bol zrušený alebo nesprávny."});
 			</pre>
 		 * </td><td><table>
-		 * <tr><td><image>citajCeleCislo.png<alt/></image></td></tr>
-		 * <tr><td><image>citajCeleCisloOK.png<alt/></image></td></tr>
-		 * <tr><td><image>citajCeleCisloCancel.png<alt/></image></td></tr>
+		 * <tr><td><image>zadaj-cele-cislo-2-windows.png<alt/></image></td></tr>
+		 * <tr><td><image>zadaj-cele-cislo-ok-windows.png<alt/></image></td></tr>
+		 * <tr><td><image>zadaj-cislo-cancel-windows.png<alt/></image></td></tr>
 		 * <tr><td><p class="image">Ukážky možného vzhľadu dialógov
-		 * zobrazených<br />počas vykonávania tohto príkladu.</p></td></tr>
+		 * zobrazených<br />počas vykonávania tohto príkladu (Windows).</p></td></tr>
+		 * </table></td><td><table>
+		 * <tr><td><image>zadaj-cele-cislo-2-macos.png<alt/></image></td></tr>
+		 * <tr><td><image>zadaj-cele-cislo-ok-macos.png<alt/></image></td></tr>
+		 * <tr><td><image>zadaj-cislo-cancel-macos.png<alt/></image></td></tr>
+		 * <tr><td><p class="image">Ukážky možného vzhľadu dialógov
+		 * zobrazených<br />počas vykonávania tohto príkladu (macOS).</p></td></tr>
 		 * </table></td></tr></table>
 		 * 
 		 * @param výzva text výzvy
@@ -14056,6 +14082,13 @@ public final class Svet extends JFrame
 		 * <p>Otvorí štandardný dialóg so zadanou výzvou a zadávacím poľom na
 		 * zadanie údajov (očakávaný je číselný údaj). Pozri príklad pri
 		 * {@link #zadajReálneČíslo(String, String) zadajReálneČíslo}.</p>
+		 * 
+		 * <table class="centered">
+		 * <tr><td><p><image>zadaj-realne-cislo-1-windows.png<alt/>Ukážka
+		 * dialógu.</image>Ukážka dialógu (Windows).</p></td>
+		 * <td><p><image>zadaj-realne-cislo-1-macos.png<alt/>Ukážka
+		 * dialógu.</image></td>Ukážka dialógu (macOS).</p></tr>
+		 * </table>
 		 * 
 		 * @param výzva text výzvy
 		 * @return objekt {@link java.lang.Double Double} s celočíselnou
@@ -14097,7 +14130,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <table><tr><td>
 		 * <pre CLASS="example">
-			{@link java.lang.Double Double} d = {@link Svet Svet}.{@code currzadajReálneČíslo}({@code srg"Počet:"}, {@code srg"Zadaj reálne číslo"});
+			{@link java.lang.Double Double} d = {@link Svet Svet}.{@code currzadajReálneČíslo}({@code srg"Hodnota:"}, {@code srg"Zadaj reálne číslo"});
 
 			{@code kwdif} (d != {@code valnull})
 			{
@@ -14108,11 +14141,17 @@ public final class Svet extends JFrame
 				{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Vstup bol zrušený alebo nesprávny."});
 			</pre>
 		 * </td><td><table>
-		 * <tr><td><image>citajRealneCislo.png<alt/></image></td></tr>
-		 * <tr><td><image>citajRealneCisloOK.png<alt/></image></td></tr>
-		 * <tr><td><image>citajRealneCisloCancel.png<alt/></image></td></tr>
+		 * <tr><td><image>zadaj-realne-cislo-2-windows.png<alt/></image></td></tr>
+		 * <tr><td><image>zadaj-realne-cislo-ok-windows.png<alt/></image></td></tr>
+		 * <tr><td><image>zadaj-cislo-cancel-windows.png<alt/></image></td></tr>
 		 * <tr><td><p class="image">Ukážky možného vzhľadu dialógov
-		 * zobrazených<br />počas vykonávania tohto príkladu.</p></td></tr>
+		 * zobrazených<br />počas vykonávania tohto príkladu (Windows).</p></td></tr>
+		 * </table></td><td><table>
+		 * <tr><td><image>zadaj-realne-cislo-2-macos.png<alt/></image></td></tr>
+		 * <tr><td><image>zadaj-realne-cislo-ok-macos.png<alt/></image></td></tr>
+		 * <tr><td><image>zadaj-cislo-cancel-macos.png<alt/></image></td></tr>
+		 * <tr><td><p class="image">Ukážky možného vzhľadu dialógov
+		 * zobrazených<br />počas vykonávania tohto príkladu (macOS).</p></td></tr>
 		 * </table></td></tr></table>
 		 * 
 		 * @param výzva text výzvy
@@ -14157,6 +14196,13 @@ public final class Svet extends JFrame
 		 * #zadajReťazec(String) zadajReťazec}, ibaže vyžaduje zadanie
 		 * reťazca určeného na úpravu.</p>
 		 * 
+		 * <table class="centered">
+		 * <tr><td><p><image>uprav-retazec-1-windows.png<alt/>Ukážka
+		 * dialógu.</image>Ukážka dialógu (Windows).</p></td>
+		 * <td><p><image>uprav-retazec-1-macos.png<alt/>Ukážka
+		 * dialógu.</image></td>Ukážka dialógu (macOS).</p></tr>
+		 * </table>
+		 * 
 		 * @param reťazec reťazec určený na úpravu
 		 * @param výzva text výzvy
 		 * @return objekt {@link java.lang.String String} s textom, ktorý
@@ -14184,6 +14230,13 @@ public final class Svet extends JFrame
 		 * úpravu údajov. Funguje podobne ako metóda {@link 
 		 * #zadajReťazec(String, String) zadajReťazec}, ibaže vyžaduje
 		 * zadanie reťazca určeného na úpravu.</p>
+		 * 
+		 * <table class="centered">
+		 * <tr><td><p><image>uprav-retazec-2-windows.png<alt/>Ukážka
+		 * dialógu.</image>Ukážka dialógu (Windows).</p></td>
+		 * <td><p><image>uprav-retazec-2-macos.png<alt/>Ukážka
+		 * dialógu.</image></td>Ukážka dialógu (macOS).</p></tr>
+		 * </table>
 		 * 
 		 * @param reťazec reťazec určený na úpravu
 		 * @param výzva text výzvy
@@ -14226,6 +14279,13 @@ public final class Svet extends JFrame
 		 * metóda {@link #zadajCeléČíslo(String) zadajCeléČíslo}, ibaže
 		 * vyžaduje zadanie celého čísla určeného na úpravu.</p>
 		 * 
+		 * <table class="centered">
+		 * <tr><td><p><image>uprav-cele-cislo-1-windows.png<alt/>Ukážka
+		 * dialógu.</image>Ukážka dialógu (Windows).</p></td>
+		 * <td><p><image>uprav-cele-cislo-1-macos.png<alt/>Ukážka
+		 * dialógu.</image></td>Ukážka dialógu (macOS).</p></tr>
+		 * </table>
+		 * 
 		 * @param celéČíslo celé číslo určené na úpravu
 		 * @param výzva text výzvy
 		 * @return objekt {@link Long} s celočíselnou hodnotou, ktorú
@@ -14259,6 +14319,13 @@ public final class Svet extends JFrame
 		 * úpravu údajov (očakávaný je celočíselný údaj). Funguje podobne ako
 		 * metóda {@link #zadajCeléČíslo(String, String) zadajCeléČíslo},
 		 * ibaže vyžaduje zadanie celého čísla určeného na úpravu.</p>
+		 * 
+		 * <table class="centered">
+		 * <tr><td><p><image>uprav-cele-cislo-2-windows.png<alt/>Ukážka
+		 * dialógu.</image>Ukážka dialógu (Windows).</p></td>
+		 * <td><p><image>uprav-cele-cislo-2-macos.png<alt/>Ukážka
+		 * dialógu.</image></td>Ukážka dialógu (macOS).</p></tr>
+		 * </table>
 		 * 
 		 * @param celéČíslo celé číslo určené na úpravu
 		 * @param výzva text výzvy
@@ -14298,6 +14365,13 @@ public final class Svet extends JFrame
 		 * metóda {@link #zadajReálneČíslo(String) zadajReálneČíslo},
 		 * ibaže vyžaduje zadanie reálneho čísla určeného na úpravu.</p>
 		 * 
+		 * <table class="centered">
+		 * <tr><td><p><image>uprav-realne-cislo-1-windows.png<alt/>Ukážka
+		 * dialógu.</image>Ukážka dialógu (Windows).</p></td>
+		 * <td><p><image>uprav-realne-cislo-1-macos.png<alt/>Ukážka
+		 * dialógu.</image></td>Ukážka dialógu (macOS).</p></tr>
+		 * </table>
+		 * 
 		 * @param reálneČíslo reálne číslo určené na úpravu
 		 * @param výzva text výzvy
 		 * @return objekt {@link java.lang.Double Double} s celočíselnou
@@ -14333,6 +14407,13 @@ public final class Svet extends JFrame
 		 * metóda {@link #zadajReálneČíslo(String, String)
 		 * zadajReálneČíslo}, ibaže vyžaduje zadanie reálneho čísla
 		 * určeného na úpravu.</p>
+		 * 
+		 * <table class="centered">
+		 * <tr><td><p><image>uprav-realne-cislo-2-windows.png<alt/>Ukážka
+		 * dialógu.</image>Ukážka dialógu (Windows).</p></td>
+		 * <td><p><image>uprav-realne-cislo-2-macos.png<alt/>Ukážka
+		 * dialógu.</image></td>Ukážka dialógu (macOS).</p></tr>
+		 * </table>
 		 * 
 		 * @param reálneČíslo reálne číslo určené na úpravu
 		 * @param výzva text výzvy
@@ -14448,12 +14529,6 @@ public final class Svet extends JFrame
 		 * a s možnosťou zadania (zmeny) uhla prostredníctvom vstupného
 		 * poľa,</li>
 		 * 
-		 * <!-- TODO doplniť možnosť vloženia Vectora/Zoznamu fungujúceho
-		 * podobne ako Enum, ale umožňujúceho vkladať dynamicky sa meniaci
-		 * zoznam položiek. Bude podporovať zobrazenie obrázkov Vector<Image>
-		 * (resp. Zoznam<Obrazok>). Ostatné objekty budú (asi) konvertované
-		 * na texty štandardnou metódou toString(). -->
-		 * 
 		 * <li>hodnota inštancie údajového typu {@link Enum Enum} – čiže
 		 * prvok enumeračného údajového typu; ktorý spôsobí, že na určenej
 		 * pozícii dialógu bude zobrazený panel so zoznamom rádiových
@@ -14461,6 +14536,12 @@ public final class Svet extends JFrame
 		 * typu, pričom zadaná hodnota bude použitá na určenie aktuálne
 		 * zvoleného rádiového tlačidla (aktuálne zvolenej hodnoty v rámci
 		 * skupiny týchto tlačidiel),</li>
+		 * 
+		 * <!-- TODO ✓ doplniť možnosť vloženia Vectora/Zoznamu fungujúceho
+		 * podobne ako Enum, ale umožňujúceho vkladať dynamicky sa meniaci
+		 * zoznam položiek. Bude podporovať zobrazenie obrázkov Vector<Image>
+		 * (resp. Zoznam<Obrazok>). Ostatné objekty budú (asi) konvertované
+		 * na texty štandardnou metódou toString(). ✓ Otestovať? -->
 		 * 
 		 * <li>inštancia netriedeného zoznamu Javy ({@link Vector Vector},
 		 * resp. odvodeného, napr. {@link Zoznam Zoznam}), ktorá spôsobí, že
@@ -14476,6 +14557,16 @@ public final class Svet extends JFrame
 		 * (ktorá je zmenená/nahradená aj v pôvodnom zozname) určuje
 		 * používateľom zvolenú položku (hodnota {@code valnull} znamená,
 		 * že používateľ nezvolil žiadnu položku alebo výber zrušil),</li>
+		 * 
+		 * <li>inštancia tably rolovania {@link JScrollPane}, ktorá je
+		 * (prirodzene, že spolu s jej obsahom) do dialógu iba vložená; nie
+		 * je nijako dodatočne spracovaná a je ponechaná na svojom mieste
+		 * aj vo vrátených údajoch; programátor môže na tomto mieste s výhodou
+		 * využiť pripravenú triedu {@code knižnica.podpora.ScrollTextPane},
+		 * ktorá obsahuje niečo ako „odľahčenú verziu“ triedy {@link 
+		 * PoznámkovýBlok PoznámkovýBlok} (pretože poznámkový blok by
+		 * v dialógu nebol použiteľný z dôvodu jeho úzkej viazanosti na
+		 * komponent {@linkplain Svet sveta}),</li>
 		 * 
 		 * <li>hodnota údajového typu {@link Character Character},
 		 * ktorá má špeciálny význam – je rezervovaná na vkladanie riadiacich
@@ -14611,8 +14702,12 @@ public final class Svet extends JFrame
 		 * <p>Po spustení aplikácie je používateľovi zobrazený dialóg na
 		 * obrázku nižšie.</p>
 		 * 
-		 * <p><image>dialog.png<alt/>Dialóg „zadaj meno
-		 * a heslo.“</image>Vyplnený dialóg príkadu.</p>
+		 * <table class="centered">
+		 * <tr><td><p><image>dialog-windows.png<alt/>Dialóg „zadaj meno
+		 * a heslo.“</image>Vyplnený dialóg príkadu (Windows).</p></td>
+		 * <td><p><image>dialog-macos.png<alt/>Dialóg „zadaj meno
+		 * a heslo.“</image>Vyplnený dialóg príkadu (macOS).</p></td></tr>
+		 * </table>
 		 * 
 		 * <p>Ak používateľ zadal správne údaje, tak pri zvolení voľby
 		 * „Zapamätaj si ma“ (ako na obrázku) sa najprv zobrazí správa
@@ -14751,6 +14846,10 @@ public final class Svet extends JFrame
 						početKomponentov += 2;
 					}
 					else if (údaj instanceof Vector)
+					{
+						početKomponentov += 2;
+					}
+					else if (údaj instanceof JScrollPane) // TODO zdokumentovať
 					{
 						početKomponentov += 2;
 					}
@@ -14970,6 +15069,20 @@ public final class Svet extends JFrame
 							aktívnyPanel.add(panel);
 							indexyZdrojov[i] = i;
 						}
+						else if (údaj instanceof JScrollPane) // TODO zdokumentovať
+						{
+							if (j < popisy.length && null != popisy[j])
+							{
+								if (popisyDialógu.size() < (l + 1))
+									popisyDialógu.add(new JLabel());
+								JLabel popis = popisyDialógu.get(l++);
+								popis.setText(popisy[j]);
+								aktívnyPanel.add(popis);
+							}
+							komponentyÚdajov[i] = údaj;
+							aktívnyPanel.add((JScrollPane)údaj);
+							indexyZdrojov[i] = i;
+						}
 						else if (údaj instanceof Character)
 						{
 							if (riadok == (Character)údaj)
@@ -15136,6 +15249,17 @@ public final class Svet extends JFrame
 						indexyZdrojov[i] = j + 1;
 						j += 2;
 					}
+					else if (údaj instanceof JScrollPane) // TODO zdokumentovať
+					{
+						if (i < popisy.length && null != popisy[i])
+							komponentyÚdajov[j] = popisy[i];
+						else
+							komponentyÚdajov[j] = "";
+						komponentyÚdajov[j + 1] = údaj;
+
+						indexyZdrojov[i] = j + 1;
+						j += 2;
+					}
 					else indexyZdrojov[i] = -1;
 					++i;
 				}
@@ -15203,6 +15327,10 @@ public final class Svet extends JFrame
 							getSelectedValue());
 						komponentyÚdajov[indexyZdrojov[i]] = null;
 					}
+					else if (údaj instanceof JScrollPane) // TODO zdokumentovať
+					{
+						komponentyÚdajov[indexyZdrojov[i]] = null;
+					}
 					++i;
 				}
 
@@ -15225,9 +15353,14 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Zobrazí štandardný dialóg so zadanou textovou správou.</p>
 		 * 
-		 * <p><image>DialogSprava.png<alt/>Ukážka vzhľadu dialógu
+		 * <table class="centered">
+		 * <tr><td><p><image>sprava-windows.png<alt/>Ukážka vzhľadu
+		 * dialógu s informačnou správou.</image>Ukážka vzhľadu dialógu
+		 * s informačnou správou (Windows).</p></td>
+		 * <td><p><image>sprava-macos.png<alt/>Ukážka vzhľadu dialógu
 		 * s informačnou správou.</image>Ukážka vzhľadu dialógu
-		 * s informačnou správou.</p>
+		 * s informačnou správou (macOS).</p></td></tr>
+		 * </table>
 		 * 
 		 * @param správa text správy
 		 * 
@@ -15268,9 +15401,14 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Zobrazí štandardný dialóg so zadanou textovou správou.</p>
 		 * 
-		 * <p><image>DialogSprava.png<alt/>Ukážka vzhľadu dialógu
+		 * <table class="centered">
+		 * <tr><td><p><image>sprava-windows.png<alt/>Ukážka vzhľadu
+		 * dialógu s informačnou správou.</image>Ukážka vzhľadu dialógu
+		 * s informačnou správou (Windows).</p></td>
+		 * <td><p><image>sprava-macos.png<alt/>Ukážka vzhľadu dialógu
 		 * s informačnou správou.</image>Ukážka vzhľadu dialógu
-		 * s informačnou správou.</p>
+		 * s informačnou správou (macOS).</p></td></tr>
+		 * </table>
 		 * 
 		 * @param správa text správy
 		 * @param titulok text titulku dialógového okna správy
@@ -15299,8 +15437,14 @@ public final class Svet extends JFrame
 		 * <p>Zobrazí štandardný dialóg so zadanou textovou správou a ikonou
 		 * varovania.</p>
 		 * 
-		 * <p><image>DialogVarovanie.png<alt/>Ukážka vzhľadu dialógu
-		 * s varovaním.</image>Ukážka vzhľadu dialógu s varovaním.</p>
+		 * <table class="centered">
+		 * <tr><td><p><image>varovanie-windows.png<alt/>Ukážka vzhľadu
+		 * dialógu s varovaním.</image>Ukážka vzhľadu dialógu s varovaním
+		 * (Windows).</p></td>
+		 * <td><p><image>varovanie-macos.png<alt/>Ukážka vzhľadu dialógu
+		 * s varovaním.</image>Ukážka vzhľadu dialógu s varovaním
+		 * (macOS).</p></td></tr>
+		 * </table>
 		 * 
 		 * @param varovanie text s obsahom varovania
 		 * 
@@ -15318,8 +15462,14 @@ public final class Svet extends JFrame
 		 * <p>Zobrazí štandardný dialóg so zadanou textovou správou a ikonou
 		 * varovania.</p>
 		 * 
-		 * <p><image>DialogVarovanie.png<alt/>Ukážka vzhľadu dialógu
-		 * s varovaním.</image>Ukážka vzhľadu dialógu s varovaním.</p>
+		 * <table class="centered">
+		 * <tr><td><p><image>varovanie-windows.png<alt/>Ukážka vzhľadu
+		 * dialógu s varovaním.</image>Ukážka vzhľadu dialógu s varovaním
+		 * (Windows).</p></td>
+		 * <td><p><image>varovanie-macos.png<alt/>Ukážka vzhľadu dialógu
+		 * s varovaním.</image>Ukážka vzhľadu dialógu s varovaním
+		 * (macOS).</p></td></tr>
+		 * </table>
 		 * 
 		 * @param varovanie text s obsahom varovania
 		 * @param titulok text titulku dialógového okna varovania
@@ -15338,9 +15488,14 @@ public final class Svet extends JFrame
 		 * <p>Zobrazí štandardný dialóg so zadanou textovou správou a ikonou
 		 * chyby.</p>
 		 * 
-		 * <p><image>DialogChyba.png<alt/>Ukážka vzhľadu dialógu
+		 * <table class="centered">
+		 * <tr><td><p><image>chyba-windows.png<alt/>Ukážka vzhľadu
+		 * dialógu s chybovým hlásením.</image>Ukážka vzhľadu dialógu
+		 * s chybovým hlásením (Windows).</p></td>
+		 * <td><p><image>chyba-macos.png<alt/>Ukážka vzhľadu dialógu
 		 * s chybovým hlásením.</image>Ukážka vzhľadu dialógu s chybovým
-		 * hlásením.</p>
+		 * hlásením (macOS).</p></td></tr>
+		 * </table>
 		 * 
 		 * @param chyba text s obsahom chyby
 		 * 
@@ -15358,9 +15513,14 @@ public final class Svet extends JFrame
 		 * <p>Zobrazí štandardný dialóg so zadanou textovou správou a ikonou
 		 * chyby.</p>
 		 * 
-		 * <p><image>DialogChyba.png<alt/>Ukážka vzhľadu dialógu
+		 * <table class="centered">
+		 * <tr><td><p><image>chyba-windows.png<alt/>Ukážka vzhľadu
+		 * dialógu s chybovým hlásením.</image>Ukážka vzhľadu dialógu
+		 * s chybovým hlásením (Windows).</p></td>
+		 * <td><p><image>chyba-macos.png<alt/>Ukážka vzhľadu dialógu
 		 * s chybovým hlásením.</image>Ukážka vzhľadu dialógu s chybovým
-		 * hlásením.</p>
+		 * hlásením (macOS).</p></td></tr>
+		 * </table>
 		 * 
 		 * @param chyba text s obsahom chyby
 		 * @param titulok text titulku dialógového okna chyby
@@ -15390,13 +15550,13 @@ public final class Svet extends JFrame
 			{@code kwdif} ({@link Konštanty#ZAVRETÉ ZAVRETÉ} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Nechceš odpovedať…"});
 			</pre>
 		 * </td><td><table>
-		 * <tr><td rowspan="3"><image>otazka1A.png<alt/></image></td>
+		 * <tr><td rowspan="3"><image>otazka-1-windows.png<alt/></image></td>
+		 * <td rowspan="3"><image>otazka-1-macos.png<alt/></image></td>
 		 * <td><image>otazka2A.png<alt/></image></td></tr>
 		 * <tr><td><image>otazka3A.png<alt/></image></td></tr>
 		 * <tr><td><image>otazka4A.png<alt/></image></td></tr>
-		 * <tr><td colspan="2"><p class="image">Ukážky možného vzhľadu dialógov
-		 * a odpovedí<br />zobrazených počas vykonávania tohto
-		 * príkladu.</p></td></tr>
+		 * <tr><td colspan="3"><p class="image">Ukážky možného vzhľadu dialógov
+		 * a odpovedí zobrazených počas vykonávania tohto príkladu.</p></td></tr>
 		 * </table></td></tr></table>
 		 * 
 		 * @param otázka text otázky
@@ -15438,13 +15598,13 @@ public final class Svet extends JFrame
 			{@code kwdif} ({@link Konštanty#ZAVRETÉ ZAVRETÉ} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Nechceš odpovedať…"});
 			</pre>
 		 * </td><td><table>
-		 * <tr><td rowspan="3"><image>otazka1B.png<alt/></image></td>
+		 * <tr><td rowspan="3"><image>otazka-2-windows.png<alt/></image></td>
+		 * <td rowspan="3"><image>otazka-2-macos.png<alt/></image></td>
 		 * <td><image>otazka2A.png<alt/></image></td></tr>
 		 * <tr><td><image>otazka3A.png<alt/></image></td></tr>
 		 * <tr><td><image>otazka4A.png<alt/></image></td></tr>
-		 * <tr><td colspan="2"><p class="image">Ukážky možného vzhľadu dialógov
-		 * a odpovedí<br />zobrazených počas vykonávania tohto
-		 * príkladu.</p></td></tr>
+		 * <tr><td colspan="3"><p class="image">Ukážky možného vzhľadu dialógov
+		 * a odpovedí zobrazených počas vykonávania tohto príkladu.</p></td></tr>
 		 * </table></td></tr></table>
 		 * 
 		 * @param otázka text otázky
@@ -15483,9 +15643,10 @@ public final class Svet extends JFrame
 			{@code typeint} i = {@link Svet Svet}.{@code currotázka}({@code srg"Ako?"}, {@code kwdnew} {@link String#String(java.lang.String) String}[]{{@code srg"Zle"}, {@code srg"Dobre"}});
 			{@code comm// Spracovanie… Pozri príklad pri:} {@link #otázka(String, String, Object[], int) otázka(otázka, titulok, tlačidlá, predvolenéTlačidlo)}
 			</pre>
-		 * </td><td><image>otazka1C.png<alt/>Ukážka dialógu.</image>Ukážka
-		 * možného vzhľadu dialógu<br />zobrazeného počas
-		 * vykonávania tohto príkladu.</td></tr></table>
+		 * </td><td><image>otazka-3-windows.png<alt/>Ukážka dialógu.</image>Ukážka
+		 * možného vzhľadu dialógu<br />zobrazeného počas vykonávania tohto
+		 * príkladu (Windows).</td><td><image>otazka-3-macos.png<alt/>Ukážka
+		 * dialógu.</image>Ukážka dialógu (macOS).</td></tr></table>
 		 * 
 		 * @param otázka text otázky
 		 * @param tlačidlá zoznam popisov tlačidiel
@@ -15523,9 +15684,10 @@ public final class Svet extends JFrame
 			{@code typeint} i = {@link Svet Svet}.{@code currotázka}({@code srg"Ako?"}, {@code srg"Otázočka na teba…"}, {@code kwdnew} {@link String#String(java.lang.String) String}[]{{@code srg"Zle"}, {@code srg"Dobre"}});
 			{@code comm// Spracovanie… Pozri príklad pri:} {@link #otázka(String, String, Object[], int) otázka(otázka, titulok, tlačidlá, predvolenéTlačidlo)}
 			</pre>
-		 * </td><td><image>otazka1D.png<alt/>Ukážka dialógu.</image>Ukážka
-		 * možného vzhľadu dialógu<br />zobrazeného počas
-		 * vykonávania tohto príkladu.</td></tr></table>
+		 * </td><td><image>otazka-4-windows.png<alt/>Ukážka dialógu.</image>Ukážka
+		 * možného vzhľadu dialógu<br />zobrazeného počas vykonávania tohto
+		 * príkladu (Windows).</td><td><image>otazka-4-macos.png<alt/>Ukážka
+		 * dialógu.</image>Ukážka dialógu (macOS).</td></tr></table>
 		 * 
 		 * @param otázka text otázky
 		 * @param titulok text titulku okna s otázkou
@@ -15565,9 +15727,10 @@ public final class Svet extends JFrame
 			{@code typeint} i = {@link Svet Svet}.{@code currotázka}({@code srg"Ako?"}, {@code kwdnew} {@link String#String(java.lang.String) String}[]{{@code srg"Zle"}, {@code srg"Dobre"}}, {@code num1});
 			{@code comm// Spracovanie… Pozri príklad pri:} {@link #otázka(String, String, Object[], int) otázka(otázka, titulok, tlačidlá, predvolenéTlačidlo)}
 			</pre>
-		 * </td><td><image>otazka1E.png<alt/>Ukážka dialógu.</image>Ukážka
-		 * možného vzhľadu dialógu<br />zobrazeného počas
-		 * vykonávania tohto príkladu.</td></tr></table>
+		 * </td><td><image>otazka-5-windows.png<alt/>Ukážka dialógu.</image>Ukážka
+		 * možného vzhľadu dialógu<br />zobrazeného počas vykonávania tohto
+		 * príkladu (Windows).</td><td><image>otazka-5-macos.png<alt/>Ukážka
+		 * dialógu.</image>Ukážka dialógu (macOS).</td></tr></table>
 		 * 
 		 * @param otázka text otázky
 		 * @param tlačidlá zoznam popisov tlačidiel
@@ -15613,13 +15776,14 @@ public final class Svet extends JFrame
 			{@code kwdif} ({@link Konštanty#ZAVRETÉ ZAVRETÉ} == i) {@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code srg"Nechceš odpovedať…"});
 			</pre>
 		 * </td><td><table>
-		 * <tr><td><image>otazka1F.png<alt/></image></td></tr>
-		 * <tr><td><image>otazka2F.png<alt/></image></td></tr>
-		 * <tr><td><image>otazka3F.png<alt/></image></td></tr>
-		 * <tr><td><image>otazka4F.png<alt/></image></td></tr>
-		 * <tr><td><p class="image">Ukážky možného vzhľadu dialógov
-		 * a odpovedí<br />zobrazených počas vykonávania tohto
-		 * príkladu.</p></td></tr>
+		 * <tr><td><image>otazka-6-windows.png<alt/></image></td>
+		 * <td><image>otazka-6-macos.png<alt/></image></td></tr>
+		 * <tr><td colspan="2"><image>otazka2F.png<alt/></image></td></tr>
+		 * <tr><td colspan="2"><image>otazka3F.png<alt/></image></td></tr>
+		 * <tr><td colspan="2"><image>otazka4F.png<alt/></image></td></tr>
+		 * <tr><td colspan="2"><p class="image">Ukážky možného vzhľadu
+		 * dialógov (Windows a macOS) a odpovedí<br />zobrazených počas
+		 * vykonávania tohto príkladu.</p></td></tr>
 		 * </table></td></tr></table>
 		 * 
 		 * @param otázka text otázky
@@ -17048,6 +17212,7 @@ public final class Svet extends JFrame
 		 */
 		public static Long reťazecNaCeléČíslo(String reťazec)
 		{
+			if (null == reťazec || reťazec.isEmpty()) return null;
 			Long číslo = null;
 			try { číslo = Long.valueOf(filtrujReťazec(reťazec)); }
 			catch (Exception e)
@@ -17071,6 +17236,7 @@ public final class Svet extends JFrame
 		 */
 		public static Double reťazecNaReálneČíslo(String reťazec)
 		{
+			if (null == reťazec || reťazec.isEmpty()) return null;
 			Double číslo = null;
 			try { číslo = Double.valueOf(filtrujReťazec(reťazec)); }
 			catch (Exception e)
@@ -17524,7 +17690,8 @@ public final class Svet extends JFrame
 		 * 
 		 * <p><image>standardny-vstup-na-vnutornu-konzolu.png<alt/>Výsledok
 		 * štandardného vstupu na vnútornej konzole.</image>Výsledok.
-		 * (Ako vidno, nastavenie správneho kódovania môže byť problém…)</p>
+		 * (Ako vidno, nastavenie správneho kódovania môže byť problém –
+		 * nepodarilo sa to ani po viacerých pokusoch…)</p>
 		 * 
 		 * @return ak bol štandardný vstup bezchybne aktivovaný, tak táto
 		 *     metóda vráti hodnotu {@code valtrue}
@@ -21325,8 +21492,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Vráti hodnotu 3D Perlinovho šumu z rozsahu ⟨−1; 1⟩ v bode so
-		 * zadanými súradnicami a so zadaným počtom obsiahnutých oktáv.
-		 * (Metóda používa predvolenú hodnotu stability {@code num0.5}.)</p>
+		 * zadanými súradnicami a so zadaným počtom obsiahnutých oktáv.</p>
 		 * 
 		 * <p>Podrobnosti o Perlinovom šume nájdete v opise metódy {@link 
 		 * #perlin(double, double, double) perlin(x, y, z)}.</p>
@@ -21420,8 +21586,7 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Vráti hodnotu polovičného 3D Perlinovho šumu z rozsahu ⟨0; 1⟩
 		 * v bode so zadanými súradnicami a so zadaným počtom obsiahnutých
-		 * oktáv.
-		 * (Metóda používa predvolenú hodnotu stability {@code num0.5}.)</p>
+		 * oktáv.</p>
 		 * 
 		 * <p>Podrobnosti o Perlinovom šume nájdete v opise metódy {@link 
 		 * #perlin(double, double, double) perlin(x, y, z)}.</p>
@@ -21456,8 +21621,8 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Vráti hodnotu opakovania vzoru generátora Perlinovho šumu.
-		 * Hodnoty menšie od 1 znamenajú nekonečný vzor, čo je predvolený
-		 * stav.</p>
+		 * Hodnoty menšie alebo rovné 0 znamenajú nekonečný vzor, čo je
+		 * predvolený stav.</p>
 		 * 
 		 * <p>Podrobnosti o Perlinovom šume nájdete v opise metódy {@link 
 		 * #perlin(double, double, double) perlin(x, y, z)}.</p>
@@ -21476,7 +21641,8 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Nastaví novú hodnotu opakovania vzoru generátora Perlinovho
-		 * šumu. Hodnoty menšie od 1 znamenajú nekonečný vzor.</p>
+		 * šumu. Hodnoty menšie alebo rovné 0 (čo je predvolený stav) znamenajú
+		 * nekonečný vzor.</p>
 		 * 
 		 * <p>Podrobnosti o Perlinovom šume nájdete v opise metódy {@link 
 		 * #perlin(double, double, double) perlin(x, y, z)}.</p>
@@ -27425,9 +27591,12 @@ public final class Svet extends JFrame
 		// že to nebola chyba ☺ ☺ ☺) a použiť ich.
 
 		/**
-		 * <p>Vypočíta vzdialenosť medzi určenou priamkou a kružnicou. Ak sa
-		 * priamka a kružnica pretínajú, tak vrátená vzdialenosť (v) je menšia
-		 * od nuly (dôvody tohto správania sú rovnaké ako pri metóde {@link 
+		 * <p>Vypočíta vzdialenosť medzi určenou priamkou a kružnicou.
+		 * <b>Pozor!</b> Ak sa priamka a kružnica pretínajú, tak vrátená
+		 * vzdialenosť (v) je menšia od nuly, čo je z pohľadu zhody s realitou
+		 * číry nezmysel, ale keďže aj táto hodnota sa dá využiť v praxi,
+		 * bol tento spôsob v programovacom rámci ponechaný (dôvody tohto
+		 * správania sú rovnaké ako pri metóde {@link 
 		 * #vzdialenosťÚsečkyOdKružnice(double, double, double, double,
 		 * double, double, double) vzdialenosťÚsečkyOdKružnice} – pozri jej
 		 * opis), pričom absolútna hodnota tejto vzdialenosti je rovná
@@ -27550,10 +27719,11 @@ public final class Svet extends JFrame
 
 
 		/**
-		 * <p>Vypočíta vzdialenosť medzi určenou úsečkou a kružnicou. Ak sa
-		 * úsečka a kružnica pretínajú, tak vrátená vzdialenosť je menšia od
-		 * nuly a jej absolútna hodnota je vzdialenosťou najbližšieho bodu
-		 * na úsečke od stredu kružnice. Technicky je v takom prípade
+		 * <p>Vypočíta vzdialenosť medzi určenou úsečkou a kružnicou.
+		 * <b>Pozor!</b> Ak sa úsečka a kružnica pretínajú, tak vrátená
+		 * vzdialenosť je menšia od nuly (bez ohľadu na nezmyselnosť tohto
+		 * výsledku) a jej absolútna hodnota je vzdialenosťou najbližšieho
+		 * bodu na úsečke od stredu kružnice. Technicky je v takom prípade
 		 * vzdialenosť nulová, ale je užitočné mať možnosť rozlíšiť tento
 		 * prípad. Najmä pri programovaní rôznych situácií. Preto vracia táto
 		 * metóda aj záporné hodnoty, ktoré sa dajú v prípade potreby

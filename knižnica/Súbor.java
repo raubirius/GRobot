@@ -4857,16 +4857,22 @@ public class Súbor implements Closeable
 		 * <p>Priradí k tomuto súboru zadanú inštanciu {@linkplain Archív
 		 * archívu}. Metódy…
 
-		 TODO
+		 <br />TODO (dokončiť opis: pripojenie má viacero výhodných
+		 * dôsledkov…)<br />
 
 		 * … automatické otvorenie…
 
+		 <br />
+
 		 Zápis:
 
-		 …
+		 <br />…<br />
+
 		 * vrhne výnimku {@link GRobotException GRobotException} s jazykovým
 		 * identifikátorom {@code duplicateEntry} (Položka „<em>názov
 		 * položky</em>“ už v archíve jestvuje.)
+
+		 <br />
 
 		 * Hodnota {@code valnull} znamená, že prípadný pripojený archív má
 		 * byť od tohto súboru odpojený a súbor má opäť fungovať samostatne
@@ -4876,7 +4882,7 @@ public class Súbor implements Closeable
 
 		 * <!-- TODO príklad použitia -->
 
-		 * @param archív TODO
+		 * @param archív inštancia archívu na pripojenie
 		 * 
 		 * @see #archívPriradený()
 		 * @see #otvorNaZápis(String)

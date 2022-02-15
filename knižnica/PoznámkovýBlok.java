@@ -35,10 +35,13 @@ package knižnica;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
+import java.util.regex.Pattern;
 
 import javax.swing.Action;
 import javax.swing.JPanel;
@@ -49,20 +52,31 @@ import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import javax.swing.border.Border;
+
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.DocumentFilter.FilterBypass;
 import javax.swing.text.Element;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import static knižnica.Farebnosť.*;
+import static javax.swing.ScrollPaneConstants.*;
+
+import static javax.swing.text.StyleConstants.ALIGN_CENTER;
+import static javax.swing.text.StyleConstants.ALIGN_JUSTIFIED;
+import static javax.swing.text.StyleConstants.ALIGN_LEFT;
+import static javax.swing.text.StyleConstants.ALIGN_RIGHT;
 
 // ------------------------------- //
 //  *** Trieda PoznámkovýBlok ***  //
@@ -109,8 +123,62 @@ import static knižnica.Farebnosť.*;
  * <p><image>«TODO».png<alt/></image>Ukážka … TODO.</p -->
  */
 @SuppressWarnings("serial")
-public class PoznámkovýBlok extends JTextPane implements Poloha
+public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 {
+	/**
+	 * <p>Hodnota konštanty zarovnania odseku na stred. Pozri metódu
+	 * {@link #zarovnať(int) zarovnať}.</p>
+	 */
+	public static final int ZAROVNAŤ_NA_STRED = ALIGN_CENTER;
+
+	/**
+	 * <p>Hodnota konštanty zarovnania odseku podľa okrajov. Pozri metódu
+	 * {@link #zarovnať(int) zarovnať}.</p>
+	 */
+	public static final int ZAROVNAŤ_PODĽA_OKRAJOV = ALIGN_JUSTIFIED;
+
+	/**
+	 * <p>Hodnota konštanty zarovnania odseku doľava. Pozri metódu
+	 * {@link #zarovnať(int) zarovnať}.</p>
+	 */
+	public static final int ZAROVNAŤ_DOĽAVA = ALIGN_LEFT;
+
+	/**
+	 * <p>Hodnota konštanty zarovnania odseku doprava. Pozri metódu
+	 * {@link #zarovnať(int) zarovnať}.</p>
+	 */
+	public static final int ZAROVNAŤ_DOPRAVA = ALIGN_RIGHT;
+
+
+	/** <p>Alias pre {@link #ZAROVNAŤ_NA_STRED ZAROVNAŤ_NA_STRED}.</p> */
+	public static final int ZAROVNAT_NA_STRED = ALIGN_CENTER;
+
+	/** <p>Alias pre {@link #ZAROVNAŤ_PODĽA_OKRAJOV ZAROVNAŤ_PODĽA_OKRAJOV}.</p> */
+	public static final int ZAROVNAT_PODLA_OKRAJOV = ALIGN_JUSTIFIED;
+
+	/** <p>Alias pre {@link #ZAROVNAŤ_DOĽAVA ZAROVNAŤ_DOĽAVA}.</p> */
+	public static final int ZAROVNAT_DOLAVA = ALIGN_LEFT;
+
+	/** <p>Alias pre {@link #ZAROVNAŤ_DOPRAVA ZAROVNAŤ_DOPRAVA}.</p> */
+	public static final int ZAROVNAT_DOPRAVA = ALIGN_RIGHT;
+
+
+	// Príznak zruśenia dekoru poznámkového bloku:
+	private boolean zrušDekor = false;
+
+	// Inštancie slúžiace na zálohovanie dekoru poznámkového bloku:
+	private Border okrajRolovania = null;
+	private Color pozadieRolovania = null;
+	private boolean nepriehľadnosťRolovania = false;
+
+	private Border okrajVýrezu = null;
+	private Color pozadieVýrezu = null;
+	private boolean nepriehľadnosťVýrezu = false;
+
+	private Border okrajBloku = null;
+	private Color pozadieBloku = null;
+	private boolean textPaneOpaque = false;
+
 	// Tabla rolovania poznámkového bloku
 	@SuppressWarnings("serial")
 	/*packagePrivate*/ class RolovaniePoznámkovéhoBloku extends JScrollPane
@@ -127,14 +195,59 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 			super(komponent);
 			poznámkovýBlok = (PoznámkovýBlok)komponent;
 
-			setBorder(null);
-			setBackground(žiadna);
-			setOpaque(false);
+			// setBorder(null);
+			// setBackground(žiadna);
+			// setOpaque(false);
+
+			okrajRolovania = getBorder();
+			pozadieRolovania = getBackground();
+			nepriehľadnosťRolovania = isOpaque();
+
+			// JViewport viewport = getViewport();
+			// viewport.setBorder(null);
+			// viewport.setBackground(žiadna);
+			// viewport.setOpaque(false);
 
 			JViewport viewport = getViewport();
-			viewport.setBorder(null);
-			viewport.setBackground(žiadna);
-			viewport.setOpaque(false);
+			if (null != viewport)
+			{
+				okrajVýrezu = viewport.getBorder();
+				pozadieVýrezu = viewport.getBackground();
+				nepriehľadnosťVýrezu = viewport.isOpaque();
+			}
+		}
+
+		/** <p>Zrušenie/obnovenie dekoru.</p> */
+		public void zrušDekor(boolean zrušiť)
+		{
+			if (zrušiť)
+			{
+				setBorder(null);
+				setBackground(žiadna);
+				setOpaque(false);
+
+				JViewport viewport = getViewport();
+				if (null != viewport)
+				{
+					viewport.setBorder(null);
+					viewport.setBackground(žiadna);
+					viewport.setOpaque(false);
+				}
+			}
+			else
+			{
+				JViewport viewport = getViewport();
+				if (null != viewport)
+				{
+					viewport.setBorder(okrajVýrezu);
+					viewport.setBackground(pozadieVýrezu);
+					viewport.setOpaque(nepriehľadnosťVýrezu);
+				}
+
+				setBorder(okrajRolovania);
+				setBackground(pozadieRolovania);
+				setOpaque(nepriehľadnosťRolovania);
+			}
 		}
 	}
 
@@ -169,6 +282,54 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	private boolean zakážTabulátor = false;
 	private boolean zakážEnter = false;
 
+	private final static Pattern ibaPrvýRiadok = Pattern.compile(
+		"^([^\\r\\n]*)(.*)$", Pattern.DOTALL);
+
+	private class FilterDokumentu extends DocumentFilter
+	{
+		public void insertString(FilterBypass fb, int offset,
+			String string, AttributeSet attr) throws BadLocationException
+		{
+			if (zakážTabulátor) string = string.replace("\t", " ");
+
+			// System.out.println("insert: " + string);
+			// System.out.println("string.indexOf('\r'): " +
+			// 	string.indexOf('\r'));
+			// System.out.println("string.indexOf('\n'): " +
+			// 	string.indexOf('\n'));
+			// System.out.println("replaceFirst: " +
+			// 	ibaPrvýRiadok.matcher(string).replaceFirst("v$1w"));
+
+			if (zakážEnter && (-1 != string.indexOf('\r') ||
+				-1 != string.indexOf('\n')))
+				string = ibaPrvýRiadok.matcher(string).replaceFirst("$1");
+
+			fb.insertString(offset, string, attr);
+		}
+
+		public void replace(FilterBypass fb, int offset, int length,
+			String string, AttributeSet attr) throws BadLocationException
+		{
+			if (zakážTabulátor) string = string.replace("\t", " ");
+
+			// System.out.println("replace: " + string);
+			// System.out.println("string.indexOf('\r'): " +
+			// 	string.indexOf('\r'));
+			// System.out.println("string.indexOf('\n'): " +
+			// 	string.indexOf('\n'));
+			// System.out.println("replaceFirst: " +
+			// 	ibaPrvýRiadok.matcher(string).replaceFirst("x$1y"));
+
+			if (zakážEnter && (-1 != string.indexOf('\r') ||
+				-1 != string.indexOf('\n')))
+				string = ibaPrvýRiadok.matcher(string).replaceFirst("$1");
+
+			fb.replace(offset, length, string, attr);
+		}
+	}
+
+	private final FilterDokumentu filterDokumentu = new FilterDokumentu();
+
 	private void vytvor(int vlastnáŠírka, int vlastnáVýška)
 	{
 		rolovanie = new RolovaniePoznámkovéhoBloku(this);
@@ -176,13 +337,24 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 
 		x = (Plátno.šírkaPlátna - šírka) / 2;
 		y = (Plátno.výškaPlátna - výška) / 2;
+		setPreferredSize(new Dimension(vlastnáŠírka, vlastnáVýška));
 
 		Svet.hlavnýPanel.add(rolovanie, 0);
 		Svet.hlavnýPanel.doLayout();
 
-		setBorder(null);
-		setBackground(žiadna);
-		setOpaque(false);
+		// setBorder(null);
+		// setBackground(žiadna);
+		// setOpaque(false);
+
+		okrajBloku = getBorder();
+		pozadieBloku = getBackground();
+		textPaneOpaque = isOpaque();
+
+		zrušDekor(true);
+
+		Document dokument = getDocument();
+		if (dokument instanceof AbstractDocument)
+			((AbstractDocument)dokument).setDocumentFilter(filterDokumentu);
 
 		addHyperlinkListener(new HyperlinkListener()
 			{
@@ -869,60 +1041,361 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	/**
 	 * <p><a class="getter"></a> Zistí aktuálnu šírku poznámkového bloku.</p>
 	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom poznámkového bloku s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery bloku vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru bloku neceločíselnú hodnotu,
+	 * spätne z neho prečítate celočíselnú hodnotu získanú zanedbaním
+	 * neceločíselnej časti.)</p>
+	 * 
 	 * @return aktuálna šírka poznámkového bloku
 	 * 
 	 * @see #šírka(int)
+	 * 
+	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
 	 */
-	public int šírka() { return šírka; }
+	public double šírka() { return šírka; }
 
 	/** <p><a class="alias"></a> Alias pre {@link #šírka() šírka}.</p> */
-	public int sirka() { return šírka; }
+	public double sirka() { return šírka; }
 
 	/**
 	 * <p><a class="getter"></a> Zistí aktuálnu výšku poznámkového bloku.</p>
 	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom poznámkového bloku s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery bloku vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru bloku neceločíselnú hodnotu,
+	 * spätne z neho prečítate celočíselnú hodnotu získanú zanedbaním
+	 * neceločíselnej časti.)</p>
+	 * 
 	 * @return aktuálna výška poznámkového bloku
 	 * 
 	 * @see #výška(int)
+	 * 
+	 * @see #šírka()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
 	 */
-	public int výška() { return výška; }
+	public double výška() { return výška; }
 
 	/** <p><a class="alias"></a> Alias pre {@link #výška() výška}.</p> */
-	public int vyska() { return výška; }
+	public double vyska() { return výška; }
+
 
 	/**
 	 * <p><a class="setter"></a> Zmení šírku poznámkového bloku.</p>
 	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom poznámkového bloku s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery bloku vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru bloku neceločíselnú hodnotu,
+	 * spätne z neho prečítate celočíselnú hodnotu získanú zanedbaním
+	 * neceločíselnej časti.)</p>
+	 * 
 	 * @param nováŠírka nová šírka poznámkového bloku
 	 * 
 	 * @see #šírka()
+	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
 	 */
-	public void šírka(int nováŠírka)
+	public void šírka(double nováŠírka)
 	{
 		double ox = polohaX();
-		šírka = nováŠírka;
+		šírka = (int)nováŠírka;
 		polohaX(ox);
 	}
 
-	/** <p><a class="alias"></a> Alias pre {@link #šírka(int) šírka}.</p> */
-	public void sirka(int nováŠírka) { šírka(nováŠírka); }
+	/** <p><a class="alias"></a> Alias pre {@link #šírka(double) šírka}.</p> */
+	public void sirka(double nováŠírka) { šírka(nováŠírka); }
 
 	/**
 	 * <p><a class="setter"></a> Zmení výšku poznámkového bloku.</p>
 	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom poznámkového bloku s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery bloku vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru bloku neceločíselnú hodnotu,
+	 * spätne z neho prečítate celočíselnú hodnotu získanú zanedbaním
+	 * neceločíselnej časti.)</p>
+	 * 
 	 * @param nováVýška nová výška poznámkového bloku
 	 * 
+	 * @see #šírka()
 	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
 	 */
-	public void výška(int nováVýška)
+	public void výška(double nováVýška)
 	{
 		double oy = polohaY();
-		výška = nováVýška;
+		výška = (int)nováVýška;
 		polohaY(oy);
 	}
 
-	/** <p><a class="alias"></a> Alias pre {@link #výška(int) výška}.</p> */
-	public void vyska(int nováVýška) { výška(nováVýška); }
+	/** <p><a class="alias"></a> Alias pre {@link #výška(double) výška}.</p> */
+	public void vyska(double nováVýška) { výška(nováVýška); }
+
+
+	/**
+	 * <p>Zistí aktuálne rozmery poznámkového bloku.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom poznámkového bloku s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery bloku vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru bloku neceločíselnú hodnotu,
+	 * spätne z neho prečítate celočíselnú hodnotu získanú zanedbaním
+	 * neceločíselnej časti.)</p>
+	 * 
+	 * @return objekt vytvorený podľa aktuálnych rozmerov poznámkového bloku
+	 * 
+	 * @see #šírka()
+	 * @see #výška()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
+	 */
+	public Rozmer rozmery() { return new Rozmery(šírka, výška); }
+
+	/**
+	 * <p>Nastaví nové rozmery poznámkového bloku.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom poznámkového bloku s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery bloku vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru bloku neceločíselnú hodnotu,
+	 * spätne z neho prečítate celočíselnú hodnotu získanú zanedbaním
+	 * neceločíselnej časti.)</p>
+	 * 
+	 * @param nováŠírka nová šírka poznámkového bloku
+	 * @param nováVýška nová výška poznámkového bloku
+	 * 
+	 * @see #šírka()
+	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
+	 */
+	public void rozmery(double nováŠírka, double nováVýška)
+	{
+		double ox = polohaX();
+		double oy = polohaY();
+		šírka = (int)nováŠírka;
+		výška = (int)nováVýška;
+		polohaX(ox);
+		polohaY(oy);
+	}
+
+	/**
+	 * <p>Nastaví nové rozmery poznámkového bloku podľa zadanej implementácie
+	 * rozmeru.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom poznámkového bloku s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery bloku vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru bloku neceločíselnú hodnotu,
+	 * spätne z neho prečítate celočíselnú hodnotu získanú zanedbaním
+	 * neceločíselnej časti.)</p>
+	 * 
+	 * @param rozmer inštancia obsahujúca nové rozmery poznámkového bloku
+	 * 
+	 * @see #šírka()
+	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
+	 */
+	public void rozmery(Rozmer rozmer)
+	{
+		double ox = polohaX();
+		double oy = polohaY();
+		šírka = (int)rozmer.šírka();
+		výška = (int)rozmer.výška();
+		polohaX(ox);
+		polohaY(oy);
+	}
+
+
+	/**
+	 * <p>Zistí, či má poznámkový blok zadanú šírku.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom poznámkového bloku s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery bloku vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru bloku neceločíselnú hodnotu,
+	 * spätne z neho prečítate celočíselnú hodnotu získanú zanedbaním
+	 * neceločíselnej časti.)</p>
+	 * 
+	 * @param šírka šírka, ktorá má byť porovnaná so šírkou poznámkového bloku
+	 * @return {@code valtrue} ak sa šírka poznámkového bloku zhoduje so
+	 *     zadanou šírkou, {@code valfalse} v opačnom prípade
+	 * 
+	 * @see #šírka()
+	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
+	 */
+	public boolean máŠírku(double šírka) { return this.šírka == (int)šírka; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #máŠírku(double) máŠírku}.</p> */
+	public boolean maSirku(double šírka) { return this.šírka == (int)šírka; }
+
+
+	/**
+	 * <p>Zistí, či má poznámkový blok zadanú výšku.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom poznámkového bloku s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery bloku vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru bloku neceločíselnú hodnotu,
+	 * spätne z neho prečítate celočíselnú hodnotu získanú zanedbaním
+	 * neceločíselnej časti.)</p>
+	 * 
+	 * @param výška výška, ktorá má byť porovnaná s výškou poznámkového bloku
+	 * @return {@code valtrue} ak sa výška poznámkového bloku zhoduje so
+	 *     zadanou výškou, {@code valfalse} v opačnom prípade
+	 * 
+	 * @see #šírka()
+	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
+	 */
+	public boolean máVýšku(double výška) { return this.výška == (int)výška; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #máVýšku(double) máVýšku}.</p> */
+	public boolean maVysku(double výška) { return this.výška == (int)výška; }
+
+
+	/**
+	 * <p>Overí, či sa rozmery poznámkového bloku dokonale zhodujú so zadanými
+	 * rozmermi. Ak je zistená zhoda, tak je výsledkom
+	 * {@code valtrue}, v opačnom prípade hodnota {@code valfalse}.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom poznámkového bloku s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery bloku vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru bloku neceločíselnú hodnotu,
+	 * spätne z neho prečítate celočíselnú hodnotu získanú zanedbaním
+	 * neceločíselnej časti.)</p>
+	 * 
+	 * @param šírka šírka porovnávaná so šírkou poznámkového bloku
+	 * @param výška výška porovnávaná s výškou poznámkového bloku
+	 * @return {@code valtrue} ak sa rozmery poznámkového bloku zhodujú so
+	 *     zadanými rozmermi, {@code valfalse} v opačnom prípade
+	 * 
+	 * @see #šírka()
+	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 */
+	public boolean máRozmer(double šírka, double výška)
+	{ return this.šírka == (int)šírka && this.výška == (int)výška; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #máRozmer(double, double) máRozmer}.</p> */
+	public boolean maRozmer(double šírka, double výška)
+	{ return máRozmer(šírka, výška); }
+
+
+	/**
+	 * <p>Overí, či sa rozmery poznámkového bloku a rozmery zadaného objektu
+	 * dokonale zhodujú. Ak je zistená zhoda, tak je výsledkom
+	 * {@code valtrue}, v opačnom prípade hodnota {@code valfalse}.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom poznámkového bloku s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery bloku vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru bloku neceločíselnú hodnotu,
+	 * spätne z neho prečítate celočíselnú hodnotu získanú zanedbaním
+	 * neceločíselnej časti.)</p>
+	 * 
+	 * @param rozmer iný objekt, ktorého rozmery majú byť porovnané
+	 *     s rozmermi poznámkového bloku
+	 * @return {@code valtrue} ak sa rozmery poznámkového bloku zhodujú
+	 *     s rozmermi zadaného objektu, {@code valfalse} v opačnom prípade
+	 * 
+	 * @see #šírka()
+	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(double, double)
+	 */
+	public boolean máRozmer(Rozmer rozmer)
+	{
+		if (null == rozmer) return false;
+		return (int)rozmer.šírka() == šírka && (int)rozmer.výška() == výška;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #máRozmer(Rozmer) máRozmer}.</p> */
+	public boolean maRozmer(Rozmer rozmer) { return máRozmer(rozmer); }
 
 
 	/**
@@ -1064,6 +1537,16 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	 * bloku) a tiež na synchronizované zobrazenie/skrytie všetkých súčastí
 	 * poznámkového bloku – {@link JTextPane#setVisible(boolean)},
 	 * {@link JScrollPane#setVisible(boolean)}.)</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda prekrýva originálnu
+	 * metódu {@link JTextPane#setVisible(boolean)}. </p>
+	 * 
+	 * <!-- TODO – priebežne dopĺňať rovnaké poznámky ku všetkým prekrytým
+	 * metódam v programovacom rámci. -->
+	 * 
+	 * @param visible {@code valtrue} alebo {@code valfalse} podľa toho, či
+	 *     má byť poznámkový blok zobrazený alebo skrytý
+	 * @see JTextPane#setVisible(boolean)
 	 */
 	@Override public void setVisible(boolean visible)
 	{
@@ -1076,18 +1559,21 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 
 	/**
 	 * <p><a class="setter"></a> Zakáže alebo povolí predvolenú funkciu
-	 * klávesu tabulátora pre tento poznámkový blok. Predvolene je hodnota
-	 * tejto vlastnosti nastavená na {@code valfalse} a kláves tabulátora
-	 * vkladá znak tabulátora do textu poznámkového bloku. Ak túto funkciu
-	 * zakážeme, tak kláves tabulátora bude plniť funkciu prechodu na ďalší
-	 * (prípadne so Shiftom predchádzajúci) komponent sveta.</p>
+	 * klávesu tabulátora a vkladania znakov tabulátora pre tento poznámkový
+	 * blok.
+	 * Predvolene je hodnota tejto vlastnosti nastavená na {@code valfalse}
+	 * a kláves tabulátora vkladá znak tabulátora do textu poznámkového bloku.
+	 * Ak túto funkciu zakážeme, tak kláves tabulátora bude plniť funkciu
+	 * prechodu na ďalší (prípadne so Shiftom predchádzajúci) komponent
+	 * sveta a vkladanie tabulátorov bude zakázané aj inými mechanizmami.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Nastavenie tejto vlastnosti
+	 * <!-- p class="remark"><b>Poznámka:</b> Nastavenie tejto vlastnosti
 	 * neznamená, že tabulátor nemôže byť vložený do poznámkového bloku
-	 * iným spôsobom.</p>
+	 * iným spôsobom.</p -->
 	 * 
 	 * @param zakážTabulátor {@code valtrue} ak má byť predvolená funkčnosť
-	 *     klávesu zakázaná; {@code valfalse} v opačnom prípade
+	 *     klávesu a vkladanie znaku tabulátora zakázané; {@code valfalse}
+	 *     v opačnom prípade
 	 * 
 	 * @see #zakážTabulátor()
 	 */
@@ -1096,10 +1582,10 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 
 	/**
 	 * <p><a class="getter"></a> Zistí, či je zakázaná predvolená funkcia
-	 * tabulátora pre tento poznámkový blok.</p>
+	 * tabulátora a vkladanie znaku tabulátora pre tento poznámkový blok.</p>
 	 * 
-	 * @return {@code valtrue} ak je predvolená funkčnosť klávesu zakázaná;
-	 *      {@code valfalse} v opačnom prípade
+	 * @return {@code valtrue} ak je predvolená funkčnosť klávesu a vkladanie
+	 *     znaku tabulátora zakázané; {@code valfalse} v opačnom prípade
 	 * 
 	 * @see #zakážTabulátor(boolean)
 	 */
@@ -1115,20 +1601,25 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 
 	/**
 	 * <p><a class="setter"></a> Zakáže alebo povolí predvolenú funkciu
-	 * klávesu {@code Enter} pre tento poznámkový blok. Predvolene je hodnota
-	 * tejto vlastnosti nastavená na {@code valfalse} a kláves {@code Enter}
-	 * vkladá nový riadok do textu poznámkového bloku. Ak túto vlastnosť
-	 * nastavíme na {@code valtrue}, tak {@code Enter} prestane túto funkciu
-	 * plniť. Ak v takom prípade pre kláves {@code Enter} definovaná {@link 
+	 * klávesu {@code Enter} a vkladania znakov nového riadka pre tento
+	 * poznámkový blok.
+	 * Predvolene je hodnota tejto vlastnosti nastavená na {@code valfalse},
+	 * kláves {@code Enter} vkladá nový riadok do textu poznámkového bloku
+	 * a vkladanie nových riadkov je povolené aj inými mechanizmami. Ak túto
+	 * vlastnosť nastavíme na {@code valtrue}, tak {@code Enter} prestane
+	 * túto funkciu plniť a do poznámkového bloku bude zakázané vkladanie
+	 * znakov nových riadkov.
+	 * Ak v takom prípade pre kláves {@code Enter} definovaná {@link 
 	 * Svet#pridajKlávesovúSkratku(String, int, int) klávesová skratka sveta},
 	 * tak je vykonaný príkaz prislúchajúci tejto skratke.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Nastavenie tejto vlastnosti
+	 * <!-- p class="remark"><b>Poznámka:</b> Nastavenie tejto vlastnosti
 	 * neznamená, že nový riadok nemôže byť vložený do poznámkového bloku
-	 * iným spôsobom.</p>
+	 * iným spôsobom.</p -->
 	 * 
-	 * @param zakážTabulátor {@code valtrue} ak má byť predvolená funkčnosť
-	 *     klávesu zakázaná; {@code valfalse} v opačnom prípade
+	 * @param zakážEnter {@code valtrue} ak má byť predvolená funkčnosť
+	 *     klávesu a vkladanie znakov nového riadka zakázané;
+	 *     {@code valfalse} v opačnom prípade
 	 * 
 	 * @see #zakážEnter()
 	 */
@@ -1137,10 +1628,11 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 
 	/**
 	 * <p><a class="getter"></a> Zistí, či je zakázaná predvolená funkcia
-	 * klávesu {@code Enter} pre tento poznámkový blok</p>
+	 * klávesu {@code Enter} a vkladania znakov nových riadkov pre tento
+	 * poznámkový blok.</p>
 	 * 
-	 * @return {@code valtrue} ak je predvolená funkčnosť klávesu zakázaná;
-	 *     {@code valfalse} v opačnom prípade
+	 * @return {@code valtrue} ak je predvolená funkčnosť klávesu a vkladanie
+	 *     znakov nových riadkov zakázané; {@code valfalse} v opačnom prípade
 	 * 
 	 * @see #zakážEnter(boolean)
 	 */
@@ -2151,6 +2643,65 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 
 
 	/**
+	 * <p><a class="getter"></a> Zistí, aké je zarovnanie textu na aktuálnej
+	 * pozícii kurzora v poznámkovom bloku.</p>
+	 * 
+	 * @return stav zarovnania; na porovnanie môžete použiť konštanty
+	 *     {@link #ZAROVNAŤ_NA_STRED ZAROVNAŤ_NA_STRED},
+	 *     {@link #ZAROVNAŤ_PODĽA_OKRAJOV ZAROVNAŤ_PODĽA_OKRAJOV},
+	 *     {@link #ZAROVNAŤ_DOĽAVA ZAROVNAŤ_DOĽAVA}
+	 *     a {@link #ZAROVNAŤ_DOPRAVA ZAROVNAŤ_DOPRAVA}
+	 */
+	public int zarovnať()
+	{
+		// AttributeSet atribúty = getCharacterAttributes();
+		AttributeSet atribúty = getInputAttributes();
+		return StyleConstants.getAlignment(atribúty);
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #zarovnať() zarovnať}.</p> */
+	public int zarovnat() { return zarovnať(); }
+
+
+	/**
+	 * <p><a class="setter"></a> Nastaví zarovnanie označeného textu
+	 * alebo textu, ktorý má byť vkladaný na aktuálnu pozíciu
+	 * poznámkového bloku.</p>
+	 * 
+	 * @param zarovnať stav zarovnania; môžete použiť konštanty
+	 *     {@link #ZAROVNAŤ_NA_STRED ZAROVNAŤ_NA_STRED},
+	 *     {@link #ZAROVNAŤ_PODĽA_OKRAJOV ZAROVNAŤ_PODĽA_OKRAJOV},
+	 *     {@link #ZAROVNAŤ_DOĽAVA ZAROVNAŤ_DOĽAVA}
+	 *     a {@link #ZAROVNAŤ_DOPRAVA ZAROVNAŤ_DOPRAVA}
+	 */
+	public void zarovnať(int zarovnať) // , int začiatok, int koniec)
+	{
+		MutableAttributeSet upravAtribúty = new SimpleAttributeSet();
+		StyleConstants.setAlignment(upravAtribúty, zarovnať);
+
+		// int dĺžka = 0;
+			// 
+			// Document dokument = getDocument();
+			// if (null != dokument) try { dĺžka = dokument.getLength(); }
+			// catch (BadLocationException bad)
+			// { GRobotException.vypíšChybovéHlásenia(bad); }
+			// 
+			// if (začiatok < 0) začiatok += 1 + dĺžka;
+			// if (začiatok < 0) začiatok = 0;
+			// if (koniec < 0) koniec += 1 + dĺžka;
+			// if (koniec < 0) koniec = 0;
+			// 
+			// dokument.setParagraphAttributes(
+			// 	začiatok, koniec, upravAtribúty, false);
+
+		setParagraphAttributes(upravAtribúty, false);
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #zarovnať(int) zarovnať}.</p> */
+	public void zarovnat(int zarovnať) { zarovnať(zarovnať); }
+
+
+	/**
 	 * <p><a class="getter"></a> Vráti text dokumentu vo forme čistého
 	 * textu. Ak je typ dokumentu <code>text/plain</code> alebo
 	 * <code>text/html</code>, tak vráti aktuálny obsah poznámkového
@@ -2213,9 +2764,9 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 
 
 	/**
-	 * <p><a class="getter"></a> Ak je typ dokumentu
-	 * <code>text/html</code>, tak vráti aktuálny HTML obsah
-	 * poznámkového bloku, inak vráti hodnotu {@code valnull}.</p>
+	 * <p><a class="getter"></a> Ak je typ dokumentu <code>text/html</code>,
+	 * tak vráti aktuálny HTML obsah poznámkového bloku (vo forme čistého
+	 * textu obsahujúceho HTML syntax), inak vráti hodnotu {@code valnull}.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Typ dokumentu je možné overiť
 	 * zdedenou metódou {@link #getContentType() getContentType()},
@@ -2234,7 +2785,9 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 
 	/**
 	 * <p><a class="setter"></a> Nastaví nový HTML obsah poznámkového
-	 * bloku. Táto metóda nastaví typ obsahu na <code>text/html</code>,
+	 * bloku. Metóda očakáva obsah vo forme čistého textu, ktorý obsahuje
+	 * HTML syntax, ale prijatý obsah nijako neoveruje, ani nemodifikuje.
+	 * Táto metóda nastaví typ obsahu na <code>text/html</code>,
 	 * ktorý je automaticky nastavený konštruktorom v prípade, že sa
 	 * ním nastavovaný text začína značkou <code>&lt;html&gt;</code>.</p>
 	 * 
@@ -2534,4 +3087,195 @@ public class PoznámkovýBlok extends JTextPane implements Poloha
 	// @Override public int getWidth() { return šírka; }
 	// @Override public int getHeight() { return výška; }
 	// ...
+
+
+	/**
+	 * <p>Zistí, či bola volaná metóda {@link #zrušDekor(boolean) zrušDekor}
+	 * s parametrom {@code true}. Predvolene je každý poznámkový blok
+	 * vytvorený so zrušeným dekorom prostredníctvom volania metódy
+	 * {@link #zrušDekor(boolean) zrušDekor} s parametrom {@code true},
+	 * čím sa pôvodný dekor odstráni zo všetkých súčastí poznámkového
+	 * bloku.</p>
+	 * 
+	 * @return {@code true} ak bol dekor odstránený metódou {@link 
+	 *     #zrušDekor(boolean) zrušDekor}, {@code false} v opačnom prípade
+	 * 
+	 * @see #máDekor()
+	 * @see #zrušDekor(boolean)
+	 */
+	public boolean jeDekorZrušený() { return zrušDekor; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #jeDekorZrušený() jeDekorZrušený}.</p> */
+	public boolean jeDekorZruseny() { return zrušDekor; }
+
+	/**
+	 * <p>Zistí, či nebola volaná metóda {@link #zrušDekor(boolean) zrušDekor}
+	 * s parametrom {@code true}. Táto metóda vracia opačnú logickú hodnotu
+	 * ako metóda {@link #jeDekorZrušený() jeDekorZrušený} (pozr jej opis)
+	 * a je jej doplnkom.</p>
+	 * 
+	 * @return {@code true} ak nebol dekor odstránený metódou {@link 
+	 *     #zrušDekor(boolean) zrušDekor}, {@code false} v opačnom prípade
+	 * 
+	 * @see #jeDekorZrušený()
+	 * @see #zrušDekor(boolean)
+	 */
+	public boolean máDekor() { return !zrušDekor; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #máDekor() máDekor}.</p> */
+	public boolean maDekor() { return !zrušDekor; }
+
+	/**
+	 * <p>Obnoví pôvodný alebo zruší aktuálny dekor poznámkového bloku. Ak je
+	 * hodnota parametra {@code zrušiť} rovná {@code true}, tak je aktuálny
+	 * dekor (orámovanie, pozadie a stav nepriehľadnosti) vymazaný. V opačnom
+	 * prípade (čiže keď je parameter {@code zrušiť} rovný {@code false}) je
+	 * obnovený ten dekor, ktorý bol aktívny v čase vytvárania komponentov
+	 * (súčastí) poznámkového bloku.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Pozor na priame nastavovanie
+	 * orámovania, farby pozadia a nepriehľadnosti tohto poznámkového bloku
+	 * a jeho súčastí. Tento mechanizus ich ruší.</p>
+	 * 
+	 * @param zrušiť pravdivostná hodnota {@code true}/{@code false},
+	 *     ktorá má určiť, či má byť tento komponent dekorovaný, alebo nie
+	 * 
+	 * @see #jeDekorZrušený()
+	 * @see #máDekor()
+	 */
+	public void zrušDekor(boolean zrušiť)
+	{
+		if (zrušiť)
+		{
+			rolovanie.zrušDekor(true);
+
+			setBorder(null);
+			setBackground(žiadna);
+			setOpaque(false);
+
+			this.zrušDekor = true;
+		}
+		else
+		{
+			setBorder(okrajBloku);
+			setBackground(pozadieBloku);
+			setOpaque(textPaneOpaque);
+
+			rolovanie.zrušDekor(false);
+
+			this.zrušDekor = false;
+		}
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #zrušDekor(boolean) zrušDekor}.</p> */
+	public void zrusDekor(boolean zrušiť) { zrušDekor(zrušiť); }
+
+
+	/**
+	 * <p>Nastaví režim zobrazenia rolovacích líšt poznámkového bloku. Ak je
+	 * parameter pre prislúchajúcu lištu ({@code horizontálna} alebo
+	 * {@code vertikálna}) rovný hodnote {@code valtrue}, tak bude lišta stále
+	 * viditeľná, ak je rovný {@code valfalse}, tak bude stále skrytá a ak je
+	 * rovný {@code valnull}, tak bude lišta fungovať v automatickom režime
+	 * a bude sa zobrazovať alebo skrývať podľa potreby (toto je predvolený
+	 * režim zobrazenia líšt).</p>
+	 * 
+	 * @param horizontálna režim zobrazenia horizontálnej (vodorovnej) lišty
+	 * @param vertikálna režim zobrazenia vertikálnej (zvislej) lišty
+	 * 
+	 * @see #režimZobrazeniaHorizontálnejLišty()
+	 * @see #režimZobrazeniaVertikálnejLišty()
+	 */
+	public void režimZobrazeniaRolovacíchLíšt(
+		Boolean horizontálna, Boolean vertikálna)
+	{
+		int h, v;
+		if (null == horizontálna) h = HORIZONTAL_SCROLLBAR_AS_NEEDED;
+		else if (horizontálna) h = HORIZONTAL_SCROLLBAR_ALWAYS;
+		else h = HORIZONTAL_SCROLLBAR_NEVER;
+
+		if (null == vertikálna) v = VERTICAL_SCROLLBAR_AS_NEEDED;
+		else if (vertikálna) v = VERTICAL_SCROLLBAR_ALWAYS;
+		else v = VERTICAL_SCROLLBAR_NEVER;
+
+		rolovanie.setHorizontalScrollBarPolicy(h);
+		rolovanie.setVerticalScrollBarPolicy(v);
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link režimZobrazeniaRolovacíchLíšt(Boolean, Boolean) režimZobrazeniaRolovacíchLíšt}. */
+	public void rezimZobrazeniaRolovacichList(
+		Boolean horizontálna, Boolean vertikálna)
+	{ režimZobrazeniaRolovacíchLíšt(horizontálna, vertikálna); }
+
+	/**
+	 * <p>Zistí režim zobrazenia horizontálnej rolovacej lišty poznámkového
+	 * bloku. Hodnota {@code valtrue} znamená, že lišta je stále viditeľná.
+	 * Hodnota {@code valfalse} znamená, že lišta je stále skrytá. Hodnota
+	 * {@code valnull} znamená, že lišta funguje v automatickom režime –
+	 * zobrazuje alebo skrýva sa podľa potreby (toto je predvolený režim
+	 * zobrazenia líšt). (Hodnota {@code valnull} je vrátená aj v prípade
+	 * chybného nastavenia režimu tejto lišty, ale tento prípad by nemal
+	 * nastať.)</p>
+	 * 
+	 * @return režim zobrazenia horizontálnej rolovacej lišty ({@code valtrue},
+	 *     {@code valfalse}, {@code valnull})
+	 * 
+	 * @see #režimZobrazeniaRolovacíchLišty(Boolean, Boolean)
+	 * @see #režimZobrazeniaVertikálnejLišty()
+	 */
+	public Boolean režimZobrazeniaHorizontálnejLišty()
+	{
+		int h = rolovanie.getHorizontalScrollBarPolicy();
+		switch (h)
+		{
+			// case HORIZONTAL_SCROLLBAR_AS_NEEDED:
+			case HORIZONTAL_SCROLLBAR_ALWAYS: return true;
+			case HORIZONTAL_SCROLLBAR_NEVER: return false;
+		}
+		return null;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link režimZobrazeniaHorizontálnejLišty() režimZobrazeniaHorizontálnejLišty}. */
+	public Boolean rezimZobrazeniaHorizontalnejListy()
+	{ return režimZobrazeniaHorizontálnejLišty(); }
+
+	/**
+	 * <p>Zistí režim zobrazenia vertikálnej rolovacej lišty poznámkového
+	 * bloku. Hodnota {@code valtrue} znamená, že lišta je stále viditeľná.
+	 * Hodnota {@code valfalse} znamená, že lišta je stále skrytá. Hodnota
+	 * {@code valnull} znamená, že lišta funguje v automatickom režime –
+	 * zobrazuje alebo skrýva sa podľa potreby (toto je predvolený režim
+	 * zobrazenia líšt). (Hodnota {@code valnull} je vrátená aj v prípade
+	 * chybného nastavenia režimu tejto lišty, ale tento prípad by nemal
+	 * nastať.)</p>
+	 * 
+	 * @return režim zobrazenia vertikálnej rolovacej lišty ({@code valtrue},
+	 *     {@code valfalse}, {@code valnull})
+	 * 
+	 * @see #režimZobrazeniaRolovacíchLišty(Boolean, Boolean)
+	 * @see #režimZobrazeniaHorizontálnejLišty()
+	 */
+	public Boolean režimZobrazeniaVertikálnejLišty()
+	{
+		int v = rolovanie.getVerticalScrollBarPolicy();
+		switch (v)
+		{
+			// case VERTICAL_SCROLLBAR_AS_NEEDED;
+			case VERTICAL_SCROLLBAR_ALWAYS: return true;
+			case VERTICAL_SCROLLBAR_NEVER: return false;
+		}
+		return null;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link režimZobrazeniaVertikálnejLišty() režimZobrazeniaVertikálnejLišty}. */
+	public Boolean rezimZobrazeniaVertikalnejListy()
+	{ return režimZobrazeniaVertikálnejLišty(); }
+
+	/**
+	 * <p>Poskytne komponent rolovania {@link JScrollPane JScrollPane}
+	 * poznámkového bloku.</p>
+	 * 
+	 * @return komponent rolovania {@link JScrollPane JScrollPane}
+	 */
+	public JScrollPane rolovanie() { return rolovanie; }
 }

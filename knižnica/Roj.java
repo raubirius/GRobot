@@ -144,7 +144,7 @@ import static java.lang.Math.*;
 
 		{@code comm// Statická trieda zoskupujúca funkcionalitu prevodu čiarovej ikonky}
 		{@code comm// vo formáte SVG do tvarov Javy.}
-		{@code kwdpublic} {@code kwdstatic} {@code typeclass} Ikonka implements {@link KreslenieTvaru KreslenieTvaru}
+		{@code kwdpublic} {@code kwdstatic} {@code typeclass} Ikonka {@code kwdimplements} {@link KreslenieTvaru KreslenieTvaru}
 		{
 			{@code comm// Atribút na prepínanie zobrazenia ladiacich informácií:}
 			{@code kwdprivate} {@code kwdstatic} {@code typeboolean} info = {@code valfalse};

@@ -1146,8 +1146,9 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 * <p>Zobrazí alebo skryhe rolovaciu lištu podľa parametra {@code zobraz}.
 	 * Táto metóda prekrýva originálnu metódu z dôvodu implementácie
 	 * mechanizmu zabezpečujúceho správne zobrazenie lišty po inicializácii
-	 * aplikácie.
-	 * (Viac informácií nájdete v opise metódy {@link #zobrazená()
+	 * aplikácie.</p>
+	 * 
+	 * <p>(Viac informácií nájdete v opise metódy {@link #zobrazená()
 	 * zobrazená}.)</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Táto metóda prekrýva originálnu

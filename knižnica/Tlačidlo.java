@@ -941,6 +941,12 @@ public class Tlačidlo extends JButton implements Poloha
 	 * postúpenia vstupu klávesnice (fokusu) hlavnému panelu (pri skrytí
 	 * tlačidla).</p>
 	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda prekrýva originálnu
+	 * metódu {@link JButton#setVisible(boolean)}. </p>
+	 * 
+	 * <!-- TODO – priebežne dopĺňať rovnaké poznámky ku všetkým prekrytým
+	 * metódam v programovacom rámci. -->
+	 * 
 	 * @param visible {@code valtrue} alebo {@code valfalse} podľa toho, či
 	 *     má byť tlačidlo zobrazené alebo skryté
 	 * @see JButton#setVisible(boolean)

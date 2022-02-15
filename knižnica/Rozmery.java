@@ -342,9 +342,9 @@ public class Rozmery extends Dimension2D implements Rozmer
 
 	/**
 	 * <p>Reťazcová reprezentácia tejto inštancie vhodná na účely ladenia
-	 * a obsahujúca informáciu o jednotlivých rozmeroch tejto inštancie.
-	 * Pozri aj metódy:
-	 * {@link #rozmeryNaReťazec(Rozmer) rozmeryNaReťazec},
+	 * a obsahujúca informáciu o jednotlivých rozmeroch tejto inštancie.</p>
+	 * 
+	 * <p>Pozri aj metódy: {@link #rozmeryNaReťazec(Rozmer) rozmeryNaReťazec},
 	 * {@link #reťazecNaRozmery(String) reťazecNaRozmery},
 	 * {@link #dimension2DNaReťazec(Dimension2D) dimension2DNaReťazec}
 	 * a {@link #reťazecNaDimension2D(String) reťazecNaDimension2D}.</p>

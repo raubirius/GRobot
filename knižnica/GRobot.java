@@ -1581,6 +1581,9 @@ Toto bolo presunuté na úvodnú stránku:
 				// Značka kreslená na začiatku a konci čiary:
 				private ZnačkaČiary značkaZačiatku = null, značkaKonca = null;
 
+				// Príznak viditeľnosti:
+				private boolean viditeľná = true;
+
 				/**
 				 * <p>Parametre rôzneho druhu asociované s touto spojnicou.</p>
 				 * 
@@ -3319,6 +3322,234 @@ Toto bolo presunuté na úvodnú stránku:
 					this.vysunutieZačiatku = this.vysunutieKonca = vysunutie;
 					return this;
 				}
+
+
+				/**
+				 * <p>Zistí, či je spojnica viditeľná alebo skrytá.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Táto metóda nezistí, či
+				 * je spojnica reálne vidno na plátne, iba vráti stav zobrazenia
+				 * určený metódami {@link #zobraz() zobraz} a/alebo
+				 * {@link #skry() skry}.<br /> <br />(Tým chce byť vysvetlené,
+				 * že ak je napríklad spojnica skrytá za nejakým objektom, tak
+				 * táto metóda to nezistí.)</p>
+				 * 
+				 * @return {@code valtrue} ak je spojnica zobrazená, {@code 
+				 *     valfalse} v opačnom prípade
+				 * 
+				 * @see #zobrazená()
+				 * @see #skrytá()
+				 * @see #ukáž()
+				 * @see #zobraz()
+				 * @see #skry()
+				 * @see #ukáž(boolean)
+				 * @see #zobraz(boolean)
+				 */
+				public boolean viditeľná() { return viditeľná; }
+
+				/** <p><a class="alias"></a> Alias pre {@link #viditeľná() viditeľná}.</p> */
+				public boolean viditelna() { return viditeľná; }
+
+				/**
+				 * <p>Zistí, či je spojnica viditeľná alebo skrytá.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Táto metóda nezistí, či
+				 * je spojnica reálne vidno na plátne, iba vráti stav zobrazenia
+				 * určený metódami {@link #zobraz() zobraz} a/alebo
+				 * {@link #skry() skry}.<br /> <br />(Tým chce byť vysvetlené,
+				 * že ak je napríklad spojnica skrytá za nejakým objektom, tak
+				 * táto metóda to nezistí.)</p>
+				 * 
+				 * @return {@code valtrue} ak je spojnica zobrazená, {@code 
+				 *     valfalse} v opačnom prípade
+				 * 
+				 * @see #viditeľná()
+				 * @see #skrytá()
+				 * @see #ukáž()
+				 * @see #zobraz()
+				 * @see #skry()
+				 * @see #ukáž(boolean)
+				 * @see #zobraz(boolean)
+				 */
+				public boolean zobrazená() { return viditeľná; }
+
+				/** <p><a class="alias"></a> Alias pre {@link #zobrazená() zobrazená}.</p> */
+				public boolean zobrazena() { return viditeľná; }
+
+				/**
+				 * <p>Zistí, či je spojnica viditeľná alebo skrytá.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Táto metóda nezistí, či
+				 * je spojnica reálne vidno na plátne, iba vráti stav zobrazenia
+				 * určený metódami {@link #zobraz() zobraz} a/alebo
+				 * {@link #skry() skry}.<br /> <br />(Tým chce byť vysvetlené,
+				 * že ak je napríklad spojnica skrytá za nejakým objektom, tak
+				 * táto metóda to nezistí.)</p>
+				 * 
+				 * @return {@code valtrue} ak je spojnica skrytá, {@code 
+				 *     valfalse} v opačnom prípade
+				 * 
+				 * @see #viditeľná()
+				 * @see #zobrazená()
+				 * @see #ukáž()
+				 * @see #zobraz()
+				 * @see #skry()
+				 * @see #ukáž(boolean)
+				 * @see #zobraz(boolean)
+				 */
+				public boolean skrytá() { return !viditeľná; }
+
+				/** <p><a class="alias"></a> Alias pre {@link #skrytá() skrytá}.</p> */
+				public boolean skryta() { return !viditeľná; }
+
+				/**
+				 * <p>Zobrazí túto spojnicu. Alternatívou tejto metódy je
+				 * metóda {@link #zobraz() zobraz}. Opačný efekt má metóda
+				 * {@link #skry() skry}.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Táto metóda spúšťa
+				 * automatické prekreslenie sveta, ale len v prípade, že sa
+				 * stav viditeľnosti spojnice zmení.</p>
+				 * 
+				 * @see #viditeľná()
+				 * @see #zobrazená()
+				 * @see #skrytá()
+				 * @see #zobraz()
+				 * @see #skry()
+				 * @see #ukáž(boolean)
+				 * @see #zobraz(boolean)
+				 */
+				public void ukáž()
+				{
+					// Toto nie je alias‼ Prípadné zmeny treba
+					// vniesť aj do metódy zobraz (nižšie)‼
+					if (!viditeľná)
+					{
+						viditeľná = true;
+						Svet.automatickéPrekreslenie();
+					}
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #ukáž() ukáž}.</p> */
+				public void ukaz() { ukáž(); }
+
+				/**
+				 * <p>Zobrazí túto spojnicu. Alternatívou tejto metódy je
+				 * metóda {@link #ukáž() ukáž}. Opačný efekt má metóda
+				 * {@link #skry() skry}.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Táto metóda spúšťa
+				 * automatické prekreslenie sveta, ale len v prípade, že sa
+				 * stav viditeľnosti spojnice zmení.</p>
+				 * 
+				 * @see #viditeľná()
+				 * @see #zobrazená()
+				 * @see #skrytá()
+				 * @see #ukáž()
+				 * @see #skry()
+				 * @see #ukáž(boolean)
+				 * @see #zobraz(boolean)
+				 */
+				public void zobraz()
+				{
+					// Toto nie je alias‼ Prípadné zmeny treba
+					// vniesť aj do metódy ukáž (vyššie)‼
+					if (!viditeľná)
+					{
+						viditeľná = true;
+						Svet.automatickéPrekreslenie();
+					}
+				}
+
+				/**
+				 * <p>Skryje túto spojnicu. Opačný efekt majú metódy
+				 * {@link #ukáž() ukáž} a {@link #zobraz() zobraz} (ktoré
+				 * fungujú identicky – jedna je alternatívou druhej). Uvedené
+				 * metódy majú definované aj verzie s parametrom, ktorého
+				 * hodnota určuje, či má byť spojnica zobrazená alebo
+				 * skrytá.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Táto metóda spúšťa
+				 * automatické prekreslenie sveta, ale len v prípade, že sa
+				 * stav viditeľnosti spojnice zmení.</p>
+				 * 
+				 * @see #viditeľná()
+				 * @see #zobrazená()
+				 * @see #skrytá()
+				 * @see #ukáž()
+				 * @see #zobraz()
+				 * @see #ukáž(boolean)
+				 * @see #zobraz(boolean)
+				 */
+				public void skry()
+				{
+					if (viditeľná)
+					{
+						viditeľná = false;
+						Svet.automatickéPrekreslenie();
+					}
+				}
+
+				/**
+				 * <p>Zobrazí alebo skryje túto spojnicu podľa hodnoty
+				 * parametra {@code ukáž}. Alternatívou tejto metódy je
+				 * metóda {@link #zobraz(boolean) zobraz}. Okrem tejto
+				 * dvojice metód je definovaná trojica bezparametrických
+				 * metód: {@link #ukáž() ukáž}, {@link #zobraz() zobraz}
+				 * a {@link #skry() skry}.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Táto metóda spúšťa
+				 * automatické prekreslenie sveta, ale len v prípade, že sa
+				 * stav viditeľnosti spojnice zmení.</p>
+				 * 
+				 * @param zobraz ak je hodnota tohto parametera rovná
+				 *     {@code valtrue} a spojnica nie je viditeľná, tak bude
+				 *     zobrazená;
+				 *     ak je hodnota tohto parametera rovná {@code valfalse}
+				 *     a spojnica je viditeľná, tak bude skrytá
+				 * 
+				 * @see #viditeľná()
+				 * @see #zobrazená()
+				 * @see #skrytá()
+				 * @see #ukáž()
+				 * @see #zobraz()
+				 * @see #skry()
+				 * @see #zobraz(boolean)
+				 */
+				public void ukáž(boolean ukáž)
+				{ if (ukáž) ukáž(); else skry(); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #ukáž(boolean) ukáž}.</p> */
+				public void ukaz(boolean ukáž) { ukáž(ukáž); }
+
+				/**
+				 * <p>Zobrazí alebo skryje túto spojnicu podľa hodnoty
+				 * parametra {@code zobraz}. Alternatívou tejto metódy je
+				 * metóda {@link #ukáž(boolean) ukáž}. Okrem tejto
+				 * dvojice metód je definovaná trojica bezparametrických
+				 * metód: {@link #ukáž() ukáž}, {@link #zobraz() zobraz}
+				 * a {@link #skry() skry}.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Táto metóda spúšťa
+				 * automatické prekreslenie sveta, ale len v prípade, že sa
+				 * stav viditeľnosti spojnice zmení.</p>
+				 * 
+				 * @param zobraz ak je hodnota tohto parametera rovná
+				 *     {@code valtrue} a spojnica nie je viditeľná, tak bude
+				 *     zobrazená;
+				 *     ak je hodnota tohto parametera rovná {@code valfalse}
+				 *     a spojnica je viditeľná, tak bude skrytá
+				 * 
+				 * @see #viditeľná()
+				 * @see #zobrazená()
+				 * @see #skrytá()
+				 * @see #ukáž()
+				 * @see #zobraz()
+				 * @see #skry()
+				 * @see #ukáž(boolean)
+				 */
+				public void zobraz(boolean zobraz)
+				{ if (zobraz) zobraz(); else skry(); }
 			}
 
 
@@ -4106,6 +4337,31 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 			}
 
+			/*packagePrivate*/ Paint dajNáterPodľaRobota()
+			{
+				if (null != náter) return náter;
+				if (null == cieľováFarba) return farbaRobota;
+
+				if (použiKruhovýNáter)
+					return new RadialGradientPaint(
+						(float)Svet.prepočítajX(aktuálneX),
+						(float)Svet.prepočítajY(aktuálneY),
+						(float)veľkosť, podiely, new Color[]
+						{farbaRobota, cieľováFarba});
+
+				double α = toRadians(aktuálnyUhol);
+				double cosα = cos(α) * veľkosť;
+				double sinα = sin(α) * veľkosť;
+				double x0P = Svet.prepočítajX(aktuálneX - cosα);
+				double y0P = Svet.prepočítajY(aktuálneY - sinα);
+				double x1P = Svet.prepočítajX(aktuálneX + cosα);
+				double y1P = Svet.prepočítajY(aktuálneY + sinα);
+
+				return new GradientPaint(
+					(float)x0P, (float)y0P, farbaRobota,
+					(float)x1P, (float)y1P, cieľováFarba);
+			}
+
 			/*packagePrivate*/ void obnovVlastnostiGrafiky(Graphics2D grafika)
 			{
 				if (vráťKompozit_vlastnosťGrafiky)
@@ -4602,7 +4858,7 @@ Toto bolo presunuté na úvodnú stránku:
 
 				for (Spojnica s : spojnice)
 				{
-					if (s.cieľ.viditeľný())
+					if (s.viditeľná && s.cieľ.viditeľný())
 					{
 						// if (null != s.farba) grafika.setColor(s.farba);
 						// else grafika.setColor(farbaRobota);
@@ -6376,7 +6632,10 @@ Toto bolo presunuté na úvodnú stránku:
 				 *     aktuálneho ťahu robota
 				 */
 				public Shape tvarPodľaČiary(Shape tvar)
-				{ poslednýTypTvaru = TypTvaru.NIČ; return čiara.createStrokedShape(tvar); }
+				{
+					poslednýTypTvaru = TypTvaru.NIČ;
+					return čiara.createStrokedShape(tvar);
+				}
 
 				/** <p><a class="alias"></a> Alias pre {@link #tvarPodľaČiary(Shape) tvarPodľaČiary}.</p> */
 				public Shape tvarPodlaCiary(Shape tvar)

@@ -29,4 +29,5 @@
 
 package knižnica;
 
+/** <p><a class="alias"></a> Alias pre {@link Konštanty Konštanty}.</p> */
 public interface Konstanty extends Konštanty {}

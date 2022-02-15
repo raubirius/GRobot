@@ -36,6 +36,7 @@ package knižnica;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Paint;
 import java.awt.Shape;
 
 import java.awt.geom.AffineTransform;
@@ -2714,8 +2715,7 @@ public class SVGPodpora
 	 * @see #alfaNaReťazec(Farebnosť)
 	 * @see #reťazecNaFarbu(String, String)
 	 */
-	public static String farbaNaReťazec(Farebnosť farba,
-		boolean ignorujAlfu)
+	public static String farbaNaReťazec(Farebnosť farba, boolean ignorujAlfu)
 	{
 		if (null == farba) return "none";
 		return farbaNaReťazec(farba.farba(), ignorujAlfu);
@@ -3534,7 +3534,7 @@ public class SVGPodpora
 	 * <p>Vypočíta aktuálny rozmer kresby (šírku a výšku) a vráti ho
 	 * v prvých dvoch prvkoch poľa typu {@code typedouble}.</p>
 	 * 
-	 * <!--p>Doplnkou informáciou v ďalších dvoch prvkoch poľa je miera
+	 * <!--p>Doplnkovou informáciou v ďalších dvoch prvkoch poľa je miera
 	 * vysunutia ľavého spodného rohu kresby od stredu súradnicovej sústavy.
 	 * (Vrátené súradnice sú prepočítané do súradnicového priestoru rámca.
 	 * O súradnicových priestoroch sa podrobnejšie píše napríklad v opisoch
@@ -3550,12 +3550,12 @@ public class SVGPodpora
 	 * <pre CLASS="example">
 		</pre-->
 	 * 
-	 * <p class="attention"><b>Upozornenie:</b> Táto metóda nemusí fungovať
-	 * spoľahlivo, keď je vnútorný stav kresby upravený niektorými druhmi
-	 * transformácií. Ak potrebujete napríklad zistiť veľkosť kresby
-	 * prečítanej z SVG súboru, tak je najlepšie ho zisťovať ihneď po
-	 * prečítaní súboru (skôr než budú vykonané určité zásahy do vnútorných
-	 * stavov inštancie triedy {@code currSVGPodpora}).</p>
+	 * <p class="attention"><b>Upozornenie:</b> V prípade, že je vnútorný
+	 * stav kresby upravený niektorými druhmi transformácií, nemusí táto
+	 * metóda fungovať spoľahlivo. Ak potrebujete napríklad zistiť veľkosť
+	 * kresby prečítanej z SVG súboru, tak je najlepšie ho zisťovať ihneď po
+	 * prečítaní kresby zo súboru (skôr než budú vykonané určité zásahy do
+	 * vnútorných stavov inštancie triedy {@code currSVGPodpora}).</p>
 	 * 
 	 * @return dvojica hodnôt (uložených v prvých dvoch prvkoch poľa)
 	 *     udávajúcich rozmer kresby<!-- s doplnkovou informáciou o vysunutí
@@ -4082,6 +4082,36 @@ public class SVGPodpora
 	/** <p><a class="alias"></a> Alias pre {@link #dajAtribút(int, String) dajAtribút}.</p> */
 	public String dajAtribut(int index, String meno)
 	{ return dajAtribút(index, meno); }
+
+
+	// Toto prázdne pole je využívané na prevod množiny (Set) na pole
+	// v nasledujúcej metóde (dajAtribúty).
+	private final static String[] prázdnePoleAtribútov = new String[]{};
+
+	/**
+	 * <p>Poskytne zoznam názvov atribútov asociovaných s tvarom so zadaným
+	 * indexom. Ak je zadaný index záporný, metóda vytvorí zoznam atribútov
+	 * pre tvar od konca zásobníka tvarov. To znamená, že index {@code num-1}
+	 * označuje posledný tvar vložený do vnútorného zásobníka tvarov. Ak
+	 * požadovaný tvar nejestvuje, tak táto metóda vráti hodnotu {@code 
+	 * valnull}, inak vráti pole reťazcov (hoci aj prázdne).</p>
+	 * 
+	 * @param index index požadovaného tvaru z vnútorného zásobníka
+	 * @return reťazec s hodnotou požadovaného atribútu alebo
+	 *     {@code valnull}
+	 */
+	public String[] dajAtribúty(int index)
+	{
+		if (index < 0) index = tvary.size() + index;
+		if (index >= 0 && index < tvary.size())
+			return tvary.get(index).atribúty.keySet().
+				toArray(prázdnePoleAtribútov);
+		return null;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #dajAtribúty(int) dajAtribúty}.</p> */
+	public String[] dajAtributy(int index) { return dajAtribúty(index); }
+
 
 	/**
 	 * <p>Vráti XML/SVG reprezentáciu tvaru uloženého vo vnútornom
@@ -5127,8 +5157,7 @@ public class SVGPodpora
 	 *     prepíšAtribút})
 	 * @param transformácie pole objektov transformácií na pridanie
 	 */
-	public void pridajTransformácie(int index,
-		Transformácia[] transformácie)
+	public void pridajTransformácie(int index, Transformácia[] transformácie)
 	{
 		if (null != transformácie)
 		{
@@ -5156,8 +5185,7 @@ public class SVGPodpora
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #pridajTransformácie(int, Transformácia[]) pridajTransformácie}.</p> */
-	public void pridajTransformacie(int index,
-		Transformácia[] transformácie)
+	public void pridajTransformacie(int index, Transformácia[] transformácie)
 	{ pridajTransformácie(index, transformácie); }
 
 
@@ -5222,18 +5250,102 @@ public class SVGPodpora
 		tvary.add(záznam);
 	}
 
+	/**
+	 * <p>Vloží do vnútorného zásobníka tejto inštancie ďalší tvar
+	 * so základnými atribútmi (ťah a/alebo výplň) nastavenými podľa
+	 * zadaného tvorcu a s prípadnou doplňujúcou sériou atribútov. Okrem
+	 * nastavovania základných atribútov podľa tvorcu funguje táto metóda
+	 * rovnako ako metóda {@link #pridaj(Shape, String[]) pridaj(tvar,
+	 * atribúty)}.</p>
+	 * 
+	 * <p>Trieda pri {@linkplain #zapíš(String, String, boolean) ukladaní
+	 * tvarov do súboru} nájde vhodnú reprezentáciu zadaného tvaru vo forme
+	 * XML/SVG značky (pozri aj metódu {@link #dajSVG(int) dajSVG(index)}),
+	 * ku ktorej priradí sériu zadaných atribútov. (Atribúty bez mena alebo
+	 * s hodnotou {@code valnull} sú ignorované.)</p>
+	 * 
+	 * <p class="caution"><b>Pozor!</b> Atribúty, ktoré sú kľúčové pri
+	 * vyjadrení konkrétneho tvaru (napr. {@code cx}, {@code cy}, {@code r}
+	 * pri kružnici, {@code points} pri polygóne, {@code d} pri ceste
+	 * a podobne) sú počas prevodu do XML/SVG tvaru nahradené konkrétnymi
+	 * hodnotami. Preto ich nastavenie touto metódou nemá zmysel.</p>
+	 * 
+	 * @param tvar inštancia tvaru na uloženie
+	 * @param tvorca robot, z ktorého budú prevzaté niektoré parametre
+	 *     užitočné počas vytvárania obrysu
+	 * @param atribúty séria dvojíc reťazcov určujúca doplňujúce atribúty
+	 *     tvaru
+	 */
+	public void pridaj(Shape tvar, GRobot tvorca, String... atribúty)
+	{
+		int dĺžka = atribúty.length - 1;
+		Atribúty zoznam = new Atribúty();
+
+		if (tvorca.priehľadnosť() < 1.0)
+		{
+			if (tvorca.priehľadnosť() > 0.0)
+				zoznam.put("opacity", "" + tvorca.priehľadnosť());
+			else
+				zoznam.put("opacity", "0.0");
+		}
+
+		String náter = náterNaReťazec(tvorca.dajNáterPodľaRobota());
+
+		if (null != náter)
+		{
+			if (GRobot.TypTvaru.VÝPLŇ == tvorca.poslednýTypTvaru)
+				zoznam.put("fill", náter);
+			else if (GRobot.TypTvaru.OBRYS == tvorca.poslednýTypTvaru)
+			{
+				zoznam.put("stroke", náter);
+				zoznam.put("fill", "none");
+			}
+		}
+
+		for (int i = 0; i < dĺžka; i += 2)
+			if (null != atribúty[i] && !atribúty[i].isEmpty() &&
+				null != atribúty[i + 1])
+				zoznam.put(atribúty[i], atribúty[i + 1]);
+
+		Tvar záznam = new Tvar(tvar, zoznam);
+		tvary.add(záznam);
+	}
+
+
+	/**
+	 * <p>Pokúsi sa previesť zadaný náter do reťazcovej podoby – do definície
+	 * podľa štandardu SVG. Ak je zadaný náter jeden z podporovaných typov<!--:
+	 * TODO-->, tak metóda vráti jeho textový tvar. V opačnom prípade vráti
+	 * metóda hodnotu {@code valnull}.</p>
+	 * 
+	 * @param náter inštancia náteru ({@link Paint Paint}), ktorá má byť
+	 *     prevedená do reťazcovej (SVG) podoby
+	 * @return reťazec obsahujúci SVG definíciu náteru alebo {@code valnull},
+	 *     ak bol náter neznámeho typu (alebo nejestvuje)
+	 */
+	public String náterNaReťazec(Paint náter)
+	{
+		if (null == náter) return null;
+		if (náter instanceof Color) return farbaNaReťazec((Color)náter, false);
+		return null;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #náterNaReťazec(Paint) náterNaReťazec}.</p> */
+	public String naterNaRetazec(Paint náter) { return náterNaReťazec(náter); }
+
 
 	/**
 	 * <p>Vloží do vnútorného zásobníka tejto inštancie nový tvar
 	 * reprezentujúci text (znaky, textovú informáciu) s prípadnou
-	 * sériou atribútov. Pri kreslení je zo zadaného textu vytvorený
-	 * obrys podľa niektorých parametrov, ktoré sú pri procese
-	 * pridávania textu prevzaté zo zadaného robota (konkrétne písmo,
-	 * poloha, spôsob kreslenia textov a pootočenie robota, ktoré určia
-	 * vlastnosti písma, polohu kreslenia a pootočenie kresleného textu;
-	 * farba robota, ktorá je použitá na určenie predvolenej farby
-	 * výplne obrysu textu – čiže predvolene nie je nakreslený
-	 * vygenerovaný obrys textu, ale jeho výplň).</p>
+	 * sériou atribútov. Pri kreslení (až vo fáze kreslenia, čiže text
+	 * zostáva v SVG reprezentácii vo forme textu a dá sa dodatočne
+	 * upravovať) je zo zadaného textu vytvorený obrys podľa niektorých
+	 * parametrov, ktoré sú pri procese pridávania textu prevzaté zo
+	 * zadaného robota (konkrétne písmo, poloha, spôsob kreslenia textov
+	 * a pootočenie robota, ktoré určia vlastnosti písma, polohu kreslenia
+	 * a pootočenie kresleného textu; farba robota, ktorá je použitá na
+	 * určenie predvolenej farby výplne obrysu textu – čiže predvolene nie
+	 * je nakreslený vygenerovaný obrys textu, ale jeho výplň).</p>
 	 * 
 	 * <p>Trieda pri {@linkplain #zapíš(String, String, boolean) ukladaní
 	 * tvarov do súboru} použije XML/SVG značku {@code <text>}, ku
@@ -7433,6 +7545,8 @@ public class SVGPodpora
 	{
 		početPridanýchTvarov = -1;
 
+		try { // (Pár k finally na núdzové zavretie a likvidáciu prúdu.)
+
 		// „Otvorí“ zadaný reťazec ako prúd…
 		try
 		{
@@ -7466,7 +7580,7 @@ public class SVGPodpora
 
 					if (null == prefix || prefix.isEmpty())
 					{
-						// Začne čítanie elementu svg
+						// Začne čítanie elementu svg.
 						if ("svg".equals(čítanie.getLocalName()))
 						{
 							čítanie.next();
@@ -7486,7 +7600,7 @@ public class SVGPodpora
 		}
 
 
-		// Bezpečné zavretie prúdu
+		// Bezpečné zavretie prúdu.
 		try
 		{
 			if (null != čítanie) čítanie.close();
@@ -7498,11 +7612,15 @@ public class SVGPodpora
 				"svgImportError", e);
 		}
 
-		// Likvidácia dočasnej inštancie čítania prúdu
+		// Likvidácia dočasnej inštancie čítania prúdu.
 		čítanie = null;
 
 		// Metóda má vrátiť počet rozpoznaných (a pridaných) tvarov:
 		return početPridanýchTvarov;
+
+		} finally { if (null != čítanie) { try { čítanie.close(); }
+			catch (Exception e) { /* Ignorované, toto je núdzové
+			zatváranie. */ } čítanie = null; }}
 	}
 
 
@@ -7549,6 +7667,8 @@ public class SVGPodpora
 
 		FileNotFoundException notFound = null;
 		boolean ešteRaz = true;
+
+		try { // (Pár k finally na núdzové zavretie a likvidáciu prúdu.)
 
 		// Skúsi otvoriť prúd z aktuálnej lokality
 		// alebo z aktuálneho zoznamu ciest classpath:
@@ -7604,7 +7724,7 @@ public class SVGPodpora
 
 					if (null == prefix || prefix.isEmpty())
 					{
-						// Začne čítanie elementu svg
+						// Začne čítanie elementu svg.
 						if ("svg".equals(čítanie.getLocalName()))
 						{
 							čítanie.next();
@@ -7624,7 +7744,7 @@ public class SVGPodpora
 		}
 
 
-		// Bezpečné zavretie prúdu
+		// Bezpečné zavretie prúdu.
 		try
 		{
 			if (null != čítanie) čítanie.close();
@@ -7636,11 +7756,15 @@ public class SVGPodpora
 				meno + ".“", "svgReadError", e);
 		}
 
-		// Likvidácia dočasnej inštancie čítania prúdu
+		// Likvidácia dočasnej inštancie čítania prúdu.
 		čítanie = null;
 
 		// Metóda má vrátiť počet „prečítaných“ (pridaných) tvarov:
 		return početPridanýchTvarov;
+
+		} finally { if (null != čítanie) { try { čítanie.close(); }
+			catch (Exception e) { /* Ignorované, toto je núdzové
+			zatváranie. */ } čítanie = null; }}
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #čítaj(String) čítaj}.</p> */

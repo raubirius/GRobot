@@ -573,7 +573,8 @@ import knižnica.Poloha;
  * dole pod hviezdou (klikaním myšou) a vyčkaním na úplné upokojenie hladiny
  * (táto prípravná fáza je z animácie vystrihnutá). Z tohto stavu prejde robot
  * krížom popod zmrazenú hviezdu (kliknutím myšou) a vyčká na úplné upokojenie
- * hladiny. Potom sa celý proces zopakuje.</p>
+ * hladiny. Potom sa celý proces zopakuje. (Všimnite si, že zmrazená hviezda
+ * sa nevlní, ale prechádzajúci robot v nej vidno.)</p>
  * 
  * <p><image>vlnenie-ukazka.gif<alt/></image>Ukážka animácií vlnenia
  * <small>(ukážka je zmenšená a mierne zrýchlená)</small>.</p>
