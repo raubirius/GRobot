@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2021 by Roman Horváth
+ // Copyright © 2010 – 2022 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -36,7 +36,11 @@ package knižnica;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.GradientPaint;
+import java.awt.LinearGradientPaint;
+import java.awt.MultipleGradientPaint;
 import java.awt.Paint;
+import java.awt.RadialGradientPaint;
 import java.awt.Shape;
 
 import java.awt.geom.AffineTransform;
@@ -45,6 +49,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 
@@ -2259,7 +2264,7 @@ public class SVGPodpora
 	 * @return prevedený reťazec obsahujúci text definície 2D SVG
 	 *     transformácie
 	 */
-	public String transformáciuNaReťazec(AffineTransform transformácia)
+	public static String transformáciuNaReťazec(AffineTransform transformácia)
 	{
 		double[] hodnota = new double[6];
 		transformácia.getMatrix(hodnota);
@@ -2317,7 +2322,7 @@ public class SVGPodpora
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #transformáciuNaReťazec(AffineTransform) transformáciuNaReťazec}.</p> */
-	public String transformaciuNaRetazec(AffineTransform transformácia)
+	public static String transformaciuNaRetazec(AffineTransform transformácia)
 	{ return transformáciuNaReťazec(transformácia); }
 
 	/**
@@ -2333,14 +2338,14 @@ public class SVGPodpora
 	 * @return prevedený reťazec obsahujúci text definície 2D SVG
 	 *     transformácie
 	 */
-	public String transformáciuNaReťazec(Transformácia transformácia)
+	public static String transformáciuNaReťazec(Transformácia transformácia)
 	{
 		if (null == transformácia) return null;
 		return transformácia.toString();
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #transformáciuNaReťazec(Transformácia) transformáciuNaReťazec}.</p> */
-	public String transformaciuNaRetazec(Transformácia transformácia)
+	public static String transformaciuNaRetazec(Transformácia transformácia)
 	{ return transformáciuNaReťazec(transformácia); }
 
 	/**
@@ -2362,7 +2367,7 @@ public class SVGPodpora
 	 * @return prevedený reťazec obsahujúci textové definície všetkých
 	 *     zadaných afinných transformácií
 	 */
-	public String transformácieNaReťazec(AffineTransform... transformácie)
+	public static String transformácieNaReťazec(AffineTransform... transformácie)
 	{
 		if (null == transformácie) return null;
 
@@ -2381,7 +2386,7 @@ public class SVGPodpora
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #transformácieNaReťazec(AffineTransform[]) transformácieNaReťazec}.</p> */
-	public String transformacieNaRetazec(AffineTransform... transformácie)
+	public static String transformacieNaRetazec(AffineTransform... transformácie)
 	{ return transformácieNaReťazec(transformácie); }
 
 	/**
@@ -2398,7 +2403,7 @@ public class SVGPodpora
 	 * @return prevedený reťazec obsahujúci textové definície všetkých
 	 *     zadaných transformácií
 	 */
-	public String transformácieNaReťazec(Transformácia... transformácie)
+	public static String transformácieNaReťazec(Transformácia... transformácie)
 	{
 		if (null == transformácie) return null;
 
@@ -2417,7 +2422,7 @@ public class SVGPodpora
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #transformácieNaReťazec(Transformácia[]) transformácieNaReťazec}.</p> */
-	public String transformacieNaRetazec(Transformácia... transformácie)
+	public static String transformacieNaRetazec(Transformácia... transformácie)
 	{ return transformácieNaReťazec(transformácie); }
 
 
@@ -3046,7 +3051,7 @@ public class SVGPodpora
 		"<!DOCTYPE html>", "<html>", "<head>",
 		"<meta charset=\"$KÓDOVANIE\" />", "<title>$TITULOK</title>",
 		"</head>", "<body>", "<svg width=\"$ŠÍRKA\" height=\"$VÝŠKA\">",
-		"<g stroke-linecap=\"round\" stroke-linejoin=\"round\">",
+		"$DEFINÍCIE<g stroke-linecap=\"round\" stroke-linejoin=\"round\">",
 		"$TVARY", "</g>", "</svg>", "</body>", "</html>"
 	};
 
@@ -3059,8 +3064,8 @@ public class SVGPodpora
 		"<?xml version=\"1.0\" encoding=\"$KÓDOVANIE\"" +
 		" standalone=\"no\"?>", "<svg xmlns=\"http://www.w3.org/2000/svg" +
 		"\" width=\"$ŠÍRKA\" height=\"$VÝŠKA\">", "<title>$TITULOK</title>",
-		"<g stroke-linecap=\"round\" stroke-linejoin=\"round\">", "$TVARY",
-		"</g>", "</svg>"
+		"$DEFINÍCIE<g stroke-linecap=\"round\" stroke-linejoin=\"round\">",
+		"$TVARY", "</g>", "</svg>"
 	};
 
 
@@ -3070,9 +3075,9 @@ public class SVGPodpora
 	 * na zápis tvarov (vo formáte SVG).</p>
 	 * 
 	 * <p>Jeden prvok poľa je ekvivalentný jednému riadku HTML súboru.
-	 * Výnimku tvorí riadok obsahujúci rezervovaný reťazec {@code $TVARY}
-	 * (resp. {@code $SHAPES}), pretože tento reťazec bude nahradený SVG
-	 * definíciami tvarov.</p>
+	 * Výnimku tvoria riadky obsahujúce rezervované reťazce {@code $TVARY}
+	 * (resp. {@code $SHAPES}) alebo {@code $DEFINÍCIE} (resp. {@code $DEFS}),
+	 * pretože tieto reťazce budú nahradený viacriadkovými SVG definíciami.</p>
 	 * 
 	 * <p>V prípade potreby môžete obsah tejto šablóny nahradiť iným
 	 * požadovaným tvarom metódou {@link #htmlŠablóna(String[])
@@ -3080,10 +3085,17 @@ public class SVGPodpora
 	 * 
 	 * @return aktuálny tvar šablóny HTML súboru
 	 */
-	public String[] htmlŠablóna() { return htmlŠablóna; }
+	public String[] htmlŠablóna()
+	{
+		int počet = htmlŠablóna.length;
+		String[] šablóna = new String[počet];
+		for (int i = 0; i < počet; ++i)
+			šablóna[i] = htmlŠablóna[i];
+		return šablóna;
+	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #htmlŠablóna() htmlŠablóna}.</p> */
-	public String[] htmlSablona() { return htmlŠablóna; }
+	public String[] htmlSablona() { return htmlŠablóna(); }
 
 	/**
 	 * <p>Táto metóda umožňuje zistiť aktuálny tvar šablóny SVG súboru.
@@ -3091,9 +3103,9 @@ public class SVGPodpora
 	 * na zápis tvarov (vo formáte SVG).</p>
 	 * 
 	 * <p>Jeden prvok poľa je ekvivalentný jednému riadku SVG súboru.
-	 * Výnimku tvorí riadok obsahujúci rezervovaný reťazec {@code $TVARY}
-	 * (resp. {@code $SHAPES}), pretože tento reťazec bude nahradený SVG
-	 * definíciami tvarov.</p>
+	 * Výnimku tvoria riadky obsahujúce rezervované reťazce {@code $TVARY}
+	 * (resp. {@code $SHAPES}) alebo {@code $DEFINÍCIE} (resp. {@code $DEFS}),
+	 * pretože tieto reťazce budú nahradený viacriadkovými SVG definíciami.</p>
 	 * 
 	 * <p>V prípade potreby môžete obsah tejto šablóny nahradiť iným
 	 * požadovaným tvarom metódou {@link #svgŠablóna(String[])
@@ -3101,10 +3113,17 @@ public class SVGPodpora
 	 * 
 	 * @return aktuálny tvar šablóny SVG súboru
 	 */
-	public String[] svgŠablóna() { return svgŠablóna; }
+	public String[] svgŠablóna()
+	{
+		int počet = svgŠablóna.length;
+		String[] šablóna = new String[počet];
+		for (int i = 0; i < počet; ++i)
+			šablóna[i] = svgŠablóna[i];
+		return šablóna;
+	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #svgŠablóna() svgŠablóna}.</p> */
-	public String[] svgSablona() { return svgŠablóna; }
+	public String[] svgSablona() { return svgŠablóna(); }
 
 
 	/**
@@ -3113,57 +3132,75 @@ public class SVGPodpora
 	 * na zápis tvarov (vo formáte SVG).</p>
 	 * 
 	 * <p>Jeden prvok poľa je ekvivalentný jednému riadku HTML súboru.
-	 * Výnimku tvorí riadok obsahujúci rezervovaný reťazec {@code $TVARY}
-	 * (resp. {@code $SHAPES}), pretože tento reťazec bude nahradený SVG
-	 * definíciami tvarov.</p>
+	 * Výnimku tvoria riadky obsahujúce rezervované reťazce {@code $TVARY}
+	 * (resp. {@code $SHAPES}) alebo {@code $DEFINÍCIE} (resp. {@code $DEFS}),
+	 * pretože tieto reťazce budú nahradený viacriadkovými SVG definíciami.</p>
 	 * 
 	 * <p>Šablóna musí byť v korektnom tvare (dotýka sa to syntaxe
 	 * a štruktúry) HTML súboru s vloženým {@code svg} elementom, inak
 	 * bude výsledný súbor v nekorektnom tvare, čo môže viesť k jeho
 	 * nefunkčnosti! (Za korektnú štruktúru šablóny je zodpovedný autor.)
-	 * Šablóna musí obsahovať rezervovaný reťazec: {@code $TVARY} (resp.
-	 * {@code $SHAPES}). Mala by tiež obsahovať rezervované reťazce:
-	 * {@code $KÓDOVANIE}, {@code $ŠÍRKA}, {@code $VÝŠKA}
-	 * a {@code $TITULOK}, ktoré budú nahradené korektným kódovaním,
-	 * rozmermi plátien a zadaným alebo predvoleným titulkom.</p>
+	 * Šablóna musí obsahovať rezervované reťazce: {@code $TVARY} (resp.
+	 * {@code $SHAPES}) a {@code $DEFINÍCIE} (resp. {@code $DEFS}). Mala by
+	 * tiež obsahovať rezervované reťazce: {@code $KÓDOVANIE}, {@code $ŠÍRKA},
+	 * {@code $VÝŠKA} a {@code $TITULOK}, ktoré budú nahradené korektnými
+	 * údajmi – kódovaním, rozmermi plátien a zadaným alebo predvoleným
+	 * titulkom.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Rezervované reťazce
-	 * {@code $KÓDOVANIE}, {@code $ŠÍRKA} a {@code $VÝŠKA} môžu byť
-	 * uvedené aj bez diakritiky a všetky rezervované reťazce majú
+	 * {@code $KÓDOVANIE}, {@code $ŠÍRKA}, {@code $VÝŠKA} a {@code $DEFINÍCIE}
+	 * môžu byť uvedené aj bez diakritiky a všetky rezervované reťazce majú
 	 * definované aliasy v anglickom jazyku: {@code $KÓDOVANIE} –
 	 * {@code $ENCODING}, {@code $ŠÍRKA} – {@code $WIDTH},
-	 * {@code $VÝŠKA} – {@code $HEIGHT}, {@code $TITULOK} –
-	 * {@code $TITLE} a {@code $TVARY} – {@code $SHAPES}.</p>
+	 * {@code $VÝŠKA} – {@code $HEIGHT}, * {@code $DEFINÍCIE} – {@code $DEFS},
+	 * {@code $TITULOK} – {@code $TITLE} a {@code $TVARY} –
+	 * {@code $SHAPES}.</p>
 	 * 
 	 * @param šablóna nový požadovaný tvar HTML šablóny
 	 * @return {@code valtrue} v prípade úspechu (šablónu sa podarilo
 	 *     zmeniť), {@code valfalse} v prípade neúspechu (šablóna
 	 *     neobsahuje požadovaný reťazec {@code $TVARY} (resp.
-	 *     {@code $SHAPES}) alebo sa v zadaných vstupných údajoch vyskytla
-	 *     hodnota {@code valnull} – to znamená, že korektnosť štruktúry
-	 *     šablóny nie je overovaná)
+	 *     {@code $SHAPES}) alebo {@code $DEFINÍCIE} (resp. {@code $DEFS})
+	 *     alebo sa v zadaných vstupných údajoch vyskytla hodnota
+	 *     {@code valnull})
 	 */
 	public boolean htmlŠablóna(String[] šablóna)
 	{
 		if (null == šablóna) return false;
 
+		for (String riadok : šablóna)
+			if (null == riadok) return false;
+
 		boolean korektné = false;
 
 		for (String riadok : šablóna)
-		{
-			if (null == riadok) return false;
-
 			if (-1 != riadok.indexOf("$TVARY") ||
 				-1 != riadok.indexOf("$SHAPES"))
 			{
 				korektné = true;
 				break;
 			}
+
+		if (korektné)
+		{
+			korektné = false;
+
+			for (String riadok : šablóna)
+				if (-1 != riadok.indexOf("$DEFINÍCIE") ||
+					-1 != riadok.indexOf("$DEFINICIE") ||
+					-1 != riadok.indexOf("$DEFS"))
+				{
+					korektné = true;
+					break;
+				}
 		}
 
 		if (korektné)
 		{
-			htmlŠablóna = šablóna;
+			int počet = šablóna.length;
+			htmlŠablóna = new String[počet];
+			for (int i = 0; i < počet; ++i)
+				htmlŠablóna[i] = šablóna[i];
 			return true;
 		}
 
@@ -3180,57 +3217,73 @@ public class SVGPodpora
 	 * na zápis tvarov (vo formáte SVG).</p>
 	 * 
 	 * <p>Jeden prvok poľa je ekvivalentný jednému riadku SVG súboru.
-	 * Výnimku tvorí riadok obsahujúci rezervovaný reťazec {@code $TVARY}
-	 * (resp. {@code $SHAPES}), pretože tento reťazec bude nahradený SVG
-	 * definíciami tvarov.</p>
+	 * Výnimku tvoria riadky obsahujúce rezervované reťazce {@code $TVARY}
+	 * (resp. {@code $SHAPES}) alebo {@code $DEFINÍCIE} (resp. {@code $DEFS}),
+	 * pretože tieto reťazce budú nahradený viacriadkovými SVG definíciami.</p>
 	 * 
 	 * <p>Šablóna musí byť v korektnom tvare (dotýka sa to syntaxe
 	 * a štruktúry) SVG súboru, inak bude výsledný súbor v nekorektnom
 	 * tvare, čo môže viesť k jeho nefunkčnosti! (Za korektnú štruktúru
 	 * šablóny je zodpovedný autor.) Šablóna musí obsahovať rezervovaný
-	 * reťazec: {@code $TVARY} (resp. {@code $SHAPES}). Mala by tiež
-	 * obsahovať rezervované reťazce: {@code $KÓDOVANIE}, {@code $ŠÍRKA},
-	 * {@code $VÝŠKA} a {@code $TITULOK}, ktoré budú nahradené korektným
-	 * kódovaním, rozmermi plátien a zadaným alebo predvoleným
-	 * titulkom.</p>
+	 * reťazec: {@code $TVARY} (resp. {@code $SHAPES}) a {@code $DEFINÍCIE}
+	 * (resp. {@code $DEFS}). Mala by tiež obsahovať rezervované reťazce:
+	 * {@code $KÓDOVANIE}, {@code $ŠÍRKA}, {@code $VÝŠKA} a {@code $TITULOK},
+	 * ktoré budú nahradené korektnými údajmi – kódovaním, rozmermi plátien
+	 * a zadaným alebo predvoleným titulkom.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Rezervované reťazce
-	 * {@code $KÓDOVANIE}, {@code $ŠÍRKA} a {@code $VÝŠKA} môžu byť
-	 * uvedené aj bez diakritiky a všetky rezervované reťazce majú
+	 * {@code $KÓDOVANIE}, {@code $ŠÍRKA}, {@code $VÝŠKA} a {@code $DEFINÍCIE}
+	 * môžu byť uvedené aj bez diakritiky a všetky rezervované reťazce majú
 	 * definované aliasy v anglickom jazyku: {@code $KÓDOVANIE} –
 	 * {@code $ENCODING}, {@code $ŠÍRKA} – {@code $WIDTH},
-	 * {@code $VÝŠKA} – {@code $HEIGHT}, {@code $TITULOK} –
-	 * {@code $TITLE} a {@code $TVARY} – {@code $SHAPES}.</p>
+	 * {@code $VÝŠKA} – {@code $HEIGHT}, {@code $DEFINÍCIE} – {@code $DEFS},
+	 * {@code $TITULOK} – {@code $TITLE} a {@code $TVARY} –
+	 * {@code $SHAPES}.</p>
 	 * 
 	 * @param šablóna nový požadovaný tvar SVG šablóny
-	 * @return {@code valtrue} v prípade úspechu (šablónu sa podarilo
-	 *     zmeniť), {@code valfalse} v prípade neúspechu (šablóna
-	 *     neobsahuje požadovaný reťazec {@code $TVARY} (resp.
-	 *     {@code $SHAPES}) alebo sa v zadaných vstupných údajoch vyskytla
-	 *     hodnota {@code valnull} – to znamená, že korektnosť štruktúry
-	 *     šablóny nie je overovaná)
+	 * @return {@code valtrue} v prípade úspechu (šablónu sa podarilo zmeniť),
+	 *     {@code valfalse} v prípade neúspechu (šablóna neobsahuje požadovaný
+	 *     reťazec {@code $TVARY} (resp. {@code $SHAPES}) alebo
+	 *     {@code $DEFINÍCIE} (resp. {@code $DEFS}) alebo sa v zadaných
+	 *     vstupných údajoch vyskytla hodnota {@code valnull})
 	 */
 	public boolean svgŠablóna(String[] šablóna)
 	{
 		if (null == šablóna) return false;
 
+		for (String riadok : šablóna)
+			if (null == riadok) return false;
+
 		boolean korektné = false;
 
 		for (String riadok : šablóna)
-		{
-			if (null == riadok) return false;
-
 			if (-1 != riadok.indexOf("$TVARY") ||
 				-1 != riadok.indexOf("$SHAPES"))
 			{
 				korektné = true;
 				break;
 			}
+
+		if (korektné)
+		{
+			korektné = false;
+
+			for (String riadok : šablóna)
+				if (-1 != riadok.indexOf("$DEFINÍCIE") ||
+					-1 != riadok.indexOf("$DEFINICIE") ||
+					-1 != riadok.indexOf("$DEFS"))
+				{
+					korektné = true;
+					break;
+				}
 		}
 
 		if (korektné)
 		{
-			svgŠablóna = šablóna;
+			int počet = šablóna.length;
+			svgŠablóna = new String[počet];
+			for (int i = 0; i < počet; ++i)
+				svgŠablóna[i] = šablóna[i];
 			return true;
 		}
 
@@ -3342,11 +3395,11 @@ public class SVGPodpora
 	public int pocet() { return počet(); }
 
 	/**
-	 * <p>Vyčistí vnútorný zásobník tvarov tejto inštancie. To znamená,
-	 * že všetky vnútorne uskladnené tvary budú z tejto inštancie
-	 * odstránené.</p>
+	 * <p>Vyčistí vnútorné zásobníky tvarov a {@linkplain #definície()
+	 * definícií} tejto inštancie. To znamená, že všetky vnútorne uskladnené
+	 * tvary a (špeciálne) definície budú z tejto inštancie odstránené.</p>
 	 */
-	public void vymaž() { tvary.clear(); }
+	public void vymaž() { tvary.clear(); definície.clear(); }
 
 	/** <p><a class="alias"></a> Alias pre {@link #vymaž() vymaž}.</p> */
 	public void vymaz() { vymaž(); }
@@ -4393,8 +4446,7 @@ public class SVGPodpora
 			if (255 == farba.getAlpha())
 				prepíšAtribút(index, "stroke-opacity", null);
 			else
-				prepíšAtribút(index, "stroke-opacity",
-					alfaNaReťazec(farba));
+				prepíšAtribút(index, "stroke-opacity", alfaNaReťazec(farba));
 		}
 	}
 
@@ -4414,30 +4466,7 @@ public class SVGPodpora
 	 * @param hrúbka nová hrúbka čiary
 	 */
 	public void hrúbkaČiary(int index, double hrúbka)
-	{
-		if (!mapaJednotiek.isEmpty())
-		{
-			Double prevod = mapaJednotiek.get("px");
-			Double posun = mapaPosunov.get("px");
-			if (null == posun) posun = 0.0;
-
-			if (null != prevod && 1.0 != prevod &&
-				0.0 != prevod && Double.isFinite(prevod))
-			{
-				prepíšAtribút(index, "stroke-width",
-					((hrúbka - posun) / prevod) + "px");
-				return;
-			}
-			else if (0.0 != posun)
-			{
-				prepíšAtribút(index, "stroke-width",
-					(hrúbka - posun) + "px");
-				return;
-			}
-		}
-
-		prepíšAtribút(index, "stroke-width", hrúbka + "px");
-	}
+	{ prepíšAtribút(index, "stroke-width", konverziaDoubleNaString(hrúbka)); }
 
 	/** <p><a class="alias"></a> Alias pre {@link #hrúbkaČiary(int, double) hrúbkaČiary}.</p> */
 	public void hrubkaCiary(int index, double hrúbka) { hrúbkaČiary(index, hrúbka); }
@@ -5250,6 +5279,28 @@ public class SVGPodpora
 		tvary.add(záznam);
 	}
 
+
+	// TODO: public a nejako vhodne nazvať a zaradiť
+	public String konverziaDoubleNaString(double hodnota)
+	{
+		if (!mapaJednotiek.isEmpty())
+		{
+			Double prevod = mapaJednotiek.get("px");
+			Double posun = mapaPosunov.get("px");
+			if (null == posun) posun = 0.0;
+
+			if (null != prevod && 1.0 != prevod &&
+				0.0 != prevod && Double.isFinite(prevod))
+				return ((hodnota - posun) / prevod) + "px";
+
+			if (0.0 != posun)
+				return (hodnota - posun) + "px";
+		}
+
+		return hodnota + "px";
+	}
+
+
 	/**
 	 * <p>Vloží do vnútorného zásobníka tejto inštancie ďalší tvar
 	 * so základnými atribútmi (ťah a/alebo výplň) nastavenými podľa
@@ -5290,6 +5341,7 @@ public class SVGPodpora
 		}
 
 		String náter = náterNaReťazec(tvorca.dajNáterPodľaRobota());
+		// System.out.println("Náter: " + tvorca.dajNáterPodľaRobota());
 
 		if (null != náter)
 		{
@@ -5298,6 +5350,8 @@ public class SVGPodpora
 			else if (GRobot.TypTvaru.OBRYS == tvorca.poslednýTypTvaru)
 			{
 				zoznam.put("stroke", náter);
+				zoznam.put("stroke-width",
+					konverziaDoubleNaString(tvorca.polomerPera));
 				zoznam.put("fill", "none");
 			}
 		}
@@ -5312,11 +5366,43 @@ public class SVGPodpora
 	}
 
 
+	// Zoznam špeciálnych definícií:
+	private final Vector<String> definície = new Vector<>();
+
+	/**
+	 * <p>Vráti aktuálny zoznam (zásobník) špeciálnych definícií tejto SVG
+	 * inštancie. Vrátený zoznam je úplne modifikovateľný a všetky zásahy do
+	 * neho znamenajú priamy zásah do vnútorného zásobníka tejto inštancie
+	 * (vrátená inštancia zoznamu je tá istá, ktorá je vnútornou inštanciou
+	 * tejto SVG inštancie).</p>
+	 * <!-- TODO – prípadne dokončiť opis. -->
+	 * <ul>
+	 * <li><a target="_blank"
+	 * href="https://www.w3.org/html/wiki/SVGElements/defs"
+	 * >SVGElements/defs – HTML Wiki</a> (cit. 7. 5. 2022).</li>
+	 * <li><a target="_blank"
+	 * href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/defs"
+	 * >&lt;defs&gt; SVG : Scalable Vector Graphics | MDN</a> (cit.
+	 * 7. 5. 2022).</li>
+	 * <li><a href="https://www.javatpoint.com/svg-defs-element"
+	 * target="_blank">SVG defs Element – JavaTPoint</a> (cit. 7. 5. 2022).</li>
+	 * </ul>
+	 * 
+	 * @return odkaz na vnútornú inštanciu špeciálnych SVG definícií
+	 */
+	public Vector<String> definície() { return definície; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #definície()}.</p> */
+	public Vector<String> definicie() { return definície; }
+
+
 	/**
 	 * <p>Pokúsi sa previesť zadaný náter do reťazcovej podoby – do definície
 	 * podľa štandardu SVG. Ak je zadaný náter jeden z podporovaných typov<!--:
-	 * TODO-->, tak metóda vráti jeho textový tvar. V opačnom prípade vráti
-	 * metóda hodnotu {@code valnull}.</p>
+	 * TODO-->, tak metóda vráti jeho textový tvar. Ak náter vyžaduje pridanie
+	 * novej (špeciálnej) SVG {@linkplain #definície() definície}, tak ju
+	 * metóda automaticky vloží do zoznamu definícií. V prípade neúspechu
+	 * vráti metóda hodnotu {@code valnull}.</p>
 	 * 
 	 * @param náter inštancia náteru ({@link Paint Paint}), ktorá má byť
 	 *     prevedená do reťazcovej (SVG) podoby
@@ -5327,6 +5413,197 @@ public class SVGPodpora
 	{
 		if (null == náter) return null;
 		if (náter instanceof Color) return farbaNaReťazec((Color)náter, false);
+
+		// TODO – filtre zbytočných atribútov?
+		if (náter instanceof RadialGradientPaint)
+		{
+			RadialGradientPaint rgp = (RadialGradientPaint)náter;
+			String id = "RadialGradient_" + definície.size();
+
+			StringBuffer sb = new StringBuffer();
+			sb.append("<radialGradient id=\""); sb.append(id);
+
+			Point2D stred = rgp.getCenterPoint();
+			sb.append("\" cx=\""); sb.append(stred.getX());
+			sb.append("\" cy=\""); sb.append(stred.getY());
+
+			sb.append("\" r=\""); sb.append(rgp.getRadius());
+
+			Point2D ohnisko = rgp.getFocusPoint();
+			if (!ohnisko.equals(stred))
+			{
+				sb.append("\" fx=\""); sb.append(ohnisko.getX());
+				sb.append("\" fy=\""); sb.append(ohnisko.getY());
+			}
+
+			sb.append("\" spreadMethod=\"");
+
+			switch (rgp.getCycleMethod())
+			{
+			case NO_CYCLE: sb.append("pad"); break;
+			case REFLECT: sb.append("reflect"); break;
+			case REPEAT: sb.append("repeat"); break;
+			}
+
+			{
+				String transformácia =
+					transformáciuNaReťazec(
+						rgp.getTransform());
+
+				if (!"translate(0.0, 0.0)".
+					equals(transformácia))
+				{
+					sb.append("\" transform=\"");
+					sb.append(transformácia);
+				}
+			}
+
+			sb.append("\" gradientUnits=\"userSpaceOnUse\">\r\n");
+
+			Color[] farby = rgp.getColors();
+			float[] stopky = rgp.getFractions();
+			int počet = Math.min(farby.length, stopky.length);
+
+			for (int i = 0; i < počet; ++i)
+			{
+				sb.append("  <stop offset=\"");
+				sb.append(stopky[i]);
+
+				sb.append("\" stop-color=\"");
+				sb.append(farbaNaReťazec(farby[i], true));
+
+				if (255 != farby[i].getAlpha())
+				{
+					sb.append("\" stop-opacity=\"");
+					sb.append(alfaNaReťazec(farby[i]));
+				}
+
+				sb.append("\"/>\r\n");
+			}
+
+			sb.append("</radialGradient>");
+
+			definície.add(sb.toString());
+			return "url(#" + id + ")";
+		}
+
+		if (náter instanceof LinearGradientPaint)
+		{
+			LinearGradientPaint lgp = (LinearGradientPaint)náter;
+			String id = "LinearGradient_" + definície.size();
+
+			StringBuffer sb = new StringBuffer();
+			sb.append("<linearGradient id=\""); sb.append(id);
+
+			Point2D bod1 = lgp.getStartPoint();
+			Point2D bod2 = lgp.getEndPoint();
+
+			sb.append("\" x1=\""); sb.append(bod1.getX());
+			sb.append("\" y1=\""); sb.append(bod1.getY());
+			sb.append("\" x2=\""); sb.append(bod2.getX());
+			sb.append("\" y2=\""); sb.append(bod2.getY());
+
+			sb.append("\" spreadMethod=\"");
+
+			switch (lgp.getCycleMethod())
+			{
+			case NO_CYCLE: sb.append("pad"); break;
+			case REFLECT: sb.append("reflect"); break;
+			case REPEAT: sb.append("repeat"); break;
+			}
+
+			{
+				String transformácia =
+					transformáciuNaReťazec(
+						lgp.getTransform());
+
+				if (!"translate(0.0, 0.0)".
+					equals(transformácia))
+				{
+					sb.append("\" transform=\"");
+					sb.append(transformácia);
+				}
+			}
+
+			sb.append("\" gradientUnits=\"userSpaceOnUse\">\r\n");
+
+			Color[] farby = lgp.getColors();
+			float[] stopky = lgp.getFractions();
+			int počet = Math.min(farby.length, stopky.length);
+
+			for (int i = 0; i < počet; ++i)
+			{
+				sb.append("  <stop offset=\"");
+				sb.append(stopky[i]);
+
+				sb.append("\" stop-color=\"");
+				sb.append(farbaNaReťazec(farby[i], true));
+
+				if (255 != farby[i].getAlpha())
+				{
+					sb.append("\" stop-opacity=\"");
+					sb.append(alfaNaReťazec(farby[i]));
+				}
+
+				sb.append("\"/>\r\n");
+			}
+
+			sb.append("</linearGradient>");
+
+			definície.add(sb.toString());
+			return "url(#" + id + ")";
+		}
+
+		if (náter instanceof GradientPaint)
+		{
+			GradientPaint gp = (GradientPaint)náter;
+			String id = "LinearGradient_" + definície.size();
+
+			StringBuffer sb = new StringBuffer();
+			sb.append("<linearGradient id=\""); sb.append(id);
+
+			Point2D bod1 = gp.getPoint1();
+			Point2D bod2 = gp.getPoint2();
+
+			sb.append("\" x1=\""); sb.append(bod1.getX());
+			sb.append("\" y1=\""); sb.append(bod1.getY());
+			sb.append("\" x2=\""); sb.append(bod2.getX());
+			sb.append("\" y2=\""); sb.append(bod2.getY());
+
+			sb.append("\" spreadMethod=\"");
+
+			if (gp.isCyclic()) sb.append("pad");
+			else sb.append("reflect");
+
+			sb.append("\" gradientUnits=\"userSpaceOnUse\">\r\n");
+
+			Color[] farby = {gp.getColor1(), gp.getColor2()};
+			float[] stopky = {0, 1};
+			int počet = Math.min(farby.length, stopky.length);
+
+			for (int i = 0; i < počet; ++i)
+			{
+				sb.append("  <stop offset=\"");
+				sb.append(stopky[i]);
+
+				sb.append("\" stop-color=\"");
+				sb.append(farbaNaReťazec(farby[i], true));
+
+				if (255 != farby[i].getAlpha())
+				{
+					sb.append("\" stop-opacity=\"");
+					sb.append(alfaNaReťazec(farby[i]));
+				}
+
+				sb.append("\"/>\r\n");
+			}
+
+			sb.append("</linearGradient>");
+
+			definície.add(sb.toString());
+			return "url(#" + id + ")";
+		}
+
 		return null;
 	}
 
@@ -5429,15 +5706,52 @@ public class SVGPodpora
 			prepočítanéY += poklesTextu;
 		}
 
-		// Použitie farby robota na definíciu predvolenej výplne
-		// textového tvaru:
-		Color farba = tvorca.farbaRobota;
-		if (null != farba)
+
+		if (tvorca.priehľadnosť() < 1.0)
 		{
-			zoznam.put("fill", farbaNaReťazec(farba, true));
-			if (255 != farba.getAlpha())
-				zoznam.put("fill-opacity", alfaNaReťazec(farba));
+			if (tvorca.priehľadnosť() > 0.0)
+				zoznam.put("opacity", "" + tvorca.priehľadnosť());
+			else
+				zoznam.put("opacity", "0.0");
 		}
+
+		String náter = náterNaReťazec(tvorca.dajNáterPodľaRobota());
+
+		if (null != náter)
+		{
+			if (GRobot.TypTvaru.VÝPLŇ == tvorca.poslednýTypTvaru)
+				zoznam.put("fill", náter);
+			else if (GRobot.TypTvaru.OBRYS == tvorca.poslednýTypTvaru)
+			{
+				zoznam.put("stroke", náter);
+				zoznam.put("fill", "none");
+			}
+		}
+		else
+		{
+			Color farba = tvorca.farbaRobota;
+			if (null != farba)
+			{
+				// Použitie farby robota na definíciu…
+				// if (GRobot.TypTvaru.VÝPLŇ == tvorca.poslednýTypTvaru)
+				if (GRobot.TypTvaru.OBRYS != tvorca.poslednýTypTvaru)
+				{
+					// … výplne textového tvaru:
+					zoznam.put("fill", farbaNaReťazec(farba, true));
+					if (255 != farba.getAlpha())
+						zoznam.put("fill-opacity", alfaNaReťazec(farba));
+				}
+				else
+				{
+					// … čiary textového tvaru:
+					zoznam.put("stroke", farbaNaReťazec(farba, true));
+					if (255 != farba.getAlpha())
+						zoznam.put("stroke-opacity", alfaNaReťazec(farba));
+					zoznam.put("fill", "none");
+				}
+			}
+		}
+
 
 		// Spracovanie ostatných atribútov:
 		int dĺžka = atribúty.length - 1;
@@ -5873,6 +6187,18 @@ public class SVGPodpora
 			++početZapísaných;
 		}
 
+		// Pomocný reťazcový zásobník
+		StringBuffer $DEFINÍICIE = new StringBuffer();
+
+		// Zoskupenie SVG definícií…
+		$DEFINÍICIE.append("<defs>");
+		for (String definícia : definície)
+		{
+			$DEFINÍICIE.append("\r\n");
+			$DEFINÍICIE.append(definícia);
+		}
+		$DEFINÍICIE.append("\r\n</defs>\r\n");
+
 		// Zápis šablóny do súboru
 		try
 		{
@@ -5904,6 +6230,15 @@ public class SVGPodpora
 
 				if (-1 != riadok.indexOf("$HEIGHT"))
 					riadok = riadok.replace("$HEIGHT", "" + Svet.výška());
+
+				if (-1 != riadok.indexOf("$DEFINÍCIE"))
+					riadok = riadok.replace("$DEFINÍCIE", $DEFINÍICIE);
+
+				if (-1 != riadok.indexOf("$DEFINICIE"))
+					riadok = riadok.replace("$DEFINICIE", $DEFINÍICIE);
+
+				if (-1 != riadok.indexOf("$DEFS"))
+					riadok = riadok.replace("$DEFS", $DEFINÍICIE);
 
 				if (-1 != riadok.indexOf("$TVARY"))
 					riadok = riadok.replace("$TVARY", $TVARY);
@@ -6048,6 +6383,18 @@ public class SVGPodpora
 			$TVARY.append(dajSVG(tvar));
 		}}
 
+		// Pomocný reťazcový zásobník
+		StringBuffer $DEFINÍICIE = new StringBuffer();
+
+		// Zoskupenie SVG definícií…
+		$DEFINÍICIE.append("<defs>");
+		for (String definícia : definície)
+		{
+			$DEFINÍICIE.append("\r\n");
+			$DEFINÍICIE.append(definícia);
+		}
+		$DEFINÍICIE.append("\r\n</defs>\r\n");
+
 		// Tvorba výsledného SVG reťazca podľa šablóny
 		for (String riadok : šablóna)
 		{
@@ -6077,6 +6424,15 @@ public class SVGPodpora
 
 			if (-1 != riadok.indexOf("$HEIGHT"))
 				riadok = riadok.replace("$HEIGHT", "" + Svet.výška());
+
+			if (-1 != riadok.indexOf("$DEFINÍCIE"))
+				riadok = riadok.replace("$DEFINÍCIE", $DEFINÍICIE);
+
+			if (-1 != riadok.indexOf("$DEFINICIE"))
+				riadok = riadok.replace("$DEFINICIE", $DEFINÍICIE);
+
+			if (-1 != riadok.indexOf("$DEFS"))
+				riadok = riadok.replace("$DEFS", $DEFINÍICIE);
 
 			if (-1 != riadok.indexOf("$TVARY"))
 				riadok = riadok.replace("$TVARY", $TVARY);

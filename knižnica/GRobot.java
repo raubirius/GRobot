@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2021 by Roman Horváth
+ // Copyright © 2010 – 2022 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -32340,6 +32340,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 * všetky metódy pracujúce s obrázkami alebo zvukmi, ktoré
 			 * prijímajú názov súboru ako parameter.)</p>
 			 * 
+			 * <p class="remark"><b>Poznámka:</b> Tieto metódy nesmú brať
+			 * do úvahy priehľadnosť robota. Kolidovalo by to s inými
+			 * mechanizmami programovacieho rámca. Je dosť iných spôsobov
+			 * ako nakresliť spriehľadnaný obrázok. Napríklad nastaviť
+			 * priehľadnosť inštancii triedy {@link Obrázok Obrázok} alebo
+			 * kresliť obrázkový tvar spriehľadneného robota.</p>
+			 * 
 			 * @param súbor názov súboru s obrázkom, ktorý má byť
 			 *     vykreslený
 			 * @param spôsobKreslenia môže byť buď hodnota {@link 
@@ -32364,6 +32371,10 @@ Toto bolo presunuté na úvodnú stránku:
 			public void obrázok(String súbor, int spôsobKreslenia,
 				double mierka)
 			{
+				// ‼Pozor‼ Priehľadnosť sa nesmie meniť v rámci týchto
+				// metód. Kolidovalo by to s priehľadnosťou robotov
+				// (najmä pri kreslení obrázkových tvarov).
+
 				Image obrázok = Obrázok.súborNaObrázok(súbor);
 
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
@@ -32628,6 +32639,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 * všetky metódy pracujúce s obrázkami alebo zvukmi, ktoré
 			 * prijímajú názov súboru ako parameter.)</p>
 			 * 
+			 * <p class="remark"><b>Poznámka:</b> Tieto metódy nesmú brať
+			 * do úvahy priehľadnosť robota. Kolidovalo by to s inými
+			 * mechanizmami programovacieho rámca. Je dosť iných spôsobov
+			 * ako nakresliť spriehľadnaný obrázok. Napríklad nastaviť
+			 * priehľadnosť inštancii triedy {@link Obrázok Obrázok} alebo
+			 * kresliť obrázkový tvar spriehľadneného robota.</p>
+			 * 
 			 * @param súbor názov súboru s obrázkom, ktorý má byť
 			 *     vykreslený
 			 * @param spôsobKreslenia môže byť buď hodnota {@link 
@@ -32654,6 +32672,10 @@ Toto bolo presunuté na úvodnú stránku:
 			public void obrázok(String súbor, int spôsobKreslenia,
 				double Δx, double Δy, double mierka)
 			{
+				// ‼Pozor‼ Priehľadnosť sa nesmie meniť v rámci týchto
+				// metód. Kolidovalo by to s priehľadnosťou robotov
+				// (najmä pri kreslení obrázkových tvarov).
+
 				Image obrázok = Obrázok.súborNaObrázok(súbor);
 
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
@@ -32876,6 +32898,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 * #mierka(double) mierka} a resetuje sa i pri zmene {@linkplain 
 			 * #vlastnýTvar(String) vlastného obrázkového tvaru robota}.</p>
 			 * 
+			 * <p class="remark"><b>Poznámka:</b> Tieto metódy nesmú brať
+			 * do úvahy priehľadnosť robota. Kolidovalo by to s inými
+			 * mechanizmami programovacieho rámca. Je dosť iných spôsobov
+			 * ako nakresliť spriehľadnaný obrázok. Napríklad nastaviť
+			 * priehľadnosť inštancii triedy {@link Obrázok Obrázok} alebo
+			 * kresliť obrázkový tvar spriehľadneného robota.</p>
+			 * 
 			 * @param obrázok obrázok, ktorý má byť vykreslený
 			 * @param spôsobKreslenia môže byť buď hodnota {@link 
 			 *     #KRESLI_PRIAMO}, alebo kombinácia hodnôt {@link 
@@ -32913,6 +32942,10 @@ Toto bolo presunuté na úvodnú stránku:
 			public void obrázok(Image obrázok, int spôsobKreslenia,
 				double mierka)
 			{
+				// ‼Pozor‼ Priehľadnosť sa nesmie meniť v rámci týchto
+				// metód. Kolidovalo by to s priehľadnosťou robotov
+				// (najmä pri kreslení obrázkových tvarov).
+
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
@@ -33293,6 +33326,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 * transformáciami generovaného obrázka.</image>Ukážka možného
 			 * výsledku experimentovania s obrázkom.</p>
 			 * 
+			 * <p class="remark"><b>Poznámka:</b> Tieto metódy nesmú brať
+			 * do úvahy priehľadnosť robota. Kolidovalo by to s inými
+			 * mechanizmami programovacieho rámca. Je dosť iných spôsobov
+			 * ako nakresliť spriehľadnaný obrázok. Napríklad nastaviť
+			 * priehľadnosť inštancii triedy {@link Obrázok Obrázok} alebo
+			 * kresliť obrázkový tvar spriehľadneného robota.</p>
+			 * 
 			 * @param obrázok obrázok, ktorý má byť vykreslený
 			 * @param spôsobKreslenia môže byť buď hodnota {@link 
 			 *     #KRESLI_PRIAMO}, alebo kombinácia hodnôt {@link 
@@ -33309,6 +33349,10 @@ Toto bolo presunuté na úvodnú stránku:
 			public void obrázok(Image obrázok, int spôsobKreslenia,
 				double Δx, double Δy, double mierka)
 			{
+				// ‼Pozor‼ Priehľadnosť sa nesmie meniť v rámci týchto
+				// metód. Kolidovalo by to s priehľadnosťou robotov
+				// (najmä pri kreslení obrázkových tvarov).
+
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
@@ -33500,6 +33544,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 * všetky metódy pracujúce s obrázkami alebo zvukmi, ktoré
 			 * prijímajú názov súboru ako parameter.)</p>
 			 * 
+			 * <p class="remark"><b>Poznámka:</b> Tieto metódy nesmú brať
+			 * do úvahy priehľadnosť robota. Kolidovalo by to s inými
+			 * mechanizmami programovacieho rámca. Je dosť iných spôsobov
+			 * ako nakresliť spriehľadnaný obrázok. Napríklad nastaviť
+			 * priehľadnosť inštancii triedy {@link Obrázok Obrázok} alebo
+			 * kresliť obrázkový tvar spriehľadneného robota.</p>
+			 * 
 			 * @param súbor názov súboru s obrázkom, ktorý má byť
 			 *     vykreslený
 			 * @param spôsobKreslenia môže byť buď hodnota {@link 
@@ -33525,6 +33576,10 @@ Toto bolo presunuté na úvodnú stránku:
 			public void obrázok(String súbor, int spôsobKreslenia,
 				double Δx, double Δy, double mierkaX, double mierkaY)
 			{
+				// ‼Pozor‼ Priehľadnosť sa nesmie meniť v rámci týchto
+				// metód. Kolidovalo by to s priehľadnosťou robotov
+				// (najmä pri kreslení obrázkových tvarov).
+
 				Image obrázok = Obrázok.súborNaObrázok(súbor);
 
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
@@ -33705,6 +33760,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 * dosadený aj objekt typu {@link Obrázok Obrázok}.
 			 * Odchýlky otáčania sú upravené podľa mierky.</p>
 			 * 
+			 * <p class="remark"><b>Poznámka:</b> Tieto metódy nesmú brať
+			 * do úvahy priehľadnosť robota. Kolidovalo by to s inými
+			 * mechanizmami programovacieho rámca. Je dosť iných spôsobov
+			 * ako nakresliť spriehľadnaný obrázok. Napríklad nastaviť
+			 * priehľadnosť inštancii triedy {@link Obrázok Obrázok} alebo
+			 * kresliť obrázkový tvar spriehľadneného robota.</p>
+			 * 
 			 * @param obrázok obrázok, ktorý má byť vykreslený
 			 * @param spôsobKreslenia môže byť buď hodnota {@link 
 			 *     #KRESLI_PRIAMO}, alebo kombinácia hodnôt {@link 
@@ -33720,6 +33782,10 @@ Toto bolo presunuté na úvodnú stránku:
 			public void obrázok(Image obrázok, int spôsobKreslenia,
 				double Δx, double Δy, double mierkaX, double mierkaY)
 			{
+				// ‼Pozor‼ Priehľadnosť sa nesmie meniť v rámci týchto
+				// metód. Kolidovalo by to s priehľadnosťou robotov
+				// (najmä pri kreslení obrázkových tvarov).
+
 				double prepočítanéX = Svet.prepočítajX(aktuálneX);
 				double prepočítanéY = Svet.prepočítajY(aktuálneY);
 

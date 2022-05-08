@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2021 by Roman Horváth
+ // Copyright © 2010 – 2022 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -124,7 +124,7 @@ import javax.swing.JButton;
  * tlačidlami<br /><small>(plátno ukážky je zmenšené)</small>.</p>
  */
 @SuppressWarnings("serial")
-public class Tlačidlo extends JButton implements Poloha
+public class Tlačidlo extends JButton implements Poloha, Rozmer
 {
 	// Parametre polohy a veľkosti tlačidla
 	/*packagePrivate*/ int x, y, šírka, výška;
@@ -699,63 +699,425 @@ public class Tlačidlo extends JButton implements Poloha
 	}
 
 
+	// TODO: Staré – vymazať
+	// 
+	// /**
+	//  * <p><a class="getter"></a> Zistí aktuálnu šírku tlačidla.</p>
+	//  * 
+	//  * @return aktuálna šírka tlačidla
+	//  * 
+	//  * @see #šírka(int)
+	//  */
+	// public int šírka() { return šírka; }
+	// 
+	// /** <p><a class="alias"></a> Alias pre {@link #šírka() šírka}.</p> */
+	// public int sirka() { return šírka; }
+	// 
+	// /**
+	//  * <p><a class="getter"></a> Zistí aktuálnu výšku tlačidla.</p>
+	//  * 
+	//  * @return aktuálna výška tlačidla
+	//  * 
+	//  * @see #výška(int)
+	//  */
+	// public int výška() { return výška; }
+	// 
+	// /** <p><a class="alias"></a> Alias pre {@link #výška() výška}.</p> */
+	// public int vyska() { return výška; }
+	// 
+	// /**
+	//  * <p><a class="setter"></a> Zmení šírku tlačidla.</p>
+	//  * 
+	//  * @param nováŠírka nová šírka tlačidla
+	//  * 
+	//  * @see #šírka()
+	//  */
+	// public void šírka(int nováŠírka)
+	// {
+	// 	double ox = polohaX();
+	// 	šírka = nováŠírka;
+	// 	polohaX(ox);
+	// }
+	// 
+	// /** <p><a class="alias"></a> Alias pre {@link #šírka(int) šírka}.</p> */
+	// public void sirka(int nováŠírka) { šírka(nováŠírka); }
+	// 
+	// /**
+	//  * <p><a class="setter"></a> Zmení výšku tlačidla.</p>
+	//  * 
+	//  * @param nováVýška nová výška tlačidla
+	//  * 
+	//  * @see #výška()
+	//  */
+	// public void výška(int nováVýška)
+	// {
+	// 	double oy = polohaY();
+	// 	výška = nováVýška;
+	// 	polohaY(oy);
+	// }
+	// 
+	// /** <p><a class="alias"></a> Alias pre {@link #výška(int) výška}.</p> */
+	// public void vyska(int nováVýška) { výška(nováVýška); }
+
+
 	/**
 	 * <p><a class="getter"></a> Zistí aktuálnu šírku tlačidla.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom tlačidla s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery tlačidla vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru tlačidla neceločíselnú
+	 * hodnotu, spätne z neho prečítate celočíselnú hodnotu získanú
+	 * zanedbaním neceločíselnej časti.)</p>
 	 * 
 	 * @return aktuálna šírka tlačidla
 	 * 
 	 * @see #šírka(int)
+	 * 
+	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
 	 */
-	public int šírka() { return šírka; }
+	public double šírka() { return šírka; }
 
 	/** <p><a class="alias"></a> Alias pre {@link #šírka() šírka}.</p> */
-	public int sirka() { return šírka; }
+	public double sirka() { return šírka; }
 
 	/**
 	 * <p><a class="getter"></a> Zistí aktuálnu výšku tlačidla.</p>
 	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom tlačidla s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery tlačidla vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru tlačidla neceločíselnú
+	 * hodnotu, spätne z neho prečítate celočíselnú hodnotu získanú
+	 * zanedbaním neceločíselnej časti.)</p>
+	 * 
 	 * @return aktuálna výška tlačidla
 	 * 
 	 * @see #výška(int)
+	 * 
+	 * @see #šírka()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
 	 */
-	public int výška() { return výška; }
+	public double výška() { return výška; }
 
 	/** <p><a class="alias"></a> Alias pre {@link #výška() výška}.</p> */
-	public int vyska() { return výška; }
+	public double vyska() { return výška; }
+
 
 	/**
 	 * <p><a class="setter"></a> Zmení šírku tlačidla.</p>
 	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom tlačidla s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery tlačidla vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru tlačidla neceločíselnú
+	 * hodnotu,* spätne z neho prečítate celočíselnú hodnotu získanú
+	 * zanedbaním neceločíselnej časti.)</p>
+	 * 
 	 * @param nováŠírka nová šírka tlačidla
 	 * 
 	 * @see #šírka()
+	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
 	 */
-	public void šírka(int nováŠírka)
+	public void šírka(double nováŠírka)
 	{
 		double ox = polohaX();
-		šírka = nováŠírka;
+		šírka = (int)nováŠírka;
 		polohaX(ox);
 	}
 
-	/** <p><a class="alias"></a> Alias pre {@link #šírka(int) šírka}.</p> */
-	public void sirka(int nováŠírka) { šírka(nováŠírka); }
+	/** <p><a class="alias"></a> Alias pre {@link #šírka(double) šírka}.</p> */
+	public void sirka(double nováŠírka) { šírka(nováŠírka); }
 
 	/**
 	 * <p><a class="setter"></a> Zmení výšku tlačidla.</p>
 	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom tlačidla s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery tlačidla vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru tlačidla neceločíselnú
+	 * hodnotu, spätne z neho prečítate celočíselnú hodnotu získanú
+	 * zanedbaním neceločíselnej časti.)</p>
+	 * 
 	 * @param nováVýška nová výška tlačidla
 	 * 
+	 * @see #šírka()
 	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
 	 */
-	public void výška(int nováVýška)
+	public void výška(double nováVýška)
 	{
 		double oy = polohaY();
-		výška = nováVýška;
+		výška = (int)nováVýška;
 		polohaY(oy);
 	}
 
-	/** <p><a class="alias"></a> Alias pre {@link #výška(int) výška}.</p> */
-	public void vyska(int nováVýška) { výška(nováVýška); }
+	/** <p><a class="alias"></a> Alias pre {@link #výška(double) výška}.</p> */
+	public void vyska(double nováVýška) { výška(nováVýška); }
+
+
+	/**
+	 * <p>Zistí aktuálne rozmery tlačidla.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom tlačidla s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery tlačidla vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru tlačidla neceločíselnú
+	 * hodnotu, spätne z neho prečítate celočíselnú hodnotu získanú
+	 * zanedbaním neceločíselnej časti.)</p>
+	 * 
+	 * @return objekt vytvorený podľa aktuálnych rozmerov tlačidla
+	 * 
+	 * @see #šírka()
+	 * @see #výška()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
+	 */
+	public Rozmer rozmery() { return new Rozmery(šírka, výška); }
+
+	/**
+	 * <p>Nastaví nové rozmery tlačidla.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom tlačidla s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery tlačidla vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru tlačidla neceločíselnú
+	 * hodnotu, spätne z neho prečítate celočíselnú hodnotu získanú
+	 * zanedbaním neceločíselnej časti.)</p>
+	 * 
+	 * @param nováŠírka nová šírka tlačidla
+	 * @param nováVýška nová výška tlačidla
+	 * 
+	 * @see #šírka()
+	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
+	 */
+	public void rozmery(double nováŠírka, double nováVýška)
+	{
+		double ox = polohaX();
+		double oy = polohaY();
+		šírka = (int)nováŠírka;
+		výška = (int)nováVýška;
+		polohaX(ox);
+		polohaY(oy);
+	}
+
+	/**
+	 * <p>Nastaví nové rozmery tlačidla podľa zadanej implementácie
+	 * rozmeru.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom tlačidla s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery tlačidla vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru tlačidla neceločíselnú
+	 * hodnotu, spätne z neho prečítate celočíselnú hodnotu získanú
+	 * zanedbaním neceločíselnej časti.)</p>
+	 * 
+	 * @param rozmer inštancia obsahujúca nové rozmery tlačidla
+	 * 
+	 * @see #šírka()
+	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
+	 */
+	public void rozmery(Rozmer rozmer)
+	{
+		double ox = polohaX();
+		double oy = polohaY();
+		šírka = (int)rozmer.šírka();
+		výška = (int)rozmer.výška();
+		polohaX(ox);
+		polohaY(oy);
+	}
+
+
+	/**
+	 * <p>Zistí, či má tlačidlo zadanú šírku.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom tlačidla s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery tlačidla vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru tlačidla neceločíselnú
+	 * hodnotu, spätne z neho prečítate celočíselnú hodnotu získanú
+	 * zanedbaním neceločíselnej časti.)</p>
+	 * 
+	 * @param šírka šírka, ktorá má byť porovnaná so šírkou tlačidla
+	 * @return {@code valtrue} ak sa šírka tlačidla zhoduje so
+	 *     zadanou šírkou, {@code valfalse} v opačnom prípade
+	 * 
+	 * @see #šírka()
+	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
+	 */
+	public boolean máŠírku(double šírka) { return this.šírka == (int)šírka; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #máŠírku(double) máŠírku}.</p> */
+	public boolean maSirku(double šírka) { return this.šírka == (int)šírka; }
+
+
+	/**
+	 * <p>Zistí, či má tlačidlo zadanú výšku.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom tlačidla s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery tlačidla vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru tlačidla neceločíselnú
+	 * hodnotu, spätne z neho prečítate celočíselnú hodnotu získanú
+	 * zanedbaním neceločíselnej časti.)</p>
+	 * 
+	 * @param výška výška, ktorá má byť porovnaná s výškou tlačidla
+	 * @return {@code valtrue} ak sa výška tlačidla zhoduje so
+	 *     zadanou výškou, {@code valfalse} v opačnom prípade
+	 * 
+	 * @see #šírka()
+	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máRozmer(Rozmer)
+	 * @see #máRozmer(double, double)
+	 */
+	public boolean máVýšku(double výška) { return this.výška == (int)výška; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #máVýšku(double) máVýšku}.</p> */
+	public boolean maVysku(double výška) { return this.výška == (int)výška; }
+
+
+	/**
+	 * <p>Overí, či sa rozmery tlačidla dokonale zhodujú so zadanými
+	 * rozmermi. Ak je zistená zhoda, tak je výsledkom
+	 * {@code valtrue}, v opačnom prípade hodnota {@code valfalse}.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom tlačidla s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery tlačidla vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru tlačidla neceločíselnú
+	 * hodnotu, spätne z neho prečítate celočíselnú hodnotu získanú
+	 * zanedbaním neceločíselnej časti.)</p>
+	 * 
+	 * @param šírka šírka porovnávaná so šírkou tlačidla
+	 * @param výška výška porovnávaná s výškou tlačidla
+	 * @return {@code valtrue} ak sa rozmery tlačidla zhodujú so
+	 *     zadanými rozmermi, {@code valfalse} v opačnom prípade
+	 * 
+	 * @see #šírka()
+	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(Rozmer)
+	 */
+	public boolean máRozmer(double šírka, double výška)
+	{ return this.šírka == (int)šírka && this.výška == (int)výška; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #máRozmer(double, double) máRozmer}.</p> */
+	public boolean maRozmer(double šírka, double výška)
+	{ return máRozmer(šírka, výška); }
+
+
+	/**
+	 * <p>Overí, či sa rozmery tlačidla a rozmery zadaného objektu
+	 * dokonale zhodujú. Ak je zistená zhoda, tak je výsledkom
+	 * {@code valtrue}, v opačnom prípade hodnota {@code valfalse}.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Z dôvodu kompatibility
+	 * s rozhraním {@link Rozmer Rozmer} pracujú všetky metódy súvisiace
+	 * s rozmerom tlačidla s údajovým typom {@code typedouble}, ale
+	 * z optimalizačných (a iných) dôvodov sú rozmery tlačidla vnútorne
+	 * uchovávané v atribútoch s údajovým typom {@code typeint}. (Z toho
+	 * dôvodu, ak priradíte/zapíšete do rozmeru tlačidla neceločíselnú
+	 * hodnotu, spätne z neho prečítate celočíselnú hodnotu získanú
+	 * zanedbaním neceločíselnej časti.)</p>
+	 * 
+	 * @param rozmer iný objekt, ktorého rozmery majú byť porovnané
+	 *     s rozmermi tlačidla
+	 * @return {@code valtrue} ak sa rozmery tlačidla zhodujú
+	 *     s rozmermi zadaného objektu, {@code valfalse} v opačnom prípade
+	 * 
+	 * @see #šírka()
+	 * @see #výška()
+	 * @see #rozmery()
+	 * @see #rozmery(double, double)
+	 * @see #rozmery(Rozmer)
+	 * @see #máŠírku(double)
+	 * @see #máVýšku(double)
+	 * @see #máRozmer(double, double)
+	 */
+	public boolean máRozmer(Rozmer rozmer)
+	{
+		if (null == rozmer) return false;
+		return (int)rozmer.šírka() == šírka && (int)rozmer.výška() == výška;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #máRozmer(Rozmer) máRozmer}.</p> */
+	public boolean maRozmer(Rozmer rozmer) { return máRozmer(rozmer); }
 
 
 	// Keďže sme ani pri robote neboli zvyknutí na túto verziu metódy,
