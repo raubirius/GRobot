@@ -103,8 +103,8 @@ import static javax.swing.text.StyleConstants.ALIGN_RIGHT;
  * a rozmermi blokov metódy definované v tejto triede, ako:
  * {@link PoznámkovýBlok#polohaX(double) polohaX},
  * {@link PoznámkovýBlok#polohaY(double) polohaY},
- * {@link PoznámkovýBlok#šírka(int) šírka},
- * {@link PoznámkovýBlok#výška(int) výška}…, a nie zdedené metódy
+ * {@link PoznámkovýBlok#šírka(double) šírka},
+ * {@link PoznámkovýBlok#výška(double) výška}…, a nie zdedené metódy
  * ako {@link JTextPane#setLocation(int, int) setLocation},
  * {@link JTextPane#setSize(int, int) setSize}…</p>
  * 
@@ -1052,7 +1052,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	 * 
 	 * @return aktuálna šírka poznámkového bloku
 	 * 
-	 * @see #šírka(int)
+	 * @see #šírka(double)
 	 * 
 	 * @see #výška()
 	 * @see #rozmery()
@@ -1082,7 +1082,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	 * 
 	 * @return aktuálna výška poznámkového bloku
 	 * 
-	 * @see #výška(int)
+	 * @see #výška(double)
 	 * 
 	 * @see #šírka()
 	 * @see #rozmery()
@@ -3202,7 +3202,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 		rolovanie.setVerticalScrollBarPolicy(v);
 	}
 
-	/** <p><a class="alias"></a> Alias pre {@link režimZobrazeniaRolovacíchLíšt(Boolean, Boolean) režimZobrazeniaRolovacíchLíšt}. */
+	/** <p><a class="alias"></a> Alias pre {@link #režimZobrazeniaRolovacíchLíšt(Boolean, Boolean) režimZobrazeniaRolovacíchLíšt}. */
 	public void rezimZobrazeniaRolovacichList(
 		Boolean horizontálna, Boolean vertikálna)
 	{ režimZobrazeniaRolovacíchLíšt(horizontálna, vertikálna); }
@@ -3220,7 +3220,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	 * @return režim zobrazenia horizontálnej rolovacej lišty ({@code valtrue},
 	 *     {@code valfalse}, {@code valnull})
 	 * 
-	 * @see #režimZobrazeniaRolovacíchLišty(Boolean, Boolean)
+	 * @see #režimZobrazeniaRolovacíchLíšt(Boolean, Boolean)
 	 * @see #režimZobrazeniaVertikálnejLišty()
 	 */
 	public Boolean režimZobrazeniaHorizontálnejLišty()
@@ -3235,7 +3235,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 		return null;
 	}
 
-	/** <p><a class="alias"></a> Alias pre {@link režimZobrazeniaHorizontálnejLišty() režimZobrazeniaHorizontálnejLišty}. */
+	/** <p><a class="alias"></a> Alias pre {@link #režimZobrazeniaHorizontálnejLišty() režimZobrazeniaHorizontálnejLišty}. */
 	public Boolean rezimZobrazeniaHorizontalnejListy()
 	{ return režimZobrazeniaHorizontálnejLišty(); }
 
@@ -3252,7 +3252,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	 * @return režim zobrazenia vertikálnej rolovacej lišty ({@code valtrue},
 	 *     {@code valfalse}, {@code valnull})
 	 * 
-	 * @see #režimZobrazeniaRolovacíchLišty(Boolean, Boolean)
+	 * @see #režimZobrazeniaRolovacíchLíšt(Boolean, Boolean)
 	 * @see #režimZobrazeniaHorizontálnejLišty()
 	 */
 	public Boolean režimZobrazeniaVertikálnejLišty()
@@ -3267,7 +3267,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 		return null;
 	}
 
-	/** <p><a class="alias"></a> Alias pre {@link režimZobrazeniaVertikálnejLišty() režimZobrazeniaVertikálnejLišty}. */
+	/** <p><a class="alias"></a> Alias pre {@link #režimZobrazeniaVertikálnejLišty() režimZobrazeniaVertikálnejLišty}. */
 	public Boolean rezimZobrazeniaVertikalnejListy()
 	{ return režimZobrazeniaVertikálnejLišty(); }
 

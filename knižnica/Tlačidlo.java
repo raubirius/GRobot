@@ -61,7 +61,7 @@ import javax.swing.JButton;
  * manipuláciu s polohou a rozmermi tlačidiel používajte metódy
  * definované v tejto triede, ako: {@link Tlačidlo#polohaX(double)
  * polohaX}, {@link Tlačidlo#polohaY(double) polohaY}, {@link 
- * Tlačidlo#šírka(int) šírka}, {@link Tlačidlo#výška(int) výška}…, nie
+ * Tlačidlo#šírka(double) šírka}, {@link Tlačidlo#výška(double) výška}…, nie
  * zdedené metódy {@link JButton#setLocation(int, int) setLocation},
  * {@link JButton#setSize(int, int) setSize}…</p>
  * 
@@ -706,7 +706,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	//  * 
 	//  * @return aktuálna šírka tlačidla
 	//  * 
-	//  * @see #šírka(int)
+	//  * @see #šírka(double)
 	//  */
 	// public int šírka() { return šírka; }
 	// 
@@ -718,7 +718,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	//  * 
 	//  * @return aktuálna výška tlačidla
 	//  * 
-	//  * @see #výška(int)
+	//  * @see #výška(double)
 	//  */
 	// public int výška() { return výška; }
 	// 
@@ -732,15 +732,15 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	//  * 
 	//  * @see #šírka()
 	//  */
-	// public void šírka(int nováŠírka)
+	// public void šírka(double nováŠírka)
 	// {
 	// 	double ox = polohaX();
 	// 	šírka = nováŠírka;
 	// 	polohaX(ox);
 	// }
 	// 
-	// /** <p><a class="alias"></a> Alias pre {@link #šírka(int) šírka}.</p> */
-	// public void sirka(int nováŠírka) { šírka(nováŠírka); }
+	// /** <p><a class="alias"></a> Alias pre {@link #šírka(double) šírka}.</p> */
+	// public void sirka(double nováŠírka) { šírka(nováŠírka); }
 	// 
 	// /**
 	//  * <p><a class="setter"></a> Zmení výšku tlačidla.</p>
@@ -749,15 +749,15 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	//  * 
 	//  * @see #výška()
 	//  */
-	// public void výška(int nováVýška)
+	// public void výška(double nováVýška)
 	// {
 	// 	double oy = polohaY();
 	// 	výška = nováVýška;
 	// 	polohaY(oy);
 	// }
 	// 
-	// /** <p><a class="alias"></a> Alias pre {@link #výška(int) výška}.</p> */
-	// public void vyska(int nováVýška) { výška(nováVýška); }
+	// /** <p><a class="alias"></a> Alias pre {@link #výška(double) výška}.</p> */
+	// public void vyska(double nováVýška) { výška(nováVýška); }
 
 
 	/**
@@ -774,7 +774,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	 * 
 	 * @return aktuálna šírka tlačidla
 	 * 
-	 * @see #šírka(int)
+	 * @see #šírka(double)
 	 * 
 	 * @see #výška()
 	 * @see #rozmery()
@@ -804,7 +804,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	 * 
 	 * @return aktuálna výška tlačidla
 	 * 
-	 * @see #výška(int)
+	 * @see #výška(double)
 	 * 
 	 * @see #šírka()
 	 * @see #rozmery()

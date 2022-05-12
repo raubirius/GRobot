@@ -210,7 +210,7 @@ public interface KreslenieTvaru
 		</pre>
 	 * 
 	 * <p><image>kruznica-s-nosom.svg<alt/>Výsledok ukážky kreslenia
-	 * vlasntého tvaru.<onerror>kruznica-s-nosom.png</onerror></image>Ukážka
+	 * vlastného tvaru.<onerror>kruznica-s-nosom.png</onerror></image>Ukážka
 	 * vzhľadu.</p>
 	 * 
 	 * <p class="remark"><b>Poznámky:</b> Niektoré metódy upravujú

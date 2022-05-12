@@ -5280,7 +5280,15 @@ public class SVGPodpora
 	}
 
 
-	// TODO: public a nejako vhodne nazvať a zaradiť
+	/**
+	 * <p>Prevedie hodnotu z údajového typu {@code typedouble} do reťazcového
+	 * tvaru. Toto je pracovná verzia metódy, ktorá je v súčasnosti používaná
+	 * vnútorne. Pri prevode používa mapy jednotiek a výsledok uvádza
+	 * v jednotkách px.</p>
+	 * <!--TODO: public a nejako vhodne nazvať a doplniť opis.-->
+	 * @param hodnota vstupná hodnota
+	 * @return výsledný reťazec v px
+	 */
 	public String konverziaDoubleNaString(double hodnota)
 	{
 		if (!mapaJednotiek.isEmpty())
@@ -5403,6 +5411,38 @@ public class SVGPodpora
 	 * novej (špeciálnej) SVG {@linkplain #definície() definície}, tak ju
 	 * metóda automaticky vloží do zoznamu definícií. V prípade neúspechu
 	 * vráti metóda hodnotu {@code valnull}.</p>
+	 * 
+	 * <ul>
+	 * <li><a
+	 * href="https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Gradients"
+	 * target="_blank">Gradients in SVG – SVG: Scalable Vector Graphics.</a>
+	 * MDN Web Docs. (cit. 8. 5. 2022).</li>
+	 * <li><a href="https://www.w3.org/TR/SVG11/pservers.html"
+	 * target="_blank">Gradients and Patterns – SVG 1.1 (Second Edition).</a>
+	 * W3Schools Online Web Tutorials. (cit. 8. 5. 2022).</li>
+	 * <li><a
+	 * href="https://www.c-sharpcorner.com/UploadFile/433c33/working-gradientpaint-class-in-java/"
+	 * target="_blank">Working GradientPaint Class in Java.</a> C# Corner –
+	 * Community of Software and Data Developers. (cit. 8. 5. 2022).</li>
+	 * <li><a href="https://www.w3schools.com/graphics/svg_grad_linear.asp"
+	 * target="_blank">SVG Gradients – Linear.</a> W3Schools Online Web
+	 * Tutorials. (cit. 8. 5. 2022).</li>
+	 * <li><a href="https://www.w3schools.com/graphics/svg_grad_radial.asp"
+	 * target="_blank">SVG Gradients – Radial.</a> W3Schools Online Web
+	 * Tutorials. (cit. 8. 5. 2022).</li>
+	 * <li><a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/awt/GradientPaint.html"
+	 * target="_blank">GradientPaint.</a> Java Platform SE 8.
+	 * (cit. 8. 5. 2022).</li>
+	 * <li><a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/awt/LinearGradientPaint.html"
+	 * target="_blank">LinearGradientPaint.</a> Java Platform SE 8.
+	 * (cit. 8. 5. 2022).</li>
+	 * <li><a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/awt/RadialGradientPaint.html"
+	 * target="_blank">RadialGradientPaint.</a> Java Platform SE 8.
+	 * (cit. 8. 5. 2022).</li>
+	 * </ul>
 	 * 
 	 * @param náter inštancia náteru ({@link Paint Paint}), ktorá má byť
 	 *     prevedená do reťazcovej (SVG) podoby

@@ -13202,6 +13202,17 @@ Toto bolo presunuté na úvodnú stránku:
 				 * 
 				 * @param smer uhol smeru, ktorým sa má robot posunúť
 				 * @param dĺžka vzdialenosť, o ktorú sa má robot posunúť
+				 * 
+				 * @see #preskočVSmere(double, double)
+				 * @see #posuňVSmere(Smer, double)
+				 * @see #preskočVSmere(Smer, double)
+				 * @see #posuňVSmere(double)
+				 * @see #preskočVSmere(double)
+				 * @see #posuňVSmere(Smer)
+				 * @see #preskočVSmere(Smer)
+				 * 
+				 * @see #posuň(double, double)
+				 * @see #preskoč(double, double)
 				 */
 				public void posuňVSmere(double smer, double dĺžka)
 				{
@@ -13272,6 +13283,17 @@ Toto bolo presunuté na úvodnú stránku:
 				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 				 * 
 				 * @param smer uhol smeru, ktorým sa má robot posunúť
+				 * 
+				 * @see #posuňVSmere(double, double)
+				 * @see #preskočVSmere(double, double)
+				 * @see #posuňVSmere(Smer, double)
+				 * @see #preskočVSmere(Smer, double)
+				 * @see #preskočVSmere(double)
+				 * @see #posuňVSmere(Smer)
+				 * @see #preskočVSmere(Smer)
+				 * 
+				 * @see #posuň(double, double)
+				 * @see #preskoč(double, double)
 				 */
 				public void posuňVSmere(double smer)
 				{ posuňVSmere(smer, veľkosť); }
@@ -13288,6 +13310,17 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @param smer inštancia určujúca smer, ktorým sa má robot
 				 *     posunúť
 				 * @param dĺžka vzdialenosť, o ktorú sa má robot posunúť
+				 * 
+				 * @see #posuňVSmere(double, double)
+				 * @see #preskočVSmere(double, double)
+				 * @see #preskočVSmere(Smer, double)
+				 * @see #posuňVSmere(double)
+				 * @see #preskočVSmere(double)
+				 * @see #posuňVSmere(Smer)
+				 * @see #preskočVSmere(Smer)
+				 * 
+				 * @see #posuň(double, double)
+				 * @see #preskoč(double, double)
 				 */
 				public void posuňVSmere(Smer smer, double dĺžka)
 				{
@@ -13361,6 +13394,17 @@ Toto bolo presunuté na úvodnú stránku:
 				 * 
 				 * @param smer inštancia určujúca smer, ktorým sa má robot
 				 *     posunúť
+				 * 
+				 * @see #posuňVSmere(double, double)
+				 * @see #preskočVSmere(double, double)
+				 * @see #posuňVSmere(Smer, double)
+				 * @see #preskočVSmere(Smer, double)
+				 * @see #posuňVSmere(double)
+				 * @see #preskočVSmere(double)
+				 * @see #preskočVSmere(Smer)
+				 * 
+				 * @see #posuň(double, double)
+				 * @see #preskoč(double, double)
 				 */
 				public void posuňVSmere(Smer smer)
 				{ posuňVSmere(smer, veľkosť); }
@@ -13549,6 +13593,17 @@ Toto bolo presunuté na úvodnú stránku:
 				 * 
 				 * @param smer uhol smeru, ktorým má robot skočiť
 				 * @param dĺžka vzdialenosť, o ktorú má robot preskočiť
+				 * 
+				 * @see #posuňVSmere(double, double)
+				 * @see #posuňVSmere(Smer, double)
+				 * @see #preskočVSmere(Smer, double)
+				 * @see #posuňVSmere(double)
+				 * @see #preskočVSmere(double)
+				 * @see #posuňVSmere(Smer)
+				 * @see #preskočVSmere(Smer)
+				 * 
+				 * @see #posuň(double, double)
+				 * @see #preskoč(double, double)
 				 */
 				public void preskočVSmere(double smer, double dĺžka)
 				{
@@ -13607,6 +13662,17 @@ Toto bolo presunuté na úvodnú stránku:
 				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 				 * 
 				 * @param smer uhol smeru, ktorým má robot skočiť
+				 * 
+				 * @see #posuňVSmere(double, double)
+				 * @see #preskočVSmere(double, double)
+				 * @see #posuňVSmere(Smer, double)
+				 * @see #preskočVSmere(Smer, double)
+				 * @see #posuňVSmere(double)
+				 * @see #preskočVSmere(Smer)
+				 * @see #posuňVSmere(Smer)
+				 * 
+				 * @see #posuň(double, double)
+				 * @see #preskoč(double, double)
 				 */
 				public void preskočVSmere(double smer)
 				{ preskočVSmere(smer, veľkosť); }
@@ -13622,6 +13688,17 @@ Toto bolo presunuté na úvodnú stránku:
 				 * 
 				 * @param smer inštancia určujúca smer, ktorým má robot skočiť
 				 * @param dĺžka vzdialenosť, o ktorú má robot preskočiť
+				 * 
+				 * @see #posuňVSmere(double, double)
+				 * @see #preskočVSmere(double, double)
+				 * @see #posuňVSmere(Smer, double)
+				 * @see #posuňVSmere(double)
+				 * @see #preskočVSmere(double)
+				 * @see #posuňVSmere(Smer)
+				 * @see #preskočVSmere(Smer)
+				 * 
+				 * @see #posuň(double, double)
+				 * @see #preskoč(double, double)
 				 */
 				public void preskočVSmere(Smer smer, double dĺžka)
 				{
@@ -13682,6 +13759,17 @@ Toto bolo presunuté na úvodnú stránku:
 				 * Mierka} nemá na funkciu tejto metódy vplyv.</p>
 				 * 
 				 * @param smer inštancia určujúca smer, ktorým má robot skočiť
+				 * 
+				 * @see #posuňVSmere(double, double)
+				 * @see #preskočVSmere(double, double)
+				 * @see #posuňVSmere(Smer, double)
+				 * @see #preskočVSmere(Smer, double)
+				 * @see #posuňVSmere(double)
+				 * @see #preskočVSmere(double)
+				 * @see #posuňVSmere(Smer)
+				 * 
+				 * @see #posuň(double, double)
+				 * @see #preskoč(double, double)
 				 */
 				public void preskočVSmere(Smer smer)
 				{ preskočVSmere(smer, veľkosť); }
@@ -15577,6 +15665,17 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @param Δy miera posunutia, o ktorú sa má robot posunúť
 				 *     „dopredu“ – priamo v smere svojej orientácie (opäť,
 				 *     záporné súradnice posúvajú robot „dozadu“)
+				 * 
+				 * @see #preskoč(double, double)
+				 * 
+				 * @see #posuňVSmere(double, double)
+				 * @see #preskočVSmere(double, double)
+				 * @see #posuňVSmere(Smer, double)
+				 * @see #preskočVSmere(Smer, double)
+				 * @see #posuňVSmere(double)
+				 * @see #preskočVSmere(double)
+				 * @see #posuňVSmere(Smer)
+				 * @see #preskočVSmere(Smer)
 				 */
 				public void posuň(double Δx, double Δy)
 				{
@@ -15746,6 +15845,17 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @param Δy miera posunutia, o ktorú má robot preskočiť
 				 *     „dopredu“ – priamo v smere svojej orientácie (opäť,
 				 *     záporné súradnice mu kážu skákať „dozadu“)
+				 * 
+				 * @see #posuň(double, double)
+				 * 
+				 * @see #posuňVSmere(double, double)
+				 * @see #preskočVSmere(double, double)
+				 * @see #posuňVSmere(Smer, double)
+				 * @see #preskočVSmere(Smer, double)
+				 * @see #posuňVSmere(double)
+				 * @see #preskočVSmere(double)
+				 * @see #posuňVSmere(Smer)
+				 * @see #preskočVSmere(Smer)
 				 */
 				public void preskoč(double Δx, double Δy)
 				{
@@ -23069,6 +23179,27 @@ Toto bolo presunuté na úvodnú stránku:
 				 * tejto metódy. To znamená, že úpravy polôh bodov alebo
 				 * zámena prvkov poľa nezmenia skutočné hodnoty polôh, ktoré
 				 * odzrkadľujú.</p>
+				 * 
+				 * <p>Keď zapneme spôsob spracovania ohraničenia {@link #ODRAZ
+				 * ODRAZ} a chceme, aby sa pri odraze korektne menil smer
+				 * robota, môžeme na prepočet použiť nasledujúci kód umiestnený
+				 * v rámci reakcie {@code currmimoHraníc}:</p>
+				 * 
+				 * <pre CLASS="example">
+					{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@code currmimoHraníc}({@link Bod Bod}[] poleBodov, {@code typedouble} uhol)
+					{
+						{@link Bod Bod} priesečník = {@link Svet Svet}.{@link Svet#priesečníkÚsečiek(Poloha, Poloha, Poloha, Poloha) priesečníkÚsečiek}(poleBodov[{@code num0}],
+							{@link GRobot#poloha() poloha}(), poleBodov[{@code num2}], poleBodov[{@code num3}]);
+						{@code kwdif} ({@code valnull} != priesečník)
+							{@link GRobot#smer(double) smer}({@link Svet Svet}.{@link Svet#smer(Poloha, Poloha) smer}(priesečník, poleBodov[{@code num1}]));
+						{@code kwdreturn} {@code valtrue};
+					}
+					</pre>
+				 * 
+				 * <p><image>odraz-mimo-hranic.svg<alt/>Znázornenie
+				 * situácie.<onerror>odraz-mimo-hranic.png</onerror></image>Grafické
+				 * znázornenie situácie.</p>
+				 * 
 				 * 
 				 * <p><b>Príklad:</b></p>
 				 * 
