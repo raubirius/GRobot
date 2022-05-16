@@ -1,0 +1,15 @@
+[output]
+GRobot
+
+[files]
+knižnica/*.class
+
+knižnica/apacheAntZIP/*.class
+
+knižnica/podpora/*.class
+
+knižnica/license.txt
+*
+
+knižnica/apacheAntZIP/LICENSE-2.0.txt
+*

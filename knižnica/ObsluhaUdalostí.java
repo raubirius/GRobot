@@ -447,7 +447,9 @@ public class ObsluhaUdalostí
 	 * spustený automaticky. Pozri napríklad: {@link GRobot#rýchlosť(double)
 	 * rýchlosť}, {@link GRobot#uhlováRýchlosť(double) uhlováRýchlosť}…</p>
 	 * 
+	 * @see ÚdajeUdalostí#tik()
 	 * @see GRobot#tik()
+	 * @see Svet#tik()
 	 */
 	public void tik() {}
 

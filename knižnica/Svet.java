@@ -1952,15 +1952,16 @@ public final class Svet extends JFrame
 			private Timer časovanie;
 			private Časovač() { časovanie = null; }
 
-			public void actionPerformed(ActionEvent evt)
+			private void akcia()
 			{
-				ÚdajeUdalostí.poslednýTik = evt;
-
 				// boolean nekresli_záloha = nekresli;
 				žiadamPrekresleniePoPráci = false;
 				pracujem =
 					// nekresli =
 					true;
+
+				// násobTiky – začiatok
+				for (čísloTiku = 1; čísloTiku <= násobTiky; ++čísloTiku) {
 
 				GRobot.aspoňJedenAktívny = false;
 				synchronized (ÚdajeUdalostí.zámokUdalostí)
@@ -2049,6 +2050,8 @@ public final class Svet extends JFrame
 						počúvajúci.tik();
 				}
 
+				} // násobTiky – koniec
+
 				// nekresli = nekresli_záloha;
 				pracujem = false;
 				if (žiadamPrekresleniePoPráci)
@@ -2060,6 +2063,22 @@ public final class Svet extends JFrame
 				}
 				else if (GRobot.aspoňJedenAktívny)
 					automatickéPrekreslenie();
+			}
+
+			private boolean užSpustený = false; // semafor simulácie tiku
+
+			public void tik()
+			{
+				if (užSpustený) return;
+				užSpustený = true;
+				ÚdajeUdalostí.poslednýTik = null;
+				try { akcia(); } finally { užSpustený = false; }
+			}
+
+			public void actionPerformed(ActionEvent evt)
+			{
+				ÚdajeUdalostí.poslednýTik = evt;
+				akcia();
 			}
 
 			public void spusti(int čas)
@@ -2110,6 +2129,9 @@ public final class Svet extends JFrame
 		}
 
 		private final static Časovač časovač = new Časovač();
+
+		// Premenné riadiace a koordinujúce násobenie tikov:
+		private static int násobTiky, čísloTiku;
 
 		// Udalosti okna – ObsluhaUdalostí.počúvadlo myši, klávesnice
 		// a udalostí komponentov
@@ -24545,6 +24567,8 @@ public final class Svet extends JFrame
 		 * @see #časovačAktívny()
 		 * @see #intervalČasovača()
 		 * @see #zastavČasovač()
+		 * @see #násobTiky(int)
+		 * @see #tik()
 		 */
 		public static void spustiČasovač(double čas) { časovač.spusti((int)(čas * 1000)); }
 
@@ -24586,6 +24610,8 @@ public final class Svet extends JFrame
 		 * @see #časovačAktívny()
 		 * @see #intervalČasovača()
 		 * @see #zastavČasovač()
+		 * @see #násobTiky(int)
+		 * @see #tik()
 		 */
 		public static void spustiČasovač()
 		{
@@ -24609,6 +24635,8 @@ public final class Svet extends JFrame
 		 * @see #časovačAktívny()
 		 * @see #intervalČasovača()
 		 * @see #zastavČasovač()
+		 * @see #násobTiky(int)
+		 * @see #tik()
 		 */
 		public static void odložČasovač(double čas) { časovač.odlož((int)(čas * 1000)); }
 
@@ -24626,6 +24654,8 @@ public final class Svet extends JFrame
 		 * @see #odložČasovač(double)
 		 * @see #intervalČasovača()
 		 * @see #zastavČasovač()
+		 * @see #násobTiky(int)
+		 * @see #tik()
 		 */
 		public static boolean časovačAktívny() { return časovač.aktívny(); }
 
@@ -24649,6 +24679,8 @@ public final class Svet extends JFrame
 		 * @see #odložČasovač(double)
 		 * @see #časovačAktívny()
 		 * @see #zastavČasovač()
+		 * @see #násobTiky(int)
+		 * @see #tik()
 		 */
 		public static double intervalČasovača()
 		{
@@ -24667,11 +24699,97 @@ public final class Svet extends JFrame
 		 * @see #odložČasovač(double)
 		 * @see #časovačAktívny()
 		 * @see #intervalČasovača()
+		 * @see #násobTiky(int)
+		 * @see #tik()
 		 */
 		public static void zastavČasovač() { časovač.zastav(); }
 
 		/** <p><a class="alias"></a> Alias pre {@link #zastavČasovač() zastavČasovač}.</p> */
 		public static void zastavCasovac() { časovač.zastav(); }
+
+
+		/**
+		 * <p>Zistí aktuálnu hodnotu násobičky tikov časovača. Pozri:
+		 * {@link #násobTiky(int) násobTiky(počet)}.</p>
+		 * 
+		 * @return aktuálna hodnota násobičky tikov
+		 * 
+		 * @see #násobTiky(int)
+		 * @see #čísloTiku()
+		 * @see #spustiČasovač(double)
+		 * @see #tik()
+		 */
+		public static int násobTiky()
+		{ return násobTiky; }
+
+		/**
+		 * <p>Upraví hodnotu násobičky tikov časovača. Ak je {@linkplain 
+		 * Svet#spustiČasovač() časovač} zapnutý, tak sa zmenou tejto hodnoty
+		 * dá upraviť počet cyklov rôznych operácií vykonaných v rámci jedného
+		 * tiku. Ide o množstvo rôznych záležitostí ako sú {@linkplain 
+		 * GRobot#aktivita() aktivity} alebo aj {@linkplain GRobot#pasivita()
+		 * pasitivy} robotov, {@linkplain #nespi() kofeín,} samotné reakcie
+		 * na {@linkplain ObsluhaUdalostí#tik() tik,} prípadne ďalšie.</p>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b> Príliš veľké hodnoty
+		 * násobiča preťažia systém.</p>
+		 * 
+		 * @param počet nová hodnota násobičky tikov
+		 * 
+		 * @see #násobTiky()
+		 * @see #čísloTiku()
+		 * @see #spustiČasovač(double)
+		 * @see #tik()
+		 */
+		public static void násobTiky(int počet)
+		{
+			if (počet < 1) počet = 1;
+			Svet.násobTiky = počet;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #násobTiky() násobTiky}.</p> */
+		public static int nasobTiky() { return násobTiky(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #násobTiky(int) násobTiky}.</p> */
+		public static void nasobTiky(int násobTiky) { násobTiky(násobTiky); }
+
+		/**
+		 * <p>Overí, ktorý násobok tiku je práve vykonávaný. Toto overenie má
+		 * zmysel vykonávať len v rámci {@linkplain ObsluhaUdalostí#tik()
+		 * reakcií na tik.} Pozri aj: {@link #násobTiky(int)
+		 * násobTiky(počet)}.</p>
+		 * 
+		 * @return aktuálne číslo tiku
+		 * 
+		 * @see #násobTiky()
+		 * @see #násobTiky(int)
+		 * @see #spustiČasovač(double)
+		 * @see #tik()
+		 */
+		public static int čísloTiku()
+		{ return čísloTiku; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #čísloTiku() čísloTiku}.</p> */
+		public static int cisloTiku() { return čísloTiku(); }
+
+
+		/**
+		 * <p>Simuluje vykonanie reakcie na tik {@linkplain 
+		 * #spustiČasovač(double) časovača}. Vykonanie tejto metódy má zmysel
+		 * mimo reťaze udalostí vykonávaných v rámci tiku časovača. Dá sa
+		 * použiť napríklad na krokovanie tikov pri zastavenom časovači.</p>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b> Nezamieňajte si túto metódu
+		 * s {@linkplain ObsluhaUdalostí#tik() reakciami na časovač} alebo
+		 * {@linkplain ÚdajeUdalostí#tik() údajmi udalosti časovača.}</p>
+		 * 
+		 * @see #násobTiky(int)
+		 * @see #spustiČasovač(double)
+		 * @see ObsluhaUdalostí#tik()
+		 * @see GRobot#tik()
+		 * @see ÚdajeUdalostí#tik()
+		 */
+		public static void tik() { časovač.tik(); }
 
 
 		// Čakanie
@@ -26151,7 +26269,7 @@ public final class Svet extends JFrame
 			double x3, double y3, double r)
 		{
 			// Poznámka: Archív tejto metódy je v súbore
-			// @Robot/Vývoj/zálohy/TestPriesPriamKruž.java
+			// @Robot/Testy/zálohy/TestPriesPriamKruž.java
 
 			double Δxa = x2 - x1, Δya = y2 - y1;
 			double Δxb = x3 - x1, Δyb = y3 - y1;

@@ -134,6 +134,12 @@ public class ÚdajeUdalostí
 	 * 
 	 * @return objekt typu {@link ActionEvent ActionEvent}
 	 *     s informáciami o poslednej udalosti časovača
+	 * 
+	 * @see Svet#násobTiky(int)
+	 * @see Svet#spustiČasovač(double)
+	 * @see ObsluhaUdalostí#tik()
+	 * @see GRobot#tik()
+	 * @see Svet#tik()
 	 */
 	public static ActionEvent tik() { return poslednýTik; }
 

@@ -70,7 +70,7 @@ public interface Konštanty
 		/** <p>Konštanta minoritnej verzie tohto rámca.</p> */
 		public final static int minorVersion = 14;
 		/** <p>Konštanta poznámky verzie tohto rámca.</p> */
-		public final static String versionNote = " (2022-05-08)";
+		public final static String versionNote = " (2022-05-16)";
 		/** <p>Konštanta rozpätia rokov vývoja tejto verzie rámca
 			(v podstate na účel výpisu copyrightu…)</p> */
 		public final static String years = "2010 – 2022";

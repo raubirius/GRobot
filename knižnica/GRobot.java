@@ -112,7 +112,7 @@ import static java.lang.Math.toRadians;
  * Potom treba pridať aj úvodné slovo o tom, čo všetko programovanie v Jave
  * môže znamenať (o vyznavačoch „surového“ programovania – bez všelijakých
  * pomocných prvkov) a o tom, aký prístup volí tento programovací rámec
- * (angl. framework – pozri aj: Vývoj/__TODO__.java)…
+ * (angl. framework – pozri aj: GRobot/__TODO__.java)…
  * 
  * Kedysi som zvolil názov robota Vegas…
  * 
@@ -863,6 +863,9 @@ Toto bolo presunuté na úvodnú stránku:
 
 			// Aktuálny spôsob ohraničenia
 			private int aktuálneOhraničenie = ŽIADNE;
+
+			// Záloha spôsobu ohraničenia
+			private int zálohovanéOhraničenie = ŽIADNE;
 
 			// Aktuálne hranice
 			private double ľaváHranica = 0.0;
@@ -5281,10 +5284,14 @@ Toto bolo presunuté na úvodnú stránku:
 			// Inštancia produkujúca tvar a overujúca prítomnosť bodu v tvare
 			private final Hviezda hviezda = new Hviezda();
 
-			// Faktor na výpočet polomeru vpísanej kružnice:
+			// Faktor na výpočet polomeru vpísanej kružnice (ten sa používa
+			// len na zistenie prítomnosti bodu v hviezde):
 			private final static double faktorHviezdy0 = 0.38196601125010504;
 			// V skutočnosti je:
 			//	faktorHviezdy0 = faktorHviezdy1 × sin 18° / sin 36°
+			//	(36° je, evidentne, desatina z 360° – pretože päťcípa hviezda
+			//	má 10 uhlov; v podstate to je desaťuholník s alternujúcimi
+			//	uhlami pri stranách)
 
 			// Faktor na výpočet dĺžky strany hviezdy (to jest dĺžky úsečiek,
 			// z ktorých je hviezda vytvorená – všetky sú zhodou okolností
@@ -11888,6 +11895,47 @@ Toto bolo presunuté na úvodnú stránku:
 							}
 						}
 
+						{
+							String ohraničenieS = "neznáme";
+
+							switch (zálohovanéOhraničenie)
+							{
+							case ŽIADNE: ohraničenieS = "žiadne"; break;
+							case ODRAZ:  ohraničenieS = "odraz";  break;
+							case PLOT:   ohraničenieS = "plot";   break;
+							case PRETOČ: ohraničenieS = "pretoč"; break;
+							}
+
+							vlastnosťS = súbor.čítajVlastnosť(
+								"záloha", ohraničenieS);
+							if (null != vlastnosťS)
+							{
+								vlastnosťS = vlastnosťS.toLowerCase().trim();
+								if (vlastnosťS.equals("žiadne") ||
+									vlastnosťS.equals("ziadne"))
+									zálohovanéOhraničenie = ŽIADNE;
+								else if (vlastnosťS.equals("odraz") ||
+									vlastnosťS.equals("odrazenie") ||
+									vlastnosťS.equals("odraziť") ||
+									vlastnosťS.equals("odrazit"))
+									zálohovanéOhraničenie = ODRAZ;
+								else if (vlastnosťS.equals("plot") ||
+									vlastnosťS.equals("oplotenie") ||
+									vlastnosťS.equals("oplotiť") ||
+									vlastnosťS.equals("oplotit"))
+									zálohovanéOhraničenie = PLOT;
+								else if (vlastnosťS.equals("pretoč") ||
+									vlastnosťS.equals("pretoc") ||
+									vlastnosťS.equals("pretočenie") ||
+									vlastnosťS.equals("pretocenie") ||
+									vlastnosťS.equals("pretočiť") ||
+									vlastnosťS.equals("pretocit"))
+									zálohovanéOhraničenie = PRETOČ;
+								else
+									zálohovanéOhraničenie = ŽIADNE;
+							}
+						}
+
 						// switch (aktuálneOhraničenie)
 						// {
 						// case ODRAZ: case PLOT: case PRETOČ:
@@ -12311,6 +12359,28 @@ Toto bolo presunuté na úvodnú stránku:
 
 						default:
 							súbor.zapíšVlastnosť("spôsob", "neznáme");
+						}
+
+						switch (zálohovanéOhraničenie)
+						{
+						case ŽIADNE:
+							súbor.zapíšVlastnosť("záloha", "žiadne");
+							break;
+
+						case ODRAZ:
+							súbor.zapíšVlastnosť("záloha", "odraz");
+							break;
+
+						case PLOT:
+							súbor.zapíšVlastnosť("záloha", "plot");
+							break;
+
+						case PRETOČ:
+							súbor.zapíšVlastnosť("záloha", "pretoč");
+							break;
+
+						default:
+							súbor.zapíšVlastnosť("záloha", "neznáme");
 						}
 
 						// switch (aktuálneOhraničenie)
@@ -24636,6 +24706,54 @@ Toto bolo presunuté na úvodnú stránku:
 			/** <p><a class="alias"></a> Alias pre {@link #hraniceOhraničenia() hraniceOhraničenia}.</p> */
 			public double[] hraniceOhranicenia() { return hraniceOhraničenia(); }
 
+
+			/**
+			 * <p>Dočasne vypne {@linkplain #ohranič(double, double, double,
+			 * double, int) ohraničenie robota,} ak je zapnuté. To znamená,
+			 * že volanie tejto metódy nemá zmysel, ak je ohraničenie
+			 * vypnuté.</p>
+			 * 
+			 * @see #ohranič(double, double, double, double, int)
+			 * @see #zapniOhraničenie()
+			 */
+			public void vypniOhraničenie()
+			{
+				if (ŽIADNE != aktuálneOhraničenie)
+				{
+					zálohovanéOhraničenie = aktuálneOhraničenie;
+					aktuálneOhraničenie = ŽIADNE;
+				}
+			}
+
+			/** <p><a class="alias"></a> Alias pre {@link #vypniOhraničenie() vypniOhraničenie}.</p> */
+			public void vypniOhranicenie() { vypniOhraničenie(); }
+
+			/**
+			 * <p>Opätovne zapne {@linkplain #ohranič(double, double, double,
+			 * double, int) ohraničenie robota,} ak bolo predtým aktívne, ale
+			 * bolo vypnuté metódou {@link #vypniOhraničenie()
+			 * vypniOhraničenie.} To znamená, že volanie tejto metódy nemá
+			 * zmysel buď ak je ohraničenie aktívne, alebo ak nebolo predtým
+			 * vypnuté metódou {@link #vypniOhraničenie()
+			 * vypniOhraničenie.}</p>
+			 * 
+			 * @see #ohranič(double, double, double, double, int)
+			 * @see #vypniOhraničenie()
+			 */
+			public void zapniOhraničenie()
+			{
+				if (ŽIADNE == aktuálneOhraničenie &&
+					ŽIADNE != zálohovanéOhraničenie)
+				{
+					aktuálneOhraničenie = zálohovanéOhraničenie;
+					zálohovanéOhraničenie = ŽIADNE;
+				}
+			}
+
+			/** <p><a class="alias"></a> Alias pre {@link #zapniOhraničenie() zapniOhraničenie}.</p> */
+			public void zapniOhranicenie() { zapniOhraničenie(); }
+
+
 			/**
 			 * <p>Zapne alebo vypne kontrolu polohy robota počas jeho pohybu
 			 * prostredníctvom určenia vzdialenosti štyroch hraníc od aktuálnej
@@ -24755,6 +24873,9 @@ Toto bolo presunuté na úvodnú stránku:
 			 *     {@link #PLOT PLOT}, {@link #PRETOČ PRETOČ} alebo
 			 *     {@link #ŽIADNE ŽIADNE}, pričom pri poslednej hodnote budú
 			 *     hodnoty hraníc ignorované (ohraničenie bude vypnuté)
+			 * 
+			 * @see #vypniOhraničenie()
+			 * @see #zapniOhraničenie()
 			 */
 			public void ohranič(double ľaváHranica, double dolnáHranica,
 				double praváHranica, double hornáHranica, int spôsob)
@@ -24762,6 +24883,7 @@ Toto bolo presunuté na úvodnú stránku:
 				if (ŽIADNE == spôsob)
 				{
 					aktuálneOhraničenie = ŽIADNE;
+					zálohovanéOhraničenie = ŽIADNE;
 				}
 				else if (ODRAZ == spôsob || PLOT == spôsob || PRETOČ == spôsob)
 				{
@@ -24775,6 +24897,7 @@ Toto bolo presunuté na úvodnú stránku:
 					this.praváHranica = aktuálneX + abs(praváHranica);
 					this.hornáHranica = aktuálneY + abs(hornáHranica);
 					aktuálneOhraničenie = spôsob;
+					zálohovanéOhraničenie = ŽIADNE;
 
 					// System.out.println("Aktuálne ohraničenie: " +
 					// 	this.ľaváHranica  + ", " + this.dolnáHranica + ", " +
