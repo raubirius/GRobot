@@ -5574,7 +5574,8 @@ public class SVGPodpora
 	/**
 	 * <p>Pridá úsečku vymedzenú posledným navštíveným bodom tvorcu a jeho
 	 * aktuálnou polohou. Táto metóda bola pridaná na zjednodušenie pridávania
-	 * úsečiek do inštancie SVG podpory. Používa nasledujúci algoritmus:</p>
+	 * úsečiek do inštancie SVG podpory. Principiálne používa nasledujúci
+	 * algoritmus:</p>
 	 * 
 	 * <pre CLASS="example">
 		{@code typedouble} x0 = {@link Svet Svet}.{@link Svet#prepočítajX(double) prepočítajX}(tvorca.{@link GRobot#poslednáPolohaX() poslednáPolohaX}());
@@ -5583,7 +5584,7 @@ public class SVGPodpora
 		{@code typedouble} x1 = {@link Svet Svet}.{@link Svet#prepočítajX(double) prepočítajX}(tvorca.{@link GRobot#polohaX() polohaX}());
 		{@code typedouble} y1 = {@link Svet Svet}.{@link Svet#prepočítajY(double) prepočítajY}(tvorca.{@link GRobot#polohaY() polohaY}());
 
-		svgPodpora.{@link #pridaj(Shape, GRobot, String...) pridaj}({@code kwdnew} {@link Line2D Line2D}.{@link Line2D.Double#Line2D.Double(double, double, double, double) Double}(x0, y0, x1, y1), tvorca);
+		svgPodpora.{@link #pridaj(Shape, GRobot, String...) pridaj}({@code kwdnew} {@link Line2D Line2D}.{@link Line2D.Double#Line2D.Double(double, double, double, double) Double}(x0, y0, x1, y1), tvorca, atribúty);
 		</pre>
 	 * 
 	 * <p>Z toho vyplýva, že pri použití tejto metódy sú relevantné všetky
@@ -5621,7 +5622,7 @@ public class SVGPodpora
 			double x1 = Svet.prepočítajX(tvorca.aktuálneX);
 			double y1 = Svet.prepočítajY(tvorca.aktuálneY);
 
-			pridaj(new Line2D.Double(x0, y0, x1, y1), tvorca);
+			pridaj(new Line2D.Double(x0, y0, x1, y1), tvorca, atribúty);
 		}
 		finally
 		{
