@@ -759,14 +759,33 @@ Toto bolo presunuté na úvodnú stránku:
 
 		// Hrúbka čiary (polomer pera)
 
+			// Špeciálne hodnoty polí používané v špeciálnych prípadoch:
+			private final static double[] prázdnyVzorPera = new double[0];
+			private final static float[] plnáČiaraPeraDoma = new float[0];
+
 			// Predvolená hrúbka čiary
 			private final static double predvolenýPolomerPera = 0.5;
 
 			// Aktuálna hrúbka čiary
 			/*packagePrivate*/ double polomerPera;
 
+			// Vzor a posun pera:
+			/*packagePrivate*/ float[] vzorPera = null;
+			/*packagePrivate*/ float posunVzoruPera = 0;
+
 			// Čiara prevedená na Stroke
 			/*packagePrivate*/ Stroke čiara;
+
+				private void nastavPero()
+				{
+					if (null == vzorPera)
+						čiara = new BasicStroke((float)polomerPera,
+							BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+					else
+						čiara = new BasicStroke((float)polomerPera,
+							BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+							0f, vzorPera, posunVzoruPera);
+				}
 
 		// Farby a nátery
 
@@ -814,6 +833,10 @@ Toto bolo presunuté na úvodnú stránku:
 			// Zmena hrúbky pera po návrate domov
 			private Double polomerPeraDoma = null;
 
+			// Vzor a posun pera pri prechode domov:
+			private float[] vzorPeraDoma = null;
+			private float posunVzoruPeraDoma = 0;
+
 			// Stav pera po návrate domov
 			private Boolean peroPoloženéDoma = null;
 
@@ -843,9 +866,9 @@ Toto bolo presunuté na úvodnú stránku:
 			/*packagePrivate*/ double aktuálnyUhol;
 
 			// Posledná poloha a smer
-			private double poslednéX;
-			private double poslednéY;
-			private double poslednýUhol;
+			/*packagePrivate*/ double poslednéX;
+			/*packagePrivate*/ double poslednéY;
+			/*packagePrivate*/ double poslednýUhol;
 
 			// Predvolený uhol otáčania bezparametrických príkazov vpravo/vľavo
 			private double uholOtáčania = 45.0;
@@ -2493,6 +2516,10 @@ Toto bolo presunuté na úvodnú stránku:
 				 * 
 				 * @return implementácia rozhrania {@link Stroke Stroke}
 				 *     určujúca viaceré vlastnosti čiary
+				 * 
+				 * @see #čiara(Stroke)
+				 * @see #hrúbkaČiary()
+				 * @see #hrúbkaČiary(double)
 				 */
 				public Stroke čiara()
 				{
@@ -2506,12 +2533,12 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 
 				/**
-				 * <p>Umožňuje určiť nový štýl čiary prostredníctvom implementácie
-				 * rozhrania {@link Stroke Stroke}. Základnou implementáciou
-				 * je trieda {@link BasicStroke BasicStroke}, ktorá umožňuje
-				 * definovať značné množstvo vlastností čiary. (Nazložitejší
-				 * konštruktor uvedenej triedy prijíma {@linkplain 
-				 * BasicStroke#BasicStroke(float, int, int, float,
+				 * <p>Umožňuje určiť nový štýl čiary prostredníctvom
+				 * implementácie rozhrania {@link Stroke Stroke}. Základnou
+				 * implementáciou je trieda {@link BasicStroke BasicStroke},
+				 * ktorá umožňuje definovať značné množstvo vlastností čiary.
+				 * (Najzložitejší konštruktor uvedenej triedy prijíma
+				 * {@linkplain BasicStroke#BasicStroke(float, int, int, float,
 				 * float[], float) hrúbku čiary, štýl ukončenia čiary, štýl
 				 * spojov lomených čiar, limit dĺžky špičiek ostrých hrán,
 				 * pole hodnôt určujúcich čiarkovanú čiaru a fázu čiarkovanej
@@ -2522,6 +2549,10 @@ Toto bolo presunuté na úvodnú stránku:
 				 *     BasicStroke}
 				 * @return aktuálna inštancia spojnice (na reťazové nastavenie
 				 *     viacerých vlastností)
+				 * 
+				 * @see #čiara()
+				 * @see #hrúbkaČiary()
+				 * @see #hrúbkaČiary(double)
 				 */
 				public Spojnica čiara(Stroke čiara)
 				{
@@ -2534,10 +2565,7 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 
 				/** <p><a class="alias"></a> Alias pre {@link #čiara(Stroke) čiara}.</p> */
-				public Spojnica ciara(Stroke čiara)
-				{
-					return čiara(čiara);
-				}
+				public Spojnica ciara(Stroke čiara) { return čiara(čiara); }
 
 
 				/**
@@ -2547,6 +2575,10 @@ Toto bolo presunuté na úvodnú stránku:
 				 * 
 				 * @return hrúbka čiary (podľa aktuálneho štýlu čiary) alebo
 				 *     {@code num-1}
+				 * 
+				 * @see #hrúbkaČiary(double)
+				 * @see #čiara()
+				 * @see #čiara(Stroke)
 				 */
 				public double hrúbkaČiary()
 				{
@@ -2558,9 +2590,7 @@ Toto bolo presunuté na úvodnú stránku:
 
 				/** <p><a class="alias"></a> Alias pre {@link #hrúbkaČiary() hrúbkaČiary}.</p> */
 				public double hrubkaCiary()
-				{
-					return hrúbkaČiary();
-				}
+				{ return hrúbkaČiary(); }
 
 				/**
 				 * <p>Určí novú hrúbku čiary spojnice. Ak je zadaná záporná
@@ -2571,6 +2601,10 @@ Toto bolo presunuté na úvodnú stránku:
 				 *     hodnota, ak má byť štýl čiary zdedený od hlavného robota
 				 * @return aktuálna inštancia spojnice (na reťazové nastavenie
 				 *     viacerých vlastností)
+				 * 
+				 * @see #hrúbkaČiary()
+				 * @see #čiara()
+				 * @see #čiara(Stroke)
 				 */
 				public Spojnica hrúbkaČiary(double hrúbkaČiary)
 				{
@@ -2583,9 +2617,7 @@ Toto bolo presunuté na úvodnú stránku:
 
 				/** <p><a class="alias"></a> Alias pre {@link #hrúbkaČiary(double) hrúbkaČiary}.</p> */
 				public Spojnica hrubkaCiary(double hrúbkaČiary)
-				{
-					return hrúbkaČiary(hrúbkaČiary);
-				}
+				{ return hrúbkaČiary(hrúbkaČiary); }
 
 
 				/**
@@ -4760,6 +4792,8 @@ Toto bolo presunuté na úvodnú stránku:
 				Farba cieľováFarbaDoma_Záloha = robot.cieľováFarbaDoma;
 				boolean zrušCieľovúFarbuDoma_Záloha = robot.zrušCieľovúFarbuDoma;
 				Double polomerPeraDoma_Záloha = robot.polomerPeraDoma;
+				float[] vzorPeraDoma_Záloha = robot.vzorPeraDoma;
+				float posunVzoruPeraDoma_Záloha = robot.posunVzoruPeraDoma;
 				Boolean peroPoloženéDoma_Záloha = robot.peroPoloženéDoma;
 				Boolean viditeľnýDoma_Záloha = robot.viditeľnýDoma;
 				Double veľkosťDoma_Záloha = robot.veľkosťDoma;
@@ -4774,6 +4808,8 @@ Toto bolo presunuté na úvodnú stránku:
 				Farba cieľováFarba_Záloha = robot.cieľováFarba;
 				boolean použiKruhovýNáter_Záloha = robot.použiKruhovýNáter;
 				double polomerPera_Záloha = robot.polomerPera;
+				float[] vzorPera_Záloha = robot.vzorPera;
+				float posunVzoruPera_Záloha = robot.posunVzoruPera;
 
 				float priehľadnosť_Záloha = robot.priehľadnosť;
 				double veľkosť_Záloha = robot.veľkosť;
@@ -4827,6 +4863,8 @@ Toto bolo presunuté na úvodnú stránku:
 				robot.cieľováFarbaDoma = cieľováFarbaDoma_Záloha;
 				robot.zrušCieľovúFarbuDoma = zrušCieľovúFarbuDoma_Záloha;
 				robot.polomerPeraDoma = polomerPeraDoma_Záloha;
+				robot.vzorPeraDoma = vzorPeraDoma_Záloha;
+				robot.posunVzoruPeraDoma = posunVzoruPeraDoma_Záloha;
 				robot.peroPoloženéDoma = peroPoloženéDoma_Záloha;
 				robot.viditeľnýDoma = viditeľnýDoma_Záloha;
 				robot.veľkosťDoma = veľkosťDoma_Záloha;
@@ -4841,6 +4879,8 @@ Toto bolo presunuté na úvodnú stránku:
 				robot.cieľováFarba = cieľováFarba_Záloha;
 				robot.použiKruhovýNáter = použiKruhovýNáter_Záloha;
 				robot.polomerPera = polomerPera_Záloha;
+				robot.vzorPera = vzorPera_Záloha;
+				robot.posunVzoruPera = posunVzoruPera_Záloha;
 
 				robot.priehľadnosť = priehľadnosť_Záloha;
 				robot.veľkosť = veľkosť_Záloha;
@@ -5153,6 +5193,8 @@ Toto bolo presunuté na úvodnú stránku:
 				Farba cieľováFarbaDoma_Záloha;
 				boolean zrušCieľovúFarbuDoma_Záloha;
 				Double polomerPeraDoma_Záloha;
+				float[] vzorPeraDoma_Záloha;
+				float posunVzoruPeraDoma_Záloha;
 				Boolean peroPoloženéDoma_Záloha;
 				Boolean viditeľnýDoma_Záloha;
 				Double veľkosťDoma_Záloha;
@@ -5167,6 +5209,8 @@ Toto bolo presunuté na úvodnú stránku:
 				Farba cieľováFarba_Záloha;
 				boolean použiKruhovýNáter_Záloha;
 				double polomerPera_Záloha;
+				float[] vzorPera_Záloha;
+				float posunVzoruPera_Záloha;
 
 				float priehľadnosť_Záloha;
 				double veľkosť_Záloha;
@@ -5203,6 +5247,8 @@ Toto bolo presunuté na úvodnú stránku:
 					cieľováFarbaDoma_Záloha = robot.cieľováFarbaDoma;
 					zrušCieľovúFarbuDoma_Záloha = robot.zrušCieľovúFarbuDoma;
 					polomerPeraDoma_Záloha = robot.polomerPeraDoma;
+					vzorPeraDoma_Záloha = robot.vzorPeraDoma;
+					posunVzoruPeraDoma_Záloha = robot.posunVzoruPeraDoma;
 					peroPoloženéDoma_Záloha = robot.peroPoloženéDoma;
 					viditeľnýDoma_Záloha = robot.viditeľnýDoma;
 					veľkosťDoma_Záloha = robot.veľkosťDoma;
@@ -5217,6 +5263,8 @@ Toto bolo presunuté na úvodnú stránku:
 					cieľováFarba_Záloha = robot.cieľováFarba;
 					použiKruhovýNáter_Záloha = robot.použiKruhovýNáter;
 					polomerPera_Záloha = robot.polomerPera;
+					vzorPera_Záloha = robot.vzorPera;
+					posunVzoruPera_Záloha = robot.posunVzoruPera;
 
 					priehľadnosť_Záloha = robot.priehľadnosť;
 					veľkosť_Záloha = robot.veľkosť;
@@ -5250,6 +5298,8 @@ Toto bolo presunuté na úvodnú stránku:
 					robot.cieľováFarbaDoma = cieľováFarbaDoma_Záloha;
 					robot.zrušCieľovúFarbuDoma = zrušCieľovúFarbuDoma_Záloha;
 					robot.polomerPeraDoma = polomerPeraDoma_Záloha;
+					robot.vzorPeraDoma = vzorPeraDoma_Záloha;
+					robot.posunVzoruPeraDoma = posunVzoruPeraDoma_Záloha;
 					robot.peroPoloženéDoma = peroPoloženéDoma_Záloha;
 					robot.viditeľnýDoma = viditeľnýDoma_Záloha;
 					robot.veľkosťDoma = veľkosťDoma_Záloha;
@@ -5264,6 +5314,8 @@ Toto bolo presunuté na úvodnú stránku:
 					robot.cieľováFarba = cieľováFarba_Záloha;
 					robot.použiKruhovýNáter = použiKruhovýNáter_Záloha;
 					robot.polomerPera = polomerPera_Záloha;
+					robot.vzorPera = vzorPera_Záloha;
+					robot.posunVzoruPera = posunVzoruPera_Záloha;
 
 					robot.priehľadnosť = priehľadnosť_Záloha;
 					robot.veľkosť = veľkosť_Záloha;
@@ -6328,6 +6380,9 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #čiara()
 				 * @see #čiara(Stroke)
 				 * @see #hrúbkaPeraDoma() hrúbkaPeraDoma
+				 * 
+				 * @see #vzorČiary(double, double...)
+				 * @see #vzorPera(double, double...)
 				 */
 				public double hrúbkaPera() { return polomerPera; }
 
@@ -6347,6 +6402,9 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #čiara()
 				 * @see #čiara(Stroke)
 				 * @see #hrúbkaČiaryDoma() hrúbkaČiaryDoma
+				 * 
+				 * @see #vzorČiary(double, double...)
+				 * @see #vzorPera(double, double...)
 				 */
 				public double hrúbkaČiary() { return polomerPera; }
 
@@ -6368,6 +6426,9 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #čiara()
 				 * @see #čiara(Stroke)
 				 * @see #hrúbkaPeraDoma(Double) hrúbkaPeraDoma
+				 * 
+				 * @see #vzorČiary(double, double...)
+				 * @see #vzorPera(double, double...)
 				 */
 				public void hrúbkaPera(double nováHrúbka)
 				{
@@ -6376,9 +6437,11 @@ Toto bolo presunuté na úvodnú stránku:
 						"negativePenWidth", new IllegalArgumentException());
 
 					polomerPera = nováHrúbka;
-					čiara = new BasicStroke((float)polomerPera,
-						BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+					nastavPero();
+					// čiara = new BasicStroke((float)polomerPera,
+					// 	BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 					// čiara = new BasicStroke((float)polomerPera);
+
 					if (viditeľný && null == vlastnýTvarObrázok &&
 						(null != vlastnýTvarKreslenie || !vyplnený))
 						Svet.automatickéPrekreslenie();
@@ -6434,6 +6497,9 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #čiara()
 				 * @see #čiara(Stroke)
 				 * @see #hrúbkaČiaryDoma(Double) hrúbkaČiaryDoma
+				 * 
+				 * @see #vzorČiary(double, double...)
+				 * @see #vzorPera(double, double...)
 				 */
 				public void hrúbkaČiary(double nováHrúbka)
 				{
@@ -6442,9 +6508,11 @@ Toto bolo presunuté na úvodnú stránku:
 						"negativePenWidth", new IllegalArgumentException());
 
 					polomerPera = nováHrúbka;
-					čiara = new BasicStroke((float)polomerPera,
-						BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+					nastavPero();
+					// čiara = new BasicStroke((float)polomerPera,
+					// 	BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 					// čiara = new BasicStroke((float)polomerPera);
+
 					if (viditeľný && null == vlastnýTvarObrázok &&
 						(null != vlastnýTvarKreslenie || !vyplnený))
 						Svet.automatickéPrekreslenie();
@@ -6463,6 +6531,9 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #predvolenáHrúbkaČiary()
 				 * @see #čiara()
 				 * @see #čiara(Stroke)
+				 * 
+				 * @see #predvolenýVzorČiary()
+				 * @see #predvolenýVzorPera()
 				 */
 				public void predvolenáHrúbkaPera() { hrúbkaPera(predvolenýPolomerPera); }
 
@@ -6479,11 +6550,14 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #predvolenáHrúbkaPera()
 				 * @see #čiara()
 				 * @see #čiara(Stroke)
+				 * 
+				 * @see #predvolenýVzorČiary()
+				 * @see #predvolenýVzorPera()
 				 */
-				public void predvolenáHrúbkaČiary() { hrúbkaPera(predvolenýPolomerPera); }
+				public void predvolenáHrúbkaČiary() { hrúbkaČiary(predvolenýPolomerPera); }
 
 				/** <p><a class="alias"></a> Alias pre {@link #predvolenáHrúbkaČiary() predvolenáHrúbkaČiary}.</p> */
-				public void predvolenaHrubkaCiary() { hrúbkaPera(predvolenýPolomerPera); }
+				public void predvolenaHrubkaCiary() { hrúbkaČiary(predvolenýPolomerPera); }
 
 				/**
 				 * <p>Vráti objekt typu {@link Stroke Stroke} vyjadrujúci
@@ -6509,6 +6583,9 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #predvolenáHrúbkaPera()
 				 * @see #predvolenáHrúbkaČiary()
 				 * @see #čiara(Stroke)
+				 * 
+				 * @see #vzorČiary(double, double...)
+				 * @see #vzorPera(double, double...)
 				 */
 				public Stroke čiara() { return čiara; }
 
@@ -6578,14 +6655,14 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #predvolenáHrúbkaPera()
 				 * @see #predvolenáHrúbkaČiary()
 				 * @see #čiara()
+				 * 
+				 * @see #vzorČiary(double, double...)
+				 * @see #vzorPera(double, double...)
 				 */
 				public void čiara(Stroke nováČiara)
 				{
-					if (null == nováČiara)
-						čiara = new BasicStroke((float)polomerPera,
-							BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-					else
-						čiara = nováČiara;
+					if (null == nováČiara) nastavPero(); // BasicStroke
+					else čiara = nováČiara;
 
 					if (viditeľný && null == vlastnýTvarObrázok &&
 						(null != vlastnýTvarKreslenie || !vyplnený))
@@ -6640,7 +6717,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public Shape tvarPodľaČiary(Shape tvar)
 				{
-					poslednýTypTvaru = TypTvaru.NIČ;
+					poslednýTypTvaru = vyplnený ? TypTvaru.VÝPLŇ : TypTvaru.OBRYS;
 					return čiara.createStrokedShape(tvar);
 				}
 
@@ -9019,6 +9096,17 @@ Toto bolo presunuté na úvodnú stránku:
 						cieľováFarba = cieľováFarbaDoma;
 					if (null != polomerPeraDoma)
 						hrúbkaČiary(polomerPeraDoma);
+					if (null != vzorPeraDoma)
+					{
+						if (0 == vzorPeraDoma.length)
+							predvolenýVzorPera();
+						else
+						{
+							vzorPera = vzorPeraDoma;
+							posunVzoruPera = posunVzoruPeraDoma;
+							nastavPero();
+						}
+					}
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
 					if (null != pomerDoma)
@@ -9091,6 +9179,17 @@ Toto bolo presunuté na úvodnú stránku:
 						cieľováFarba = cieľováFarbaDoma;
 					if (null != polomerPeraDoma)
 						hrúbkaČiary(polomerPeraDoma);
+					if (null != vzorPeraDoma)
+					{
+						if (0 == vzorPeraDoma.length)
+							predvolenýVzorPera();
+						else
+						{
+							vzorPera = vzorPeraDoma;
+							posunVzoruPera = posunVzoruPeraDoma;
+							nastavPero();
+						}
+					}
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
 					if (null != pomerDoma)
@@ -9164,6 +9263,17 @@ Toto bolo presunuté na úvodnú stránku:
 						cieľováFarba = cieľováFarbaDoma;
 					if (null != polomerPeraDoma)
 						hrúbkaČiary(polomerPeraDoma);
+					if (null != vzorPeraDoma)
+					{
+						if (0 == vzorPeraDoma.length)
+							predvolenýVzorPera();
+						else
+						{
+							vzorPera = vzorPeraDoma;
+							posunVzoruPera = posunVzoruPeraDoma;
+							nastavPero();
+						}
+					}
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
 					if (null != pomerDoma)
@@ -9235,6 +9345,17 @@ Toto bolo presunuté na úvodnú stránku:
 						cieľováFarba = cieľováFarbaDoma;
 					if (null != polomerPeraDoma)
 						hrúbkaČiary(polomerPeraDoma);
+					if (null != vzorPeraDoma)
+					{
+						if (0 == vzorPeraDoma.length)
+							predvolenýVzorPera();
+						else
+						{
+							vzorPera = vzorPeraDoma;
+							posunVzoruPera = posunVzoruPeraDoma;
+							nastavPero();
+						}
+					}
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
 					if (null != pomerDoma)
@@ -9310,6 +9431,17 @@ Toto bolo presunuté na úvodnú stránku:
 						cieľováFarba = cieľováFarbaDoma;
 					if (null != polomerPeraDoma)
 						hrúbkaČiary(polomerPeraDoma);
+					if (null != vzorPeraDoma)
+					{
+						if (0 == vzorPeraDoma.length)
+							predvolenýVzorPera();
+						else
+						{
+							vzorPera = vzorPeraDoma;
+							posunVzoruPera = posunVzoruPeraDoma;
+							nastavPero();
+						}
+					}
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
 					if (null != pomerDoma)
@@ -9386,6 +9518,17 @@ Toto bolo presunuté na úvodnú stránku:
 						cieľováFarba = cieľováFarbaDoma;
 					if (null != polomerPeraDoma)
 						hrúbkaČiary(polomerPeraDoma);
+					if (null != vzorPeraDoma)
+					{
+						if (0 == vzorPeraDoma.length)
+							predvolenýVzorPera();
+						else
+						{
+							vzorPera = vzorPeraDoma;
+							posunVzoruPera = posunVzoruPeraDoma;
+							nastavPero();
+						}
+					}
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
 					if (null != pomerDoma)
@@ -9457,6 +9600,17 @@ Toto bolo presunuté na úvodnú stránku:
 						cieľováFarba = cieľováFarbaDoma;
 					if (null != polomerPeraDoma)
 						hrúbkaČiary(polomerPeraDoma);
+					if (null != vzorPeraDoma)
+					{
+						if (0 == vzorPeraDoma.length)
+							predvolenýVzorPera();
+						else
+						{
+							vzorPera = vzorPeraDoma;
+							posunVzoruPera = posunVzoruPeraDoma;
+							nastavPero();
+						}
+					}
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
 					if (null != pomerDoma)
@@ -9531,6 +9685,17 @@ Toto bolo presunuté na úvodnú stránku:
 						cieľováFarba = cieľováFarbaDoma;
 					if (null != polomerPeraDoma)
 						hrúbkaČiary(polomerPeraDoma);
+					if (null != vzorPeraDoma)
+					{
+						if (0 == vzorPeraDoma.length)
+							predvolenýVzorPera();
+						else
+						{
+							vzorPera = vzorPeraDoma;
+							posunVzoruPera = posunVzoruPeraDoma;
+							nastavPero();
+						}
+					}
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
 					if (null != pomerDoma)
@@ -9606,6 +9771,17 @@ Toto bolo presunuté na úvodnú stránku:
 						cieľováFarba = cieľováFarbaDoma;
 					if (null != polomerPeraDoma)
 						hrúbkaČiary(polomerPeraDoma);
+					if (null != vzorPeraDoma)
+					{
+						if (0 == vzorPeraDoma.length)
+							predvolenýVzorPera();
+						else
+						{
+							vzorPera = vzorPeraDoma;
+							posunVzoruPera = posunVzoruPeraDoma;
+							nastavPero();
+						}
+					}
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
 					if (null != pomerDoma)
@@ -9704,7 +9880,18 @@ Toto bolo presunuté na úvodnú stránku:
 						cieľováFarba = cieľováFarbaDoma;
 					if (null != polomerPeraDoma)
 						hrúbkaČiary(polomerPeraDoma);
-					/* if (null != veľkosťDoma)
+					if (null != vzorPeraDoma)
+					{
+						if (0 == vzorPeraDoma.length)
+							predvolenýVzorPera();
+						else
+						{
+							vzorPera = vzorPeraDoma;
+							posunVzoruPera = posunVzoruPeraDoma;
+							nastavPero();
+						}
+					}
+					/* if (null != veľkosťDoma) // toto sa nastavuje podľa častice
 						veľkosť(veľkosťDoma);
 					if (null != pomerDoma)
 						pomer(pomerDoma); */
@@ -9769,6 +9956,8 @@ Toto bolo presunuté na úvodnú stránku:
 					peroPoloženéDoma = iný.viditeľnýDoma;
 					viditeľnýDoma = iný.viditeľnýDoma;
 					polomerPeraDoma = iný.polomerPeraDoma;
+					vzorPeraDoma = iný.vzorPeraDoma;
+					posunVzoruPeraDoma = iný.posunVzoruPeraDoma;
 					veľkosťDoma = iný.veľkosťDoma;
 					pomerDoma = iný.pomerDoma;
 					priehľadnosťDoma = iný.priehľadnosťDoma;
@@ -9798,6 +9987,17 @@ Toto bolo presunuté na úvodnú stránku:
 						cieľováFarba = cieľováFarbaDoma;
 					if (null != polomerPeraDoma)
 						hrúbkaČiary(polomerPeraDoma);
+					if (null != vzorPeraDoma)
+					{
+						if (0 == vzorPeraDoma.length)
+							predvolenýVzorPera();
+						else
+						{
+							vzorPera = vzorPeraDoma;
+							posunVzoruPera = posunVzoruPeraDoma;
+							nastavPero();
+						}
+					}
 					if (null != veľkosťDoma)
 						veľkosť(veľkosťDoma);
 					if (null != pomerDoma)
@@ -10034,6 +10234,8 @@ Toto bolo presunuté na úvodnú stránku:
 					cieľováFarbaDoma = iný.cieľováFarbaDoma;
 					zrušCieľovúFarbuDoma = iný.zrušCieľovúFarbuDoma;
 					polomerPeraDoma = iný.polomerPeraDoma;
+					vzorPeraDoma = iný.vzorPeraDoma;
+					posunVzoruPeraDoma = iný.posunVzoruPeraDoma;
 					veľkosťDoma = iný.veľkosťDoma;
 					pomerDoma = iný.pomerDoma;
 					priehľadnosťDoma = iný.priehľadnosťDoma;
@@ -10925,6 +11127,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #zachovajHrúbkuPeraDoma()
 				 * @see #zachovajHrúbkuČiaryDoma()
 				 * @see #hrúbkaPera() hrúbkaPera
+				 * @see #parametreVzoruPeraDoma(double, double...)
 				 */
 				public Double hrúbkaPeraDoma() { return polomerPeraDoma; }
 
@@ -10945,6 +11148,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #zachovajHrúbkuPeraDoma()
 				 * @see #zachovajHrúbkuČiaryDoma()
 				 * @see #hrúbkaČiary() hrúbkaČiary
+				 * @see #parametreVzoruČiaryDoma(double, double...)
 				 */
 				public Double hrúbkaČiaryDoma() { return polomerPeraDoma; }
 
@@ -10968,6 +11172,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #zachovajHrúbkuPeraDoma()
 				 * @see #zachovajHrúbkuČiaryDoma()
 				 * @see #hrúbkaPera(double) hrúbkaPera
+				 * @see #parametreVzoruPeraDoma(double, double...)
 				 */
 				public void hrúbkaPeraDoma(Double nováHrúbka)
 				{ polomerPeraDoma = nováHrúbka; }
@@ -10993,6 +11198,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #zachovajHrúbkuPeraDoma()
 				 * @see #zachovajHrúbkuČiaryDoma()
 				 * @see #hrúbkaČiary(double) hrúbkaČiary
+				 * @see #parametreVzoruČiaryDoma(double, double...)
 				 */
 				public void hrúbkaČiaryDoma(Double nováHrúbka)
 				{ polomerPeraDoma = nováHrúbka; }
@@ -11011,6 +11217,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #hrúbkaPeraDoma(Double)
 				 * @see #hrúbkaČiaryDoma(Double)
 				 * @see #zachovajHrúbkuČiaryDoma()
+				 * @see #parametreVzoruPeraDoma(double, double...)
 				 */
 				public void zachovajHrúbkuPeraDoma()
 				{ polomerPeraDoma = null; }
@@ -11029,6 +11236,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #hrúbkaPeraDoma(Double)
 				 * @see #hrúbkaČiaryDoma(Double)
 				 * @see #zachovajHrúbkuPeraDoma()
+				 * @see #parametreVzoruČiaryDoma(double, double...)
 				 */
 				public void zachovajHrúbkuČiaryDoma()
 				{ polomerPeraDoma = null; }
@@ -11036,6 +11244,830 @@ Toto bolo presunuté na úvodnú stránku:
 				/** <p><a class="alias"></a> Alias pre {@link #zachovajHrúbkuČiaryDoma() zachovajHrúbkuČiaryDoma}.</p> */
 				public void zachovajHrubkuCiaryDoma()
 				{ polomerPeraDoma = null; }
+
+
+				// Predvolený vzor a posun čiary/pera:
+
+
+				/**
+				 * <p>Nastaví vzor čiary pera na predvolený, čo je plná
+				 * neprerušovaná čiara. Metóda zároveň zresetuje posun vzoru
+				 * čiary pera.</p>
+				 * 
+				 * @see #vzorČiary(double, double...)
+				 * @see #posunVzoruČiary(double)
+				 * 
+				 * @see #predvolenýVzorPera()
+				 */
+				public void predvolenýVzorČiary()
+				{
+					posunVzoruPera = 0;
+					vzorPera = null;
+					nastavPero();
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #predvolenýVzorČiary() predvolenýVzorČiary}.</p> */
+				public void predvolenyVzorCiary() { predvolenýVzorČiary(); }
+
+
+				/**
+				 * <p>Nastaví vzor čiary pera na predvolený, čo je plná
+				 * neprerušovaná čiara. Metóda zároveň zresetuje posun vzoru
+				 * čiary pera.</p>
+				 * 
+				 * @see #vzorPera(double, double...)
+				 * @see #posunVzoruPera(double)
+				 * 
+				 * @see #predvolenýVzorČiary()
+				 */
+				public void predvolenýVzorPera()
+				{
+					posunVzoruPera = 0;
+					vzorPera = null;
+					nastavPero();
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #predvolenýVzorPera() predvolenýVzorPera}.</p> */
+				public void predvolenyVzorPera() { predvolenýVzorPera(); }
+
+
+				// Vzor a posun – terminológia „čiara“:
+
+
+				/**
+				 * <p>Upraví vzor čiary pera. Vzorom sa myslí striedanie čiarok
+				 * a medzier rôznych dĺžok súbežných s líniou kreslenej krivky –
+				 * čiarkovanie.</p>
+				 * 
+				 * <p>Dĺžky čiarok vzoru sú uvádzané v pixeloch. Každá hodnota
+				 * striedavo určuje kreslenú a vynechávanú časť. Ak je počet
+				 * hodnôt <b>nepárny,</b> tak sa celý vzor zopakuje v inverznom
+				 * význame hodnôt, čiže pri druhom opakovaní bude {@code 
+				 * začiatokVzoru} označovať vynechanú (nekreslenú) časť, ale
+				 * pri treťom opäť kreslenú a tak ďalej. Pozrite sa na obrázok
+				 * nižšie:</p>
+				 * 
+				 * <p><image>zmena-vzoru-ciary-1.svg<alt/>Ilustrácia ku vzorom
+				 * čiary.<onerror>zmena-vzoru-ciary-1.png</onerror></image>Zobrazenie
+				 * rôznych vzorov podľa opisu nižšie.</p>
+				 * 
+				 * <p>Smerom zdola nahor narastá hrúbka čiarky a smerom zľava
+				 * doprava narastá dĺžka čiarok vzoru, pričom sa striedajú
+				 * vzory s nepárnym a párnym počtom hodnôt. Napríklad prvé dve
+				 * čiary zľava sú vyrobené z dĺžok {@code num1} (nepárny počet
+				 * dĺžok – čiže rovnaká hodnota sa strieda pre kreslenú aj
+				 * vynechanú časť) a {@code num1}{@code , }{@code num2} (párny
+				 * počet dĺžok – čiže prvá hodnota vyjadruje kreslenú dĺžku
+				 * a druhá vynechanú). Ďalšie dve čiary sú zložené z dĺžok
+				 * {@code num2} a {@code num2}{@code , }{@code num4} a takto
+				 * dĺžky stúpajú až po hodnoty {@code num11} a {@code 
+				 * num11}{@code , }{@code num22}. (So zmenou hrúby sa vždy
+				 * reštartuje čiarkovanie. Hrúbka rastie od {@code num1} po
+				 * {@code num8}.)</p>
+				 * 
+				 * <p>Tvorba vzoru so zadanými párnymi alebo nepárnymi dĺžkami
+				 * bude možno lepšie pochopiteľná z nasledujúceho obrázka:</p>
+				 * 
+				 * <p><image>zmena-vzoru-ciary-2.svg<alt/>Ilustrácia ku vzorom
+				 * čiary.<onerror>zmena-vzoru-ciary-2.png</onerror></image>Zobrazenie
+				 * rôznych vzorov podľa opisu nižšie.</p>
+				 * 
+				 * <p>Prvá čiara je vytvorená zo vzoru zadaného ako jedna
+				 * hodnota, ktorú pomenujme <i>n</i>. To znamená, že sa
+				 * striedajú rovnaké kreslené a vynechané dĺžky (<i>n</i>).
+				 * Druhá čiara je vytvorená z dvoch hodnôt:
+				 * <i>n</i> a 2 × <i>n</i>. Tretia čiara z troch hodnôt:
+				 * <i>n</i>, 2 × <i>n</i> a 3 × <i>n</i>. Pri nej si všimnite
+				 * ako sa striedajú kreslené a vynechané časti: prvá je
+				 * kreslená časť s dĺžkou <i>n</i>, potom nasleduje vynechaná
+				 * časť s dĺžkou 2 × <i>n</i>, potom opäť kreslená s dĺžkou
+				 * 3 × <i>n</i> a potom sa opakovanie vymení – štvrtá časť je
+				 * vynechaná s dĺžkou <i>n</i>, piata kreslená s dĺžkou
+				 * 2 × <i>n</i> a tak ďalej. Štvrtý riadok opäť obsahuje párny
+				 * počet hodnôt (<i>n</i>, 2<i>n</i>, 3<i>n</i> a 4<i>n</i>),
+				 * takže všetky kreslené a vynechané časti sa opakujú stále
+				 * v rovnakom poradí. Takto to pokračuje až po čiaru vzoru
+				 * s párnym počtom hodnôt: <i>n</i>, 2<i>n</i>, 3<i>n</i>,
+				 * 4<i>n</i><i>n</i>, 5<i>n</i> a 6<i>n</i>.</p>
+				 * 
+				 * <p style="font-size: larger;">Ak chceme vzor čiary pera
+				 * <b>zrušiť,</b> použijeme metódu {@link #predvolenýVzorPera()
+				 * predvolenýVzorPera}.</p>
+				 * 
+				 * @param začiatokVzoru prvý prvok vzoru čiary pera
+				 *     (čiarkovania); tento parameter je povinný, aby Java
+				 *     vedela rozlíšiť, či chceme vzor čiary čítať alebo
+				 *     zapisovať
+				 * @param pokračovanieVzoru zoznam parametrov určujúcich
+				 *     ostatné dĺžky kreslených a vynechávaných čiarok
+				 *     (čiarkovanie)
+				 * 
+				 * @see #vzorČiary(double[])
+				 * @see #vzorPera(double[])
+				 * 
+				 * @see #vzorPera(double, double...)
+				 * @see #vzorČiary()
+				 * @see #vzorPera()
+				 * @see #posunVzoruČiary(double)
+				 * @see #posunVzoruPera(double)
+				 * @see #posunVzoruČiary()
+				 * @see #posunVzoruPera()
+				 * 
+				 * @see #predvolenýVzorČiary()
+				 * @see #predvolenýVzorPera()
+				 * 
+				 * @see #parametreVzoruČiaryDoma(double, double...)
+				 * 
+				 * @see #hrúbkaPera(double)
+				 * @see #hrúbkaČiary(double)
+				 * @see #čiara(Stroke)
+				 */
+				public void vzorČiary(double začiatokVzoru,
+					double... pokračovanieVzoru)
+				{
+					float[] zálohaVzoru = vzorPera;
+					try
+					{
+						int n = pokračovanieVzoru.length;
+						vzorPera = new float[1 + n];
+						vzorPera[0] = (float)začiatokVzoru;
+
+						for (int i = 0; i < n; ++i)
+							vzorPera[i + 1] = (float)pokračovanieVzoru[i];
+
+						nastavPero();
+					}
+					catch (Throwable t)
+					{
+						vzorPera = zálohaVzoru;
+						throw new GRobotException("Neplatný vzor čiary pera.",
+							"invalidDash", t);
+					}
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #vzorČiary(double, double...) vzorČiary}.</p> */
+				public void vzorCiary(double začiatokVzoru, double... pokračovanieVzoru) { vzorČiary(začiatokVzoru, pokračovanieVzoru); }
+
+				/**
+				 * <p>Upraví vzor čiary pera. Toto je alternatívna verzia
+				 * metódy {@link #vzorČiary(double, double...)
+				 * vzorČiary}{@code (začiatokVzoru, pokračovanieVzoru)}.
+				 * Viac podrobností o fungovaní vzoru čiary nájdete v jej
+				 * opise. Hlavný rozdiel je v tom, že táto metóda prijíma pole
+				 * dĺžok a metóda {@link #vzorČiary(double, double...)
+				 * vzorČiary}{@code (začiatokVzoru, pokračovanieVzoru)}
+				 * prijíma zoznam parametrov. V rôznych situáciách môže byť
+				 * výhodnejšie jedno alebo druhé.</p>
+				 * 
+				 * @param novýVzor pole prvkov určujúcich dĺžky kreslených
+				 *     a vynechávaných čiarok (čiarkovanie)
+				 * 
+				 * @see #vzorČiary(double, double...)
+				 * @see #vzorPera(double, double...)
+				 * @see #vzorPera(double[])
+				 */
+				public void vzorČiary(double[] novýVzor)
+				{
+					float[] zálohaVzoru = vzorPera;
+					try
+					{
+						int n = novýVzor.length;
+						vzorPera = new float[n];
+
+						for (int i = 0; i < n; ++i)
+							vzorPera[i] = (float)novýVzor[i];
+
+						nastavPero();
+					}
+					catch (Throwable t)
+					{
+						vzorPera = zálohaVzoru;
+						throw new GRobotException("Neplatný vzor čiary pera.",
+							"invalidDash", t);
+					}
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #vzorČiary(double[]) vzorČiary}.</p> */
+				public void vzorCiary(double[] novýVzor) { vzorČiary(novýVzor); }
+
+				/**
+				 * <p>Vráti aktuálny vzor čiary pera. Pozri metódu {@link 
+				 * #vzorČiary(double, double...)
+				 * vzorČiary}{@code (začiatokVzoru, pokračovanieVzoru)}.</p>
+				 * 
+				 * @return aktuálny vzor čiary pera
+				 * 
+				 * @see #vzorČiary(double, double...)
+				 * @see #vzorPera(double, double...)
+				 * @see #vzorPera()
+				 * @see #posunVzoruČiary(double)
+				 * @see #posunVzoruPera(double)
+				 * @see #posunVzoruČiary()
+				 * @see #posunVzoruPera()
+				 * 
+				 * @see #predvolenýVzorČiary()
+				 * @see #predvolenýVzorPera()
+				 * 
+				 * @see #parametreVzoruČiaryDoma()
+				 * 
+				 * @see #hrúbkaPera(double)
+				 * @see #hrúbkaČiary(double)
+				 * @see #čiara(Stroke)
+				 */
+				public double[] vzorČiary()
+				{
+					if (null == vzorPera) return null;
+
+					int n = vzorPera.length;
+					double vzor[] = new double[n];
+
+					for (int i = 0; i < n; ++i)
+						vzor[i] = vzorPera[i];
+
+					return vzor;
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #vzorČiary() vzorČiary}.</p> */
+				public double[] vzorCiary() { return vzorČiary(); }
+
+
+				/**
+				 * <p>Upraví posun vzoru čiary pera. Pozri aj: {@link 
+				 * #vzorČiary(double, double...) vzorČiary}. Posun (alebo
+				 * fáza) je nezáporná hodnota, ktorá posúva začiatok vzoru –
+				 * čiarkovania čiary. Najlepšie to vyjadrujú nasledujúce
+				 * obrázky:</p>
+				 * 
+				 * <table class="centered">
+				 * <tr><td><image>zmena-fazy-ciary-1.png<alt/>Ilustrácia k fáze
+				 * čiary.</image></td>
+				 * <td><image>zmena-fazy-ciary-2.png<alt/>Ilustrácia k fáze
+				 * čiary.</image></td></tr>
+				 * <tr><td colspan="2"><p class="image">Zobrazenie rôznych fáz
+				 * čiar rovnakého vzoru. Horné čiary majú vždy nulový posun,
+				 * ktorý plynule rastie po jednotkách smerom
+				 * nadol.</p></td></tr></table>
+				 * 
+				 * @param posun určuje posun (fázu) vzoru (čiarkovania) čiary
+				 *     od začiatku kreslenej krivky; nezáporná hodnota
+				 * 
+				 * @see #vzorČiary(double, double...)
+				 * @see #vzorPera(double, double...)
+				 * 
+				 * @see #posunVzoruPera(double)
+				 * @see #posunVzoruČiary()
+				 * @see #posunVzoruPera()
+				 * 
+				 * @see #predvolenýVzorČiary()
+				 * @see #predvolenýVzorPera()
+				 * 
+				 * @see #parametreVzoruČiaryDoma(double, double...)
+				 * 
+				 * @see #hrúbkaPera(double)
+				 * @see #hrúbkaČiary(double)
+				 * @see #čiara(Stroke)
+				 */
+				public void posunVzoruČiary(double posun)
+				{
+					float zálohaPosunu = posunVzoruPera;
+					try
+					{
+						posunVzoruPera = (float)posun;
+						nastavPero();
+					}
+					catch (Throwable t)
+					{
+						posunVzoruPera = zálohaPosunu;
+						throw new GRobotException(
+							"Neplatný posun vzoru čiary pera.",
+							"invalidDashPhase", t);
+					}
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #posunVzoruČiary(double) posunVzoruČiary}.</p> */
+				public void posunVzoruCiary(double posun)
+				{ posunVzoruČiary(posun); }
+
+
+				/**
+				 * <p>Vráti aktuálny posun vzoru čiary pera. Pozri metódu
+				 * {@link #posunVzoruČiary(double)
+				 * posunVzoruČiary}{@code (posun)}.</p>
+				 * 
+				 * @return aktuálny posun vzoru čiary pera
+				 * 
+				 * @see #vzorČiary(double, double...)
+				 * @see #vzorPera(double, double...)
+				 * @see #vzorČiary()
+				 * @see #vzorPera()
+				 * @see #posunVzoruČiary(double)
+				 * @see #posunVzoruPera(double)
+				 * 
+				 * @see #posunVzoruPera()
+				 * 
+				 * @see #predvolenýVzorČiary()
+				 * @see #predvolenýVzorPera()
+				 * 
+				 * @see #parametreVzoruČiaryDoma()
+				 * 
+				 * @see #hrúbkaPera(double)
+				 * @see #hrúbkaČiary(double)
+				 * @see #čiara(Stroke)
+				 */
+				public double posunVzoruČiary() { return posunVzoruPera; }
+
+				/** <p><a class="alias"></a> Alias pre {@link #posunVzoruČiary() posunVzoruČiary}.</p> */
+				public double posunVzoruCiary() { return posunVzoruPera; }
+
+
+				/**
+				 * <p>Zistí, aké parametre majú byť nastavené vzoru čiary pera
+				 * pri prechode robota {@linkplain #domov() domov.} Ak robot
+				 * pri prechode domov vzor čiary nemení, tak je vrátená
+				 * hodnota {@code valnull}. Ak mení čiaru na plnú, tak je
+				 * vrátené prázdne pole. Ak mení vzor čiary podľa určitého
+				 * zadania, tak je vrátene pole obsahujúce posun vzoru v prvom
+				 * prvku (s indexom {@code num0}) a charakter vzoru
+				 * (čiarkovanie) v ostatných prvkoch poľa.</p>
+
+				 * <p class="caution"><b>Pozor!</b> Všimnite si, že prvý prvok
+				 * poľa pri použití určitého vzoru označuje posun – fázu
+				 * vzoru.</p>
+
+				 * @return parametre vzoru čiary pera pri prechode robota
+				 *     {@linkplain #domov() domov} uložené v poli prvkov typu
+				 *     {@code typedouble}
+				 * 
+				 * @see #parametreVzoruČiaryDoma(double, double...)
+				 * @see #zachovajVzorČiaryDoma()
+				 * @see #hrúbkaČiaryDoma()
+				 */
+				public double[] parametreVzoruČiaryDoma()
+				{
+					if (null == vzorPeraDoma) return null;
+					if (plnáČiaraPeraDoma == vzorPeraDoma)
+						return prázdnyVzorPera;
+
+					int n = vzorPeraDoma.length;
+					double vzorDoma[] = new double[1 + n];
+					vzorDoma[0] = posunVzoruPeraDoma;
+
+					for (int i = 0; i < n; ++i)
+						vzorDoma[i + 1] = vzorPeraDoma[i];
+
+					return vzorDoma;
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #parametreVzoruČiaryDoma() parametreVzoruČiaryDoma}.</p> */
+				public double[] parametreVzoruCiaryDoma()
+				{ return parametreVzoruČiaryDoma(); }
+
+				/**
+				 * <p>Nastaví parametre vzoru čiary pera použité pri prechode
+				 * robota {@linkplain #domov() domov.}</p>
+				 * 
+				 * <p>Prvým parametrom je posun vzoru, ktorý môže byť aj
+				 * nulový.</p>
+				 * 
+				 * <p>Smerodajnejšími sú ďalšie parametre (zoznam), ktoré
+				 * určujú charakter vzoru – pozri aj {@link #vzorČiary(double,
+				 * double...) vzorČiary}. Ak nie je ani jeden z týchto
+				 * parametrov nastavený, znamená to, že robot si má pri
+				 * prechode {@linkplain #domov() domov} nastaviť plnú čiaru.
+				 * V takom prípade je hodnota posunu irelevantná.</p>
+				 * 
+				 * <p>V opačnom prípade určujú parametre charakter vzoru
+				 * (čiarkovanie) a posun sa do úvahy berie.</p>
+				 * 
+				 * <p>Ak chceme tieto parametre zrušiť a nastaviť robot tak,
+				 * aby pri prechode {@linkplain #domov() domov} vzor čiary
+				 * nemenil, tak použijeme metódu {@link #zachovajVzorČiaryDoma()
+				 * zachovajVzorČiaryDoma}.</p>
+				 * 
+				 * @param posunVzoru posun vzoru čiary pera nastavený pri
+				 *     prechode robota {@linkplain #domov() domov}
+				 * @param charakterVzoru charakter vzoru čiary pera nastavený
+				 *     pri prechode robota {@linkplain #domov() domov}
+				 * 
+				 * @see #parametreVzoruČiaryDoma()
+				 * @see #zachovajVzorČiaryDoma()
+				 * @see #hrúbkaČiaryDoma(Double)
+				 */
+				public void parametreVzoruČiaryDoma(double posunVzoru,
+					double... charakterVzoru)
+				{
+					posunVzoruPeraDoma = (float)posunVzoru;
+					int n = charakterVzoru.length;
+
+					if (0 == n)
+					{
+						vzorPeraDoma = plnáČiaraPeraDoma;
+						return;
+					}
+
+					vzorPeraDoma = new float[n];
+					for (int i = 0; i < n; ++i)
+						vzorPeraDoma[i] = (float)charakterVzoru[i];
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #parametreVzoruČiaryDoma(double, double...) parametreVzoruČiaryDoma}.</p> */
+				public void parametreVzoruCiaryDoma(double posunVzoru,
+					double... charakterVzoru)
+				{ parametreVzoruČiaryDoma(posunVzoru, charakterVzoru); }
+
+
+				/**
+				 * <p>Zruší zmenu parametrov čiarkovania, vrátane jeho posunu,
+				 * pri prechode robota {@linkplain #domov() domov.}</p>
+				 * 
+				 * @see #parametreVzoruČiaryDoma()
+				 * @see #parametreVzoruČiaryDoma(double, double...)
+				 * @see #zachovajHrúbkuČiaryDoma()
+				 */
+				public void zachovajVzorČiaryDoma()
+				{
+					vzorPeraDoma = null;
+					posunVzoruPeraDoma = 0;
+				}
+
+				/** <p><a class="alias"></a> Alias pre {@link #zachovajVzorČiaryDoma() zachovajVzorČiaryDoma}.</p> */
+				public void zachovajVzorCiaryDoma() { zachovajVzorČiaryDoma(); }
+
+
+				// Vzor a posun – terminológia „pero“:
+
+
+				/**
+				 * <p>Upraví vzor čiary pera. Vzorom sa myslí striedanie čiarok
+				 * a medzier rôznych dĺžok súbežných s líniou kreslenej krivky –
+				 * čiarkovanie.</p>
+				 * 
+				 * <p>Dĺžky čiarok vzoru sú uvádzané v pixeloch. Každá hodnota
+				 * striedavo určuje kreslenú a vynechávanú časť. Ak je počet
+				 * hodnôt <b>nepárny,</b> tak sa celý vzor zopakuje v inverznom
+				 * význame hodnôt, čiže pri druhom opakovaní bude {@code 
+				 * začiatokVzoru} označovať vynechanú (nekreslenú) časť, ale
+				 * pri treťom opäť kreslenú a tak ďalej. Pozrite sa na obrázok
+				 * nižšie:</p>
+				 * 
+				 * <p><image>zmena-vzoru-ciary-1.svg<alt/>Ilustrácia ku vzorom
+				 * čiary.<onerror>zmena-vzoru-ciary-1.png</onerror></image>Zobrazenie
+				 * rôznych vzorov podľa opisu nižšie.</p>
+				 * 
+				 * <p>Smerom zdola nahor narastá hrúbka čiarky a smerom zľava
+				 * doprava narastá dĺžka čiarok vzoru, pričom sa striedajú
+				 * vzory s nepárnym a párnym počtom hodnôt. Napríklad prvé dve
+				 * čiary zľava sú vyrobené z dĺžok {@code num1} (nepárny počet
+				 * dĺžok – čiže rovnaká hodnota sa strieda pre kreslenú aj
+				 * vynechanú časť) a {@code num1}{@code , }{@code num2} (párny
+				 * počet dĺžok – čiže prvá hodnota vyjadruje kreslenú dĺžku
+				 * a druhá vynechanú). Ďalšie dve čiary sú zložené z dĺžok
+				 * {@code num2} a {@code num2}{@code , }{@code num4} a takto
+				 * dĺžky stúpajú až po hodnoty {@code num11} a {@code 
+				 * num11}{@code , }{@code num22}. (So zmenou hrúby sa vždy
+				 * reštartuje čiarkovanie. Hrúbka rastie od {@code num1} po
+				 * {@code num8}.)</p>
+				 * 
+				 * <p>Tvorba vzoru so zadanými párnymi alebo nepárnymi dĺžkami
+				 * bude možno lepšie pochopiteľná z nasledujúceho obrázka:</p>
+				 * 
+				 * <p><image>zmena-vzoru-ciary-2.svg<alt/>Ilustrácia ku vzorom
+				 * čiary.<onerror>zmena-vzoru-ciary-2.png</onerror></image>Zobrazenie
+				 * rôznych vzorov podľa opisu nižšie.</p>
+				 * 
+				 * <p>Prvá čiara je vytvorená zo vzoru zadaného ako jedna
+				 * hodnota, ktorú pomenujme <i>n</i>. To znamená, že sa
+				 * striedajú rovnaké kreslené a vynechané dĺžky (<i>n</i>).
+				 * Druhá čiara je vytvorená z dvoch hodnôt:
+				 * <i>n</i> a 2 × <i>n</i>. Tretia čiara z troch hodnôt:
+				 * <i>n</i>, 2 × <i>n</i> a 3 × <i>n</i>. Pri nej si všimnite
+				 * ako sa striedajú kreslené a vynechané časti: prvá je
+				 * kreslená časť s dĺžkou <i>n</i>, potom nasleduje vynechaná
+				 * časť s dĺžkou 2 × <i>n</i>, potom opäť kreslená s dĺžkou
+				 * 3 × <i>n</i> a potom sa opakovanie vymení – štvrtá časť je
+				 * vynechaná s dĺžkou <i>n</i>, piata kreslená s dĺžkou
+				 * 2 × <i>n</i> a tak ďalej. Štvrtý riadok opäť obsahuje párny
+				 * počet hodnôt (<i>n</i>, 2<i>n</i>, 3<i>n</i> a 4<i>n</i>),
+				 * takže všetky kreslené a vynechané časti sa opakujú stále
+				 * v rovnakom poradí. Takto to pokračuje až po čiaru vzoru
+				 * s párnym počtom hodnôt: <i>n</i>, 2<i>n</i>, 3<i>n</i>,
+				 * 4<i>n</i><i>n</i>, 5<i>n</i> a 6<i>n</i>.</p>
+				 * 
+				 * <p style="font-size: larger;">Ak chceme vzor čiary pera
+				 * <b>zrušiť,</b> použijeme metódu {@link #predvolenýVzorPera()
+				 * predvolenýVzorPera}.</p>
+				 * 
+				 * @param začiatokVzoru prvý prvok vzoru čiary pera
+				 *     (čiarkovania); tento parameter je povinný, aby Java
+				 *     vedela rozlíšiť, či chceme vzor čiary čítať alebo
+				 *     zapisovať
+				 * @param pokračovanieVzoru zoznam parametrov určujúcich
+				 *     ostatné dĺžky kreslených a vynechávaných čiarok
+				 *     (čiarkovanie)
+				 * 
+				 * @see #vzorČiary(double[])
+				 * @see #vzorPera(double[])
+				 * 
+				 * @see #vzorČiary(double, double...)
+				 * @see #vzorČiary()
+				 * @see #vzorPera()
+				 * @see #posunVzoruČiary(double)
+				 * @see #posunVzoruPera(double)
+				 * @see #posunVzoruČiary()
+				 * @see #posunVzoruPera()
+				 * 
+				 * @see #predvolenýVzorČiary()
+				 * @see #predvolenýVzorPera()
+				 * 
+				 * @see #parametreVzoruČiaryDoma(double, double...)
+				 * 
+				 * @see #hrúbkaPera(double)
+				 * @see #hrúbkaČiary(double)
+				 * @see #čiara(Stroke)
+				 */
+				public void vzorPera(double začiatokVzoru,
+					double... pokračovanieVzoru)
+				{
+					float[] zálohaVzoru = vzorPera;
+					try
+					{
+						int n = pokračovanieVzoru.length;
+						vzorPera = new float[1 + n];
+						vzorPera[0] = (float)začiatokVzoru;
+
+						for (int i = 0; i < n; ++i)
+							vzorPera[i + 1] = (float)pokračovanieVzoru[i];
+
+						nastavPero();
+					}
+					catch (Throwable t)
+					{
+						vzorPera = zálohaVzoru;
+						throw new GRobotException("Neplatný vzor čiary pera.",
+							"invalidDash", t);
+					}
+				}
+
+				/**
+				 * <p>Upraví vzor čiary pera. Toto je alternatívna verzia
+				 * metódy {@link #vzorPera(double, double...)
+				 * vzorPera}{@code (začiatokVzoru, pokračovanieVzoru)}.
+				 * Viac podrobností o fungovaní vzoru čiary nájdete v jej
+				 * opise. Hlavný rozdiel je v tom, že táto metóda prijíma pole
+				 * dĺžok a metóda {@link #vzorPera(double, double...)
+				 * vzorPera}{@code (začiatokVzoru, pokračovanieVzoru)}
+				 * prijíma zoznam parametrov. V rôznych situáciách môže byť
+				 * výhodnejšie jedno alebo druhé.</p>
+				 * 
+				 * @param novýVzor pole prvkov určujúcich dĺžky kreslených
+				 *     a vynechávaných čiarok (čiarkovanie)
+				 * 
+				 * @see #vzorČiary(double, double...)
+				 * @see #vzorPera(double, double...)
+				 * @see #vzorČiary(double[])
+				 */
+				public void vzorPera(double[] novýVzor)
+				{
+					float[] zálohaVzoru = vzorPera;
+					try
+					{
+						int n = novýVzor.length;
+						vzorPera = new float[n];
+
+						for (int i = 0; i < n; ++i)
+							vzorPera[i] = (float)novýVzor[i];
+
+						nastavPero();
+					}
+					catch (Throwable t)
+					{
+						vzorPera = zálohaVzoru;
+						throw new GRobotException("Neplatný vzor čiary pera.",
+							"invalidDash", t);
+					}
+				}
+
+				/**
+				 * <p>Vráti aktuálny vzor čiary pera. Pozri metódu {@link 
+				 * #vzorPera(double, double...)
+				 * vzorPera}{@code (začiatokVzoru, pokračovanieVzoru)}.</p>
+				 * 
+				 * @return aktuálny vzor čiary pera
+				 * 
+				 * @see #vzorČiary(double, double...)
+				 * @see #vzorPera(double, double...)
+				 * @see #vzorČiary()
+				 * @see #posunVzoruČiary(double)
+				 * @see #posunVzoruPera(double)
+				 * @see #posunVzoruČiary()
+				 * @see #posunVzoruPera()
+				 * 
+				 * @see #predvolenýVzorČiary()
+				 * @see #predvolenýVzorPera()
+				 * 
+				 * @see #parametreVzoruČiaryDoma()
+				 * 
+				 * @see #hrúbkaPera(double)
+				 * @see #hrúbkaČiary(double)
+				 * @see #čiara(Stroke)
+				 */
+				public double[] vzorPera()
+				{
+					if (null == vzorPera) return null;
+
+					int n = vzorPera.length;
+					double vzor[] = new double[n];
+
+					for (int i = 0; i < n; ++i)
+						vzor[i] = vzorPera[i];
+
+					return vzor;
+				}
+
+
+				/**
+				 * <p>Upraví posun vzoru čiary pera. Pozri aj: {@link 
+				 * #vzorPera(double, double...) vzorPera}. Posun (alebo
+				 * fáza) je nezáporná hodnota, ktorá posúva začiatok vzoru –
+				 * čiarkovania čiary. Najlepšie to vyjadrujú nasledujúce
+				 * obrázky:</p>
+				 * 
+				 * <table class="centered">
+				 * <tr><td><image>zmena-fazy-ciary-1.png<alt/>Ilustrácia k fáze
+				 * čiary.</image></td>
+				 * <td><image>zmena-fazy-ciary-2.png<alt/>Ilustrácia k fáze
+				 * čiary.</image></td></tr>
+				 * <tr><td colspan="2"><p class="image">Zobrazenie rôznych fáz
+				 * čiar rovnakého vzoru. Horné čiary majú vždy nulový posun,
+				 * ktorý plynule rastie po jednotkách smerom
+				 * nadol.</p></td></tr></table>
+				 * 
+				 * @param posun určuje posun (fázu) vzoru (čiarkovania) čiary
+				 *     od začiatku kreslenej krivky; nezáporná hodnota
+				 * 
+				 * @see #vzorČiary(double, double...)
+				 * @see #vzorPera(double, double...)
+				 * @see #posunVzoruČiary(double)
+				 * @see #posunVzoruČiary()
+				 * @see #posunVzoruPera()
+				 * 
+				 * @see #predvolenýVzorČiary()
+				 * @see #predvolenýVzorPera()
+				 * 
+				 * @see #parametreVzoruPeraDoma(double, double...)
+				 * 
+				 * @see #hrúbkaPera(double)
+				 * @see #hrúbkaČiary(double)
+				 * @see #čiara(Stroke)
+				 */
+				public void posunVzoruPera(double posun)
+				{
+					float zálohaPosunu = posunVzoruPera;
+					try
+					{
+						posunVzoruPera = (float)posun;
+						nastavPero();
+					}
+					catch (Throwable t)
+					{
+						posunVzoruPera = zálohaPosunu;
+						throw new GRobotException(
+							"Neplatný posun vzoru čiary pera.",
+							"invalidDashPhase", t);
+					}
+				}
+
+
+				/**
+				 * <p>Vráti aktuálny posun vzoru čiary pera. Pozri metódu
+				 * {@link #posunVzoruPera(double)
+				 * posunVzoruPera}{@code (posun)}.</p>
+				 * 
+				 * @return aktuálny posun vzoru čiary pera
+				 * 
+				 * @see #vzorČiary(double, double...)
+				 * @see #vzorPera(double, double...)
+				 * @see #vzorČiary()
+				 * @see #vzorPera()
+				 * @see #posunVzoruČiary(double)
+				 * @see #posunVzoruPera(double)
+				 * @see #posunVzoruČiary()
+				 * 
+				 * @see #predvolenýVzorČiary()
+				 * @see #predvolenýVzorPera()
+				 * 
+				 * @see #parametreVzoruČiaryDoma()
+				 * 
+				 * @see #hrúbkaPera(double)
+				 * @see #hrúbkaČiary(double)
+				 * @see #čiara(Stroke)
+				 */
+				public double posunVzoruPera() { return posunVzoruPera; }
+
+
+				/**
+				 * <p>Zistí, aké parametre majú byť nastavené vzoru čiary pera
+				 * pri prechode robota {@linkplain #domov() domov.} Ak robot
+				 * pri prechode domov vzor čiary nemení, tak je vrátená
+				 * hodnota {@code valnull}. Ak mení čiaru na plnú, tak je
+				 * vrátené prázdne pole. Ak mení vzor čiary podľa určitého
+				 * zadania, tak je vrátene pole obsahujúce posun vzoru v prvom
+				 * prvku (s indexom {@code num0}) a charakter vzoru
+				 * (čiarkovanie) v ostatných prvkoch poľa.</p>
+
+				 * <p class="caution"><b>Pozor!</b> Všimnite si, že prvý prvok
+				 * poľa pri použití určitého vzoru označuje posun – fázu
+				 * vzoru.</p>
+
+				 * @return parametre vzoru čiary pera pri prechode robota
+				 *     {@linkplain #domov() domov} uložené v poli prvkov typu
+				 *     {@code typedouble}
+				 * 
+				 * @see #parametreVzoruPeraDoma(double, double...)
+				 * @see #zachovajVzorPeraDoma()
+				 * @see #hrúbkaPeraDoma()
+				 */
+				public double[] parametreVzoruPeraDoma()
+				{
+					if (null == vzorPeraDoma) return null;
+					if (plnáČiaraPeraDoma == vzorPeraDoma)
+						return prázdnyVzorPera;
+
+					int n = vzorPeraDoma.length;
+					double vzorDoma[] = new double[1 + n];
+					vzorDoma[0] = posunVzoruPeraDoma;
+
+					for (int i = 0; i < n; ++i)
+						vzorDoma[i + 1] = vzorPeraDoma[i];
+
+					return vzorDoma;
+				}
+
+				/**
+				 * <p>Nastaví parametre vzoru čiary pera použité pri prechode
+				 * robota {@linkplain #domov() domov.}</p>
+				 * 
+				 * <p>Prvým parametrom je posun vzoru, ktorý môže byť aj
+				 * nulový.</p>
+				 * 
+				 * <p>Smerodajnejšími sú ďalšie parametre (zoznam), ktoré
+				 * určujú charakter vzoru – pozri aj {@link #vzorPera(double,
+				 * double...) vzorPera}. Ak nie je ani jeden z týchto
+				 * parametrov nastavený, znamená to, že robot si má pri
+				 * prechode {@linkplain #domov() domov} nastaviť plnú čiaru.
+				 * V takom prípade je hodnota posunu irelevantná.</p>
+				 * 
+				 * <p>V opačnom prípade určujú parametre charakter vzoru
+				 * (čiarkovanie) a posun sa do úvahy berie.</p>
+				 * 
+				 * <p>Ak chceme tieto parametre zrušiť a nastaviť robot tak,
+				 * aby pri prechode {@linkplain #domov() domov} vzor čiary
+				 * nemenil, tak použijeme metódu {@link #zachovajVzorPeraDoma()
+				 * zachovajVzorPeraDoma}.</p>
+				 * 
+				 * @param posunVzoru posun vzoru čiary pera nastavený pri
+				 *     prechode robota {@linkplain #domov() domov}
+				 * @param charakterVzoru charakter vzoru čiary pera nastavený
+				 *     pri prechode robota {@linkplain #domov() domov}
+				 * 
+				 * @see #parametreVzoruPeraDoma()
+				 * @see #zachovajVzorPeraDoma()
+				 * @see #hrúbkaPeraDoma(Double)
+				 */
+				public void parametreVzoruPeraDoma(double posunVzoru,
+					double... charakterVzoru)
+				{
+					posunVzoruPeraDoma = (float)posunVzoru;
+					int n = charakterVzoru.length;
+
+					if (0 == n)
+					{
+						vzorPeraDoma = plnáČiaraPeraDoma;
+						return;
+					}
+
+					vzorPeraDoma = new float[n];
+					for (int i = 0; i < n; ++i)
+						vzorPeraDoma[i] = (float)charakterVzoru[i];
+				}
+
+
+				/**
+				 * <p>Zruší zmenu parametrov čiarkovania, vrátane jeho posunu,
+				 * pri prechode robota {@linkplain #domov() domov.}</p>
+				 * 
+				 * @see #parametreVzoruPeraDoma()
+				 * @see #parametreVzoruPeraDoma(double, double...)
+				 * @see #zachovajHrúbkuPeraDoma()
+				 */
+				public void zachovajVzorPeraDoma()
+				{
+					vzorPeraDoma = null;
+					posunVzoruPeraDoma = 0;
+				}
+
+
+				// Vzor a posun – koniec.
 
 
 				/**
@@ -11750,6 +12782,15 @@ Toto bolo presunuté na úvodnú stránku:
 						použiKruhovýNáter = súbor.čítajVlastnosť(
 							"použiKruhovýNáter", použiKruhovýNáter);
 
+						posunVzoruPera = súbor.čítajVlastnosť(
+							"posunVzoruPera", posunVzoruPera);
+						{
+							float[] čítajVzor = null;
+							čítajVzor = súbor.čítajVlastnosť(
+								"vzorPera", čítajVzor);
+							if (null != čítajVzor && čítajVzor.length > 0)
+								vzorPera = čítajVzor; else vzorPera = null;
+						}
 						hrúbkaČiary(súbor.čítajVlastnosť("hrúbkaPera",
 							polomerPera));
 
@@ -12012,6 +13053,10 @@ Toto bolo presunuté na úvodnú stránku:
 						zrušCieľovúFarbuDoma = súbor.čítajVlastnosť(
 							"zrušCieľovúFarbu", zrušCieľovúFarbuDoma);
 
+						posunVzoruPeraDoma = súbor.čítajVlastnosť(
+							"posunVzoruPera", posunVzoruPeraDoma);
+						vzorPeraDoma = súbor.čítajVlastnosť(
+							"vzorPera", (float[])null);
 						polomerPeraDoma = súbor.čítajVlastnosť("hrúbkaPera",
 							polomerPeraDoma);
 
@@ -12189,6 +13234,8 @@ Toto bolo presunuté na úvodnú stránku:
 						súbor.zapíšVlastnosť("použiKruhovýNáter",
 							použiKruhovýNáter);
 						súbor.zapíšVlastnosť("hrúbkaPera", polomerPera);
+						súbor.zapíšVlastnosť("vzorPera", vzorPera);
+						súbor.zapíšVlastnosť("posunVzoruPera", posunVzoruPera);
 
 						súbor.zapíšVlastnosť("peroPoložené", peroPoložené);
 						súbor.zapíšVlastnosť("viditeľnosť", viditeľný);
@@ -12432,6 +13479,8 @@ Toto bolo presunuté na úvodnú stránku:
 							zrušCieľovúFarbuDoma);
 
 						súbor.zapíšVlastnosť("hrúbkaPera", polomerPeraDoma);
+						súbor.zapíšVlastnosť("vzorPera", vzorPeraDoma);
+						súbor.zapíšVlastnosť("posunVzoruPera", posunVzoruPeraDoma);
 
 						súbor.zapíšVlastnosť("peroPoložené", peroPoloženéDoma);
 						súbor.zapíšVlastnosť("viditeľnosť", viditeľnýDoma);
@@ -16819,6 +17868,21 @@ Toto bolo presunuté na úvodnú stránku:
 				 * prijíma implementáciu rozhrania {@link Poloha Poloha}
 				 * (napríklad {@link Bod Bod}).</p>
 				 * 
+				 * <p class="warning"><b>Varovanie!</b> Počas pridávania metódy
+				 * {@link #vajce(double, String...) vajce} bolo zistené
+				 * nevysvetliteľné správanie: S použitím tenjo metódy ({@code 
+				 * currchoďNaPoOblúku}{@code (poloha)}) nefungoval mechanizmus
+				 * vytvárania {@linkplain #začniCestu() cesty} na rozdiel od
+				 * použitia metódy {@link #choďNaPoOblúku(double, double)
+				 * choďNaPoOblúku}{@code (double, double)}, pričom táto metóda
+				 * volá tú druhú, takže vo výsledku by nemal byť žiadny rozdiel!
+				 * Ani hlboké testovanie s využitím trasovania cez zásobník
+				 * volaní neodhalil žiadne podozrivé „odbočky“, ktoré by toto
+				 * nepochopiteľné správanie pomohli vysvetliť. To isté volanie
+				 * zvonka tejto metódy funguje, zvnútra spôsobuje problémy.
+				 * Záhada. V tom čase bola aktuálna verzia JVM 1.8.0_331. Možno
+				 * budúce verzie túto záhadu odstránia.</p>
+				 * 
 				 * @param poloha objekt určujúci súradnice cieľového bodu
 				 * 
 				 * @throws GRobotException ak je robot obrátený opačným smerom
@@ -16831,7 +17895,12 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #skočNaPoOblúku(Poloha)
 				 */
 				public void choďNaPoOblúku(Poloha poloha)
-				{ choďNaPoOblúku(poloha.polohaX(), poloha.polohaY()); }
+				{
+					// Nevysvetliteľné čudo‼ Bez akejkoľvek príčiny toto
+					// volanie nemá rovanký efekt ako rovnaké volanie zvonka
+					// tejto metódy:
+					choďNaPoOblúku(poloha.polohaX(), poloha.polohaY());
+				}
 
 				/** <p><a class="alias"></a> Alias pre {@link #choďNaPoOblúku(Poloha) choďNaPoOblúku}.</p> */
 				public void chodNaPoObluku(Poloha poloha)
@@ -29024,6 +30093,414 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 			/**
+			 * <p>Nakreslí vajce. Táto metóda sa významne odlišuje od ostatných
+			 * metód, ktoré slúžia na kreslenie tvarov. Nemá žiadne verzie.
+			 * Nie sú k nej definované metódy slúžiace na overovanie
+			 * prítomnosti bodov (alebo myši) v rámci tvaru. Negeneruje tvar
+			 * na ďalšie použitie. Neberie do úvahy vypĺňanie tvarov. Všetko
+			 * to súvisí s jedným faktom: Metóda len uzatvára nasledujúci
+			 * algoritmus kreslenia vajíčka. Algoritmus pochádza z <a
+			 * href="https://www.geogebra.org/m/ssr3mvgu?fbclid=IwAR207QQ84dvafxi1OgyDoaNqcGPMuW7GRrKl_t-SiDDMeo6H0pL0Ti3TovY"
+			 * target="_blank">tohto zdroja.</a></p>
+			 * 
+			 * <p>Na lepšie pochopenie si uveďme najskôr schému kreslenia:</p>
+			 * 
+			 * <p><image>schema-vajca.svg<alt/>Schéma k algoritmu kreslenia
+			 * vajca.<onerror>schema-vajca.png</onerror></image>Ilustračná
+			 * schéma k algoritmu kreslenia vajca.</p>
+			 * 
+			 * <p> </p>
+			 * 
+			 * <p><b>Algoritmus metódy vyzerá zhruba takto:</b></p>
+			 * 
+			 * <pre CLASS="example">
+				{@code comm// Deklarácie bodov:}
+				{@link Bod Bod} S, A, B, C, D, E;
+
+				{@code comm// Zapamätanie si počiatočnej polohy a uhla (do zálohy, aby sme sa}
+				{@code comm// po skončení kreslenia vedeli vrátiť do pôvodného stavu):}
+				S = {@link #poloha() poloha}();
+				{@code typedouble} u = {@link #uhol() uhol}();
+
+				{@code comm// Kreslenie v „try“ a vrátenie zálohy vo „finally“ (to je „trik“,}
+				{@code comm// ktorý sa používa v takýchto prípadoch, lebo „finally“ sa vykoná}
+				{@code comm// vždy, aj keby počas vykonávania bloku „try“ nastala nejaká chyba):}
+				{@code kwdtry}
+				{
+					{@code comm// Body A, B, C vieme zistiť veľmi ľahko:}
+					{@link #skoč(double) skoč}(polomer);
+					C = {@link #poloha() poloha}();
+
+					{@link #poloha(Poloha) poloha}(S);
+					{@link #preskočVpravo(double) preskočVpravo}(polomer);
+					B = {@link #poloha() poloha}();
+
+					{@link #poloha(Poloha) poloha}(S);
+					{@link #preskočVľavo(double) preskočVľavo}(polomer);
+					A = {@link #poloha() poloha}();
+
+					{@link Bod Bod}[]
+
+					{@code comm// Vypočítame priesečníky priamky |AC| a kružnice {A; 2r} – sú dva:}
+					P = {@link Svet Svet}.{@link Svet#priesečníkyPriamkyAKružnice(Poloha, Poloha, Poloha, double) priesečníkyPriamkyAKružnice}(A, C, A, {@code num2} * polomer);
+
+					{@code comm// Z nich jeden je bod E – je to ten, ktorý je bližšie k bodu C:}
+					{@code kwdif} ({@link Svet Svet}.{@link Svet#vzdialenosť(Poloha, Poloha) vzdialenosť}(C, P[{@code num0}]) &lt;
+						{@link Svet Svet}.{@link Svet#vzdialenosť(Poloha, Poloha) vzdialenosť}(C, P[P.length &#45; {@code num1}]))
+						E = P[{@code num0}]; {@code kwdelse} E = P[P.length &#45; {@code num1}];
+
+					{@code comm// Podobne nájdeme bod D:}
+					P = {@link Svet Svet}.{@link Svet#priesečníkyPriamkyAKružnice(Poloha, Poloha, Poloha, double) priesečníkyPriamkyAKružnice}(B, C, B, {@code num2} * polomer);
+
+					{@code kwdif} ({@link Svet Svet}.{@link Svet#vzdialenosť(Poloha, Poloha) vzdialenosť}(C, P[{@code num0}]) &lt;
+						{@link Svet Svet}.{@link Svet#vzdialenosť(Poloha, Poloha) vzdialenosť}(C, P[P.length &#45; {@code num1}]))
+						D = P[{@code num0}]; {@code kwdelse} D = P[P.length &#45; {@code num1}];
+
+					{@code comm// A nakoniec nakreslíme celé vajce (zložené z oblúkov):}
+
+					{@link GRobot#choďNaPoOblúku(double, double) choďNaPoOblúku}(D.{@link Bod#polohaX() polohaX}(), D.{@link Bod#polohaY() polohaY}());
+					{@link GRobot#choďNaPoOblúku(double, double) choďNaPoOblúku}(E.{@link Bod#polohaX() polohaX}(), E.{@link Bod#polohaY() polohaY}());
+					{@link GRobot#choďNaPoOblúku(double, double) choďNaPoOblúku}(B.{@link Bod#polohaX() polohaX}(), B.{@link Bod#polohaY() polohaY}());
+					{@link GRobot#choďNaPoOblúku(double, double) choďNaPoOblúku}(A.{@link Bod#polohaX() polohaX}(), A.{@link Bod#polohaY() polohaY}());
+
+					{@code comm// Poznámka: Pozri varovanie v opise metódy:}
+					{@code comm// }{@link #choďNaPoOblúku(Poloha) choďNaPoOblúku(poloha)}
+				}
+				{@code kwdfinally}
+				{
+					{@code comm// Vrátenie zálohy:}
+					{@link #skočNa(Poloha) skočNa}(S);
+					{@link #uhol(double) uhol}(u);
+				}
+				</pre>
+			 * 
+			 * <!-- (toto už neplatí) p>Je to presná kópia algoritmu. Všimnite si, ktoré metódy
+			 * sú v ňom použité – podľa toho sa dá prispôsobiť využitie tejto
+			 * metódy, napríklad: Na vyplnenie vajca treba zdvihnúť pero,
+			 * začať cestu, nakresliť vajce a prevziať a vyplniť alebo priamo
+			 * vyplniť cestu.</p -->
+			 * 
+			 * <p>Metóda môže prijať nepovinný zoznam reťazcových parametrov,
+			 * s nasledujúcim významom:</p>
+			 *
+			 * <ul><li>{@code srg"zaznamenajCestu"}, {@code srg"cesta"},
+			 * {@code srg"cestu"} – zapne zaznamenávanie cesty pre záverečnú
+			 * štvoricu príkazov {@link #choďNaPoOblúku(double, double)
+			 * choďNaPoOblúku} (pozri kód vyššie). Tento príkaz zároveň prikáže
+			 * dočasne zdvihnúť pero (počas vykonávania tejto metódy), aby sa
+			 * vajce nenakreslilo. Tvar bude uložený v {@linkplain #cesta()
+			 * ceste}. Po skončení vykonávania metódy je obnovená pôvodná
+			 * poloha pera.</li>
+			 * <li>{@code srg"nezaznamenajCestu"}, {@code srg"necesta"},
+			 * {@code srg"necestu"} – vypne zaznamenávanie cesty zapnuté podľa
+			 * predchádzajúceho parametra, ale nezruší zdvihnutie pera.</li>
+			 * <li>{@code srg"zdvihniPero"}, {@code srg"nepero"} – dočasne
+			 * zdvihne pero – počas vykonávania tejto metódy. Po skončení
+			 * vykonávania metódy je obnovená pôvodná poloha pera.</li>
+			 * <li>{@code srg"nezdvíhajpero"}, {@code srg"nezdvihnipero"},
+			 * {@code srg"pero"} – eliminuje akciu dočasného zdvíhania pera.
+			 * Toto má význam vykonať najmä po parametri {@code srg"cesta"}
+			 * (alebo jeho alternatívy), ktorý zároveň prikazuje dočasne
+			 * zdvihnúť pero. Takže kombináciou parametrov: {@code srg"cesta"}
+			 * a {@code srg"pero"} (v uvedenom poradí) sa dá docieliť súčasné
+			 * zaznamenanie cesty aj nakreslenie vajca.</li></ul>
+			 * 
+			 * <p>Parametre sú vyhodnocované postupne, to znamená, že tie
+			 * neskoršie uvedené môžu zrušiť alebo čiastočne zrušiť akcie tých
+			 * skôr uvedených. Medzery, spojovníky a podčiarkovníky sú
+			 * z parametrov pred ich vyhodnotením vymazané. Na veľkosti písmen
+			 * nezáleží.</p>
+			 * 
+			 * <p> </p>
+			 * 
+			 * <p><b>Mimochodom, vytvorenie schémy vyššie bolo vykonané
+			 * nasledujúcim spôsobom (ktorý je zároveň dobrou ukážkou použitia
+			 * {@linkplain SVGPodpora SVG podpory}):</b></p>
+			 * 
+			 * <pre CLASS="example">
+				{@code kwdimport} java.awt.{@link BasicStroke BasicStroke};
+				{@code kwdimport} java.awt.{@link Shape Shape};
+
+				{@code kwdimport} knižnica.*;
+
+				{@code kwdpublic} {@code typeclass} NákresKVajcu {@code kwdextends} {@link GRobot GRobot}
+				{
+					{@code kwdprivate} {@code kwdfinal} {@code kwdstatic} {@link BasicStroke BasicStroke} čiaraNákresu = {@code kwdnew} {@link BasicStroke#BasicStroke(float, int, int, float, float[], float) BasicStroke}(
+						{@code num0.65f}, {@link BasicStroke BasicStroke}.{@link BasicStroke#CAP_ROUND CAP_ROUND}, {@link BasicStroke BasicStroke}.{@link BasicStroke#JOIN_ROUND JOIN_ROUND}, {@code num1.0f},
+						{@code kwdnew} {@code typefloat}[]{{@code num5.0f}, {@code num5.0f}}, {@code num0.0f});
+
+					{@code kwdprivate} NákresKVajcu()
+					{
+						{@code valsuper}({@code num800}, {@code num540});
+
+						{@link #skry() skry}();
+						{@link #písmo(Font) písmo}({@code kwdnew} {@link Písmo Písmo}({@code srg"Arial"}, {@link Písmo Písmo}.{@link Písmo#NORMÁLNE NORMÁLNE}, {@code num40}));
+						nákresKVajcu({@code num130});
+					}
+
+
+					{@code comm// Prekrytia metód využitých pri kreslení:}
+
+					{@code kwd@}Override {@code kwdpublic} {@link Shape Shape} kružnica({@code typedouble} r)
+					{
+						{@link Shape Shape} s;
+						{@link #svgPodpora svgPodpora}.{@link SVGPodpora#pridaj(Shape, GRobot, String...) pridaj}(s = {@code valsuper}.{@link #kružnica(double) kružnica}(r), {@code valthis});
+						{@code kwdreturn} s;
+					}
+
+					{@code kwd@}Override {@code kwdpublic} {@code typevoid} choďNa({@link Poloha Poloha} p)
+					{
+						{@code valsuper}.{@link #choďNa(Poloha) choďNa}(p);
+						{@link #svgPodpora svgPodpora}.{@link SVGPodpora#pridajÚsečku(GRobot, String...) pridajÚsečku}({@code valthis});
+					}
+
+					{@code kwd@}Override {@code kwdpublic} {@code typevoid} choďNaPoOblúku({@link Poloha Poloha} p)
+					{
+						{@link #začniCestu() začniCestu}();
+						{@code valsuper}.{@link GRobot#choďNaPoOblúku(Poloha) choďNaPoOblúku}(p);
+						{@link #svgPodpora svgPodpora}.{@link SVGPodpora#pridaj(Shape, GRobot, String...) pridaj}({@link #cesta() cesta}(), {@code valthis});
+					}
+
+					{@code kwd@}Override {@code kwdpublic} {@link Shape Shape} kruh({@code typedouble} r)
+					{
+						{@link Shape Shape} s;
+						{@link #svgPodpora svgPodpora}.{@link SVGPodpora#pridaj(Shape, GRobot, String...) pridaj}(s = {@code valsuper}.{@link #kruh(double) kruh}(r), {@code valthis});
+						{@code kwdreturn} s;
+					}
+
+					{@code kwd@}Override {@code kwdpublic} {@link Shape Shape} text({@link String String} s)
+					{
+						{@link #svgPodpora svgPodpora}.{@link SVGPodpora#pridajText(String, GRobot, String...) pridajText}(s, {@code valthis});
+						{@code kwdreturn} {@code valsuper}.{@link #text(String) text}(s);
+					}
+
+
+					{@code kwdpublic} {@code typevoid} nákresKVajcu({@code typedouble} polomer)
+					{
+						{@code comm// Deklarácie a záloha (presne ako v príklade vyššie):}
+
+						{@link Bod Bod} S, A, B, C, D, E;
+
+						S = {@link #poloha() poloha}();
+						{@code typedouble} u = {@link #uhol() uhol}();
+
+						{@code comm// Vodiace čiary a kružnice nákresu budú nakreslené šedou}
+						{@code comm// čiarkovanou čiarou:}
+
+						{@link #farba(Color) farba}({@link Farebnosť#šedá šedá});
+						{@link #čiara(Stroke) čiara}(čiaraNákresu);
+
+						{@code comm// || Poznámka: Všetky kresliace metódy použité nižšie (čiže   ||}
+						{@code comm// || podľa poradia výskytu: kružnica, choďNa, choďNaPoOblúku, ||}
+						{@code comm// || kruh aj text) sú vyššie prekryté tak, aby zároveň s tým  ||}
+						{@code comm// || čo kreslia ukladali prislúchajúce tvary do inštancie     ||}
+						{@code comm// || SVG podpory.                                             ||}
+
+						{@code comm// Kružnica patriaca k zadanému polomeru vajca}
+						{@code comm// (so stredom S a priemerom |AB|):}
+						{@link #kružnica(double) kružnica}(polomer);
+
+						{@code kwdtry}
+						{
+							{@code comm// Výpočty bodov vajca (zhodné s kódom algoritmu; vyššie):}
+
+							{@link #skoč(double) skoč}(polomer);
+							C = {@link #poloha() poloha}();
+
+							{@link #poloha(Poloha) poloha}(S);
+							{@link #preskočVpravo(double) preskočVpravo}(polomer);
+							B = {@link #poloha() poloha}();
+
+							{@link #poloha(Poloha) poloha}(S);
+							{@link #preskočVľavo(double) preskočVľavo}(polomer);
+							A = {@link #poloha() poloha}();
+
+							{@link Bod Bod}[]
+
+							P = {@link Svet Svet}.{@link Svet#priesečníkyPriamkyAKružnice(Poloha, Poloha, Poloha, double) priesečníkyPriamkyAKružnice}(A, C, A, {@code num2} * polomer);
+
+							{@code kwdif} ({@link Svet Svet}.{@link Svet#vzdialenosť(Poloha, Poloha) vzdialenosť}(C, P[{@code num0}]) &lt;
+								{@link Svet Svet}.{@link Svet#vzdialenosť(Poloha, Poloha) vzdialenosť}(C, P[P.length &#45; {@code num1}]))
+								E = P[{@code num0}]; {@code kwdelse} E = P[P.length &#45; {@code num1}];
+
+							P = {@link Svet Svet}.{@link Svet#priesečníkyPriamkyAKružnice(Poloha, Poloha, Poloha, double) priesečníkyPriamkyAKružnice}(B, C, B, {@code num2} * polomer);
+
+							{@code kwdif} ({@link Svet Svet}.{@link Svet#vzdialenosť(Poloha, Poloha) vzdialenosť}(C, P[{@code num0}]) &lt;
+								{@link Svet Svet}.{@link Svet#vzdialenosť(Poloha, Poloha) vzdialenosť}(C, P[P.length &#45; {@code num1}]))
+								D = P[{@code num0}]; {@code kwdelse} D = P[P.length &#45; {@code num1}];
+
+
+							{@code comm// Úsečky nákresu (jedným ťahom):}
+
+							{@link #skočNa(Poloha) skočNa}(E);
+							{@link #choďNa(Poloha) choďNa}(A);
+							{@link #kružnica(double) kružnica}({@code num2} * polomer); {@code comm// (ľavá kružnica s polomerom |AB|)}
+							{@link #choďNa(Poloha) choďNa}(B);
+							{@link #kružnica(double) kružnica}({@code num2} * polomer); {@code comm// (pravá kružnica s polomerom |AB|)}
+							{@link #choďNa(Poloha) choďNa}(D);
+
+							{@code comm// Menšia kružnica so stredom v bode C:}
+
+							{@link #skočNa(Poloha) skočNa}(C);
+							{@link #kružnica(double) kružnica}({@link Svet Svet}.{@link Svet#vzdialenosť(Poloha, Poloha) vzdialenosť}(C, D));
+
+							{@code comm// Farebné zvýraznenie segmentov vajca:}
+
+							{@link #hrúbkaČiary(double) hrúbkaČiary}({@code num3.25});
+							{@link #skočNa(Poloha) skočNa}(A);
+
+							{@link #farba(Color) farba}({@link Farebnosť#svetlooranžová svetlooranžová}); {@link GRobot#choďNaPoOblúku(Poloha) choďNaPoOblúku}(D);
+							{@link #farba(Color) farba}({@link Farebnosť#svetlomodrá svetlomodrá}); {@link GRobot#choďNaPoOblúku(Poloha) choďNaPoOblúku}(E);
+							{@link #farba(Color) farba}({@link Farebnosť#svetlooranžová svetlooranžová}); {@link GRobot#choďNaPoOblúku(Poloha) choďNaPoOblúku}(B);
+							{@link #farba(Color) farba}({@link Farebnosť#svetločervená svetločervená}); {@link GRobot#choďNaPoOblúku(Poloha) choďNaPoOblúku}(A);
+
+							{@code comm// Popisy bodov a ich vyznačenie čiernymi bodkami:}
+
+							{@link #farba(Color) farba}({@link Farebnosť#čierna čierna});
+
+							{@link #skočNa(Poloha) skočNa}(A); {@link #kruh(double) kruh}({@code num3}); {@link #preskočVľavo(double) preskočVľavo}({@code num40}); {@link #text(String) text}({@code srg"A"});
+
+							{@link #skočNa(Poloha) skočNa}(B); {@link #kruh(double) kruh}({@code num3}); {@link #preskočVpravo(double) preskočVpravo}({@code num40}); {@link #text(String) text}({@code srg"B"});
+
+							{@link #skočNa(Poloha) skočNa}(C); {@link #kruh(double) kruh}({@code num3}); {@link #skoč(double) skoč}({@code num30}); {@link #text(String) text}({@code srg"C"});
+
+							{@link #skočNa(Poloha) skočNa}(D); {@link #kruh(double) kruh}({@code num3}); {@link #preskoč(double, double) preskoč}(-{@code num40}, {@code num10}); {@link #text(String) text}({@code srg"D"});
+
+							{@link #skočNa(Poloha) skočNa}(E); {@link #kruh(double) kruh}({@code num3}); {@link #preskoč(double, double) preskoč}({@code num40}, {@code num10}); {@link #text(String) text}({@code srg"E"});
+
+							{@link #skočNa(Poloha) skočNa}(S); {@link #kruh(double) kruh}({@code num3}); {@link #odskoč(double) odskoč}({@code num30}); {@link #text(String) text}({@code srg"S"});
+						}
+						{@code kwdfinally}
+						{
+							{@link #skočNa(Poloha) skočNa}(S); {@link #uhol(double) uhol}(u); {@code comm// (vrátenie zálohy)}
+
+							{@code comm// Uloženie do súboru:}
+							{@link #svgPodpora svgPodpora}.{@link SVGPodpora#zapíš(String, String, boolean) zapíš}({@code srg"schema-vajca.svg"}, {@code valnull}, {@code valtrue});
+						}
+					}
+
+
+					{@code kwdpublic} {@code kwdstatic} {@code typevoid} main(String[] args)
+					{
+						{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"NákresKVajcu.cfg"});
+						{@code kwdnew} NákresKVajcu();
+					}
+				}
+				</pre>
+			 * 
+			 * <p> </p>
+			 * 
+			 * @param polomer polomer určujúci veľkosť vajíčka; ide o polomer
+			 *     kružnice so stredom S – pozri schému vyššie
+			 * @param parametre nepovinný zoznam parametrov (podrobnosti sú
+			 *     v rámci opisu; vyššie)
+			 */
+			public void vajce(double polomer, String... parametre)
+			{
+				boolean zaznamenajCestu = false;
+				boolean zdvihniPero = false;
+
+				for (String parameter : parametre)
+				{
+					if (null == parameter) continue;
+					parameter = parameter.trim().replaceAll("[-_  \t]+",
+						"").toLowerCase();
+					if (parameter.isEmpty()) continue;
+
+					switch (parameter)
+					{
+					case "cesta": case "cestu":
+					case "zaznamenajcestu":
+						zaznamenajCestu = true;
+						zdvihniPero = true;
+						break;
+
+					case "necesta": case "necestu":
+					case "nezaznamenajcestu":
+						zaznamenajCestu = false;
+						break;
+
+					case "zdvihnipero": case "nepero":
+						zdvihniPero = true;
+						break;
+
+					case "nezdvíhajpero": case "nezdvihajpero":
+					case "nezdvihnipero": case "pero":
+						zdvihniPero = false;
+						break;
+					}
+				}
+
+				Bod S, A, B, C, D, E; // (deklarácie bodov)
+
+				// Vytvorenie záloh:
+				boolean nekresli = Svet.nekresli;
+				S = new Bod(aktuálneX, aktuálneY);
+				double au = aktuálnyUhol;
+				double pu = poslednýUhol;
+				boolean pp = peroPoložené;
+				double px = poslednéX;
+				double py = poslednéY;
+
+				if (zdvihniPero) peroPoložené = false;
+				Svet.nekresli = true;
+
+				// (Podrobnejšie komentáre sú v opise tejto metódy.)
+				try
+				{
+					skoč(polomer);
+					C = new Bod(aktuálneX, aktuálneY);
+
+					poloha(S);
+					preskočVpravo(polomer);
+					B = new Bod(aktuálneX, aktuálneY);
+
+					poloha(S);
+					preskočVľavo(polomer);
+					A = new Bod(aktuálneX, aktuálneY);
+
+					Bod[]
+
+					P = Svet.priesečníkyPriamkyAKružnice(A, C, A, 2 * polomer);
+
+					if (Svet.vzdialenosť(C, P[0]) <
+						Svet.vzdialenosť(C, P[P.length - 1]))
+						E = P[0]; else E = P[P.length - 1];
+
+					P = Svet.priesečníkyPriamkyAKružnice(B, C, B, 2 * polomer);
+
+					if (Svet.vzdialenosť(C, P[0]) <
+						Svet.vzdialenosť(C, P[P.length - 1]))
+						D = P[0]; else D = P[P.length - 1];
+
+
+					if (zaznamenajCestu) začniCestu();
+					choďNaPoOblúku(D.polohaX(), D.polohaY());
+					choďNaPoOblúku(E.polohaX(), E.polohaY());
+					choďNaPoOblúku(B.polohaX(), B.polohaY());
+					choďNaPoOblúku(A.polohaX(), A.polohaY());
+					if (zaznamenajCestu) uzavriCestu();
+				}
+				finally
+				{
+					// Vrátenie záloh:
+					aktuálneX = S.x;
+					aktuálneY = S.y;
+
+					poslednéX = px;
+					poslednéY = py;
+
+					aktuálnyUhol = au;
+					poslednýUhol = pu;
+					peroPoložené = pp;
+
+					Svet.nekresli = nekresli;
+					Svet.automatickéPrekreslenie();
+				}
+			}
+
+
+			/**
 			 * <p>Táto metóda buď nakreslí, alebo vráti tvar trojzubca, ktorý
 			 * je {@linkplain #predvolenýTvar(boolean) predvoleným tvarom
 			 * grafického robota}. Metóda má zvláštne postavenie. Má jednu
@@ -29073,7 +30550,7 @@ Toto bolo presunuté na úvodnú stránku:
 			public Shape trojzubec()
 			{
 				prepočítajPolygón();
-				poslednýTypTvaru = TypTvaru.NIČ;
+				poslednýTypTvaru = vyplnený ? TypTvaru.VÝPLŇ : TypTvaru.OBRYS;
 
 				if (!kresliTvary) return new Polygon(fx, fy, 7);
 
@@ -29135,7 +30612,7 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				if (starý) starýPolygón();
 				else prepočítajPolygón();
-				poslednýTypTvaru = TypTvaru.NIČ;
+				poslednýTypTvaru = vyplnený ? TypTvaru.VÝPLŇ : TypTvaru.OBRYS;
 
 				if (!kresliTvary) return new Polygon(fx, fy, 7);
 
@@ -29188,9 +30665,9 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public Shape kresliTvar(Shape tvar)
 			{
+				poslednýTypTvaru = TypTvaru.OBRYS;
 				if (kresliTvary)
 				{
-					poslednýTypTvaru = TypTvaru.OBRYS;
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
@@ -29224,9 +30701,9 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public Shape vyplňTvar(Shape tvar)
 			{
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 				if (kresliTvary)
 				{
-					poslednýTypTvaru = TypTvaru.VÝPLŇ;
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
@@ -29286,6 +30763,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public Shape vyplňTvar(Shape tvar, String súbor)
 			{
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 				if (kresliTvary)
 				{
 					BufferedImage obrázok = Obrázok.súborNaObrázok(súbor);
@@ -29295,8 +30773,6 @@ Toto bolo presunuté na úvodnú stránku:
 							Svet.posuňVýplňX, Svet.posuňVýplňY,
 							obrázok.getWidth()  * Svet.mierkaVýplneX,
 							obrázok.getHeight() * Svet.mierkaVýplneY)));
-
-					poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 					if (0 == Svet.otočVýplňΑ)
 						grafikaAktívnehoPlátna.fill(tvar);
@@ -29358,6 +30834,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public Shape vyplňTvar(Shape tvar, Image výplň)
 			{
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 				if (kresliTvary)
 				{
 					BufferedImage obrázok =
@@ -29367,8 +30844,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 					float priehľadnosť = (obrázok instanceof Obrázok) ?
 						((Obrázok)obrázok).priehľadnosť : 1.0f;
-
-					poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 					if (priehľadnosť > 0)
 					{
@@ -29464,14 +30939,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public Shape kresliTvar(Shape tvar, boolean upravRobotom)
 			{
+				poslednýTypTvaru = TypTvaru.OBRYS;
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
-
-					poslednýTypTvaru = TypTvaru.OBRYS;
 
 					if (!upravRobotom || (aktuálnyUhol == 90 &&
 						aktuálneX == 0 && aktuálneY == 0 &&
@@ -29597,13 +31071,12 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public Shape vyplňTvar(Shape tvar, boolean upravRobotom)
 			{
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 				if (kresliTvary)
 				{
 					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
-
-					poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 					if (!upravRobotom || (aktuálnyUhol == 90 &&
 						aktuálneX == 0 && aktuálneY == 0 &&
@@ -29736,6 +31209,7 @@ Toto bolo presunuté na úvodnú stránku:
 			public Shape vyplňTvar(Shape tvar, String súbor,
 				boolean upravRobotom)
 			{
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 				if (kresliTvary)
 				{
 					BufferedImage obrázok = Obrázok.súborNaObrázok(súbor);
@@ -29745,8 +31219,6 @@ Toto bolo presunuté na úvodnú stránku:
 							Svet.posuňVýplňX, Svet.posuňVýplňY,
 							obrázok.getWidth()  * Svet.mierkaVýplneX,
 							obrázok.getHeight() * Svet.mierkaVýplneY)));
-
-					poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 					Shape s = tvar; double β = 0.0;
 
@@ -29820,8 +31292,6 @@ Toto bolo presunuté na úvodnú stránku:
 					double prepočítanéX = Svet.prepočítajX(aktuálneX);
 					double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-					poslednýTypTvaru = TypTvaru.NIČ;
-
 					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
 
@@ -29893,6 +31363,7 @@ Toto bolo presunuté na úvodnú stránku:
 			public Shape vyplňTvar(Shape tvar, Image výplň,
 				boolean upravRobotom)
 			{
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 				if (kresliTvary)
 				{
 					BufferedImage obrázok =
@@ -29902,8 +31373,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 					float priehľadnosť = (obrázok instanceof Obrázok) ?
 						((Obrázok)obrázok).priehľadnosť : 1.0f;
-
-					poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 					if (priehľadnosť > 0)
 					{
@@ -30068,10 +31537,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 					double prepočítanéX = Svet.prepočítajX(aktuálneX);
 					double prepočítanéY = Svet.prepočítajY(aktuálneY);
-
-					poslednýTypTvaru = TypTvaru.NIČ;
-						// TODO toto napojiť na SVGPodporu‼‼
-						// (over, či to je všade, kde má byť)
 
 					at.rotate(toRadians(90 - aktuálnyUhol),
 						prepočítanéX, prepočítanéY);
@@ -34378,6 +35843,8 @@ Toto bolo presunuté na úvodnú stránku:
 				int poklesTextu = (rozmery.getDescent() * 3) / 2;
 				// System.out.println("Pokles " + text + ": " + poklesTextu);
 
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
+
 				if (!kresliTvary)
 				{
 					TextLayout rozloženieTextu = new TextLayout(text,
@@ -34421,11 +35888,8 @@ Toto bolo presunuté na úvodnú stránku:
 						}
 					}
 
-					poslednýTypTvaru = TypTvaru.NIČ;
 					return rozloženieTextu.getOutline(transformácie);
 				}
-
-				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 				// grafikaAktívnehoPlátna.setColor(farbaRobota);
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
@@ -34609,6 +36073,8 @@ Toto bolo presunuté na úvodnú stránku:
 				int poklesTextu = (rozmery.getDescent() * 3) / 2;
 				// System.out.println("Pokles " + text + ": " + poklesTextu);
 
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
+
 				if (!kresliTvary)
 				{
 					TextLayout rozloženieTextu = new TextLayout(text,
@@ -34652,11 +36118,8 @@ Toto bolo presunuté na úvodnú stránku:
 						}
 					}
 
-					poslednýTypTvaru = TypTvaru.NIČ;
 					return rozloženieTextu.getOutline(transformácie);
 				}
-
-				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
 				// grafikaAktívnehoPlátna.setColor(farbaRobota);
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
@@ -35763,7 +37226,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public Shape cesta()
 			{
-				poslednýTypTvaru = TypTvaru.NIČ;
+				poslednýTypTvaru = vyplnený ? TypTvaru.VÝPLŇ : TypTvaru.OBRYS;
 				/*
 				 * @throws RuntimeException ak cesta nejestvuje
 				if (0 == cesta.npoints) throw new RuntimeException("Cesta " +
@@ -40393,6 +41856,12 @@ Toto bolo presunuté na úvodnú stránku:
 			 * currkresliTvar}) je síce najjednoduchší spôsob zmeny tvaru
 			 * robota, ale <em>je menej efektívny.</em></p>
 			 * 
+			 * <p class="remark"><b>Poznámka:</b> Účinnosť tejto metódy môže
+			 * zrušiť volanie metódy {@link #vlastnýTvar(KreslenieTvaru)
+			 * vlastnýTvar} (pozri jej opis) a opätovne obnoviť volanie
+			 * niektorej z verzií metód {@link #predvolenýTvar()
+			 * predvolenýTvar}.</p>
+			 * 
 			 * <div class="remark"><p><b>Poznámka:</b> Táto metóda v skrytosti
 			 * využíva rovnaký mechanizmus ako definovanie {@linkplain 
 			 * KreslenieTvaru vlastného tvaru}. Pre väčšie množstvá inštancií
@@ -40905,6 +42374,15 @@ Toto bolo presunuté na úvodnú stránku:
 			 * {@link #vlastnýTvar(Image) vlastnýTvar(Image obrázok)}, tak
 			 * nimi definovaný obrázkový tvar bude zrušený.</p>
 			 * 
+			 * <p>Volanie tejto metódy zruší vlastné kreslenie definované
+			 * v prekrytej metóde {@link #kresliTvar() kresliTvar} a to dokonca
+			 * aj ak je zadaná hodnota {@code valnull}. Hodnota {@code valnull}
+			 * tak umožňuje návrat kreslenia k originálnemu, skutočne
+			 * predvolenému kresleniu tvaru robota (k trojzubcu). Ak chcete
+			 * obnoviť mechanizmus kreslenia cez prekrytú metódu {@link 
+			 * #kresliTvar() kresliTvar}, použite niektorú z verzií metód
+			 * {@link #predvolenýTvar() predvolenýTvar}.</p>
+			 * 
 			 * <p class="tip"><b>Tip:</b> Ak chcete kombinovať vlastné
 			 * kreslenie tvaru s obrázkami, použite iba {@linkplain 
 			 * #vlastnýTvar(KreslenieTvaru) vlastné kreslenie tvaru
@@ -40934,7 +42412,21 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				if (null != vlastnýTvarObrázok)
 					vlastnýTvarObrázok = null;
-				vlastnýTvarKreslenie = tvar;
+
+				/*if (null == tvar) // Toto nie je „bag,“ toto je „fíčr“ 😁…
+				{
+					try // Nie vždy je metóda kresliTvar() zaručene pôvodná
+					{
+						if (getClass().getMethod("kresliTvar").getDeclaringClass().
+							equals(GRobot.class)) vlastnýTvarKreslenie = null;
+						else
+							vlastnýTvarKreslenie = použiPrekrytúMetóduKresli;
+					}
+					catch (Exception e)
+					{ GRobotException.vypíšChybovéHlásenia(e); }
+				}
+				else */vlastnýTvarKreslenie = tvar;
+
 				Svet.automatickéPrekreslenie();
 			}
 

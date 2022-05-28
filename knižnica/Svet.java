@@ -2131,7 +2131,7 @@ public final class Svet extends JFrame
 		private final static Časovač časovač = new Časovač();
 
 		// Premenné riadiace a koordinujúce násobenie tikov:
-		private static int násobTiky, čísloTiku;
+		private static int násobTiky = 1, čísloTiku = 1;
 
 		// Udalosti okna – ObsluhaUdalostí.počúvadlo myši, klávesnice
 		// a udalostí komponentov

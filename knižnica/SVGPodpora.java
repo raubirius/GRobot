@@ -33,6 +33,7 @@
 
 package knižnica;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -42,6 +43,7 @@ import java.awt.MultipleGradientPaint;
 import java.awt.Paint;
 import java.awt.RadialGradientPaint;
 import java.awt.Shape;
+import java.awt.Stroke;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
@@ -117,7 +119,10 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * style="fill:blue" />} bude spracované tak, ako keby bolo uvedené
  * v tvare {@code <rect … fill="blue" />}. Avšak okrem vybraných CSS
  * definícií ako {@code fill}, {@code stroke}, {@code fill-opacity},
- * {@code stroke-opacity}, {@code stroke-width} a {@code transform} sú
+ * {@code stroke-opacity}, {@code stroke-width}
+ * (a príbuzných ako: {@code stroke-dasharray}, {@code stroke-linecap},
+ * {@code stroke-miterlimit}…)
+ * a {@code transform} sú
  * všetky ostatné CSS definície ignorované. Tiež nie je analyzovaný
  * obsah <em>značky</em> {@code <style> … </style>}, z čoho vyplýva, že
  * aj obsah atribútu {@code class} je ignorovaný.)</small>
@@ -844,7 +849,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 
 			{@code comm// Uloženie SVG súboru (s predvoleným titulkom a prepisujúc}
 			{@code comm// prípadný pôvodný súbor):}
-			{@link SVGPodpora svgPodpora}.{@link SVGPodpora#zapíš(String) zapíš}({@code srg"mola-bodkova.svg"}, {@code valnull}, {@code valtrue});
+			{@link SVGPodpora svgPodpora}.{@link SVGPodpora#zapíš(String, String, boolean) zapíš}({@code srg"mola-bodkova.svg"}, {@code valnull}, {@code valtrue});
 
 			{@code comm// Opätovné zapnutie automatického prekresľovania.}
 			{@link Svet Svet}.{@link Svet#kresli() kresli}();
@@ -956,6 +961,11 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 		{@code comm// Pomocná metóda na pridanie úsečky do SVG údajov.}
 		{@code kwdprivate} {@code typevoid} pridajÚsečku()
 		{
+			{@code comm// Poznámka: Od 17. 5. 2022 je definovaná metóda SVG podpory:}
+			{@code comm// }{@link #pridajÚsečku(GRobot, String...) pridajÚsečku}
+			{@code comm// Jej použitie by tento príklad zjednodušilo.}
+			{@code comm// Definícia tejto pomocnej metódy by nebola potrebná.}
+
 			{@code comm// Je dôležité prepočítať súradnice zo súradnicového priestoru}
 			{@code comm// rámca do súradnicového priestoru, ktorý je používaný formátom}
 			{@code comm// SVG. Podrobnejšie je to vysvetlené v komentároch v metóde}
@@ -1009,6 +1019,13 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
 			uložPolohu();
 			{@link GRobot#dopredu(double) dopredu}(dĺžka);
 			pridajÚsečku();
+
+			{@code comm// Poznámka: Od 17. 5. 2022 je definovaná metóda SVG podpory:}
+			{@code comm// }{@link #pridajÚsečku(GRobot, String...) pridajÚsečku}
+			{@code comm// Jej použitie by tento príklad zjednodušilo.}
+			{@code comm// Definícia pomocnej metódy pridajÚsečku() by nebola potrebná}
+			{@code comm// a namiesto jej volania (vyššie) by sme volali:}
+			{@code comm// svgPodpora.pridajÚsečku(this);}
 
 			{@code comm// Pootočenie doprava vlastne zjednodušene znamená odčítanie}
 			{@code comm// zadaného uhla od aktuálneho uhla. Súčet všetkých pootočení}
@@ -1208,6 +1225,13 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * primitívne. Ide v podstate len o prečítanie a zápis obsahu značky
  * {@code <text>} a o poskytnutie základných geometrických
  * transformácií.</p>
+ * 
+ * <p> </p>
+ * 
+ * <p>Jeden celkom užitočný príklad použitia SVG podpory je v opise
+ * metódy {@link GRobot#vajce(double, String...) vajce}.</p>
+ * 
+ * <p> </p>
  * 
  * <p><b>Použité zdroje:</b></p>
  * 
@@ -2584,7 +2608,7 @@ public class SVGPodpora
 	}
 
 	private final TreeMap<String, Double> mapaJednotiek = new TreeMap<>();
-	private final TreeMap<String, Double> mapaPosunov = new TreeMap<>();
+	private final TreeMap<String, Double> mapaPosunov = new TreeMap<>(); // TODO
 
 	private void naplňMapuJednotiek()
 	{
@@ -2957,6 +2981,9 @@ public class SVGPodpora
 	 * prepočítané na „klasické“ uhlové stupne ({@code deg}), kedy jedna
 	 * otáčka znamená 360°.</p>
 	 * 
+	 * <!-- TODO Podrobnejšie opísať a spoznámkovať nevýhody tohto tabuľkového
+	 * spôsobu prepočtu jednotiek. Najmä percentá nesedia… TODO -->
+	 * 
 	 * @param hodnota číselná hodnota s prípadným uvedením jednotiek
 	 * @return výsledná prevedená a prepočítaná číselná hodnota
 	 */
@@ -3008,6 +3035,9 @@ public class SVGPodpora
 	 * nekonečná (alebo neplatná, napríklad rovná nule), tak je
 	 * ignorovaná.</p>
 	 * 
+	 * <!-- TODO Podrobnejšie opísať a spoznámkovať nevýhody tohto tabuľkového
+	 * spôsobu prepočtu jednotiek. Najmä percentá nesedia… TODO -->
+	 * 
 	 * @param jednotka jednotka, ktorej koeficient prevodu chceme zmeniť
 	 *     alebo nastaviť
 	 * @param hodnota nová číselná hodnota koeficientu prevodu
@@ -3027,6 +3057,9 @@ public class SVGPodpora
 	 * číselnej hodnoty (pozri opis metódy {@link #reťazecNaČíslo(String)
 	 * reťazecNaČíslo}). Ak zadaná jednotka nejestvuje (nie je definovaná),
 	 * tak táto metóda vráti hodnotu {@link Double#NaN}.</p>
+	 * 
+	 * <!-- TODO Podrobnejšie opísať a spoznámkovať nevýhody tohto tabuľkového
+	 * spôsobu prepočtu jednotiek. Najmä percentá nesedia… TODO -->
 	 * 
 	 * @param jednotka jednotka, ktorej koeficient prevodu chceme zistiť
 	 * @return koeficient pre určenú jednotku alebo {@link Double#NaN}
@@ -5285,7 +5318,9 @@ public class SVGPodpora
 	 * tvaru. Toto je pracovná verzia metódy, ktorá je v súčasnosti používaná
 	 * vnútorne. Pri prevode používa mapy jednotiek a výsledok uvádza
 	 * v jednotkách px.</p>
-	 * <!--TODO: public a nejako vhodne nazvať a doplniť opis.-->
+	 * <!--TODO: public a nejako vhodne nazvať a lepšie dopísať opis.-->
+	 * <!-- TODO Podrobnejšie opísať a spoznámkovať nevýhody tohto tabuľkového
+	 * spôsobu prepočtu jednotiek. Najmä percentá nesedia… TODO -->
 	 * @param hodnota vstupná hodnota
 	 * @return výsledný reťazec v px
 	 */
@@ -5311,17 +5346,42 @@ public class SVGPodpora
 
 	/**
 	 * <p>Vloží do vnútorného zásobníka tejto inštancie ďalší tvar
-	 * so základnými atribútmi (ťah a/alebo výplň) nastavenými podľa
-	 * zadaného tvorcu a s prípadnou doplňujúcou sériou atribútov. Okrem
-	 * nastavovania základných atribútov podľa tvorcu funguje táto metóda
-	 * rovnako ako metóda {@link #pridaj(Shape, String[]) pridaj(tvar,
-	 * atribúty)}.</p>
+	 * so základnými atribútmi (ťah a/alebo výplň) nastavenými podľa zadaného
+	 * tvorcu a s prípadnou doplňujúcou sériou atribútov. Táto metóda
+	 * kombinuje správanie metód {@link #pridaj(Shape, String[]) pridaj(tvar,
+	 * atribúty)} a {@link #pridajText(String, GRobot, String...)
+	 * pridajText(text, tvorca, atribúty)}. Základné atribúty nastaví podľa
+	 * tvorcu, ale umožní programátorovi pridať ďalšie, prípadne eliminovať
+	 * tie, ktoré táto metóda pridáva predvolene.</p>
 	 * 
 	 * <p>Trieda pri {@linkplain #zapíš(String, String, boolean) ukladaní
 	 * tvarov do súboru} nájde vhodnú reprezentáciu zadaného tvaru vo forme
 	 * XML/SVG značky (pozri aj metódu {@link #dajSVG(int) dajSVG(index)}),
-	 * ku ktorej priradí sériu zadaných atribútov. (Atribúty bez mena alebo
-	 * s hodnotou {@code valnull} sú ignorované.)</p>
+	 * ku ktorej priradí sériu zadaných atribútov.</p>
+	 * 
+	 * <p class="remark"><b>Poznámky:</b> Atribúty bez mena sú ignorované
+	 * a na rozdiel od metódy {@link #pridaj(Shape, String[]) pridaj(tvar,
+	 * atribúty)} sú v tejto metóde atribúty s hodnotou {@code valnull}
+	 * pri spracovaní odstránené, čo sa dá využiť na úpravu niektorých
+	 * predvolene vytváraných atribútov – napríklad na odstránenie
+	 * predvolenej výplne – {@code fill}, {@code fill-opacity} alebo
+	 * reset predvoleného pootočenia, ktoré sa ukladá vo forme
+	 * transformácie otočenia do atribútu {@code transform}. Atribút
+	 * {@code transform} má pritom špeciálny spôsob spracovania.
+	 * Ak jeho hodnota nie je rovná {@code valnull}, tak je pripojená
+	 * k pôvodnej (hoci aj vygenerovanej) hodnote. To znamená, že v prípade
+	 * tohto atribútu má zmysel i jeho opakovaný výskyt v zozname
+	 * atribútov.</p>
+	 * 
+	 * <p class="remark"><b>Poznámky:</b> Na rozdiel od SVG štandardu sú
+	 * touto metódou považované za predvolené tieto hodnoty nasledujúcich
+	 * dvoch atribútov: {@code round} pre {@code stroke-linecap} a rovnako
+	 * pre {@code stroke-linejoin}. Dôvodom je predvolené nastavenie
+	 * v preddefinovanej SVG šablóne, ktoré zodpovedá predvolenému nastaveniu
+	 * čiar robotov. Ak má čiara tvorcu nastavené tieto hodnoty, tak metóda
+	 * tieto atribúty nenastaví. Ak programátor šablónu zmení a potrebuje
+	 * tieto atribúty pre niektorý objekt nastaviť, tak ich musí uviesť
+	 * zvlášť (v zozname doplňujúcich atribútov tejto metódy).
 	 * 
 	 * <p class="caution"><b>Pozor!</b> Atribúty, ktoré sú kľúčové pri
 	 * vyjadrení konkrétneho tvaru (napr. {@code cx}, {@code cy}, {@code r}
@@ -5331,7 +5391,7 @@ public class SVGPodpora
 	 * 
 	 * @param tvar inštancia tvaru na uloženie
 	 * @param tvorca robot, z ktorého budú prevzaté niektoré parametre
-	 *     užitočné počas vytvárania obrysu
+	 *     užitočné počas vytvárania tvaru
 	 * @param atribúty séria dvojíc reťazcov určujúca doplňujúce atribúty
 	 *     tvaru
 	 */
@@ -5348,30 +5408,230 @@ public class SVGPodpora
 				zoznam.put("opacity", "0.0");
 		}
 
-		String náter = náterNaReťazec(tvorca.dajNáterPodľaRobota());
-		// System.out.println("Náter: " + tvorca.dajNáterPodľaRobota());
+		Paint náter = tvorca.dajNáterPodľaRobota();
 
-		if (null != náter)
+		if (náter instanceof Color)
 		{
-			if (GRobot.TypTvaru.VÝPLŇ == tvorca.poslednýTypTvaru)
-				zoznam.put("fill", náter);
-			else if (GRobot.TypTvaru.OBRYS == tvorca.poslednýTypTvaru)
+			Color farba = tvorca.farbaRobota;
+
+			if (null != farba)
 			{
-				zoznam.put("stroke", náter);
-				zoznam.put("stroke-width",
-					konverziaDoubleNaString(tvorca.polomerPera));
-				zoznam.put("fill", "none");
+				// Použitie farby robota na definíciu…
+				// if (GRobot.TypTvaru.VÝPLŇ == tvorca.poslednýTypTvaru)
+				if (GRobot.TypTvaru.OBRYS != tvorca.poslednýTypTvaru)
+				{
+					// … výplne textového tvaru:
+					zoznam.put("fill", farbaNaReťazec(farba, true));
+					if (255 != farba.getAlpha())
+						zoznam.put("fill-opacity", alfaNaReťazec(farba));
+				}
+				else
+				{
+					// … čiary textového tvaru:
+					zoznam.put("stroke", farbaNaReťazec(farba, true));
+					if (255 != farba.getAlpha())
+						zoznam.put("stroke-opacity", alfaNaReťazec(farba));
+					zoznam.put("stroke-width",
+						konverziaDoubleNaString(tvorca.polomerPera));
+					zoznam.put("fill", "none");
+				}
+			}
+		}
+		else
+		{
+			String reťazecNáteru = náterNaReťazec(náter);
+
+			if (null != reťazecNáteru)
+			{
+				if (GRobot.TypTvaru.VÝPLŇ == tvorca.poslednýTypTvaru)
+					zoznam.put("fill", reťazecNáteru);
+				else if (GRobot.TypTvaru.OBRYS == tvorca.poslednýTypTvaru)
+				{
+					zoznam.put("stroke", reťazecNáteru);
+					// stroke-opacity tu nenastavovať‼
+					zoznam.put("stroke-width",
+						konverziaDoubleNaString(tvorca.polomerPera));
+					zoznam.put("fill", "none");
+				}
+			}
+		}
+
+		// System.out.println();
+
+		if (GRobot.TypTvaru.OBRYS == tvorca.poslednýTypTvaru)
+		{
+			Stroke ťah = tvorca.čiara();
+			if (ťah instanceof BasicStroke)
+			{
+				BasicStroke čiara = (BasicStroke)ťah;
+
+				{
+					float[] dashArray = čiara.getDashArray();
+					if (null != dashArray && dashArray.length > 0)
+					{
+						// System.out.println("DashArray: " + Svet.S(dashArray));
+
+						StringBuffer dashSB = new StringBuffer();
+						dashSB.append(dashArray[0]);
+						for (int i = 1; i < dashArray.length; ++i)
+						{
+							dashSB.append(' ');
+							dashSB.append(dashArray[i]);
+						}
+						zoznam.put("stroke-dasharray", dashSB.toString());
+					}
+				}
+
+
+				{
+					float dashOffset = čiara.getDashPhase();
+					// System.out.println("DashPhase: " + dashOffset);
+					if (0.0f != dashOffset)
+						zoznam.put("stroke-dashoffset", "" + dashOffset);
+				}
+
+
+				{
+					int lineCap = čiara.getEndCap();
+					// System.out.println("EndCap: " + lineCap);
+					switch (lineCap)
+					{
+					case BasicStroke.CAP_BUTT:
+						zoznam.put("stroke-linecap", "butt");
+						break;
+
+					// Považované za predvolené podľa šablóny:
+					// case BasicStroke.CAP_ROUND:
+					// 	zoznam.put("stroke-linecap", "round");
+					// 	break;
+
+					case BasicStroke.CAP_SQUARE:
+						zoznam.put("stroke-linecap", "square");
+						break;
+					}
+				}
+
+
+				{
+					int lineJoin = čiara.getLineJoin();
+					// System.out.println("LineJoin: " + lineJoin);
+					switch (lineJoin)
+					{
+					case BasicStroke.JOIN_BEVEL:
+						zoznam.put("stroke-linejoin", "bevel");
+						break;
+
+					// Považované za predvolené podľa šablóny:
+					// case BasicStroke.JOIN_ROUND:
+					// 	zoznam.put("stroke-linejoin", "round");
+					// 	break;
+
+					case BasicStroke.JOIN_MITER:
+						zoznam.put("stroke-linejoin", "miter");
+						{
+							float miterLimit = čiara.getMiterLimit();
+							// System.out.println("MiterLimit: " + miterLimit);
+							if (4.0f != miterLimit)
+								// 4 – predvolené podľa SVG štandardu
+								zoznam.put("stroke-miterlimit",
+									"" + miterLimit);
+						}
+						break;
+					}
+				}
 			}
 		}
 
 		for (int i = 0; i < dĺžka; i += 2)
-			if (null != atribúty[i] && !atribúty[i].isEmpty() &&
-				null != atribúty[i + 1])
-				zoznam.put(atribúty[i], atribúty[i + 1]);
+			if (null != atribúty[i] && !atribúty[i].isEmpty())
+			{
+				if (null == atribúty[i + 1])
+					zoznam.remove(atribúty[i]);
+				else
+				{
+					if (atribúty[i].equals("transform"))
+					{
+						String pôvodnáHodnota = zoznam.get(atribúty[i]);
+						if (null == pôvodnáHodnota)
+							zoznam.put(atribúty[i], atribúty[i + 1]);
+						else
+							zoznam.put(atribúty[i],
+								pôvodnáHodnota.trim() + " " + atribúty[i + 1]);
+					}
+					else zoznam.put(atribúty[i], atribúty[i + 1]);
+				}
+			}
+
+		// for (Map.Entry<String, String> entry : zoznam.entrySet())
+		// 	System.out.println("\t" + entry.getKey() +
+		// 		" = " + entry.getValue());
 
 		Tvar záznam = new Tvar(tvar, zoznam);
 		tvary.add(záznam);
 	}
+
+
+	/**
+	 * <p>Pridá úsečku vymedzenú posledným navštíveným bodom tvorcu a jeho
+	 * aktuálnou polohou. Táto metóda bola pridaná na zjednodušenie pridávania
+	 * úsečiek do inštancie SVG podpory. Používa nasledujúci algoritmus:</p>
+	 * 
+	 * <pre CLASS="example">
+		{@code typedouble} x0 = {@link Svet Svet}.{@link Svet#prepočítajX(double) prepočítajX}(tvorca.{@link GRobot#poslednáPolohaX() poslednáPolohaX}());
+		{@code typedouble} y0 = {@link Svet Svet}.{@link Svet#prepočítajY(double) prepočítajY}(tvorca.{@link GRobot#poslednáPolohaY() poslednáPolohaY}());
+
+		{@code typedouble} x1 = {@link Svet Svet}.{@link Svet#prepočítajX(double) prepočítajX}(tvorca.{@link GRobot#polohaX() polohaX}());
+		{@code typedouble} y1 = {@link Svet Svet}.{@link Svet#prepočítajY(double) prepočítajY}(tvorca.{@link GRobot#polohaY() polohaY}());
+
+		svgPodpora.{@link #pridaj(Shape, GRobot, String...) pridaj}({@code kwdnew} {@link Line2D Line2D}.{@link Line2D.Double#Line2D.Double(double, double, double, double) Double}(x0, y0, x1, y1), tvorca);
+		</pre>
+	 * 
+	 * <p>Z toho vyplýva, že pri použití tejto metódy sú relevantné všetky
+	 * informácie uvedené v opise metódy {@link #pridaj(Shape, GRobot,
+	 * String...) pridaj(tvar, tvorca, atribúty)}.</p>
+	 * 
+	 * <p>Ak potrebujete pridať iný typ čiary, použite principiálne tento
+	 * algoritmus (ale zabezpečte, aby mal tvorca vypnuté {@linkplain 
+	 * GRobot#nevypĺňajTvary() vypĺňanie tvarov} – to je predvolené nastavenie
+	 * robota, ale ak ste ho zmenili, treba ho pred týmto algoritmom vrátiť
+	 * do pôvodného stavu; metóda {@code currpridajÚsečku} tento stav
+	 * automaticky zálohuje, nastavuje a obnovuje tak ako treba):</p>
+	 * 
+	 * <pre CLASS="example">
+		{@link GRobot#začniCestu() začniCestu}();
+		{@link GRobot#choďNaPoOblúku(Poloha) choďNaPoOblúku}(poloha);
+		svgPodpora.{@link #pridaj(Shape, GRobot, String...) pridaj}({@link GRobot#cesta() cesta}(), {@code valthis});
+		</pre>
+	 * 
+	 * @param tvorca robot, z ktorého budú prevzaté niektoré parametre
+	 *     užitočné počas vytvárania tvaru
+	 * @param atribúty séria dvojíc reťazcov určujúca doplňujúce atribúty
+	 *     tvaru
+	 */
+	public void pridajÚsečku(GRobot tvorca, String... atribúty)
+	{
+		GRobot.TypTvaru zálohaTypu = tvorca.poslednýTypTvaru;
+		try
+		{
+			tvorca.poslednýTypTvaru = GRobot.TypTvaru.OBRYS;
+
+			double x0 = Svet.prepočítajX(tvorca.poslednéX);
+			double y0 = Svet.prepočítajY(tvorca.poslednéY);
+
+			double x1 = Svet.prepočítajX(tvorca.aktuálneX);
+			double y1 = Svet.prepočítajY(tvorca.aktuálneY);
+
+			pridaj(new Line2D.Double(x0, y0, x1, y1), tvorca);
+		}
+		finally
+		{
+			tvorca.poslednýTypTvaru = zálohaTypu;
+		}
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #pridajÚsečku(GRobot, String...)}.</p> */	
+	public void pridajUsecku(GRobot tvorca, String... atribúty)
+	{ pridajÚsečku(tvorca, atribúty); }
 
 
 	// Zoznam špeciálnych definícií:
@@ -5661,7 +5921,7 @@ public class SVGPodpora
 	 * zadaného robota (konkrétne písmo, poloha, spôsob kreslenia textov
 	 * a pootočenie robota, ktoré určia vlastnosti písma, polohu kreslenia
 	 * a pootočenie kresleného textu; farba robota, ktorá je použitá na
-	 * určenie predvolenej farby výplne obrysu textu – čiže predvolene nie
+	 * určenie predvolenej farby výplne textu – čiže predvolene nie
 	 * je nakreslený vygenerovaný obrys textu, ale jeho výplň).</p>
 	 * 
 	 * <p>Trieda pri {@linkplain #zapíš(String, String, boolean) ukladaní
@@ -5679,7 +5939,7 @@ public class SVGPodpora
 	 * transformácie otočenia do atribútu {@code transform}. Atribút
 	 * {@code transform} má pritom špeciálny spôsob spracovania.
 	 * Ak jeho hodnota nie je rovná {@code valnull}, tak je pripojená
-	 * k pôvodnej (vygenerovanej) hodnote. To znamená, že v prípade
+	 * k pôvodnej (hoci aj vygenerovanej) hodnote. To znamená, že v prípade
 	 * tohto atribútu má zmysel i jeho opakovaný výskyt v zozname
 	 * atribútov.</p>
 	 * 
@@ -5698,9 +5958,9 @@ public class SVGPodpora
 	 *     (predvolene je obrys vyplnený, takže vizuálne vyzerá ako
 	 *     klasický text)
 	 * @param tvorca robot, z ktorého budú prevzaté niektoré parametre
-	 *     užitočné počas vytvárania obrysu
+	 *     užitočné počas vytvárania prislúchajúcej SVG definície tvaru
 	 * @param atribúty séria dvojíc reťazcov určujúca doplňujúce atribúty
-	 *     výsledného (vygenerovaného) tvaru (čiže obrysu textu)
+	 *     výsledného SVG tvaru (textu)
 	 */
 	public void pridajText(String text, GRobot tvorca, String... atribúty)
 	{
@@ -5755,40 +6015,54 @@ public class SVGPodpora
 				zoznam.put("opacity", "0.0");
 		}
 
-		String náter = náterNaReťazec(tvorca.dajNáterPodľaRobota());
+		Paint náter = tvorca.dajNáterPodľaRobota();
 
-		if (null != náter)
-		{
-			if (GRobot.TypTvaru.VÝPLŇ == tvorca.poslednýTypTvaru)
-				zoznam.put("fill", náter);
-			else if (GRobot.TypTvaru.OBRYS == tvorca.poslednýTypTvaru)
-			{
-				zoznam.put("stroke", náter);
-				zoznam.put("fill", "none");
-			}
-		}
-		else
+		if (náter instanceof Color)
 		{
 			Color farba = tvorca.farbaRobota;
+
 			if (null != farba)
 			{
 				// Použitie farby robota na definíciu…
 				// if (GRobot.TypTvaru.VÝPLŇ == tvorca.poslednýTypTvaru)
-				if (GRobot.TypTvaru.OBRYS != tvorca.poslednýTypTvaru)
-				{
+
+				// Pozor‼ Text je vždy vyplnený! Keď to chceme zmeniť, treba
+				// na to ísť cez atribúty.
+
+				/*if (GRobot.TypTvaru.OBRYS != tvorca.poslednýTypTvaru)
+				{*/
 					// … výplne textového tvaru:
 					zoznam.put("fill", farbaNaReťazec(farba, true));
 					if (255 != farba.getAlpha())
 						zoznam.put("fill-opacity", alfaNaReťazec(farba));
-				}
+				/*}
 				else
 				{
 					// … čiary textového tvaru:
 					zoznam.put("stroke", farbaNaReťazec(farba, true));
 					if (255 != farba.getAlpha())
 						zoznam.put("stroke-opacity", alfaNaReťazec(farba));
+					zoznam.put("stroke-width",
+						konverziaDoubleNaString(tvorca.polomerPera));
 					zoznam.put("fill", "none");
-				}
+				}*/
+			}
+		}
+		else
+		{
+			String reťazecNáteru = náterNaReťazec(náter);
+
+			if (null != reťazecNáteru)
+			{
+				// if (GRobot.TypTvaru.VÝPLŇ == tvorca.poslednýTypTvaru)
+					zoznam.put("fill", reťazecNáteru);
+				/*else if (GRobot.TypTvaru.OBRYS == tvorca.poslednýTypTvaru)
+				{
+					zoznam.put("stroke", reťazecNáteru);
+					zoznam.put("stroke-width",
+						konverziaDoubleNaString(tvorca.polomerPera));
+					zoznam.put("fill", "none");
+				}*/
 			}
 		}
 
@@ -7743,6 +8017,11 @@ public class SVGPodpora
 			prepíšZoŠtýlu.add("fill-opacity");
 			prepíšZoŠtýlu.add("stroke-opacity");
 			prepíšZoŠtýlu.add("stroke-width");
+			prepíšZoŠtýlu.add("stroke-dasharray");
+			prepíšZoŠtýlu.add("stroke-dashoffset");
+			prepíšZoŠtýlu.add("stroke-linecap");
+			prepíšZoŠtýlu.add("stroke-linejoin");
+			prepíšZoŠtýlu.add("stroke-miterlimit");
 			prepíšZoŠtýlu.add("font-family");
 			prepíšZoŠtýlu.add("font-size");
 			prepíšZoŠtýlu.add("font-style");

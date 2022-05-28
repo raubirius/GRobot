@@ -250,6 +250,17 @@ import static java.util.Calendar.*;
  * svetlo(grafika, svetlo)} alebo {@link Obrázok#svetlo(Obrázok)
  * svetlo(svetlo)}) s rozdielnymi rozmermi.</td></tr>
  * 
+ * <tr><td><code>invalidDash</code></td><td>Neplatný vzor čiary
+ * pera.</td><td>Vzniká pri pokuse o nastavenie {@linkplain 
+ * GRobot#vzorPera(double, double...) vzoru čiary pera,} ktorý nie je platný
+ * (napríklad má všetky dĺžky čiarok a medzier nulové). Spresňujúcim objektom
+ * je pôvodná výnimka, ktorá chybu spôsobila.</td></tr>
+ * 
+ * <tr><td><code>invalidDashPhase</code></td><td>Neplatný posun vzoru čiary
+ * pera.</td><td>Vzniká pri pokuse o nastavenie negatívneho {@linkplain 
+ * GRobot#posunVzoruPera(double) posunu vzoru čiary pera.} Spresňujúcim
+ * objektom je pôvodná výnimka, ktorá chybu spôsobila.</td></tr>
+ * 
  * <tr><td><code>invalidDomain</code></td><td>Neplatná doména:
  * <em>«doména»</em></td><td>Zlyhal pokus o zostavenie koreňa cieľa
  * komunikácie inštancie triedy {@link Spojenie Spojenie} v dôsledku
