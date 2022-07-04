@@ -8136,6 +8136,7 @@ public final class Svet extends JFrame
 		 * @see PoložkaPonuky
 		 * @see #vymažPonuku()
 		 * @see #pridajPoložkuHlavnejPonuky(String, int)
+		 * @see #premenujPoložkuHlavnejPonuky(int, String)
 		 * @see #pridajPoložkuPonuky(String)
 		 * @see #pridajVnorenúPonuku(String, JMenuItem...)
 		 * @see #pridajOddeľovačPonuky()
@@ -8192,6 +8193,7 @@ public final class Svet extends JFrame
 		 * @see PoložkaPonuky
 		 * @see #vymažPonuku()
 		 * @see #pridajPoložkuHlavnejPonuky(String)
+		 * @see #premenujPoložkuHlavnejPonuky(int, String, int)
 		 * @see #pridajPoložkuPonuky(String, int)
 		 * @see #pridajVnorenúPonuku(String, JMenuItem...)
 		 * @see #pridajOddeľovačPonuky()
@@ -8234,6 +8236,91 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #pridajPoložkuHlavnejPonuky(String, int) pridajPoložkuHlavnejPonuky}.</p> */
 		public static void pridajPolozkuHlavnejPonuky(String text, int mnemonickáSkratka)
 		{ pridajPoložkuHlavnejPonuky(text, mnemonickáSkratka); }
+
+
+		/**
+		 * <p>Premenuje zadanú položku hlavnej ponuky. (Cieľom tejto metódy
+		 * je uľahčiť jazykovú lokalizáciu.) Prvý parameter je index
+		 * („poradové číslo“ začínajúce od nuly) položky, ktorá má byť
+		 * premenovaná. Ak nastane chyba (napríklad položka so zadaným
+		 * indexom nejestvuje), tak metóda vráti hodnotu {@code valfalse}.</p>
+		 * 
+		 * @param ktorá index položky, ktorej text má byť zmenený
+		 * @param text nové znenie textu položky
+		 * @return kontrolná návratová hodnota: {@code valtrue} ak akcia uspela
+		 * 
+		 * @see #premenujPoložkuHlavnejPonuky(int, String, int)
+		 * @see #pridajPoložkuHlavnejPonuky(String)
+		 */
+		public static boolean premenujPoložkuHlavnejPonuky(int ktorá,
+			String text)
+		{
+			if (!inicializované) return false;
+
+			JMenuBar hlavnáPonuka = svet.getJMenuBar();
+			if (null != hlavnáPonuka)
+			{
+				JMenu položkaHlavnejPonuky =
+					hlavnáPonuka.getMenu(ktorá);
+				if (null != položkaHlavnejPonuky)
+				{
+					položkaHlavnejPonuky.setText(text);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #premenujPoložkuHlavnejPonuky(int, String) premenujPoložkuHlavnejPonuky}.</p> */
+		public static boolean premenujPolozkuHlavnejPonuky(int ktorá, String text)
+		{ return premenujPoložkuHlavnejPonuky(ktorá, text); }
+
+		/**
+		 * <p>Premenuje zadanú položku hlavnej ponuky. (Cieľom tejto metódy
+		 * je uľahčiť jazykovú lokalizáciu.) Prvý parameter je index
+		 * („poradové číslo“ začínajúce od nuly) položky, ktorá má byť
+		 * premenovaná. Ak nastane chyba (napríklad položka so zadaným
+		 * indexom nejestvuje), tak metóda vráti hodnotu {@code valfalse}.
+		 * Význam parametra {@code mnemonickáSkratka} je rovnaký ako
+		 * pri metóde {@link #pridajPoložkuPonuky(String, int)
+		 * pridajPoložkuPonuky(text, mnemonickáSkratka)}.</p>
+		 * 
+		 * @param ktorá index položky, ktorej text má byť zmenený
+		 * @param text nové znenie textu položky
+		 * @param mnemonickáSkratka kód mnemonickej skratky (príklad:
+		 *     {@code Kláves.VK_A})
+		 * @return kontrolná návratová hodnota: {@code valtrue} ak akcia uspela
+		 * 
+		 * @see #premenujPoložkuHlavnejPonuky(int, String)
+		 * @see #pridajPoložkuHlavnejPonuky(String, int)
+		 */
+		public static boolean premenujPoložkuHlavnejPonuky(int ktorá,
+			String text, int mnemonickáSkratka)
+		{
+			if (!inicializované) return false;
+
+			JMenuBar hlavnáPonuka = svet.getJMenuBar();
+			if (null != hlavnáPonuka)
+			{
+				JMenu položkaHlavnejPonuky =
+					hlavnáPonuka.getMenu(ktorá);
+				if (null != položkaHlavnejPonuky)
+				{
+					položkaHlavnejPonuky.setText(text);
+					položkaHlavnejPonuky.setMnemonic(mnemonickáSkratka);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #premenujPoložkuHlavnejPonuky(int, String, int) premenujPoložkuHlavnejPonuky}.</p> */
+		public static boolean premenujPolozkuHlavnejPonuky(int ktorá,
+			String text, int mnemonickáSkratka)
+		{ return premenujPoložkuHlavnejPonuky(ktorá, text, mnemonickáSkratka); }
+
 
 		/**
 		 * <p>Pridá do hlavnej ponuky položku so zadaným textom. Zvolenie položky

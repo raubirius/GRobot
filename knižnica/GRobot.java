@@ -8245,12 +8245,11 @@ Toto bolo presunuté na úvodnú stránku:
 
 				/**
 				 * <p><a class="setter"></a> Nastaví nové súradnice robota.
-				 * Nové súradnice
-				 * sú očakávané v inštancii triedy, ktorá implementuje
-				 * rozhranie {@link Poloha Poloha}, takže môže ísť o rôzne
-				 * objekty programovacieho rámca GRobot. Robot sa presunie
-				 * na zadané súradnice, nekreslí pri tom čiaru, ani nezmení
-				 * svoju aktuálnu orientáciu (smer).</p>
+				 * Nové súradnice sú očakávané v inštancii triedy, ktorá
+				 * implementuje rozhranie {@link Poloha Poloha}, takže môže
+				 * ísť o rôzne objekty programovacieho rámca GRobot. Robot sa
+				 * presunie na zadané súradnice, nekreslí pri tom čiaru, ani
+				 * nezmení svoju aktuálnu orientáciu (smer).</p>
 				 * 
 				 * @param poloha objekt typu {@link Poloha Poloha}
 				 *     obsahujúci nové súradnice robota
@@ -8278,6 +8277,53 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(aktuálneX),
 								Svet.prepočítajY(aktuálneY));
+					}
+
+					// Kontrola ohraničenia
+					if (!kreslímVlastnýTvar && vyriešOhraničenie())
+					{
+						registrujPretočOhraničenie(() ->
+							skočNa(novýCieľX, novýCieľY));
+						while (doriešOhraničenie());
+					}
+
+					if (viditeľný) Svet.automatickéPrekreslenie();
+				}
+
+
+				/**
+				 * <p>Nastaví nové súradnice robota. V podstate ide
+				 * o alternatívu metódy {@link poloha(Poloha)
+				 * poloha}{@code (poloha)} a funguje rovnako ako metóda
+				 * {@link skočNa(double, double) skočNa}{@code (novéX,
+				 * novéY)}.</p>
+				 * 
+				 * @param novéX nová x-ová súradnica
+				 * @param novéY nová y-ová súradnica
+				 */
+				public void poloha(double novéX, double novéY)
+				{
+					// Prvý krok ohraničenia (ak je aktívne)
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
+					}
+
+					aktuálneX = novéX;
+					aktuálneY = novéY;
+
+					if (záznamCesty)
+					{
+						if (záznamCestyBezPolohyPera)
+							cesta.lineTo(
+								Svet.prepočítajX(novéX),
+								Svet.prepočítajY(novéY));
+						else
+							cesta.moveTo(
+								Svet.prepočítajX(novéX),
+								Svet.prepočítajY(novéY));
 					}
 
 					// Kontrola ohraničenia
@@ -11322,8 +11368,9 @@ Toto bolo presunuté na úvodnú stránku:
 				 * {@code num2} a {@code num2}{@code , }{@code num4} a takto
 				 * dĺžky stúpajú až po hodnoty {@code num11} a {@code 
 				 * num11}{@code , }{@code num22}. (So zmenou hrúby sa vždy
-				 * reštartuje čiarkovanie. Hrúbka rastie od {@code num1} po
-				 * {@code num8}.)</p>
+				 * reštartuje čiarkovanie, čo by sa dalo „doladiť“ metódou
+				 * {@link #posunVzoruČiary(double) posunVzoruČiary}.
+				 * Hrúbka rastie od {@code num1} po {@code num8}.)</p>
 				 * 
 				 * <p>Tvorba vzoru so zadanými párnymi alebo nepárnymi dĺžkami
 				 * bude možno lepšie pochopiteľná z nasledujúceho obrázka:</p>
@@ -11725,8 +11772,9 @@ Toto bolo presunuté na úvodnú stránku:
 				 * {@code num2} a {@code num2}{@code , }{@code num4} a takto
 				 * dĺžky stúpajú až po hodnoty {@code num11} a {@code 
 				 * num11}{@code , }{@code num22}. (So zmenou hrúby sa vždy
-				 * reštartuje čiarkovanie. Hrúbka rastie od {@code num1} po
-				 * {@code num8}.)</p>
+				 * reštartuje čiarkovanie, čo by sa dalo „doladiť“ metódou
+				 * {@link #posunVzoruPera(double) posunVzoruPera}.
+				 * Hrúbka rastie od {@code num1} po {@code num8}.)</p>
 				 * 
 				 * <p>Tvorba vzoru so zadanými párnymi alebo nepárnymi dĺžkami
 				 * bude možno lepšie pochopiteľná z nasledujúceho obrázka:</p>
@@ -16383,7 +16431,7 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 				/**
-				 * <p>Prikáže robotu, aby sa na posunul o zadané súradnice
+				 * <p>Prikáže robotu, aby sa posunul o zadané súradnice
 				 * v horizontálnom a vertikálnom smere. Keď je pero položené,
 				 * tak kreslí čiaru po aktívnom plátne (podlahe alebo strope).
 				 * Robot nezmení aktuálny smer.</p>
@@ -16453,6 +16501,24 @@ Toto bolo presunuté na úvodnú stránku:
 
 				/** <p><a class="alias"></a> Alias pre {@link #choď(double, double) choď}.</p> */
 				public void chod(double Δx, double Δy) { choď(Δx, Δy); }
+
+				/**
+				 * <p>Prikáže robotu, aby sa posunul (prešiel) o súradnice,
+				 * ktoré obsahuje zadaná inštancia polohy. To znamená, že
+				 * súradnice polohy sú prevedené na relatívne súradnice. Keď
+				 * je pero položené, tak kreslí čiaru po aktívnom plátne
+				 * (podlahe alebo strope). Robot nezmení aktuálny smer.</p>
+				 * 
+				 * @param poloha poloha, ktorá bude prevedená na relatívne
+				 *     súradnice skoku
+				 * 
+				 * @see #choď(double, double)
+				 */
+				public void choď(Poloha poloha)
+				{ choď(poloha.polohaX(), poloha.polohaY()); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #choď(Poloha) choď}.</p> */
+				public void chod(Poloha poloha) { choď(poloha); }
 
 
 				/**
@@ -16704,7 +16770,7 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 				/**
-				 * <p>Prikáže robotu, aby sa na na podlahe (strope) preskočil
+				 * <p>Prikáže robotu, aby sa na podlahe (strope) preskočil
 				 * o zadané súradnice v horizontálnom a vertikálnom smere.
 				 * Robot nekreslí čiaru, ani nezmení svoj aktuálny smer.</p>
 				 * 
@@ -16718,6 +16784,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #skočNa(Poloha)
 				 * @see #skočNa(Shape)
 				 * @see #choď(double, double)
+				 * @see #skoč(Poloha)
 				 */
 				public void skoč(double Δx, double Δy)
 				{
@@ -16761,6 +16828,24 @@ Toto bolo presunuté na úvodnú stránku:
 
 				/** <p><a class="alias"></a> Alias pre {@link #skoč(double, double) skoč}.</p> */
 				public void skoc(double Δx, double Δy) { skoč(Δx, Δy); }
+
+				/**
+				 * <p>Prikáže robotu, aby sa na podlahe (strope) preskočil
+				 * o súradnice, ktoré obsahuje zadaná inštancia polohy. To
+				 * znamená, že súradnice polohy sú prevedené na relatívne
+				 * súradnice. Robot nekreslí čiaru, ani nezmení svoj aktuálny
+				 * smer.</p>
+				 * 
+				 * @param poloha poloha, ktorá bude prevedená na relatívne
+				 *     súradnice skoku
+				 * 
+				 * @see #skoč(double, double)
+				 */
+				public void skoč(Poloha poloha)
+				{ skoč(poloha.polohaX(), poloha.polohaY()); }
+
+				/** <p><a class="alias"></a> Alias pre {@link #skoč(Poloha) skoč}.</p> */
+				public void skoc(Poloha poloha) { skoč(poloha); }
 
 
 				/**
@@ -30174,7 +30259,8 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 				</pre>
 			 * 
-			 * <!-- (toto už neplatí) p>Je to presná kópia algoritmu. Všimnite si, ktoré metódy
+			 * <!-- (toto už neplatí; to bol iba pôvodný plán…)
+			 * p>Je to presná kópia algoritmu. Všimnite si, ktoré metódy
 			 * sú v ňom použité – podľa toho sa dá prispôsobiť využitie tejto
 			 * metódy, napríklad: Na vyplnenie vajca treba zdvihnúť pero,
 			 * začať cestu, nakresliť vajce a prevziať a vyplniť alebo priamo
@@ -30190,7 +30276,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 * dočasne zdvihnúť pero (počas vykonávania tejto metódy), aby sa
 			 * vajce nenakreslilo. Tvar bude uložený v {@linkplain #cesta()
 			 * ceste}. Po skončení vykonávania metódy je obnovená pôvodná
-			 * poloha pera.</li>
+			 * poloha pera. (Ak bolo pero zdvihnuté, zostane zdvihnuté a po
+			 * skončení vykonávania metódy sa nepoloží.)</li>
 			 * <li>{@code srg"nezaznamenajCestu"}, {@code srg"necesta"},
 			 * {@code srg"necestu"} – vypne zaznamenávanie cesty zapnuté podľa
 			 * predchádzajúceho parametra, ale nezruší zdvihnutie pera.</li>
@@ -30203,7 +30290,11 @@ Toto bolo presunuté na úvodnú stránku:
 			 * (alebo jeho alternatívy), ktorý zároveň prikazuje dočasne
 			 * zdvihnúť pero. Takže kombináciou parametrov: {@code srg"cesta"}
 			 * a {@code srg"pero"} (v uvedenom poradí) sa dá docieliť súčasné
-			 * zaznamenanie cesty aj nakreslenie vajca.</li></ul>
+			 * zaznamenanie cesty aj nakreslenie vajca. Pozor, ak bolo pero
+			 * zdvihnuté, tento parameter ho nepoloží. Tento parameter len
+			 * zruší automatické dočasné zdvíhanie pera, ale ak chceme vajce
+			 * nakresliť, treba mať pero položené už pred volaním tejto
+			 * metódy.</li></ul>
 			 * 
 			 * <p>Parametre sú vyhodnocované postupne, to znamená, že tie
 			 * neskoršie uvedené môžu zrušiť alebo čiastočne zrušiť akcie tých

@@ -257,25 +257,57 @@ public class Častica implements Poloha, Smer, Rozmer
 	 */
 	public double h = 10;
 
-	/** <p><a class="getter"></a> Metóda vráti súradnicu x polohy častice.</p> */
+	/**
+	 * <p><a class="getter"></a> Metóda vráti súradnicu x polohy častice.
+	 * Metóda je povinnou súčasťou implementácie rozhrania {@link Poloha
+	 * Poloha}, inak je prístup k atribútom {@code x}, {@code y} verejný.</p>
+	 * 
+	 * @return x-ová súradnica častice
+	 */
 	public double polohaX() { return x; }
 
-	/** <p><a class="getter"></a> Metóda vráti súradnicu y polohy častice.</p> */
+	/**
+	 * <p><a class="getter"></a> Metóda vráti súradnicu y polohy častice.
+	 * Metóda je povinnou súčasťou implementácie rozhrania {@link Poloha
+	 * Poloha}, inak je prístup k atribútom {@code x}, {@code y} verejný.</p>
+	 * 
+	 * @return y-ová súradnica častice
+	 */
 	public double polohaY() { return y; }
 
-	/** <p><a class="getter"></a> Metóda vráti súradnicu x polohy častice.</p> */
+	/**
+	 * <p><a class="getter"></a> Metóda vráti súradnicu x polohy častice.
+	 * Metóda je povinnou súčasťou implementácie rozhrania {@link Poloha
+	 * Poloha}, inak je prístup k atribútom {@code x}, {@code y} verejný.</p>
+	 * 
+	 * @return x-ová súradnica častice
+	 */
 	public double súradnicaX() { return x; }
 
-	/** <p><a class="getter"></a> Metóda vráti súradnicu x polohy častice.</p> */
+	/** <p><a class="alias"></a> Alias pre {@link #súradnicaX() súradnicaX}.</p> */
 	public double suradnicaX() { return x; }
 
-	/** <p><a class="getter"></a> Metóda vráti súradnicu y polohy častice.</p> */
+	/**
+	 * <p><a class="getter"></a> Metóda vráti súradnicu y polohy častice.
+	 * Metóda je povinnou súčasťou implementácie rozhrania {@link Poloha
+	 * Poloha}, inak je prístup k atribútom {@code x}, {@code y} verejný.</p>
+	 * 
+	 * @return y-ová súradnica častice
+	 */
 	public double súradnicaY() { return y; }
 
-	/** <p><a class="getter"></a> Metóda vráti súradnicu y polohy častice.</p> */
+	/** <p><a class="alias"></a> Alias pre {@link #súradnicaY() súradnicaY}.</p> */
 	public double suradnicaY() { return y; }
 
-	/** <p><a class="getter"></a> Metóda vráti objekt spájajúce obidve súradnice polohy častice.</p> */
+	/**
+	 * <p><a class="getter"></a> Metóda vráti objekt spájajúce obidve
+	 * súradnice polohy častice.
+	 * Metóda je povinnou súčasťou implementácie rozhrania {@link Poloha
+	 * Poloha}, inak je prístup k atribútom {@code x}, {@code y} verejný.</p>
+	 * 
+	 * @return inštancia triedy {@link Bod Bod} obsahujúca aktuálne súradnice
+	 *     častice
+	 */
 	public Bod poloha() { return new Bod(x, y); }
 
 
@@ -301,6 +333,18 @@ public class Častica implements Poloha, Smer, Rozmer
 	{
 		x = bod.polohaX();
 		y = bod.polohaY();
+	}
+
+	/**
+	 * <p><a class="setter"></a> Metóda nastaví nové súradnice častice.</p>
+	 * 
+	 * @param novéX nová x-ová súradnica častice
+	 * @param novéY nová y-ová súradnica častice
+	 */
+	public void poloha(double novéX, double novéY)
+	{
+		x = novéX;
+		y = novéY;
 	}
 
 
@@ -337,10 +381,18 @@ public class Častica implements Poloha, Smer, Rozmer
 	}
 
 
-	/** <p><a class="getter"></a> Metóda vráti smer častice.</p> */
+	/**
+	 * <p><a class="getter"></a> Metóda vráti smer častice.
+	 * Metóda je povinnou súčasťou implementácie rozhrania {@link Smer
+	 * Smer}, inak je prístup k atribútu {@code uhol} verejný.</p>
+	 */
 	public double uhol() { return uhol; }
 
-	/** <p><a class="getter"></a> Metóda vráti smer častice.</p> */
+	/**
+	 * <p><a class="getter"></a> Metóda vráti smer častice.
+	 * Metóda je povinnou súčasťou implementácie rozhrania {@link Smer
+	 * Smer}, inak je prístup k atribútu {@code uhol} verejný.</p>
+	 */
 	public double smer() { return uhol; }
 
 
@@ -375,7 +427,9 @@ public class Častica implements Poloha, Smer, Rozmer
 
 
 	/**
-	 * <p><a class="getter"></a> Vráti aktuálnu šírku častice.</p>
+	 * <p><a class="getter"></a> Vráti aktuálnu šírku častice.
+	 * Metóda je povinnou súčasťou implementácie rozhrania {@link Rozmer
+	 * Rozmer}, inak je prístup k atribútom {@code w}, {@code h} verejný.</p>
 	 * 
 	 * @return aktuálna šírka častice
 	 */
@@ -385,7 +439,9 @@ public class Častica implements Poloha, Smer, Rozmer
 	public double sirka() { return šírka(); }
 
 	/**
-	 * <p><a class="getter"></a> Vráti aktuálnu výšku častice.</p>
+	 * <p><a class="getter"></a> Vráti aktuálnu výšku častice.
+	 * Metóda je povinnou súčasťou implementácie rozhrania {@link Rozmer
+	 * Rozmer}, inak je prístup k atribútom {@code w}, {@code h} verejný.</p>
 	 * 
 	 * @return aktuálna výška častice
 	 */
@@ -396,7 +452,9 @@ public class Častica implements Poloha, Smer, Rozmer
 
 
 	/**
-	 * <p><a class="setter"></a> Nastaví novú šírku častice.</p>
+	 * <p><a class="setter"></a> Nastaví novú šírku častice.
+	 * Metóda je povinnou súčasťou implementácie rozhrania {@link Rozmer
+	 * Rozmer}, inak je prístup k atribútom {@code w}, {@code h} verejný.</p>
 	 * 
 	 * @param šírka nová šírka častice
 	 */
@@ -406,7 +464,9 @@ public class Častica implements Poloha, Smer, Rozmer
 	public void sirka(double šírka) { šírka(šírka); }
 
 	/**
-	 * <p><a class="setter"></a> Nastaví novú výšku častice.</p>
+	 * <p><a class="setter"></a> Nastaví novú výšku častice.
+	 * Metóda je povinnou súčasťou implementácie rozhrania {@link Rozmer
+	 * Rozmer}, inak je prístup k atribútom {@code w}, {@code h} verejný.</p>
 	 * 
 	 * @param výška nová výška častice
 	 */
@@ -425,7 +485,9 @@ public class Častica implements Poloha, Smer, Rozmer
 
 
 	/**
-	 * <p>Nastaví nové rozmery častice.</p>
+	 * <p>Nastaví nové rozmery častice.
+	 * Metóda je povinnou súčasťou implementácie rozhrania {@link Rozmer
+	 * Rozmer}, inak je prístup k atribútom {@code w}, {@code h} verejný.</p>
 	 * 
 	 * @param šírka nová šírka častice
 	 * @param výška nová výška častice

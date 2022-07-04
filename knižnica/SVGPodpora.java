@@ -5431,8 +5431,9 @@ public class SVGPodpora
 					zoznam.put("stroke", farbaNaReťazec(farba, true));
 					if (255 != farba.getAlpha())
 						zoznam.put("stroke-opacity", alfaNaReťazec(farba));
-					zoznam.put("stroke-width",
-						konverziaDoubleNaString(tvorca.polomerPera));
+					if (1.0 != tvorca.polomerPera)
+						zoznam.put("stroke-width",
+							konverziaDoubleNaString(tvorca.polomerPera));
 					zoznam.put("fill", "none");
 				}
 			}
@@ -5449,8 +5450,9 @@ public class SVGPodpora
 				{
 					zoznam.put("stroke", reťazecNáteru);
 					// stroke-opacity tu nenastavovať‼
-					zoznam.put("stroke-width",
-						konverziaDoubleNaString(tvorca.polomerPera));
+					if (1.0 != tvorca.polomerPera)
+						zoznam.put("stroke-width",
+							konverziaDoubleNaString(tvorca.polomerPera));
 					zoznam.put("fill", "none");
 				}
 			}

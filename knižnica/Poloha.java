@@ -203,6 +203,8 @@ public interface Poloha
 	public void suradnicaY(double novéY);
 
 	/* * <p>Prototyp metódy na nastavenie obidvoch súradníc objektu.</p> * /
+	public void poloha(double x, double y);
+	/* * <p>Prototyp metódy na nastavenie obidvoch súradníc objektu.</p> * /
 	public void poloha(Poloha poloha);
 	*/
 

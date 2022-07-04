@@ -758,7 +758,6 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 * @see #polohaY(double)
 	 * @see #poloha(double, double)
 	 */
-	// public void poloha(GRobot robot)
 	public void poloha(Poloha objekt)
 	{
 		poloha((int)objekt.polohaX(), (int)objekt.polohaY());
