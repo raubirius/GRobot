@@ -1,6 +1,6 @@
 # Programming framework GRobot
 
-*Slovenský text nájdete nižšie (for Slovak scroll down).*
+*Slovenský text je nižšie (for Slovak scroll/look down).*
 
 This project started as a small library for the students. It was part of my PhD thesis. Since then (2010) it went a huge way and became a framework. The only thing that prevents its mass use is that it is written using the Slovak language (not just the documentation, but each identifier – classes, methods, attributes…). This is due to its original purpose: teaching programming… The decision was one of the results of the pre-research to PhD work. I don’t regret it fully, but it would better find its wider use when it would be in English. There is an option, however, a very complicated one. I could develop an automatic translation module for all GRobot’s source codes… I am considering this option for years, but it would consume a big (huge) portion of effort (time, energy, resources, everything)…
 
