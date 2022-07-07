@@ -389,7 +389,7 @@ public class Bod extends Point2D implements Poloha
 	 * #poloha(Poloha) poloha}), posunutím súradníc tejto inštancie
 	 * o hodnotu druhého bodu úsečky (napr. metódou {@link  #posuň(Poloha)
 	 * posuň}) a zmenou mierky tejto inštancie o hodnotu {@code num0.5}
-	 * (napr. metódou {@link  #mierka(double) mierka}). Tiež môžeme
+	 * (napr. metódou {@link #mierka(double) mierka}). Tiež môžeme
 	 * zrkladliť body okolo osí (zápornými hodnotami mierok) a podobne.</p>
 	 * 
 	 * @param mx miera zmeny mierky v smere osi x

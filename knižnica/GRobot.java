@@ -8293,9 +8293,9 @@ Toto bolo presunuté na úvodnú stránku:
 
 				/**
 				 * <p>Nastaví nové súradnice robota. V podstate ide
-				 * o alternatívu metódy {@link poloha(Poloha)
+				 * o alternatívu metódy {@link #poloha(Poloha)
 				 * poloha}{@code (poloha)} a funguje rovnako ako metóda
-				 * {@link skočNa(double, double) skočNa}{@code (novéX,
+				 * {@link #skočNa(double, double) skočNa}{@code (novéX,
 				 * novéY)}.</p>
 				 * 
 				 * @param novéX nová x-ová súradnica
@@ -10941,8 +10941,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				/**
 				 * <p>Zmení nastavenie cieľovej farby robota po jeho prechode
-				 * {@linkplain #domov() domov}. Hodnota {@code (Farba)}{@link 
-				 * valnull} znamená, že ak nie je nastavené {@linkplain 
+				 * {@linkplain #domov() domov}. Hodnota {@code (Farba)}{@code valnull}
+				 * znamená, že ak nie je nastavené {@linkplain 
 				 * #zrušCieľovúFarbuDoma(boolean) zrušenie cieľovej farby
 				 * doma}, tak cieľová farba nie je po prechode domov
 				 * ovplyvnená.</p>
@@ -11205,9 +11205,8 @@ Toto bolo presunuté na úvodnú stránku:
 				 * <p>Nastaví alebo zruší ovplyvňovanie hrúbky pera po prechode
 				 * robota {@linkplain #domov() domov}. Ak je zadaná konkrétna
 				 * číselná hodnota, hrúbka pera robota bude po prechode domov
-				 * upravená na zadanú hodnotu. Ak je zadaná hodnota {@link 
-				 * valnull}, tak hrúbka pera nebude po prechode domov
-				 * ovplyvnená.</p>
+				 * upravená na zadanú hodnotu. Ak je zadaná hodnota {@code valnull},
+				 * tak hrúbka pera nebude po prechode domov ovplyvnená.</p>
 				 * 
 				 * @param nováHrúbka nová hrúbka pera domovskej pozície alebo
 				 *     {@code valnull}
@@ -11231,9 +11230,8 @@ Toto bolo presunuté na úvodnú stránku:
 				 * <p>Nastaví alebo zruší ovplyvňovanie hrúbky pera po prechode
 				 * robota {@linkplain #domov() domov}. Ak je zadaná konkrétna
 				 * číselná hodnota, hrúbka pera robota bude po prechode domov
-				 * upravená na zadanú hodnotu. Ak je zadaná hodnota {@link 
-				 * valnull}, tak hrúbka pera nebude po prechode domov
-				 * ovplyvnená.</p>
+				 * upravená na zadanú hodnotu. Ak je zadaná hodnota {@code valnull},
+				 * tak hrúbka pera nebude po prechode domov ovplyvnená.</p>
 				 * 
 				 * @param nováHrúbka nová hrúbka pera domovskej pozície alebo
 				 *     {@code valnull}

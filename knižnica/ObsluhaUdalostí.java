@@ -1239,7 +1239,7 @@ public class ObsluhaUdalostí
 			{@code kwdprivate} {@code typevoid} obnov()
 			{
 				{@link Svet Svet}.{@link Svet#vymaž() vymaž}();
-				{@link obrázok obrázok}(obrázok);
+				obrázok(obrázok);
 				{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
 			}
 
