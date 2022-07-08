@@ -12,6 +12,6 @@ Tento projekt sa začal ako malá knižnica pre študentov. Bola to súčasť mo
 
 ___
 
-**See:** [Dokumentácia programovacieho rámca GRobot](https://pdfweb.truni.sk/horvath/GRobot/).
+**See:** [Dokumentácia programovacieho rámca GRobot.](https://pdfweb.truni.sk/horvath/GRobot/)
 
 [//]: # (**See:** Programming framework GRobot project https://github.com/users/raubirius/projects/1.)

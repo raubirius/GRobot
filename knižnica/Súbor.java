@@ -1355,8 +1355,7 @@ public class Súbor implements Closeable
 									String hodnota = upravenáHodnota.toString();
 
 									if (presnéNázvy.containsKey(názov))
-										názov = presnéNázvy.
-											getValue(názov);
+										názov = presnéNázvy.getValue(názov);
 									else
 									{
 										for (Map.Entry<String, String> záznam :
@@ -1412,8 +1411,7 @@ public class Súbor implements Closeable
 										{
 											if (hodnota.endsWith(
 												záznam.getKey()))
-												hodnota =
-													hodnota.substring(0,
+												hodnota = hodnota.substring(0,
 													hodnota.length() -
 													záznam.getKey().
 													length()) + záznam.
@@ -1446,8 +1444,7 @@ public class Súbor implements Closeable
 									String hodnota = vlastnosť.hodnota;
 
 									if (presnéNázvy.containsKey(názov))
-										názov = presnéNázvy.
-											getValue(názov);
+										názov = presnéNázvy.getValue(názov);
 									else
 									{
 										for (Map.Entry<String, String> záznam :
@@ -1493,8 +1490,7 @@ public class Súbor implements Closeable
 										{
 											if (hodnota.startsWith(
 												záznam.getKey()))
-												hodnota =
-													záznam.getValue() +
+												hodnota = záznam.getValue() +
 													hodnota.substring(
 														záznam.getKey().length());
 										}
@@ -1504,8 +1500,7 @@ public class Súbor implements Closeable
 										{
 											if (hodnota.endsWith(
 												záznam.getKey()))
-												hodnota =
-													hodnota.substring(0,
+												hodnota = hodnota.substring(0,
 													hodnota.length() -
 													záznam.getKey().
 													length()) + záznam.
