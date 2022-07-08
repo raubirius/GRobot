@@ -1307,7 +1307,8 @@ public class Súbor implements Closeable
 										int indexZáznamu = názov.
 											indexOf(záznam.getKey());
 										if (-1 != indexZáznamu)
-											názov.replace(záznam.getKey(),
+											názov = názov.replace(
+												záznam.getKey(),
 												záznam.getValue());
 									}
 								}
@@ -1363,9 +1364,8 @@ public class Súbor implements Closeable
 										{
 											if (názov.startsWith(
 												záznam.getKey()))
-												názov = záznam.
-													getValue() + názov.
-													substring(záznam.
+												názov = záznam.getValue() +
+													názov.substring(záznam.
 														getKey().length());
 										}
 
@@ -1373,8 +1373,7 @@ public class Súbor implements Closeable
 											konceNázvov.iterateKeys())
 										{
 											if (názov.endsWith(záznam.getKey()))
-												názov = názov.
-													substring(0,
+												názov = názov.substring(0,
 													názov.length() -
 													záznam.getKey().
 													length()) + záznam.
@@ -1387,7 +1386,7 @@ public class Súbor implements Closeable
 											int indexZáznamu = názov.
 												indexOf(záznam.getKey());
 											if (-1 != indexZáznamu)
-												názov.replace(
+												názov = názov.replace(
 													záznam.getKey(),
 													záznam.getValue());
 										}
@@ -1456,19 +1455,16 @@ public class Súbor implements Closeable
 										{
 											if (názov.startsWith(
 												záznam.getKey()))
-												názov = záznam.
-													getValue() + názov.
-													substring(záznam.
+												názov = záznam.getValue() +
+													názov.substring(záznam.
 														getKey().length());
 										}
 
 										for (Map.Entry<String, String> záznam :
 											konceNázvov.iterateKeys())
 										{
-											if (názov.
-												endsWith(záznam.getKey()))
-												názov = názov.
-													substring(0,
+											if (názov.endsWith(záznam.getKey()))
+												názov = názov.substring(0,
 													názov.length() -
 													záznam.getKey().
 													length()) + záznam.
@@ -1481,14 +1477,13 @@ public class Súbor implements Closeable
 											int indexZáznamu = názov.
 												indexOf(záznam.getKey());
 											if (-1 != indexZáznamu)
-												názov.replace(
+												názov = názov.replace(
 													záznam.getKey(),
 													záznam.getValue());
 										}
 									}
 
-									if (presnéHodnoty.containsKey(
-										hodnota))
+									if (presnéHodnoty.containsKey(hodnota))
 										hodnota = presnéHodnoty.
 											getValue(hodnota);
 									else
@@ -1883,7 +1878,7 @@ public class Súbor implements Closeable
 					{
 						int indexZáznamu = názov.indexOf(záznam.getKey());
 						if (-1 != indexZáznamu)
-							názov.replace(záznam.getKey(),
+							názov = názov.replace(záznam.getKey(),
 								záznam.getValue());
 					}
 				}
