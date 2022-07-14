@@ -617,7 +617,7 @@ public final class Svet extends JFrame
 								históriaVstupnéhoRiadkaNezmenená = true;
 							}
 							else
-								konfiguračnýSúbor.vymažVlastnosť("dĺžkaHistórie");
+								konfiguračnýSúbor.vymažVlastnosť("dĺžka");
 						}
 						catch (Exception e)
 						{ GRobotException.vypíšChybovéHlásenia(e); }
@@ -11060,7 +11060,7 @@ public final class Svet extends JFrame
 
 				// Čítanie histórie vstupného riadka sa deje bez ohľadu na
 				// jej aktiváciu; do úvahy sa berie existencia a hodnota
-				// atribútu dĺžkaHistórie
+				// atribútu: história.dĺžka
 
 				try
 				{

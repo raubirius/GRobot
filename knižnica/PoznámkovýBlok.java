@@ -3090,15 +3090,14 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 
 
 	/**
-	 * <p>Zistí, či bola volaná metóda {@link #zrušDekor(boolean) zrušDekor}
-	 * s parametrom {@code true}. Predvolene je každý poznámkový blok
-	 * vytvorený so zrušeným dekorom prostredníctvom volania metódy
-	 * {@link #zrušDekor(boolean) zrušDekor} s parametrom {@code true},
-	 * čím sa pôvodný dekor odstráni zo všetkých súčastí poznámkového
-	 * bloku.</p>
+	 * <p>Zistí, či má poznámkový blok zrušený dekor. Toto je predvolený stav
+	 * a programovo sa dá dosiahnuť volaním metódy {@link #zrušDekor(boolean)
+	 * zrušDekor} s parametrom {@code true}, čím sa pôvodný dekor odstráni zo
+	 * všetkých súčastí poznámkového bloku.</p>
 	 * 
-	 * @return {@code true} ak bol dekor odstránený metódou {@link 
-	 *     #zrušDekor(boolean) zrušDekor}, {@code false} v opačnom prípade
+	 * @return {@code true} ak bol dekor odstránený (predvolenou konštrukciou
+	 *     alebo metódou {@link #zrušDekor(boolean) zrušDekor}), {@code false}
+	 *     v opačnom prípade
 	 * 
 	 * @see #máDekor()
 	 * @see #zrušDekor(boolean)
@@ -3109,13 +3108,16 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	public boolean jeDekorZruseny() { return zrušDekor; }
 
 	/**
-	 * <p>Zistí, či nebola volaná metóda {@link #zrušDekor(boolean) zrušDekor}
-	 * s parametrom {@code true}. Táto metóda vracia opačnú logickú hodnotu
-	 * ako metóda {@link #jeDekorZrušený() jeDekorZrušený} (pozr jej opis)
-	 * a je jej doplnkom.</p>
+	 * <p>Zistí, či má poznámkový blok dekor. Táto metóda vracia opačnú
+	 * logickú hodnotu ako metóda {@link #jeDekorZrušený() jeDekorZrušený}
+	 * (pozr jej opis) a je jej doplnkom.</p>
 	 * 
-	 * @return {@code true} ak nebol dekor odstránený metódou {@link 
-	 *     #zrušDekor(boolean) zrušDekor}, {@code false} v opačnom prípade
+	 * <!-- p>(Zrušenie dekoru sa programovo dá dosiahnuť volaním metódy
+	 * {@link #zrušDekor(boolean) zrušDekor} s parametrom {@code true}.)</p -->
+	 * 
+	 * @return {@code true} ak nebol dekor odstránený (predvolenou
+	 *     konštrukciou alebo metódou {@link #zrušDekor(boolean) zrušDekor}),
+	 *     {@code false} v opačnom prípade
 	 * 
 	 * @see #jeDekorZrušený()
 	 * @see #zrušDekor(boolean)
@@ -3128,10 +3130,12 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	/**
 	 * <p>Obnoví pôvodný alebo zruší aktuálny dekor poznámkového bloku. Ak je
 	 * hodnota parametra {@code zrušiť} rovná {@code true}, tak je aktuálny
-	 * dekor (orámovanie, pozadie a stav nepriehľadnosti) vymazaný. V opačnom
-	 * prípade (čiže keď je parameter {@code zrušiť} rovný {@code false}) je
-	 * obnovený ten dekor, ktorý bol aktívny v čase vytvárania komponentov
-	 * (súčastí) poznámkového bloku.</p>
+	 * dekor (orámovanie, pozadie a stav nepriehľadnosti) vymazaný (to je
+	 * predvolený stav poznámkových blokov tohto rámca, pričom pôvodný dekor
+	 * je uložený do vnútorných stavov blokov, aby mohol byť touto metódou
+	 * obnovený). V opačnom prípade (čiže keď je parameter {@code zrušiť}
+	 * rovný {@code false}) je obnovený ten dekor, ktorý bol aktívny v čase
+	 * vytvárania komponentov (súčastí) poznámkového bloku.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Pozor na priame nastavovanie
 	 * orámovania, farby pozadia a nepriehľadnosti tohto poznámkového bloku
