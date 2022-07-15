@@ -5632,7 +5632,7 @@ public class SVGPodpora
 		}
 	}
 
-	/** <p><a class="alias"></a> Alias pre {@link #pridajÚsečku(GRobot, String...)}.</p> */	
+	/** <p><a class="alias"></a> Alias pre {@link #pridajÚsečku(GRobot, String...)}.</p> */
 	public void pridajUsecku(GRobot tvorca, String... atribúty)
 	{ pridajÚsečku(tvorca, atribúty); }
 

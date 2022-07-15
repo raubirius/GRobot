@@ -597,6 +597,13 @@ import static java.util.Calendar.*;
  */
 @SuppressWarnings("serial")
 public class GRobotException extends RuntimeException
+	// Poznámka: Odvodenie výnimky od RuntimeException je z pohľadu
+	//     softvérového inžinierstva a z pohľadu veľkých projektov nesprávne.
+	//     Nikdy to nerobte! V rámci tohto rámca bolo toto riešenie prijaté
+	//     z dôvodu zjedodušenia práce s rámcom na hodinách. Mnohé z výnimiek
+	//     ani nikdy nenastanú a komplikácie s ich zachytávaním by priniesli
+	//     priveľa nepriaznivých efektov do procesu používania rámca. Bolo by
+	//     to kontraproduktívne.
 {
 	// Regulárny výraz na vyhľadanie pasáží súvisiacich s výnimkami v rámci
 	// celého programovacieho rámca:

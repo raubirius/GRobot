@@ -744,10 +744,10 @@ public class Plazma
 		int začiatok = 0, koniec;
 		int f1 = farby[0].getRGB(), f2;
 
-		System.out.println("Počet farieb: " + farby.length);
-		System.out.println("Počet zarážok: " + zarážky.length +
-			" (max. využiteľných: " + ((farby.length - 2) >= 0 ?
-			(farby.length - 2) : 0) + ")");
+		// System.out.println("Počet farieb: " + farby.length);
+		// System.out.println("Počet zarážok: " + zarážky.length +
+		// 	" (max. využiteľných: " + ((farby.length - 2) >= 0 ?
+		// 	(farby.length - 2) : 0) + ")");
 
 		for (int j = 0; j < farby.length - 1; ++j)
 		{
@@ -759,8 +759,8 @@ public class Plazma
 			int počet = 1 + koniec - začiatok;
 			f2 = farby[j + 1].getRGB();
 
-			System.out.println(j + ": Rozsah: " + začiatok +
-				" – " + koniec + "; počet: " + počet);
+			// System.out.println(j + ": Rozsah: " + začiatok +
+			// 	" – " + koniec + "; počet: " + počet);
 
 			int r1 = ((f1 >> 16) & 0xff);
 			int g1 = ((f1 >>  8) & 0xff);

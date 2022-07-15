@@ -4149,7 +4149,7 @@ Toto bolo presunuté na úvodnú stránku:
 				if (null == Svet.hlavnýRobot)
 				{
 					Svet.hlavnýRobot = this;
-					Svet.čítajVlastnúKonfiguráciu();
+					Svet.obnovKonfiguráciu();
 
 					Obrázok ikona = new Obrázok(32, 32);
 					kresliNaObrázok(ikona);

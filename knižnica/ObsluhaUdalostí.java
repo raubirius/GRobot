@@ -420,7 +420,7 @@ public class ObsluhaUdalostí
 			if (null == počúvadlo)
 			{
 				počúvadlo = this;
-				Svet.čítajVlastnúKonfiguráciu();
+				Svet.obnovKonfiguráciu();
 			}
 		}
 		else
@@ -430,7 +430,7 @@ public class ObsluhaUdalostí
 					"Obsluha udalostí už bola definovaná!",
 					"eventFactoryAlreadyExists");
 			počúvadlo = this;
-			Svet.čítajVlastnúKonfiguráciu();
+			Svet.obnovKonfiguráciu();
 		}
 	}
 

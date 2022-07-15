@@ -55,6 +55,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
 
+import java.security.MessageDigest;
+
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Stack;
@@ -3382,6 +3384,77 @@ public class Súbor implements Closeable
 		/** <p><a class="alias"></a> Alias pre {@link #veľkosť(String) veľkosť}.</p> */
 		public static long velkost(String názov) { return veľkosť(názov); }
 
+		/**
+		 * <p>Vyrobí kontrolný súčet súboru algoritmom SHA1. Tento súčet sa dá
+		 * použiť na overenie toho, či bol obsah súboru zmenený. Dá sa to
+		 * využiť napríklad na overenie toho, či sa zmenil obsah konfigurácie
+		 * zapísanej na disku, pretože je omnoho menej pamäťovo náročné
+		 * uchovávať v pamäti len kontrolný súčet (kvázi signatúru) súboru ako
+		 * celý súbor.</p>
+		 * 
+		 * <p>Princíp je jednoduchý – uchovať kontrolný súčet vytvorený tesne
+		 * po prečítaní a spracovaní obsahu súboru (t. j. napr. po prečítaní
+		 * konfigurácie) a ten neskôr {@linkplain #súčtySúZhodné(byte[],
+		 * byte[]) porovnavať} s novým súčtom vytvoreným pri vzniku podozrenia
+		 * na zmeny v súbore (napr. pri zistení zmeny {@linkplain 
+		 * #naposledyUpravený(String) dátumu a času poslednej úpravy} súboru).
+		 * Je minimálna šanca, že by mali súbory s rôznym obsahom a rovnakou
+		 * veľkosťou rovnaké kontroné súčty (signatúry).</p>
+		 * 
+		 * @param názov názov súboru
+		 * @return pole bajtov obsahujúce kontrolný súčet súboru alebo
+		 *     {@code valnull}, ak súbor nejestvuje alebo je to priečinok,
+		 *     prípadne sa nedá čítať
+		 * 
+		 * @see #súčtySúZhodné(byte[], byte[])
+		 */
+		public static byte[] kontrolnýSúčet(String názov)
+		{
+			try
+			{
+				MessageDigest md = MessageDigest.getInstance("SHA1");
+
+				byte[] zásobník = new byte[1024]; int prečítané;
+				FileInputStream fis = new FileInputStream(názov);
+
+				while (-1 != (prečítané = fis.read(zásobník)))
+					if (prečítané > 0) md.update(zásobník, 0, prečítané);
+
+				fis.close();
+				return md.digest();
+			}
+			catch (Exception e)
+			{ GRobotException.vypíšChybovéHlásenia(e); }
+
+			return null;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #kontrolnýSúčet(String) kontrolnýSúčet}.</p> */
+		public static byte[] kontrolnySucet(String názov)
+		{ return kontrolnýSúčet(názov); }
+
+		/**
+		 * <p>Porovná zhodu dvoch kontrolných súčtov súborov. Kontrolné súčty
+		 * súborov sa dajú získať metódou: {@link kontrolnýSúčet(String)
+		 * kontrolnýSúčet}.</p>
+		 * 
+		 * @param kontrolnýSúčet1 kontrolný súčet 1 (prvý „odtlačok“ súboru
+		 *     na porovnanie oddelený od druhého v čase alebo priestore)
+		 * @param kontrolnýSúčet2 kontrolný súčet 2 (druhý „odtlačok“ súboru)
+		 * @return {@code valtrue} ak sa súčty zhodujú; {@code valtrue}
+		 *     v opačnom prípade
+		 * 
+		 * @see #kontrolnýSúčet(String)
+		 */
+		public static boolean súčtySúZhodné(byte[] kontrolnýSúčet1,
+			byte[] kontrolnýSúčet2)
+		{ return MessageDigest.isEqual(kontrolnýSúčet1, kontrolnýSúčet2); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #súčtySúZhodné(byte[], byte[]) súčtySúZhodné}.</p> */
+		public static boolean suctySuZhodne(byte[] kontrolnýSúčet1,
+			byte[] kontrolnýSúčet2)
+		{ return súčtySúZhodné(kontrolnýSúčet1, kontrolnýSúčet2); }
+
 	// Menné priestory vlastností
 
 		/**
@@ -5673,6 +5746,7 @@ public class Súbor implements Closeable
 		 * znamenalo použiť nasledujúci zápis:<br />
 		 * <code>    premenná = súbor.čítajVlastnosť("názovVlastnosti",<br />
 		 *         (double)predvolenáHodnota).floatValue();</code></p>
+		 * 
 		 * @param názov názov vlastnosti; nesmie byť prázdny ani obsahovať
 		 *     nepovolené znaky (bodku, hranatú zátvorku alebo rovná sa)
 		 * @param predvolenáHodnota predvolená hodnota vlastnosti, ktorá je
@@ -6773,6 +6847,18 @@ public class Súbor implements Closeable
 		public void prekladajVlastnosti(
 			String[][] prekladyNázvov, String[][] prekladyHodnôt)
 		{
+			// (TODO – zaradiť túto poznámku niekde tak, aby bola ľahko
+			// dostupná alebo lepšie dohľadateľná.)
+			// 
+			// Poznámka: Na hľadanie ďalších vlastností na preklad (pozri
+			// príklad v opise vyššie) je dobré použiť tento regulárny výraz:
+			// 
+			// Vlastnosť(\s*"
+			// 
+			// Na hľadanie rôznych reťazcov v celej dokumentácii je užitočné
+			// zostaviť regulárny výraz podobný nasledujúcemu:
+			// "[^"\n]*?\pL[^"\n]*?(?<!"(?:_blank|alias|attention|caution|centered|color-box|example|fallthrough|[gs]etter|image|note|rawtypes|remark|serial|shadedTable|text/html|text/plain|tip|unchecked|UTF-8|varargs|warning|zoznam-zmien.html))"
+			// 
 			začiatkyNázvov.clear();
 			konceNázvov.clear();
 			stredyNázvov.clear();

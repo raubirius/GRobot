@@ -756,7 +756,13 @@ public final class Svet extends JFrame
 					{ GRobotException.vypíšChybovéHlásenia(e); }
 				}
 
-				/*packagePrivate*/ static void čítajVlastnúKonfiguráciu()
+				// V r. 2022 bola možnosť ukladania a obnovenia konfigurácie
+				// rozšírená o overovanie zmeny konfigurácie na disku. Tým
+				// sa dá synchronizovať nastavenie viacerých inštancií
+				// rovnakej aplikácie. Metóda čítajVlastnúKonfiguráciu() bola
+				// pri tej príležitosti premenovaná na obnovKonfiguráciu().
+
+				/*packagePrivate*/ static void obnovKonfiguráciu()
 				{
 					if (null == názovKonfiguračnéhoSúboru) return;
 
@@ -820,6 +826,8 @@ public final class Svet extends JFrame
 				private static int poslednáVýška = 500;
 				private static int poslednéX = 25;
 				private static int poslednéY = 25;
+
+				private static boolean overujPočiatočnúPolohuOkna = true;
 
 			// Viditeľnosť pri štarte (aplikácie môžu oceniť, keď je hlavné
 				// okno pri štarte skryté a aplikácia sa môže inicializovať
@@ -1554,6 +1562,10 @@ public final class Svet extends JFrame
 				// svet.requestFocusInWindow();
 				svet.setSize(počiatočnáŠírka, počiatočnáVýška);
 				svet.setLocation(počiatočnéX, počiatočnéY);
+
+				if (overujPočiatočnúPolohuOkna && -1 == zistiZariadenieOkna())
+					premiestniNaZariadenie();
+
 				svet.setVisible(zobrazPriŠtarte);
 
 				// Poznámka: Nasledujúci nápad bol dobrý, ale nepodarilo sa
@@ -3957,6 +3969,7 @@ public final class Svet extends JFrame
 		 * 
 		 * @see #početZariadení()
 		 * @see #premiestniNaZariadenie()
+		 * @see #zistiZariadenieOkna()
 		 */
 		public static void premiestniNaZariadenie(int zariadenie)
 		{
@@ -4000,6 +4013,7 @@ public final class Svet extends JFrame
 		 * 
 		 * @see #početZariadení()
 		 * @see #premiestniNaZariadenie(int)
+		 * @see #zistiZariadenieOkna()
 		 */
 		public static void premiestniNaZariadenie()
 		{ premiestniNaZariadenie(0); }
@@ -4045,6 +4059,50 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #premiestniNaZariadenie() premiestniNaZariadenie}.</p> */
 		public static void presunNaObrazovku()
 		{ premiestniNaZariadenie(0); }
+
+
+		/**
+		 * <p>Zistí číslo zariadenia, na ktorom sa nachádza okno sveta.
+		 * Zariadenie je určené jeho „poradovým číslom“ (indexom; čiže
+		 * nula označuje prvé zariadenie). Pri zisťovaní polohy je braný do
+		 * úvahy stred okna. Ak také zariadenie, do ktorého plochy by patril
+		 * stred okna nejestvuje, tak je vrátená hodnota {@code num-1}.</p>
+		 * 
+		 * @return číslo zariadenia, do ktorého patrí stred okna sveta alebo
+		 *     {@code num-1}, ak také zariadenie nejestvuje
+		 * 
+		 * @see #početZariadení()
+		 * @see #premiestniNaZariadenie()
+		 * @see #premiestniNaZariadenie(int)
+		 */
+		public static int zistiZariadenieOkna()
+		{
+			GraphicsDevice[] zariadenia = GraphicsEnvironment.
+				getLocalGraphicsEnvironment().getScreenDevices();
+
+			Rectangle2D hraniceOkna = svet.getBounds();
+
+			double stredX = hraniceOkna.getX() + (hraniceOkna.getWidth()  / 2);
+			double stredY = hraniceOkna.getY() + (hraniceOkna.getHeight() / 2);
+
+			for (int zariadenie = 0; zariadenie <
+				zariadenia.length; ++zariadenie)
+			{
+				GraphicsConfiguration konfigurácia =
+					zariadenia[zariadenie].getDefaultConfiguration();
+				Rectangle2D hraniceZariadenia = konfigurácia.getBounds();
+
+				if (stredX >= hraniceZariadenia.getX() &&
+					(stredX <= hraniceZariadenia.getX() +
+						hraniceZariadenia.getWidth()) &&
+					stredY >= hraniceZariadenia.getY() &&
+					(stredY <= hraniceZariadenia.getY() +
+						hraniceZariadenia.getHeight()))
+					return zariadenie;
+			}
+
+			return -1;
+		}
 
 
 		/**
@@ -10902,6 +10960,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu()
 		 * @see #registrujRobot(GRobot, String)
 		 * @see #čítajKonfiguráciuSveta()
+		 * @see #overujPočiatočnúPolohuOkna()
 		 */
 		public static String predvolenáSekciaKonfigurácie()
 		{
@@ -10932,6 +10991,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu()
 		 * @see #registrujRobot(GRobot, String)
 		 * @see #čítajKonfiguráciuSveta()
+		 * @see #overujPočiatočnúPolohuOkna()
 		 */
 		public static void predvolenáSekciaKonfigurácie(String názov)
 		{
@@ -10975,6 +11035,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu()
 		 * @see #registrujRobot(GRobot, String)
 		 * @see #čítajKonfiguráciuSveta()
+		 * @see #overujPočiatočnúPolohuOkna()
 		 */
 		public static void použiKonfiguráciu(String názovSúboru,
 			int x, int y, int šírka, int výška)
@@ -10985,23 +11046,25 @@ public final class Svet extends JFrame
 				"Svet už bol inicializovaný!", "configNotApplicable");
 
 			// Poznámka: Pri zápise štandardných súborov typu konfiguračné
-			//     súbory, denníky a podobné záležitosti, ktoré majú
-			//     štandardnú príponu vždy kontrolujte, či je táto prípona
-			//     uvedená v názve súboru a ak nie, tak ju pripojte. Je to
-			//     bezpečnejšie. Jeden príklad za všetky: Predstavte si, že
-			//     programátor píše kód, na začiatku ktorého registruje
-			//     konfiguračný súbor s rovnakým názvom ako názov hlavnej
-			//     triedy. Či už z dôvodu nočnej únavy, alebo nedostatku
-			//     rannej kávy v úsilí zjednodušiť si veci skopíruje názov
-			//     z dialógu triedy Uložiť ako… a zabudne prepísať príponu
-			//     z .java na .cfg. Neuvedomí si to a program spustí. Po
-			//     ukončení programu s úžasom zistí, že zdrojový kód jeho
-			//     triedy je fuč a namiesto neho tam má zapísanú konfiguráciu.
-			//     Ak to bola prvá vec, ktorú v hlavnej triede napísal, tak
-			//     veľa nestratil, ak mal zdrojový kód zálohovaný, tiež asi
-			//     veľa nestratil, ale ak my zabezpečíme, pridanie korektnej
-			//     prípony, tak strata ani nenastane.
-			// TODO – poznač medzi „postrehy programátora.“
+			//     súbory, denníky a podobné záležitosti, ktoré majú
+			//     štandardnú príponu vždy kontrolujte, či je táto prípona
+			//     uvedená v názve súboru a ak nie, tak ju pripojte. Je to
+			//     bezpečnejšie. Jeden príklad za všetky: Predstavte si, že
+			//     programátor píše kód, na začiatku ktorého registruje
+			//     konfiguračný súbor s rovnakým názvom ako názov hlavnej
+			//     triedy. Či už z dôvodu nočnej únavy, alebo nedostatku
+			//     rannej kávy v úsilí zjednodušiť si veci skopíruje názov
+			//     z dialógu triedy Uložiť ako… a zabudne prepísať príponu
+			//     z .java na .cfg. Neuvedomí si to a program spustí. Po
+			//     ukončení programu s úžasom zistí, že zdrojový kód jeho
+			//     triedy je fuč a namiesto neho tam má zapísanú konfiguráciu.
+			//     Ak to bola prvá vec, ktorú v hlavnej triede napísal, tak
+			//     veľa nestratil, ak mal zdrojový kód zálohovaný, tiež asi
+			//     veľa nestratil, ale ak my zabezpečíme, pridanie korektnej
+			//     prípony, tak hrozba straty ani nevznikne.
+			// 
+			// TODO – poznač si medzi „postrehy programátora.“
+
 			if (!názovSúboru.endsWith(".cfg")) názovSúboru += ".cfg";
 
 			Súbor.Sekcia pôvodnáSekcia = konfiguračnýSúbor.aktívnaSekcia;
@@ -11013,8 +11076,15 @@ public final class Svet extends JFrame
 			// a zápise zatvorený a opätovne otvorený.
 			try
 			{
+				// —konfiguráciaPoužitá = true;—
+				// Na detegovanie toho, či bola konfigurácia použitá
+				// slúži null != názovKonfiguračnéhoSúboru.
+
 				konfiguračnýSúbor.otvorNaČítanie(
 					názovKonfiguračnéhoSúboru = názovSúboru);
+
+				// ‼TODO‼ long new File(názovKonfiguračnéhoSúboru).lastModified();
+				// konfiguračnýSúborZmenený
 
 				pôvodnáSekcia = konfiguračnýSúbor.aktívnaSekcia;
 				konfiguračnýSúbor.aktivujSekciu(
@@ -11072,14 +11142,18 @@ public final class Svet extends JFrame
 
 					if (dĺžkaHistórie >= 0)
 					{
-						// Prečítanie a vloženie neprázdnych príkazov histórie:
+						// Prečítanie a vloženie neprázdnych príkazov
+						// histórie:
 						for (int i = 0; i < dĺžkaHistórie; ++i)
 						{
 							String položka = konfiguračnýSúbor.
 								čítajVlastnosť("riadok[" + i + "]", "");
 
 							if (null != položka && !položka.isEmpty())
+							{
+								while (históriaVstupnéhoRiadka.odober(položka));
 								históriaVstupnéhoRiadka.pridaj(položka);
+							}
 						}
 
 						// Nastavenie počítadla za poslednú položku histórie:
@@ -11137,6 +11211,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu()
 		 * @see #registrujRobot(GRobot, String)
 		 * @see #čítajKonfiguráciuSveta()
+		 * @see #overujPočiatočnúPolohuOkna()
 		 */
 		public static void použiKonfiguráciu(
 			int x, int y, int šírka, int výška)
@@ -11191,6 +11266,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu()
 		 * @see #registrujRobot(GRobot, String)
 		 * @see #čítajKonfiguráciuSveta()
+		 * @see #overujPočiatočnúPolohuOkna()
 		 */
 		public static void použiKonfiguráciu(String názovSúboru)
 		{
@@ -11242,6 +11318,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu(String)
 		 * @see #registrujRobot(GRobot, String)
 		 * @see #čítajKonfiguráciuSveta()
+		 * @see #overujPočiatočnúPolohuOkna()
 		 */
 		public static void použiKonfiguráciu()
 		{ použiKonfiguráciu(predvolenýNázovKonfiguračnéhoSúboru); }
@@ -11249,6 +11326,50 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #použiKonfiguráciu() použiKonfiguráciu}.</p> */
 		public static void pouziKonfiguraciu()
 		{ použiKonfiguráciu(predvolenýNázovKonfiguračnéhoSúboru); }
+
+		/**
+		 * <p>Zistí aktuálny stav automatického overovania počiatočnej polohy
+		 * okna po jeho inicializácii. Viac podrobností nájdete v opise metódy
+		 * {@link #overujPočiatočnúPolohuOkna(boolean)
+		 * overujPočiatočnúPolohuOkna}{@code (overuj)}.</p>
+		 * 
+		 * @return aktuálny stav overovania: {@code valtrue}/{@code valfalse}
+		 * 
+		 * @see #použiKonfiguráciu()
+		 * @see #overujPočiatočnúPolohuOkna(boolean)
+		 */
+		public static boolean overujPočiatočnúPolohuOkna()
+		{ return overujPočiatočnúPolohuOkna; }
+
+		/**
+		 * <p>Zmení stav automatického overovania počiatočnej polohy okna po
+		 * jeho inicializácii. Z toho vyplýva, že tento stav (príznak) má
+		 * zmysel meniť len pred inicializáciou okna sveta. Najlepšie pred
+		 * {@linkplain #použiKonfiguráciu() použitím konfigurácie.} Po
+		 * inicializácii okna sveta už nie je poloha okna overovaná
+		 * automaticky, ale dá sa vykonať týmto (alebo podobným) kódom:</p>
+		 * 
+		 * <pre CLASS="example">
+			{@code kwdif} ({@link Svet Svet}.{@link #zistiZariadenieOkna() zistiZariadenieOkna}())
+				{@link Svet Svet}.{@link #premiestniNaZariadenie() premiestniNaZariadenie}();
+			</pre>
+		 * 
+		 * @param overuj nový stav overovania: {@code valtrue}/{@code valfalse}
+		 * 
+		 * @see #použiKonfiguráciu()
+		 * @see #overujPočiatočnúPolohuOkna()
+		 * @see #overujPočiatočnúPolohuOkna(boolean)
+		 */
+		public static void overujPočiatočnúPolohuOkna(boolean overuj)
+		{ overujPočiatočnúPolohuOkna = overuj; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #overujPočiatočnúPolohuOkna() overujPočiatočnúPolohuOkna}.</p> */
+		public static boolean overujPociatocnuPolohuOkna()
+		{ return overujPočiatočnúPolohuOkna; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #overujPočiatočnúPolohuOkna(boolean) overujPočiatočnúPolohuOkna}.</p> */
+		public static void overujPociatocnuPolohuOkna(boolean overuj)
+		{ overujPočiatočnúPolohuOkna = overuj; }
 
 		/**
 		 * <p>Účelom tejto metódy je overiť, či pred spustením aplikácie
@@ -11290,6 +11411,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu(String, int, int, int, int)
 		 * @see #použiKonfiguráciu(int, int, int, int)
 		 * @see #čítajKonfiguráciuSveta()
+		 * @see #overujPočiatočnúPolohuOkna()
 		 */
 		public static void registrujRobot() { registrujRobot(hlavnýRobot); }
 
@@ -11321,6 +11443,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu(String, int, int, int, int)
 		 * @see #použiKonfiguráciu(int, int, int, int)
 		 * @see #čítajKonfiguráciuSveta()
+		 * @see #overujPočiatočnúPolohuOkna()
 		 */
 		public static void registrujRobot(String meno)
 		{
@@ -11402,6 +11525,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu(String, int, int, int, int)
 		 * @see #použiKonfiguráciu(int, int, int, int)
 		 * @see #čítajKonfiguráciuSveta()
+		 * @see #overujPočiatočnúPolohuOkna()
 		 */
 		public static void registrujRobot(GRobot robot)
 		{
@@ -11447,6 +11571,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu(String)
 		 * @see #použiKonfiguráciu(String, int, int, int, int)
 		 * @see #použiKonfiguráciu(int, int, int, int)
+		 * @see #overujPočiatočnúPolohuOkna()
 		 */
 		public static void registrujRobot(GRobot robot, String meno)
 		{
@@ -11547,6 +11672,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu(String)
 		 * @see #použiKonfiguráciu(String, int, int, int, int)
 		 * @see #použiKonfiguráciu(int, int, int, int)
+		 * @see #overujPočiatočnúPolohuOkna()
 		 */
 		public static void čítajKonfiguráciuSveta()
 		{
@@ -11974,16 +12100,16 @@ public final class Svet extends JFrame
 					try
 					{
 						StringBuilder sb = new StringBuilder("mailto:");
-						int čísloÚdaju = 0;
+						int čísloÚdaja = 0;
 						boolean semafor = false;
 						String parameter = null;
 
 						for (String údajSprávy : údajeSprávy)
 						{
-							if (0 == čísloÚdaju)
+							if (0 == čísloÚdaja)
 							{
 								sb.append(údajSprávy);
-								++čísloÚdaju;
+								++čísloÚdaja;
 							}
 							else
 							{
@@ -12020,14 +12146,14 @@ public final class Svet extends JFrame
 									else if (parameter.equalsIgnoreCase(
 										"teloSpravy")) parameter = "body";
 
-									sb.append(1 == čísloÚdaju ?
+									sb.append(1 == čísloÚdaja ?
 										'?' : '&');
 									sb.append(URLEncoder.encode(
 										parameter, "UTF-8"));
 									sb.append('=');
 									sb.append(URLEncoder.encode(
 										údajSprávy, "UTF-8"));
-									++čísloÚdaju;
+									++čísloÚdaja;
 								}
 								else parameter = údajSprávy;
 								semafor = !semafor;
@@ -12459,8 +12585,8 @@ public final class Svet extends JFrame
 		 * 
 		 * <p><a href="javascript:;"
 		 * onclick="document.getElementById('grconsole01').style.display = ''; document.getElementById('grconsole02').style.display = 'none';">Zobraziť
-		 * kratšiu verziu (bez komentárov s alternatívnou implementáciou
-		 * ovládania konzoly).</a></p>
+		 * kratšiu verziu (bez komentárov obsahujúcich alternatívnu
+		 * implementáciu ovládania konzoly).</a></p>
 		 * 
 		 * <pre CLASS="example">
 			{@code kwdimport} knižnica.*;
@@ -28042,6 +28168,7 @@ public final class Svet extends JFrame
 		 * @see #celáObrazovka(boolean)
 		 * @see #celáObrazovka(int, boolean)
 		 * @see #premiestniNaZariadenie(int)
+		 * @see #zistiZariadenieOkna()
 		 */
 		public static int početZariadení()
 		{
@@ -28073,6 +28200,7 @@ public final class Svet extends JFrame
 		 * @see #celáObrazovka(int)
 		 * @see #celáObrazovka(boolean)
 		 * @see #celáObrazovka(int, boolean)
+		 * @see #zistiZariadenieOkna()
 		 */
 		public static int šírkaZariadenia() { return šírkaZariadenia(0); }
 
@@ -28103,6 +28231,7 @@ public final class Svet extends JFrame
 		 * @see #celáObrazovka(int)
 		 * @see #celáObrazovka(boolean)
 		 * @see #celáObrazovka(int, boolean)
+		 * @see #zistiZariadenieOkna()
 		 */
 		public static int šírkaZariadenia(int zariadenie)
 		{
@@ -28135,6 +28264,7 @@ public final class Svet extends JFrame
 		 * @see #celáObrazovka(int)
 		 * @see #celáObrazovka(boolean)
 		 * @see #celáObrazovka(int, boolean)
+		 * @see #zistiZariadenieOkna()
 		 */
 		public static int výškaZariadenia() { return výškaZariadenia(0); }
 
@@ -28165,6 +28295,7 @@ public final class Svet extends JFrame
 		 * @see #celáObrazovka(int)
 		 * @see #celáObrazovka(boolean)
 		 * @see #celáObrazovka(int, boolean)
+		 * @see #zistiZariadenieOkna()
 		 */
 		public static int výškaZariadenia(int zariadenie)
 		{
@@ -28199,6 +28330,7 @@ public final class Svet extends JFrame
 		 * @see #celáObrazovka(boolean)
 		 * @see #celáObrazovka(int, boolean)
 		 * @see #oknoCelejObrazovky()
+		 * @see #zistiZariadenieOkna()
 		 */
 		public static boolean celáObrazovka() { return celáObrazovka(0, true); }
 
@@ -28228,6 +28360,7 @@ public final class Svet extends JFrame
 		 * @see #celáObrazovka(boolean)
 		 * @see #celáObrazovka(int, boolean)
 		 * @see #oknoCelejObrazovky()
+		 * @see #zistiZariadenieOkna()
 		 */
 		public static boolean celáObrazovka(int zariadenie)
 		{ return celáObrazovka(zariadenie, true); }
@@ -28255,6 +28388,7 @@ public final class Svet extends JFrame
 		 * @see #celáObrazovka(int)
 		 * @see #celáObrazovka(int, boolean)
 		 * @see #oknoCelejObrazovky()
+		 * @see #zistiZariadenieOkna()
 		 */
 		public static boolean celáObrazovka(boolean celáObrazovka)
 		{ return celáObrazovka(0, celáObrazovka); }
@@ -28357,6 +28491,7 @@ public final class Svet extends JFrame
 		 * @see #celáObrazovka(int)
 		 * @see #celáObrazovka(boolean)
 		 * @see #oknoCelejObrazovky()
+		 * @see #zistiZariadenieOkna()
 		 */
 		public static boolean celáObrazovka(
 			int zariadenie, boolean celáObrazovka)

@@ -213,7 +213,7 @@ package knižnica;
 		{@code comm// Hlavná metóda.}
 		{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}... args)
 		{
-			Svet.použiKonfiguráciu({@code srg"ohnostroj.cfg"});
+			{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"ohnostroj.cfg"});
 			{@code kwdnew} Ohňostroj();
 		}
 	}

@@ -70,7 +70,7 @@ import java.util.Map;
 		{@code kwdif} (a &lt;= {@code num25})
 			{@link GRobot#písmo(Font) písmo}({@code kwdnew} {@link Písmo#Písmo(String, int, double) Písmo}({@code srg"Arial"}, {@code currPísmo}.{@link Písmo#OBYČAJNÉ OBYČAJNÉ}, a));
 		{@code kwdelse if} (a &lt;= {@code num40})
-			{@link GRobot#písmo(Font) písmo}({@code kwdnew} {@link Písmo#Písmo(String, int, double) Písmo}({@code srg"Arial "}, {@code currPísmo}.{@link Písmo#TUČNÉ TUČNÉ}, a));
+			{@link GRobot#písmo(Font) písmo}({@code kwdnew} {@link Písmo#Písmo(String, int, double) Písmo}({@code srg"Arial"}, {@code currPísmo}.{@link Písmo#TUČNÉ TUČNÉ}, a));
 		{@code kwdelse}
 			{@link GRobot#písmo(Font) písmo}({@code kwdnew} {@link Písmo#Písmo(String, int, double) Písmo}({@code srg"Arial"}, {@code currPísmo}.{@link Písmo#TUČNÉ TUČNÉ} | {@code currPísmo}.{@link Písmo#KURZÍVA KURZÍVA}, a));
 
