@@ -645,7 +645,7 @@ public class Súbor implements Closeable
 				notFound = e;
 			}
 
-			// Potom skúsi otvoriť prúd zo zoznamu tried classpath:
+			// Potom skúsi otvoriť prúd zo zoznamu ciest classpath:
 			ClassLoader nahrávačTried = ClassLoader.getSystemClassLoader();
 
 			if (nahrávačTried instanceof URLClassLoader)

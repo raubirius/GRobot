@@ -7104,10 +7104,12 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * <p><b>Príklad:</b></p>
 		 * 
 		 * <p>Sekvenciu súborov vo formáte PNG vytvoríte, ak namiesto názvu
-		 * súboru zadáte šablónu v nasledujúcom tvare:</p>
+		 * súboru zadáte šablónu v nasledujúcom tvare (dôležitá je prítomnosť
+		 * aspoň jednej hviezdičky – zvýraznené červenou):</p>
 		 * 
-		 * <p>    <em>«prefix»</em><code>*</code>[<em>«ľubovoľné
-		 * znaky»</em><code>*</code>]<em>«postfix»</em><code>.png</code></p>
+		 * <p>    <em>«prefix»</em><code><b style="color:red">*</b></code>[<em
+		 * >«ľubovoľné znaky»</em><code><b>*</b></code>]<em>«postfix»</em><code
+		 * >.png</code></p>
 		 * 
 		 * <p>Príklady platných šablón a ukážky názvov prvých dvoch
 		 * a niekoľkých ďalších náhodne zvolených súborov snímok v animovanej

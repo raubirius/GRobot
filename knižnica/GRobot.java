@@ -899,9 +899,13 @@ Toto bolo presunuté na úvodnú stránku:
 			// Záloha spôsobu ohraničenia počas jeho riešenia
 			private int zálohaOhraničenia = ŽIADNE;
 
-			// Záloha polohy a uhla na účely riešenia ohraničenia
+			// Záloha polohy a uhla (a pod.) na účely riešenia ohraničenia
+			// a kontroly zmien polohy a orientácie
 			private double zálohaUhla = 90.0;
 			// private double zálohaX = 0.0, zálohaY = 0.0;
+			private double zálohaPoslednéhoX = 0.0;
+			private double zálohaPoslednéhoY = 0.0;
+			private double zálohaPoslednéhoUhla = 90.0;
 
 			// Stav zachytávajúci zdrojovú a cieľovú polohu robota
 			// a dotknutej hranice počas riešenia ohraničenia
@@ -4190,8 +4194,66 @@ Toto bolo presunuté na úvodnú stránku:
 					else skrytie();
 					zoznamZmenený2 = zoznamZmenený1 = true;
 				}
-				domov();
+
+				try {
+					menímPolohu = menímSmer = true;
+					domov();
+				} finally {
+					menímPolohu = menímSmer = false;
+				}
 			}
+
+		// Kontrola polohy a uhla, obnovenie zo zálohy
+
+			// Príznaky zmeny polohy alebo smeru, aby nenastávalo cyklické
+			// kontrolovanie (čo by s vysokou pravdepodobnosťou skončilo
+			// v nekonečnom cykle):
+			private boolean menímPolohu = false, menímSmer = false;
+
+			// TODO – otestovať tieto nové veci… (2022-07-24)
+
+			private boolean povoľZmenuPolohy()
+			{
+				if (menímPolohu) return true;
+				try
+				{
+					menímPolohu = true;
+					return zmenaPolohy();
+				}
+				finally
+				{
+					menímPolohu = false;
+				}
+			}
+
+			private void vráťPolohu()
+			{
+				aktuálneX = poslednéX;
+				poslednéX = zálohaPoslednéhoX;
+				aktuálneY = poslednéY;
+				poslednéY = zálohaPoslednéhoY;
+			}
+
+			private boolean povoľZmenuUhla()
+			{
+				if (menímSmer) return true;
+				try
+				{
+					menímSmer = true;
+					return zmenaUhla();
+				}
+				finally
+				{
+					menímSmer = false;
+				}
+			}
+
+			private void vráťUhol()
+			{
+				aktuálnyUhol = poslednýUhol;
+				poslednýUhol = zálohaPoslednéhoUhla;
+			}
+
 
 		// Zlúčenie zoznamov
 
@@ -4216,7 +4278,7 @@ Toto bolo presunuté na úvodnú stránku:
 		// Kreslenie úsečky medzi bodmi zadanými v súradnicovom priestore
 		// frameworku
 
-			private void úsečka(double x0, double y0, double x1, double y1)
+			private void úsečka()
 			{
 				boolean vráťKompozit = priehľadnosť < 1.0;
 				Composite zálohaKompozitu = null;
@@ -4241,8 +4303,8 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.setStroke(čiara);
 
 					grafikaAktívnehoPlátna.draw(new Line2D.Double(
-						Svet.prepočítajX(x0), Svet.prepočítajY(y0),
-						Svet.prepočítajX(x1), Svet.prepočítajY(y1)));
+						Svet.prepočítajX(poslednéX), Svet.prepočítajY(poslednéY),
+						Svet.prepočítajX(aktuálneX), Svet.prepočítajY(aktuálneY)));
 				}
 				else if (null == cieľováFarba)
 				{
@@ -4250,13 +4312,15 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.setStroke(čiara);
 
 					grafikaAktívnehoPlátna.draw(new Line2D.Double(
-						Svet.prepočítajX(x0), Svet.prepočítajY(y0),
-						Svet.prepočítajX(x1), Svet.prepočítajY(y1)));
+						Svet.prepočítajX(poslednéX), Svet.prepočítajY(poslednéY),
+						Svet.prepočítajX(aktuálneX), Svet.prepočítajY(aktuálneY)));
 				}
 				else
 				{
-					double x0P = Svet.prepočítajX(x0); double y0P = Svet.prepočítajY(y0);
-					double x1P = Svet.prepočítajX(x1); double y1P = Svet.prepočítajY(y1);
+					double x0P = Svet.prepočítajX(poslednéX);
+					double y0P = Svet.prepočítajY(poslednéY);
+					double x1P = Svet.prepočítajX(aktuálneX);
+					double y1P = Svet.prepočítajY(aktuálneY);
 
 					grafikaAktívnehoPlátna.setPaint(new GradientPaint(
 						(float)x0P, (float)y0P, farbaRobota,
@@ -4269,6 +4333,25 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (vráťKompozit)
 					grafikaAktívnehoPlátna.setComposite(zálohaKompozitu);
+
+				// Aktualizuje pôsobisko úsečkou:
+				if ((poslednéX - (polomerPera / 2)) < minimálneX)
+					minimálneX = poslednéX - (polomerPera / 2);
+				if ((poslednéX + (polomerPera / 2)) > maximálneX)
+					maximálneX = poslednéX + (polomerPera / 2);
+				if ((poslednéY - (polomerPera / 2)) < minimálneY)
+					minimálneY = poslednéY - (polomerPera / 2);
+				if ((poslednéY + (polomerPera / 2)) > maximálneY)
+					maximálneY = poslednéY + (polomerPera / 2);
+
+				if ((aktuálneX - (polomerPera / 2)) < minimálneX)
+					minimálneX = aktuálneX - (polomerPera / 2);
+				if ((aktuálneX + (polomerPera / 2)) > maximálneX)
+					maximálneX = aktuálneX + (polomerPera / 2);
+				if ((aktuálneY - (polomerPera / 2)) < minimálneY)
+					minimálneY = aktuálneY - (polomerPera / 2);
+				if ((aktuálneY + (polomerPera / 2)) > maximálneY)
+					maximálneY = aktuálneY + (polomerPera / 2);
 
 				Svet.automatickéPrekreslenie();
 			}
@@ -5477,6 +5560,9 @@ Toto bolo presunuté na úvodnú stránku:
 		// Pôsobisko
 
 			// Činnosti s pôsobiskom
+
+				// Poznámka: Aktualizácia pôsobiska sa automaticky deje aj
+				// v tele súkromnej metódy úsečka()
 
 				private void aktualizujPôsobisko()
 				{
@@ -8145,10 +8231,19 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						aktuálneX = novéX;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
-
-					aktuálneX = novéX;
+					else
+					{
+						aktuálneX = novéX;
+					}
 
 					if (záznamCesty)
 					{
@@ -8185,10 +8280,19 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						aktuálneY = novéY;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
-
-					aktuálneY = novéY;
+					else
+					{
+						aktuálneY = novéY;
+					}
 
 					if (záznamCesty)
 					{
@@ -8260,12 +8364,23 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						aktuálneX = poloha.polohaX();
+						aktuálneY = poloha.polohaY();
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
-
-					aktuálneX = poloha.polohaX();
-					aktuálneY = poloha.polohaY();
+					else
+					{
+						aktuálneX = poloha.polohaX();
+						aktuálneY = poloha.polohaY();
+					}
 
 					if (záznamCesty)
 					{
@@ -8307,12 +8422,23 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
-
-					aktuálneX = novéX;
-					aktuálneY = novéY;
+					else
+					{
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+					}
 
 					if (záznamCesty)
 					{
@@ -8441,10 +8567,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void uhol(double uhol)
 				{
+					zálohaPoslednéhoUhla = poslednýUhol;
 					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol = uhol;
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+					if (!povoľZmenuUhla())
+					{
+						vráťUhol();
+						return;
+					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
@@ -8461,10 +8593,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void smer(double uhol)
 				{
+					zálohaPoslednéhoUhla = poslednýUhol;
 					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol = uhol;
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+					if (!povoľZmenuUhla())
+					{
+						vráťUhol();
+						return;
+					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
@@ -8502,10 +8640,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void otoč(double uhol)
 				{
+					zálohaPoslednéhoUhla = poslednýUhol;
 					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol = uhol;
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+					if (!povoľZmenuUhla())
+					{
+						vráťUhol();
+						return;
+					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
@@ -8522,10 +8666,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void uhol(Smer objekt)
 				{
+					zálohaPoslednéhoUhla = poslednýUhol;
 					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol = objekt.uhol();
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+					if (!povoľZmenuUhla())
+					{
+						vráťUhol();
+						return;
+					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
@@ -8538,10 +8688,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void smer(Smer objekt)
 				{
+					zálohaPoslednéhoUhla = poslednýUhol;
 					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol = objekt.uhol();
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+					if (!povoľZmenuUhla())
+					{
+						vráťUhol();
+						return;
+					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
@@ -9111,14 +9267,34 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
+						aktuálneX = domaX;
+						aktuálneY = domaY;
+						aktuálnyUhol = uholDoma;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							if (!povoľZmenuUhla()) vráťUhol();
+							return;
+						}
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = domaX;
+						aktuálneY = domaY;
+						aktuálnyUhol = uholDoma;
 					}
 
-					aktuálneX = domaX;
-					aktuálneY = domaY;
-					aktuálnyUhol = uholDoma;
 					if (kreslímVlastnýTvar) return;
 
 					vymažPôsobisko();
@@ -9188,20 +9364,43 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void domov(double novýUholDoma)
 				{
+					novýUholDoma %= 360;
+					if (novýUholDoma < 0) novýUholDoma += 360;
+
 					// Prvý krok ohraničenia (ak je aktívne)
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
+						aktuálneX = domaX;
+						aktuálneY = domaY;
+						aktuálnyUhol = novýUholDoma;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							if (!povoľZmenuUhla()) vráťUhol();
+							return;
+						}
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = domaX;
+						aktuálneY = domaY;
+						aktuálnyUhol = novýUholDoma;
 					}
 
-					aktuálneX = domaX;
-					aktuálneY = domaY;
-					novýUholDoma %= 360;
-					if (novýUholDoma < 0) novýUholDoma += 360;
-					aktuálnyUhol = uholDoma = novýUholDoma;
+					uholDoma = novýUholDoma;
+
 					if (kreslímVlastnýTvar) return;
 
 					vymažPôsobisko();
@@ -9272,20 +9471,43 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void domov(Smer novýSmerDoma)
 				{
+					double novýUholDoma = novýSmerDoma.uhol() % 360;
+					if (novýUholDoma < 0) novýUholDoma += 360;
+
 					// Prvý krok ohraničenia (ak je aktívne)
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
+						aktuálneX = domaX;
+						aktuálneY = domaY;
+						aktuálnyUhol = novýUholDoma;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							if (!povoľZmenuUhla()) vráťUhol();
+							return;
+						}
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = domaX;
+						aktuálneY = domaY;
+						aktuálnyUhol = novýUholDoma;
 					}
 
-					aktuálneX = domaX;
-					aktuálneY = domaY;
-					double novýUholDoma = novýSmerDoma.uhol() % 360;
-					if (novýUholDoma < 0) novýUholDoma += 360;
-					aktuálnyUhol = uholDoma = novýUholDoma;
+					uholDoma = novýUholDoma;
+
 					if (kreslímVlastnýTvar) return;
 
 					vymažPôsobisko();
@@ -9360,14 +9582,37 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
+						aktuálneX = novéXDoma;
+						aktuálneY = novéYDoma;
+						aktuálnyUhol = uholDoma;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							if (!povoľZmenuUhla()) vráťUhol();
+							return;
+						}
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = novéXDoma;
+						aktuálneY = novéYDoma;
+						aktuálnyUhol = uholDoma;
 					}
 
-					aktuálneX = domaX = novéXDoma;
-					aktuálneY = domaY = novéYDoma;
-					aktuálnyUhol = uholDoma;
+					domaX = novéXDoma;
+					domaY = novéYDoma;
+
 					if (kreslímVlastnýTvar) return;
 
 					vymažPôsobisko();
@@ -9440,20 +9685,45 @@ Toto bolo presunuté na úvodnú stránku:
 				public void domov(double novéXDoma, double novéYDoma,
 					double novýUholDoma)
 				{
+					novýUholDoma %= 360;
+					if (novýUholDoma < 0) novýUholDoma += 360;
+
 					// Prvý krok ohraničenia (ak je aktívne)
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
+						aktuálneX = novéXDoma;
+						aktuálneY = novéYDoma;
+						aktuálnyUhol = novýUholDoma;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							if (!povoľZmenuUhla()) vráťUhol();
+							return;
+						}
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = novéXDoma;
+						aktuálneY = novéYDoma;
+						aktuálnyUhol = novýUholDoma;
 					}
 
-					aktuálneX = domaX = novéXDoma;
-					aktuálneY = domaY = novéYDoma;
-					novýUholDoma %= 360;
-					if (novýUholDoma < 0) novýUholDoma += 360;
-					aktuálnyUhol = uholDoma = novýUholDoma;
+					domaX = novéXDoma;
+					domaY = novéYDoma;
+					uholDoma = novýUholDoma;
+
 					if (kreslímVlastnýTvar) return;
 
 					vymažPôsobisko();
@@ -9527,20 +9797,45 @@ Toto bolo presunuté na úvodnú stránku:
 				public void domov(double novéXDoma, double novéYDoma,
 					Smer novýSmerDoma)
 				{
+					double novýUholDoma = novýSmerDoma.uhol() % 360;
+					if (novýUholDoma < 0) novýUholDoma += 360;
+
 					// Prvý krok ohraničenia (ak je aktívne)
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
+						aktuálneX = novéXDoma;
+						aktuálneY = novéYDoma;
+						aktuálnyUhol = novýUholDoma;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							if (!povoľZmenuUhla()) vráťUhol();
+							return;
+						}
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = novéXDoma;
+						aktuálneY = novéYDoma;
+						aktuálnyUhol = novýUholDoma;
 					}
 
-					aktuálneX = domaX = novéXDoma;
-					aktuálneY = domaY = novéYDoma;
-					double novýUholDoma = novýSmerDoma.uhol() % 360;
-					if (novýUholDoma < 0) novýUholDoma += 360;
-					aktuálnyUhol = uholDoma = novýUholDoma;
+					domaX = novéXDoma;
+					domaY = novéYDoma;
+					uholDoma = novýUholDoma;
+
 					if (kreslímVlastnýTvar) return;
 
 					vymažPôsobisko();
@@ -9615,14 +9910,37 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
+						aktuálneX = nováPolohaDoma.polohaX();
+						aktuálneY = nováPolohaDoma.polohaY();
+						aktuálnyUhol = uholDoma;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							if (!povoľZmenuUhla()) vráťUhol();
+							return;
+						}
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = nováPolohaDoma.polohaX();
+						aktuálneY = nováPolohaDoma.polohaY();
+						aktuálnyUhol = uholDoma;
 					}
 
-					aktuálneX = domaX = nováPolohaDoma.polohaX();
-					aktuálneY = domaY = nováPolohaDoma.polohaY();
-					aktuálnyUhol = uholDoma;
+					domaX = nováPolohaDoma.polohaX();
+					domaY = nováPolohaDoma.polohaY();
+
 					if (kreslímVlastnýTvar) return;
 
 					vymažPôsobisko();
@@ -9694,20 +10012,45 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void domov(Poloha nováPolohaDoma, double novýUholDoma)
 				{
+					novýUholDoma %= 360;
+					if (novýUholDoma < 0) novýUholDoma += 360;
+
 					// Prvý krok ohraničenia (ak je aktívne)
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
+						aktuálneX = nováPolohaDoma.polohaX();
+						aktuálneY = nováPolohaDoma.polohaY();
+						aktuálnyUhol = novýUholDoma;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							if (!povoľZmenuUhla()) vráťUhol();
+							return;
+						}
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = nováPolohaDoma.polohaX();
+						aktuálneY = nováPolohaDoma.polohaY();
+						aktuálnyUhol = novýUholDoma;
 					}
 
-					aktuálneX = domaX = nováPolohaDoma.polohaX();
-					aktuálneY = domaY = nováPolohaDoma.polohaY();
-					novýUholDoma %= 360;
-					if (novýUholDoma < 0) novýUholDoma += 360;
-					aktuálnyUhol = uholDoma = novýUholDoma;
+					domaX = nováPolohaDoma.polohaX();
+					domaY = nováPolohaDoma.polohaY();
+					uholDoma = novýUholDoma;
+
 					if (kreslímVlastnýTvar) return;
 
 					vymažPôsobisko();
@@ -9780,20 +10123,45 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void domov(Poloha nováPolohaDoma, Smer novýSmerDoma)
 				{
+					double novýUholDoma = novýSmerDoma.uhol() % 360;
+					if (novýUholDoma < 0) novýUholDoma += 360;
+
 					// Prvý krok ohraničenia (ak je aktívne)
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
+						aktuálneX = nováPolohaDoma.polohaX();
+						aktuálneY = nováPolohaDoma.polohaY();
+						aktuálnyUhol = novýUholDoma;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							if (!povoľZmenuUhla()) vráťUhol();
+							return;
+						}
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = nováPolohaDoma.polohaX();
+						aktuálneY = nováPolohaDoma.polohaY();
+						aktuálnyUhol = novýUholDoma;
 					}
 
-					aktuálneX = domaX = nováPolohaDoma.polohaX();
-					aktuálneY = domaY = nováPolohaDoma.polohaY();
-					double novýUholDoma = novýSmerDoma.uhol() % 360;
-					if (novýUholDoma < 0) novýUholDoma += 360;
-					aktuálnyUhol = uholDoma = novýUholDoma;
+					domaX = nováPolohaDoma.polohaX();
+					domaY = nováPolohaDoma.polohaY();
+					uholDoma = novýUholDoma;
+
 					if (kreslímVlastnýTvar) return;
 
 					vymažPôsobisko();
@@ -9884,20 +10252,45 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void domov(Častica častica)
 				{
+					double novýUholDoma = častica.uhol() % 360;
+					if (novýUholDoma < 0) novýUholDoma += 360;
+
 					// Prvý krok ohraničenia (ak je aktívne)
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
+						aktuálneX = častica.polohaX();
+						aktuálneY = častica.polohaY();
+						aktuálnyUhol = novýUholDoma;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							if (!povoľZmenuUhla()) vráťUhol();
+							return;
+						}
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = častica.polohaX();
+						aktuálneY = častica.polohaY();
+						aktuálnyUhol = novýUholDoma;
 					}
 
-					aktuálneX = domaX = častica.polohaX();
-					aktuálneY = domaY = častica.polohaY();
-					double novýUholDoma = častica.uhol() % 360;
-					if (novýUholDoma < 0) novýUholDoma += 360;
-					aktuálnyUhol = uholDoma = novýUholDoma;
+					domaX = častica.polohaX();
+					domaY = častica.polohaY();
+					uholDoma = novýUholDoma;
+
 					if (kreslímVlastnýTvar) return;
 
 					veľkosť = veľkosťDoma = častica.výška() / 2.0;
@@ -9986,14 +10379,38 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
+						aktuálneX = iný.domaX;
+						aktuálneY = iný.domaY;
+						aktuálnyUhol = iný.uholDoma;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							if (!povoľZmenuUhla()) vráťUhol();
+							return;
+						}
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = iný.domaX;
+						aktuálneY = iný.domaY;
+						aktuálnyUhol = iný.uholDoma;
 					}
 
-					aktuálneX = domaX = iný.domaX;
-					aktuálneY = domaY = iný.domaY;
-					aktuálnyUhol = uholDoma = iný.uholDoma;
+					domaX = iný.domaX;
+					domaY = iný.domaY;
+					uholDoma = iný.uholDoma;
+
 					if (kreslímVlastnýTvar) return;
 
 					// Ostatné veci sa nemenia ak práve kreslím vlastný tvar
@@ -13641,32 +14058,34 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void dopredu(double dĺžka)
 				{
-					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar)
-					{
-						zálohujÚdajeOhraničenia();
-						poslednéX = aktuálneX;
-						poslednéY = aktuálneY;
-					}
-
 					double novéX = aktuálneX + cos(
 						toRadians(aktuálnyUhol)) * dĺžka;
 					double novéY = aktuálneY + sin(
 						toRadians(aktuálnyUhol)) * dĺžka;
 
-					if (peroPoložené)
+					// Prvý krok ohraničenia (ak je aktívne)
+					if (!kreslímVlastnýTvar)
 					{
-						úsečka(aktuálneX, aktuálneY, novéX, novéY);
-						aktualizujPôsobisko();
+						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
+						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
+						poslednéY = aktuálneY;
 						aktuálneX = novéX;
 						aktuálneY = novéY;
-						aktualizujPôsobisko();
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
 					else
 					{
 						aktuálneX = novéX;
 						aktuálneY = novéY;
 					}
+
+					if (peroPoložené) úsečka();
 
 					if (záznamCesty)
 					{
@@ -13783,11 +14202,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void vpravo(double uhol)
 				{
+					zálohaPoslednéhoUhla = poslednýUhol;
 					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol -= uhol;
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-					// while (aktuálnyUhol > 360) aktuálnyUhol -= 360;
+					if (!povoľZmenuUhla())
+					{
+						vráťUhol();
+						return;
+					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
@@ -13833,12 +14257,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void vľavo(double uhol)
 				{
+					zálohaPoslednéhoUhla = poslednýUhol;
 					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol += uhol;
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-					// while (aktuálnyUhol > 360) aktuálnyUhol -= 360;
-					// while (aktuálnyUhol < 0) aktuálnyUhol += 360;
+					if (!povoľZmenuUhla())
+					{
+						vráťUhol();
+						return;
+					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
@@ -14003,21 +14431,32 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void skoč(double dĺžka)
 				{
-					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar)
-					{
-						zálohujÚdajeOhraničenia();
-						poslednéX = aktuálneX;
-						poslednéY = aktuálneY;
-					}
-
 					double novéX = aktuálneX + cos(
 						toRadians(aktuálnyUhol)) * dĺžka;
 					double novéY = aktuálneY + sin(
 						toRadians(aktuálnyUhol)) * dĺžka;
 
-					aktuálneX = novéX;
-					aktuálneY = novéY;
+					// Prvý krok ohraničenia (ak je aktívne)
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
+						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
+						poslednéY = aktuálneY;
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+					}
 
 					if (záznamCesty)
 					{
@@ -14112,12 +14551,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void otočO(double uhol)
 				{
+					zálohaPoslednéhoUhla = poslednýUhol;
 					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol += uhol;
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-					// while (aktuálnyUhol > 360) aktuálnyUhol -= 360;
-					// while (aktuálnyUhol < 0) aktuálnyUhol += 360;
+					if (!povoľZmenuUhla())
+					{
+						vráťUhol();
+						return;
+					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
@@ -14153,10 +14596,17 @@ Toto bolo presunuté na úvodnú stránku:
 					if (uhol > 0 && uhol > najviacO) uhol = najviacO;
 					if (uhol < 0 && uhol < -najviacO) uhol = -najviacO;
 
+					zálohaPoslednéhoUhla = poslednýUhol;
 					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol += uhol;
 					aktuálnyUhol %= 360;
 					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+
+					if (!povoľZmenuUhla())
+					{
+						vráťUhol();
+						return;
+					}
 
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
@@ -14176,32 +14626,34 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void posuňVpravo(double dĺžka)
 				{
-					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar)
-					{
-						zálohujÚdajeOhraničenia();
-						poslednéX = aktuálneX;
-						poslednéY = aktuálneY;
-					}
-
 					double novéX = aktuálneX + cos(
 						toRadians(aktuálnyUhol - 90)) * dĺžka;
 					double novéY = aktuálneY + sin(
 						toRadians(aktuálnyUhol - 90)) * dĺžka;
 
-					if (peroPoložené)
+					// Prvý krok ohraničenia (ak je aktívne)
+					if (!kreslímVlastnýTvar)
 					{
-						úsečka(aktuálneX, aktuálneY, novéX, novéY);
-						aktualizujPôsobisko();
+						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
+						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
+						poslednéY = aktuálneY;
 						aktuálneX = novéX;
 						aktuálneY = novéY;
-						aktualizujPôsobisko();
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
 					else
 					{
 						aktuálneX = novéX;
 						aktuálneY = novéY;
 					}
+
+					if (peroPoložené) úsečka();
 
 					if (záznamCesty)
 					{
@@ -14251,32 +14703,34 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void posuňVľavo(double dĺžka)
 				{
-					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar)
-					{
-						zálohujÚdajeOhraničenia();
-						poslednéX = aktuálneX;
-						poslednéY = aktuálneY;
-					}
-
 					double novéX = aktuálneX + cos(
 						toRadians(aktuálnyUhol + 90)) * dĺžka;
 					double novéY = aktuálneY + sin(
 						toRadians(aktuálnyUhol + 90)) * dĺžka;
 
-					if (peroPoložené)
+					// Prvý krok ohraničenia (ak je aktívne)
+					if (!kreslímVlastnýTvar)
 					{
-						úsečka(aktuálneX, aktuálneY, novéX, novéY);
-						aktualizujPôsobisko();
+						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
+						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
+						poslednéY = aktuálneY;
 						aktuálneX = novéX;
 						aktuálneY = novéY;
-						aktualizujPôsobisko();
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
 					else
 					{
 						aktuálneX = novéX;
 						aktuálneY = novéY;
 					}
+
+					if (peroPoložené) úsečka();
 
 					if (záznamCesty)
 					{
@@ -14381,30 +14835,32 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void posuňVSmere(double smer, double dĺžka)
 				{
+					double novéX = aktuálneX + cos(toRadians(smer)) * dĺžka;
+					double novéY = aktuálneY + sin(toRadians(smer)) * dĺžka;
+
 					// Prvý krok ohraničenia (ak je aktívne)
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
-					}
-
-					double novéX = aktuálneX + cos(toRadians(smer)) * dĺžka;
-					double novéY = aktuálneY + sin(toRadians(smer)) * dĺžka;
-
-					if (peroPoložené)
-					{
-						úsečka(aktuálneX, aktuálneY, novéX, novéY);
-						aktualizujPôsobisko();
 						aktuálneX = novéX;
 						aktuálneY = novéY;
-						aktualizujPôsobisko();
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
 					else
 					{
 						aktuálneX = novéX;
 						aktuálneY = novéY;
 					}
+
+					if (peroPoložené) úsečka();
 
 					if (záznamCesty)
 					{
@@ -14489,32 +14945,34 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void posuňVSmere(Smer smer, double dĺžka)
 				{
-					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar)
-					{
-						zálohujÚdajeOhraničenia();
-						poslednéX = aktuálneX;
-						poslednéY = aktuálneY;
-					}
-
 					double novéX = aktuálneX + cos(
 						toRadians(smer.smer())) * dĺžka;
 					double novéY = aktuálneY + sin(
 						toRadians(smer.smer())) * dĺžka;
 
-					if (peroPoložené)
+					// Prvý krok ohraničenia (ak je aktívne)
+					if (!kreslímVlastnýTvar)
 					{
-						úsečka(aktuálneX, aktuálneY, novéX, novéY);
-						aktualizujPôsobisko();
+						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
+						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
+						poslednéY = aktuálneY;
 						aktuálneX = novéX;
 						aktuálneY = novéY;
-						aktualizujPôsobisko();
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
 					else
 					{
 						aktuálneX = novéX;
 						aktuálneY = novéY;
 					}
+
+					if (peroPoložené) úsečka();
 
 					if (záznamCesty)
 					{
@@ -14589,21 +15047,32 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void preskočVpravo(double dĺžka)
 				{
-					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar)
-					{
-						zálohujÚdajeOhraničenia();
-						poslednéX = aktuálneX;
-						poslednéY = aktuálneY;
-					}
-
 					double novéX = aktuálneX + cos(
 						toRadians(aktuálnyUhol - 90)) * dĺžka;
 					double novéY = aktuálneY + sin(
 						toRadians(aktuálnyUhol - 90)) * dĺžka;
 
-					aktuálneX = novéX;
-					aktuálneY = novéY;
+					// Prvý krok ohraničenia (ak je aktívne)
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
+						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
+						poslednéY = aktuálneY;
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+					}
 
 					if (záznamCesty)
 					{
@@ -14653,21 +15122,32 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void preskočVľavo(double dĺžka)
 				{
-					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar)
-					{
-						zálohujÚdajeOhraničenia();
-						poslednéX = aktuálneX;
-						poslednéY = aktuálneY;
-					}
-
 					double novéX = aktuálneX + cos(
 						toRadians(aktuálnyUhol + 90)) * dĺžka;
 					double novéY = aktuálneY + sin(
 						toRadians(aktuálnyUhol + 90)) * dĺžka;
 
-					aktuálneX = novéX;
-					aktuálneY = novéY;
+					// Prvý krok ohraničenia (ak je aktívne)
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
+						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
+						poslednéY = aktuálneY;
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+					}
 
 					if (záznamCesty)
 					{
@@ -14772,19 +15252,30 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void preskočVSmere(double smer, double dĺžka)
 				{
+					double novéX = aktuálneX + cos(toRadians(smer)) * dĺžka;
+					double novéY = aktuálneY + sin(toRadians(smer)) * dĺžka;
+
 					// Prvý krok ohraničenia (ak je aktívne)
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
-
-					double novéX = aktuálneX + cos(toRadians(smer)) * dĺžka;
-					double novéY = aktuálneY + sin(toRadians(smer)) * dĺžka;
-
-					aktuálneX = novéX;
-					aktuálneY = novéY;
+					else
+					{
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+					}
 
 					if (záznamCesty)
 					{
@@ -14867,21 +15358,32 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void preskočVSmere(Smer smer, double dĺžka)
 				{
-					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar)
-					{
-						zálohujÚdajeOhraničenia();
-						poslednéX = aktuálneX;
-						poslednéY = aktuálneY;
-					}
-
 					double novéX = aktuálneX + cos(
 						toRadians(smer.smer())) * dĺžka;
 					double novéY = aktuálneY + sin(
 						toRadians(smer.smer())) * dĺžka;
 
-					aktuálneX = novéX;
-					aktuálneY = novéY;
+					// Prvý krok ohraničenia (ak je aktívne)
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
+						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
+						poslednéY = aktuálneY;
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+					}
 
 					if (záznamCesty)
 					{
@@ -15248,26 +15750,18 @@ Toto bolo presunuté na úvodnú stránku:
 					double Δy = y - aktuálneY;  // delta y – rozdiel súradníc y
 
 					if (Δx == 0 && Δy == 0) return;
-					// else if (Δx == 0 && Δy < 0) aktuálnyUhol = 270;
-					// else if (Δx == 0 && Δy > 0) aktuálnyUhol = 90;
-					// else if (Δx > 0 && Δy == 0) aktuálnyUhol = 0;
-					// else if (Δx < 0 && Δy == 0) aktuálnyUhol = 180;
 					else
 					{
-						/*
-						double α = toDegrees(atan(Δy / Δx));
-
-						if (Δx < 0)
-							aktuálnyUhol = 180 + α;
-						else if (Δy < 0)
-							aktuálnyUhol = 360 + α;
-						else
-							aktuálnyUhol = α;
-						*/
-
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
 						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
 					}
 
 					if (viditeľný) Svet.automatickéPrekreslenie();
@@ -15325,26 +15819,16 @@ Toto bolo presunuté na úvodnú stránku:
 				// 	double Δy = bod.getY() - aktuálneY;
 				// 
 				// 	if (Δx == 0 && Δy == 0) return;
-				// 	// else if (Δx == 0 && Δy < 0) aktuálnyUhol = 270;
-				// 	// else if (Δx == 0 && Δy > 0) aktuálnyUhol = 90;
-				// 	// else if (Δx > 0 && Δy == 0) aktuálnyUhol = 0;
-				// 	// else if (Δx < 0 && Δy == 0) aktuálnyUhol = 180;
 				// 	else
 				// 	{
-				// 		/*
-				// 		double α = toDegrees(atan(Δy / Δx));
-				// 
 				// 		poslednýUhol = aktuálnyUhol;
-				// 		if (Δx < 0)
-				// 			aktuálnyUhol = 180 + α;
-				// 		else if (Δy < 0)
-				// 			aktuálnyUhol = 360 + α;
-				// 		else
-				// 			aktuálnyUhol = α;
-				// 		*/
-				// 
 				// 		aktuálnyUhol = toDegrees(atan2(Δy, Δx));
 				// 		if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+				// 		if (!povoľZmenuUhla())
+				// 		{
+				// 			vráťUhol();
+				// 			return;
+				// 		}
 				// 	}
 				// 
 				// 	if (viditeľný) Svet.automatickéPrekreslenie();
@@ -15405,26 +15889,17 @@ Toto bolo presunuté na úvodnú stránku:
 						// delta y – rozdiel súradníc y
 
 					if (Δx == 0 && Δy == 0) return;
-					// else if (Δx == 0 && Δy < 0) aktuálnyUhol = 270;
-					// else if (Δx == 0 && Δy > 0) aktuálnyUhol = 90;
-					// else if (Δx > 0 && Δy == 0) aktuálnyUhol = 0;
-					// else if (Δx < 0 && Δy == 0) aktuálnyUhol = 180;
 					else
 					{
-						/*
-						double α = toDegrees(atan(Δy / Δx));
-
-						if (Δx < 0)
-							aktuálnyUhol = 180 + α;
-						else if (Δy < 0)
-							aktuálnyUhol = 360 + α;
-						else
-							aktuálnyUhol = α;
-						*/
-
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
 						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
 					}
 
 					if (viditeľný) Svet.automatickéPrekreslenie();
@@ -15493,26 +15968,17 @@ Toto bolo presunuté na úvodnú stránku:
 						hranice.getHeight() / 2) - aktuálneY;
 
 					if (Δx == 0 && Δy == 0) return;
-					// else if (Δx == 0 && Δy < 0) aktuálnyUhol = 270;
-					// else if (Δx == 0 && Δy > 0) aktuálnyUhol = 90;
-					// else if (Δx > 0 && Δy == 0) aktuálnyUhol = 0;
-					// else if (Δx < 0 && Δy == 0) aktuálnyUhol = 180;
 					else
 					{
-						/*
-						double α = toDegrees(atan(Δy / Δx));
-
-						if (Δx < 0)
-							aktuálnyUhol = 180 + α;
-						else if (Δy < 0)
-							aktuálnyUhol = 360 + α;
-						else
-							aktuálnyUhol = α;
-						*/
-
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
 						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
 					}
 
 					if (viditeľný) Svet.automatickéPrekreslenie();
@@ -15575,26 +16041,17 @@ Toto bolo presunuté na úvodnú stránku:
 					double Δy = ÚdajeUdalostí.súradnicaMyšiY - aktuálneY;
 
 					if (Δx == 0 && Δy == 0) return;
-					// else if (Δx == 0 && Δy < 0) aktuálnyUhol = 270;
-					// else if (Δx == 0 && Δy > 0) aktuálnyUhol = 90;
-					// else if (Δx > 0 && Δy == 0) aktuálnyUhol = 0;
-					// else if (Δx < 0 && Δy == 0) aktuálnyUhol = 180;
 					else
 					{
-						/*
-						double α = toDegrees(atan(Δy / Δx));
-
-						if (Δx < 0)
-							aktuálnyUhol = 180 + α;
-						else if (Δy < 0)
-							aktuálnyUhol = 360 + α;
-						else
-							aktuálnyUhol = α;
-						*/
-
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
 						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
 					}
 
 					if (viditeľný) Svet.automatickéPrekreslenie();
@@ -15660,26 +16117,17 @@ Toto bolo presunuté na úvodnú stránku:
 				public void otoč(double Δx, double Δy)
 				{
 					if (Δx == 0 && Δy == 0) return;
-					// else if (Δx == 0 && Δy < 0) aktuálnyUhol = 270;
-					// else if (Δx == 0 && Δy > 0) aktuálnyUhol = 90;
-					// else if (Δx > 0 && Δy == 0) aktuálnyUhol = 0;
-					// else if (Δx < 0 && Δy == 0) aktuálnyUhol = 180;
 					else
 					{
-						/*
-						double α = toDegrees(atan(Δy / Δx));
-
-						if (Δx < 0)
-							aktuálnyUhol = 180 + α;
-						else if (Δy < 0)
-							aktuálnyUhol = 360 + α;
-						else
-							aktuálnyUhol = α;
-						*/
-
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
 						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
 					}
 
 					if (viditeľný) Svet.automatickéPrekreslenie();
@@ -15732,8 +16180,14 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void otoč(Smer objekt)
 				{
+					zálohaPoslednéhoUhla = poslednýUhol;
 					poslednýUhol = aktuálnyUhol;
 					aktuálnyUhol = objekt.smer();
+					if (!povoľZmenuUhla())
+					{
+						vráťUhol();
+						return;
+					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
@@ -16160,23 +16614,25 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
-					}
-
-					if (peroPoložené)
-					{
-						úsečka(aktuálneX, aktuálneY, novéX, novéY);
-						aktualizujPôsobisko();
 						aktuálneX = novéX;
 						aktuálneY = novéY;
-						aktualizujPôsobisko();
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
 					else
 					{
 						aktuálneX = novéX;
 						aktuálneY = novéY;
 					}
+
+					if (peroPoložené) úsečka();
 
 					if (záznamCesty)
 					{
@@ -16230,24 +16686,25 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
-					}
-
-					if (peroPoložené)
-					{
-						úsečka(aktuálneX, aktuálneY,
-							objekt.polohaX(), objekt.polohaY());
-						aktualizujPôsobisko();
 						aktuálneX = objekt.polohaX();
 						aktuálneY = objekt.polohaY();
-						aktualizujPôsobisko();
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
 					else
 					{
 						aktuálneX = objekt.polohaX();
 						aktuálneY = objekt.polohaY();
 					}
+
+					if (peroPoložené) úsečka();
 
 					if (záznamCesty)
 					{
@@ -16303,33 +16760,35 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void choďNa(Shape tvar)
 				{
-					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar)
-					{
-						zálohujÚdajeOhraničenia();
-						poslednéX = aktuálneX;
-						poslednéY = aktuálneY;
-					}
-
 					Rectangle2D hranice = tvar.getBounds2D();
 					double novéX = Svet.prepočítajSpäťX(hranice.getX()) +
 						hranice.getWidth() / 2;
 					double novéY = Svet.prepočítajSpäťY(hranice.getY()) -
 						hranice.getHeight() / 2;
 
-					if (peroPoložené)
+					// Prvý krok ohraničenia (ak je aktívne)
+					if (!kreslímVlastnýTvar)
 					{
-						úsečka(aktuálneX, aktuálneY, novéX, novéY);
-						aktualizujPôsobisko();
+						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
+						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
+						poslednéY = aktuálneY;
 						aktuálneX = novéX;
 						aktuálneY = novéY;
-						aktualizujPôsobisko();
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
 					else
 					{
 						aktuálneX = novéX;
 						aktuálneY = novéY;
 					}
+
+					if (peroPoložené) úsečka();
 
 					if (záznamCesty)
 					{
@@ -16376,25 +16835,26 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
-					}
-
-					if (peroPoložené)
-					{
-						úsečka(aktuálneX, aktuálneY,
-							ÚdajeUdalostí.súradnicaMyšiX,
-							ÚdajeUdalostí.súradnicaMyšiY);
-						aktualizujPôsobisko();
 						aktuálneX = ÚdajeUdalostí.súradnicaMyšiX;
 						aktuálneY = ÚdajeUdalostí.súradnicaMyšiY;
-						aktualizujPôsobisko();
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
 					else
 					{
 						aktuálneX = ÚdajeUdalostí.súradnicaMyšiX;
 						aktuálneY = ÚdajeUdalostí.súradnicaMyšiY;
+
 					}
+
+					if (peroPoložené) úsečka();
 
 					if (záznamCesty)
 					{
@@ -16451,24 +16911,25 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
-					}
-
-					if (peroPoložené)
-					{
-						úsečka(aktuálneX, aktuálneY,
-							aktuálneX + Δx, aktuálneY + Δy);
-						aktualizujPôsobisko();
 						aktuálneX += Δx;
 						aktuálneY += Δy;
-						aktualizujPôsobisko();
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
 					else
 					{
 						aktuálneX += Δx;
 						aktuálneY += Δy;
 					}
+
+					if (peroPoložené) úsečka();
 
 					if (záznamCesty)
 					{
@@ -16545,12 +17006,23 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
-
-					aktuálneX = novéX;
-					aktuálneY = novéY;
+					else
+					{
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+					}
 
 					if (záznamCesty)
 					{
@@ -16605,12 +17077,23 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						aktuálneX = objekt.polohaX();
+						aktuálneY = objekt.polohaY();
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
-
-					aktuálneX = objekt.polohaX();
-					aktuálneY = objekt.polohaY();
+					else
+					{
+						aktuálneX = objekt.polohaX();
+						aktuálneY = objekt.polohaY();
+					}
 
 					if (záznamCesty)
 					{
@@ -16666,22 +17149,33 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void skočNa(Shape tvar)
 				{
-					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar)
-					{
-						zálohujÚdajeOhraničenia();
-						poslednéX = aktuálneX;
-						poslednéY = aktuálneY;
-					}
-
 					Rectangle2D hranice = tvar.getBounds2D();
 					double novéX = Svet.prepočítajSpäťX(hranice.getX()) +
 						hranice.getWidth() / 2;
 					double novéY = Svet.prepočítajSpäťY(hranice.getY()) -
 						hranice.getHeight() / 2;
 
-					aktuálneX = novéX;
-					aktuálneY = novéY;
+					// Prvý krok ohraničenia (ak je aktívne)
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
+						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
+						poslednéY = aktuálneY;
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+					}
 
 					if (záznamCesty)
 					{
@@ -16728,12 +17222,23 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						aktuálneX = ÚdajeUdalostí.súradnicaMyšiX;
+						aktuálneY = ÚdajeUdalostí.súradnicaMyšiY;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
-
-					aktuálneX = ÚdajeUdalostí.súradnicaMyšiX;
-					aktuálneY = ÚdajeUdalostí.súradnicaMyšiY;
+					else
+					{
+						aktuálneX = ÚdajeUdalostí.súradnicaMyšiX;
+						aktuálneY = ÚdajeUdalostí.súradnicaMyšiY;
+					}
 
 					if (záznamCesty)
 					{
@@ -16790,12 +17295,23 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						aktuálneX += Δx;
+						aktuálneY += Δy;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
-
-					aktuálneX += Δx;
-					aktuálneY += Δy;
+					else
+					{
+						aktuálneX += Δx;
+						aktuálneY += Δy;
+					}
 
 					if (záznamCesty)
 					{
@@ -16881,14 +17397,6 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void posuň(double Δx, double Δy)
 				{
-					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar)
-					{
-						zálohujÚdajeOhraničenia();
-						poslednéX = aktuálneX;
-						poslednéY = aktuálneY;
-					}
-
 					double novéX = aktuálneX
 						+ sin(toRadians(aktuálnyUhol)) * Δx
 						+ cos(toRadians(aktuálnyUhol)) * Δy;
@@ -16897,19 +17405,29 @@ Toto bolo presunuté na úvodnú stránku:
 						- cos(toRadians(aktuálnyUhol)) * Δx
 						+ sin(toRadians(aktuálnyUhol)) * Δy;
 
-					if (peroPoložené)
+					// Prvý krok ohraničenia (ak je aktívne)
+					if (!kreslímVlastnýTvar)
 					{
-						úsečka(aktuálneX, aktuálneY, novéX, novéY);
-						aktualizujPôsobisko();
+						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
+						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
+						poslednéY = aktuálneY;
 						aktuálneX = novéX;
 						aktuálneY = novéY;
-						aktualizujPôsobisko();
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
 					else
 					{
 						aktuálneX = novéX;
 						aktuálneY = novéY;
 					}
+
+					if (peroPoložené) úsečka();
 
 					if (záznamCesty)
 					{
@@ -17061,14 +17579,6 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void preskoč(double Δx, double Δy)
 				{
-					// Prvý krok ohraničenia (ak je aktívne)
-					if (!kreslímVlastnýTvar)
-					{
-						zálohujÚdajeOhraničenia();
-						poslednéX = aktuálneX;
-						poslednéY = aktuálneY;
-					}
-
 					double novéX = aktuálneX
 						+ sin(toRadians(aktuálnyUhol)) * Δx
 						+ cos(toRadians(aktuálnyUhol)) * Δy;
@@ -17077,8 +17587,27 @@ Toto bolo presunuté na úvodnú stránku:
 						- cos(toRadians(aktuálnyUhol)) * Δx
 						+ sin(toRadians(aktuálnyUhol)) * Δy;
 
-					aktuálneX = novéX;
-					aktuálneY = novéY;
+					// Prvý krok ohraničenia (ak je aktívne)
+					if (!kreslímVlastnýTvar)
+					{
+						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
+						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
+						poslednéY = aktuálneY;
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
+					}
+					else
+					{
+						aktuálneX = novéX;
+						aktuálneY = novéY;
+					}
 
 					if (záznamCesty)
 					{
@@ -17162,18 +17691,13 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
 					}
-
-					/*
-					if (polomer < 0)
-					{
-						uhol = -uhol;
-						polomer = -polomer;
-					}
-					*/
 
 					double prepočítanéX = Svet.prepočítajX(aktuálneX);
 					double prepočítanéY = Svet.prepočítajY(aktuálneY);
@@ -17256,22 +17780,20 @@ Toto bolo presunuté na úvodnú stránku:
 							aktuálnyUhol + 90)) * polomer;
 					}
 
-					/*
-					// Pôvodné správanie metódy:
-					double pôvodnýSmer = aktuálnyUhol;
-					double krok = (PI * polomer) / 180.0;
-					double alfa = uhol >= 0 ? 1 : -1;
-					double rotácia = alfa;
-					while (abs(rotácia) <= abs(uhol))
+					if (!kreslímVlastnýTvar)
 					{
-						aktuálnyUhol -= alfa;
-						rotácia += alfa;
-						dopredu(krok);
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							if (!povoľZmenuUhla()) vráťUhol();
+							return;
+						}
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
 					}
-					aktuálnyUhol = pôvodnýSmer - uhol;
-					aktuálnyUhol %= 360;
-					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-					*/
 
 					if (záznamCesty)
 					{
@@ -17337,6 +17859,7 @@ Toto bolo presunuté na úvodnú stránku:
 					double krok = (PI * polomer * jemnosť) / 180.0;
 					double alfa = uhol >= 0 ? jemnosť : -jemnosť;
 					double rotácia = alfa;
+					zálohaPoslednéhoUhla = poslednýUhol;
 					poslednýUhol = aktuálnyUhol;
 					while (abs(rotácia) <= abs(uhol))
 					{
@@ -17345,6 +17868,11 @@ Toto bolo presunuté na úvodnú stránku:
 						dopredu(krok);
 					}
 					aktuálnyUhol = pôvodnýSmer + uhol;
+					if (!povoľZmenuUhla())
+					{
+						vráťUhol();
+						return;
+					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
@@ -17400,8 +17928,11 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
 					}
 
@@ -17483,6 +18014,20 @@ Toto bolo presunuté na úvodnú stránku:
 							aktuálnyUhol + 90)) * polomer;
 					}
 
+					if (!kreslímVlastnýTvar)
+					{
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							if (!povoľZmenuUhla()) vráťUhol();
+							return;
+						}
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
 
 					if (záznamCesty)
 					{
@@ -17815,12 +18360,17 @@ Toto bolo presunuté na úvodnú stránku:
 					if (δ < 0.0001 || δ > 359.9999)
 					{
 						choďNa(x, y);
-						double zálohaUhla = aktuálnyUhol;
-						aktuálnyUhol += δ;
-						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 
-						uhol(aktuálnyUhol);
-						poslednýUhol = zálohaUhla;
+						// Starý mechanizmus sa po pridaní kontroly povolenia
+						// zmeny uhla už nedal použiť:
+						// 
+						// double zálohaUhla = aktuálnyUhol;
+						// aktuálnyUhol += δ;
+						// if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						// uhol(aktuálnyUhol);
+						// poslednýUhol = zálohaUhla;
+
+						uhol(aktuálnyUhol + δ);
 						return;
 					}
 					else if (δ > 179.9999 && δ < 180.0001)
@@ -18045,12 +18595,17 @@ Toto bolo presunuté na úvodnú stránku:
 					if (δ < 0.0001 || δ > 359.9999)
 					{
 						skočNa(x, y);
-						double zálohaUhla = aktuálnyUhol;
-						aktuálnyUhol += δ;
-						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 
-						uhol(aktuálnyUhol);
-						poslednýUhol = zálohaUhla;
+						// Starý mechanizmus sa po pridaní kontroly povolenia
+						// zmeny uhla už nedal použiť:
+						// 
+						// double zálohaUhla = aktuálnyUhol;
+						// aktuálnyUhol += δ;
+						// if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						// uhol(aktuálnyUhol);
+						// poslednýUhol = zálohaUhla;
+
+						uhol(aktuálnyUhol + δ);
 						return;
 					}
 
@@ -19980,8 +20535,13 @@ Toto bolo presunuté na úvodnú stránku:
 							if (abs(aktuálnyUhol - β) <= 0.05 ||
 								abs(360 + aktuálnyUhol - β) <= 0.05)
 							{
+								zálohaPoslednéhoUhla = poslednýUhol;
 								poslednýUhol = aktuálnyUhol;
 								aktuálnyUhol = β;
+								if (!povoľZmenuUhla()) vráťUhol();
+									// Poznámka: Tu som sa rozhodol nevykonať
+									// return true, lebo ani choďNa nižšie to
+									// neurobí (v súčasnosti ani nemá ako).
 							}
 							else return true;
 						}
@@ -20840,23 +21400,25 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
-					}
-
-					if (peroPoložené)
-					{
-						úsečka(aktuálneX, aktuálneY, cieľX, cieľY);
-						aktualizujPôsobisko();
 						aktuálneX = cieľX;
 						aktuálneY = cieľY;
-						aktualizujPôsobisko();
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
 					else
 					{
 						aktuálneX = cieľX;
 						aktuálneY = cieľY;
 					}
+
+					if (peroPoložené) úsečka();
 
 					if (záznamCesty)
 					{
@@ -20903,12 +21465,23 @@ Toto bolo presunuté na úvodnú stránku:
 					if (!kreslímVlastnýTvar)
 					{
 						zálohujÚdajeOhraničenia();
+						zálohaPoslednéhoX = poslednéX;
 						poslednéX = aktuálneX;
+						zálohaPoslednéhoY = poslednéY;
 						poslednéY = aktuálneY;
+						aktuálneX = cieľX;
+						aktuálneY = cieľY;
+						if (!povoľZmenuPolohy())
+						{
+							vráťPolohu();
+							return;
+						}
 					}
-
-					aktuálneX = cieľX;
-					aktuálneY = cieľY;
+					else
+					{
+						aktuálneX = cieľX;
+						aktuálneY = cieľY;
+					}
 
 					if (záznamCesty)
 					{
@@ -20958,9 +21531,15 @@ Toto bolo presunuté na úvodnú stránku:
 					if (Δx == 0 && Δy == 0) return;
 					else
 					{
+						zálohaPoslednéhoUhla = poslednýUhol;
 						poslednýUhol = aktuálnyUhol;
 						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
 					}
 
 					if (viditeľný) Svet.automatickéPrekreslenie();
@@ -23288,42 +23867,9 @@ Toto bolo presunuté na úvodnú stránku:
 
 								overDosiahnutieCieľa();
 
-								/*
-								if (sqrt(pow(cieľX - aktuálneX, 2) +
-									pow(cieľY - aktuálneY, 2)) <= rýchlosť)
-								{
-									double β = smerNa(cieľX, cieľY);
-									if (abs(aktuálnyUhol - β) <= 0.01 ||
-										abs(360 + aktuálnyUhol - β) <= 0.01)
-									{
-										poslednýUhol = aktuálnyUhol;
-										aktuálnyUhol = β;
-										choďNa(cieľX, cieľY);
-										cieľAktívny = false;
-										if (zastavVCieli)
-										{
-											if (zrýchlenie != 0)
-											{
-												if ((rýchlosť > 0.0 &&
-													zrýchlenie < 0.0) ||
-													rýchlosť < 0.0)
-												{
-													zrýchlenie = -zrýchlenie;
-												}
-												rýchlosť = 0.0;
-											}
-											zastav();
-										}
-										dosiahnutieCieľa();
-										dosiahnutieCiela();
-									}
-								}
-								*/
-
 								if (cieľAktívny)
 								{
 									dopredu(rýchlosť);
-									// doľava(uhlováRýchlosť);
 
 									if (zrýchlenie != 0.0)
 									{
@@ -24433,7 +24979,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * na hranice svojho ohraničenia, posunie stav dotknutia
 				 * nasledujúcemu robotu v poradí.</p>
 				 * 
-				 * <pre CLASS="example">
+				 * <pre C+LASS="example">
 					{@code kwdimport} knižnica.*;
 
 					{@code kwdpublic} {@code typeclass} OplotenéRoboty {@code kwdextends} {@link GRobot GRobot}
@@ -24651,6 +25197,66 @@ Toto bolo presunuté na úvodnú stránku:
 
 				/** <p><a class="alias"></a> Alias pre {@link #mimoHraníc() mimoHraníc}.</p> */
 				public void mimoHranic() {}
+
+				/**
+				 * <p>Táto metóda je predvolene prázdna. Je určená na prekrytie
+				 * v niektorej z tried odvodených od robota. Je spúšťaná
+				 * automaticky vždy pri zmene {@linkplain #poloha() polohy}
+				 * robota (skákanie, rôzne pohyby, všetko, čo vedie ku zmene
+				 * aktuálnej polohy…), okrem zmien vykonávaných v rámci procesu
+				 * kreslenia {@linkplain #kresliTvar() vlastného tvaru}.
+				 * Návratová hodnota tejto metódy určuje, či smie byť zmena
+				 * schválená. Ak nebude schválená, robot sa nepohne, resp.
+				 * technicky sa vráti na svoju {@linkplain #poslednáPoloha()
+				 * poslednú polohu}.</p>
+				 * 
+				 * <p><b>Príklad:</b></p>
+				 * 
+				 * <pre CLASS="example">
+					{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@code currzmenaPolohy}()
+					{
+						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Zmena polohy: "},
+							{@link #poslednáPoloha() poslednáPoloha}(), {@code srg" – "} + {@link poloha poloha}());
+						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Zistené volanie: "},
+							{@link GRobotException GRobotException}.{@link GRobotException#stackTraceToString(Throwable) stackTraceToString}(
+								{@code kwdnew} {@link Throwable#Throwable() Throwable}()));
+						{@code kwdreturn} {@code valtrue};
+					}
+					</pre>
+				 * 
+				 * @return určuje, či smie byť zmena schválená
+				 */
+				public boolean zmenaPolohy() { return true; }
+
+				/**
+				 * <p>Táto metóda je predvolene prázdna. Je určená na prekrytie
+				 * v niektorej z tried odvodených od robota. Je spúšťaná
+				 * automaticky vždy pri zmene {@linkplain #uhol() uhla} robota
+				 * (nastavovanie, otáčanie, všetko, čo vedie ku zmene
+				 * orientácie…), okrem zmien vykonávaných v rámci procesu
+				 * kreslenia {@linkplain #kresliTvar() vlastného tvaru}.
+				 * Návratová hodnota tejto metódy určuje, či smie byť zmena
+				 * schválená. Ak nebude schválená, robot sa nepohne (neotočí),
+				 * resp. technicky sa vráti naspäť na svoj {@linkplain 
+				 * #poslednýUhol() posledný smer}.</p>
+				 * 
+				 * <p><b>Príklad:</b></p>
+				 * 
+				 * <pre CLASS="example">
+					{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@code currzmenaUhla}()
+					{
+						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Zmena uhla: "},
+							{@link #poslednýUhol() poslednýUhol}(), {@code srg" – "} + {@link #uhol() uhol}());
+						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Zistené volanie: "},
+							{@link GRobotException GRobotException}.{@link GRobotException#stackTraceToString(Throwable) stackTraceToString}(
+								{@code kwdnew} {@link Throwable#Throwable() Throwable}()));
+						{@code kwdreturn} {@code valtrue};
+					}
+					</pre>
+				 * 
+				 * @return určuje, či smie byť zmena schválená
+				 */
+				public boolean zmenaUhla() { return true; }
 
 
 			// Metódy obsluhy udalostí na prekrytie
