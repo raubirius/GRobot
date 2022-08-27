@@ -222,6 +222,76 @@ import static knižnica.Konštanty.ODOVZDANIE_ÚDAJOV;
 	}
 	</pre>
  * 
+ * <p>Príklad vytvorenia metódy na prevzatie súboru zo servera (na
+ * požiadanie):</p>
+ * 
+ * <!-- TODO – overiť vzhľad a funkčnosť príkladu, pridať výsledok (?)… -->
+ * 
+ * <pre CLASS="example">
+	{@code kwdprivate} {@code currSpojenie} spojenie = {@code kwdnew} {@link Spojenie#Spojenie() Spojenie}();
+
+	{@code kwdpublic} {@code typevoid} prevezmiSúbor({@link String String} adresa)
+	{
+		{@code comm// Svet.vykonaťNeskôr(() -> // (ak chceme sledovať priebeh)}
+		{
+			{@code kwdif} (spojenie.{@link Spojenie#otvorLokalitu(String) otvorLokalitu}(adresa))
+			{
+				{@code kwdif} (!spojenie.{@link Spojenie#zavri() zavri}())
+					{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"Spojenie sa nepodarilo "} +
+						{@code srg"korektne zavrieť."});
+
+				{@link String String} uloženýAko = spojenie.{@link Spojenie#uložOdpoveď() uložOdpoveď}();
+
+				{@code kwdif} ({@code valnull} == uloženýAko)
+					{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}(
+						{@code srg"Nepodarilo sa prevziať súbor z adresy: "} + adresa);
+				{@code kwdelse}
+					{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"Súbor prevzatý z adresy: "} + adresa +
+						{@code srg"\nbol uložený ako: "} + uloženýAko);
+
+				{@code comm// Ak chceme získať ďalšie detaily o požiadavke:}
+				{
+					{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"\nPožiadavka:"});
+
+					{@link String String}[] údaje = spojenie.{@link Spojenie#dajÚdajePožiadavky() dajÚdajePožiadavky}();
+					{@code kwdif} ({@code valnull} == údaje)
+						{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"Žiadne údaje požiadavky."});
+					{@code kwdelse}
+						{@code kwdfor} ({@link String String} údaj : údaje)
+							{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}(údaj);
+				}
+
+				{@code comm// Ak chceme získať ďalšie detaily o odpovedi:}
+				{
+					{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"\nOdpoveď:"});
+
+					{@link String String}[] údaje = spojenie.{@link Spojenie#dajÚdajeOdpovede() dajÚdajeOdpovede}();
+					{@code kwdif} ({@code valnull} == údaje)
+						{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"Žiadne údaje odpovede."});
+					{@code kwdelse}
+						{@code kwdfor} ({@link String String} údaj : údaje)
+							{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}(údaj);
+				}
+			}
+			{@code kwdelse}
+				{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"Nepodarilo sa ovoriť spojenie na "} +
+					{@code srg"prevzatie súboru z adresy: "} + adresa);
+		}
+		{@code comm// , true); // (ak chceme sledovať priebeh)}
+	}
+
+	{@code comm// private static int percento = -1; // (ak chceme sledovať priebeh)}
+
+	{@code comm// (ak chceme sledovať priebeh)}
+	{@code comm//  @Override public void sekvencia(int kódSpracovania, Object zdroj,}
+	{@code comm//  	Object cieľ, long stav, long celkovo)}
+	{@code comm//  {}
+	{@code comm//  	if (stav > celkovo) stav = celkovo;}
+	{@code comm//  	percento = (int)((stav * 100) / celkovo);}
+	{@code comm//  	System.out.println(percento + " %");}
+	{@code comm//  }}
+	</pre>
+ * 
  * <p> </p>
  * 
  * <p><b>Použité a odporúčané zdroje:</b></p>
@@ -305,11 +375,11 @@ public class Spojenie
 	private String lokálnaCesta = "";
 
 
-	// Atribút uchovávajúci hlavičku odosielanej správy.
-	private String hlavičkaSprávy = "";
+	// Atribút uchovávajúci hlavičku obsahu odosielanej správy.
+	private String hlavičkaObsahuSprávy = "";
 
-	// Atribút uchovávajúci chvost odosielanej správy.
-	private String chvostSprávy = "";
+	// Atribút uchovávajúci chvost obsahu odosielanej správy.
+	private String chvostObsahuSprávy = "";
 
 	// Jedinečné ohraničenie údajov vytvorené s použitím identifikátora
 	// údajov a generátora náhodných čísiel (vyššie).
@@ -446,11 +516,11 @@ public class Spojenie
 
 		try
 		{
-			// System.out.println("Hlavička: „" + hlavičkaSprávy + "“");
-			byte[] bytes = hlavičkaSprávy.getBytes("UTF-8");
+			// System.out.println("Hlavička: „" + hlavičkaObsahuSprávy + "“");
+			byte[] bytes = hlavičkaObsahuSprávy.getBytes("UTF-8");
 
 			spojenie.setRequestProperty("Content-Length",
-				String.valueOf((bytes.length + chvostSprávy.
+				String.valueOf((bytes.length + chvostObsahuSprávy.
 					getBytes("UTF-8").length + veľkosťPrílohy)));
 
 			údajePožiadavky = spojenie.getRequestProperties();
@@ -480,8 +550,8 @@ public class Spojenie
 
 		try
 		{
-			// System.out.println("Chvost: „" + chvostSprávy + "“");
-			výstup.write(chvostSprávy.getBytes("UTF-8"));
+			// System.out.println("Chvost: „" + chvostObsahuSprávy + "“");
+			výstup.write(chvostObsahuSprávy.getBytes("UTF-8"));
 			výstup.flush();
 			chvostPoslaný = true;
 
@@ -2314,6 +2384,8 @@ public class Spojenie
 	 * 
 	 * @see #otvor(String, String, String, String...)
 	 * @see #otvorLokalitu(String)
+	 * @see #hlavičkyPoslané()
+	 * @see #pridajHlavičky(String...)
 	 * @see #pridajÚdaj(String, String)
 	 * @see #pošliSúbor(String, String, String)
 	 * @see #zavri()
@@ -2359,10 +2431,10 @@ public class Spojenie
 
 			// Inicializácia ďalších (dôležitých) súvisiacich údajov:
 			hranica = "--" + identifikátorÚdajov + "--" + random.nextInt();
-			hlavičkaSprávy = "";
+			hlavičkaObsahuSprávy = "";
 
-			chvostSprávy = "";
-			chvostSprávy += EOL + "--" + hranica + "--" + EOL;
+			chvostObsahuSprávy = "";
+			chvostObsahuSprávy += EOL + "--" + hranica + "--" + EOL;
 
 			spojenie.setRequestProperty("Content-Type",
 				"multipart/form-data; boundary=" + hranica);
@@ -2392,7 +2464,15 @@ public class Spojenie
 	 * #port(int) portom}, {@linkplain #vzdialenáCesta(String) vzdialenou
 	 * cestou}) a parametrami tejto metódy ({@code vzdialenýSúbor},
 	 * {@code prvýParameter}, {@code prváHodnota} a nepovinným variabilným
-	 * zoznamom ďalších parametrov a hodnôt).</p>
+	 * zoznamom ďalších parametrov a hodnôt). Dvojice parametrov a hodnôt
+	 * sú k adrese pridávané v tvare {@code parameter=hodnota} prvá dvojica
+	 * je od predchádzajúcej adresy oddelená otáznikom, ďalšie sú oddeľované
+	 * znakom {@code &amp;}. Ak je ľubovoľná hodnota (vrátane prvej) rovná
+	 * {@code valnull}, tak je prislúchajúci parameter pridaný v bezhodnotovom
+	 * tvare: {@code parameter}. Špeciálne znaky v názvoch parametrov aj
+	 * v ich hodnotách sú kódované podľa pravidiel URL kódovania – pozri <a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/net/URLEncoder.html"
+	 * target="_blank"><code>URLEncoder</code> (Java Platform SE 8).</a></p>
 	 * 
 	 * <!-- TODO príklad použitia -->
 	 * 
@@ -2404,12 +2484,17 @@ public class Spojenie
 	 *     k tejto požiadavke
 	 * @param prváHodnota hodnota prvého parametra
 	 * @param ďalšieParametreAHodnoty nepovinný zoznam ďalších dvojíc
-	 *     názvov a hodnôt parametrov; ak má zoznam nepárny počet prvkov,
-	 *     tak posledný prvok nebude použitý
+	 *     názvov a hodnôt parametrov; každý názov musí mať párujúcu hodnotu;
+	 *     ak má zoznam nepárny počet prvkov, tak posledný prvok nebude
+	 *     použitý (ak aj chcete pridať posledný parameter v bezhodnotovom
+	 *     tvare, stále musí byť prítomná posledná párujúca hodnota rovná
+	 *     {@code valnull})
 	 * @return {@code valtrue} v prípade úspechu, inak {@code valfalse}
 	 * 
 	 * @see #otvor(String)
 	 * @see #otvorLokalitu(String)
+	 * @see #hlavičkyPoslané()
+	 * @see #pridajHlavičky(String...)
 	 * @see #pridajÚdaj(String, String)
 	 * @see #pošliSúbor(String, String, String)
 	 * @see #dajÚdajePožiadavky()
@@ -2427,8 +2512,11 @@ public class Spojenie
 
 			sb.append('?');
 			sb.append(URLEncoder.encode(prvýParameter, "UTF-8"));
-			sb.append('=');
-			sb.append(URLEncoder.encode(prváHodnota, "UTF-8"));
+			if (null != prváHodnota)
+			{
+				sb.append('=');
+				sb.append(URLEncoder.encode(prváHodnota, "UTF-8"));
+			}
 
 			boolean semafor = false; String parameter = null;
 			for (String hodnota : ďalšieParametreAHodnoty)
@@ -2437,8 +2525,11 @@ public class Spojenie
 				{
 					sb.append('&');
 					sb.append(URLEncoder.encode(parameter, "UTF-8"));
-					sb.append('=');
-					sb.append(URLEncoder.encode(hodnota, "UTF-8"));
+					if (null != hodnota)
+					{
+						sb.append('=');
+						sb.append(URLEncoder.encode(hodnota, "UTF-8"));
+					}
 				}
 				else parameter = hodnota;
 				semafor = !semafor;
@@ -2480,6 +2571,8 @@ public class Spojenie
 	 * @see #vzdialenáCesta(String)
 	 * 
 	 * @see #otvor(String)
+	 * @see #hlavičkyPoslané()
+	 * @see #pridajHlavičky(String...)
 	 * @see #pridajÚdaj(String, String)
 	 * @see #pošliSúbor(String, String, String)
 	 * @see #zavri()
@@ -2615,12 +2708,84 @@ public class Spojenie
 
 
 	/**
+	 * <p>Overí, či boli na server odoslané hlavičky spojenia. Túto hodnotu má
+	 * zmysel overovať v čase medzi {@linkplain #otvor(String) otvorením}
+	 * a {@linkplain #zavri() zavretím} spojenia.</p>
+	 * 
+	 * @return {@code valtrue}/{@code valfalse} podľa toho, či boli hlavičky
+	 *     poslané, alebo nie
+	 * 
+	 * @see #pridajHlavičky(String...)
+	 * @see #otvor(String)
+	 * @see #zavri()
+	 */
+	public boolean hlavičkyPoslané() { return hlavičkaPoslaná; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #hlavičkyPoslané() hlavičkyPoslané}.</p> */
+	public boolean hlavickyPoslane() { return hlavičkaPoslaná; }
+
+	/**
+	 * <p>Pridá jednu alebo viacero hlavičiek požiadavky k tejto správe, ak
+	 * ešte {@linkplain #hlavičkyPoslané() neboli poslané.} Správa vzniká
+	 * v okamihu {@linkplain #otvor(String) otvorenia spojenia} a posielanie
+	 * hlavičiek nastáva pred poslaním ľubovoľného údaja na server.</p>
+	 * 
+	 * <p>Hlavičky sú zadávané ako dvojice hodnôt: kľúč, hodnota. Na server sú
+	 * potom posielané v tvare {@code kľúč: hodnota}. Ďalšie užitočné
+	 * informácie o hlavičkách požiadavky sú dostupné <a
+	 * href="https://docs.oracle.com/javase/8/docs/api/java/net/URLConnection.html#setRequestProperty-java.lang.String-java.lang.String-"
+	 * target="_blank">tu (v anglickom jazyku).</a></p>
+	 * 
+	 * @param hlavičky jedna alebo viacero hlavičiek – dvojíc kľúč/hodnota;
+	 *     každý kľúč musí mať párujúcu hodnotu; ak má zoznam nepárny počet
+	 *     prvkov, tak posledný prvok nebude použitý (ak aj chcete pridať
+	 *     hlavičku v „bezhodnotovom“ tvare, tak zadajte párujúcu hodnotu
+	 *     rovnú {@code valnull})
+	 * @return {@code valtrue} v prípade úspechu (ak hlavičky ešte
+	 *     {@linkplain #hlavičkyPoslané() neboli poslané}), inak
+	 *     {@code valfalse}
+	 * 
+	 * @see #hlavičkyPoslané()
+	 * @see #otvor(String)
+	 * @see #zavri()
+	 */
+	public boolean pridajHlavičky(String... hlavičky)
+	{
+		if (hlavičkaPoslaná) return false;
+		if (null == hlavičky) return true;
+
+		boolean semafor = false; String kľúč = null;
+		for (String hodnota : hlavičky)
+		{
+			if (semafor)
+			try
+			{
+				spojenie.setRequestProperty(kľúč, hodnota);
+			}
+			catch (IllegalStateException | NullPointerException e)
+			{
+				GRobotException.vypíšChybovéHlásenia(e);
+				return false;
+			}
+			else kľúč = hodnota;
+			semafor = !semafor;
+		}
+
+		return true;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #pridajHlavičky(String...) pridajHlavičky}.</p> */
+	public boolean pridajHlavicky(String... hlavičky)
+	{ return pridajHlavičky(hlavičky); }
+
+
+	/**
 	 * <p>Pridá údajové pole so zadaným názvom a hodnotou k tejto správe.
 	 * Správa vzniká v okamihu {@linkplain #otvor(String) otvorenia
 	 * spojenia}.</p>
 	 * 
-	 * @param názov názov údaju na odoslanie
-	 * @param hodnota hodnota údaju na odoslanie
+	 * @param názov názov údaja na odoslanie
+	 * @param hodnota hodnota údaja na odoslanie
 	 * @return {@code valtrue} v prípade úspechu, inak {@code valfalse}
 	 * 
 	 * @see #pridajÚdaj(String, long)
@@ -2643,7 +2808,7 @@ public class Spojenie
 
 		try
 		{
-			hlavičkaSprávy += "--" + hranica + EOL +
+			hlavičkaObsahuSprávy += "--" + hranica + EOL +
 				"Content-Disposition: form-data; name=\"" +
 				URLEncoder.encode(názov, "UTF-8") + '"' +
 				EOL + EOL + hodnota + EOL + "--" + hranica + EOL;
@@ -2666,8 +2831,8 @@ public class Spojenie
 	 * Správa vzniká v okamihu {@linkplain #otvor(String) otvorenia
 	 * spojenia}.</p>
 	 * 
-	 * @param názov názov údaju na odoslanie
-	 * @param hodnota hodnota údaju na odoslanie
+	 * @param názov názov údaja na odoslanie
+	 * @param hodnota hodnota údaja na odoslanie
 	 * @return {@code valtrue} v prípade úspechu, inak {@code valfalse}
 	 * 
 	 * @see #pridajÚdaj(String, String)
@@ -2687,8 +2852,8 @@ public class Spojenie
 	 * Správa vzniká v okamihu {@linkplain #otvor(String) otvorenia
 	 * spojenia}.</p>
 	 * 
-	 * @param názov názov údaju na odoslanie
-	 * @param hodnota hodnota údaju na odoslanie
+	 * @param názov názov údaja na odoslanie
+	 * @param hodnota hodnota údaja na odoslanie
 	 * @return {@code valtrue} v prípade úspechu, inak {@code valfalse}
 	 * 
 	 * @see #pridajÚdaj(String, String)
@@ -2911,9 +3076,9 @@ public class Spojenie
 	 * názov je {@code srg"lastModified"}. Predvolený názov sa dá zmeniť
 	 * metódou {@link #posielaťDátumPoslednejÚpravy(String)
 	 * posielaťDátumPoslednejÚpravy}, pričom hodnota {@code valnull} zruší
-	 * posielanie tohto údaju na server. V tom prípade musíte buď na server
+	 * posielanie tohto údaja na server. V tom prípade musíte buď na server
 	 * poslať iný údaj, alebo použiť iný server, ktorý bude schopný súbor
-	 * spracovať aj bez poslania doplnkového údaju.</p>
+	 * spracovať aj bez poslania doplnkového údaja.</p>
 	 * 
 	 * @param názovPoľa názov údajového poľa tejto správy priradeného
 	 *     k odosielanému súboru
@@ -2963,7 +3128,7 @@ public class Spojenie
 			{
 				String názovBezCesty = názovSúboru.substring(
 					1 + Math.max(indexOf1, indexOf2));
-				hlavičkaSprávy += "Content-Disposition: form-data; " +
+				hlavičkaObsahuSprávy += "Content-Disposition: form-data; " +
 					"name=\"" + URLEncoder.encode(názovPoľa, "UTF-8") +
 					"\"; filename=\"" + URLEncoder.encode(názovBezCesty,
 					"UTF-8") + "\"; filename*=UTF-8''" + URLEncoder.encode(
@@ -2971,7 +3136,7 @@ public class Spojenie
 					typObsahu + EOL + EOL;
 			}
 			else
-				hlavičkaSprávy += "Content-Disposition: form-data; " +
+				hlavičkaObsahuSprávy += "Content-Disposition: form-data; " +
 					"name=\"" + URLEncoder.encode(názovPoľa, "UTF-8") +
 					"\"; filename=\"" + URLEncoder.encode(názovSúboru,
 					"UTF-8") + "\"; filename*=UTF-8''" + URLEncoder.encode(
@@ -2981,7 +3146,7 @@ public class Spojenie
 			// Testovanie, či nepomôže odoslanie jednoduchšej hlavičky,
 			// keď neboli odoslané žiadne ďalšie údaje (nie, nepomohlo to):
 			// 
-			// hlavičkaSprávy += "Content-Disposition: form-data; name=\"" +
+			// hlavičkaObsahuSprávy += "Content-Disposition: form-data; name=\"" +
 			// 	názovPoľa + "\"; filename=\"" + názovSúboru + "\"" + EOL +
 			// 	"Content-Type: " + typObsahu + EOL + EOL;
 
@@ -3117,6 +3282,8 @@ public class Spojenie
 	 * 
 	 * @see #otvor(String)
 	 * @see #otvor(String, String, String, String...)
+	 * @see #hlavičkyPoslané()
+	 * @see #pridajHlavičky(String...)
 	 * @see #pridajÚdaj(String, String)
 	 * @see #pošliSúbor(String, String, String)
 	 * @see #dajOdpoveď()

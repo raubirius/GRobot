@@ -840,7 +840,7 @@ public abstract class Tlač implements Printable, Pageable
 	 * @param poloha aktuálna poloha spracovania reťazca {@code chs}
 	 * @return nová farba textu alebo {@code valnull}
 	 * 
-	 * @see 	#dajFarbu(Graphics2D g2d, CharSequence chs, int poloha)
+	 * @see #dajFarbu(Graphics2D g2d, CharSequence chs, int poloha)
 	 * @see #dajFont(Graphics2D g2d, CharSequence chs, int poloha)
 	 * @see #dajPosun(Graphics2D g2d, CharSequence chs, int poloha)
 	 */
@@ -875,7 +875,7 @@ public abstract class Tlač implements Printable, Pageable
 	 * @param poloha aktuálna poloha spracovania reťazca {@code chs}
 	 * @return nový font alebo {@code valnull}
 	 * 
-	 * @see 	#dajFarbu(Graphics2D g2d, CharSequence chs, int poloha)
+	 * @see #dajFarbu(Graphics2D g2d, CharSequence chs, int poloha)
 	 * @see #dajFont(Graphics2D g2d, CharSequence chs, int poloha)
 	 * @see #dajPosun(Graphics2D g2d, CharSequence chs, int poloha)
 	 */
@@ -907,7 +907,7 @@ public abstract class Tlač implements Printable, Pageable
 	 * @param poloha aktuálna poloha spracovania reťazca {@code chs}
 	 * @return posunutie textov na riadku
 	 * 
-	 * @see 	#dajFarbu(Graphics2D g2d, CharSequence chs, int poloha)
+	 * @see #dajFarbu(Graphics2D g2d, CharSequence chs, int poloha)
 	 * @see #dajFont(Graphics2D g2d, CharSequence chs, int poloha)
 	 * @see #dajPosun(Graphics2D g2d, CharSequence chs, int poloha)
 	 */
@@ -1605,10 +1605,19 @@ public abstract class Tlač implements Printable, Pageable
 	/**
 	 * <p>Rendruje text na grafický kontext do priestoru zadaného rámčeka.
 	 * Parametre rendrovania relatívne podrobne určujú parametre tejto
-	 * metódy. Dá sa nimi dosiahnuť rendrovanie vopred {@linkplain 
-	 * #rozbiNaSlová(Graphics, CharSequence, int) rozbitého bloku} a tiež
-	 * rendrovanie do viacerých za sebou nasledujúcich rámčekov (napríklad
-	 * pre text prekračujúci rozhranie strán).</p>
+	 * metódy. Vhodnou kombináciou ich hodnôt a opakovaným volaním tejto
+	 * metódy s hodnotami, ktoré sa vzájomne dopĺňajú sa dosiahnuť napríklad
+	 * rendrovanie jedného vopred {@linkplain #rozbiNaSlová(Graphics,
+	 * CharSequence, int) rozbitého bloku} do viacerých rôznych rámčekov
+	 * (napríklad pre text prekračujúci rozhranie strán). Užitočná je pri tom
+	 * návratová hodnota tejto metódy, ktorá určuje index prvého riadka, ktorý
+	 * presiahol požadovanú výšku bloku (zadanú v parametri {@code výška}),
+	 * pričom návratová hodnota {@code num-1} znamená, že táto situácia
+	 * nenastala.</p>
+	 * 
+	 * <!-- TODO – dokonči opis – chs vs blokSlov nulls -->
+	 * 
+	 * <!-- TODO – príklad použitia? -->
 	 * 
 	 * @param g grafický kontext kreslenia textu; jeho {@linkplain 
 	 *     Graphics#getFont() font} ovplyvňuje {@linkplain 
@@ -1641,8 +1650,8 @@ public abstract class Tlač implements Printable, Pageable
 	 *     rozdelené do viacerých rámčekov s rozdielnou výškou (šírka musí
 	 *     byť rovnaká, inak bude výsledok nepredvídateľný)
 	 * @return index prvého riadka, ktorý presiahol požadovanú výšku bloku
-	 *     (zadanú v parametri {@code výška}); hodnota -1 znamená, že táto
-	 *     situácia nenastala
+	 *     (zadanú v parametri {@code výška}); hodnota {@code num-1} znamená,
+	 *     že táto situácia nenastala
 	 */
 	public int kresliTextDo(Graphics g, CharSequence chs,
 		int x, int y, int šírka, int výška, BlokSlov blokSlov,

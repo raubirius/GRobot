@@ -4148,6 +4148,10 @@ Toto bolo presunuté na úvodnú stránku:
 				/* --- */
 			}
 
+
+			// Pomocný príznak prekreslenia ikony:
+			private static boolean trebaIkonu = true;
+
 			private void inicializujRobot() // pôvodne: inicializujRobota()
 			{
 				if (null == Svet.hlavnýRobot)
@@ -4155,25 +4159,29 @@ Toto bolo presunuté na úvodnú stránku:
 					Svet.hlavnýRobot = this;
 					Svet.obnovKonfiguráciu();
 
-					Obrázok ikona = new Obrázok(32, 32);
-					kresliNaObrázok(ikona);
+					if (trebaIkonu)
+					{
+						Obrázok ikona = new Obrázok(32, 32);
+						kresliNaObrázok(ikona);
 
-					čiara = new BasicStroke(1.3f,
-						BasicStroke.CAP_ROUND,
-						BasicStroke.JOIN_ROUND);
-					farbaRobota = predvolenáFarbaRobota;
+						čiara = new BasicStroke(1.3f,
+							BasicStroke.CAP_ROUND,
+							BasicStroke.JOIN_ROUND);
+						farbaRobota = predvolenáFarbaRobota;
 
-					poslednéX = 0; poslednéY = 0;
-					aktuálneX = aktuálneY = 0;
-					poslednýUhol = 30;
-					aktuálnyUhol = 30;
+						poslednéX = 0; poslednéY = 0;
+						aktuálneX = aktuálneY = 0;
+						poslednýUhol = 30;
+						aktuálnyUhol = 30;
 
-					double veľkosť = this.veľkosť;
-					this.veľkosť = 14;
-					trojzubec();
-					this.veľkosť = veľkosť;
+						double veľkosť = this.veľkosť;
+						this.veľkosť = 14;
+						trojzubec();
+						this.veľkosť = veľkosť;
 
-					Svet.ikona(ikona);
+						Svet.ikona(ikona);
+						trebaIkonu = false;
+					}
 				}
 
 				kresliNaPodlahu();

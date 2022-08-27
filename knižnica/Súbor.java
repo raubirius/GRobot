@@ -1940,10 +1940,14 @@ public class Súbor implements Closeable
 			{
 				if (!riadok.isEmpty())
 				{
-					// Korekcia značky endianity kódovania UTF-8
-					// (všetky údaje sú čítané prostredníctvom tejto metódy
-					// a žiadne údaje nie sú čítané mimo nej, takže záplata
-					// je na správnom mieste)
+					// Ignorovanie značky endianity – BOM – potenciálne
+					// prítomnej na začiatku súboru. Zvykne sa vyskytovať
+					// v súboroch s kódovaním UTF-8, ktoré boli vytvorené
+					// inými softvérmi.
+					// 
+					// (Poznámka: Všetky údaje sú čítané prostredníctvom tejto
+					// metódy a žiadne údaje nie sú čítané mimo nej, takže
+					// „záplata“ je na správnom mieste.)
 
 					if (riadok.charAt(0) == '\uFEFF')
 						prečítanýRiadok.append(riadok.substring(1));
@@ -3435,7 +3439,7 @@ public class Súbor implements Closeable
 
 		/**
 		 * <p>Porovná zhodu dvoch kontrolných súčtov súborov. Kontrolné súčty
-		 * súborov sa dajú získať metódou: {@link kontrolnýSúčet(String)
+		 * súborov sa dajú získať metódou: {@link #kontrolnýSúčet(String)
 		 * kontrolnýSúčet}.</p>
 		 * 
 		 * @param kontrolnýSúčet1 kontrolný súčet 1 (prvý „odtlačok“ súboru
@@ -4995,6 +4999,13 @@ public class Súbor implements Closeable
 		 * uvedené v opise metódy {@link #pripojArchív(Archív)
 		 * pripojArchív}.</p>
 		 * 
+		 * <p class="remark"><b>Poznámka:</b> Ak bude súbor, ktorý zapisujete
+		 * čítaný iným softvérom, zvážte uloženie značky BOM (byte order mark)
+		 * na začiatok súboru. Pozri metódu {@link #zapíšBOM() zapíšBOM},
+		 * ktorá túto možnosť poskytuje. Niektoré softvéry sa bez prítomnosti
+		 * tejto značky na začiatku súboru nevedia orientovať (takže v podstate
+		 * jej prítomnosť vyžadujú).</p>
+		 * 
 		 * @param názovSúboru názov súboru, ktorý má byť otvorený na zápis
 		 * 
 		 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
@@ -5011,10 +5022,6 @@ public class Súbor implements Closeable
 		 */
 		public void otvorNaZápis(String názovSúboru) throws IOException
 		{
-			// TODO: Poskytnúť možnosť uloženia „BOM mark-u“ do súboru
-			// (dôležité najmä ak ide o konfiguračný súbor – môže byť
-			// totiž čítaný iným softvérom).
-
 			if (null == názovSúboru)
 				throw new GRobotException(
 					"Názov súboru nesmie byť zamlčaný.",
@@ -5085,6 +5092,13 @@ public class Súbor implements Closeable
 		 * {@code pripojiť}) nesmie byť použité s konfiguračnými súbormi,
 		 * pretože tieto by sa stali pri ďalšom otvorení nečitateľné!</p>
 		 * 
+		 * <p class="remark"><b>Poznámka:</b> Ak bude súbor, ktorý zapisujete
+		 * čítaný iným softvérom, zvážte uloženie značky BOM (byte order mark)
+		 * na začiatok súboru. Pozri metódu {@link #zapíšBOM() zapíšBOM},
+		 * ktorá túto možnosť poskytuje. Niektoré softvéry sa bez prítomnosti
+		 * tejto značky na začiatku súboru nevedia orientovať (takže v podstate
+		 * jej prítomnosť vyžadujú).</p>
+		 * 
 		 * @param názovSúboru názov súboru, ktorý má byť otvorený na zápis
 		 * @param pripojiť ak je hodnota tohto parametra {@code valtrue},
 		 *     zapisovaný obsah bude pripojený na koniec jestvujúceho súboru
@@ -5128,6 +5142,13 @@ public class Súbor implements Closeable
 		 * <p class="caution"><b>Pozor!</b> Pripájanie (pozri parameter
 		 * {@code pripojiť}) nesmie byť použité s konfiguračnými súbormi,
 		 * pretože tieto by sa stali pri ďalšom otvorení nečitateľné!</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Ak bude súbor, ktorý zapisujete
+		 * čítaný iným softvérom, zvážte uloženie značky BOM (byte order mark)
+		 * na začiatok súboru. Pozri metódu {@link #zapíšBOM() zapíšBOM},
+		 * ktorá túto možnosť poskytuje. Niektoré softvéry sa bez prítomnosti
+		 * tejto značky na začiatku súboru nevedia orientovať (takže v podstate
+		 * jej prítomnosť vyžadujú).</p>
 		 * 
 		 * @param názovSúboru názov súboru, ktorý má byť otvorený na zápis
 		 * @param kódovanie typ kódovania, ktorý má byť použitý na uloženie
@@ -7680,6 +7701,49 @@ public class Súbor implements Closeable
 	// Zápis údajov
 
 		/**
+		 * <p>Zapíše do súboru otvoreného na zápis značku BOM. BOM – byte
+		 * order mark – je špeciálna značka zapisovaná na začiatok súboru,
+		 * ktorá má slúžiť na identifikáciu poradia bajtov (tzv. endianitu)
+		 * vo viacbajtových údajových celkoch v rámci tohto súboru (čiže pri
+		 * textových súboroch o nej má zmysel uvažovať len ak vieme, že jeden
+		 * znak má alebo môže mať viac ako jeden bajt; kódovania UTF túto
+		 * podmienku spĺňajú). Značka zodpovedá reťazcu
+		 * {@code srg"\uFEFF"}.</p>
+		 * 
+		 * <p>Cieľom jej uvedenia je uľahčiť alebo umožniť softvérom iných
+		 * strán identifikáciu organizácie bajtov v súbore. Napríklad
+		 * v prípade textového súboru kódovaného kódovaním UTF-8 je táto
+		 * značka automaticky konvertovaná na trojicu bajtov s hodnotami:
+		 * {@code num0xEF} ({@code num239}), {@code num0xBB} ({@code num187}),
+		 * {@code num0xBF} ({@code num191}) a tú môže softvér inej strany
+		 * ľahko identifikovať ako signál, že tento textový súbor používa
+		 * toto kódovanie.</p>
+		 * 
+		 * <p>Túto metódu nemá zmysel volať inokedy, než tesne po {@linkplain 
+		 * #otvorNaZápis(String) otvorení súboru na zápis.} Výskyt tejto
+		 * značky na inom mieste, než na začiatku súboru by spôsobil chaos.
+		 * Nemá tiež zmysel túto značku zapisovať, ak máme istotu, že textový
+		 * súbor bude čítaný len v rámci programovacieho rámca. Táto trieda
+		 * pri čítaní túto značku automaticky ignoruje.</p>
+		 * 
+		 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
+		 *     operácii
+		 * @throws GRobotException ak súbor nie je otvorený na zápis
+		 */
+		public void zapíšBOM() throws IOException
+		{
+			if (null == zápis)
+				throw new GRobotException(
+					"Súbor nie je otvorený na zápis.",
+					"fileNotOpenForWriting");
+			zápis.write("\uFEFF");
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #zapíšBOM() zapíšBOM}.</p> */
+		public void zapisBOM() throws IOException { zapíšBOM(); }
+
+
+		/**
 		 * <p>Zapíše do súboru otvoreného na zápis určený reťazec.</p>
 		 * 
 		 * @param text text, ktorý má byť zapísaný do súboru otvoreného na
@@ -7704,6 +7768,13 @@ public class Súbor implements Closeable
 		/**
 		 * <p>Zapíše do súboru otvoreného na zápis riadok textu.</p>
 		 * 
+		 * <p class="remark"><b>Poznámka:</b> Metóda používa na ukončenie
+		 * riadka sekvenciu návrat vozíka ({@code srg'\r'}) a koniec riadka
+		 * ({@code srg'\n'}), čo je bežný spôsob ukončovania riadkov
+		 * v textových súboroch OS Windows. Ak chcete na ukončovanie využívať
+		 * inú sekvenciu, použite metódu {@link #zapíš(Object[]) zapíš}
+		 * a uveďte želanú sekvenciu ako posledný parameter.</p>
+		 * 
 		 * @param text text, ktorý má byť zapísaný do samostatného riadka
 		 *     súboru otvoreného na zápis
 		 * 
@@ -7725,6 +7796,13 @@ public class Súbor implements Closeable
 
 		/**
 		 * <p>Zapíše do súboru otvoreného na zápis prázdny riadok.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Metóda používa na ukončenie
+		 * riadka sekvenciu návrat vozíka ({@code srg'\r'}) a koniec riadka
+		 * ({@code srg'\n'}), čo je bežný spôsob ukončovania riadkov
+		 * v textových súboroch OS Windows. Ak chcete na ukončovanie využívať
+		 * inú sekvenciu, použite metódu {@link #zapíš(Object[]) zapíš}
+		 * a uveďte želanú sekvenciu ako posledný parameter.</p>
 		 * 
 		 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
 		 *     operácii
@@ -7815,4 +7893,6 @@ public class Súbor implements Closeable
 
 		/** <p><a class="alias"></a> Alias pre {@link #zapíš(Object[]) zapíš}.</p> */
 		public void zapis(Object... objekty) throws IOException { zapíš(objekty); }
+
+		
 }

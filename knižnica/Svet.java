@@ -686,6 +686,9 @@ public final class Svet extends JFrame
 							konfiguračnýSúbor.zapíšVlastnosť("interaktívny",
 								GRobot.podlaha.interaktívnyRežim);
 
+							konfiguračnýSúbor.zapíšVlastnosť("skratky",
+								skratkyPodlahy);
+
 
 							konfiguračnýSúbor.aktívnaSekcia.
 								mennýPriestorVlastností = "strop";
@@ -1385,7 +1388,7 @@ public final class Svet extends JFrame
 				try { UIManager.setLookAndFeel(UIManager.
 					getSystemLookAndFeelClassName());
 					// Tento „hack“ je tu z dôvodu zabránenia zmeny nastavení
-					// vzhľadu prvkov rámca po dodatočnej iniciali dialógov
+					// vzhľadu prvkov rámca po dodatočnej inicializácii dialógov
 					// na otvorenie/uloženie údajov… (V jednom projekte mi to
 					// rozhodilo celé používateľské rozhranie. Strašné…)
 					javax.swing.plaf.FileChooserUI ui =
@@ -1960,12 +1963,17 @@ public final class Svet extends JFrame
 		// Časovač
 		private static class Časovač implements ActionListener
 		{
+			public boolean spí = false; // celý mechanizmus časovača funguje,
+				// ale akcie sú vynechávané; vhodné najmä pri inicializácii
+
 			private int čas = 40;
 			private Timer časovanie;
 			private Časovač() { časovanie = null; }
 
 			private void akcia()
 			{
+				if (spí) return;
+
 				// boolean nekresli_záloha = nekresli;
 				žiadamPrekresleniePoPráci = false;
 				pracujem =
@@ -2229,6 +2237,36 @@ public final class Svet extends JFrame
 					aktuálnyIntervalKofeínu = intervalKofeínu;
 
 					// Súčasť implementácie označovania
+					// a kopírovania textov podlahy.
+					if (skratkyPodlahy)
+					{
+						if (PRAVÉ == ÚdajeUdalostí.tlačidloMyši)
+						{
+							GRobot.podlaha.textyDoSchránky(true);
+							GRobot.podlaha.zrušOznačenieTextov();
+							Svet.pípni();
+						}
+						else if (ĽAVÉ == ÚdajeUdalostí.tlačidloMyši)
+						{
+							if (!ÚdajeUdalostí.poslednáUdalosťMyši.
+								isControlDown())
+								GRobot.podlaha.zrušOznačenieTextov();
+
+							int[] výpis = GRobot.podlaha.výpisPriBode(
+								ÚdajeUdalostí.súradnicaMyšiX,
+								ÚdajeUdalostí.súradnicaMyšiY);
+
+							if (null != výpis)
+							{
+								počiatočnýRiadokPodlahy =
+									koncovýRiadokPodlahy = výpis[0];
+								počiatočnýBlokPodlahy   =
+									koncovýBlokPodlahy   = výpis[1];
+							}
+						}
+					}
+
+					// Súčasť implementácie označovania
 					// a kopírovania textov stropu.
 					if (skratkyStropu)
 					{
@@ -2405,6 +2443,29 @@ public final class Svet extends JFrame
 
 					ÚdajeUdalostí.poslednáUdalosťMyši = e;
 					aktuálnyIntervalKofeínu = intervalKofeínu;
+
+					// Súčasť implementácie označovania
+					// a kopírovania textov podlahy.
+					if (skratkyPodlahy && ĽAVÉ == ÚdajeUdalostí.tlačidloMyši)
+					{
+						int[] výpis = GRobot.podlaha.výpisPriBode(
+							ÚdajeUdalostí.súradnicaMyšiX,
+							ÚdajeUdalostí.súradnicaMyšiY);
+
+						if (null != výpis)
+						{
+							GRobot.podlaha.zrušOznačenieVýpisov(
+								počiatočnýRiadokPodlahy, počiatočnýBlokPodlahy,
+								koncovýRiadokPodlahy, koncovýBlokPodlahy);
+
+							koncovýRiadokPodlahy = výpis[0];
+							koncovýBlokPodlahy   = výpis[1];
+
+							GRobot.podlaha.označVýpisy(
+								počiatočnýRiadokPodlahy, počiatočnýBlokPodlahy,
+								koncovýRiadokPodlahy, koncovýBlokPodlahy);
+						}
+					}
 
 					// Súčasť implementácie označovania
 					// a kopírovania textov stropu.
@@ -3811,7 +3872,8 @@ public final class Svet extends JFrame
 		 */
 		public static boolean viditeľný()
 		{
-			if (null == svet) return zobrazPriŠtarte;
+			if (null == svet && null == oknoCelejObrazovky)
+				return zobrazPriŠtarte;
 			if (null != oknoCelejObrazovky)
 				return oknoCelejObrazovky.isVisible();
 			return svet.isVisible();
@@ -3837,7 +3899,8 @@ public final class Svet extends JFrame
 		 */
 		public static boolean zobrazený()
 		{
-			if (null == svet) return zobrazPriŠtarte;
+			if (null == svet && null == oknoCelejObrazovky)
+				return zobrazPriŠtarte;
 			if (null != oknoCelejObrazovky)
 				return oknoCelejObrazovky.isVisible();
 			return svet.isVisible();
@@ -11784,6 +11847,9 @@ public final class Svet extends JFrame
 
 				GRobot.podlaha.interaktívnyRežim = konfiguračnýSúbor.
 					čítajVlastnosť("interaktívny", GRobot.podlaha.interaktívnyRežim);
+
+				skratkyPodlahy = konfiguračnýSúbor.
+					čítajVlastnosť("skratky", skratkyPodlahy);
 
 
 				konfiguračnýSúbor.aktívnaSekcia.
@@ -23872,11 +23938,11 @@ public final class Svet extends JFrame
 		 * názvy súborov (prípadne zdrojov), z ktorých zvuky boli alebo majú
 		 * byť prečítané. (Najlepšie použiť priamo reťazce.)</p>
 		 * 
-		 * <p class="caution"><b>Pozor!</b> Táto metóda zároveň spôsobí prečítanie
-		 * všetkých dotknutých zvukov do vnútornej pamäte (ak tam už nie sú).
-		 * Z nej môžu byť v prípade potreby (napríklad ak sa obsah súboru
-		 * na disku zmenil) odstránené metódou {@link Svet#uvoľni(String)
-		 * Svet.uvoľni(názovZdroja)}.
+		 * <p class="caution"><b>Pozor!</b> Táto metóda zároveň spôsobí
+		 * prečítanie všetkých dotknutých zvukov do vnútornej pamäte (ak tam
+		 * už nie sú). Z nej môžu byť v prípade potreby (napríklad ak sa obsah
+		 * súboru na disku zmenil) odstránené metódou {@link 
+		 * Svet#uvoľni(String) Svet.uvoľni(názovZdroja)}.
 		 * (Táto informácia je platná pre všetky metódy pracujúce s obrázkami
 		 * alebo zvukmi, ktoré prijímajú názov súboru ako parameter.)</p>
 		 * 
@@ -23919,11 +23985,11 @@ public final class Svet extends JFrame
 		 * budú označovať názvy súborov (prípadne zdrojov), z ktorých zvuky
 		 * boli alebo majú byť prečítané. (Najlepšie použiť priamo reťazce.)</p>
 		 * 
-		 * <p class="caution"><b>Pozor!</b> Táto metóda zároveň spôsobí prečítanie
-		 * všetkých dotknutých zvukov do vnútornej pamäte (ak tam už nie sú).
-		 * Z nej môžu byť v prípade potreby (napríklad ak sa obsah súboru
-		 * na disku zmenil) odstránené metódou {@link Svet#uvoľni(String)
-		 * Svet.uvoľni(názovZdroja)}.
+		 * <p class="caution"><b>Pozor!</b> Táto metóda zároveň spôsobí
+		 * prečítanie všetkých dotknutých zvukov do vnútornej pamäte (ak tam
+		 * už nie sú). Z nej môžu byť v prípade potreby (napríklad ak sa obsah
+		 * súboru na disku zmenil) odstránené metódou {@link 
+		 * Svet#uvoľni(String) Svet.uvoľni(názovZdroja)}.
 		 * (Táto informácia je platná pre všetky metódy pracujúce s obrázkami
 		 * alebo zvukmi, ktoré prijímajú názov súboru ako parameter.)</p>
 		 * 
@@ -23973,11 +24039,11 @@ public final class Svet extends JFrame
 		 * budú označovať názvy súborov (prípadne zdrojov), z ktorých zvuky
 		 * boli alebo majú byť prečítané. (Najlepšie je použiť priamo reťazce.)</p>
 		 * 
-		 * <p class="caution"><b>Pozor!</b> Táto metóda zároveň spôsobí prečítanie
-		 * všetkých dotknutých zvukov do vnútornej pamäte (ak tam už nie sú).
-		 * Z nej môžu byť v prípade potreby (napríklad ak sa obsah súboru
-		 * na disku zmenil) odstránené metódou {@link Svet#uvoľni(String)
-		 * Svet.uvoľni(názovZdroja)}.
+		 * <p class="caution"><b>Pozor!</b> Táto metóda zároveň spôsobí
+		 * prečítanie všetkých dotknutých zvukov do vnútornej pamäte (ak tam
+		 * už nie sú). Z nej môžu byť v prípade potreby (napríklad ak sa obsah
+		 * súboru na disku zmenil) odstránené metódou {@link 
+		 * Svet#uvoľni(String) Svet.uvoľni(názovZdroja)}.
 		 * (Táto informácia je platná pre všetky metódy pracujúce s obrázkami
 		 * alebo zvukmi, ktoré prijímajú názov súboru ako parameter.)</p>
 		 * 
@@ -24026,11 +24092,11 @@ public final class Svet extends JFrame
 		 * <p>Zastaví všetky uvedené zvuky. Zoznam je tvorený poľom textových
 		 * reťazcov označujúcich súbory, z ktorých boli zvuky prečítané.</p>
 		 * 
-		 * <p class="caution"><b>Pozor!</b> Táto metóda zároveň spôsobí prečítanie
-		 * všetkých dotknutých zvukov do vnútornej pamäte (ak tam už nie sú).
-		 * Z nej môžu byť v prípade potreby (napríklad ak sa obsah súboru
-		 * na disku zmenil) odstránené metódou {@link Svet#uvoľni(String)
-		 * Svet.uvoľni(názovZdroja)}.
+		 * <p class="caution"><b>Pozor!</b> Táto metóda zároveň spôsobí
+		 * prečítanie všetkých dotknutých zvukov do vnútornej pamäte (ak tam
+		 * už nie sú). Z nej môžu byť v prípade potreby (napríklad ak sa obsah
+		 * súboru na disku zmenil) odstránené metódou {@link 
+		 * Svet#uvoľni(String) Svet.uvoľni(názovZdroja)}.
 		 * (Táto informácia je platná pre všetky metódy pracujúce s obrázkami
 		 * alebo zvukmi, ktoré prijímajú názov súboru ako parameter.)</p>
 		 * 
@@ -24072,11 +24138,11 @@ public final class Svet extends JFrame
 		 * tvorený poľom textových reťazcov označujúcich súbory, z ktorých
 		 * boli zvuky prečítané.</p>
 		 * 
-		 * <p class="caution"><b>Pozor!</b> Táto metóda zároveň spôsobí prečítanie
-		 * všetkých dotknutých zvukov do vnútornej pamäte (ak tam už nie sú).
-		 * Z nej môžu byť v prípade potreby (napríklad ak sa obsah súboru
-		 * na disku zmenil) odstránené metódou {@link Svet#uvoľni(String)
-		 * Svet.uvoľni(názovZdroja)}.
+		 * <p class="caution"><b>Pozor!</b> Táto metóda zároveň spôsobí
+		 * prečítanie všetkých dotknutých zvukov do vnútornej pamäte (ak tam
+		 * už nie sú). Z nej môžu byť v prípade potreby (napríklad ak sa obsah
+		 * súboru na disku zmenil) odstránené metódou {@link 
+		 * Svet#uvoľni(String) Svet.uvoľni(názovZdroja)}.
 		 * (Táto informácia je platná pre všetky metódy pracujúce s obrázkami
 		 * alebo zvukmi, ktoré prijímajú názov súboru ako parameter.)</p>
 		 * 
@@ -24125,11 +24191,11 @@ public final class Svet extends JFrame
 		 * tvorený poľom textových reťazcov označujúcich súbory, z ktorých
 		 * boli zvuky prečítané.</p>
 		 * 
-		 * <p class="caution"><b>Pozor!</b> Táto metóda zároveň spôsobí prečítanie
-		 * všetkých dotknutých zvukov do vnútornej pamäte (ak tam už nie sú).
-		 * Z nej môžu byť v prípade potreby (napríklad ak sa obsah súboru
-		 * na disku zmenil) odstránené metódou {@link Svet#uvoľni(String)
-		 * Svet.uvoľni(názovZdroja)}.
+		 * <p class="caution"><b>Pozor!</b> Táto metóda zároveň spôsobí
+		 * prečítanie všetkých dotknutých zvukov do vnútornej pamäte (ak tam
+		 * už nie sú). Z nej môžu byť v prípade potreby (napríklad ak sa obsah
+		 * súboru na disku zmenil) odstránené metódou {@link 
+		 * Svet#uvoľni(String) Svet.uvoľni(názovZdroja)}.
 		 * (Táto informácia je platná pre všetky metódy pracujúce s obrázkami
 		 * alebo zvukmi, ktoré prijímajú názov súboru ako parameter.)</p>
 		 * 
@@ -24818,12 +24884,20 @@ public final class Svet extends JFrame
 		 * {@link GRobot#rýchlosť(double, boolean) rýchlosť}, {@link 
 		 * GRobot#uhlováRýchlosť(double, boolean) uhlováRýchlosť}…</p>
 		 * 
+		 * <p class="caution"><b>Pozor!</b> Časovač môže byť {@linkplain 
+		 * #uspiČasovač() uspatý.} Vtedy všetky metódy, ktoré menia jeho
+		 * parametre fungujú, ale samotný časovač nereaguje – správa sa, ako
+		 * keby negeneroval tiky (ale v skutočnosti ich len vynecháva).
+		 * Podrobnosti o užitočnosti spánku časovača nájdete v opise metódy
+		 * {@linkplain #uspiČasovač() uspiČasovač.}</p>
+		 * 
 		 * @see #spustiČasovač(double)
 		 * @see #odložČasovač(double)
 		 * @see #časovačAktívny()
 		 * @see #intervalČasovača()
 		 * @see #zastavČasovač()
 		 * @see #násobTiky(int)
+		 * @see #uspiČasovač()
 		 * @see #tik()
 		 */
 		public static void spustiČasovač()
@@ -24841,6 +24915,13 @@ public final class Svet extends JFrame
 		 * #spustiČasovač(double) spustiČasovač}, inak iba odloží najbližšie
 		 * spustenie časovača o zadaný časový údaj.</p>
 		 * 
+		 * <p class="caution"><b>Pozor!</b> Časovač môže byť {@linkplain 
+		 * #uspiČasovač() uspatý.} Vtedy všetky metódy, ktoré menia jeho
+		 * parametre fungujú, ale samotný časovač nereaguje – správa sa, ako
+		 * keby negeneroval tiky (ale v skutočnosti ich len vynecháva).
+		 * Podrobnosti o užitočnosti spánku časovača nájdete v opise metódy
+		 * {@linkplain #uspiČasovač() uspiČasovač.}</p>
+		 * 
 		 * @param čas časový interval v sekundách; desatinná časť je
 		 *     zaokrúhlená na milisekundy
 		 * 
@@ -24849,6 +24930,7 @@ public final class Svet extends JFrame
 		 * @see #intervalČasovača()
 		 * @see #zastavČasovač()
 		 * @see #násobTiky(int)
+		 * @see #uspiČasovač()
 		 * @see #tik()
 		 */
 		public static void odložČasovač(double čas) { časovač.odlož((int)(čas * 1000)); }
@@ -24859,6 +24941,13 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Zistí, či je časovač aktívny.</p>
 		 * 
+		 * <p class="caution"><b>Pozor!</b> Časovač môže byť {@linkplain 
+		 * #uspiČasovač() uspatý.} Vtedy všetky metódy, ktoré menia jeho
+		 * parametre fungujú, ale samotný časovač nereaguje – správa sa, ako
+		 * keby negeneroval tiky (ale v skutočnosti ich len vynecháva).
+		 * Podrobnosti o užitočnosti spánku časovača nájdete v opise metódy
+		 * {@linkplain #uspiČasovač() uspiČasovač.}</p>
+		 * 
 		 * @return {@code valtrue}/&#8203;{@code valfalse} – podľa toho, či je
 		 *     časovač aktívny, alebo nie
 		 * 
@@ -24868,6 +24957,7 @@ public final class Svet extends JFrame
 		 * @see #intervalČasovača()
 		 * @see #zastavČasovač()
 		 * @see #násobTiky(int)
+		 * @see #uspiČasovač()
 		 * @see #tik()
 		 */
 		public static boolean časovačAktívny() { return časovač.aktívny(); }
@@ -24884,6 +24974,13 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Vráti časový interval časovača v sekundách.</p>
 		 * 
+		 * <p class="caution"><b>Pozor!</b> Časovač môže byť {@linkplain 
+		 * #uspiČasovač() uspatý.} Vtedy všetky metódy, ktoré menia jeho
+		 * parametre fungujú, ale samotný časovač nereaguje – správa sa, ako
+		 * keby negeneroval tiky (ale v skutočnosti ich len vynecháva).
+		 * Podrobnosti o užitočnosti spánku časovača nájdete v opise metódy
+		 * {@linkplain #uspiČasovač() uspiČasovač.}</p>
+		 * 
 		 * @return časový interval v sekundách; desatinná časť je
 		 *     zaokrúhlená na milisekundy
 		 * 
@@ -24893,6 +24990,7 @@ public final class Svet extends JFrame
 		 * @see #časovačAktívny()
 		 * @see #zastavČasovač()
 		 * @see #násobTiky(int)
+		 * @see #uspiČasovač()
 		 * @see #tik()
 		 */
 		public static double intervalČasovača()
@@ -24907,12 +25005,20 @@ public final class Svet extends JFrame
 		 * <p>Zastaví časovač, ktorý bol spustený metódou {@link 
 		 * #spustiČasovač(double) spustiČasovač}.</p>
 		 * 
+		 * <p class="caution"><b>Pozor!</b> Časovač môže byť {@linkplain 
+		 * #uspiČasovač() uspatý.} Vtedy všetky metódy, ktoré menia jeho
+		 * parametre fungujú, ale samotný časovač nereaguje – správa sa, ako
+		 * keby negeneroval tiky (ale v skutočnosti ich len vynecháva).
+		 * Podrobnosti o užitočnosti spánku časovača nájdete v opise metódy
+		 * {@linkplain #uspiČasovač() uspiČasovač.}</p>
+		 * 
 		 * @see #spustiČasovač(double)
 		 * @see #spustiČasovač()
 		 * @see #odložČasovač(double)
 		 * @see #časovačAktívny()
 		 * @see #intervalČasovača()
 		 * @see #násobTiky(int)
+		 * @see #uspiČasovač()
 		 * @see #tik()
 		 */
 		public static void zastavČasovač() { časovač.zastav(); }
@@ -24925,11 +25031,19 @@ public final class Svet extends JFrame
 		 * <p>Zistí aktuálnu hodnotu násobičky tikov časovača. Pozri:
 		 * {@link #násobTiky(int) násobTiky(počet)}.</p>
 		 * 
+		 * <p class="caution"><b>Pozor!</b> Časovač môže byť {@linkplain 
+		 * #uspiČasovač() uspatý.} Vtedy všetky metódy, ktoré menia jeho
+		 * parametre fungujú, ale samotný časovač nereaguje – správa sa, ako
+		 * keby negeneroval tiky (ale v skutočnosti ich len vynecháva).
+		 * Podrobnosti o užitočnosti spánku časovača nájdete v opise metódy
+		 * {@linkplain #uspiČasovač() uspiČasovač.}</p>
+		 * 
 		 * @return aktuálna hodnota násobičky tikov
 		 * 
 		 * @see #násobTiky(int)
 		 * @see #čísloTiku()
 		 * @see #spustiČasovač(double)
+		 * @see #uspiČasovač()
 		 * @see #tik()
 		 */
 		public static int násobTiky()
@@ -24946,6 +25060,13 @@ public final class Svet extends JFrame
 		 * 
 		 * <p class="attention"><b>Upozornenie:</b> Príliš veľké hodnoty
 		 * násobiča preťažia systém.</p>
+		 * 
+		 * <p class="caution"><b>Pozor!</b> Časovač môže byť {@linkplain 
+		 * #uspiČasovač() uspatý.} Vtedy všetky metódy, ktoré menia jeho
+		 * parametre fungujú, ale samotný časovač nereaguje – správa sa, ako
+		 * keby negeneroval tiky (ale v skutočnosti ich len vynecháva).
+		 * Podrobnosti o užitočnosti spánku časovača nájdete v opise metódy
+		 * {@linkplain #uspiČasovač() uspiČasovač.}</p>
 		 * 
 		 * @param počet nová hodnota násobičky tikov
 		 * 
@@ -24972,11 +25093,19 @@ public final class Svet extends JFrame
 		 * reakcií na tik.} Pozri aj: {@link #násobTiky(int)
 		 * násobTiky(počet)}.</p>
 		 * 
+		 * <p class="caution"><b>Pozor!</b> Časovač môže byť {@linkplain 
+		 * #uspiČasovač() uspatý.} Vtedy všetky metódy, ktoré menia jeho
+		 * parametre fungujú, ale samotný časovač nereaguje – správa sa, ako
+		 * keby negeneroval tiky (ale v skutočnosti ich len vynecháva).
+		 * Podrobnosti o užitočnosti spánku časovača nájdete v opise metódy
+		 * {@linkplain #uspiČasovač() uspiČasovač.}</p>
+		 * 
 		 * @return aktuálne číslo tiku
 		 * 
 		 * @see #násobTiky()
 		 * @see #násobTiky(int)
 		 * @see #spustiČasovač(double)
+		 * @see #uspiČasovač()
 		 * @see #tik()
 		 */
 		public static int čísloTiku()
@@ -24985,6 +25114,94 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #čísloTiku() čísloTiku}.</p> */
 		public static int cisloTiku() { return čísloTiku(); }
 
+		/**
+		 * <p>Zistí, či je časovač v „režime spánku.“ Podrobnosti o užitočnosti
+		 * spánku časovača nájdete v opise metódy {@linkplain #uspiČasovač()
+		 * uspiČasovač.}</p>
+		 * 
+		 * @see #časovačSpí()
+		 * @see #uspiČasovač()
+		 * @see #prebuďČasovač()
+		 * @see #spustiČasovač()
+		 * @see #časovačAktívny()
+		 * @see #násobTiky(int)
+		 * @see #tik()
+		 */
+		public static boolean časovačSpí() { return časovač.spí; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #časovačSpí() časovačSpí}.</p> */
+		public static boolean casovacSpi() { return časovač.spí; }
+
+		/**
+		 * <p>Uvedie časovač do „režimu spánku.“ Keď časovač spí, preskakuje
+		 * tiky, čiže sa zdá, ako keby nefungoval. Tento režim je veľmi
+		 * užitočné zapnúť počas inicializácie aplikácie. Zabráni sa tým
+		 * neželanému predčasnému spúšťaniu časovača v období, keď ešte nie
+		 * sú všetky objekty korektne inicializované, čo by s vysokou
+		 * pravdepodobnosťou viedlo ku vzniku chýb.</p>
+		 * 
+		 * <p><b>Príklad:</b></p>
+		 * 
+		 * <pre CLASS="example">
+			{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
+			{
+				{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"MojaAplikácia.cfg"});
+				{@code kwdtry}
+				{
+					{@code comm// Ak by v tomto bloku vznikla chyba, okno aplikácie bude aj tak}
+					{@code comm// zobrazené vďaka bloku finally. Používateľ ho vďaka tomu bude môcť}
+					{@code comm// aspoň korektne zavrieť.}
+					{@link Svet Svet}.{@link Svet#skry() skry}();
+					{@link Svet Svet}.{@link Svet#nekresli() nekresli}();
+					{@link Svet Svet}.{@code curruspiČasovač}();
+					{@code kwdnew} MojaAplikácia();
+					{@link Svet Svet}.{@link Svet#kresli() kresli}();
+					{@link Svet Svet}.{@link Svet#prebuďČasovač() prebuďČasovač}();
+					{@link Svet Svet}.{@link Svet#spustiČasovač() spustiČasovač}(); {@code comm// (Aj keď už je pravdepodobne spustený.)}
+				}
+				{@code kwdfinally}
+				{
+					{@link Svet Svet}.{@link Svet#zobraz() zobraz}();
+				}
+			}
+			</pre>
+		 * 
+		 * @see #časovačSpí()
+		 * @see #uspiČasovač()
+		 * @see #prebuďČasovač()
+		 * @see #spustiČasovač()
+		 * @see #časovačAktívny()
+		 * @see #násobTiky(int)
+		 * @see #tik()
+		 */
+		public static void uspiČasovač() { časovač.spí = true; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #uspiČasovač() uspiČasovač}.</p> */
+		public static void uspiCasovac() { časovač.spí = true; }
+
+		/**
+		 * <p>Prebudí časovač z „režimu spánku.“ Podrobnosti o užitočnosti
+		 * spánku časovača nájdete v opise metódy {@linkplain #uspiČasovač()
+		 * uspiČasovač.}</p>
+		 * 
+		 * @see #časovačSpí()
+		 * @see #uspiČasovač()
+		 * @see #prebuďČasovač()
+		 * @see #spustiČasovač()
+		 * @see #časovačAktívny()
+		 * @see #násobTiky(int)
+		 * @see #tik()
+		 */
+		public static void prebuďČasovač() { časovač.spí = false; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #prebuďČasovač() prebuďČasovač}.</p> */
+		public static void prebudCasovac() { časovač.spí = false; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #prebuďČasovač() prebuďČasovač}.</p> */
+		public static void zobuďČasovač() { časovač.spí = false; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #prebuďČasovač() prebuďČasovač}.</p> */
+		public static void zobudCasovac() { časovač.spí = false; }
 
 		/**
 		 * <p>Simuluje vykonanie reakcie na tik {@linkplain 
@@ -24996,8 +25213,13 @@ public final class Svet extends JFrame
 		 * s {@linkplain ObsluhaUdalostí#tik() reakciami na časovač} alebo
 		 * {@linkplain ÚdajeUdalostí#tik() údajmi udalosti časovača.}</p>
 		 * 
+		 * <p class="caution"><b>Pozor!</b> Ak je časovač {@linkplain 
+		 * #uspiČasovač() uspatý,} tak volanie tejto metódy nemá žiadny
+		 * efekt.</p>
+		 * 
 		 * @see #násobTiky(int)
 		 * @see #spustiČasovač(double)
+		 * @see #uspiČasovač()
 		 * @see ObsluhaUdalostí#tik()
 		 * @see GRobot#tik()
 		 * @see ÚdajeUdalostí#tik()
@@ -28834,6 +29056,14 @@ public final class Svet extends JFrame
 		};
 
 
+		// Súčasť implementácie skratiek podlahy.
+		private static boolean skratkyPodlahy = false;
+
+		// Súčasť implementácie označovania a kopírovania textov podlahy.
+		private static int počiatočnýRiadokPodlahy = 0,
+			koncovýRiadokPodlahy = 0, počiatočnýBlokPodlahy = 0,
+			koncovýBlokPodlahy = 0;
+
 		// Súčasť implementácie skratiek stropu.
 		private static boolean skratkyStropu = false;
 
@@ -28843,7 +29073,7 @@ public final class Svet extends JFrame
 			koncovýBlokStropu = 0;
 
 		// Súčasť implementácie rolovania a posúvania textov
-		// vnútornej konzoly stropu s pomocou klávesnice.
+		// vnútornej konzoly podlahy alebo stropu s pomocou klávesnice.
 		private final static String home = "home";
 		private final static String end  = "end";
 		private final static String hore = "hore";
@@ -28852,7 +29082,7 @@ public final class Svet extends JFrame
 		private final static String pgDn = "pgDn";
 
 		// Súčasť implementácie označovania a kopírovania
-		// textov stropu.
+		// textov podlahy alebo stropu.
 		private final static String dAll1 = "dAll1";
 		private final static String dAll2 = "dAll2";
 		private final static String sAll = "sAll";
@@ -28873,6 +29103,46 @@ public final class Svet extends JFrame
 
 			@Override public void actionPerformed(ActionEvent e)
 			{
+				if (skratkyPodlahy)
+				{
+					boolean nepokračuj = true;
+
+					// Súčasť implementácie rolovania a posúvania textov
+					// vnútornej konzoly podlahy s pomocou klávesnice.
+					if (príkaz == home)
+						GRobot.podlaha.posunutieTextov(
+							GRobot.podlaha.posunutieTextovX(),
+							GRobot.podlaha.poslednáVýškaTextu());
+					else if (príkaz == end)
+						GRobot.podlaha.posunutieTextov(
+							GRobot.podlaha.posunutieTextovX(), 0);
+					else if (príkaz == hore)
+						GRobot.podlaha.rolujTexty(0,
+							GRobot.podlaha.výškaRiadka());
+					else if (príkaz == dole)
+						GRobot.podlaha.rolujTexty(0,
+							-GRobot.podlaha.výškaRiadka());
+					else if (príkaz == pgUp)
+						GRobot.podlaha.rolujTexty(0,
+							Plátno.viditeľnáVýška() - 10);
+					else if (príkaz == pgDn)
+						GRobot.podlaha.rolujTexty(0,
+							10 - Plátno.viditeľnáVýška());
+
+					// Súčasť implementácie označovania a kopírovania
+					// textov podlahy.
+					else if (príkaz == dAll1 || príkaz == dAll2)
+						GRobot.podlaha.zrušOznačenieTextov();
+					else if (príkaz == sAll)
+						GRobot.podlaha.označVšetkyTexty();
+					else if (príkaz == copy)
+						GRobot.podlaha.textyDoSchránky(true);
+					else
+						nepokračuj = false;
+
+					if (nepokračuj) return;
+				}
+
 				if (skratkyStropu)
 				{
 					boolean nepokračuj = true;
@@ -28985,6 +29255,8 @@ public final class Svet extends JFrame
 		 * @see #reťazecSkratkyPríkazu(String)
 		 * @see #skratkyStropu()
 		 * @see #skratkyStropu(boolean)
+		 * @see #skratkyPodlahy()
+		 * @see #skratkyPodlahy(boolean)
 		 */
 		public static void pridajKlávesovúSkratku(String príkaz, int kódKlávesu)
 		{
@@ -29033,6 +29305,8 @@ public final class Svet extends JFrame
 		 * @see #reťazecSkratkyPríkazu(String)
 		 * @see #skratkyStropu()
 		 * @see #skratkyStropu(boolean)
+		 * @see #skratkyPodlahy()
+		 * @see #skratkyPodlahy(boolean)
 		 */
 		public static void pridajKlávesovúSkratku(String príkaz, int kódKlávesu,
 			int modifikátor)
@@ -29091,6 +29365,8 @@ public final class Svet extends JFrame
 		 * @see #reťazecSkratkyPríkazu(String)
 		 * @see #skratkyStropu()
 		 * @see #skratkyStropu(boolean)
+		 * @see #skratkyPodlahy()
+		 * @see #skratkyPodlahy(boolean)
 		 */
 		public static void pridajKlávesovúSkratku(String príkaz,
 			int kódKlávesu, int modifikátor, boolean ajVstupnýRiadok)
@@ -29171,6 +29447,8 @@ public final class Svet extends JFrame
 		 * @see #reťazecSkratkyPríkazu(String)
 		 * @see #skratkyStropu()
 		 * @see #skratkyStropu(boolean)
+		 * @see #skratkyPodlahy()
+		 * @see #skratkyPodlahy(boolean)
 		 */
 		public static void pridajKlávesovúSkratkuVstupnéhoRiadka(
 			String príkaz, int kódKlávesu, int modifikátor)
@@ -29211,6 +29489,8 @@ public final class Svet extends JFrame
 		 * @see #reťazecSkratkyPríkazu(String)
 		 * @see #skratkyStropu()
 		 * @see #skratkyStropu(boolean)
+		 * @see #skratkyPodlahy()
+		 * @see #skratkyPodlahy(boolean)
 		 */
 		public static void odoberKlávesovúSkratku(String príkaz)
 		{
@@ -29261,6 +29541,8 @@ public final class Svet extends JFrame
 		 * @see #reťazecSkratkyPríkazu(String)
 		 * @see #skratkyStropu()
 		 * @see #skratkyStropu(boolean)
+		 * @see #skratkyPodlahy()
+		 * @see #skratkyPodlahy(boolean)
 		 */
 		public static KeyStroke skratkaPríkazu(String príkaz)
 		{
@@ -29296,6 +29578,8 @@ public final class Svet extends JFrame
 		 * @see #skratkaPríkazu(String)
 		 * @see #skratkyStropu()
 		 * @see #skratkyStropu(boolean)
+		 * @see #skratkyPodlahy()
+		 * @see #skratkyPodlahy(boolean)
 		 */
 		public static String reťazecSkratkyPríkazu(String príkaz)
 		{
@@ -29360,6 +29644,8 @@ public final class Svet extends JFrame
 		 *     {@code valfalse} v opačnom 
 		 * 
 		 * @see #skratkyStropu()
+		 * @see #skratkyPodlahy()
+		 * @see #skratkyPodlahy(boolean)
 		 * @see #pridajKlávesovúSkratku(String, int)
 		 * @see #pridajKlávesovúSkratku(String, int, int)
 		 * @see #pridajKlávesovúSkratku(String, int, int, boolean)
@@ -29369,7 +29655,7 @@ public final class Svet extends JFrame
 		 */
 		public static void skratkyStropu(boolean zapnúť)
 		{
-			if (zapnúť)
+			if (zapnúť || skratkyPodlahy)
 			{
 				// Súčasť implementácie rolovania a posúvania textov
 				// vnútornej konzoly stropu s pomocou klávesnice.
@@ -29422,6 +29708,8 @@ public final class Svet extends JFrame
 		 *     v opačnom prípade
 		 * 
 		 * @see #skratkyStropu(boolean)
+		 * @see #skratkyPodlahy()
+		 * @see #skratkyPodlahy(boolean)
 		 * @see #pridajKlávesovúSkratku(String, int)
 		 * @see #pridajKlávesovúSkratku(String, int, int)
 		 * @see #pridajKlávesovúSkratku(String, int, int, boolean)
@@ -29430,6 +29718,80 @@ public final class Svet extends JFrame
 		 * @see #skratkaPríkazu(String)
 		 */
 		public static boolean skratkyStropu() { return skratkyStropu; }
+
+
+		/**
+		 * <p>Zapne alebo vypne fungovanie niekoľkých predvolených skratiek
+		 * vnútornej konzoly podlahy. Predvolene sú tieto skratky vypnuté.
+		 * Ide o rovnaké skratky ako v prípade stropu – pozri metódu
+		 * {@link #skratkyStropu(boolean) skratkyStropu}.</p>
+		 * 
+		 * @param zapnúť {@code valtrue}, ak majú byť skratky zapnuté,
+		 *     {@code valfalse} v opačnom 
+		 * 
+		 * @see #skratkyPodlahy()
+		 * @see #skratkyStropu()
+		 * @see #skratkyStropu(boolean)
+		 */
+		public static void skratkyPodlahy(boolean zapnúť)
+		{
+			if (zapnúť || skratkyStropu)
+			{
+				// Súčasť implementácie rolovania a posúvania textov
+				// vnútornej konzoly podlahy s pomocou klávesnice.
+				pridajKlávesovúSkratku(home, Kláves.VK_HOME, 0, false);
+				pridajKlávesovúSkratku(end, Kláves.VK_END, 0, false);
+				pridajKlávesovúSkratku(hore, Kláves.VK_UP, 0, false);
+				pridajKlávesovúSkratku(dole, Kláves.VK_DOWN, 0, false);
+				pridajKlávesovúSkratku(pgUp,
+					Kláves.PAGE_UP, 0, false); // bez ctrl…
+				pridajKlávesovúSkratku(pgDn, Kláves.PAGE_DOWN, 0, false);
+		
+				// Súčasť implementácie označovania a kopírovania
+				// textov podlahy.
+				pridajKlávesovúSkratku(dAll1, Kláves.VK_A,
+					Kláves.SKRATKA_PONUKY | Kláves.SHIFT_MASK, false);
+				pridajKlávesovúSkratku(dAll2, Kláves.VK_ESCAPE, 0, false);
+				pridajKlávesovúSkratku(sAll, Kláves.VK_A,
+					Kláves.SKRATKA_PONUKY, false);
+				pridajKlávesovúSkratku(copy, Kláves.VK_C,
+					Kláves.SKRATKA_PONUKY, false);
+			}
+			else
+			{
+				// Súčasť implementácie rolovania a posúvania textov
+				// vnútornej konzoly podlahy s pomocou klávesnice.
+				odoberKlávesovúSkratku(home);
+				odoberKlávesovúSkratku(end);
+				odoberKlávesovúSkratku(hore);
+				odoberKlávesovúSkratku(dole);
+				odoberKlávesovúSkratku(pgUp);
+				odoberKlávesovúSkratku(pgDn);
+		
+				// Súčasť implementácie označovania a kopírovania
+				// textov podlahy.
+				odoberKlávesovúSkratku(dAll1);
+				odoberKlávesovúSkratku(dAll2);
+				odoberKlávesovúSkratku(sAll);
+				odoberKlávesovúSkratku(copy);
+			}
+		
+			skratkyPodlahy = zapnúť;
+		}
+		
+		/**
+		 * <p>Overí, či sú zapnuté preddefinované skratky podlahy. Viac
+		 * detailov je v opise metódy {@link #skratkyPodlahy(boolean)
+		 * skratkyPodlahy(zapnúť)}.</p>
+		 * 
+		 * @return {@code valtrue}, ak sú skratky zapnuté, {@code valfalse}
+		 *     v opačnom prípade
+		 * 
+		 * @see #skratkyPodlahy(boolean)
+		 * @see #skratkyStropu()
+		 * @see #skratkyStropu(boolean)
+		 */
+		public static boolean skratkyPodlahy() { return skratkyPodlahy; }
 
 
 	// --- Vlnenie
