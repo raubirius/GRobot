@@ -5301,8 +5301,8 @@ public class SVGPodpora
 	 */
 	public void pridaj(Shape tvar, String... atribúty)
 	{
-		int dĺžka = atribúty.length - 1;
 		Atribúty zoznam = new Atribúty();
+		int dĺžka = atribúty.length - 1;
 		for (int i = 0; i < dĺžka; i += 2)
 			if (null != atribúty[i] && !atribúty[i].isEmpty() &&
 				null != atribúty[i + 1])
@@ -5397,7 +5397,6 @@ public class SVGPodpora
 	 */
 	public void pridaj(Shape tvar, GRobot tvorca, String... atribúty)
 	{
-		int dĺžka = atribúty.length - 1;
 		Atribúty zoznam = new Atribúty();
 
 		if (tvorca.priehľadnosť() < 1.0)
@@ -5431,9 +5430,10 @@ public class SVGPodpora
 					zoznam.put("stroke", farbaNaReťazec(farba, true));
 					if (255 != farba.getAlpha())
 						zoznam.put("stroke-opacity", alfaNaReťazec(farba));
-					if (1.0 != tvorca.polomerPera)
+					double polomerPera = tvorca.dajPolomerPera();
+					if (1.0 != polomerPera)
 						zoznam.put("stroke-width",
-							konverziaDoubleNaString(tvorca.polomerPera));
+							konverziaDoubleNaString(polomerPera));
 					zoznam.put("fill", "none");
 				}
 			}
@@ -5450,9 +5450,10 @@ public class SVGPodpora
 				{
 					zoznam.put("stroke", reťazecNáteru);
 					// stroke-opacity tu nenastavovať‼
-					if (1.0 != tvorca.polomerPera)
+					double polomerPera = tvorca.dajPolomerPera();
+					if (1.0 != polomerPera)
 						zoznam.put("stroke-width",
-							konverziaDoubleNaString(tvorca.polomerPera));
+							konverziaDoubleNaString(polomerPera));
 					zoznam.put("fill", "none");
 				}
 			}
@@ -5544,6 +5545,7 @@ public class SVGPodpora
 			}
 		}
 
+		int dĺžka = atribúty.length - 1;
 		for (int i = 0; i < dĺžka; i += 2)
 			if (null != atribúty[i] && !atribúty[i].isEmpty())
 			{
@@ -6046,7 +6048,7 @@ public class SVGPodpora
 					if (255 != farba.getAlpha())
 						zoznam.put("stroke-opacity", alfaNaReťazec(farba));
 					zoznam.put("stroke-width",
-						konverziaDoubleNaString(tvorca.polomerPera));
+						konverziaDoubleNaString(tvorca.dajPolomerPera()));
 					zoznam.put("fill", "none");
 				}*/
 			}
@@ -6063,7 +6065,7 @@ public class SVGPodpora
 				{
 					zoznam.put("stroke", reťazecNáteru);
 					zoznam.put("stroke-width",
-						konverziaDoubleNaString(tvorca.polomerPera));
+						konverziaDoubleNaString(tvorca.dajPolomerPera()));
 					zoznam.put("fill", "none");
 				}*/
 			}
@@ -7113,8 +7115,8 @@ public class SVGPodpora
 			{
 				int začiatok = poloha;
 				while (jeZnakÚdajov()) ďalej();
-				int dĺžka = poloha - začiatok;
 
+				int dĺžka = poloha - začiatok;
 				if (0 != dĺžka) try
 				{
 					// System.out.println("Parsujem údaj: " +
@@ -7140,8 +7142,8 @@ public class SVGPodpora
 			{
 				int začiatok = poloha;
 				while (jeZnakČísla()) ďalej();
-				int dĺžka = poloha - začiatok;
 
+				int dĺžka = poloha - začiatok;
 				if (0 != dĺžka) try
 				{
 					// System.out.println("Parsujem číslo: " +

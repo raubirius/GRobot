@@ -787,6 +787,13 @@ Toto bolo presunuté na úvodnú stránku:
 							0f, vzorPera, posunVzoruPera);
 				}
 
+				/*packagePrivate*/ double dajPolomerPera()
+				{
+					if (čiara instanceof BasicStroke)
+						return ((BasicStroke)čiara).getLineWidth();
+					return polomerPera;
+				}
+
 		// Farby a nátery
 
 			// Predvolená farba robota…
@@ -18511,18 +18518,32 @@ Toto bolo presunuté na úvodnú stránku:
 				 * 
 				 * <p class="warning"><b>Varovanie!</b> Počas pridávania metódy
 				 * {@link #vajce(double, String...) vajce} bolo zistené
-				 * nevysvetliteľné správanie: S použitím tenjo metódy ({@code 
-				 * currchoďNaPoOblúku}{@code (poloha)}) nefungoval mechanizmus
-				 * vytvárania {@linkplain #začniCestu() cesty} na rozdiel od
-				 * použitia metódy {@link #choďNaPoOblúku(double, double)
-				 * choďNaPoOblúku}{@code (double, double)}, pričom táto metóda
-				 * volá tú druhú, takže vo výsledku by nemal byť žiadny rozdiel!
+				 * nevysvetliteľné správanie: S použitím tejto verzie metódy
+				 * ({@code currchoďNaPoOblúku}{@code (poloha)}) nefungoval
+				 * mechanizmus vytvárania {@linkplain #začniCestu() cesty}.
+				 * Všetko začalo fungovať po použití verzie metódy
+				 * {@link #choďNaPoOblúku(double, double)
+				 * choďNaPoOblúku}{@code (double, double)}. (Preto metóda
+				 * {@link #vajce(double, String...) vajce} nakoniec volá tú
+				 * druhú verziu chodenia po oblúku.) Lenže to nedáva žiadny
+				 * zmysel. Metóda {@code currchoďNaPoOblúku}{@code (poloha)}
+				 * volá metódu {@link #choďNaPoOblúku(double, double)
+				 * choďNaPoOblúku}{@code (double, double)} a to do bodky
+				 * rovnakým spôsobom, takže vo výsledku by nemal byť žiadny
+				 * rozdiel!
+				 * 
 				 * Ani hlboké testovanie s využitím trasovania cez zásobník
 				 * volaní neodhalil žiadne podozrivé „odbočky“, ktoré by toto
 				 * nepochopiteľné správanie pomohli vysvetliť. To isté volanie
-				 * zvonka tejto metódy funguje, zvnútra spôsobuje problémy.
-				 * Záhada. V tom čase bola aktuálna verzia JVM 1.8.0_331. Možno
-				 * budúce verzie túto záhadu odstránia.</p>
+				 * „zvonka“ tejto metódy funguje, „zvnútra“ spôsobuje problémy.
+				 * Záhada. Nedá sa to vysvetliť inak, len že virtuálny stroj
+				 * Javy má nejaký vnútorný problém. V tom čase bola aktuálna
+				 * verzia JVM 1.8.0_331. Možno budúce verzie túto poruchu
+				 * odstránia.
+				 * 
+				 * (Keby som mal čas, vytvoril by som prípad použitia a poruchu
+				 * nahlásil. Žiaľ, momentálne na to nie je priestor… Takže
+				 * zatiaľ je treba sa tejto poruche skrátka vyhýbať.)</p>
 				 * 
 				 * @param poloha objekt určujúci súradnice cieľového bodu
 				 * 
@@ -30878,9 +30899,10 @@ Toto bolo presunuté na úvodnú stránku:
 			 * začať cestu, nakresliť vajce a prevziať a vyplniť alebo priamo
 			 * vyplniť cestu.</p -->
 			 * 
-			 * <p>Metóda môže prijať nepovinný zoznam reťazcových parametrov,
-			 * s nasledujúcim významom:</p>
-			 *
+			 * <p>Metóda môže prijať nepovinný zoznam reťazcových parametrov
+			 * ({@code nastavenia}), ktoré umožňujú vykonať nasledujúce zmeny
+			 * správania metódy:</p>
+			 * 
 			 * <ul><li>{@code srg"zaznamenajCestu"}, {@code srg"cesta"},
 			 * {@code srg"cestu"} – zapne zaznamenávanie cesty pre záverečnú
 			 * štvoricu príkazov {@link #choďNaPoOblúku(double, double)
@@ -30892,27 +30914,27 @@ Toto bolo presunuté na úvodnú stránku:
 			 * skončení vykonávania metódy sa nepoloží.)</li>
 			 * <li>{@code srg"nezaznamenajCestu"}, {@code srg"necesta"},
 			 * {@code srg"necestu"} – vypne zaznamenávanie cesty zapnuté podľa
-			 * predchádzajúceho parametra, ale nezruší zdvihnutie pera.</li>
+			 * predchádzajúceho nastavenia, ale nezruší zdvihnutie pera.</li>
 			 * <li>{@code srg"zdvihniPero"}, {@code srg"nepero"} – dočasne
 			 * zdvihne pero – počas vykonávania tejto metódy. Po skončení
 			 * vykonávania metódy je obnovená pôvodná poloha pera.</li>
-			 * <li>{@code srg"nezdvíhajpero"}, {@code srg"nezdvihnipero"},
+			 * <li>{@code srg"nezdvíhajPero"}, {@code srg"nezdvihniPero"},
 			 * {@code srg"pero"} – eliminuje akciu dočasného zdvíhania pera.
-			 * Toto má význam vykonať najmä po parametri {@code srg"cesta"}
+			 * Toto má význam vykonať najmä po nastavení {@code srg"cesta"}
 			 * (alebo jeho alternatívy), ktorý zároveň prikazuje dočasne
-			 * zdvihnúť pero. Takže kombináciou parametrov: {@code srg"cesta"}
+			 * zdvihnúť pero. Takže kombináciou nastavení: {@code srg"cesta"}
 			 * a {@code srg"pero"} (v uvedenom poradí) sa dá docieliť súčasné
 			 * zaznamenanie cesty aj nakreslenie vajca. Pozor, ak bolo pero
-			 * zdvihnuté, tento parameter ho nepoloží. Tento parameter len
+			 * zdvihnuté, toto nastavenie ho nepoloží. Toto nastavenie len
 			 * zruší automatické dočasné zdvíhanie pera, ale ak chceme vajce
 			 * nakresliť, treba mať pero položené už pred volaním tejto
 			 * metódy.</li></ul>
 			 * 
-			 * <p>Parametre sú vyhodnocované postupne, to znamená, že tie
-			 * neskoršie uvedené môžu zrušiť alebo čiastočne zrušiť akcie tých
-			 * skôr uvedených. Medzery, spojovníky a podčiarkovníky sú
-			 * z parametrov pred ich vyhodnotením vymazané. Na veľkosti písmen
-			 * nezáleží.</p>
+			 * <p>Parametre nastavení sú vyhodnocované postupne, to znamená,
+			 * že tie neskoršie uvedené môžu zrušiť alebo čiastočne zrušiť
+			 * akcie tých skôr uvedených. Medzery, spojovníky a podčiarkovníky
+			 * sú z parametrov pred ich vyhodnotením vymazané. Na veľkosti
+			 * písmen nezáleží.</p>
 			 * 
 			 * <p> </p>
 			 * 
@@ -31093,24 +31115,32 @@ Toto bolo presunuté na úvodnú stránku:
 			 * 
 			 * <p> </p>
 			 * 
+			 * <p><image>schema-vajca.svg" style="width: 50%; height:
+			 * 50%;<alt/>Schéma k algoritmu kreslenia
+			 * vajca.<onerror>schema-vajca.png</onerror></image>Ilustračná
+			 * schéma k algoritmu kreslenia vajca.</p>
+			 * 
+			 * <!-- TODO – overiť, ako vyzerá vo vygenerovanej dokumentácii
+			 * táto druhá zmenšená schéma. -->
+			 * 
 			 * @param polomer polomer určujúci veľkosť vajíčka; ide o polomer
 			 *     kružnice so stredom S – pozri schému vyššie
-			 * @param parametre nepovinný zoznam parametrov (podrobnosti sú
+			 * @param nastavenia nepovinný zoznam nastavení (podrobnosti sú
 			 *     v rámci opisu; vyššie)
 			 */
-			public void vajce(double polomer, String... parametre)
+			public void vajce(double polomer, String... nastavenia)
 			{
 				boolean zaznamenajCestu = false;
 				boolean zdvihniPero = false;
 
-				for (String parameter : parametre)
+				for (String nastavenie : nastavenia)
 				{
-					if (null == parameter) continue;
-					parameter = parameter.trim().replaceAll("[-_  \t]+",
+					if (null == nastavenie) continue;
+					nastavenie = nastavenie.trim().replaceAll("[-_  \t]+",
 						"").toLowerCase();
-					if (parameter.isEmpty()) continue;
+					if (nastavenie.isEmpty()) continue;
 
-					switch (parameter)
+					switch (nastavenie)
 					{
 					case "cesta": case "cestu":
 					case "zaznamenajcestu":
@@ -31201,6 +31231,243 @@ Toto bolo presunuté na úvodnú stránku:
 					Svet.automatickéPrekreslenie();
 				}
 			}
+
+
+			/**
+			 * <p>Nakreslí pravidelný n-uholník. Metóda funguje podobne ako
+			 * metóda {@link #vajce(double, String...) vajce}. Bola postavená
+			 * na jej princípoch, preto je dobré prezrieť si aj jej
+			 * dokumentáciu. Algoritmus kreslenia pravidelného mnohouholníka
+			 * využil <a
+			 * href="https://math.stackexchange.com/questions/1712375/perimeter-and-area-of-a-regular-n-gon"
+			 * target="_blank">tento zdroj</a> na obojsmerný prepočet medzi
+			 * polomerom – vzdialenosťou od jeho stredu k ľubovoľnému
+			 * vrcholu a dĺžkou stray mnohouholníka. Význam parametra {@code 
+			 * rozmer} sa dá ovplyvniť nastaveniami {@code srg"rozmerJePolomer"}
+			 * a {@code srg"rozmerJeDĺžka"} (pozri nižšie).</p>
+			 * 
+			 * <table class="centered">
+			 * <tr><td><image>mnohouholniky-1.svg<alt/>Ukážka nakreslenia
+			 * viacerých n-uholníkov s rovnakým
+			 * polomerom.<onerror>mnohouholniky-1.png</onerror></image></td>
+			 * <td><image>mnohouholniky-2.svg<alt/>Ukážka nakreslenia viacerých
+			 * n-uholníkov s rovnakou dĺžkou
+			 * strany.<onerror>mnohouholniky-2.png</onerror></image></td></tr>
+			 * 
+			 * <tr><td><p class="image">Ukážka nakreslenia viacerých n-uholníkov
+			 * s rovnakým polomerom.</td><td><p class="image">Ukážka nakreslenia
+			 * viacerých n-uholníkov s rovnakou dĺžkou strany.</p></td></tr>
+			 * </table>
+			 * 
+			 * <p> </p>
+			 * 
+			 * <p><b>Algoritmus metódy vo verzii, kedy rozmer znamená dĺžku
+			 * strany vyzerá zhruba takto:</b></p>
+			 * 
+			 * <pre CLASS="example">
+				{@code kwdpublic} {@code typevoid} nUholník({@code typedouble} dĺžka, {@code typeint} n)
+				{
+					{@link Svet Svet}.{@link Svet#nekresli() nekresli}();
+					{@code typedouble} u = {@link GRobot#uhol() uhol}();
+					{@link Poloha Poloha} p = 	{@link GRobot#poloha() poloha}();
+					{@code kwdtry} {
+						{@code typedouble} pootočenie = {@code num360.0} / n;
+						{@code typedouble} polomer = dĺžka / ({@code num2.0} *
+							{@link Math Math}.{@link Math#sin(double) sin}({@link Math Math}.{@link Math#toRadians(double) toRadians}(pootočenie / {@code num2.0})));
+
+						{@link GRobot#vpravo(double) vpravo}({@code num180});
+						{@link GRobot#odskoč(double) odskoč}(polomer);
+						{@link GRobot#vľavo(double) vľavo}(({@code num180.0} &#45; pootočenie) / {@code num2.0});
+
+						{@code kwdfor} ({@code typeint} i = {@code num0}; i &lt; n; ++i)
+						{
+							{@link GRobot#dopredu(double) dopredu}(dĺžka);
+							{@link GRobot#vpravo(double) vpravo}(pootočenie);
+						}
+					} {@code kwdfinally} {
+						{@link GRobot#uhol(double) uhol}(u);
+						{@link GRobot#poloha(Poloha) poloha}(p);
+						{@link Svet Svet}.{@link Svet#kresli() kresli}();
+					}
+				}
+				</pre>
+			 * 
+			 * <p>Metóda môže prijať nepovinný zoznam reťazcových parametrov
+			 * ({@code nastavenia}), ktoré umožňujú vykonať nasledujúce zmeny
+			 * správania metódy:</p>
+			 * 
+			 * <ul><li>{@code srg"zaznamenajCestu"}, {@code srg"cesta"},
+			 * {@code srg"cestu"} – zapne zaznamenávanie cesty pre záverečnú
+			 * dvojicu príkazov {@link #dopredu(double) dopredu} a {@link 
+			 * #vpravo(double) vpravo} uzavretú v cykle {@code kwdfor} (pozri
+			 * kód vyššie). Tento príkaz zároveň prikáže dočasne zdvihnúť pero
+			 * (počas vykonávania tejto metódy), aby sa mnohouholník
+			 * nenakreslil. Tvar bude uložený v {@linkplain #cesta() ceste}.
+			 * Po skončení vykonávania metódy je obnovená pôvodná poloha pera.
+			 * (Ak bolo pero zdvihnuté, zostane zdvihnuté a po skončení
+			 * vykonávania metódy sa nepoloží.)</li>
+			 * <li>{@code srg"nezaznamenajCestu"}, {@code srg"necesta"},
+			 * {@code srg"necestu"} – vypne zaznamenávanie cesty zapnuté podľa
+			 * predchádzajúceho nastavenia, ale nezruší zdvihnutie pera.</li>
+			 * <li>{@code srg"zdvihniPero"}, {@code srg"nepero"} – dočasne
+			 * zdvihne pero – počas vykonávania tejto metódy. Po skončení
+			 * vykonávania metódy je obnovená pôvodná poloha pera.</li>
+			 * <li>{@code srg"nezdvíhajPero"}, {@code srg"nezdvihniPero"},
+			 * {@code srg"pero"} – eliminuje akciu dočasného zdvíhania pera.
+			 * Toto má význam vykonať najmä po nastavení {@code srg"cesta"}
+			 * (alebo jeho alternatívy), ktorý zároveň prikazuje dočasne
+			 * zdvihnúť pero. Takže kombináciou nastavení: {@code srg"cesta"}
+			 * a {@code srg"pero"} (v uvedenom poradí) sa dá docieliť súčasné
+			 * zaznamenanie cesty aj nakreslenie mnohouholníka. Pozor, ak bolo
+			 * pero zdvihnuté, toto nastavenie ho nepoloží. Toto nastavenie len
+			 * zruší automatické dočasné zdvíhanie pera, ale ak chceme
+			 * mnohouholník nakresliť, treba mať pero položené už pred volaním
+			 * tejto metódy.</li>
+			 * <li>{@code srg"rozmerJePolomer"} – prepne metódu do režimu, kedy
+			 * parameter {@code rozmer} bude mať význam polomeru
+			 * mnohouholníka – vzdialenosti ľubovoľného vrchola od stredu. Toto
+			 * je predvolený režim.</li>
+			 * <li>{@code srg"rozmerJeDĺžka"} – prepne metódu do režimu, kedy
+			 * parameter {@code rozmer} bude mať význam dĺžky strany
+			 * mnohouholníka.</li></ul>
+			 * 
+			 * <p>Parametre nastavení sú vyhodnocované postupne, to znamená, že
+			 * tie neskoršie uvedené môžu zrušiť alebo čiastočne zrušiť akcie
+			 * tých skôr uvedených. Medzery, spojovníky a podčiarkovníky sú
+			 * z parametrov pred ich vyhodnotením vymazané. Na veľkosti písmen
+			 * nezáleží.</p>
+			 * 
+			 * @param rozmer buď polomer, alebo dĺžka strany n-uholníka (pozri
+			 *     nastavenia vyššie)
+			 * @param n počet uhlov n-uholníka; ak je n menšie ako 2, tak
+			 *     volanie metódy v podstate nemá zmysel (nenakreslí nič)
+			 * @param nastavenia nepovinný zoznam nastavení (podrobnosti sú
+			 *     uvedené v rámci opisu; vyššie)
+			 */
+			public void nUholník(double rozmer, int n, String... nastavenia)
+			{
+				boolean zaznamenajCestu = false;
+				boolean zdvihniPero = false;
+				boolean rozmerJePolomer = true;
+
+				for (String nastavenie : nastavenia)
+				{
+					if (null == nastavenie) continue;
+					nastavenie = nastavenie.trim().replaceAll("[-_  \t]+",
+						"").toLowerCase();
+					if (nastavenie.isEmpty()) continue;
+
+					switch (nastavenie)
+					{
+					case "cesta": case "cestu":
+					case "zaznamenajcestu":
+						zaznamenajCestu = true;
+						zdvihniPero = true;
+						break;
+
+					case "necesta": case "necestu":
+					case "nezaznamenajcestu":
+						zaznamenajCestu = false;
+						break;
+
+					case "zdvihnipero": case "nepero":
+						zdvihniPero = true;
+						break;
+
+					case "nezdvíhajpero": case "nezdvihajpero":
+					case "nezdvihnipero": case "pero":
+						zdvihniPero = false;
+						break;
+
+					case "rozmerjepolomer":
+						rozmerJePolomer = true;
+						break;
+
+					case "rozmerjedĺžka": case "rozmerjedlzka":
+						rozmerJePolomer = false;
+						break;
+					}
+				}
+
+				Bod S, A, B, C, D, E; // (deklarácie bodov)
+
+				// Vytvorenie záloh:
+				boolean nekresli = Svet.nekresli;
+				S = new Bod(aktuálneX, aktuálneY);
+				double au = aktuálnyUhol;
+				double pu = poslednýUhol;
+				boolean pp = peroPoložené;
+				double px = poslednéX;
+				double py = poslednéY;
+
+				if (zdvihniPero) peroPoložené = false;
+				Svet.nekresli = true;
+
+				// (Podrobnejšie komentáre sú v opise tejto metódy.)
+				try
+				{
+					double pootočenie = 360.0 / n;
+					double dĺžka, polomer;
+
+					if (rozmerJePolomer)
+					{
+						polomer = rozmer;
+						dĺžka = 2.0 * rozmer * sin(toRadians(pootočenie / 2.0));
+					}
+					else
+					{
+						dĺžka = rozmer;
+						polomer = rozmer / (2.0 * sin(
+							toRadians(pootočenie / 2.0)));
+					}
+
+					// https://math.stackexchange.com/questions/1712375/
+					// perimeter-and-area-of-a-regular-n-gon:
+					// 
+					// s – dĺžka
+					// r – polomer
+					// 
+					// s / 2 = r * sin(θ / 2)
+					// 
+					// s = 2 * r * sin(θ / 2)
+					// 
+					// s / 2 = r * sin(θ / 2)
+					// s / (2 * sin(θ / 2)) = r
+
+					vpravo(180);
+					odskoč(polomer);
+					vľavo((180.0 - pootočenie) / 2.0);
+
+
+					if (zaznamenajCestu) začniCestu();
+					for (int i = 0; i < n; ++i)
+					{
+						dopredu(dĺžka);
+						vpravo(pootočenie);
+					}
+					if (zaznamenajCestu) uzavriCestu();
+				}
+				finally
+				{
+					// Vrátenie záloh:
+					aktuálneX = S.x;
+					aktuálneY = S.y;
+
+					poslednéX = px;
+					poslednéY = py;
+
+					aktuálnyUhol = au;
+					poslednýUhol = pu;
+					peroPoložené = pp;
+
+					Svet.nekresli = nekresli;
+					Svet.automatickéPrekreslenie();
+				}
+			}
+
+			/** <p><a class="alias"></a> Alias pre {@link #nUholník(double, int, String...) nUholník}.</p> */
+			public void nUholnik(double dĺžka, int n, String... nastavenia)
+			{ nUholník(dĺžka, n, nastavenia); }
 
 
 			/**
@@ -37929,7 +38196,11 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public Shape cesta()
 			{
-				poslednýTypTvaru = vyplnený ? TypTvaru.VÝPLŇ : TypTvaru.OBRYS;
+				// Fix: Pozor! Tuto treba byť opatrný. Ak neprebieha záznam,
+				// tak je šanca, že cesta už bola kreslená príkazmi
+				// kresliCestu, vyplňCestu…
+				if (záznamCesty)
+					poslednýTypTvaru = vyplnený ? TypTvaru.VÝPLŇ : TypTvaru.OBRYS;
 				/*
 				 * @throws RuntimeException ak cesta nejestvuje
 				if (0 == cesta.npoints) throw new RuntimeException("Cesta " +

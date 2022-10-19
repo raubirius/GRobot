@@ -7772,8 +7772,11 @@ public class Súbor implements Closeable
 		 * riadka sekvenciu návrat vozíka ({@code srg'\r'}) a koniec riadka
 		 * ({@code srg'\n'}), čo je bežný spôsob ukončovania riadkov
 		 * v textových súboroch OS Windows. Ak chcete na ukončovanie využívať
-		 * inú sekvenciu, použite metódu {@link #zapíš(Object[]) zapíš}
-		 * a uveďte želanú sekvenciu ako posledný parameter.</p>
+		 * inú sekvenciu, tak buď použite metódu {@link #zapíš(Object[]) zapíš}
+		 * a uveďte želanú sekvenciu ako posledný parameter (ale pozor, táto
+		 * metóda môže pomedzi zapísané údaje vkladať neželané medzery), alebo
+		 * metódu {@link #zapíšReťazec(String) zapíšReťazec} pri volaní ktorej
+		 * pripojíte želanú sekvenciu na koniec zapisovaného reťazca.</p>
 		 * 
 		 * @param text text, ktorý má byť zapísaný do samostatného riadka
 		 *     súboru otvoreného na zápis
@@ -7801,8 +7804,11 @@ public class Súbor implements Closeable
 		 * riadka sekvenciu návrat vozíka ({@code srg'\r'}) a koniec riadka
 		 * ({@code srg'\n'}), čo je bežný spôsob ukončovania riadkov
 		 * v textových súboroch OS Windows. Ak chcete na ukončovanie využívať
-		 * inú sekvenciu, použite metódu {@link #zapíš(Object[]) zapíš}
-		 * a uveďte želanú sekvenciu ako posledný parameter.</p>
+		 * inú sekvenciu, tak buď použite metódu {@link #zapíš(Object[]) zapíš}
+		 * a uveďte želanú sekvenciu ako posledný parameter (ale pozor, táto
+		 * metóda môže pomedzi zapísané údaje vkladať neželané medzery), alebo
+		 * metódu {@link #zapíšReťazec(String) zapíšReťazec} pri volaní ktorej
+		 * pripojíte želanú sekvenciu na koniec zapisovaného reťazca.</p>
 		 * 
 		 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
 		 *     operácii

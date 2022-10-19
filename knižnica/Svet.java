@@ -17838,8 +17838,9 @@ public final class Svet extends JFrame
 		// 
 
 		private final static TreeSet<Long> prvočísla = new TreeSet<>();
-		static { prvočísla.add(2L); prvočísla.add(3L); }
-		private static long overenéPrvočísla = 4;
+		private static Long[] polePrvočísiel; static { prvočísla.add(2L);
+		prvočísla.add(3L); polePrvočísiel = prvočísla.toArray(new Long[
+		prvočísla.size()]); } private static long overenéPrvočísla = 4;
 
 		private static void overPrvočísla(long poČíslo)
 		{
@@ -17866,12 +17867,13 @@ public final class Svet extends JFrame
 
 
 		/**
-		 * <p>Overí, či zadané číslo je prvočíslo. Metóda
-		 * prevedie záporné číslo na kladné, pretože záporné
-		 * čísla sú považované za združené (angl. associates)
-		 * a v tomto zmysle je prvočíslom každé záporné číslo,
-		 * ktorého kladný „súrodenec“ je prvočíslom [1, 2,
-		 * 3].<p>
+		 * <p>Overí, či zadané číslo je prvočíslo.</p>
+		 * 
+		 * <p>Metóda berie do úvahy aj záporné čísla. Tie si
+		 * vnútorne prevedie na kladné, pretože záporné čísla sú
+		 * považované za združené (angl. associates) a v tomto
+		 * zmysle je prvočíslom každé záporné číslo, ktorého
+		 * kladný „súrodenec“ je prvočíslom [1, 2, 3].<p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Vnútorný
 		 * mechanizmus sveta zabezpečuje dynamické vyhľadávanie
@@ -17902,11 +17904,14 @@ public final class Svet extends JFrame
 		 * 16. 12. 2020.</a></td></tr>
 		 * 
 		 * </table>
-		 
+		 * 
 		 * @param číslo celé číslo, ktorého prvočíselnosť
 		 *     chceme overiť
 		 * @return {@code valtrue} ak je zadané číslo
 		 *     prvočíslo; {@code valfalse} v opačnom prípade
+		 * 
+		 * @see #dajPrvočíslo(int)
+		 * @see #rozložNaPrvočísla(long)
 		 */
 		public static boolean jePrvočíslo(long číslo)
 		{
@@ -17930,6 +17935,110 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #jePrvočíslo(long) jePrvočíslo}.</p> */
 		public static boolean jePrvocislo(long číslo)
 		{ return jePrvočíslo(číslo); }
+
+
+		/**
+		 * <p>Vráti n-té prvočíslo, ak jestvuje. Metóda vráti kladné alebo
+		 * záporné prvočíslo podľa zadaného poradového čísla v rámci parametra
+		 * {@code n}. Ak je zadaná nula, metóda vráti nulu, čo je nezmysel,
+		 * ale aspoň sa vďaka tomu dá prejsť celá (dostupná) celočíselná os
+		 * bez vzniku výnimy.</p>
+		 * 
+		 * <p><b>Príklad:</b></p>
+		 * 
+		 * <pre CLASS="example">
+			{@code kwdfor} ({@code typeint} i = {@code num1}; i <= {@code num10}; ++i)
+				{@link System System}.{@link System#out out}.{@link java.io.PrintStream#print(String) print}(i + {@code srg": "} + {@link Svet Svet}.{@code currdajPrvočíslo}(i) + {@code srg"; "});
+			{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}();
+			</pre>
+		 * 
+		 * <p><b>Výsledok:</b></p>
+		 * 
+		 * <code>1: 2; 2: 3; 3: 5; 4: 7; 5: 11; 6: 13; 7: 17; 8: 19; 9: 23; 10: 29;</code>
+		 * 
+		 * @param n poradové číslo – určuje, ktoré prvočíslo v poradí má byť
+		 *     vrátené
+		 * @return n-té prvočíslo, ak jestvuje
+		 * 
+		 * @see #jePrvočíslo(long)
+		 * @see #rozložNaPrvočísla(long)
+		 */
+		public static long dajPrvočíslo(int n)
+		{
+			if (0 == n) return 0;
+			boolean záporné = false;
+			if (n < 0)
+			{
+				n = -n;
+				záporné = true;
+			}
+			while (prvočísla.size() < n)
+				overPrvočísla(overenéPrvočísla * 2);
+			--n;
+			if (polePrvočísiel.length < prvočísla.size())
+				polePrvočísiel = prvočísla.toArray(new Long[prvočísla.size()]);
+			return záporné ? -polePrvočísiel[n] : polePrvočísiel[n];
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #dajPrvočíslo(int) dajPrvočíslo}.</p> */
+		public static long dajPrvocislo(int n)
+		{ return dajPrvočíslo(n); }
+
+		// Pomocné atribúty k metóde rozložNaPrvočísla:
+		private final static Vector<Long> rozkladNaPrvočísla = new Vector<>();
+		private final static long[] prázdnaMnožinaRozkladu = new long[] {};
+
+		/**
+		 * <p>Rozloží zadané celé číslo na prvočísla, ak je to možné. Ak
+		 * rozklad nie je možný, tak metóda vráti prázdne pole (pole
+		 * s nulovou dĺžkou). V podstate rozklad nie je možný len pre
+		 * tie celé čísla, ktoré nie sú prvočíslami: ⟨−1; 1⟩. Ak je zadané
+		 * číslo záporné, tak metóda vráti rovnaký rozklad ako pre kladné
+		 * združené číslo, len prvý prvok prevedie na zápornú hodnotu.</p>
+		 * 
+		 * @param číslo celé číslo, ktoré chceme rozložiť na prvočísla
+		 * @return pole prvočísiel alebo prázdne pole
+		 * 
+		 * @see #jePrvočíslo(long)
+		 * @see #dajPrvočíslo(int)
+		 */
+		public static long[] rozložNaPrvočísla(long číslo)
+		{
+			if (číslo >= -1 && číslo <= 1) return prázdnaMnožinaRozkladu;
+
+			boolean záporné = false;
+			if (číslo < 0)
+			{
+				číslo = -číslo;
+				záporné = true;
+			}
+
+			rozkladNaPrvočísla.clear();
+
+			int i = 1;
+			long aktuálne = dajPrvočíslo(i);
+
+			while (aktuálne <= číslo)
+			{
+				while (0 == číslo % aktuálne)
+				{
+					rozkladNaPrvočísla.add(aktuálne);
+					číslo /= aktuálne;
+				}
+				aktuálne = dajPrvočíslo(++i);
+			}
+
+			if (záporné) rozkladNaPrvočísla.set(0, -rozkladNaPrvočísla.get(0));
+
+			long[] rozklad = new long[rozkladNaPrvočísla.size()];
+			i = 0; for (Long l : rozkladNaPrvočísla) rozklad[i++] = l;
+
+			return rozklad;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #rozložNaPrvočísla(long) rozložNaPrvočísla}.</p> */
+		public static long[] rozlozNaPrvocisla(long číslo)
+		{ return rozložNaPrvočísla(číslo); }
 
 
 		// Štandardný vstup
@@ -29746,7 +29855,7 @@ public final class Svet extends JFrame
 				pridajKlávesovúSkratku(pgUp,
 					Kláves.PAGE_UP, 0, false); // bez ctrl…
 				pridajKlávesovúSkratku(pgDn, Kláves.PAGE_DOWN, 0, false);
-		
+
 				// Súčasť implementácie označovania a kopírovania
 				// textov podlahy.
 				pridajKlávesovúSkratku(dAll1, Kláves.VK_A,
@@ -29767,7 +29876,7 @@ public final class Svet extends JFrame
 				odoberKlávesovúSkratku(dole);
 				odoberKlávesovúSkratku(pgUp);
 				odoberKlávesovúSkratku(pgDn);
-		
+
 				// Súčasť implementácie označovania a kopírovania
 				// textov podlahy.
 				odoberKlávesovúSkratku(dAll1);
@@ -29775,10 +29884,10 @@ public final class Svet extends JFrame
 				odoberKlávesovúSkratku(sAll);
 				odoberKlávesovúSkratku(copy);
 			}
-		
+
 			skratkyPodlahy = zapnúť;
 		}
-		
+
 		/**
 		 * <p>Overí, či sú zapnuté preddefinované skratky podlahy. Viac
 		 * detailov je v opise metódy {@link #skratkyPodlahy(boolean)
