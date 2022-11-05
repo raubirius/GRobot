@@ -954,15 +954,15 @@ import static java.lang.Math.*;
  * Tutorial.</em> anthony.liekens.net, 2000–2013. Dostupné na:
  * <a href="http://anthony.liekens.net/index.php/Computers/RenderingTutorial"
  * target="_blank"
- * >http://anthony.liekens.net/index.php/Computers/RenderingTutorial</a>.
+ * >http://&#8203;anthony.&#8203;liekens.&#8203;net/&#8203;index.&#8203;php/&#8203;Computers/&#8203;RenderingTutorial</a>.
  * Citované: 15. 10. 2017.</li>
  * <li><em>Matrix multiplication – Wikipedia.</em> Dostupné na:
- * <a href="https://en.wikipedia.org/wiki/Matrix_multiplication"
- * target="_blank">https://en.wikipedia.org/wiki/Matrix_multiplication</a>.
+ * <a href="https://en.wikipedia.org/wiki/Matrix_multiplication" target="_blank"
+ * >https://&#8203;en.&#8203;wikipedia.&#8203;org/&#8203;wiki/&#8203;Matrix_&#8203;multiplication</a>.
  * Citované: 15. 10. 2017.</li>
  * <li><em>Rotation matrix – Wikipedia.</em> Dostupné na:
- * <a href="https://en.wikipedia.org/wiki/Rotation_matrix"
- * target="_blank">https://en.wikipedia.org/wiki/Rotation_matrix</a>.
+ * <a href="https://en.wikipedia.org/wiki/Rotation_matrix" target="_blank"
+ * >https://&#8203;en.&#8203;wikipedia.&#8203;org/&#8203;wiki/&#8203;Rotation_&#8203;matrix</a>.
  * Citované: 15. 10. 2017.</li>
  * </ul>
  */

@@ -503,7 +503,7 @@ import static java.lang.Math.toRadians;
  * 
  * <p>Na stránkach univerzity v Princetone (<small><b>Zdroj:</b> <a
  * href="https://introcs.cs.princeton.edu/java/stdlib/"
- * target="_blank">https://introcs.cs.princeton.edu/java/stdlib/</a></small>)
+ * target="_blank">https://&#8203;introcs.&#8203;cs.&#8203;princeton.&#8203;edu/&#8203;java/&#8203;stdlib/</a></small>)
  * <!-- Starší odkaz: http://www.cs.princeton.edu/introcs/stdlib/ -->
  * sme našli našli knižnicu pre študentov pozostávajúcu zo 17 tried. Z nich
  * nás zaujala trieda {@code Draw}, v ktorej sme našli cenné poznatky
@@ -610,21 +610,21 @@ import static java.lang.Math.toRadians;
  * <tr><td>3.</td><td><small>Zajacová, Katarína</small>: <em>Základy
  * programovania.</em> Trnava : 2010. [online]. Dostupné na: <a
  * href="http://cec.truni.sk/zajacova/2010_ZP_Java/index.html" target="_blank"
- * >http://cec.truni.sk/zajacova/2010_ZP_Java/index.html</a>. Citované: 2010 –
- * 2012.</td></tr>
+ * >http://&#8203;cec.&#8203;truni.&#8203;sk/&#8203;zajacova/&#8203;2010_&#8203;ZP_&#8203;Java/&#8203;index.&#8203;html</a>.
+ * Citované: 2010 – 2012.</td></tr>
  * 
  * <tr><td>4.</td><td><small>Hudeková, Dominika</small>: <em>Zbierka úloh
  * v Jave.</em> Trnava : 2012. [online]. Dostupné na: <a
  * href="http://cec.truni.sk/hudekova/2012_ZU_Java/index.html" target="_blank"
- * >http://cec.truni.sk/hudekova/2012_ZU_Java/index.html</a>. Citované: 2012 –
- * 2014.</td></tr>
+ * >http://&#8203;cec.&#8203;truni.&#8203;sk/&#8203;hudekova/&#8203;2012_&#8203;ZU_&#8203;Java/&#8203;index.&#8203;html</a>.
+ * Citované: 2012 – 2014.</td></tr>
  * 
  * <tr><td>5.</td><td><small>Hudeková, Dominika – Novák, Lukáš</small>:
  * <em>Java – programovací jazyk pre pokročilých programátorov + Java ako
  * prvý programovací jazyk.</em> Trnava : 2014. [online]. Dostupné na: <a
  * href="http://cec.truni.sk/hudekova/2014_EU_Java/" target="_blank"
- * >http://cec.truni.sk/hudekova/2014_EU_Java/</a>. Citované: 2014 –
- * 2016.</td></tr>
+ * >http://&#8203;cec.&#8203;truni.&#8203;sk/&#8203;hudekova/&#8203;2014_&#8203;EU_&#8203;Java/</a>.
+ * Citované: 2014 – 2016.</td></tr>
  * 
  * </table>
  * 
@@ -640,14 +640,14 @@ import static java.lang.Math.toRadians;
  * <tr><td>2.</td><td><em>The Java Tutorials (Learning the Java
  * Language).</em> Oracle, 1995, 2015. [online]. Dostupné na:
  * <a target="_blank" href="https://docs.oracle.com/javase/tutorial/"
- * >https://docs.oracle.com/javase/tutorial/</a>. Citované: 2015 –
- * 2016.</td></tr>
+ * >https://&#8203;docs.&#8203;oracle.&#8203;com/&#8203;javase/&#8203;tutorial/</a>.
+ * Citované: 2015 – 2016.</td></tr>
  * 
  * <tr><td>3.</td><td><em>Java Platform Standard Edition 8
  * Documentation.</em> Oracle. [online]. Dostupné na:
  * <a target="_blank" href="https://docs.oracle.com/javase/8/docs/"
- * >https://docs.oracle.com/javase/8/docs/</a>. Citované: 2014 –
- * 2016.</td></tr>
+ * >https://&#8203;docs.&#8203;oracle.&#8203;com/&#8203;javase/&#8203;8/&#8203;docs/</a>.
+ * Citované: 2014 – 2016.</td></tr>
  * 
  * </table>
  * 
@@ -884,7 +884,8 @@ Toto bolo presunuté na úvodnú stránku:
 			private double pootočenieTvaru = 0.0;
 
 			// Aktuálny stav pera
-			/*packagePrivate*/ boolean peroPoložené = true;
+			private boolean peroPoložené = true;
+			private boolean kresliPerom = true;
 
 			// Aktuálny stav viditeľnosti
 			/*packagePrivate*/ boolean viditeľný = true;
@@ -1395,7 +1396,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 					/**
-					 * <p>Nastaví alebo zruší vlastné orezanie tejto inštancie.</p>
+					 * <p>Nastaví alebo zruší vlastné orezanie tejto
+					 * inštancie.</p>
 					 */
 					public void vlastnéOrezanie(Shape vlastnéOrezanie)
 					{
@@ -3617,9 +3619,10 @@ Toto bolo presunuté na úvodnú stránku:
 
 			// Cesta a dráha
 			// private final Polygon cesta = new Polygon();
-			private final Path2D.Double cesta = new Path2D.Double();
+			private Path2D.Double cesta = new Path2D.Double();
 			private boolean záznamCesty = false;
 			private boolean záznamCestyBezPolohyPera = true;
+			private boolean kresliZáznamCesty = true;
 
 			private final Vector<Bod> dráha = new Vector<>();
 			private final Vector<Double> mapaSmerov = new Vector<>();
@@ -4862,6 +4865,12 @@ Toto bolo presunuté na úvodnú stránku:
 				if (vráťKompozit) grafika.setComposite(záloha);
 			}
 
+			/*packagePrivate*/ void aktualizujStavPera()
+			{
+				kresliPerom = peroPoložené &&
+					(!záznamCesty || kresliZáznamCesty);
+			}
+
 			private static void kresliTvar(
 				BufferedImage obrázok, Graphics2D grafika,
 				GRobot robot, KreslenieTvaru tvar)
@@ -4924,6 +4933,7 @@ Toto bolo presunuté na úvodnú stránku:
 				robot.grafikaAktívnehoPlátna = grafika;
 
 				robot.peroPoložené = true;
+				robot.aktualizujStavPera();
 				robot.kresliTvary = true;
 
 				robot.domaX = robot.aktuálneX;
@@ -4946,6 +4956,7 @@ Toto bolo presunuté na úvodnú stránku:
 				robot.grafikaAktívnehoPlátna = grafikaAktívnehoPlátna_Záloha;
 
 				robot.peroPoložené = peroPoložené_Záloha;
+				robot.aktualizujStavPera();
 				robot.viditeľný = viditeľný_Záloha;
 				robot.kresliTvary = kresliTvary_Záloha;
 				robot.vypĺňajTvary = vypĺňajTvary_Záloha;
@@ -5381,6 +5392,7 @@ Toto bolo presunuté na úvodnú stránku:
 					robot.grafikaAktívnehoPlátna = grafikaAktívnehoPlátna_Záloha;
 
 					robot.peroPoložené = peroPoložené_Záloha;
+					robot.aktualizujStavPera();
 					robot.viditeľný = viditeľný_Záloha;
 					robot.kresliTvary = kresliTvary_Záloha;
 					robot.vypĺňajTvary = vypĺňajTvary_Záloha;
@@ -7642,7 +7654,8 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #položPero()
 				 * @see #polohaPeraDoma(Boolean) polohaPeraDoma
 				 */
-				public void polohaPera(boolean polož) { peroPoložené = polož; }
+				public void polohaPera(boolean polož)
+				{ peroPoložené = polož; aktualizujStavPera(); }
 
 				/**
 				 * <p>Zdvihne pero tohto robota z plátna podlahy alebo stropu.
@@ -7661,7 +7674,8 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #zdvihniPeroDoma() zdvihniPeroDoma
 				 * @see #nekresliTvary() nekresliTvary
 				 */
-				public void zdvihniPero() { peroPoložené = false; }
+				public void zdvihniPero()
+				{ peroPoložené = false; aktualizujStavPera(); }
 
 				/**
 				 * <p>Položí pero tohto robota na plátno podlahy alebo stropu.
@@ -7680,10 +7694,12 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #položPeroDoma() položPeroDoma
 				 * @see #kresliTvary() kresliTvary
 				 */
-				public void položPero() { peroPoložené = true; }
+				public void položPero()
+				{ peroPoložené = true; aktualizujStavPera(); }
 
 				/** <p><a class="alias"></a> Alias pre {@link #položPero() položPero}.</p> */
-				public void polozPero() { peroPoložené = true; }
+				public void polozPero()
+				{ peroPoložené = true; aktualizujStavPera(); }
 
 
 			// Viditeľnosť
@@ -9315,7 +9331,10 @@ Toto bolo presunuté na úvodnú stránku:
 					vymažPôsobisko();
 					zrušCestu();
 					if (null != peroPoloženéDoma)
+					{
 						peroPoložené = peroPoloženéDoma.booleanValue();
+						aktualizujStavPera();
+					}
 					if (null != viditeľnýDoma)
 					{
 						if (viditeľný != viditeľnýDoma.booleanValue())
@@ -9421,7 +9440,10 @@ Toto bolo presunuté na úvodnú stránku:
 					vymažPôsobisko();
 					zrušCestu();
 					if (null != peroPoloženéDoma)
+					{
 						peroPoložené = peroPoloženéDoma.booleanValue();
+						aktualizujStavPera();
+					}
 					if (null != viditeľnýDoma)
 					{
 						if (viditeľný != viditeľnýDoma.booleanValue())
@@ -9528,7 +9550,10 @@ Toto bolo presunuté na úvodnú stránku:
 					vymažPôsobisko();
 					zrušCestu();
 					if (null != peroPoloženéDoma)
+					{
 						peroPoložené = peroPoloženéDoma.booleanValue();
+						aktualizujStavPera();
+					}
 					if (null != viditeľnýDoma)
 					{
 						if (viditeľný != viditeľnýDoma.booleanValue())
@@ -9633,7 +9658,10 @@ Toto bolo presunuté na úvodnú stránku:
 					vymažPôsobisko();
 					zrušCestu();
 					if (null != peroPoloženéDoma)
+					{
 						peroPoložené = peroPoloženéDoma.booleanValue();
+						aktualizujStavPera();
+					}
 					if (null != viditeľnýDoma)
 					{
 						if (viditeľný != viditeľnýDoma.booleanValue())
@@ -9744,7 +9772,10 @@ Toto bolo presunuté na úvodnú stránku:
 					vymažPôsobisko();
 					zrušCestu();
 					if (null != peroPoloženéDoma)
+					{
 						peroPoložené = peroPoloženéDoma.booleanValue();
+						aktualizujStavPera();
+					}
 					if (null != viditeľnýDoma)
 					{
 						if (viditeľný != viditeľnýDoma.booleanValue())
@@ -9856,7 +9887,10 @@ Toto bolo presunuté na úvodnú stránku:
 					vymažPôsobisko();
 					zrušCestu();
 					if (null != peroPoloženéDoma)
+					{
 						peroPoložené = peroPoloženéDoma.booleanValue();
+						aktualizujStavPera();
+					}
 					if (null != viditeľnýDoma)
 					{
 						if (viditeľný != viditeľnýDoma.booleanValue())
@@ -9961,7 +9995,10 @@ Toto bolo presunuté na úvodnú stránku:
 					vymažPôsobisko();
 					zrušCestu();
 					if (null != peroPoloženéDoma)
+					{
 						peroPoložené = peroPoloženéDoma.booleanValue();
+						aktualizujStavPera();
+					}
 					if (null != viditeľnýDoma)
 					{
 						if (viditeľný != viditeľnýDoma.booleanValue())
@@ -10071,7 +10108,10 @@ Toto bolo presunuté na úvodnú stránku:
 					vymažPôsobisko();
 					zrušCestu();
 					if (null != peroPoloženéDoma)
+					{
 						peroPoložené = peroPoloženéDoma.booleanValue();
+						aktualizujStavPera();
+					}
 					if (null != viditeľnýDoma)
 					{
 						if (viditeľný != viditeľnýDoma.booleanValue())
@@ -10182,7 +10222,10 @@ Toto bolo presunuté na úvodnú stránku:
 					vymažPôsobisko();
 					zrušCestu();
 					if (null != peroPoloženéDoma)
+					{
 						peroPoložené = peroPoloženéDoma.booleanValue();
+						aktualizujStavPera();
+					}
 					if (null != viditeľnýDoma)
 					{
 						if (viditeľný != viditeľnýDoma.booleanValue())
@@ -10316,7 +10359,10 @@ Toto bolo presunuté na úvodnú stránku:
 					vymažPôsobisko();
 					zrušCestu();
 					if (null != peroPoloženéDoma)
+					{
 						peroPoložené = peroPoloženéDoma.booleanValue();
+						aktualizujStavPera();
+					}
 					if (null != viditeľnýDoma)
 					{
 						if (viditeľný != viditeľnýDoma.booleanValue())
@@ -10447,7 +10493,10 @@ Toto bolo presunuté na úvodnú stránku:
 					zrušCieľovúFarbuDoma = iný.zrušCieľovúFarbuDoma;
 
 					if (null != peroPoloženéDoma)
+					{
 						peroPoložené = peroPoloženéDoma.booleanValue();
+						aktualizujStavPera();
+					}
 					if (null != viditeľnýDoma)
 					{
 						if (viditeľný != viditeľnýDoma.booleanValue())
@@ -14100,7 +14149,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneY = novéY;
 					}
 
-					if (peroPoložené) úsečka();
+					if (kresliPerom) úsečka();
 
 					if (záznamCesty)
 					{
@@ -14126,7 +14175,8 @@ Toto bolo presunuté na úvodnú stránku:
 						while (doriešOhraničenie());
 					}
 
-					if (viditeľný || peroPoložené) Svet.automatickéPrekreslenie();
+					if (viditeľný || kresliPerom)
+						Svet.automatickéPrekreslenie();
 				}
 
 				/** <p><a class="alias"></a> Alias pre {@link #dopredu(double) dopredu}.</p> */
@@ -14668,7 +14718,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneY = novéY;
 					}
 
-					if (peroPoložené) úsečka();
+					if (kresliPerom) úsečka();
 
 					if (záznamCesty)
 					{
@@ -14695,7 +14745,8 @@ Toto bolo presunuté na úvodnú stránku:
 						while (doriešOhraničenie());
 					}
 
-					if (viditeľný || peroPoložené) Svet.automatickéPrekreslenie();
+					if (viditeľný || kresliPerom)
+						Svet.automatickéPrekreslenie();
 				}
 
 				/** <p><a class="alias"></a> Alias pre {@link #posuňVpravo(double) posuňVpravo}.</p> */
@@ -14745,7 +14796,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneY = novéY;
 					}
 
-					if (peroPoložené) úsečka();
+					if (kresliPerom) úsečka();
 
 					if (záznamCesty)
 					{
@@ -14772,7 +14823,8 @@ Toto bolo presunuté na úvodnú stránku:
 						while (doriešOhraničenie());
 					}
 
-					if (viditeľný || peroPoložené) Svet.automatickéPrekreslenie();
+					if (viditeľný || kresliPerom)
+						Svet.automatickéPrekreslenie();
 				}
 
 				/** <p><a class="alias"></a> Alias pre {@link #posuňVľavo(double) posuňVľavo}.</p> */
@@ -14875,7 +14927,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneY = novéY;
 					}
 
-					if (peroPoložené) úsečka();
+					if (kresliPerom) úsečka();
 
 					if (záznamCesty)
 					{
@@ -14902,7 +14954,8 @@ Toto bolo presunuté na úvodnú stránku:
 						while (doriešOhraničenie());
 					}
 
-					if (viditeľný || peroPoložené) Svet.automatickéPrekreslenie();
+					if (viditeľný || kresliPerom)
+						Svet.automatickéPrekreslenie();
 				}
 
 				/** <p><a class="alias"></a> Alias pre {@link #posuňVSmere(double, double) posuňVSmere}.</p> */
@@ -14987,7 +15040,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneY = novéY;
 					}
 
-					if (peroPoložené) úsečka();
+					if (kresliPerom) úsečka();
 
 					if (záznamCesty)
 					{
@@ -15014,7 +15067,8 @@ Toto bolo presunuté na úvodnú stránku:
 						while (doriešOhraničenie());
 					}
 
-					if (viditeľný || peroPoložené) Svet.automatickéPrekreslenie();
+					if (viditeľný || záznamCesty)
+						Svet.automatickéPrekreslenie();
 				}
 
 				/** <p><a class="alias"></a> Alias pre {@link #posuňVSmere(Smer, double) posuňVSmere}.</p> */
@@ -16647,7 +16701,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneY = novéY;
 					}
 
-					if (peroPoložené) úsečka();
+					if (kresliPerom) úsečka();
 
 					if (záznamCesty)
 					{
@@ -16674,7 +16728,8 @@ Toto bolo presunuté na úvodnú stránku:
 						while (doriešOhraničenie());
 					}
 
-					if (viditeľný || peroPoložené) Svet.automatickéPrekreslenie();
+					if (viditeľný || záznamCesty)
+						Svet.automatickéPrekreslenie();
 				}
 
 				/** <p><a class="alias"></a> Alias pre {@link #choďNa(double, double) choďNa}.</p> */
@@ -16719,7 +16774,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneY = objekt.polohaY();
 					}
 
-					if (peroPoložené) úsečka();
+					if (kresliPerom) úsečka();
 
 					if (záznamCesty)
 					{
@@ -16746,7 +16801,8 @@ Toto bolo presunuté na úvodnú stránku:
 						while (doriešOhraničenie());
 					}
 
-					if (viditeľný || peroPoložené) Svet.automatickéPrekreslenie();
+					if (viditeľný || záznamCesty)
+						Svet.automatickéPrekreslenie();
 				}
 
 				/** <p><a class="alias"></a> Alias pre {@link #choďNa(Poloha) choďNa}.</p> */
@@ -16803,7 +16859,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneY = novéY;
 					}
 
-					if (peroPoložené) úsečka();
+					if (kresliPerom) úsečka();
 
 					if (záznamCesty)
 					{
@@ -16830,7 +16886,8 @@ Toto bolo presunuté na úvodnú stránku:
 						while (doriešOhraničenie());
 					}
 
-					if (viditeľný || peroPoložené) Svet.automatickéPrekreslenie();
+					if (viditeľný || záznamCesty)
+						Svet.automatickéPrekreslenie();
 				}
 
 				/** <p><a class="alias"></a> Alias pre {@link #choďNa(Shape) choďNa}.</p> */
@@ -16869,7 +16926,7 @@ Toto bolo presunuté na úvodnú stránku:
 
 					}
 
-					if (peroPoložené) úsečka();
+					if (kresliPerom) úsečka();
 
 					if (záznamCesty)
 					{
@@ -16896,7 +16953,8 @@ Toto bolo presunuté na úvodnú stránku:
 						while (doriešOhraničenie());
 					}
 
-					if (viditeľný || peroPoložené) Svet.automatickéPrekreslenie();
+					if (viditeľný || záznamCesty)
+						Svet.automatickéPrekreslenie();
 				}
 
 				/** <p><a class="alias"></a> Alias pre {@link #choďNaMyš() choďNaMyš}.</p> */
@@ -16944,7 +17002,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneY += Δy;
 					}
 
-					if (peroPoložené) úsečka();
+					if (kresliPerom) úsečka();
 
 					if (záznamCesty)
 					{
@@ -16970,7 +17028,8 @@ Toto bolo presunuté na úvodnú stránku:
 						while (doriešOhraničenie());
 					}
 
-					if (viditeľný || peroPoložené) Svet.automatickéPrekreslenie();
+					if (viditeľný || záznamCesty)
+						Svet.automatickéPrekreslenie();
 				}
 
 				/** <p><a class="alias"></a> Alias pre {@link #choď(double, double) choď}.</p> */
@@ -17442,7 +17501,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneY = novéY;
 					}
 
-					if (peroPoložené) úsečka();
+					if (kresliPerom) úsečka();
 
 					if (záznamCesty)
 					{
@@ -17468,7 +17527,8 @@ Toto bolo presunuté na úvodnú stránku:
 						while (doriešOhraničenie());
 					}
 
-					if (viditeľný || peroPoložené) Svet.automatickéPrekreslenie();
+					if (viditeľný || záznamCesty)
+						Svet.automatickéPrekreslenie();
 				}
 
 				/** <p><a class="alias"></a> Alias pre {@link #posuň(double, double) posuň}.</p> */
@@ -17832,7 +17892,7 @@ Toto bolo presunuté na úvodnú stránku:
 						while (doriešOhraničenie());
 					}
 
-					if (peroPoložené)
+					if (kresliPerom)
 					{
 						// grafikaAktívnehoPlátna.setColor(farbaRobota);
 						nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
@@ -18348,7 +18408,7 @@ Toto bolo presunuté na úvodnú stránku:
 
 					if (aktuálneX == x && aktuálneY == y)
 					{
-						if (peroPoložené) bod();
+						if (kresliPerom) bod();
 						return;
 					}
 
@@ -21447,7 +21507,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneY = cieľY;
 					}
 
-					if (peroPoložené) úsečka();
+					if (kresliPerom) úsečka();
 
 					if (záznamCesty)
 					{
@@ -21469,7 +21529,7 @@ Toto bolo presunuté na úvodnú stránku:
 						while (doriešOhraničenie());
 					}
 
-					if (viditeľný || peroPoložené)
+					if (viditeľný || záznamCesty)
 						Svet.automatickéPrekreslenie();
 				}
 
@@ -30911,10 +30971,16 @@ Toto bolo presunuté na úvodnú stránku:
 			 * vajce nenakreslilo. Tvar bude uložený v {@linkplain #cesta()
 			 * ceste}. Po skončení vykonávania metódy je obnovená pôvodná
 			 * poloha pera. (Ak bolo pero zdvihnuté, zostane zdvihnuté a po
-			 * skončení vykonávania metódy sa nepoloží.)</li>
+			 * skončení vykonávania metódy sa nepoloží.)
+			 * Toto nastavenie sa stane nedostupným v prípade, že bolo použité
+			 * niektoré z nastavení {@code srg"vráť"}, {@code srg"vyplň"} alebo
+			 * {@code srg"kresli"} (pozri nižšie).</li>
 			 * <li>{@code srg"nezaznamenajCestu"}, {@code srg"necesta"},
 			 * {@code srg"necestu"} – vypne zaznamenávanie cesty zapnuté podľa
-			 * predchádzajúceho nastavenia, ale nezruší zdvihnutie pera.</li>
+			 * predchádzajúceho nastavenia, ale nezruší zdvihnutie pera.
+			 * Toto nastavenie sa stane nedostupným v prípade, že bolo použité
+			 * niektoré z nastavení {@code srg"vráť"}, {@code srg"vyplň"} alebo
+			 * {@code srg"kresli"} (pozri nižšie).</li>
 			 * <li>{@code srg"zdvihniPero"}, {@code srg"nepero"} – dočasne
 			 * zdvihne pero – počas vykonávania tejto metódy. Po skončení
 			 * vykonávania metódy je obnovená pôvodná poloha pera.</li>
@@ -30929,6 +30995,29 @@ Toto bolo presunuté na úvodnú stránku:
 			 * zruší automatické dočasné zdvíhanie pera, ale ak chceme vajce
 			 * nakresliť, treba mať pero položené už pred volaním tejto
 			 * metódy.</li></ul>
+			 * 
+			 * <p>Nasledujúce tri nastavenia zrušia efekt nastavení
+			 * {@code srg"cesta"} alebo {@code srg"necesta"} a spôsobia, že
+			 * tieto dve nastavenia sa stanú nedostupnými pre toto volanie
+			 * metódy.</p>
+			 * 
+			 * <ul><li>{@code srg"vráť"}, {@code srg"vráťcestu"} – vykoná
+			 * nastavenie {@code srg"zdvihniPero"}, zálohuje aktuálny stav
+			 * záznamu a/alebo uloženia cesty tohto robota, vytvorí z vajca
+			 * novú cestu, obnoví predchádzajúci stav záznamu cesty a vráti
+			 * cestu vytvorenú z vajca v návratovej hodnote tejto metódy.</li>
+			 * <li>{@code srg"vyplň"}, {@code srg"vyplňcestu"} – vykoná
+			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
+			 * #kresliZáznamCesty(boolean)
+			 * kresliZáznamCesty}{@code (}{@code valfalse}{@code )} a metódu
+			 * {@link #vyplňTvar(Shape) kresliTvar}{@code (cesta)} s aktuálne
+			 * vytvorenou cestou z vajca.</li>
+			 * <li>{@code srg"kresli"}, {@code srg"kreslicestu"} – vykoná
+			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
+			 * #kresliZáznamCesty(boolean)
+			 * kresliZáznamCesty}{@code (}{@code valfalse}{@code )} a metódu
+			 * {@link #kresliTvar(Shape) kresliTvar}{@code (cesta)} s aktuálne
+			 * vytvorenou cestou z vajca.</li></ul>
 			 * 
 			 * <p>Parametre nastavení sú vyhodnocované postupne, to znamená,
 			 * že tie neskoršie uvedené môžu zrušiť alebo čiastočne zrušiť
@@ -31115,23 +31204,92 @@ Toto bolo presunuté na úvodnú stránku:
 			 * 
 			 * <p> </p>
 			 * 
-			 * <p><image>schema-vajca.svg" style="width: 50%; height:
-			 * 50%;<alt/>Schéma k algoritmu kreslenia
+			 * <p><image>schema-vajca.svg" style="width: 400px; height:
+			 * 270px;<alt/>Schéma k algoritmu kreslenia
 			 * vajca.<onerror>schema-vajca.png</onerror></image>Ilustračná
 			 * schéma k algoritmu kreslenia vajca.</p>
 			 * 
-			 * <!-- TODO – overiť, ako vyzerá vo vygenerovanej dokumentácii
-			 * táto druhá zmenšená schéma. -->
+			 * <p class="remark"><b>Poznámka:</b> Výška vajca sa dá vypočítať
+			 * ako {@code polomer * (4 - }{@link Math Math}.{@link 
+			 * Math#sqrt(double) sqrt}{@code (2))}.</p>
+			 * 
+			 * <p><a href="javascript:;"
+			 * onclick="let elementObj = document.getElementById('vzorce-k-vajcu'); elementObj.style.display = ('' == elementObj.style.display) ? 'none': '';">Ak
+			 * máte záujem o zobrazenie postupu výpočtu výšky vajca, tak
+			 * kliknite sem.</a></p>
+			 * 
+			 * <div id="vzorce-k-vajcu" style="display:none">
+			 * <hr/>
+			 * 
+			 * <p>Zamerajme sa na schéme (vyššie) na trojuholník Δ ABC. Šírka
+			 * vajca je evidentne zhodná s priemerom kružnice K so stredom
+			 * v bode S a polomerom <i>R</i>, čo je vlastne strana
+			 * <i>c</i> trojuholníka Δ ABC. Výška vajca je súčtom priemeru
+			 * kružnice K (2<i>R</i>) a polomeru <i>r</i> kružnice k so
+			 * stredom v bode C. Môžeme to zapísať takto:</p>
+			 * 
+			 * <table>
+			 * <tr><td><p><i>šírka</i></p></td><td><p> = <i>c</i></p></td>
+			 * <td><p> = 2<i>R</i></p></td></tr>
+			 * <tr><td><p><i>výška</i></p></td><td><p> = <i>c</i> +
+			 * <i>r</i></p></td><td><p> = 2<i>R</i> + <i>r</i></p></td></tr>
+			 * </table>
+			 * 
+			 * <p>Zostáva už len zistiť veľkosť polomeru <i>r</i>. Keď sa
+			 * pozrieme na úsečku |AE| alebo |BD| a uvedomíme si, že ich dĺžka
+			 * je zhodná s priemerom kružnice K (<i>c</i> = 2<i>R</i>), tak
+			 * zistíme, že polomer <i>r</i> vieme zistiť ako rozdiel priemeru
+			 * kružnice K a ľubovoľnej zo strán <i>a</i> alebo
+			 * <i>b</i> trojuholníka Δ ABC.</p>
+			 * 
+			 * <p>Čiže buď budeme počítať rozdiel úsečiek
+			 * |BD| − |BC| = <i>c</i> − <i>a</i>, alebo
+			 * |AE| − |AC| = <i>c</i> − <i>b</i>. Keďže dĺžky
+			 * |AE| = |BD| = |AB| = <i>c</i>
+			 * a |BC| = |AC| = <i>a</i> = <i>b</i> sú zhodné, je jedno, ktorým
+			 * spôsobom budeme polomer <i>r</i> počítať.</p>
+			 * 
+			 * <p>Obidve strany Δ ABC (<i>a</i>, <i>b</i>) sú preponami
+			 * rovnoramenných pravouhlých trojuholníkov, ktorých odvesny sú
+			 * rovné polomeru <i>R</i>. Môžeme preto napísať napríklad:</p>
+			 * 
+			 * <p><i>a</i>² = <i>R</i>² + <i>R</i>²</p>
+			 * <p><i>a</i> = √(2<i>R</i>²) = <i>R</i>√2</p>
+			 * <!-- p>(<i>b</i> = <i>a</i>)</p>
+			 * <p><i>c</i> = 2<i>R</i></p -->
+			 * 
+			 * <p>Ďalej (napríklad):</p>
+			 * <p><i>r</i> = <i>c</i> − <i>a</i></p>
+			 * <p><i>r</i> = 2<i>R</i> − <i>R</i>√2 = <i>R</i>(2 − √2)</p>
+			 * 
+			 * <p>Výška vajca je potom:</p>
+			 * <table>
+			 * <tr><td><p><i>výška</i></p></td><td><p> = <i>c</i> + <i>r</i></p></td></tr>
+			 * <tr><td> </td><td><p> = 2<i>R</i> + <i>R</i>(2 − √2)</p></td></tr>
+			 * <tr><td> </td><td><p> = <i>R</i>(2 + (2 − √2))</p></td></tr>
+			 * <tr><td> </td><td><p> = <i>R</i>(4 − √2)</p></td></tr>
+			 * </table>
+			 * 
+			 * <hr/>
+			 * </div>
 			 * 
 			 * @param polomer polomer určujúci veľkosť vajíčka; ide o polomer
 			 *     kružnice so stredom S – pozri schému vyššie
 			 * @param nastavenia nepovinný zoznam nastavení (podrobnosti sú
 			 *     v rámci opisu; vyššie)
+			 * @return {@code valnull} alebo tvar vytvorený po použití
+			 *     nastavení {@code srg"vráť"}, {@code srg"vyplň"} alebo
+			 *     {@code srg"kresli"}
 			 */
-			public void vajce(double polomer, String... nastavenia)
+			@SuppressWarnings("fallthrough")
+			public Shape vajce(double polomer, String... nastavenia)
 			{
 				boolean zaznamenajCestu = false;
 				boolean zdvihniPero = false;
+				boolean zálohujCestu = false;
+				boolean vráťCestu = false;
+				boolean kresliCestu = false;
+				boolean vyplňCestu = false;
 
 				for (String nastavenie : nastavenia)
 				{
@@ -31144,13 +31302,17 @@ Toto bolo presunuté na úvodnú stránku:
 					{
 					case "cesta": case "cestu":
 					case "zaznamenajcestu":
-						zaznamenajCestu = true;
-						zdvihniPero = true;
+						if (!vráťCestu)
+						{
+							zaznamenajCestu = true;
+							zdvihniPero = true;
+						}
 						break;
 
 					case "necesta": case "necestu":
 					case "nezaznamenajcestu":
-						zaznamenajCestu = false;
+						if (!vráťCestu)
+							zaznamenajCestu = false;
 						break;
 
 					case "zdvihnipero": case "nepero":
@@ -31160,6 +31322,25 @@ Toto bolo presunuté na úvodnú stránku:
 					case "nezdvíhajpero": case "nezdvihajpero":
 					case "nezdvihnipero": case "pero":
 						zdvihniPero = false;
+						break;
+
+					case "kresli": case "kreslicestu":
+					case "vyplň": case "vyplňcestu":
+					case "vypln": case "vyplncestu":
+						if (nastavenie.equals("kresli") ||
+							nastavenie.equals("kreslicestu"))
+							kresliCestu = true;
+						else
+							vyplňCestu = true;
+
+						// no-break; //
+
+					case "vráť": case "vráťcestu":
+					case "vrat": case "vratcestu":
+						zaznamenajCestu = true;
+						zdvihniPero = true;
+						zálohujCestu = true;
+						vráťCestu = true;
 						break;
 					}
 				}
@@ -31175,7 +31356,24 @@ Toto bolo presunuté na úvodnú stránku:
 				double px = poslednéX;
 				double py = poslednéY;
 
-				if (zdvihniPero) peroPoložené = false;
+				Path2D.Double c = null;
+				boolean zc = false, zcbpp = true, kzc = true;
+
+				if (zálohujCestu)
+				{
+					c = cesta; cesta = new Path2D.Double();
+					zc = záznamCesty; záznamCesty = false;
+					zcbpp = záznamCestyBezPolohyPera;
+					kzc = kresliZáznamCesty;
+					if (kresliCestu || vyplňCestu)
+						kresliZáznamCesty(false);
+				}
+
+				if (zdvihniPero)
+				{
+					peroPoložené = false;
+					aktualizujStavPera();
+				}
 				Svet.nekresli = true;
 
 				// (Podrobnejšie komentáre sú v opise tejto metódy.)
@@ -31212,7 +31410,19 @@ Toto bolo presunuté na úvodnú stránku:
 					choďNaPoOblúku(E.polohaX(), E.polohaY());
 					choďNaPoOblúku(B.polohaX(), B.polohaY());
 					choďNaPoOblúku(A.polohaX(), A.polohaY());
-					if (zaznamenajCestu) uzavriCestu();
+					if (zaznamenajCestu)
+					{
+						uzavriCestu();
+						if (vráťCestu)
+						{
+							Shape tátoCesta = new Path2D.Double(cesta);
+							if (vyplňCestu) vyplňTvar(tátoCesta);
+							if (kresliCestu) kresliTvar(tátoCesta);
+							return tátoCesta;
+						}
+					}
+
+					return null;
 				}
 				finally
 				{
@@ -31226,6 +31436,16 @@ Toto bolo presunuté na úvodnú stránku:
 					aktuálnyUhol = au;
 					poslednýUhol = pu;
 					peroPoložené = pp;
+
+					if (zálohujCestu)
+					{
+						cesta = c;
+						záznamCesty = zc;
+						záznamCestyBezPolohyPera = zcbpp;
+						kresliZáznamCesty = kzc;
+					}
+
+					aktualizujStavPera();
 
 					Svet.nekresli = nekresli;
 					Svet.automatickéPrekreslenie();
@@ -31269,7 +31489,7 @@ Toto bolo presunuté na úvodnú stránku:
 				{
 					{@link Svet Svet}.{@link Svet#nekresli() nekresli}();
 					{@code typedouble} u = {@link GRobot#uhol() uhol}();
-					{@link Poloha Poloha} p = 	{@link GRobot#poloha() poloha}();
+					{@link Poloha Poloha} p = {@link GRobot#poloha() poloha}();
 					{@code kwdtry} {
 						{@code typedouble} pootočenie = {@code num360.0} / n;
 						{@code typedouble} polomer = dĺžka / ({@code num2.0} *
@@ -31305,10 +31525,16 @@ Toto bolo presunuté na úvodnú stránku:
 			 * nenakreslil. Tvar bude uložený v {@linkplain #cesta() ceste}.
 			 * Po skončení vykonávania metódy je obnovená pôvodná poloha pera.
 			 * (Ak bolo pero zdvihnuté, zostane zdvihnuté a po skončení
-			 * vykonávania metódy sa nepoloží.)</li>
+			 * vykonávania metódy sa nepoloží.)
+			 * Toto nastavenie sa stane nedostupným v prípade, že bolo použité
+			 * niektoré z nastavení {@code srg"vráť"}, {@code srg"vyplň"} alebo
+			 * {@code srg"kresli"} (pozri nižšie).</li>
 			 * <li>{@code srg"nezaznamenajCestu"}, {@code srg"necesta"},
 			 * {@code srg"necestu"} – vypne zaznamenávanie cesty zapnuté podľa
-			 * predchádzajúceho nastavenia, ale nezruší zdvihnutie pera.</li>
+			 * predchádzajúceho nastavenia, ale nezruší zdvihnutie pera.
+			 * Toto nastavenie sa stane nedostupným v prípade, že bolo použité
+			 * niektoré z nastavení {@code srg"vráť"}, {@code srg"vyplň"} alebo
+			 * {@code srg"kresli"} (pozri nižšie).</li>
 			 * <li>{@code srg"zdvihniPero"}, {@code srg"nepero"} – dočasne
 			 * zdvihne pero – počas vykonávania tejto metódy. Po skončení
 			 * vykonávania metódy je obnovená pôvodná poloha pera.</li>
@@ -31331,6 +31557,29 @@ Toto bolo presunuté na úvodnú stránku:
 			 * parameter {@code rozmer} bude mať význam dĺžky strany
 			 * mnohouholníka.</li></ul>
 			 * 
+			 * <p>Nasledujúce tri nastavenia zrušia efekt nastavení
+			 * {@code srg"cesta"} alebo {@code srg"necesta"} a spôsobia, že
+			 * tieto dve nastavenia sa stanú nedostupnými pre toto volanie
+			 * metódy.</p>
+			 * 
+			 * <ul><li>{@code srg"vráť"}, {@code srg"vráťcestu"} – vykoná
+			 * nastavenie {@code srg"zdvihniPero"}, zálohuje aktuálny stav
+			 * záznamu a/alebo uloženia cesty tohto robota, vytvorí z n-uholníka
+			 * novú cestu, obnoví predchádzajúci stav záznamu cesty a vráti
+			 * cestu vytvorenú z n-uholníka v návratovej hodnote tejto metódy.</li>
+			 * <li>{@code srg"vyplň"}, {@code srg"vyplňcestu"} – vykoná
+			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
+			 * #kresliZáznamCesty(boolean)
+			 * kresliZáznamCesty}{@code (}{@code valfalse}{@code )} a metódu
+			 * {@link #vyplňTvar(Shape) kresliTvar}{@code (cesta)} s aktuálne
+			 * vytvorenou cestou z n-uholníka.</li>
+			 * <li>{@code srg"kresli"}, {@code srg"kreslicestu"} – vykoná
+			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
+			 * #kresliZáznamCesty(boolean)
+			 * kresliZáznamCesty}{@code (}{@code valfalse}{@code )} a metódu
+			 * {@link #kresliTvar(Shape) kresliTvar}{@code (cesta)} s aktuálne
+			 * vytvorenou cestou z n-uholníka.</li></ul>
+			 * 
 			 * <p>Parametre nastavení sú vyhodnocované postupne, to znamená, že
 			 * tie neskoršie uvedené môžu zrušiť alebo čiastočne zrušiť akcie
 			 * tých skôr uvedených. Medzery, spojovníky a podčiarkovníky sú
@@ -31343,12 +31592,20 @@ Toto bolo presunuté na úvodnú stránku:
 			 *     volanie metódy v podstate nemá zmysel (nenakreslí nič)
 			 * @param nastavenia nepovinný zoznam nastavení (podrobnosti sú
 			 *     uvedené v rámci opisu; vyššie)
+			 * @return {@code valnull} alebo tvar vytvorený po použití
+			 *     nastavení {@code srg"vráť"}, {@code srg"vyplň"} alebo
+			 *     {@code srg"kresli"}
 			 */
-			public void nUholník(double rozmer, int n, String... nastavenia)
+			@SuppressWarnings("fallthrough")
+			public Shape nUholník(double rozmer, int n, String... nastavenia)
 			{
 				boolean zaznamenajCestu = false;
 				boolean zdvihniPero = false;
 				boolean rozmerJePolomer = true;
+				boolean zálohujCestu = false;
+				boolean vráťCestu = false;
+				boolean kresliCestu = false;
+				boolean vyplňCestu = false;
 
 				for (String nastavenie : nastavenia)
 				{
@@ -31361,13 +31618,19 @@ Toto bolo presunuté na úvodnú stránku:
 					{
 					case "cesta": case "cestu":
 					case "zaznamenajcestu":
-						zaznamenajCestu = true;
-						zdvihniPero = true;
+						if (!vráťCestu)
+						{
+							zaznamenajCestu = true;
+							zdvihniPero = true;
+						}
 						break;
 
 					case "necesta": case "necestu":
 					case "nezaznamenajcestu":
-						zaznamenajCestu = false;
+						if (!vráťCestu)
+						{
+							zaznamenajCestu = false;
+						}
 						break;
 
 					case "zdvihnipero": case "nepero":
@@ -31386,24 +31649,58 @@ Toto bolo presunuté na úvodnú stránku:
 					case "rozmerjedĺžka": case "rozmerjedlzka":
 						rozmerJePolomer = false;
 						break;
+
+					case "kresli": case "kreslicestu":
+					case "vyplň": case "vyplňcestu":
+					case "vypln": case "vyplncestu":
+						if (nastavenie.equals("kresli") ||
+							nastavenie.equals("kreslicestu"))
+							kresliCestu = true;
+						else
+							vyplňCestu = true;
+
+						// no-break; //
+
+					case "vráť": case "vráťcestu":
+					case "vrat": case "vratcestu":
+						zaznamenajCestu = true;
+						zdvihniPero = true;
+						zálohujCestu = true;
+						vráťCestu = true;
+						break;
 					}
 				}
 
-				Bod S, A, B, C, D, E; // (deklarácie bodov)
-
 				// Vytvorenie záloh:
 				boolean nekresli = Svet.nekresli;
-				S = new Bod(aktuálneX, aktuálneY);
+				double ax = aktuálneX;
+				double ay = aktuálneY;
 				double au = aktuálnyUhol;
 				double pu = poslednýUhol;
 				boolean pp = peroPoložené;
 				double px = poslednéX;
 				double py = poslednéY;
 
-				if (zdvihniPero) peroPoložené = false;
+				Path2D.Double c = null;
+				boolean zc = false, zcbpp = true, kzc = true;
+
+				if (zálohujCestu)
+				{
+					c = cesta; cesta = new Path2D.Double();
+					zc = záznamCesty; záznamCesty = false;
+					zcbpp = záznamCestyBezPolohyPera;
+					kzc = kresliZáznamCesty;
+					if (kresliCestu || vyplňCestu)
+						kresliZáznamCesty(false);
+				}
+
+				if (zdvihniPero)
+				{
+					peroPoložené = false;
+					aktualizujStavPera();
+				}
 				Svet.nekresli = true;
 
-				// (Podrobnejšie komentáre sú v opise tejto metódy.)
 				try
 				{
 					double pootočenie = 360.0 / n;
@@ -31445,13 +31742,25 @@ Toto bolo presunuté na úvodnú stránku:
 						dopredu(dĺžka);
 						vpravo(pootočenie);
 					}
-					if (zaznamenajCestu) uzavriCestu();
+					if (zaznamenajCestu)
+					{
+						uzavriCestu();
+						if (vráťCestu)
+						{
+							Shape tátoCesta = new Path2D.Double(cesta);
+							if (vyplňCestu) vyplňTvar(tátoCesta);
+							if (kresliCestu) kresliTvar(tátoCesta);
+							return tátoCesta;
+						}
+					}
+
+					return null;
 				}
 				finally
 				{
 					// Vrátenie záloh:
-					aktuálneX = S.x;
-					aktuálneY = S.y;
+					aktuálneX = ax;
+					aktuálneY = ay;
 
 					poslednéX = px;
 					poslednéY = py;
@@ -31460,14 +31769,24 @@ Toto bolo presunuté na úvodnú stránku:
 					poslednýUhol = pu;
 					peroPoložené = pp;
 
+					if (zálohujCestu)
+					{
+						cesta = c;
+						záznamCesty = zc;
+						záznamCestyBezPolohyPera = zcbpp;
+						kresliZáznamCesty = kzc;
+					}
+
+					aktualizujStavPera();
+
 					Svet.nekresli = nekresli;
 					Svet.automatickéPrekreslenie();
 				}
 			}
 
 			/** <p><a class="alias"></a> Alias pre {@link #nUholník(double, int, String...) nUholník}.</p> */
-			public void nUholnik(double dĺžka, int n, String... nastavenia)
-			{ nUholník(dĺžka, n, nastavenia); }
+			public Shape nUholnik(double dĺžka, int n, String... nastavenia)
+			{ return nUholník(dĺžka, n, nastavenia); }
 
 
 			/**
@@ -37687,7 +38006,7 @@ Toto bolo presunuté na úvodnú stránku:
 		// Cesta
 
 			/**
-			 * <p>Začne záznam cesty robota. Odteraz sa pohyb robota bude
+			 * <p>Začne záznam novej cesty robota. Odteraz sa pohyb robota bude
 			 * zaznamenávať. Zaznamenaná cesta vytvorí oblasť, ktorú je možné
 			 * kedykoľvek nakresliť, vyplniť alebo obkresliť čiarou. Cesta je
 			 * použiteľná aj s myšou, pozri {@link #myšVCeste() myšVCeste}.
@@ -37696,7 +38015,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 * ako keby bolo pero položené. Takto je možné vytvoriť cestu
 			 * v „tichom režime“ a dodatočne ju kompletne vykresliť. Ak
 			 * chceme zmeniť spôsob záznamu, musíme použiť metódu:
-			 * {@link #začniCestu(boolean)}.</p>
+			 * {@link #začniCestu(boolean)} alebo {@link 
+			 * #kresliZáznamCesty(boolean)}.</p>
 			 * 
 			 * @see #začniCestu(boolean)
 			 * @see #skončiCestu()
@@ -37705,6 +38025,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see #kresliCestu()
 			 * @see #obkresliCestu()
 			 * @see #cesta()
+			 * @see #kresliZáznamCesty()
 			 */
 			public void začniCestu()
 			{
@@ -37718,6 +38039,7 @@ Toto bolo presunuté na úvodnú stránku:
 					(int)Svet.prepočítajY(aktuálneY));
 				*/
 				záznamCesty = true;
+				aktualizujStavPera();
 				záznamCestyBezPolohyPera = true;
 			}
 
@@ -37728,15 +38050,21 @@ Toto bolo presunuté na úvodnú stránku:
 			 * <p>Začne záznam novej cesty robota. Odteraz sa pohyb robota bude
 			 * zaznamenávať. Zaznamenaná cesta vytvorí oblasť, ktorú je možné
 			 * kedykoľvek nakresliť, vyplniť alebo obkresliť čiarou. Cesta je
-			 * použiteľná aj s myšou (pozri {@link #myšVCeste() myšVCeste}).
-			 * Parameter {@code rešpektujPolohuPera} určuje, či má byť počas
+			 * použiteľná aj s myšou (pozri {@link #myšVCeste() myšVCeste}).</p>
+			 * 
+			 * <p>Parameter {@code rešpektujPolohuPera} určuje, či má byť počas
 			 * záznamu cesty braná do úvahy aj poloha pera a výslednú cestu
 			 * má byť vytvorená z rôznych častí, ktoré smú alebo nesmú byť
 			 * vykreslené, podľa toho, či bolo počas záznamu cesty pero
-			 * zdvihnuté alebo položené. Niekedy nie je výhodné brať do
-			 * úvahy polohu pera. Napríklad ak chceme zaznamenať celú cestu
-			 * v „tichom režime“ – so zdvihnutým perom a dodatočne ju
-			 * kompletne vykresliť.</p>
+			 * zdvihnuté alebo položené.</p>
+			 * 
+			 * <p>Niekedy nie je výhodné brať do úvahy polohu pera. Napríklad ak
+			 * chceme zaznamenať celú cestu v „tichom režime“ – so zdvihnutým
+			 * perom a dodatočne ju kompletne vykresliť.</p>
+			 * 
+			 * <p>V <a href="zoznam-zmien.html">novších verziách</a>
+			 * programovacieho rámca je tiež možné využiť novú vlastnosť:
+			 * {@link #kresliZáznamCesty(boolean)}.</p>
 			 * 
 			 * @param rešpektujPolohuPera ak je rovné {@code valtrue},
 			 *     záznam cesty bude brať do úvahy polohu pera
@@ -37749,6 +38077,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see #kresliCestu()
 			 * @see #obkresliCestu()
 			 * @see #cesta()
+			 * @see #kresliZáznamCesty()
 			 */
 			public void začniCestu(boolean rešpektujPolohuPera)
 			{
@@ -37762,6 +38091,7 @@ Toto bolo presunuté na úvodnú stránku:
 					(int)Svet.prepočítajY(aktuálneY));
 				*/
 				záznamCesty = true;
+				aktualizujStavPera();
 				záznamCestyBezPolohyPera = !rešpektujPolohuPera;
 			}
 
@@ -37769,10 +38099,10 @@ Toto bolo presunuté na úvodnú stránku:
 			public void zacniCestu(boolean rešpektujPolohuPera) { začniCestu(rešpektujPolohuPera); }
 
 			/**
-			 * <p>Ukončí záznam cesty a ponechá ju na ďalšie použitie. Dokedy
-			 * opätovne nepoužijeme metódu {@link #začniCestu() začniCestu}
-			 * alebo metódu {@link #zrušCestu() zrušCestu}, je zaznamenaná
-			 * cesta opakovane použiteľná.</p>
+			 * <p>Ukončí záznam cesty (ak prebieha) a ponechá ho v pamäti
+			 * na ďalšie použitie. Dokedy opätovne nepoužijeme metódu {@link 
+			 * #začniCestu() začniCestu} alebo metódu {@link #zrušCestu()
+			 * zrušCestu}, je zaznamenaná cesta opakovane použiteľná.</p>
 			 * 
 			 * @see #začniCestu()
 			 * @see #začniCestu(boolean)
@@ -37782,10 +38112,12 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see #kresliCestu()
 			 * @see #obkresliCestu()
 			 * @see #cesta()
+			 * @see #kresliZáznamCesty()
 			 */
 			public void skončiCestu()
 			{
 				záznamCesty = false;
+				aktualizujStavPera();
 				záznamCestyBezPolohyPera = true;
 			}
 
@@ -37793,7 +38125,8 @@ Toto bolo presunuté na úvodnú stránku:
 			public void skonciCestu() { skončiCestu(); }
 
 			/**
-			 * <p>Ukončí a zmaže záznam cesty.</p>
+			 * <p>Ukončí záznam cesty (ak prebieha) a zmaže zaznamenanú cestu
+			 * (aj v prípade, že záznam neprebiehal).</p>
 			 * 
 			 * @see #začniCestu()
 			 * @see #začniCestu(boolean)
@@ -37803,11 +38136,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see #kresliCestu()
 			 * @see #obkresliCestu()
 			 * @see #cesta()
+			 * @see #kresliZáznamCesty()
 			 */
 			public void zrušCestu()
 			{
 				cesta.reset();
 				záznamCesty = false;
+				aktualizujStavPera();
 				záznamCestyBezPolohyPera = true;
 			}
 
@@ -37815,11 +38150,11 @@ Toto bolo presunuté na úvodnú stránku:
 			public void zrusCestu() { zrušCestu(); }
 
 			/**
-			 * <p>Ukončí záznam cesty, uzavrie cestu (prepojí posledný bod
-			 * s prvým bodom posledného kresleného segmentu) a ponechá ju na
-			 * ďalšie použitie. Dokedy opätovne nepoužijeme metódu {@link 
-			 * #začniCestu() začniCestu} alebo metódu {@link #zrušCestu()
-			 * zrušCestu}, je zaznamenaná cesta ľubovoľný počet ráz
+			 * <p>Ukončí záznam cesty (ak prebieha), uzavrie cestu (prepojí
+			 * posledný bod posledného kresleného segmentu s prvým bodom cesty)
+			 * a ponechá záznam cesty na ďalšie použitie. Dokedy opätovne
+			 * nepoužijeme metódu {@link #začniCestu() začniCestu} alebo metódu
+			 * {@link #zrušCestu() zrušCestu}, je zaznamenaná cesta opakovane
 			 * použiteľná.</p>
 			 * 
 			 * @see #začniCestu()
@@ -37830,6 +38165,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see #kresliCestu()
 			 * @see #obkresliCestu()
 			 * @see #cesta()
+			 * @see #kresliZáznamCesty()
 			 */
 			public void uzavriCestu()
 			{
@@ -37837,6 +38173,7 @@ Toto bolo presunuté na úvodnú stránku:
 				{
 					cesta.closePath();
 					záznamCesty = false;
+					aktualizujStavPera();
 					záznamCestyBezPolohyPera = true;
 				}
 			}
@@ -37846,8 +38183,10 @@ Toto bolo presunuté na úvodnú stránku:
 			public void zavriCestu() { uzavriCestu(); }
 
 			/**
-			 * <p>Ukončí záznam cesty a vyplní zaznamenanú cestu aktuálnou
-			 * farbou robota.</p>
+			 * <p>Ukončí záznam cesty (ak prebieha) a vyplní plochu, ktorú
+			 * zaznamenaná cesta vymedzuje aktuálnou farbou robota. Ak záznam
+			 * neprebiehal a v pamäti jestvuje zaznamenaná cesta, tak robot
+			 * vyplní plochu podľa nej.</p>
 			 * 
 			 * <p class="tip"><b>Tip:</b> Ak chcete vytvorenú cestu rotovať
 			 * alebo posúvať, vytvorte z nej {@link Oblasť oblasť} a použite
@@ -37866,6 +38205,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see #kresliCestu()
 			 * @see #obkresliCestu()
 			 * @see #cesta()
+			 * @see #kresliZáznamCesty()
 			 */
 			public void vyplňCestu()
 			{
@@ -37878,6 +38218,7 @@ Toto bolo presunuté na úvodnú stránku:
 					"začniCestu().");
 				*/
 				záznamCesty = false;
+				aktualizujStavPera();
 				záznamCestyBezPolohyPera = true;
 				// grafikaAktívnehoPlátna.setColor(farbaRobota);
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
@@ -37892,8 +38233,10 @@ Toto bolo presunuté na úvodnú stránku:
 			public void vyplnCestu() { vyplňCestu(); }
 
 			/**
-			 * <p>Ukončí záznam cesty a nakreslí zaznamenanú cestu aktuálnou
-			 * farbou a hrúbkou čiary.</p>
+			 * <p>Ukončí záznam cesty (ak prebieha) a nakreslí zaznamenanú
+			 * cestu aktuálnou farbou a hrúbkou čiary. Ak záznam neprebiehal
+			 * a v pamäti jestvuje zaznamenaná cesta, tak robot nakreslí
+			 * tú.</p>
 			 * 
 			 * <p>Použitie tohto príkazu sa stáva nenahraditeľným napríklad
 			 * v prípade, že chceme použiť polopriehľadné pero, ktoré pri
@@ -37903,11 +38246,9 @@ Toto bolo presunuté na úvodnú stránku:
 			 * 
 			 * <ol>
 			 * <li>zdvihnúť pero robota,</li>
-			 * <li>začať záznam cesty (spôsobom „bez ohľadu na polohu
-			 * pera“),</li>
+			 * <li>začať záznam cesty (spôsobom „rešpektuj polohu pera“),</li>
 			 * <li>vykonať potrebné pohyby robotom</li>
-			 * <li>a použiť túto metódu na nakreslenie výslednej
-			 * cesty.</li>
+			 * <li>a použiť túto metódu na nakreslenie výslednej cesty.</li>
 			 * </ol>
 			 * 
 			 * <p>Bez ohľadu na uvedený prípad, metóda je použiteľná
@@ -37940,6 +38281,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see #vyplňCestu()
 			 * @see #obkresliCestu()
 			 * @see #cesta()
+			 * @see #kresliZáznamCesty()
 			 */
 			public void kresliCestu()
 			{
@@ -37952,6 +38294,7 @@ Toto bolo presunuté na úvodnú stránku:
 					"začniCestu().");
 				*/
 				záznamCesty = false;
+				aktualizujStavPera();
 				záznamCestyBezPolohyPera = true;
 				// grafikaAktívnehoPlátna.setColor(farbaRobota);
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
@@ -37969,7 +38312,10 @@ Toto bolo presunuté na úvodnú stránku:
 			 * kresliCestu} za sebou (v uvedenom poradí). To znamená, že
 			 * cesta sa uzavrie vtedy a len vtedy, ak ešte stále v čase jej
 			 * volania prebieha záznam cesty, ktorý je súčasne s jej volaním
-			 * ukončený. Potom je vykreslená výsledná cesta.</p>
+			 * ukončený. Potom je vykreslená výsledná cesta, ale pozor: Ak
+			 * v čase volania tejto metódy žiadny záznam neprebiehal a v pamäti
+			 * robota jestvuje skôr zaznamenaná cesta, ktorá je otvorená,
+			 * tak táto zaznamenaná cesta nie je dodatočne uzatvorená.</p>
 			 * 
 			 * <p class="tip"><b>Tip:</b> Ak chcete vytvorenú cestu rotovať
 			 * a/alebo posúvať, vytvorte z nej {@link Oblasť oblasť}
@@ -37988,6 +38334,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see #vyplňCestu()
 			 * @see #kresliCestu()
 			 * @see #cesta()
+			 * @see #kresliZáznamCesty()
 			 */
 			public void obkresliCestu()
 			{
@@ -38003,6 +38350,7 @@ Toto bolo presunuté na úvodnú stránku:
 				{
 					cesta.closePath();
 					záznamCesty = false;
+					aktualizujStavPera();
 					záznamCestyBezPolohyPera = true;
 				}
 
@@ -38018,9 +38366,116 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 			/**
-			 * <p>Ukončí záznam cesty a vráti cestu ako tvar. Metóda je
-			 * využiteľná (respektíve tvar, ktorý vracia je využiteľný) na
-			 * tvorbu {@linkplain Oblasť oblasti}, {@linkplain 
+			 * <p>Overí, či je zapnuté kreslenie priebehu zaznamenávania cesty.
+			 * Viac informácií obsahuje opis metódy {@link 
+			 * #kresliZáznamCesty(boolean)
+			 * kresliZáznamCesty}{@code (kresli)}.</p>
+			 * 
+			 * @return {@code valtrue} – kreslenie priebehu záznamu cesty
+			 *     je zapnuté, {@code valfalse} – opak
+			 * 
+			 * @see #kresliZáznamCesty(boolean)
+			 * @see #začniCestu()
+			 * @see #začniCestu(boolean)
+			 * @see #skončiCestu()
+			 * @see #zrušCestu()
+			 * @see #uzavriCestu()
+			 * @see #vyplňCestu()
+			 * @see #kresliCestu()
+			 * @see #obkresliCestu()
+			 * @see #cesta()
+			 */
+			public boolean kresliZáznamCesty()
+			{ return kresliZáznamCesty; }
+
+			/** <p><a class="alias"></a> Alias pre {@link #kresliZáznamCesty() kresliZáznamCesty}.</p> */
+			public boolean kresliZaznamCesty()
+			{ return kresliZáznamCesty; }
+
+			/**
+			 * <p>Zapne alebo vypne kreslenie priebehu zaznamenávania cesty.
+			 * Predvolene je táto vlastnosť zapnutá. V stave vypnutia robot
+			 * počas záznamu cesty nekreslí žiadne čiary bez ohľadu na polohu
+			 * pera. Toto sa dá využiť na vytvorenie cesty, ktorá berie do
+			 * úvahy polohu pera bez toho, aby ju robot priebežne nakreslil.</p>
+			 * 
+			 * <p><b>Príklad:</b></p>
+			 * 
+			 * <p>Povedzme, že máme nasledujúci jednoduchý algoritmus na
+			 * nakreslenie cikcakového vzoru</p>
+			 * 
+			 * <pre CLASS="example">
+				{@link GRobot#vpravo(double) vpravo}({@code num45});
+				{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num10});
+
+				{@link Svet Svet}.{@link Svet#farbaPozadia(Color) farbaPozadia}({@code num255}, {@code num255}, {@code num128});
+				{@link GRobot#farba(Color) farba}({@code num250}, {@code num0}, {@code num0}, {@code num64});
+
+				{@code typedouble} l = {@code num50.0} / {@code num3.0}
+
+				{@code kwdfor} ({@code typeint} i = {@code num0}; i < {@code num5}; ++i)
+				{
+					{@link GRobot#dopredu(double) dopredu}(l); {@link GRobot#skoč(double) skoč}(l); {@link GRobot#dopredu(double) dopredu}(l);
+					{@link GRobot#vpravo(double) vpravo}({@code num90});
+					{@link GRobot#dopredu(double) dopredu}(l); {@link GRobot#skoč(double) skoč}(l); {@link GRobot#dopredu(double) dopredu}(l);
+					{@link GRobot#vľavo(double) vľavo}({@code num90});
+				}
+				</pre>
+			 * 
+			 * <p>Keď ho nakreslíme polopriehľadnou čiarou bez pomoci
+			 * {@linkplain #cesta() cesty}, tak v uzlových bodoch bude vzor
+			 * tmavší (horná časť obrázka nižšie). Keď však použijeme cestu,
+			 * čiara bude jednoliata (dolná časť obrázka nižšie). Práve na
+			 * jednoduchšie získanie cesty bez priebehu jej kreslenia slúži
+			 * metóda {@code currkresliZáznamCesty}.</p>
+			 * 
+			 * <p><image>kresli-zaznam-cesty.svg<alt/>Ukážka
+			 * kreslenia.<onerror>kresli-zaznam-cesty.png</onerror></image></p>
+			 * <!-- TODO over vzhľad -->
+			 * <p>Takto ju môžeme použiť spolu s ostatnými metódami na
+			 * nakreslenie ľubovoľnej cesty:</p>
+			 * 
+			 * <pre CLASS="example">
+				{@link #začniCestu() začniCestu}();
+				{@code currkresliZáznamCesty}({@code valfalse});
+
+				{@code comm// (Tu bude ľubovoľné kreslenie robotom.)}
+
+				{@link #kresliCestu() kresliCestu}();
+				</pre>
+			 * 
+			 * @param kresli {@code valtrue} – kreslenie priebehu záznamu cesty
+			 *     bude zapnuté, {@code valfalse} – opak
+			 * 
+			 * @see #kresliZáznamCesty()
+			 * @see #začniCestu()
+			 * @see #začniCestu(boolean)
+			 * @see #skončiCestu()
+			 * @see #zrušCestu()
+			 * @see #uzavriCestu()
+			 * @see #vyplňCestu()
+			 * @see #kresliCestu()
+			 * @see #obkresliCestu()
+			 * @see #cesta()
+			 */
+			public void kresliZáznamCesty(boolean kresli)
+			{
+				kresliZáznamCesty = kresli;
+				aktualizujStavPera();
+			}
+
+			/** <p><a class="alias"></a> Alias pre {@link #kresliZáznamCesty(boolean) kresliZáznamCesty}.</p> */
+			public void kresliZaznamCesty(boolean kresli)
+			{ kresliZáznamCesty(kresli); }
+
+
+			/**
+			 * <p>Ukončí záznam cesty (ak prebieha) a vráti cestu ako tvar. Ak
+			 * záznam cesty neprebiehal a v pamäti jestvuje skôr zaznamenaná
+			 * cesta, tak metóda vráti tú.<p>
+			 * 
+			 * </p>Metóda je využiteľná (respektíve tvar, ktorý vracia je
+			 * využiteľný) na tvorbu {@linkplain Oblasť oblasti}, {@linkplain 
 			 * #nekresliDo(Shape) obmedzenie kreslenia}, {@linkplain 
 			 * SVGPodpora#dajVýsledný(Shape, SVGPodpora.Transformácia,
 			 * SVGPodpora.Transformácia[]) vytvorenie transformovaného
@@ -38210,6 +38665,7 @@ Toto bolo presunuté na úvodnú stránku:
 				Ak cesta nejestvuje, metóda spôsobí vznik výnimky.
 				*/
 				záznamCesty = false;
+				aktualizujStavPera();
 				záznamCestyBezPolohyPera = true;
 				return new Path2D.Double(cesta);
 			}
@@ -42851,6 +43307,29 @@ Toto bolo presunuté na úvodnú stránku:
 			 * vlastnýTvar(tvar)}. Príklad je v opise rozhrania
 			 * {@link KreslenieTvaru KreslenieTvaru}.)</li>
 			 * </ol></div>
+			 * 
+			 * <p class="attention"><b>Upozornenie:</b> Vlastné kreslenie
+			 * tvaru vždy zálohuje vlastnosti robota pred začatím kreslenia
+			 * tvaru a obnovuje ich po skončení kreslenia. Pozor však na
+			 * spúšťanie automatického prekresľovania počas inicializácie
+			 * projektu. Tento proces totiž funguje inak. Preto ak
+			 * programujete komplexnejší projekt, tak vždy {@linkplain 
+			 * Svet#nekresli() vypnite automatické prekresľovanie} pred
+			 * začatím inicializácie a {@linkplain Svet#kresli() obnovte
+			 * ho} po dokončení inicializácie projektu, prípadne vytvorte
+			 * iný spôsob prekresľovania – {@linkplain Svet#nebolPrekreslený()
+			 * pozri napríklad príklad s prekresľovaním v časovači v rámci
+			 * opisu metódy nebolPrekreslený}.<br /> <br />Inicializácia
+			 * totiž spúšťa prekresľovanie iným spôsobom ako pri „klasickom“
+			 * prekresľovaní, ktorý nedokáže zálohovať hodnoty vlastností.
+			 * Vlastné kreslenie je určené najmä pre komplexnejšie projekty,
+			 * pri ktorých sa predpokladá vypnutie automatického
+			 * prekresľovania. Zapnuté automatické prekresľovanie je zase
+			 * predpokladané pri jednoduchších projektoch, pri ktorých by
+			 * zložitejšie mechanizmy boli zbytočnou komplikáciou a bránili
+			 * by študentovi priamo vidieť priebeh procesu kreslenia. Tieto
+			 * dve roviny fungovania programovacieho rámca nie sú vzájomne
+			 * kompatibilné.</p>
 			 * 
 			 * <p><b>Príklad:</b></p>
 			 * 

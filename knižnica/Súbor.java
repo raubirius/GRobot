@@ -104,6 +104,7 @@ import static knižnica.Konštanty.PRIPÁJANIE_SÚBOROV;
 		čítanie údajov
 		zápis údajov
 		ďalšie vlastnosti
+		tabuľka
 */
 
 /**
@@ -7900,5 +7901,1734 @@ public class Súbor implements Closeable
 		/** <p><a class="alias"></a> Alias pre {@link #zapíš(Object[]) zapíš}.</p> */
 		public void zapis(Object... objekty) throws IOException { zapíš(objekty); }
 
-		
+	// Tabuľka
+
+		/**
+		 * <p>Prečíta tabuľku zo zadaného súboru. Tabuľkou sa v tomto prípade
+		 * rozumie dvojrozmerné pole reťazcov. Táto metóda otvorí súbor so
+		 * zadaným názvom, prečíta jeho obsah, zavrie ho a prečítaný obsah
+		 * spracuje podľa zadaných alebo predvolených hodnôt nastavení.</p>
+		 * 
+		 * <p>Metóda aktíve využíva nasledujúce metódy: {@link 
+		 * #otvorNaČítanie(String, String) otvorNaČítanie}, {@link 
+		 * #čítajRiadok() čítajRiadok}, {@link #zavri() zavri} a {@link 
+		 * #reťazecNaTabuľku(String, String...) reťazecNaTabuľku}.</p>
+		 * 
+		 * <p><b>Nastavenia:</b></p>
+		 * 
+		 * <p>Táto metóda je navrhnutá tak, aby spolupracovala s metódou
+		 * {@link #reťazecNaTabuľku(String, String...) reťazecNaTabuľku} (ktorú
+		 * využíva – vnútorne ju volá; pozri vyššie). Preto nastavenia, ktoré
+		 * prijíma a spracúva uvedená metóda nepovažuje za chybné, ale
+		 * ignoruje ich.</p>
+		 * 
+		 * <p>Inak, ak táto metóda nájde neznáme nastavenie alebo ak niektoré
+		 * nastavenie nie je v tvare <i>«názovNastavenia»</i><code>=</code><i
+		 * >«hodnotaNastavenia»</i>, tak vrhne výnimku {@link 
+		 * IllegalArgumentException IllegalArgumentException}. Toto je zoznam
+		 * povolených nastavení:</p>
+		 * 
+		 * <ul>
+		 * <li>{@code kódovanie}, {@code kodovanie}, {@code encoding},
+		 * {@code charset} – kódovanie vstupného súboru – pozri aj metódu
+		 * {@link #otvorNaČítanie(String, String) otvorNaČítanie};
+		 * <br /><b>predvolená hodnota:</b> {@code srg"UTF-8"}</li>
+		 * 
+		 * <li>{@code formát}, {@code format}, {@code oddeľovač}, {@code 
+		 * oddelovac}, {@code separator}, {@code ohraničenie}, {@code 
+		 * ohranicenie}, {@code enclosure}, {@code únikovýZnak}, {@code 
+		 * unikovyZnak}, {@code escapeChar}, {@code únikovýVOhraničení},
+		 * {@code unikovyVOhraniceni}, {@code escapeInEnclosure}, {@code 
+		 * orezaťZnaky}, {@code orezatZnaky}, {@code trimChars}, {@code 
+		 * komentár}, {@code komentar}, {@code comment}, {@code 
+		 * číselnéÚnikové}, {@code ciselneUnikove}, {@code numericalEscapes},
+		 * {@code číselnéVOhraničení}, {@code ciselneVOhraniceni}, {@code 
+		 * numericalInEnclosure} – ignorované touto metódou; ich význam je
+		 * v opise metódy {@link #reťazecNaTabuľku(String, String...)
+		 * reťazecNaTabuľku}, do ktorej sa, samozrejme, posielajú po prečítaní
+		 * údajov zo súboru.</li>
+		 * </ul>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Nastavenia uvedené v zozname
+		 * parametrov neskôr prepisujú hodnoty nastavení uvedených skôr.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Metóda {@link 
+		 * #zapíšTabuľku(String, String[][], String...) zapíšTabuľku}
+		 * akceptuje všetky nastavenia, ktoré sú uvedené vyššie, okrem
+		 * týchto: {@code komentár}, {@code komentar}, {@code comment},
+		 * {@code číselnéÚnikové}, {@code ciselneUnikove}, {@code 
+		 * numericalEscapes}, {@code číselnéVOhraničení}, {@code 
+		 * ciselneVOhraniceni}, {@code numericalInEnclosure}.
+		 * (Rovnaká informácia je uvedená aj v opise metódy {@link 
+		 * #zapíšTabuľku(String, String[][], String...) zapíšTabuľku}.)</p>
+		 * 
+		 * @param názovSúboru názov súboru, z ktorého sa má prečítať tabuľka
+		 * @param nastavenia rôzne (nepovinné) nastavenia; pozri zoznam vyššie
+		 * @return prečítaná a rozpoznaná tabuľka – dvojrozmerné pole reťazcov
+		 * 
+		 * @throws IllegalArgumentException ak je zadaný nesprávny parameter
+		 *     nastavenia
+		 * @throws IOException ak vznikne chyba pri čítaní súboru
+		 */
+		public String[][] čítajTabuľku(String názovSúboru,
+			String... nastavenia) throws IOException
+		{
+			String kódovanie = "UTF-8";
+			for (String nastavenie : nastavenia)
+			{
+				int indexOf = nastavenie.indexOf('=');
+				if (indexOf < 0) throw new IllegalArgumentException(
+					"Nastavenie nemôže byť bez hodnoty: " + nastavenie);
+
+				String hodnota = nastavenie.substring(1 + indexOf);
+				nastavenie = nastavenie.substring(0, indexOf).toLowerCase();
+
+				if (nastavenie.equals("formát") ||
+					nastavenie.equals("format") ||
+					nastavenie.equals("oddeľovač") ||
+					nastavenie.equals("oddelovac") ||
+					nastavenie.equals("separator") ||
+					nastavenie.equals("ohraničenie") ||
+					nastavenie.equals("ohranicenie") ||
+					nastavenie.equals("enclosure") ||
+					nastavenie.equals("únikovýznak") ||
+					nastavenie.equals("unikovyznak") ||
+					nastavenie.equals("escapechar") ||
+					nastavenie.equals("únikovývohraničení") ||
+					nastavenie.equals("unikovyvohraniceni") ||
+					nastavenie.equals("escapeinenclosure") ||
+					nastavenie.equals("orezaťznaky") ||
+					nastavenie.equals("orezatznaky") ||
+					nastavenie.equals("trimchars") ||
+					nastavenie.equals("komentár") ||
+					nastavenie.equals("komentar") ||
+					nastavenie.equals("comment") ||
+					nastavenie.equals("číselnéúnikové") ||
+					nastavenie.equals("ciselneunikove") ||
+					nastavenie.equals("numericalescapes") ||
+					nastavenie.equals("číselnévohraničení") ||
+					nastavenie.equals("ciselnevohraniceni") ||
+					nastavenie.equals("numericalinenclosure")) continue;
+
+				if (nastavenie.equals("kódovanie") ||
+					nastavenie.equals("kodovanie") ||
+					nastavenie.equals("encoding") ||
+					nastavenie.equals("charset"))
+					kódovanie = hodnota;
+				else
+					throw new IllegalArgumentException(
+						"Neznáme nastavenie: " + nastavenie);
+			}
+
+			otvorNaČítanie(názovSúboru, kódovanie);
+			StringBuffer tabuľka = new StringBuffer();
+			String čítanie; boolean prvý = true;
+			while (null != (čítanie = čítajRiadok()))
+			{
+				if (prvý) prvý = false; else tabuľka.append('\n');
+				tabuľka.append(čítanie);
+			}
+			zavri();
+
+			return reťazecNaTabuľku(tabuľka.toString(), nastavenia);
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #čítajTabuľku(String, String...) čítajTabuľku}.</p> */
+		public String[][] citajTabulku(String názovSúboru, String... nastavenia)
+			throws IOException { return čítajTabuľku(názovSúboru, nastavenia); }
+
+		/**
+		 * <p>Prevedie zadaný reťazec na tabuľku. Tabuľkou sa v tomto prípade
+		 * rozumie dvojrozmerné pole reťazcov. Pravidlá rozpoznávania sú
+		 * vytvorené tak, aby bolo možné rekonštruovať tabuľku spojenú do
+		 * jedného reťazca metódou {@link #tabuľkaNaReťazec(String[][],
+		 * String...) tabuľkaNaReťazec}. Pravidlá sú konfigurovateľné
+		 * variabilným zoznamom parametrov {@code nastavenia}, aby bolo možné
+		 * rozpoznávať aj údaje prevzaté z externých zdrojov. Môže ísť o údaje
+		 * vo formáte CSV (comma separated values – hodnoty oddelené čiarkami)
+		 * alebo v principiálne podobných formátoch. Zároveň túto metódu
+		 * využíva metóda {@link #čítajTabuľku(String, String...)
+		 * čítajTabuľku}.</p>
+		 * 
+		 * <p><b>Nastavenia:</b></p>
+		 * 
+		 * <p>Táto metóda je navrhnutá tak, aby spolupracovala s metódou
+		 * {@link #čítajTabuľku(String, String...) čítajTabuľku}, ktorá
+		 * vnútorne volá túto metódu. Preto nastavenia, ktoré prijíma
+		 * a spracúva uvedená metóda nepovažuje za chybné, ale ignoruje
+		 * ich.</p>
+		 * 
+		 * <p>Inak, ak táto metóda nájde neznáme nastavenie alebo ak niektoré
+		 * nastavenie nie je v tvare <i>«názovNastavenia»</i><code>=</code><i
+		 * >«hodnotaNastavenia»</i>, tak vrhne výnimku {@link 
+		 * IllegalArgumentException IllegalArgumentException}. Toto je zoznam
+		 * povolených nastavení:</p>
+		 * 
+		 * <ul>
+		 * <li>{@code kódovanie}, {@code kodovanie}, {@code encoding},
+		 * {@code charset} – ignorované touto metódou; ich význam je v opise
+		 * metódy {@link #čítajTabuľku(String, String...) čítajTabuľku};</li>
+		 * 
+		 * <li>{@code formát}, {@code format} – toto nastavenie je skratkou;
+		 * kombinuje natavenie viacerých iných nastavení naraz; platnými
+		 * hodnotami sú napríklad: {@code srg"CSV"}, {@code srg"SSV"},
+		 * {@code srg"UNX"}…, pričom podrobnosti sú rozpísané nižšie;
+		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
+		 * 
+		 * <li>{@code oddeľovač}, {@code oddelovac}, {@code separator} –
+		 * dovoľuje zmeniť znak oddeľovača údajov; predvoleným oddeľovačom je
+		 * tabulátor; ak je hodnota tohto parametra prázdna, tak nastavenie
+		 * nie je zmenené – oddeľovač musí byť definovaný;
+		 * <br /><b>predvolená hodnota:</b> {@code srg'\t'}</li>
+		 * 
+		 * <li>{@code ohraničenie}, {@code ohranicenie}, {@code enclosure} –
+		 * zapne ohraničovanie údajov – pre túto metódu ide o rozpoznávanie
+		 * ohraničených údajov podľa zadaného znaku (napríklad strojopisných
+		 * úvodzoviek {@code "}); pre metódu {@link 
+		 * #tabuľkaNaReťazec(String[][], String...) tabuľkaNaReťazec}
+		 * o prepnutie do režimu automatického ohraničovania tých buniek
+		 * tabuľky, ktoré obsahujú špeciálne znaky – znak oddeľovača, únikový
+		 * znak, znaky nového riadka a návratu vozíka a samotný znak
+		 * ohraničenia, ktorý je v tom prípade v rámci obsahu bunky zdvojený
+		 * (ak nie je aktívne nastavenie {@code únikovýVOhraničení});
+		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
+		 * 
+		 * <li>{@code únikovýZnak}, {@code unikovyZnak}, {@code escapeChar} –
+		 * umožňuje zmeniť predvolený únikový znak {@code \} na zadaný;
+		 * zadanie prázdneho reťazca znamená pre túto metódu vypnutie
+		 * rozpoznávania a pre metódu {@link #tabuľkaNaReťazec(String[][],
+		 * String...) tabuľkaNaReťazec} zastavenie vkladania únikových
+		 * sekvencií do údajov – pozor(!), metóda {@link 
+		 * #tabuľkaNaReťazec(String[][], String...) tabuľkaNaReťazec} musí
+		 * mať v tom prípade buď zapnuté ohraničovanie (pozri nastavenie
+		 * {@code ohraničenie} vyššie), alebo údaje tabuľky nesmú obsahovať
+		 * žiadny špeciálny znak (čítaj ďalej), ktorý by musel byť jedným
+		 * alebo druhým spôsobom ošetrený, inak metóda vrhne výnimku; únikovým
+		 * znakom sú automaticky uvedené tieto špeciálne znaky v rámci údajov:
+		 * nový riadok, návrat vozíka, znak oddeľovača a samotný únikový znak
+		 * (ktorý je v prípade jeho výskytu zdvojený);
+		 * <br /><b>predvolená hodnota:</b> {@code srg'\\'}</li>
+		 * 
+		 * <li>{@code únikovýVOhraničení}, {@code unikovyVOhraniceni},
+		 * {@code escapeInEnclosure} – možnosť nastavenia toho, či sa má
+		 * alebo nemá brať do úvahy únikový znak v rámci ohraničenia (kvázi
+		 * „hodnôt v úvodzovkách“ – pozri nastavenie {@code ohraničenie})
+		 * a aký znak to má byť; ak je toto nastavenie prázdne (predvolený
+		 * stav), tak nie sú v rámci ohraničenia používané únikové sekvencie
+		 * a samotný znak ohraničenia je odlíšený jeho zdvojením – čiže pre
+		 * túto metódu to znamená, že únikové sekvencie v rámci ohraničenia
+		 * nerozpoznáva (ponecháva ich v pôvodnom stave) a pre metódu {@link 
+		 * #tabuľkaNaReťazec(String[][], String...) tabuľkaNaReťazec} to
+		 * znamená, že únikové sekvencie do údajov v rámci ohraničenia
+		 * nevkladá; inak je použitý zadaný znak a platia rovnaké pravidlá
+		 * ako pri nastavení {@code únikovýZnak};
+		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
+		 * 
+		 * <li>{@code orezaťZnaky}, {@code orezatZnaky}, {@code trimChars} –
+		 * nastaví skupinu znakov, ktoré budú orezané z okolia oddeľovačov,
+		 * čiže nepridajú sa k hodnote, ak sa nachádzajú na začiatku riadka
+		 * alebo tesne za oddeľovačom, ani ak sú na konci riadka alebo tesne
+		 * pred oddeľovačom (mimo ohraničenia); pozor(!), pre metódu {@link 
+		 * #tabuľkaNaReťazec(String[][], String...) tabuľkaNaReťazec} toto
+		 * nastavenie znamená zapnutie aktívneho orezávania hodnôt tabuľky
+		 * pri ich exporte(!), čo nemusí byť vždy žiaduce; metóda {@link 
+		 * #tabuľkaNaReťazec(String[][], String...) tabuľkaNaReťazec} totiž
+		 * nikdy svojvoľne nepridáva žiadne znaky do okolia oddeľovačov;
+		 * pozor(!), toto nastavenie je filtrované; obidve metódy, ktoré ho
+		 * využívajú z neho odfiltrujú rezerované znaky, ktoré nesmú byť
+		 * orezávané, pretože majú kľúčový význam pri rozpoznávaní údajov
+		 * tabuľky: znaky návratu vozíka a nového riadka (CR, LF), oddeľovač
+		 * údajov, znak ohraničenia údajov (ak je toto nastavenie aktívne)
+		 * a únikový znak (mimo ohraničenia; ak je toto nastavenie
+		 * aktívne);
+		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
+		 * 
+		 * <li>{@code komentár}, {@code komentar}, {@code comment} – znak,
+		 * ktorý ak bude nájdený ako prvý platný znak na začiatku nového
+		 * riadka, tak bude celý riadok považovaný za komentár a teda bude
+		 * ignorovaný; formulácia „platný znak“ označuje taký znak, ktorý
+		 * nie je preskočený nastavením {@code orezaťZnaky};
+		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
+		 * </ul>
+		 * 
+		 * <li>{@code číselnéÚnikové}, {@code ciselneUnikove},
+		 * {@code numericalEscapes} – <em>toto nastavenie je typu {@code 
+		 * typeboolean} – pozri pravidlá rozpoznávania nižšie;</em> názov
+		 * tohto nastavenia je jemne skrátený, úplný názov by mal znieť (po
+		 * prevode z camelCase tvaru do ľudsky čitateľného tvaru): „číselné
+		 * únikové sekvencie“; potom je jasné, že nastavenie zapne
+		 * rozpoznávanie číselných únikových sekvencií; ide o sekvencie
+		 * v nasledujúcom tvare, kde <em>#</em> je platná desiatková,
+		 * osmičková alebo šestnástková číslica (podľa kontextu):
+		 * {@code \}<em>###</em> a {@code \o}<em>###</em> – osmičkový kód
+		 * znaku, {@code \x}<em>##</em> – šestnástkový kód znaku, {@code 
+		 * \d}<em>###</em> – desiatkový kód znaku a {@code 
+		 * \u005C}<em>####</em> – šestnástkový kód Unicode znaku, pričom kód
+		 * znaku bude vo všetkých prípadoch prevedený na konkrétny znak, čiže
+		 * <!-- TODO over, či to správne zobrazilo sekvencie -->
+		 * napríklad sekvencia {@code \}{@code d032} bude prevedená na medzeru;
+		 * pozor, toto nastavenie je účinné len ak je zapnuté nastavenie
+		 * {@code únikovýZnak}/{@code unikovyZnak}/{@code escapeChar};
+		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
+		 * </ul>
+		 * 
+		 * <li>{@code číselnéVOhraničení}, {@code ciselneVOhraniceni},
+		 * {@code numericalInEnclosure} – <em>toto nastavenie je typu {@code 
+		 * typeboolean} – pozri pravidlá rozpoznávania nižšie;</em> názov
+		 * tohto nastavenia je skrátený, úplný názov by mal znieť „číselné
+		 * únikové (sekvencie) v ohraničení“ (ale to by bolo príliš dlhé);
+		 * ak je zapnuté nastavenie {@code únikovýVOhraničení}/{@code 
+		 * unikovyVOhraniceni}/{@code escapeInEnclosure}, tak zapne
+		 * rozpoznávanie numerických únikových sekvencií v rámci ohraničenia –
+		 * pozri aj nastavenie {@code číselnéÚnikové}/{@code 
+		 * ciselneUnikove}/{@code numericalEscapes};
+		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
+		 * </ul>
+		 * 
+		 * <p><b>Pravidlá rozpoznávania pre hodnoty nastavení typu {@code 
+		 * typeboolean}:</b> Hodnota tohto typu nastaenia je vyhodnotená ako
+		 * {@code valfalse}, ak je reťazec hodnoty prázdny, rovný
+		 * {@code srg"0"} alebo ak sa začína na veľké alebo malé písmeno: f,
+		 * l alebo n. Vo všetkých ostatných prípadoch je hodnota nastavenia
+		 * vyhodnotená ako {@code valtrue}.</p>
+		 * 
+		 * <p><b>Podrobnosti nastavenia {@code formát}:</b></p>
+		 * 
+		 * <ul>
+		 * <li>{@code srg"CSV"} – formát zodpovedajúci originálnemu formátu
+		 * „comma separated values“ (čiarkou oddelené hodnoty) – nastavuje
+		 * tieto hodnoty nastavení: {@code srg"oddeľovač=,"}, {@code 
+		 * srg"únikovýZnak="}, {@code srg"ohraničenie=\""}.</li>
+		 * <li>{@code srg"SSV"} – vymyslený formát, ktorý má zastupovať
+		 * skratku „semicolon separated values“ (bodkočiarkou oddelené
+		 * hodnoty) – nastavuje tieto hodnoty nastavení: {@code 
+		 * srg"oddeľovač=;"}, {@code srg"únikovýZnak="}, {@code 
+		 * srg"ohraničenie=\""}.</li>
+		 * <li>{@code srg"UNX"} – zástupný symbol, ktorý vykoná nastavenia
+		 * kompatibilné so štýlom CSV súborov používaných v OS Unix („unix
+		 * style“) – konkrétne ide nastavenie týchto hodnôt nastavení:
+		 * {@code srg"oddeľovač=,"}, {@code srg"únikovýZnak=\\"}, {@code 
+		 * srg"ohraničenie="}.</li>
+		 * <li>{@code srg"TAB"} – zástupný symbol, ktorý vykoná nastavenia
+		 * formátu tabulátormi oddelených hodnôt – konkrétne ide nastavenie
+		 * týchto hodnôt nastavení: {@code srg"oddeľovač=\t"}, {@code 
+		 * srg"únikovýZnak=\\"}, {@code srg"ohraničenie="}.</li>
+		 * </ul>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Nastavenia uvedené v zozname
+		 * parametrov neskôr prepisujú hodnoty nastavení uvedených skôr.
+		 * Vďaka tomu je možné dodatočne prispôsobiť súhrnné nastavenia
+		 * vykonané pri spracovaní parametra {@code formát}.</p>
+		 * 
+		 * <p><b>Pozri aj:</b></p>
+		 * 
+		 * <!-- TODO – over, či sú správne zobrazené a dostupné odkazy. -->
+		 * <ul>
+		 * <li><i>Python Separator Separated Values Package.</i> <a
+		 * target="_blank" href="https://www.python.org/psf/">Python Software
+		 * Foundation.</a> <a target="_blank"
+		 * href="https://pypi.org/project/ssv/">https://&#8203;pypi.&#8203;org/&#8203;project/&#8203;ssv/</a>
+		 * (Citované: 21. 10. 2022.)</li>
+		 * 
+		 * <li>Dunwiddie, Bruce: <i>CSV File Format.</i> <a target="_blank"
+		 * href="https://www.csvreader.com/csv_format.php">https://&#8203;www.&#8203;csvreader.&#8203;com/&#8203;csv_&#8203;format.&#8203;php</a>.
+		 * (Citované: 21. 10. 2022.)</li>
+		 * 
+		 * <li>Dunwiddie, Bruce: <i>CSV File Format.</i> <a target="_blank"
+		 * href="https://www.csvreader.com/csv_format.php">https://&#8203;www.&#8203;csvreader.&#8203;com/&#8203;csv_&#8203;format.&#8203;php</a>.
+		 * (Citované: 21. 10. 2022.)</li>
+		 * 
+		 * <li>Shafranovich, Yakov: <i>RFC 4180 – Common Format and MIME Type
+		 * for Comma-Separated Values (CSV) Files.</i> Network Working Group,
+		 * 2005. <a target="_blank"
+		 * href="https://datatracker.ietf.org/doc/html/rfc4180">https://&#8203;datatracker.&#8203;ietf.&#8203;org/&#8203;doc/&#8203;html/&#8203;rfc4180</a>,
+		 * <a target="_blank"
+		 * href="http://tools.ietf.org/html/rfc4180">http://&#8203;tools.&#8203;ietf.&#8203;org/&#8203;html/&#8203;rfc4180</a>,
+		 * <a target="_blank"
+		 * href="http://www.ietf.org/rfc/rfc4180.txt">http://&#8203;www.&#8203;ietf.&#8203;org/&#8203;rfc/&#8203;rfc4180.&#8203;txt</a>.
+		 * (Citované: 21. 10. 2022.)</li>
+		 * 
+		 * <li><i>CSV, Comma Separated Values (RFC 4180).</i> From:
+		 * Sustainability of Digital Formats : Planning for Library of
+		 * Congress Collections. Digital Preservation at the Library of
+		 * Congress. <a target="_blank"
+		 * href="https://www.loc.gov/preservation/digital/formats/fdd/fdd000323.shtml">https://&#8203;www.&#8203;loc.&#8203;gov/&#8203;preservation/&#8203;digital/&#8203;formats/&#8203;fdd/&#8203;fdd000323.&#8203;shtml</a>.
+		 * (Citované: 5. 11. 2022.)</li>
+		 * 
+		 * <li>Repici, Dominic John: <i>CSV Comma Separated Value File
+		 * Format.</i> From: How To – Creativyst – Explored, Designed,
+		 * Delivered. Creativyst, Inc. <a target="_blank"
+		 * href="https://www.creativyst.com/Doc/Articles/CSV/CSV01.shtml">https://&#8203;www.&#8203;creativyst.&#8203;com/&#8203;Doc/&#8203;Articles/&#8203;CSV/&#8203;CSV01.&#8203;shtml</a>.
+		 * (Citované: 5. 11. 2022.)</li>
+		 * 
+		 * <li><i>Super CSV – What is CSV?</i> <a target="_blank"
+		 * href="http://super-csv.github.io/super-csv/csv_specification.html">http://&#8203;super-csv.&#8203;github.&#8203;io/&#8203;super-csv/&#8203;csv_&#8203;specification.&#8203;html</a>.
+		 * (Citované: 5. 11. 2022.)</li>
+		 * 
+		 * <li><i>Escaping in CSV Formatted Files.</i> Pivotal Greenplum Docs.
+		 * VMware, Inc. <a target="_blank"
+		 * href="https://gpdb.docs.pivotal.io/6-4/admin_guide/load/topics/g-escaping-in-csv-formatted-files.html">https://&#8203;gpdb.&#8203;docs.&#8203;pivotal.&#8203;io/&#8203;6-4/&#8203;admin_&#8203;guide/&#8203;load/&#8203;topics/&#8203;g-escaping-in-csv-formatted-files.&#8203;html</a>,
+		 * <a target="_blank"
+		 * href="https://docs.vmware.com/en/VMware-Tanzu-Greenplum/6/greenplum-database/GUID-admin_guide-load-topics-g-escaping-in-csv-formatted-files.html">https://&#8203;docs.&#8203;vmware.&#8203;com/&#8203;en/&#8203;VMware-Tanzu-Greenplum/&#8203;6/&#8203;greenplum-database/&#8203;GUID-admin_&#8203;guide-load-topics-g-escaping-in-csv-formatted-files.&#8203;html</a>.
+		 * (Citované: 5. 11. 2022.)</li>
+		 * 
+		 * <li>Horváth, Roman: <i>Tabuľka znakov. Manuál k redakčnému systému
+		 * Rheia.</i> <a target="_blank"
+		 * href="https://pdf.truni.sk/horvath/Rheia-1-5/manual?tabulka-znakov">https://&#8203;pdf.&#8203;truni.&#8203;sk/&#8203;horvath/&#8203;Rheia-1-5/&#8203;manual?&#8203;tabulka-znakov</a>.
+		 * (Citované: 5. 11. 2022.)</li>
+		 * <!-- TODO – over, či sú správne zobrazené a dostupné odkazy. -->
+		 * </ul>
+		 * 
+		 * <p><b>Nekompatibilita formátov – rôzne oddeľovače</b></p>
+		 * 
+		 * <p>Na rôznych systémoch sa rôzne používajú tabuľkové formáty
+		 * slúžiace na ukladanie údajov tabuliek v textovej forme s použitím
+		 * niektorých rezervovaných znakov ako oddeľovačov a ohraničení
+		 * všetkých alebo len nevyhnutných buniek. Napríklad formát CSV je vo
+		 * všeobecnosti považovaný za formát obsahujúci „čiarkami oddelené
+		 * hodnoty“ (CSV – comma separated values). To však nie vždy platí.
+		 * Napríklad Excel sa prinajmenšom v OS Windows riadi nastaveniami
+		 * systému.</p>
+		 * 
+		 * <p>Aj keď je v zozname typov súborov Excelu (pri výbere formátu
+		 * pri ukladaní do iného formátu cez Uložiť ako…) uvedené <i>„CSV
+		 * UTF-8 (oddelené čiarkami) (*.csv)“</i>:</p>
+		 * 
+		 * <p><image>csv-excel-export.png<alt/>Snímka obrazovky.</image></p>
+		 * 
+		 * <p>… nie sú to vždy čiarky.</p>
+		 * 
+		 * <p>Excel sa riadi nastaveniami operačného systému. Ak chceme
+		 * overiť aktuálne nastavenie, otvorme Ovládací panel a zvoľme
+		 * Hodiny a oblasť (alebo Oblasť – podľa typu zobrazenia):</p>
+		 * 
+		 * <p><image>csv-excel-ovladaci-panel-1.png<alt/>Snímka
+		 * obrazovky.</image></p>
+		 * <p><image>csv-excel-ovladaci-panel-2.png<alt/>Snímka
+		 * obrazovky.</image></p>
+		 * 
+		 * <p>V dialógovom okne zvoľme tlačidlo Ďalšie nastavenia:</p>
+		 * 
+		 * <p><image>csv-excel-oblast.png<alt/>Snímka obrazovky.</image></p>
+		 *
+		 *<p>A tam venujme pozornosť znaku Oddeľovač v zoznamoch:</p>
+		 *
+		 * <p><image>csv-excel-prisposobenie-formatu-cisla.png<alt/>Snímka
+		 * obrazovky.</image></p>
+		 * 
+		 * <p>Na obrázku vidno bodkočiarku. Toto je bežné nastavenie
+		 * v slovenskej jazykovej lokalizácii OS Windows (ktoré preberá aj
+		 * Excel).</p>
+		 * 
+		 * @param tabuľka reťazec obsahujúci údaje tabuľky, ktoré budú
+		 *     prevedené na dvojrozmerné pole
+		 * @param nastavenia rôzne (nepovinné) nastavenia; pozri zoznam vyššie
+		 * @return dvojrozmerné pole – tabuľka údajov vytvorená zo zadaného
+		 *     reťazca
+		 * 
+		 * @throws IllegalArgumentException ak je zadaný nesprávny parameter
+		 *     nastavenia
+		 */
+		public static String[][] reťazecNaTabuľku(String tabuľka,
+			String... nastavenia)
+		{
+			// TODO:
+			// —————
+			// CHECK:
+			//  • pridať možnosť autodetekcie oddeľovača
+			// —————
+			// TEST:
+			// —————
+			// DONE:
+			//  • pridať možnosť parsovania číselných escape sekvencií
+			//  • orezávanie nadbytočných medzier
+			// —————
+
+			char oddeľovač = '\t', únikovýZnak = '\\', ohraničenie = (char)0,
+				únikovýVOhraničení = (char)0, komentár = (char)0;
+			String orezaťZnaky = "";
+			boolean číselnéÚnikové = false, číselnéVOhraničení = false;
+
+			for (String nastavenie : nastavenia)
+			{
+				int indexOf = nastavenie.indexOf('=');
+				if (indexOf < 0) throw new IllegalArgumentException(
+					"Nastavenie nemôže byť bez hodnoty: " + nastavenie);
+
+				String hodnota = nastavenie.substring(1 + indexOf);
+				nastavenie = nastavenie.substring(0, indexOf).toLowerCase();
+
+				if (nastavenie.equals("kódovanie") ||
+					nastavenie.equals("kodovanie") ||
+					nastavenie.equals("encoding") ||
+					nastavenie.equals("charset")) continue;
+
+				if (nastavenie.equals("formát") ||
+					nastavenie.equals("format"))
+				{
+					// aj tak to potrebujeme malým:
+					hodnota = hodnota.toLowerCase();
+
+					switch (hodnota)
+					{
+					case "csv":
+						oddeľovač = ',';
+						únikovýZnak = (char)0;
+						ohraničenie = '"';
+						break;
+
+					case "ssv":
+						oddeľovač = ';';
+						únikovýZnak = (char)0;
+						ohraničenie = '"';
+						break;
+
+					case "unx":
+						oddeľovač = ',';
+						únikovýZnak = '\\';
+						ohraničenie = (char)0;
+						break;
+
+					case "tab":
+						oddeľovač = '\t';
+						únikovýZnak = '\\';
+						ohraničenie = (char)0;
+						break;
+
+					default:
+						throw new IllegalArgumentException(
+							"Neplatný formát: " + hodnota);
+					}
+				}
+				else if (nastavenie.equals("oddeľovač") ||
+					nastavenie.equals("oddelovac") ||
+					nastavenie.equals("separator"))
+				{
+					if (!hodnota.isEmpty())
+						oddeľovač = hodnota.charAt(0);
+				}
+				else if (nastavenie.equals("ohraničenie") ||
+					nastavenie.equals("ohranicenie") ||
+					nastavenie.equals("enclosure"))
+				{
+					if (hodnota.isEmpty())
+						ohraničenie = (char)0;
+					else
+						ohraničenie = hodnota.charAt(0);
+				}
+				else if (nastavenie.equals("únikovýznak") ||
+					nastavenie.equals("unikovyznak") ||
+					nastavenie.equals("escapechar"))
+				{
+					if (hodnota.isEmpty())
+						únikovýZnak = (char)0;
+					else
+						únikovýZnak = hodnota.charAt(0);
+				}
+				else if (nastavenie.equals("únikovývohraničení") ||
+					nastavenie.equals("unikovyvohraniceni") ||
+					nastavenie.equals("escapeinenclosure"))
+				{
+					if (hodnota.isEmpty())
+						únikovýVOhraničení = (char)0;
+					else
+						únikovýVOhraničení = hodnota.charAt(0);
+				}
+				else if (nastavenie.equals("orezaťznaky") ||
+					nastavenie.equals("orezatznaky") ||
+					nastavenie.equals("trimchars"))
+					orezaťZnaky = hodnota;
+				else if (nastavenie.equals("komentár") ||
+					nastavenie.equals("komentar") ||
+					nastavenie.equals("comment"))
+				{
+					if (hodnota.isEmpty())
+						komentár = (char)0;
+					else
+						komentár = hodnota.charAt(0);
+				}
+				else if (nastavenie.equals("číselnéúnikové") ||
+					nastavenie.equals("ciselneunikove") ||
+					nastavenie.equals("numericalescapes"))
+				{
+					// Je výhodné mať hodnotu reťazca malým:
+					hodnota = hodnota.toLowerCase().trim();
+
+					// V podstate false vzniká v týchto vybraných situáciách –
+					// prázdny reťazec, čokoľvek začínajúce sa na „f/F“, „l/L“,
+					// „n/N“ a nula; všetko ostatné je true:
+					číselnéÚnikové = !hodnota.isEmpty() &&
+						!hodnota.startsWith("f") && !hodnota.startsWith("l") &&
+						!hodnota.startsWith("n") && !hodnota.equals("0");
+				}
+				else if (nastavenie.equals("číselnévohraničení") ||
+					nastavenie.equals("ciselnevohraniceni") ||
+					nastavenie.equals("numericalinenclosure"))
+				{
+					// Je výhodné mať hodnotu reťazca malým:
+					hodnota = hodnota.toLowerCase().trim();
+
+					// V podstate false vzniká v týchto vybraných situáciách –
+					// prázdny reťazec, čokoľvek začínajúce sa na „f/F“, „l/L“,
+					// „n/N“ a nula; všetko ostatné je true:
+					číselnéVOhraničení = !hodnota.isEmpty() &&
+						!hodnota.startsWith("f") && !hodnota.startsWith("l") &&
+						!hodnota.startsWith("n") && !hodnota.equals("0");
+				}
+				else
+					throw new IllegalArgumentException(
+						"Neznáme nastavenie: " + nastavenie);
+			}
+
+			if ((char)0 != únikovýVOhraničení &&
+				únikovýVOhraničení == ohraničenie)
+				throw new IllegalArgumentException(
+					"Kolízia nastavení! Únikový znak v ohraničení nesmie " +
+					"byť totožný so znakom ohraničenia: " +
+					únikovýVOhraničení + " Odstráňte kolidujúce nastavenie!");
+
+			if ((char)0 != únikovýZnak)
+			{
+				if ((char)0 != ohraničenie && únikovýZnak == ohraničenie)
+					throw new IllegalArgumentException(
+						"Kolízia nastavení! Únikový znak nesmie byť " +
+						"totožný so znakom ohraničenia: " + únikovýZnak +
+						" Odstráňte kolidujúce nastavenie!");
+
+				if (únikovýZnak == oddeľovač)
+					throw new IllegalArgumentException(
+						"Kolízia nastavení! Únikový znak nesmie byť " +
+						"totožný so znakom oddeľovača: " + únikovýZnak +
+						" Odstráňte kolidujúce nastavenie!");
+			}
+
+			if ((char)0 != ohraničenie && ohraničenie == oddeľovač)
+				throw new IllegalArgumentException(
+					"Kolízia nastavení! Znaky ohraničenia a oddeľovača " +
+					"nesmú byť totožné: " + ohraničenie +
+					" Odstráňte kolidujúce nastavenie!");
+
+			{
+				// Filter nastavenia orezaťZnaky, ktoré nesmie obsahovať
+				// rezervované znaky:
+				String filtrované = "";
+				for (int i = 0; i < orezaťZnaky.length(); ++i)
+				{
+					char znak = orezaťZnaky.charAt(i);
+					if ('\r' != znak && '\n' != znak && oddeľovač != znak &&
+						((char)0 == ohraničenie || ohraničenie != znak) &&
+						((char)0 == únikovýZnak || únikovýZnak != znak))
+						filtrované += znak;
+				}
+				orezaťZnaky = filtrované;
+			}
+
+			// Odstrániť BOM zo začiatku:
+
+			if (tabuľka.length() > 0 && '\uFEFF' == tabuľka.charAt(0))
+				tabuľka = tabuľka.substring(1);
+
+			// „Orezať“ prázdne riadky na konci (nič v zmysle nastavenia
+			// orezaťZnaky):
+
+			int koniec = tabuľka.length();
+			while (koniec > 0 && ('\n' == tabuľka.charAt(koniec - 1) ||
+				'\r' == tabuľka.charAt(koniec - 1))) --koniec;
+
+			// Okrem posledného označenia koncového riadka únikovým znakom:
+
+			if ((char)0 != únikovýZnak && koniec > 0 &&
+				koniec < tabuľka.length() &&
+				únikovýZnak == tabuľka.charAt(koniec - 1))
+			{
+				if ('\n' == tabuľka.charAt(koniec))
+				{
+					++koniec;
+					if (koniec < tabuľka.length() &&
+						'\r' == tabuľka.charAt(koniec))
+						++koniec;
+				}
+				else if ('\r' == tabuľka.charAt(koniec))
+				{
+					++koniec;
+					if (koniec < tabuľka.length() &&
+						'\n' == tabuľka.charAt(koniec))
+						++koniec;
+				}
+			}
+
+			@SuppressWarnings("serial") class Riadok extends Vector<String> {}
+			@SuppressWarnings("serial") class Tabuľka extends Vector<Riadok> {}
+
+			Tabuľka údajeTabuľky = new Tabuľka();
+			údajeTabuľky.add(new Riadok());
+			StringBuffer hodnota = new StringBuffer();
+			int platnáDĺžka = 0;
+
+			boolean hľadajKomentár = (char)0 != komentár;
+
+			for (int i = 0; i < koniec; ++i)
+			{
+				char znak = tabuľka.charAt(i);
+
+				// Kontrola počiatočného orezania – ak je hodnota prázdna,
+				// znamená to, že ešte len začínam čítať údaje a ak nájdem
+				// hocijaký znak z množiny orezania, tak ho preskočím:
+				if (0 == hodnota.length() && -1 != orezaťZnaky.indexOf(znak))
+					continue; // (Je zbytočné vytvárať ďalší vnútorný cykus…)
+
+				if (hľadajKomentár && komentár == znak)
+				{
+					for (++i; i < koniec; ++i)
+					{
+						znak = tabuľka.charAt(i);
+						if (('\n' == znak || '\r' == znak) && oddeľovač != znak)
+						{
+							if ('\n' == znak)
+							{
+								if ('\r' != oddeľovač && i + 1 < koniec &&
+									'\r' == tabuľka.charAt(i + 1)) ++i;
+							}
+							else // if ('\r' == znak) // (logicky)
+							{
+								if ('\n' != oddeľovač && i + 1 < koniec &&
+									'\n' == tabuľka.charAt(i + 1)) ++i;
+							}
+							break;
+						}
+					}
+					continue;
+				}
+				hľadajKomentár = false;
+
+				// Ak nájdem znak ohraničenia, spracujem všetko, čo je vo
+				// vnútri tohto ohraničenia:
+				if ((char)0 != ohraničenie && ohraničenie == znak)
+				{
+					for (++i; i < koniec; ++i)
+					{
+						znak = tabuľka.charAt(i);
+						// Únikové sekvencie v ohraničení – pozri aj „klasické“
+						// únikové sekvencie (nižšie):
+						if ((char)0 != únikovýVOhraničení &&
+							únikovýVOhraničení == znak)
+						{
+							// Overím, či nie som na konci údajov:
+							if (++i < koniec)
+							{
+								// Overovanie rôznych situácií:
+								znak = tabuľka.charAt(i);
+								if (únikovýVOhraničení == znak)
+									hodnota.append(znak);
+								else if (oddeľovač == znak)
+									hodnota.append(oddeľovač);
+								else if ((char)0 != ohraničenie &&
+									ohraničenie == znak)
+									hodnota.append(ohraničenie);
+								else if ('t' == znak)
+									hodnota.append('\t');
+								else if ('r' == znak)
+									hodnota.append('\r');
+								else if ('n' == znak)
+									hodnota.append('\n');
+								else if ('\n' == znak)
+								{
+									// Únikový na konci riadka.
+									// Pozri: …www.csvreader.com/csv_format.php
+									hodnota.append('\n');
+									if ('\r' != oddeľovač && i + 1 < koniec &&
+										'\r' == tabuľka.charAt(i + 1))
+									{
+										hodnota.append('\r');
+										++i;
+									}
+								}
+								else if ('\r' == znak)
+								{
+									// Únikový na konci riadka.
+									// Pozri: …www.csvreader.com/csv_format.php
+									hodnota.append('\r');
+									if ('\n' != oddeľovač && i + 1 < koniec &&
+										'\n' == tabuľka.charAt(i + 1))
+									{
+										hodnota.append('\n');
+										++i;
+									}
+								}
+								else
+								{
+									boolean neplatnáČíselná = true;
+									// Predtým, než pridám obidva znaky
+									// nerozpoznanej únikovej sekvencie
+									// (ochranné opatrenie) ešte skontrolujem,
+									// či nejde o číselnú únikovú sekvenciu:
+									if (číselnéVOhraničení)
+									{
+										// \x## – šestnástková
+										if ('x' == znak && i + 2 < koniec)
+										{
+											char znak1 = tabuľka.charAt(i + 1);
+											char znak2 = tabuľka.charAt(i + 2);
+											if ((('0' <= znak1 &&
+													'9' >= znak1) ||
+												('a' <= znak1 &&
+													'f' >= znak1) ||
+												('A' <= znak1 &&
+													'F' >= znak1)) &&
+												(('0' <= znak2 &&
+													'9' >= znak2) ||
+												('a' <= znak2 &&
+													'f' >= znak2) ||
+												('A' <= znak2 &&
+													'F' >= znak2)))
+											{
+												hodnota.append((char)Integer.
+													parseInt(tabuľka.substring(
+														i + 1, i + 3), 16));
+												neplatnáČíselná = false;
+												i += 2;
+											}
+										}
+										// \d### – desiatková
+										else if ('d' == znak && i + 3 < koniec)
+										{
+											char znak1 = tabuľka.charAt(i + 1);
+											char znak2 = tabuľka.charAt(i + 2);
+											char znak3 = tabuľka.charAt(i + 3);
+											if ('0' <= znak1 && '9' >= znak1 &&
+												'0' <= znak2 && '9' >= znak2 &&
+												'0' <= znak3 && '9' >= znak3)
+											{
+												hodnota.append((char)Integer.
+													parseInt(tabuľka.substring(
+														i + 1, i + 4)));
+												neplatnáČíselná = false;
+												i += 3;
+											}
+										}
+										// \o### – osmičková, druhý variant
+										else if ('o' == znak && i + 3 < koniec)
+										{
+											char znak1 = tabuľka.charAt(i + 1);
+											char znak2 = tabuľka.charAt(i + 2);
+											char znak3 = tabuľka.charAt(i + 3);
+											if ('0' <= znak1 && '7' >= znak1 &&
+												'0' <= znak2 && '7' >= znak2 &&
+												'0' <= znak3 && '7' >= znak3)
+											{
+												hodnota.append((char)Integer.
+													parseInt(tabuľka.substring(
+														i + 1, i + 4), 8));
+												neplatnáČíselná = false;
+												i += 3;
+											}
+										}
+										// \_u#### – Unicode, šestnástková
+										else if ('d' == znak && i + 4 < koniec)
+										{
+											char znak1 = tabuľka.charAt(i + 1);
+											char znak2 = tabuľka.charAt(i + 2);
+											char znak3 = tabuľka.charAt(i + 3);
+											char znak4 = tabuľka.charAt(i + 4);
+											if ((('0' <= znak1 &&
+												'9' >= znak1) ||
+												('a' <= znak1 &&
+													'f' >= znak1) ||
+												('A' <= znak1 &&
+													'F' >= znak1)) &&
+												(('0' <= znak2 &&
+													'9' >= znak2) ||
+												('a' <= znak2 &&
+													'f' >= znak2) ||
+												('A' <= znak2 &&
+													'F' >= znak2)) &&
+												(('0' <= znak3 &&
+													'9' >= znak3) ||
+												('a' <= znak3 &&
+													'f' >= znak3) ||
+												('A' <= znak3 &&
+													'F' >= znak3)) &&
+												(('0' <= znak4 &&
+													'9' >= znak4) ||
+												('a' <= znak4 &&
+													'f' >= znak4) ||
+												('A' <= znak4 &&
+													'F' >= znak4)))
+											{
+												hodnota.append((char)Integer.
+													parseInt(tabuľka.substring(
+														i + 1, i + 5), 16));
+												neplatnáČíselná = false;
+												i += 4;
+											}
+										}
+										// \### – osmičková (prvý variant)
+										else if ('0' <= znak && '7' >= znak &&
+											i + 2 < koniec)
+										{
+											char znak1 = tabuľka.charAt(i + 1);
+											char znak2 = tabuľka.charAt(i + 2);
+											if ('0' <= znak1 && '7' >= znak1 &&
+												'0' <= znak2 && '7' >= znak2)
+											{
+												hodnota.append((char)Integer.
+													parseInt(tabuľka.substring(
+														i, i + 3), 8));
+												neplatnáČíselná = false;
+												i += 2;
+											}
+										}
+									}
+
+									if (neplatnáČíselná)
+									{
+										hodnota.append(únikovýVOhraničení);
+										hodnota.append(znak);
+									}
+								}
+							}
+							else
+								hodnota.append(znak);
+						}
+						// Potenciálny koniec ohraničeného bloku:
+						else if (ohraničenie == znak)
+						{
+							// Ak nasleduje ďalší znak ohraničenia, ide
+							// kvázi o „únikovú sekvenciu“ – pridá sa znak
+							// ohraničenia v rámci bloku ohraničenia (inak
+							// sa blok ukončí).
+							if (i + 1 < koniec &&
+								ohraničenie == tabuľka.charAt(i + 1))
+							{
+								++i;
+								hodnota.append(znak);
+							}
+							else
+							{
+								/*údajeTabuľky.lastElement().add(
+									hodnota.toString());
+								hodnota.setLength(0); platnáDĺžka = 0;
+								if ('\n' == znak) údajeTabuľky.add(
+									new Riadok());*/
+								break;
+							}
+						}
+						else
+							hodnota.append(znak);
+					}
+
+					// Všetko v oddeľovačoch bude považované za platné:
+					platnáDĺžka = hodnota.length();
+				}
+				// Inak (mimo ohraničenia) spracúvam všeto doradu až po znak
+				// ukončujúci bunku alebo riadok:
+				else for (; i < koniec; ++i)
+				{
+					znak = tabuľka.charAt(i);
+					// Únikové sekvencie:
+					if ((char)0 != únikovýZnak && únikovýZnak == znak)
+					{
+						// Overím, či je vlastne vôbec čo zisťovať
+						// (či nie som na konci údajov):
+						if (++i < koniec)
+						{
+							// Overovanie rôznych situácií:
+							znak = tabuľka.charAt(i);
+							if (únikovýZnak == znak)
+								hodnota.append(znak);
+							else if (oddeľovač == znak)
+								hodnota.append(oddeľovač);
+							else if ((char)0 != ohraničenie &&
+								ohraničenie == znak)
+								hodnota.append(ohraničenie);
+							else if ('t' == znak)
+								hodnota.append('\t');
+							else if ('r' == znak)
+								hodnota.append('\r');
+							else if ('n' == znak)
+								hodnota.append('\n');
+							else if ('\n' == znak)
+							{
+								// Únikový na konci riadka.
+								// Pozri: …www.csvreader.com/csv_format.php
+								hodnota.append('\n');
+								if ('\r' != oddeľovač && i + 1 < koniec &&
+									'\r' == tabuľka.charAt(i + 1))
+								{
+									hodnota.append('\r');
+									++i;
+								}
+							}
+							else if ('\r' == znak)
+							{
+								// Únikový na konci riadka.
+								// Pozri: …www.csvreader.com/csv_format.php
+								hodnota.append('\r');
+								if ('\n' != oddeľovač && i + 1 < koniec &&
+									'\n' == tabuľka.charAt(i + 1))
+								{
+									hodnota.append('\n');
+									++i;
+								}
+							}
+							else
+							{
+								boolean neplatnáČíselná = true;
+								// Predtým, než pridám obidva znaky
+								// nerozpoznanej únikovej sekvencie (ochranné
+								// opatrenie) ešte skontrolujem, či nejde
+								// o číselnú únikovú sekvenciu:
+								if (číselnéÚnikové)
+								{
+									// \x## – šestnástková
+									if ('x' == znak && i + 2 < koniec)
+									{
+										char znak1 = tabuľka.charAt(i + 1);
+										char znak2 = tabuľka.charAt(i + 2);
+										if ((('0' <= znak1 && '9' >= znak1) ||
+											('a' <= znak1 && 'f' >= znak1) ||
+											('A' <= znak1 && 'F' >= znak1)) &&
+											(('0' <= znak2 && '9' >= znak2) ||
+											('a' <= znak2 && 'f' >= znak2) ||
+											('A' <= znak2 && 'F' >= znak2)))
+										{
+											hodnota.append((char)Integer.
+												parseInt(tabuľka.substring(
+													i + 1, i + 3), 16));
+											neplatnáČíselná = false;
+											i += 2;
+										}
+									}
+									// \d### – desiatková
+									else if ('d' == znak && i + 3 < koniec)
+									{
+										char znak1 = tabuľka.charAt(i + 1);
+										char znak2 = tabuľka.charAt(i + 2);
+										char znak3 = tabuľka.charAt(i + 3);
+										if ('0' <= znak1 && '9' >= znak1 &&
+											'0' <= znak2 && '9' >= znak2 &&
+											'0' <= znak3 && '9' >= znak3)
+										{
+											hodnota.append((char)Integer.
+												parseInt(tabuľka.substring(
+													i + 1, i + 4)));
+											neplatnáČíselná = false;
+											i += 3;
+										}
+									}
+									// \o### – osmičková, druhý variant
+									else if ('o' == znak && i + 3 < koniec)
+									{
+										char znak1 = tabuľka.charAt(i + 1);
+										char znak2 = tabuľka.charAt(i + 2);
+										char znak3 = tabuľka.charAt(i + 3);
+										if ('0' <= znak1 && '7' >= znak1 &&
+											'0' <= znak2 && '7' >= znak2 &&
+											'0' <= znak3 && '7' >= znak3)
+										{
+											hodnota.append((char)Integer.
+												parseInt(tabuľka.substring(
+													i + 1, i + 4), 8));
+											neplatnáČíselná = false;
+											i += 3;
+										}
+									}
+									// \_u#### – Unicode, šestnástková
+									else if ('d' == znak && i + 4 < koniec)
+									{
+										char znak1 = tabuľka.charAt(i + 1);
+										char znak2 = tabuľka.charAt(i + 2);
+										char znak3 = tabuľka.charAt(i + 3);
+										char znak4 = tabuľka.charAt(i + 4);
+										if ((('0' <= znak1 && '9' >= znak1) ||
+											('a' <= znak1 && 'f' >= znak1) ||
+											('A' <= znak1 && 'F' >= znak1)) &&
+											(('0' <= znak2 && '9' >= znak2) ||
+											('a' <= znak2 && 'f' >= znak2) ||
+											('A' <= znak2 && 'F' >= znak2)) &&
+											(('0' <= znak3 && '9' >= znak3) ||
+											('a' <= znak3 && 'f' >= znak3) ||
+											('A' <= znak3 && 'F' >= znak3)) &&
+											(('0' <= znak4 && '9' >= znak4) ||
+											('a' <= znak4 && 'f' >= znak4) ||
+											('A' <= znak4 && 'F' >= znak4)))
+										{
+											hodnota.append((char)Integer.
+												parseInt(tabuľka.substring(
+													i + 1, i + 5), 16));
+											neplatnáČíselná = false;
+											i += 4;
+										}
+									}
+									// \### – osmičková (prvý variant)
+									else if ('0' <= znak && '7' >= znak &&
+										i + 2 < koniec)
+									{
+										char znak1 = tabuľka.charAt(i + 1);
+										char znak2 = tabuľka.charAt(i + 2);
+										if ('0' <= znak1 && '7' >= znak1 &&
+											'0' <= znak2 && '7' >= znak2)
+										{
+											hodnota.append((char)Integer.
+												parseInt(tabuľka.substring(
+													i, i + 3), 8));
+											neplatnáČíselná = false;
+											i += 2;
+										}
+									}
+								}
+
+								if (neplatnáČíselná)
+								{
+									hodnota.append(únikovýZnak);
+									hodnota.append(znak);
+								}
+							}
+
+							// Úniková sekvencia vždy pridá obsah k platnej
+							// dĺžke, čiže ak boli pred ňou znaky na orezanie
+							// alebo aj ona sama obsahuje taký znak, tak je
+							// pripočítaný k platnej dĺžke:
+							platnáDĺžka = hodnota.length();
+						}
+						else
+						{
+							// Posledný osamotený únikový znak sa tam skrátka
+							// „prihodí.“ Rovnako ako pri neplatných únikových
+							// sekvenciách. (Ochranné opatrenie.)
+							hodnota.append(znak);
+							platnáDĺžka = hodnota.length();
+						}
+					}
+					else if ('\n' == znak || '\r' == znak || oddeľovač == znak)
+					{
+						// Koniec bunky alebo riadka – údaj sa pridáva do
+						// tabuľky, ale len v rámci platnej dĺžky:
+						hodnota.setLength(platnáDĺžka);
+						údajeTabuľky.lastElement().add(hodnota.toString());
+						hodnota.setLength(0); platnáDĺžka = 0;
+						if ('\n' == znak)
+						{
+							údajeTabuľky.add(new Riadok());
+							if ('\r' != oddeľovač && i + 1 < koniec &&
+								'\r' == tabuľka.charAt(i + 1)) ++i;
+							hľadajKomentár = (char)0 != komentár;
+						}
+						else if ('\r' == znak)
+						{
+							údajeTabuľky.add(new Riadok());
+							if ('\n' != oddeľovač && i + 1 < koniec &&
+								'\n' == tabuľka.charAt(i + 1)) ++i;
+							hľadajKomentár = (char)0 != komentár;
+						}
+						break;
+					}
+					else
+					{
+						hodnota.append(znak);
+						// Keďže som „mimo ohraničenia,“ tak sa k platnej
+						// dĺžke pripočíta len to, čo nie je v zozname
+						// znakov na orezanie:
+						if (-1 == orezaťZnaky.indexOf(znak))
+							platnáDĺžka = hodnota.length();
+					}
+				}
+			}
+
+			// Na záver sa do tabuľky musí pridať aj posledný prečítaný údaj
+			// (v rámci platnej dĺžky).
+			// 
+			// Presne preto, aby sa touto akciou do tabuľky omylom nepridal
+			// nadbytočný prázdny riadok sa ešte pred celým spracovaním údajov
+			// nadbytočné riadky z konca údajov orezávajú. Pripraví sa tým
+			// situácia (s ktorou sa tu ráta), v ktorej posledný údaj nikdy
+			// nebude spracovaný v rámci hlavného cyklu spracovania vyššie
+			// a preto musí byť pridaný dodatočne (tu).
+			// 
+			// „Vedľajším“ (pozitívnym) efektom je, že tým zároveň nevzniká
+			// riziko pridávania nadbytočných prázdnych riadkov.
+			// 
+			hodnota.setLength(platnáDĺžka);
+			údajeTabuľky.lastElement().add(hodnota.toString());
+			int početRiadkov = údajeTabuľky.size(), početStĺpcov = 1;
+
+			for (Riadok riadok : údajeTabuľky)
+				if (riadok.size() > početStĺpcov) početStĺpcov = riadok.size();
+
+			String poleTabuľky[][] = new String[početRiadkov][početStĺpcov];
+			for (int i = 0; i < početRiadkov; ++i)
+			{
+				Riadok riadok = údajeTabuľky.get(i);
+				for (int j = 0; j < početStĺpcov; ++j)
+					if (j < riadok.size())
+						poleTabuľky[i][j] = riadok.get(j);
+					else
+						poleTabuľky[i][j] = "";
+			}
+
+			return poleTabuľky;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #reťazecNaTabuľku(String, String...) reťazecNaTabuľku}.</p> */
+		public static String[][] retazecNaTabulku(String tabuľka,
+			String... nastavenia)
+		{ return reťazecNaTabuľku(tabuľka, nastavenia); }
+
+		/**
+		 * <p>Zapíše tabuľku do zadaného súboru. Tabuľkou sa v tomto prípade
+		 * rozumie dvojrozmerné pole reťazcov. Táto metóda otvorí súbor so
+		 * zadaným názvom na zápis (buď ho vytvorí, alebo prepíše alebo
+		 * zapisovaný obsah pripojí na jeho koniec, ak je aktívne nastavenie
+		 * pripájania – pozri nižšie), zapíše do neho obsah zadaného poľa
+		 * podľa pravidiel určených prostredníctvom zadaných alebo
+		 * predvolených hodnôt nastavení a súbor zavrie.</p>
+		 * 
+		 * <p>Metóda aktíve využíva nasledujúce metódy: {@link 
+		 * #otvorNaZápis(String, String, boolean) otvorNaZápis}, {@link 
+		 * #zapíšReťazec(String) zapíšReťazec}, {@link #zavri() zavri}
+		 * a {@link #tabuľkaNaReťazec(String[][], String...)
+		 * tabuľkaNaReťazec}.</p>
+		 * 
+		 * <p><b>Nastavenia:</b></p>
+		 * 
+		 * <p>Táto metóda je navrhnutá tak, aby spolupracovala s metódou
+		 * {@link #tabuľkaNaReťazec(String[][], String...) tabuľkaNaReťazec}
+		 * (ktorú využíva – vnútorne ju volá; pozri vyššie). Preto nastavenia,
+		 * ktoré prijíma a spracúva uvedená metóda nepovažuje za chybné, ale
+		 * ignoruje ich.</p>
+		 * 
+		 * <p>Inak, ak táto metóda nájde neznáme nastavenie alebo ak niektoré
+		 * nastavenie nie je v tvare <i>«názovNastavenia»</i><code>=</code><i
+		 * >«hodnotaNastavenia»</i>, tak vrhne výnimku {@link 
+		 * IllegalArgumentException IllegalArgumentException}. Toto je zoznam
+		 * povolených nastavení:</p>
+		 * 
+		 * <ul>
+		 * <li><b>všetky nastavenia, ktoré sú platné pre metódu {@link 
+		 * #čítajTabuľku(String, String...) čítajTabuľku}, okrem týchto:
+		 * {@code komentár}, {@code komentar}, {@code comment}, {@code 
+		 * číselnéÚnikové}, {@code ciselneUnikove}, {@code numericalEscapes},
+		 * {@code číselnéVOhraničení}, {@code ciselneVOhraniceni}, {@code 
+		 * numericalInEnclosure};</b></li>
+		 * 
+		 * <li>{@code pripojiť}, {@code pripojit}, {@code append} – <em>toto
+		 * nastavenie je typu {@code typeboolean} – pozri pravidlá
+		 * rozpoznávania nižšie;</em> toto nastavenie bolo pridané na
+		 * zachovanie kompatibility s metódou {@link #otvorNaZápis(String,
+		 * String, boolean) otvorNaZápis}; nepredpokladá sa jeho aktívne
+		 * využívanie, ale ak je prítomné a nastavené na {@code valtrue}, tak
+		 * bude obsah zapisovaný do súboru pripojený na jeho koniec (ak súbor
+		 * jestvuje); pozri aj metódu {@link #otvorNaZápis(String, String,
+		 * boolean) otvorNaZápis};
+		 * <br /><b>predvolená hodnota:</b> {@code valfalse}</li>
+		 * 
+		 * <li>{@code novýRiadok}, {@code novyRiadok}, {@code newline},
+		 * {@code BOM}, {@code ohraničKaždúBunku}, {@code ohranicKazduBunku},
+		 * {@code encloseEachCell} – ignorované touto metódou; ich význam je
+		 * v opise metódy {@link #tabuľkaNaReťazec(String[][], String...)
+		 * tabuľkaNaReťazec}, do ktorej sa, samozrejme, posielajú tesne pred
+		 * zapísaním údajov do súboru – v rámci ich prevodu prostredníctvom
+		 * uvedenej metódy;</li>
+		 * </ul>
+		 * 
+		 * <p><b>Pravidlá rozpoznávania pre hodnoty nastavení typu {@code 
+		 * typeboolean}:</b> Hodnota tohto typu nastaenia je vyhodnotená ako
+		 * {@code valfalse}, ak je reťazec hodnoty prázdny, rovný
+		 * {@code srg"0"} alebo ak sa začína na veľké alebo malé písmeno: f,
+		 * l alebo n. Vo všetkých ostatných prípadoch je hodnota nastavenia
+		 * vyhodnotená ako {@code valtrue}.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Nastavenia uvedené v zozname
+		 * parametrov neskôr prepisujú hodnoty nastavení uvedených skôr.</p>
+		 * 
+		 * <p><b>Pozri aj zdroje uvedené v opise metódy {@link 
+		 * #reťazecNaTabuľku(String, String...) reťazecNaTabuľku}.</b></p>
+		 * 
+		 * @param názovSúboru názov súboru, do ktorého má byť zapísaná tabuľka
+		 * @param tabuľka dvojrozmerné pole, ktorého obsah je určený na zápis
+		 * @param nastavenia rôzne (nepovinné) nastavenia; pozri zoznam vyššie
+		 * 
+		 * @throws IllegalArgumentException ak je zadaný nesprávny parameter
+		 *     nastavenia
+		 * @throws IOException ak vznikne chyba pri zápise do súboru
+		 */
+		public void zapíšTabuľku(String názovSúboru, String[][] tabuľka,
+			String... nastavenia) throws IOException
+		{
+			String kódovanie = "UTF-8"; boolean pripojiť = false;
+			for (String nastavenie : nastavenia)
+			{
+				int indexOf = nastavenie.indexOf('=');
+				if (indexOf < 0) throw new IllegalArgumentException(
+					"Nastavenie nemôže byť bez hodnoty: " + nastavenie);
+
+				String hodnota = nastavenie.substring(1 + indexOf);
+				nastavenie = nastavenie.substring(0, indexOf).toLowerCase();
+
+				if (nastavenie.equals("formát") ||
+					nastavenie.equals("format") ||
+					nastavenie.equals("oddeľovač") ||
+					nastavenie.equals("oddelovac") ||
+					nastavenie.equals("separator") ||
+					nastavenie.equals("ohraničenie") ||
+					nastavenie.equals("ohranicenie") ||
+					nastavenie.equals("enclosure") ||
+					nastavenie.equals("únikovýznak") ||
+					nastavenie.equals("unikovyznak") ||
+					nastavenie.equals("escapechar") ||
+					nastavenie.equals("únikovývohraničení") ||
+					nastavenie.equals("unikovyvohraniceni") ||
+					nastavenie.equals("escapeinenclosure") ||
+					nastavenie.equals("orezaťznaky") ||
+					nastavenie.equals("orezatznaky") ||
+					nastavenie.equals("trimchars") ||
+					nastavenie.equals("novýriadok") ||
+					nastavenie.equals("novyriadok") ||
+					nastavenie.equals("newline") ||
+					nastavenie.equals("bom") ||
+					nastavenie.equals("ohraničkaždúbunku") ||
+					nastavenie.equals("ohranickazdubunku") ||
+					nastavenie.equals("encloseeachcell")) continue;
+
+				if (nastavenie.equals("kódovanie") ||
+					nastavenie.equals("kodovanie") ||
+					nastavenie.equals("encoding") ||
+					nastavenie.equals("charset"))
+					kódovanie = hodnota;
+				else if (nastavenie.equals("pripojiť") ||
+					nastavenie.equals("pripojit") ||
+					nastavenie.equals("append"))
+				{
+					// Je výhodné mať hodnotu reťazca malým:
+					hodnota = hodnota.toLowerCase().trim();
+
+					// V podstate false vzniká v týchto vybraných situáciách –
+					// prázdny reťazec, čokoľvek začínajúce sa na „f/F“, „l/L“,
+					// „n/N“ a nula; všetko ostatné je true:
+					pripojiť = !hodnota.isEmpty() &&
+						!hodnota.startsWith("f") && !hodnota.startsWith("l") &&
+						!hodnota.startsWith("n") && !hodnota.equals("0");
+				}
+				else
+					throw new IllegalArgumentException(
+						"Neznáme nastavenie: " + nastavenie);
+			}
+
+			otvorNaZápis(názovSúboru, kódovanie, pripojiť);
+			zapíšReťazec(tabuľkaNaReťazec(tabuľka, nastavenia));
+			zavri();
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #zapíšTabuľku(String, String[][], String...) zapíšTabuľku}.</p> */
+		public void zapisTabulku(String názovSúboru, String[][] tabuľka,
+			String... nastavenia) throws IOException
+		{ zapíšTabuľku(názovSúboru, tabuľka, nastavenia); }
+
+		/**
+		 * <p>Prevedie tabuľku na jeden reťazec. Tabuľkou sa v tomto prípade
+		 * rozumie dvojrozmerné pole reťazcov. Prevedený reťazec je vhodný na
+		 * zapísanie do súboru a dá sa neskôr spätne previesť na dvojrozmerné
+		 * pole (tabuľku) prostredníctvom metódy {@link 
+		 * #reťazecNaTabuľku(String, String...) reťazecNaTabuľku}. V kontexte
+		 * zápisu do súboru túto metódu využíva metóda {@link 
+		 * #zapíšTabuľku(String, String[][], String...) zapíšTabuľku}.</p>
+		 * 
+		 * <p><b>Nastavenia:</b></p>
+		 * 
+		 * <p>Táto metóda je navrhnutá tak, aby spolupracovala s metódou
+		 * {@link #zapíšTabuľku(String, String[][], String...) zapíšTabuľku},
+		 * ktorá vnútorne volá túto metódu. Preto nastavenia, ktoré prijíma
+		 * a spracúva uvedená metóda nepovažuje za chybné, ale ignoruje
+		 * ich.</p>
+		 * 
+		 * <p>Inak, ak táto metóda nájde neznáme nastavenie alebo ak niektoré
+		 * nastavenie nie je v tvare <i>«názovNastavenia»</i><code>=</code><i
+		 * >«hodnotaNastavenia»</i>, tak vrhne výnimku {@link 
+		 * IllegalArgumentException IllegalArgumentException}. Toto je zoznam
+		 * povolených nastavení:</p>
+		 * 
+		 * <ul>
+		 * <li><b>všetky nastavenia, ktoré sú platné pre metódu {@link 
+		 * #reťazecNaTabuľku(String, String...) reťazecNaTabuľku}, okrem
+		 * nastavení {@code komentár}/{@code komentar}/{@code comment},
+		 * {@code číselnéÚnikové}/{@code ciselneUnikove}/{@code 
+		 * numericalEscapes} a {@code číselnéVOhraničení}/{@code 
+		 * ciselneVOhraniceni}/{@code numericalInEnclosure}, s ktorými táto
+		 * metóda nepracuje a považuje ich za chybné;</b></li>
+		 * 
+		 * <li>{@code pripojiť}, {@code pripojit}, {@code append} – ignorované
+		 * touto metódou; ich význam je v opise metódy {@link 
+		 * #zapíšTabuľku(String, String[][], String...) zapíšTabuľku};</li>
+		 * 
+		 * <li>{@code novýRiadok}, {@code novyRiadok}, {@code newline} –
+		 * umožňuje nakonfigurovať sekvenciu, ktorá bude použitá na
+		 * oddeľovanie riadkov údajov tabuľky; sú povolené len znaky nového
+		 * riadka \n (line feed – LF; kód znaku 10) a návratu vozíka \r
+		 * (carriage return – CR; kód znaku 13); parameter (nastavenie) môže
+		 * obsahovať rôzne tvary, ktoré vyjadrujú tieto dva znaky: únikové
+		 * sekvencie (\n, \r), priamo znaky s hodnotami kódov znakov 10 (LF)
+		 * a 13 (CR), písmená „n“ a „r“ (na veľkosti nezáleží) v rovnakom
+		 * význame ako pri únikových sekvenciách alebo sekvencie „LF“ a „CR“
+		 * (na veľkosti písmen nezáleží) tiež vo význame nového riadka
+		 * a návratu vozíka; príklady platných nastavení: {@code 
+		 * novýRiadok=CRLF}, {@code novýRiadok=\r\n}, {@code novýRiadok=rn},
+		 * {@code novýRiadok=crn} – výsledkom všetkých uvedených bude
+		 * rovnaká sekvencia znakov: CR + LF, čo je bežná kombinácia znakov
+		 * v OS Windows; neplatné znakové sekvencie sú ignrované; ak
+		 * ignorovaním neplatných sekvencií vznikne prázdny reťazec, tak je
+		 * zvolená predvolená kombinácia znakov: \r\n (čiže predvolená pre
+		 * Windows);
+		 * <br /><b>predvolená hodnota:</b> {@code srg"\r\n"}</li>
+		 * 
+		 * <li>{@code BOM} – zadaním prázdnej hodnoty sa dá vypnúť automatické
+		 * pridávanie značky endianity (BOM – {@code srg"\u005CFEFF"}) na
+		 * začiatok údajov; ak je do tohto parametra (nastavenia) zadaná
+		 * ľubovoľná neprázdna hodnota, tak bude pridávanie značky
+		 * zapnuté;
+		 * <br /><b>predvolená hodnota:</b> {@code srg"\u005CFEFF"}</li>
+		 * 
+		 * <li>{@code ohraničKaždúBunku}, {@code ohranicKazduBunku},
+		 * {@code encloseEachCell} – <em>toto nastavenie je typu {@code 
+		 * typeboolean} – pozri pravidlá rozpoznávania nižšie;</em> ak má tento
+		 * parameter (v súlade s nižšie uvedenými pravidlami) výslednú
+		 * hodnotu {@code valtrue} a je zapnuté ohraničovanie (pozri parameter
+		 * {@code ohraničenie}, ktorého vysvetlenie je zaradené do opisu metódy
+		 * {@link #reťazecNaTabuľku(String, String...) reťazecNaTabuľku}, ale
+		 * je, samozrejme, platný aj pre túto metódu, ako všetky parametre),
+		 * tak metóda ohraničí každú údajovú bunku, nielen tie, pre ktoré by
+		 * to bolo nevyhnutné;
+		 * <br /><b>predvolená hodnota:</b> {@code valfalse}</li>
+		 * </ul>
+		 * 
+		 * <p><b>Pravidlá rozpoznávania pre hodnoty nastavení typu {@code 
+		 * typeboolean}:</b> Hodnota tohto typu nastaenia je vyhodnotená ako
+		 * {@code valfalse}, ak je reťazec hodnoty prázdny, rovný
+		 * {@code srg"0"} alebo ak sa začína na veľké alebo malé písmeno: f,
+		 * l alebo n. Vo všetkých ostatných prípadoch je hodnota nastavenia
+		 * vyhodnotená ako {@code valtrue}.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Nastavenia uvedené v zozname
+		 * parametrov neskôr prepisujú hodnoty nastavení uvedených skôr.</p>
+		 * 
+		 * @param tabuľka dvojrozmerné pole reťazcov, ktoré má byť prevedené
+		 *     na jeden súvislý reťazec
+		 * @param nastavenia rôzne (nepovinné) nastavenia; pozri zoznam vyššie
+		 * @return tabuľka spojená do jedného reťazca podľa pravidiel opísaných
+		 *     vyššie
+		 * 
+		 * @throws IllegalArgumentException ak je zadaný nesprávny parameter
+		 *     nastavenia
+		 */
+		public static String tabuľkaNaReťazec(String[][] tabuľka,
+			String... nastavenia)
+		{
+			// TODO: poriadne otestovať (niektoré „halušky“ si odstránil
+			// podrobným čítaním…)
+
+			char oddeľovač = '\t', únikovýZnak = '\\', ohraničenie = (char)0,
+				únikovýVOhraničení = (char)0;
+			String novýRiadok = "\r\n"; String BOM = "\uFEFF";
+			boolean ohraničKaždúBunku = false;
+			String orezaťZnaky = "";
+
+			for (String nastavenie : nastavenia)
+			{
+				int indexOf = nastavenie.indexOf('=');
+				if (indexOf < 0) throw new IllegalArgumentException(
+					"Nastavenie nemôže byť bez hodnoty: " + nastavenie);
+
+				String hodnota = nastavenie.substring(1 + indexOf);
+				nastavenie = nastavenie.substring(0, indexOf).toLowerCase();
+
+				if (nastavenie.equals("kódovanie") ||
+					nastavenie.equals("kodovanie") ||
+					nastavenie.equals("encoding") ||
+					nastavenie.equals("charset") ||
+					nastavenie.equals("pripojiť") ||
+					nastavenie.equals("pripojit") ||
+					nastavenie.equals("append")) continue;
+
+				if (nastavenie.equals("formát") || nastavenie.equals("format"))
+				{
+					// aj tak to potrebujeme malým:
+					hodnota = hodnota.toLowerCase();
+
+					switch (hodnota)
+					{
+					case "csv":
+						oddeľovač = ',';
+						únikovýZnak = (char)0;
+						ohraničenie = '"';
+						break;
+
+					case "ssv":
+						oddeľovač = ';';
+						únikovýZnak = (char)0;
+						ohraničenie = '"';
+						break;
+
+					case "unx":
+						oddeľovač = ',';
+						únikovýZnak = '\\';
+						ohraničenie = (char)0;
+						break;
+
+					case "tab":
+						oddeľovač = '\t';
+						únikovýZnak = '\\';
+						ohraničenie = (char)0;
+						break;
+
+					default:
+						throw new IllegalArgumentException(
+							"Neplatný formát: " + hodnota);
+					}
+				}
+				else if (nastavenie.equals("oddeľovač") ||
+					nastavenie.equals("oddelovac") ||
+					nastavenie.equals("separator"))
+				{
+					if (!hodnota.isEmpty())
+						oddeľovač = hodnota.charAt(0);
+				}
+				else if (nastavenie.equals("ohraničenie") ||
+					nastavenie.equals("ohranicenie") ||
+					nastavenie.equals("enclosure"))
+				{
+					if (hodnota.isEmpty())
+						ohraničenie = (char)0;
+					else
+						ohraničenie = hodnota.charAt(0);
+				}
+				else if (nastavenie.equals("únikovýznak") ||
+					nastavenie.equals("unikovyznak") ||
+					nastavenie.equals("escapechar"))
+				{
+					if (hodnota.isEmpty())
+						únikovýZnak = (char)0;
+					else
+						únikovýZnak = hodnota.charAt(0);
+				}
+				else if (nastavenie.equals("únikovývohraničení") ||
+					nastavenie.equals("unikovyvohraniceni") ||
+					nastavenie.equals("escapeinenclosure"))
+				{
+					if (hodnota.isEmpty())
+						únikovýVOhraničení = (char)0;
+					else
+						únikovýVOhraničení = hodnota.charAt(0);
+				}
+				else if (nastavenie.equals("orezaťznaky") ||
+					nastavenie.equals("orezatznaky") ||
+					nastavenie.equals("trimchars"))
+					orezaťZnaky = hodnota;
+				else if (nastavenie.equals("novýriadok") ||
+					nastavenie.equals("novyriadok") ||
+					nastavenie.equals("newline"))
+				{
+					// r, n, cr atď. potrebujeme aj tak malým:
+					hodnota = hodnota.toLowerCase().replace("\\r", "\r").
+						replace("\\n", "\n").replace("cr", "\r").
+						replace("lf", "\n").replace("r", "\r").
+						replace("n", "\n");
+
+					if (!hodnota.isEmpty())
+					{
+						novýRiadok = "";
+						for (int i = 0; i < hodnota.length(); ++i)
+						{
+							char znak = hodnota.charAt(i);
+							if ('\r' == znak || '\n' == znak)
+								novýRiadok += znak;
+						}
+						if (novýRiadok.isEmpty()) novýRiadok = "\r\n";
+					}
+				}
+				else if (nastavenie.equals("bom"))
+				{
+					BOM = hodnota;
+					if (!BOM.isEmpty() && !"\uFEFF".equals(BOM))
+						BOM = "\uFEFF";
+				}
+				else if (nastavenie.equals("ohraničkaždúbunku") ||
+					nastavenie.equals("ohranickazdubunku") ||
+					nastavenie.equals("encloseeachcell"))
+				{
+					// Je výhodné mať hodnotu reťazca malým:
+					hodnota = hodnota.toLowerCase().trim();
+
+					// V podstate false vzniká v týchto vybraných situáciách –
+					// prázdny reťazec, čokoľvek začínajúce sa na „f/F“, „l/L“,
+					// „n/N“ a nula; všetko ostatné je true:
+					ohraničKaždúBunku = !hodnota.isEmpty() &&
+						!hodnota.startsWith("f") && !hodnota.startsWith("l") &&
+						!hodnota.startsWith("n") && !hodnota.equals("0");
+				}
+				else
+					throw new IllegalArgumentException(
+						"Neznáme nastavenie: " + nastavenie);
+			}
+
+			if ((char)0 != únikovýVOhraničení &&
+				únikovýVOhraničení == ohraničenie)
+				throw new IllegalArgumentException(
+					"Kolízia nastavení! Únikový znak v ohraničení nesmie " +
+					"byť totožný so znakom ohraničenia: " +
+					únikovýVOhraničení + " Odstráňte kolidujúce nastavenie!");
+
+			if ((char)0 != únikovýZnak)
+			{
+				if ((char)0 != ohraničenie && únikovýZnak == ohraničenie)
+					throw new IllegalArgumentException(
+						"Kolízia nastavení! Únikový znak nesmie byť " +
+						"totožný so znakom ohraničenia: " + únikovýZnak +
+						" Odstráňte kolidujúce nastavenie!");
+
+				if (únikovýZnak == oddeľovač)
+					throw new IllegalArgumentException(
+						"Kolízia nastavení! Únikový znak nesmie byť " +
+						"totožný so znakom oddeľovača: " + únikovýZnak +
+						" Odstráňte kolidujúce nastavenie!");
+			}
+
+			if ((char)0 != ohraničenie && ohraničenie == oddeľovač)
+				throw new IllegalArgumentException(
+					"Kolízia nastavení! Znaky ohraničenia a oddeľovača " +
+					"nesmú byť totožné: " + ohraničenie +
+					" Odstráňte kolidujúce nastavenie!");
+
+			{
+				// Filter nastavenia orezaťZnaky, ktoré nesmie obsahovať
+				// rezervované znaky:
+				String filtrované = "";
+				for (int i = 0; i < orezaťZnaky.length(); ++i)
+				{
+					char znak = orezaťZnaky.charAt(i);
+					if ('\r' != znak && '\n' != znak && oddeľovač != znak &&
+						((char)0 == ohraničenie || ohraničenie != znak) &&
+						((char)0 == únikovýZnak || únikovýZnak != znak))
+						filtrované += znak;
+				}
+				orezaťZnaky = filtrované;
+			}
+
+			StringBuffer údajeTabuľky = new StringBuffer(BOM);
+
+			for (int i = 0; i < tabuľka.length; ++i)
+			{
+				if (0 != i) údajeTabuľky.append(novýRiadok);
+				for (int j = 0; j < tabuľka[i].length; ++j)
+				{
+					if (0 != j) údajeTabuľky.append(oddeľovač);
+					String údaj = Svet.orež(tabuľka[i][j], orezaťZnaky);
+
+					if (null != údaj && !údaj.isEmpty())
+					{
+						if (ohraničKaždúBunku ||
+							-1 != údaj.indexOf(oddeľovač) ||
+							-1 != údaj.indexOf('\r') ||
+							-1 != údaj.indexOf('\n') ||
+							((char)0 != ohraničenie &&
+								-1 != údaj.indexOf(ohraničenie)) ||
+							((char)0 != únikovýZnak &&
+								-1 != údaj.indexOf(únikovýZnak)))
+						{
+							if ((char)0 != ohraničenie)
+							{
+								údajeTabuľky.append(ohraničenie);
+								if ((char)0 != únikovýVOhraničení)
+								{
+									for (int k = 0; k < údaj.length(); ++k)
+									{
+										char znak = údaj.charAt(k);
+										if (ohraničenie == znak ||
+											únikovýVOhraničení == znak)
+										{
+											údajeTabuľky.append(znak);
+											údajeTabuľky.append(znak);
+										}
+										else if (oddeľovač == znak)
+										{
+											údajeTabuľky.append(
+												únikovýVOhraničení);
+											údajeTabuľky.append(znak);
+										}
+										else if ('\r' == znak)
+										{
+											údajeTabuľky.append(
+												únikovýVOhraničení);
+											údajeTabuľky.append('r');
+										}
+										else if ('\n' == znak)
+										{
+											údajeTabuľky.append(
+												únikovýVOhraničení);
+											údajeTabuľky.append('n');
+										}
+										else
+											údajeTabuľky.append(znak);
+									}
+								}
+								else
+								{
+									for (int k = 0; k < údaj.length(); ++k)
+									{
+										char znak = údaj.charAt(k);
+										if (ohraničenie == znak)
+											údajeTabuľky.append(znak);
+										údajeTabuľky.append(znak);
+									}
+								}
+								údajeTabuľky.append(ohraničenie);
+							}
+							else if ((char)0 != únikovýZnak)
+							{
+								for (int k = 0; k < údaj.length(); ++k)
+								{
+									char znak = údaj.charAt(k);
+									if (únikovýZnak == znak)
+									{
+										údajeTabuľky.append(znak);
+										údajeTabuľky.append(znak);
+									}
+									else if (oddeľovač == znak)
+									{
+										údajeTabuľky.append(únikovýZnak);
+										údajeTabuľky.append(znak);
+									}
+									else if ('\r' == znak)
+									{
+										údajeTabuľky.append(únikovýZnak);
+										údajeTabuľky.append('r');
+									}
+									else if ('\n' == znak)
+									{
+										údajeTabuľky.append(únikovýZnak);
+										údajeTabuľky.append('n');
+									}
+									else
+										údajeTabuľky.append(znak);
+								}
+							}
+							else
+								throw new IllegalArgumentException("Tabuľka " +
+									"obsahuje v bunke " + i + ", " + j +
+									" rezervovaný znak, ktorý nebolo možné " +
+									"korektne odlíšiť, pretože bolo " +
+									"zakázané používanie oddeľovačov aj " +
+									"únikových znakov.");
+						}
+						else údajeTabuľky.append(údaj);
+					}
+				}
+			}
+
+			return údajeTabuľky.toString();
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #tabuľkaNaReťazec(String[][], String...) tabuľkaNaReťazec}.</p> */
+		public static String tabulkaNaRetazec(String[][] tabuľka,
+			String... nastavenia)
+		{ return tabuľkaNaReťazec(tabuľka, nastavenia); }
+
 }

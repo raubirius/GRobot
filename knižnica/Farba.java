@@ -2491,19 +2491,21 @@ public class Farba extends Color implements Comparable<Color>
 	 * <li><code>rgb(</code><em>red</em><code>, </code><em>green</em><code>,
 	 * </code><em>blue</em><code>)</code>, kde <em>red</em> je červená zložka
 	 * (v desiatkovom tvare), <em>green</em> zelená zložka, <em>blue</em>
-	 * modrá zložka (všetko v desiatkovom tvare),</li>
+	 * modrá zložka (všetko v desiatkovom celočíselnom tvare v rozsahu 0 –
+	 * 255),</li>
 	 * <li><code>rgba(</code><em>red</em><code>, </code><em>green</em><code>,
 	 * </code><em>blue</em><code>, </code><em>alpha</em><code>)</code>, kde
 	 * <em>red</em> je červená zložka (v desiatkovom tvare), <em>green</em>
 	 * zelená zložka, <em>blue</em> modrá zložka, <em>alpha</em> priehľadnosť
-	 * (všetko v desiatkovom tvare).</li>
+	 * (všetko v desiatkovom celočíselnom tvare v rozsahu 0 – 255; vrátane
+	 * priehľadnosti – pozri upozornenie nižšie).</li>
 	 * </ul>
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Posledný z uvedených
 	 * tvarov nekorešponduje so zápisom používaným v jazykoch slúžiacich
 	 * na tvorbu webu (HTML, CSS…), pretože na rozdiel od nich uvádza
-	 * z dôvodu zachovania presnej hodnoty zložku priehľadnosti ako celé
-	 * číslo v rozsahu od {@code num0} do {@code num255}. Na prevod do
+	 * (z dôvodu zachovania presnej hodnoty) aj zložku priehľadnosti ako celé
+	 * číslo v rozsahu od {@code num0} do {@code num255}. Na prevod z/do
 	 * skutočného webového tvaru môžete použiť metódy definované v triede
 	 * {@link SVGPodpora SVGPodpora}.</p>
 	 * 

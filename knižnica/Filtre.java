@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
  * použití regulárnych výrazov – aplikovanie zoznamu filtrov na zadaný
  * reťazec.</p>
  * 
- * <p>Táto trieda reprezentuje {@linkplain Zoznam zoznam filtrov,} ktoré
+ * <p>Táto trieda reprezentuje {@linkplain Zoznam zoznam} filtrov, ktoré
  * budú postupne aplikované na reťazec zadaný ako parameter metódy {@link 
  * #použi(String) použi}. Každý z filtrov môže mať nastavený príznak {@link 
  * Filter#zastav zastav}, ktorého hodnota {@code valtrue} indikuje, že sa
@@ -334,12 +334,11 @@ public class Filtre extends Zoznam<Filtre.Filter>
 	 * veľkosť})</p>
 	 * 
 	 * @param blokTextu blok konfiguračného textu obsahujúci definície filtrov
-	 * @return počet chýb zaznamenaných pri parsovaní zadaného reťazca,
-	 *     −1 ak bol nulový parameter ({@code valnull}),
+	 * @return počet chýb zaznamenaných pri parsovaní zadaného reťazca;
+	 *     −1 ak bol zadaný nulový parameter ({@code valnull}),
 	 *     −2 ak bol zadaný prázdny reťazec ({@code srg""} alebo
 	 *     {@code srg"\u005CFEFF"} – BOM)
 	 */
-	// TODO – over, či sa v dokumentácii správne zobrazuje BOM
 	public int parsuj(String blokTextu)
 	{
 		if (null == blokTextu) return -1;

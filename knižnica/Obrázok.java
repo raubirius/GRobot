@@ -8718,11 +8718,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * <p class="remark"><b>Poznámka:</b> Pozri aj informácie o snímkach
 		 * uvedené v opise metódy {@link #početSnímok() početSnímok}.</p>
 		 * 
-		 * @param indexSnímky index cieľovej snímky; ak je táto hodnota
-		 *     väčšia než je aktuálny počet snímok, tak bude prepočítaná
+		 * @param indexSnímky index cieľovej snímky; platí to, čo pri všetkých
+		 *     metódach pracujúcich s indexmi snímok – ak je táto hodnota
+		 *     väčšia alebo rovná než je aktuálny počet snímok, tak bude
+		 *     prepočítaná
 		 *     tak, aby ukazovala na adekvátne vzdialenú snímku v rámci
 		 *     cyklickej animácie (čiže hodnota rovná počtu snímok bude
-		 *     presmerovaná na prvú snímku, hodnota o jedno vyššia na druhú
+		 *     presmerovaná na prvú snímku – s indexom nula, hodnota o jedno
+		 *     vyššia na druhú – s indexom dva
 		 *     a tak ďalej); záporné hodnoty budú prepočítané v opačnom
 		 *     smere (od konca animácie)
 		 */
@@ -8747,11 +8750,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * <p class="remark"><b>Poznámka:</b> Pozri aj informácie o snímkach
 		 * uvedené v opise metódy {@link #početSnímok() početSnímok}.</p>
 		 * 
-		 * @param indexSnímky index cieľovej snímky; ak je táto hodnota
-		 *     väčšia než je aktuálny počet snímok, tak bude prepočítaná
+		 * @param indexSnímky index cieľovej snímky; platí to, čo pri všetkých
+		 *     metódach pracujúcich s indexmi snímok – ak je táto hodnota
+		 *     väčšia alebo rovná než je aktuálny počet snímok, tak bude
+		 *     prepočítaná
 		 *     tak, aby ukazovala na adekvátne vzdialenú snímku v rámci
 		 *     cyklickej animácie (čiže hodnota rovná počtu snímok bude
-		 *     presmerovaná na prvú snímku, hodnota o jedno vyššia na druhú
+		 *     presmerovaná na prvú snímku – s indexom nula, hodnota o jedno
+		 *     vyššia na druhú – s indexom dva
 		 *     a tak ďalej); záporné hodnoty budú prepočítané v opačnom
 		 *     smere (od konca animácie)
 		 * @param obrázok grafika novej snímky
@@ -8778,11 +8784,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * <p class="remark"><b>Poznámka:</b> Pozri aj informácie o snímkach
 		 * uvedené v opise metódy {@link #početSnímok() početSnímok}.</p>
 		 * 
-		 * @param indexSnímky index cieľovej snímky; ak je táto hodnota
-		 *     väčšia než je aktuálny počet snímok, tak bude prepočítaná
+		 * @param indexSnímky index cieľovej snímky; platí to, čo pri všetkých
+		 *     metódach pracujúcich s indexmi snímok – ak je táto hodnota
+		 *     väčšia alebo rovná než je aktuálny počet snímok, tak bude
+		 *     prepočítaná
 		 *     tak, aby ukazovala na adekvátne vzdialenú snímku v rámci
 		 *     cyklickej animácie (čiže hodnota rovná počtu snímok bude
-		 *     presmerovaná na prvú snímku, hodnota o jedno vyššia na druhú
+		 *     presmerovaná na prvú snímku – s indexom nula, hodnota o jedno
+		 *     vyššia na druhú – s indexom dva
 		 *     a tak ďalej); záporné hodnoty budú prepočítané v opačnom
 		 *     smere (od konca animácie)
 		 * @param obrázok grafika novej snímky
@@ -8840,11 +8849,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * zostávajúca snímka v tomto obrázku, tak zostane nastavená jej
 		 * grafika a prípadná prebiehajúca animácia sa zastaví.</p>
 		 * 
-		 * @param indexSnímky index cieľovej snímky; ak je táto hodnota
-		 *     väčšia než je aktuálny počet snímok, tak bude prepočítaná
+		 * @param indexSnímky index cieľovej snímky; platí to, čo pri všetkých
+		 *     metódach pracujúcich s indexmi snímok – ak je táto hodnota
+		 *     väčšia alebo rovná než je aktuálny počet snímok, tak bude
+		 *     prepočítaná
 		 *     tak, aby ukazovala na adekvátne vzdialenú snímku v rámci
 		 *     cyklickej animácie (čiže hodnota rovná počtu snímok bude
-		 *     presmerovaná na prvú snímku, hodnota o jedno vyššia na druhú
+		 *     presmerovaná na prvú snímku – s indexom nula, hodnota o jedno
+		 *     vyššia na druhú – s indexom dva
 		 *     a tak ďalej); záporné hodnoty budú prepočítané v opačnom
 		 *     smere (od konca animácie)
 		 */
@@ -8964,11 +8976,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * <p class="remark"><b>Poznámka:</b> Pozri aj informácie o snímkach
 		 * uvedené v opise metódy {@link #početSnímok() početSnímok}.</p>
 		 * 
-		 * @param indexSnímky index cieľovej snímky; ak je táto hodnota
-		 *     väčšia než je aktuálny počet snímok, tak bude prepočítaná
+		 * @param indexSnímky index cieľovej snímky; platí to, čo pri všetkých
+		 *     metódach pracujúcich s indexmi snímok – ak je táto hodnota
+		 *     väčšia alebo rovná než je aktuálny počet snímok, tak bude
+		 *     prepočítaná
 		 *     tak, aby ukazovala na adekvátne vzdialenú snímku v rámci
 		 *     cyklickej animácie (čiže hodnota rovná počtu snímok bude
-		 *     presmerovaná na prvú snímku, hodnota o jedno vyššia na druhú
+		 *     presmerovaná na prvú snímku – s indexom nula, hodnota o jedno
+		 *     vyššia na druhú – s indexom dva
 		 *     a tak ďalej); záporné hodnoty budú prepočítané v opačnom
 		 *     smere (od konca animácie)
 		 */
@@ -9026,11 +9041,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * aktuálnu naposledy použitú hodnotu trvania, ak animácia nemá
 		 * žiadne snímky.)</p>
 		 * 
-		 * @param indexSnímky index cieľovej snímky; ak je táto hodnota
-		 *     väčšia než je aktuálny počet snímok, tak bude prepočítaná
+		 * @param indexSnímky index cieľovej snímky; platí to, čo pri všetkých
+		 *     metódach pracujúcich s indexmi snímok – ak je táto hodnota
+		 *     väčšia alebo rovná než je aktuálny počet snímok, tak bude
+		 *     prepočítaná
 		 *     tak, aby ukazovala na adekvátne vzdialenú snímku v rámci
 		 *     cyklickej animácie (čiže hodnota rovná počtu snímok bude
-		 *     presmerovaná na prvú snímku, hodnota o jedno vyššia na druhú
+		 *     presmerovaná na prvú snímku – s indexom nula, hodnota o jedno
+		 *     vyššia na druhú – s indexom dva
 		 *     a tak ďalej); záporné hodnoty budú prepočítané v opačnom
 		 *     smere (od konca animácie)
 		 * @return trvanie zobrazenia cieľovej snímky počas animácie
@@ -9078,11 +9096,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * aktuálnu naposledy použitú hodnotu trvania, ak animácia nemá
 		 * žiadne snímky.)</p>
 		 * 
-		 * @param indexSnímky index cieľovej snímky; ak je táto hodnota
-		 *     väčšia než je aktuálny počet snímok, tak bude prepočítaná
+		 * @param indexSnímky index cieľovej snímky; platí to, čo pri všetkých
+		 *     metódach pracujúcich s indexmi snímok – ak je táto hodnota
+		 *     väčšia alebo rovná než je aktuálny počet snímok, tak bude
+		 *     prepočítaná
 		 *     tak, aby ukazovala na adekvátne vzdialenú snímku v rámci
 		 *     cyklickej animácie (čiže hodnota rovná počtu snímok bude
-		 *     presmerovaná na prvú snímku, hodnota o jedno vyššia na druhú
+		 *     presmerovaná na prvú snímku – s indexom nula, hodnota o jedno
+		 *     vyššia na druhú – s indexom dva
 		 *     a tak ďalej); záporné hodnoty budú prepočítané v opačnom
 		 *     smere (od konca animácie)
 		 * @return trvanie zobrazenia cieľovej snímky počas animácie
@@ -9127,11 +9148,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		/**
 		 * <p>Nastaví novú hodnotu trvania zadanej snímky.</p>
 		 * 
-		 * @param indexSnímky index cieľovej snímky; ak je táto hodnota
-		 *     väčšia než je aktuálny počet snímok, tak bude prepočítaná
+		 * @param indexSnímky index cieľovej snímky; platí to, čo pri všetkých
+		 *     metódach pracujúcich s indexmi snímok – ak je táto hodnota
+		 *     väčšia alebo rovná než je aktuálny počet snímok, tak bude
+		 *     prepočítaná
 		 *     tak, aby ukazovala na adekvátne vzdialenú snímku v rámci
 		 *     cyklickej animácie (čiže hodnota rovná počtu snímok bude
-		 *     presmerovaná na prvú snímku, hodnota o jedno vyššia na druhú
+		 *     presmerovaná na prvú snímku – s indexom nula, hodnota o jedno
+		 *     vyššia na druhú – s indexom dva
 		 *     a tak ďalej); záporné hodnoty budú prepočítané v opačnom
 		 *     smere (od konca animácie)
 		 * @param trvanie nový čas zobrazenia cieľovej snímky v sekundách
@@ -9175,11 +9199,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		/**
 		 * <p>Nastaví novú hodnotu trvania zadanej snímky.</p>
 		 * 
-		 * @param indexSnímky index cieľovej snímky; ak je táto hodnota
-		 *     väčšia než je aktuálny počet snímok, tak bude prepočítaná
+		 * @param indexSnímky index cieľovej snímky; platí to, čo pri všetkých
+		 *     metódach pracujúcich s indexmi snímok – ak je táto hodnota
+		 *     väčšia alebo rovná než je aktuálny počet snímok, tak bude
+		 *     prepočítaná
 		 *     tak, aby ukazovala na adekvátne vzdialenú snímku v rámci
 		 *     cyklickej animácie (čiže hodnota rovná počtu snímok bude
-		 *     presmerovaná na prvú snímku, hodnota o jedno vyššia na druhú
+		 *     presmerovaná na prvú snímku – s indexom nula, hodnota o jedno
+		 *     vyššia na druhú – s indexom dva
 		 *     a tak ďalej); záporné hodnoty budú prepočítané v opačnom
 		 *     smere (od konca animácie)
 		 * @param trvanie nový čas zobrazenia cieľovej snímky v sekundách

@@ -46,6 +46,29 @@ package knižnica;
  * {@link Spojnica#definujZnačkuKonca(KreslenieTvaru)
  * Spojnica.definujZnačkuKonca(kreslenie)} a podobne.</p>
  * 
+ * <p class="attention"><b>Upozornenie:</b> Vlastné kreslenie
+ * tvaru vždy zálohuje vlastnosti robota pred začatím kreslenia
+ * tvaru a obnovuje ich po skončení kreslenia. Pozor však na
+ * spúšťanie automatického prekresľovania počas inicializácie
+ * projektu. Tento proces totiž funguje inak. Preto ak
+ * programujete komplexnejší projekt, tak vždy {@linkplain 
+ * Svet#nekresli() vypnite automatické prekresľovanie} pred
+ * začatím inicializácie a {@linkplain Svet#kresli() obnovte
+ * ho} po dokončení inicializácie projektu, prípadne vytvorte
+ * iný spôsob prekresľovania – {@linkplain Svet#nebolPrekreslený()
+ * pozri napríklad príklad s prekresľovaním v časovači v rámci
+ * opisu metódy nebolPrekreslený}.<br /> <br />Inicializácia
+ * totiž spúšťa prekresľovanie iným spôsobom ako pri „klasickom“
+ * prekresľovaní, ktorý nedokáže zálohovať hodnoty vlastností.
+ * Vlastné kreslenie je určené najmä pre komplexnejšie projekty,
+ * pri ktorých sa predpokladá vypnutie automatického
+ * prekresľovania. Zapnuté automatické prekresľovanie je zase
+ * predpokladané pri jednoduchších projektoch, pri ktorých by
+ * zložitejšie mechanizmy boli zbytočnou komplikáciou a bránili
+ * by študentovi priamo vidieť priebeh procesu kreslenia. Tieto
+ * dve roviny fungovania programovacieho rámca nie sú vzájomne
+ * kompatibilné.</p>
+ * 
  * <p><b>Príklad:</b></p>
  * 
  * <pre CLASS="example">

@@ -8967,6 +8967,106 @@ public final class Svet extends JFrame
 		}
 
 
+		// Orezanie textov (súvisí s tabuľkou v triede Súbor, ale má
+		// všeobecné využitie)
+
+		/**
+		 * <p>Oreže sekvenciu znakov prvého parametra o znaky zadané do
+		 * sekvencie znakov druhého parametra. Orezanie v tomto kontexte
+		 * znamená odstránenie určitých znakov zo začiatku a konca sekvencie,
+		 * pričom zoznam znakov, ktoré majú byť vynechané obsahuje sekvencia
+		 * zadaná do druhého parametra.</p>
+		 * 
+		 * @param sekvenciu sekvencia znakov, ktorá má byť orezaná
+		 * @param znakmi sekvencia znakov obsahujúca znaky, ktoré majú byť
+		 *     orezané
+		 * @return buď pôvodná sekvencia znakov, ak nenastala žiadna zmena,
+		 *     alebo sekvencia znakov, ktorá na svojom začiatku a konci
+		 *     neobsahuje znaky obsiahnuté v sekvencii druhého parametra
+		 */
+		public static CharSequence orež(
+			CharSequence sekvenciu, CharSequence znakmi)
+		{
+			// TODO: Otestuj túto verziu.
+			int koniec = sekvenciu.length(), počet = znakmi.length();
+
+			if (null == sekvenciu || 0 == koniec ||
+				null == znakmi || 0 == počet) return sekvenciu;
+
+			int začiatok = 0;
+
+			for (; začiatok < koniec; ++začiatok)
+			{
+				char znak = sekvenciu.charAt(začiatok);
+				boolean preruš = true;
+				for (int i = 0; i < počet; ++i)
+					if (znakmi.charAt(i) == znak)
+					{
+						preruš = false;
+						break;
+					}
+				if (preruš) break;
+			}
+
+			for (; koniec > začiatok; --koniec)
+			{
+				char znak = sekvenciu.charAt(koniec - 1);
+				boolean preruš = true;
+				for (int i = 0; i < počet; ++i)
+					if (znakmi.charAt(i) == znak)
+					{
+						preruš = false;
+						break;
+					}
+				if (preruš) break;
+			}
+
+			if (začiatok > 0 || koniec < sekvenciu.length())
+				return sekvenciu.subSequence(začiatok, koniec);
+
+			return sekvenciu;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #orež(CharSequence, CharSequence) orež}.</p> */
+		public static CharSequence orez(CharSequence sekvenciu,
+			CharSequence znakmi) { return orež(sekvenciu, znakmi); }
+
+		/**
+		 * <p>Oreže reťazec prvého parametra o znaky zadané do reťazca druhého
+		 * parametra. Orezanie v tomto kontexte znamená odstránenie určitých
+		 * znakov zo začiatku a konca reťazca. Zoznam znakov, ktoré majú byť
+		 * vynechané obsahuje druhý parameter.</p>
+		 * 
+		 * @param reťazec reťazec, ktorý má byť orezaný
+		 * @param znakmi reťazec obsahujúci znaky, ktoré majú byť orezané
+		 * @return buď pôvodný reťazec, ak nenastala žiadna zmena, alebo
+		 *     reťazec, ktorý na svojom začiatku a konci neobsahuje znaky
+		 *     obsiahnuté v druhom parametri
+		 */
+		public static String orež(String reťazec, String znakmi)
+		{
+			if (null == reťazec || reťazec.isEmpty() ||
+				null == znakmi || znakmi.isEmpty()) return reťazec;
+
+			int začiatok = 0, koniec = reťazec.length();
+
+			for (; začiatok < koniec; ++začiatok)
+				if (-1 == znakmi.indexOf(reťazec.charAt(začiatok))) break;
+
+			for (; koniec > začiatok; --koniec)
+				if (-1 == znakmi.indexOf(reťazec.charAt(koniec - 1))) break;
+
+			if (začiatok > 0 || koniec < reťazec.length())
+				return reťazec.substring(začiatok, koniec);
+
+			return reťazec;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #orež(String, String) orež}.</p> */
+		public static String orez(String reťazec, String znakmi)
+		{ return orež(reťazec, znakmi); }
+
+
 		// Formát
 
 		/**
@@ -11980,7 +12080,8 @@ public final class Svet extends JFrame
 		 * <p>Spustí aktivitu pravidelného generovania udalostí pohybu
 		 * kurzorom myšky, aby sa zabránilo prechodu počítača do režimu
 		 * spánku. Táto verzia automaticky spustí časovač a zachová pôvodný
-		 * (prípadne predvolený) interval generovania udalostí.
+		 * (prípadne predvolený, ktorý má hodnotu 1 000 tikov časovača)
+		 * interval generovania udalostí.
 		 * Viac podrobností nájdete v opise nasledujúcej verzie metódy:
 		 * {@link #nespi(int, boolean) nespi}{@code (novýInterval,
 		 * ajČasovač)}.</p>
@@ -17938,8 +18039,8 @@ public final class Svet extends JFrame
 
 
 		/**
-		 * <p>Vráti n-té prvočíslo, ak jestvuje. Metóda vráti kladné alebo
-		 * záporné prvočíslo podľa zadaného poradového čísla v rámci parametra
+		 * <p>Vráti n-té prvočíslo. Metóda vráti kladné alebo záporné
+		 * prvočíslo podľa zadaného poradového čísla v rámci parametra
 		 * {@code n}. Ak je zadaná nula, metóda vráti nulu, čo je nezmysel,
 		 * ale aspoň sa vďaka tomu dá prejsť celá (dostupná) celočíselná os
 		 * bez vzniku výnimy.</p>
@@ -17958,7 +18059,9 @@ public final class Svet extends JFrame
 		 * 
 		 * @param n poradové číslo – určuje, ktoré prvočíslo v poradí má byť
 		 *     vrátené
-		 * @return n-té prvočíslo, ak jestvuje
+		 * @return n-té prvočíslo s jedinou výnimkou – ak je zadaná nula,
+		 *     metóda nevráti prvočíslo, ale nulu – dôvod je ozrejmený vyššie
+		 *     v opise
 		 * 
 		 * @see #jePrvočíslo(long)
 		 * @see #rozložNaPrvočísla(long)

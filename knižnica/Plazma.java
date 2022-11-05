@@ -313,7 +313,7 @@ import java.util.Vector;
  * WPF – SmartyPantsCoding.com.</em> 2008. Dostupné na:
  * <a
  * href="http://www.smartypantscoding.com/content/old-school-fire-algorithm-modern-day-wpf"
- * target="_blank">http://www.smartypantscoding.com/content/old-school-fire-algorithm-modern-day-wpf</a>
+ * target="_blank">http://&#8203;www.&#8203;smartypantscoding.&#8203;com/&#8203;content/&#8203;old-school-fire-algorithm-modern-day-wpf</a>
  * Citované: 27. 11. 2019.</li>
  * </ul>
  * 

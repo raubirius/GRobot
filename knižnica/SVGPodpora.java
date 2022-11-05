@@ -3082,7 +3082,7 @@ public class SVGPodpora
 	private String[] htmlŠablóna =
 	{
 		"<!DOCTYPE html>", "<html>", "<head>",
-		"<meta charset=\"$KÓDOVANIE\" />", "<title>$TITULOK</title>",
+		"<meta charset=\"$KÓDOVANIE\" />", "<title>$TITULOK</title>", "$ŠTÝL",
 		"</head>", "<body>", "<svg width=\"$ŠÍRKA\" height=\"$VÝŠKA\">",
 		"$DEFINÍCIE<g stroke-linecap=\"round\" stroke-linejoin=\"round\">",
 		"$TVARY", "</g>", "</svg>", "</body>", "</html>"
@@ -3097,8 +3097,8 @@ public class SVGPodpora
 		"<?xml version=\"1.0\" encoding=\"$KÓDOVANIE\"" +
 		" standalone=\"no\"?>", "<svg xmlns=\"http://www.w3.org/2000/svg" +
 		"\" width=\"$ŠÍRKA\" height=\"$VÝŠKA\">", "<title>$TITULOK</title>",
-		"$DEFINÍCIE<g stroke-linecap=\"round\" stroke-linejoin=\"round\">",
-		"$TVARY", "</g>", "</svg>"
+		"$ŠTÝL", "$DEFINÍCIE<g stroke-linecap=\"round\" stroke-linejoin=" +
+		"\"round\">", "$TVARY", "</g>", "</svg>"
 	};
 
 
@@ -3109,8 +3109,9 @@ public class SVGPodpora
 	 * 
 	 * <p>Jeden prvok poľa je ekvivalentný jednému riadku HTML súboru.
 	 * Výnimku tvoria riadky obsahujúce rezervované reťazce {@code $TVARY}
-	 * (resp. {@code $SHAPES}) alebo {@code $DEFINÍCIE} (resp. {@code $DEFS}),
-	 * pretože tieto reťazce budú nahradený viacriadkovými SVG definíciami.</p>
+	 * (resp. {@code $SHAPES}), {@code $ŠTÝL} (resp. {@code $STYLE}) alebo
+	 * {@code $DEFINÍCIE} (resp. {@code $DEFS}), pretože tieto reťazce budú
+	 * nahradené viacriadkovými SVG definíciami.</p>
 	 * 
 	 * <p>V prípade potreby môžete obsah tejto šablóny nahradiť iným
 	 * požadovaným tvarom metódou {@link #htmlŠablóna(String[])
@@ -3137,8 +3138,9 @@ public class SVGPodpora
 	 * 
 	 * <p>Jeden prvok poľa je ekvivalentný jednému riadku SVG súboru.
 	 * Výnimku tvoria riadky obsahujúce rezervované reťazce {@code $TVARY}
-	 * (resp. {@code $SHAPES}) alebo {@code $DEFINÍCIE} (resp. {@code $DEFS}),
-	 * pretože tieto reťazce budú nahradený viacriadkovými SVG definíciami.</p>
+	 * (resp. {@code $SHAPES}), {@code $ŠTÝL} (resp. {@code $STYLE}) alebo
+	 * {@code $DEFINÍCIE} (resp. {@code $DEFS}), pretože tieto reťazce budú
+	 * nahradené viacriadkovými SVG definíciami.</p>
 	 * 
 	 * <p>V prípade potreby môžete obsah tejto šablóny nahradiť iným
 	 * požadovaným tvarom metódou {@link #svgŠablóna(String[])
@@ -3166,8 +3168,9 @@ public class SVGPodpora
 	 * 
 	 * <p>Jeden prvok poľa je ekvivalentný jednému riadku HTML súboru.
 	 * Výnimku tvoria riadky obsahujúce rezervované reťazce {@code $TVARY}
-	 * (resp. {@code $SHAPES}) alebo {@code $DEFINÍCIE} (resp. {@code $DEFS}),
-	 * pretože tieto reťazce budú nahradený viacriadkovými SVG definíciami.</p>
+	 * (resp. {@code $SHAPES}), {@code $ŠTÝL} (resp. {@code $STYLE}) alebo
+	 * {@code $DEFINÍCIE} (resp. {@code $DEFS}), pretože tieto reťazce budú
+	 * nahradené viacriadkovými SVG definíciami.</p>
 	 * 
 	 * <p>Šablóna musí byť v korektnom tvare (dotýka sa to syntaxe
 	 * a štruktúry) HTML súboru s vloženým {@code svg} elementom, inak
@@ -3178,16 +3181,18 @@ public class SVGPodpora
 	 * tiež obsahovať rezervované reťazce: {@code $KÓDOVANIE}, {@code $ŠÍRKA},
 	 * {@code $VÝŠKA} a {@code $TITULOK}, ktoré budú nahradené korektnými
 	 * údajmi – kódovaním, rozmermi plátien a zadaným alebo predvoleným
-	 * titulkom.</p>
+	 * titulkom a môže obsahovať rezervovaný reťazec {@code $ŠTÝL} (resp.
+	 * {@code $STYLE}), ktorý bude nahradený definíciou štýlu, ak {@linkplain 
+	 * #štýl() zoznam štýlov} obsahuje nejaké prvky.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Rezervované reťazce
-	 * {@code $KÓDOVANIE}, {@code $ŠÍRKA}, {@code $VÝŠKA} a {@code $DEFINÍCIE}
-	 * môžu byť uvedené aj bez diakritiky a všetky rezervované reťazce majú
-	 * definované aliasy v anglickom jazyku: {@code $KÓDOVANIE} –
-	 * {@code $ENCODING}, {@code $ŠÍRKA} – {@code $WIDTH},
-	 * {@code $VÝŠKA} – {@code $HEIGHT}, * {@code $DEFINÍCIE} – {@code $DEFS},
-	 * {@code $TITULOK} – {@code $TITLE} a {@code $TVARY} –
-	 * {@code $SHAPES}.</p>
+	 * {@code $KÓDOVANIE}, {@code $ŠÍRKA}, {@code $VÝŠKA}, {@code $ŠTÝL}
+	 * a {@code $DEFINÍCIE} môžu byť uvedené aj bez diakritiky a všetky
+	 * rezervované reťazce majú definované aliasy v anglickom jazyku:
+	 * {@code $KÓDOVANIE} – {@code $ENCODING}, {@code $ŠÍRKA} – {@code $WIDTH},
+	 * {@code $VÝŠKA} – {@code $HEIGHT}, {@code $ŠTÝL} – {@code $STYLE},
+	 * {@code $DEFINÍCIE} – {@code $DEFS}, {@code $TITULOK} – {@code $TITLE}
+	 * a {@code $TVARY} – {@code $SHAPES}.</p>
 	 * 
 	 * @param šablóna nový požadovaný tvar HTML šablóny
 	 * @return {@code valtrue} v prípade úspechu (šablónu sa podarilo
@@ -3251,8 +3256,9 @@ public class SVGPodpora
 	 * 
 	 * <p>Jeden prvok poľa je ekvivalentný jednému riadku SVG súboru.
 	 * Výnimku tvoria riadky obsahujúce rezervované reťazce {@code $TVARY}
-	 * (resp. {@code $SHAPES}) alebo {@code $DEFINÍCIE} (resp. {@code $DEFS}),
-	 * pretože tieto reťazce budú nahradený viacriadkovými SVG definíciami.</p>
+	 * (resp. {@code $SHAPES}), {@code $ŠTÝL} (resp. {@code $STYLE}) alebo
+	 * {@code $DEFINÍCIE} (resp. {@code $DEFS}), pretože tieto reťazce budú
+	 * nahradené viacriadkovými SVG definíciami.</p>
 	 * 
 	 * <p>Šablóna musí byť v korektnom tvare (dotýka sa to syntaxe
 	 * a štruktúry) SVG súboru, inak bude výsledný súbor v nekorektnom
@@ -3262,16 +3268,19 @@ public class SVGPodpora
 	 * (resp. {@code $DEFS}). Mala by tiež obsahovať rezervované reťazce:
 	 * {@code $KÓDOVANIE}, {@code $ŠÍRKA}, {@code $VÝŠKA} a {@code $TITULOK},
 	 * ktoré budú nahradené korektnými údajmi – kódovaním, rozmermi plátien
-	 * a zadaným alebo predvoleným titulkom.</p>
+	 * a zadaným alebo predvoleným titulkom a môže obsahovať rezervovaný
+	 * reťazec {@code $ŠTÝL} (resp. {@code $STYLE}), ktorý bude nahradený
+	 * definíciou štýlu, ak {@linkplain #štýl() zoznam štýlov} obsahuje nejaké
+	 * prvky.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Rezervované reťazce
-	 * {@code $KÓDOVANIE}, {@code $ŠÍRKA}, {@code $VÝŠKA} a {@code $DEFINÍCIE}
-	 * môžu byť uvedené aj bez diakritiky a všetky rezervované reťazce majú
-	 * definované aliasy v anglickom jazyku: {@code $KÓDOVANIE} –
-	 * {@code $ENCODING}, {@code $ŠÍRKA} – {@code $WIDTH},
-	 * {@code $VÝŠKA} – {@code $HEIGHT}, {@code $DEFINÍCIE} – {@code $DEFS},
-	 * {@code $TITULOK} – {@code $TITLE} a {@code $TVARY} –
-	 * {@code $SHAPES}.</p>
+	 * {@code $KÓDOVANIE}, {@code $ŠÍRKA}, {@code $VÝŠKA}, {@code $ŠTÝL}
+	 * a {@code $DEFINÍCIE} môžu byť uvedené aj bez diakritiky a všetky
+	 * rezervované reťazce majú definované aliasy v anglickom jazyku:
+	 * {@code $KÓDOVANIE} – {@code $ENCODING}, {@code $ŠÍRKA} – {@code $WIDTH},
+	 * {@code $VÝŠKA} – {@code $HEIGHT}, {@code $ŠTÝL} – {@code $STYLE},
+	 * {@code $DEFINÍCIE} – {@code $DEFS}, {@code $TITULOK} – {@code $TITLE}
+	 * a {@code $TVARY} – {@code $SHAPES}.</p>
 	 * 
 	 * @param šablóna nový požadovaný tvar SVG šablóny
 	 * @return {@code valtrue} v prípade úspechu (šablónu sa podarilo zmeniť),
@@ -5647,8 +5656,15 @@ public class SVGPodpora
 	 * inštancie. Vrátený zoznam je úplne modifikovateľný a všetky zásahy do
 	 * neho znamenajú priamy zásah do vnútorného zásobníka tejto inštancie
 	 * (vrátená inštancia zoznamu je tá istá, ktorá je vnútornou inštanciou
-	 * tejto SVG inštancie).</p>
-	 * <!-- TODO – prípadne dokončiť opis. -->
+	 * tejto SVG inštancie). Obsah tohto zoznamu bude vložený na miesto
+	 * rezervovaného reťazca {@code $DEFINÍCIE} (resp. {@code $DEFS})
+	 * v {@linkplain #svgŠablóna(String[]) SVG} alebo {@linkplain 
+	 * #htmlŠablóna(String[]) HTML} šablóne. Obsah tohto zoznamu upravujú
+	 * tieto metódy: {@link #náterNaReťazec(Paint) náterNaReťazec} a {@link 
+	 * #vymaž() vymaž}.</p>
+	 * 
+	 * <p><b>Odporúčané zdroje:</b></p>
+	 * 
 	 * <ul>
 	 * <li><a target="_blank"
 	 * href="https://www.w3.org/html/wiki/SVGElements/defs"
@@ -5667,6 +5683,43 @@ public class SVGPodpora
 
 	/** <p><a class="alias"></a> Alias pre {@link #definície()}.</p> */
 	public Vector<String> definicie() { return definície; }
+
+
+	// Zoznam definícií štýlu:
+	private final Vector<String> štýl = new Vector<>();
+
+	/**
+	 * <p>Vráti aktuálny zoznam (zásobník) definícií štýlov (CSS) tejto SVG
+	 * inštancie. Vrátený zoznam je úplne modifikovateľný a všetky zásahy do
+	 * neho znamenajú priamy zásah do vnútorného zásobníka tejto inštancie
+	 * (vrátená inštancia zoznamu je tá istá, ktorá je vnútornou inštanciou
+	 * tejto SVG inštancie). Obsah tohto zoznamu bude vložený na miesto
+	 * rezervovaného reťazca {@code $ŠTÝL} (resp. {@code $STYLE})
+	 * v {@linkplain #svgŠablóna(String[]) SVG} alebo {@linkplain 
+	 * #htmlŠablóna(String[]) HTML} šablóne.</p>
+	 * 
+	 * <p><b>Príklad použitia:</b></p>
+	 * <!-- TODO over vzhľad -->
+	 * <pre CLASS="example">
+		{@link GRobot#svgPodpora svgPodpora}.{@code currštýl}().{@link Vector#add(java.lang.Object) add}({@code srg"svg { background: "} + {@link SVGPodpora SVGPodpora}.
+			{@link SVGPodpora#farbaNaReťazec(Color, boolean) farbaNaReťazec}({@link Svet Svet}.{@link Svet#farbaPozadia() farbaPozadia}(), true) + {@code srg"; &#125;"});
+		</pre>
+	 * 
+	 * <p><b>Odporúčané zdroje:</b></p>
+	 * 
+	 * <ul>
+	 * <li><a target="_blank"
+	 * href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/style"
+	 * >&lt;style&gt; – SVG : Scalable Vector Graphics | MDN</a> (cit.
+	 * 30. 10. 2022).</li>
+	 * </ul>
+	 * 
+	 * @return odkaz na vnútornú inštanciu zoznamu CSS definícií
+	 */
+	public Vector<String> štýl() { return štýl; }
+
+	/** <p><a class="alias"></a> Alias pre {@link #štýl()}.</p> */
+	public Vector<String> styl() { return štýl; }
 
 
 	/**
@@ -6507,16 +6560,34 @@ public class SVGPodpora
 		}
 
 		// Pomocný reťazcový zásobník
-		StringBuffer $DEFINÍICIE = new StringBuffer();
+		StringBuffer $DEFINÍCIE = new StringBuffer();
 
 		// Zoskupenie SVG definícií…
-		$DEFINÍICIE.append("<defs>");
-		for (String definícia : definície)
+		if (0 != definície.size())
 		{
-			$DEFINÍICIE.append("\r\n");
-			$DEFINÍICIE.append(definícia);
+			$DEFINÍCIE.append("<defs>");
+			for (String definícia : definície)
+			{
+				$DEFINÍCIE.append("\r\n");
+				$DEFINÍCIE.append(definícia);
+			}
+			$DEFINÍCIE.append("\r\n</defs>\r\n");
 		}
-		$DEFINÍICIE.append("\r\n</defs>\r\n");
+
+		// Pomocný reťazcový zásobník
+		StringBuffer $ŠTÝL = new StringBuffer();
+
+		// Zoskupenie definície štýlu…
+		if (0 != štýl.size())
+		{
+			$ŠTÝL.append("<style>");
+			for (String definícia : štýl)
+			{
+				$ŠTÝL.append("\r\n");
+				$ŠTÝL.append(definícia);
+			}
+			$ŠTÝL.append("\r\n</style>\r\n");
+		}
 
 		// Zápis šablóny do súboru
 		try
@@ -6550,14 +6621,23 @@ public class SVGPodpora
 				if (-1 != riadok.indexOf("$HEIGHT"))
 					riadok = riadok.replace("$HEIGHT", "" + Svet.výška());
 
+				if (-1 != riadok.indexOf("$ŠTÝL"))
+					riadok = riadok.replace("$ŠTÝL", $ŠTÝL);
+
+				if (-1 != riadok.indexOf("$STYL"))
+					riadok = riadok.replace("$STYL", $ŠTÝL);
+
+				if (-1 != riadok.indexOf("$STYLE"))
+					riadok = riadok.replace("$STYLE", $ŠTÝL);
+
 				if (-1 != riadok.indexOf("$DEFINÍCIE"))
-					riadok = riadok.replace("$DEFINÍCIE", $DEFINÍICIE);
+					riadok = riadok.replace("$DEFINÍCIE", $DEFINÍCIE);
 
 				if (-1 != riadok.indexOf("$DEFINICIE"))
-					riadok = riadok.replace("$DEFINICIE", $DEFINÍICIE);
+					riadok = riadok.replace("$DEFINICIE", $DEFINÍCIE);
 
 				if (-1 != riadok.indexOf("$DEFS"))
-					riadok = riadok.replace("$DEFS", $DEFINÍICIE);
+					riadok = riadok.replace("$DEFS", $DEFINÍCIE);
 
 				if (-1 != riadok.indexOf("$TVARY"))
 					riadok = riadok.replace("$TVARY", $TVARY);
@@ -6661,7 +6741,7 @@ public class SVGPodpora
 	 * ZIP a Base64. -->
 	 * 
 	 * @param formát formát exportovaného SVG reťazca; povolené sú dva
-	 *     formáty: {@code HTML} a {@code SVG})
+	 *     formáty: {@code HTML} a {@code SVG}
 	 * @param titulok obsah značky {@code <title>}; ak je zadaná
 	 *     hodnota {@code valnull}, tak sa použije predvolený tvar:
 	 *     {@code SVG tvary generované programovacím rámcom
@@ -6703,16 +6783,34 @@ public class SVGPodpora
 		}}
 
 		// Pomocný reťazcový zásobník
-		StringBuffer $DEFINÍICIE = new StringBuffer();
+		StringBuffer $DEFINÍCIE = new StringBuffer();
 
 		// Zoskupenie SVG definícií…
-		$DEFINÍICIE.append("<defs>");
-		for (String definícia : definície)
+		if (0 != definície.size())
 		{
-			$DEFINÍICIE.append("\r\n");
-			$DEFINÍICIE.append(definícia);
+			$DEFINÍCIE.append("<defs>");
+			for (String definícia : definície)
+			{
+				$DEFINÍCIE.append("\r\n");
+				$DEFINÍCIE.append(definícia);
+			}
+			$DEFINÍCIE.append("\r\n</defs>\r\n");
 		}
-		$DEFINÍICIE.append("\r\n</defs>\r\n");
+
+		// Pomocný reťazcový zásobník
+		StringBuffer $ŠTÝL = new StringBuffer();
+
+		// Zoskupenie definície štýlu…
+		if (0 != štýl.size())
+		{
+			$ŠTÝL.append("<style>");
+			for (String definícia : štýl)
+			{
+				$ŠTÝL.append("\r\n");
+				$ŠTÝL.append(definícia);
+			}
+			$ŠTÝL.append("\r\n</style>\r\n");
+		}
 
 		// Tvorba výsledného SVG reťazca podľa šablóny
 		for (String riadok : šablóna)
@@ -6744,14 +6842,23 @@ public class SVGPodpora
 			if (-1 != riadok.indexOf("$HEIGHT"))
 				riadok = riadok.replace("$HEIGHT", "" + Svet.výška());
 
+			if (-1 != riadok.indexOf("$ŠTÝL"))
+				riadok = riadok.replace("$ŠTÝL", $ŠTÝL);
+
+			if (-1 != riadok.indexOf("$STYL"))
+				riadok = riadok.replace("$STYL", $ŠTÝL);
+
+			if (-1 != riadok.indexOf("$STYLE"))
+				riadok = riadok.replace("$STYLE", $ŠTÝL);
+
 			if (-1 != riadok.indexOf("$DEFINÍCIE"))
-				riadok = riadok.replace("$DEFINÍCIE", $DEFINÍICIE);
+				riadok = riadok.replace("$DEFINÍCIE", $DEFINÍCIE);
 
 			if (-1 != riadok.indexOf("$DEFINICIE"))
-				riadok = riadok.replace("$DEFINICIE", $DEFINÍICIE);
+				riadok = riadok.replace("$DEFINICIE", $DEFINÍCIE);
 
 			if (-1 != riadok.indexOf("$DEFS"))
-				riadok = riadok.replace("$DEFS", $DEFINÍICIE);
+				riadok = riadok.replace("$DEFS", $DEFINÍCIE);
 
 			if (-1 != riadok.indexOf("$TVARY"))
 				riadok = riadok.replace("$TVARY", $TVARY);
@@ -6779,7 +6886,7 @@ public class SVGPodpora
 	 * valnull}{@code )}.</p>
 	 * 
 	 * @param formát formát exportovaného SVG reťazca; povolené sú dva
-	 *     formáty: {@code HTML} a {@code SVG})
+	 *     formáty: {@code HTML} a {@code SVG}
 	 * @return buď reťazec s exportovaným SVG v požadovanom formáte, alebo
 	 *     prázdny reťazec ({@code srg""}), ak export zlyhal
 	 */
