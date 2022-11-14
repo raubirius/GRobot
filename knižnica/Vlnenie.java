@@ -40,11 +40,13 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 import java.util.Arrays;
-import java.util.Random;
 import java.util.Vector;
 
 import knižnica.GRobot;
 import knižnica.Poloha;
+
+import knižnica.podpora.CERNMersenneTwister;
+import knižnica.podpora.RandomGenerator;
 
 /**
  * <p>Táto trieda slúži na oživenie vlnenia obrázkov, plátien i sveta.</p>
@@ -619,7 +621,7 @@ public class Vlnenie
 
 
 	// Inštancia náhodného generátora
-	private final static Random generátor = new Random();
+	private final static RandomGenerator generátor = new CERNMersenneTwister();
 
 	// Predvolená farba čiary alebo výplne tvarov kreslených do masky
 	private final static Color predvolenáFarba = new Color(0, 0, 0);

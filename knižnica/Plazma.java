@@ -32,8 +32,10 @@ package knižnica;
 import java.awt.Color;
 import java.awt.image.DataBufferInt;
 import java.util.Arrays;
-import java.util.Random;
 import java.util.Vector;
+
+import knižnica.podpora.CERNMersenneTwister;
+import knižnica.podpora.RandomGenerator;
 
 /**
  * <p>Táto trieda generuje pixelovú simuláciu horiacej plazmy v zadanom
@@ -328,7 +330,7 @@ public class Plazma
 
 	// Vnútorná inštancia generátora náhodných čísiel – je použitý na
 	// generovanie intenzít zdrojov plazmy:
-	private final static Random generátor = new Random();
+	private final static RandomGenerator generátor = new CERNMersenneTwister();
 
 	// Štvorica váh upravujúcich silu ťahu horenia plazmy v štyroch smeroch
 	// (prepočet plazmy je vždy pixelový, tieto hodnoty určujú len váhu ťahu

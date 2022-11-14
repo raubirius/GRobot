@@ -117,7 +117,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 import java.util.Stack;
 import java.util.TooManyListenersException;
 import java.util.TreeMap;
@@ -151,11 +150,14 @@ import javax.imageio.ImageIO;
 
 
 import knižnica.podpora.BeepChannel;
+import knižnica.podpora.CERNMersenneTwister;
 import knižnica.podpora.EnumRadioPanel;
 import knižnica.podpora.VectorListPanel;
 import knižnica.podpora.ExecuteShellCommand;
 import knižnica.podpora.PerlinNoise;
+import knižnica.podpora.RandomGenerator;
 import knižnica.podpora.ReadStandardInput;
+
 import static knižnica.Farebnosť.*;
 
 import static knižnica.Konštanty.majorVersion;
@@ -1178,8 +1180,8 @@ public final class Svet extends JFrame
 
 		// Generátor pseudonáhodných čísel
 			// (určené na použitie funkciami generovania náhodných čísel)
-			private final static Random generátor = new Random();
-
+			private final static RandomGenerator generátor =
+				new CERNMersenneTwister();
 
 
 			// Zoznam kurzorov (a ďalšie pomocné premenné s nimi súvisiace)
@@ -12080,11 +12082,10 @@ public final class Svet extends JFrame
 		 * <p>Spustí aktivitu pravidelného generovania udalostí pohybu
 		 * kurzorom myšky, aby sa zabránilo prechodu počítača do režimu
 		 * spánku. Táto verzia automaticky spustí časovač a zachová pôvodný
-		 * (prípadne predvolený, ktorý má hodnotu 1 000 tikov časovača)
-		 * interval generovania udalostí.
-		 * Viac podrobností nájdete v opise nasledujúcej verzie metódy:
-		 * {@link #nespi(int, boolean) nespi}{@code (novýInterval,
-		 * ajČasovač)}.</p>
+		 * interval generovania udalostí (prípadne predvolený, ktorý má
+		 * hodnotu 1 000 tikov časovača). Viac podrobností nájdete v opise
+		 * nasledujúcej verzie metódy: {@link #nespi(int, boolean)
+		 * nespi}{@code (novýInterval, ajČasovač)}.</p>
 		 * 
 		 * @see #nespi(int)
 		 * @see #nespi(int, boolean)
@@ -12096,10 +12097,9 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Spustí aktivitu pravidelného generovania udalostí pohybu
 		 * kurzorom myšky, aby sa zabránilo prechodu počítača do režimu
-		 * spánku. Táto verzia automaticky spustí časovač.
-		 * Viac podrobností nájdete v opise nasledujúcej verzie metódy:
-		 * {@link #nespi(int, boolean) nespi}{@code (novýInterval,
-		 * ajČasovač)}.</p>
+		 * spánku. Táto verzia automaticky spustí časovač. Viac podrobností
+		 * nájdete v opise nasledujúcej verzie metódy: {@link #nespi(int,
+		 * boolean) nespi}{@code (novýInterval, ajČasovač)}.</p>
 		 * 
 		 * @param novýInterval celé číslo určujúce počet {@linkplain 
 		 *     ObsluhaUdalostí#tik() tikov} {@linkplain 
@@ -12117,16 +12117,22 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Spustí aktivitu pravidelného generovania udalostí pohybu
 		 * kurzorom myšky, aby sa zabránilo prechodu počítača do režimu
-		 * spánku.
-		 * Toto je dôležité najmä pri aplikáciách, ktoré niečo samostatne
+		 * spánku.</p>
+		 * 
+		 * <p>Toto je dôležité najmä pri aplikáciách, ktoré niečo samostatne
 		 * prezentujú. Bez tejto možnosti by po určitom čase počítač mohol
 		 * „zaspať“ (a prezentovanie by stratilo efekt).</p>
 		 * 
 		 * <p>Udalosti, ktoré budú generované sú systémom považované za
 		 * reálne udalosti, ktoré spôsobil používateľ. Keďže virtuálny
 		 * stroj Javy nemá priamy prístup k nastaveniam súvisiacim so
-		 * správou a šetrením energie, toto je jediná možnosť ako túto
-		 * záležitosť ovplyvniť.</p>
+		 * správou a šetrením energie, toto je jediná možnosť ako je možné
+		 * túto záležitosť ovplyvniť.</p>
+		 * 
+		 * <p>Prvý parameter určuje interval generovania udalostí v jednotkách
+		 * počtu tikov (pozri aj napríklad: {@link #intervalČasovača()
+		 * intervalČasovača}) a druhý parameter umožňuje potlačiť automatické
+		 * spustenie časovača – zadaním hodnoty {@code valfalse}.</p>
 		 * 
 		 * @param novýInterval celé číslo určujúce počet {@linkplain 
 		 *     ObsluhaUdalostí#tik() tikov} {@linkplain 
@@ -21542,9 +21548,10 @@ public final class Svet extends JFrame
 		// Náhodné čísla
 
 		/**
-		 * <p>Generovanie náhodného celého čísla v celom rozsahu {@code typelong}.
-		 * (Pozri: {@link Long Long}{@code .}{@link Long#MIN_VALUE MIN_VALUE}
-		 * a {@link Long Long}{@code .}{@link Long#MAX_VALUE MAX_VALUE}.)</p>
+		 * <p>Generovanie náhodného celého čísla v celom rozsahu
+		 * {@code typelong}. (Pozri: {@link Long Long}{@code .}{@link 
+		 * Long#MIN_VALUE MIN_VALUE} a {@link Long Long}{@code .}{@link 
+		 * Long#MAX_VALUE MAX_VALUE}.)</p>
 		 * 
 		 * @return vygenerované náhodné celé číslo
 		 */
@@ -21554,10 +21561,10 @@ public final class Svet extends JFrame
 		public static long nahodneCeleCislo() { return generátor.nextLong(); }
 
 		/**
-		 * <p>Generovanie náhodného celého čísla v rozsahu od nula
+		 * <p>Generovanie náhodného celého čísla v rozsahu od nula (vrátane)
 		 * po zadanú hodnotu parametra (vrátane).</p>
 		 * 
-		 * @param hodnota druhá hranica generovania náhodných čísel
+		 * @param hodnota horná hranica generovania náhodných čísel
 		 * @return vygenerované náhodné celé číslo
 		 */
 		public static long náhodnéCeléČíslo(long hodnota)
@@ -21572,10 +21579,12 @@ public final class Svet extends JFrame
 		public static long nahodneCeleCislo(long hodnota) { return náhodnéCeléČíslo(hodnota); }
 
 		/**
-		 * <p>Generovanie náhodného celého čísla v zadanom rozsahu.</p>
+		 * <p>Generovanie náhodného celého čísla v zadanom rozsahu. Rozsah je
+		 * chápaný ako uzavretý interval – ⟨min; max⟩. Ak je spodná hranica
+		 * väčšia ako horná, tak sú metódou vnútorne prevrátené.</p>
 		 * 
-		 * @param min spodná hranica generovania náhodných čísel
-		 * @param max horná hranica generovania náhodných čísel
+		 * @param min spodná hranica generovania náhodných čísel (vrátane)
+		 * @param max horná hranica generovania náhodných čísel (vrátane)
 		 * @return vygenerované náhodné celé číslo
 		 */
 		public static long náhodnéCeléČíslo(long min, long max)
@@ -21589,8 +21598,8 @@ public final class Svet extends JFrame
 		public static long nahodneCeleCislo(long min, long max) { return náhodnéCeléČíslo(min, max); }
 
 		/**
-		 * <p>Generovanie náhodného reálneho čísla v rozsahu od nula
-		 * po jeden.</p>
+		 * <p>Generovanie náhodného reálneho čísla v rozsahu od nula (vrátane)
+		 * po jeden (vynímajúc).</p>
 		 * 
 		 * @return vygenerované náhodné reálne číslo
 		 */
@@ -21600,10 +21609,11 @@ public final class Svet extends JFrame
 		public static double nahodneRealneCislo() { return generátor.nextDouble(); }
 
 		/**
-		 * <p>Generovanie náhodného reálneho čísla v rozsahu od nula
-		 * po zadanú hodnotu parametra.</p>
+		 * <p>Generovanie náhodného reálneho čísla v rozsahu od nula (vrátane)
+		 * po zadanú hodnotu parametra (vynímajúc).</p>
 		 * 
-		 * @param hodnota horná hranica generovania náhodných čísel
+		 * @param hodnota horná (nezahrnutá) hranica generovania náhodných
+		 *     čísel
 		 * @return vygenerované náhodné reálne číslo
 		 */
 		public static double náhodnéReálneČíslo(double hodnota)
@@ -21614,10 +21624,12 @@ public final class Svet extends JFrame
 		{ return generátor.nextDouble() * hodnota; }
 
 		/**
-		 * <p>Generovanie náhodného reálneho čísla v zadanom rozsahu.</p>
+		 * <p>Generovanie náhodného reálneho čísla v zadanom rozsahu. Zadaný
+		 * interval je polovične otvorený – ⟨min; max). Ak je spodná hranica
+		 * väčšia ako horná, tak sú metódou vnútorne prevrátené.</p>
 		 * 
-		 * @param min spodná hranica generovania náhodných čísel
-		 * @param max horná hranica generovania náhodných čísel
+		 * @param min spodná hranica generovania náhodných čísel (vrátane)
+		 * @param max horná hranica generovania náhodných čísel (vynímajúc)
 		 * @return vygenerované náhodné reálne číslo
 		 */
 		public static double náhodnéReálneČíslo(double min, double max)
@@ -25118,7 +25130,7 @@ public final class Svet extends JFrame
 			else if (!časovač.časovanie.isRunning()) časovač.časovanie.start();
 		}
 
-		/** <p><a class="alias"></a> Alias pre {@link #spustiČasovač(double) spustiČasovač}.</p> */
+		/** <p><a class="alias"></a> Alias pre {@link #spustiČasovač() spustiČasovač}.</p> */
 		public static void spustiCasovac() { spustiČasovač(); }
 
 		/**

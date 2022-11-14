@@ -7709,7 +7709,7 @@ public class Súbor implements Closeable
 		 * textových súboroch o nej má zmysel uvažovať len ak vieme, že jeden
 		 * znak má alebo môže mať viac ako jeden bajt; kódovania UTF túto
 		 * podmienku spĺňajú). Značka zodpovedá reťazcu
-		 * {@code srg"\uFEFF"}.</p>
+		 * {@code srg"\u005CuFEFF"}.</p>
 		 * 
 		 * <p>Cieľom jej uvedenia je uľahčiť alebo umožniť softvérom iných
 		 * strán identifikáciu organizácie bajtov v súbore. Napríklad
@@ -7775,9 +7775,11 @@ public class Súbor implements Closeable
 		 * v textových súboroch OS Windows. Ak chcete na ukončovanie využívať
 		 * inú sekvenciu, tak buď použite metódu {@link #zapíš(Object[]) zapíš}
 		 * a uveďte želanú sekvenciu ako posledný parameter (ale pozor, táto
-		 * metóda môže pomedzi zapísané údaje vkladať neželané medzery), alebo
-		 * metódu {@link #zapíšReťazec(String) zapíšReťazec} pri volaní ktorej
-		 * pripojíte želanú sekvenciu na koniec zapisovaného reťazca.</p>
+		 * metóda automaticky vkladá pomedzi zapísané údaje medzery podľa
+		 * vnútorných pravidiel typografie, čo nemusí byť vo všetkých
+		 * prípadoch žiaduce), alebo metódu {@link #zapíšReťazec(String)
+		 * zapíšReťazec} pri volaní ktorej pripojíte želanú sekvenciu na
+		 * koniec zapisovaného reťazca.</p>
 		 * 
 		 * @param text text, ktorý má byť zapísaný do samostatného riadka
 		 *     súboru otvoreného na zápis
@@ -7807,9 +7809,11 @@ public class Súbor implements Closeable
 		 * v textových súboroch OS Windows. Ak chcete na ukončovanie využívať
 		 * inú sekvenciu, tak buď použite metódu {@link #zapíš(Object[]) zapíš}
 		 * a uveďte želanú sekvenciu ako posledný parameter (ale pozor, táto
-		 * metóda môže pomedzi zapísané údaje vkladať neželané medzery), alebo
-		 * metódu {@link #zapíšReťazec(String) zapíšReťazec} pri volaní ktorej
-		 * pripojíte želanú sekvenciu na koniec zapisovaného reťazca.</p>
+		 * metóda automaticky vkladá pomedzi zapísané údaje medzery podľa
+		 * vnútorných pravidiel typografie, čo nemusí byť vo všetkých
+		 * prípadoch žiaduce), alebo metódu {@link #zapíšReťazec(String)
+		 * zapíšReťazec} pri volaní ktorej pripojíte želanú sekvenciu na
+		 * koniec zapisovaného reťazca.</p>
 		 * 
 		 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
 		 *     operácii
@@ -7923,10 +7927,10 @@ public class Súbor implements Closeable
 		 * ignoruje ich.</p>
 		 * 
 		 * <p>Inak, ak táto metóda nájde neznáme nastavenie alebo ak niektoré
-		 * nastavenie nie je v tvare <i>«názovNastavenia»</i><code>=</code><i
-		 * >«hodnotaNastavenia»</i>, tak vrhne výnimku {@link 
-		 * IllegalArgumentException IllegalArgumentException}. Toto je zoznam
-		 * povolených nastavení:</p>
+		 * nastavenie nie je v tvare <i>«názovNastavenia»</i><code
+		 * >=&#8203;</code><i>«hodnotaNastavenia»</i>, tak vrhne výnimku
+		 * {@link IllegalArgumentException IllegalArgumentException}. Toto je
+		 * zoznam povolených nastavení:</p>
 		 * 
 		 * <ul>
 		 * <li>{@code kódovanie}, {@code kodovanie}, {@code encoding},
@@ -7934,33 +7938,26 @@ public class Súbor implements Closeable
 		 * {@link #otvorNaČítanie(String, String) otvorNaČítanie};
 		 * <br /><b>predvolená hodnota:</b> {@code srg"UTF-8"}</li>
 		 * 
-		 * <li>{@code formát}, {@code format}, {@code oddeľovač}, {@code 
-		 * oddelovac}, {@code separator}, {@code ohraničenie}, {@code 
-		 * ohranicenie}, {@code enclosure}, {@code únikovýZnak}, {@code 
-		 * unikovyZnak}, {@code escapeChar}, {@code únikovýVOhraničení},
-		 * {@code unikovyVOhraniceni}, {@code escapeInEnclosure}, {@code 
-		 * orezaťZnaky}, {@code orezatZnaky}, {@code trimChars}, {@code 
-		 * komentár}, {@code komentar}, {@code comment}, {@code 
-		 * číselnéÚnikové}, {@code ciselneUnikove}, {@code numericalEscapes},
-		 * {@code číselnéVOhraničení}, {@code ciselneVOhraniceni}, {@code 
-		 * numericalInEnclosure} – ignorované touto metódou; ich význam je
-		 * v opise metódy {@link #reťazecNaTabuľku(String, String...)
-		 * reťazecNaTabuľku}, do ktorej sa, samozrejme, posielajú po prečítaní
-		 * údajov zo súboru.</li>
+		 * <li><span style="background:#eee">{@code formát}, {@code format},
+		 * {@code oddeľovač}, {@code oddelovac}, {@code separator}, {@code 
+		 * ohraničenie}, {@code ohranicenie}, {@code enclosure}, {@code 
+		 * únikovýZnak}, {@code unikovyZnak}, {@code escapeChar}, {@code 
+		 * únikovýVOhraničení}, {@code unikovyVOhraniceni}, {@code 
+		 * escapeInEnclosure}, {@code orezaťZnaky}, {@code orezatZnaky},
+		 * {@code trimChars}, {@code komentár}, {@code komentar}, {@code 
+		 * qwxcomment}, {@code číselnéÚnikové}, {@code ciselneUnikove},
+		 * {@code qwxnumericalEscapes}, {@code číselnéVOhraničení}, {@code 
+		 * ciselneVOhraniceni}, {@code qwxnumericalInEnclosure} – ignorované
+		 * touto metódou; ich význam je v opise metódy {@link 
+		 * #reťazecNaTabuľku(String, String...) reťazecNaTabuľku}, do ktorej
+		 * sa, samozrejme, posielajú po prečítaní údajov zo súboru.</span></li>
 		 * </ul>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Nastavenia uvedené v zozname
 		 * parametrov neskôr prepisujú hodnoty nastavení uvedených skôr.</p>
 		 * 
-		 * <p class="remark"><b>Poznámka:</b> Metóda {@link 
-		 * #zapíšTabuľku(String, String[][], String...) zapíšTabuľku}
-		 * akceptuje všetky nastavenia, ktoré sú uvedené vyššie, okrem
-		 * týchto: {@code komentár}, {@code komentar}, {@code comment},
-		 * {@code číselnéÚnikové}, {@code ciselneUnikove}, {@code 
-		 * numericalEscapes}, {@code číselnéVOhraničení}, {@code 
-		 * ciselneVOhraniceni}, {@code numericalInEnclosure}.
-		 * (Rovnaká informácia je uvedená aj v opise metódy {@link 
-		 * #zapíšTabuľku(String, String[][], String...) zapíšTabuľku}.)</p>
+		 * <p><b>Pozri aj zdroje uvedené v opise metódy {@link 
+		 * #reťazecNaTabuľku(String, String...) reťazecNaTabuľku}.</b></p>
 		 * 
 		 * @param názovSúboru názov súboru, z ktorého sa má prečítať tabuľka
 		 * @param nastavenia rôzne (nepovinné) nastavenia; pozri zoznam vyššie
@@ -8059,16 +8056,19 @@ public class Súbor implements Closeable
 		 * ich.</p>
 		 * 
 		 * <p>Inak, ak táto metóda nájde neznáme nastavenie alebo ak niektoré
-		 * nastavenie nie je v tvare <i>«názovNastavenia»</i><code>=</code><i
-		 * >«hodnotaNastavenia»</i>, tak vrhne výnimku {@link 
-		 * IllegalArgumentException IllegalArgumentException}. Toto je zoznam
-		 * povolených nastavení:</p>
+		 * nastavenie nie je v tvare <i>«názovNastavenia»</i><code
+		 * >=&#8203;</code><i>«hodnotaNastavenia»</i>, tak vrhne výnimku
+		 * {@link IllegalArgumentException IllegalArgumentException}. Toto je
+		 * zoznam povolených nastavení:</p>
 		 * 
 		 * <ul>
-		 * <li>{@code kódovanie}, {@code kodovanie}, {@code encoding},
-		 * {@code charset} – ignorované touto metódou; ich význam je v opise
-		 * metódy {@link #čítajTabuľku(String, String...) čítajTabuľku};</li>
+		 * <li><span style="background:#eee">{@code kódovanie}, {@code 
+		 * kodovanie}, {@code encoding}, {@code charset} – ignorované touto
+		 * metódou; ich význam je v opise metódy {@link #čítajTabuľku(String,
+		 * String...) čítajTabuľku};</span></li>
 		 * 
+
+
 		 * <li>{@code formát}, {@code format} – toto nastavenie je skratkou;
 		 * kombinuje natavenie viacerých iných nastavení naraz; platnými
 		 * hodnotami sú napríklad: {@code srg"CSV"}, {@code srg"SSV"},
@@ -8082,31 +8082,49 @@ public class Súbor implements Closeable
 		 * <br /><b>predvolená hodnota:</b> {@code srg'\t'}</li>
 		 * 
 		 * <li>{@code ohraničenie}, {@code ohranicenie}, {@code enclosure} –
-		 * zapne ohraničovanie údajov – pre túto metódu ide o rozpoznávanie
-		 * ohraničených údajov podľa zadaného znaku (napríklad strojopisných
-		 * úvodzoviek {@code "}); pre metódu {@link 
-		 * #tabuľkaNaReťazec(String[][], String...) tabuľkaNaReťazec}
-		 * o prepnutie do režimu automatického ohraničovania tých buniek
-		 * tabuľky, ktoré obsahujú špeciálne znaky – znak oddeľovača, únikový
-		 * znak, znaky nového riadka a návratu vozíka a samotný znak
-		 * ohraničenia, ktorý je v tom prípade v rámci obsahu bunky zdvojený
-		 * (ak nie je aktívne nastavenie {@code únikovýVOhraničení});
+		 * zapne ohraničovanie údajov; pre túto metódu ide o zapnutie
+		 * rozpoznávania ohraničených údajov podľa zadaného znaku (napríklad
+		 * strojopisných úvodzoviek {@code "}); bez ohľadu na nastavenie
+		 * {@code únikovýVOhraničení} považuje metóda zdvojenie znaku
+		 * ohraničenia v rámci ohraničenia za „únikovú sekvenciu“ tohto znaku,
+		 * čiže napríklad ak by bolo ohraničenie nastavené na strojopisné
+		 * úvodzovky a nastavenie „únikový v ohraničení“ na spätnú lomku, tak
+		 * obidva nasledujúce reťazce uložené v súbore:
+		 * <code>"Boris ""Hracho"" Zelený"</code>
+		 * a <code>"Boris \"Hracho\" Zelený"</code> (v zdrojovom kóde Javy by
+		 * sme ich zapísali takto:
+		 * {@code srg"\"Boris \"\"Hracho\"\" Zelený\""}
+		 * a {@code srg"\"Boris \\\"Hracho\\\" Zelený\""}) by boli rozpoznané
+		 * ako: <i>Boris "Hracho" Zelený</i>;
+		 * <!--
+			// Test:
+			for (String reťazec : new String[] {
+				"\"Boris \"\"Hracho\"\" Zelený\"",
+				"\"Boris \\\"Hracho\\\" Zelený\"",
+			})
+			{
+				String[][] tabuľka = Súbor.reťazecNaTabuľku(reťazec,
+					"ohraničenie=\"", "únikovýVOhraničení=\\");
+				for (String[] riadok : tabuľka)
+					for (String bunka : riadok)
+						System.out.println("„" + bunka + "“");
+			}
+			// Ukázal:
+			„Boris "Hracho" Zelený“
+			„Boris "Hracho" Zelený“
+			// Čiže únikovýVOhraničení bez problémov koexistuje s konvenciou
+			// dvojitého znaku ohraničenia.
+		 * -->
 		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
 		 * 
 		 * <li>{@code únikovýZnak}, {@code unikovyZnak}, {@code escapeChar} –
 		 * umožňuje zmeniť predvolený únikový znak {@code \} na zadaný;
 		 * zadanie prázdneho reťazca znamená pre túto metódu vypnutie
-		 * rozpoznávania a pre metódu {@link #tabuľkaNaReťazec(String[][],
-		 * String...) tabuľkaNaReťazec} zastavenie vkladania únikových
-		 * sekvencií do údajov – pozor(!), metóda {@link 
-		 * #tabuľkaNaReťazec(String[][], String...) tabuľkaNaReťazec} musí
-		 * mať v tom prípade buď zapnuté ohraničovanie (pozri nastavenie
-		 * {@code ohraničenie} vyššie), alebo údaje tabuľky nesmú obsahovať
-		 * žiadny špeciálny znak (čítaj ďalej), ktorý by musel byť jedným
-		 * alebo druhým spôsobom ošetrený, inak metóda vrhne výnimku; únikovým
-		 * znakom sú automaticky uvedené tieto špeciálne znaky v rámci údajov:
-		 * nový riadok, návrat vozíka, znak oddeľovača a samotný únikový znak
-		 * (ktorý je v prípade jeho výskytu zdvojený);
+		 * rozpoznávania únikových sekvencií; metóda predpokladá, že únikovým
+		 * znakom sú uvedené tieto špeciálne znaky v rámci údajov: nový
+		 * riadok a návrat vozíka (alebo ich kombinácia), znak oddeľovača
+		 * ({@code oddeľovač}), znak ohraničenia ({@code ohraničenie})
+		 * a samotný únikový znak (ktorý je v prípade jeho výskytu zdvojený);
 		 * <br /><b>predvolená hodnota:</b> {@code srg'\\'}</li>
 		 * 
 		 * <li>{@code únikovýVOhraničení}, {@code unikovyVOhraniceni},
@@ -8114,45 +8132,39 @@ public class Súbor implements Closeable
 		 * alebo nemá brať do úvahy únikový znak v rámci ohraničenia (kvázi
 		 * „hodnôt v úvodzovkách“ – pozri nastavenie {@code ohraničenie})
 		 * a aký znak to má byť; ak je toto nastavenie prázdne (predvolený
-		 * stav), tak nie sú v rámci ohraničenia používané únikové sekvencie
-		 * a samotný znak ohraničenia je odlíšený jeho zdvojením – čiže pre
-		 * túto metódu to znamená, že únikové sekvencie v rámci ohraničenia
-		 * nerozpoznáva (ponecháva ich v pôvodnom stave) a pre metódu {@link 
-		 * #tabuľkaNaReťazec(String[][], String...) tabuľkaNaReťazec} to
-		 * znamená, že únikové sekvencie do údajov v rámci ohraničenia
-		 * nevkladá; inak je použitý zadaný znak a platia rovnaké pravidlá
-		 * ako pri nastavení {@code únikovýZnak};
+		 * stav), tak nie sú v rámci ohraničenia rozpoznávané únikové
+		 * sekvencie (ak by boli nejaké nájdené, metóda ich ponechá
+		 * v pôvodnom stave); toto nastavenie bez problémov koexistuje
+		 * s konvenciou dvojitého znaku ohraničenia (pozri nastavenie {@code 
+		 * ohraničenie}), inak platia rovnaké pravidlá ako pri nastavení
+		 * {@code únikovýZnak};
 		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
 		 * 
 		 * <li>{@code orezaťZnaky}, {@code orezatZnaky}, {@code trimChars} –
 		 * nastaví skupinu znakov, ktoré budú orezané z okolia oddeľovačov,
 		 * čiže nepridajú sa k hodnote, ak sa nachádzajú na začiatku riadka
 		 * alebo tesne za oddeľovačom, ani ak sú na konci riadka alebo tesne
-		 * pred oddeľovačom (mimo ohraničenia); pozor(!), pre metódu {@link 
-		 * #tabuľkaNaReťazec(String[][], String...) tabuľkaNaReťazec} toto
-		 * nastavenie znamená zapnutie aktívneho orezávania hodnôt tabuľky
-		 * pri ich exporte(!), čo nemusí byť vždy žiaduce; metóda {@link 
-		 * #tabuľkaNaReťazec(String[][], String...) tabuľkaNaReťazec} totiž
-		 * nikdy svojvoľne nepridáva žiadne znaky do okolia oddeľovačov;
+		 * pred oddeľovačom (t. j. „mimo ohraničenia“);
+		 * 
 		 * pozor(!), toto nastavenie je filtrované; obidve metódy, ktoré ho
-		 * využívajú z neho odfiltrujú rezerované znaky, ktoré nesmú byť
+		 * využívajú z neho odfiltrujú rezervované znaky, ktoré nesmú byť
 		 * orezávané, pretože majú kľúčový význam pri rozpoznávaní údajov
-		 * tabuľky: znaky návratu vozíka a nového riadka (CR, LF), oddeľovač
+		 * tabuľky: znaky návratu vozíka a nového riadka (CR, LF), oddeľovača
 		 * údajov, znak ohraničenia údajov (ak je toto nastavenie aktívne)
-		 * a únikový znak (mimo ohraničenia; ak je toto nastavenie
-		 * aktívne);
+		 * a únikový znak (mimo ohraničenia; ak je toto nastavenie aktívne);
 		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
 		 * 
-		 * <li>{@code komentár}, {@code komentar}, {@code comment} – znak,
+
+
+		 * <li>{@code komentár}, {@code komentar}, {@code qwxcomment} – znak,
 		 * ktorý ak bude nájdený ako prvý platný znak na začiatku nového
 		 * riadka, tak bude celý riadok považovaný za komentár a teda bude
 		 * ignorovaný; formulácia „platný znak“ označuje taký znak, ktorý
 		 * nie je preskočený nastavením {@code orezaťZnaky};
 		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
-		 * </ul>
 		 * 
 		 * <li>{@code číselnéÚnikové}, {@code ciselneUnikove},
-		 * {@code numericalEscapes} – <em>toto nastavenie je typu {@code 
+		 * {@code qwxnumericalEscapes} – <em>toto nastavenie je typu {@code 
 		 * typeboolean} – pozri pravidlá rozpoznávania nižšie;</em> názov
 		 * tohto nastavenia je jemne skrátený, úplný názov by mal znieť (po
 		 * prevode z camelCase tvaru do ľudsky čitateľného tvaru): „číselné
@@ -8163,30 +8175,29 @@ public class Súbor implements Closeable
 		 * {@code \}<em>###</em> a {@code \o}<em>###</em> – osmičkový kód
 		 * znaku, {@code \x}<em>##</em> – šestnástkový kód znaku, {@code 
 		 * \d}<em>###</em> – desiatkový kód znaku a {@code 
-		 * \u005C}<em>####</em> – šestnástkový kód Unicode znaku, pričom kód
+		 * \u005Cu}<em>####</em> – šestnástkový kód Unicode znaku, pričom kód
 		 * znaku bude vo všetkých prípadoch prevedený na konkrétny znak, čiže
-		 * <!-- TODO over, či to správne zobrazilo sekvencie -->
 		 * napríklad sekvencia {@code \}{@code d032} bude prevedená na medzeru;
 		 * pozor, toto nastavenie je účinné len ak je zapnuté nastavenie
-		 * {@code únikovýZnak}/{@code unikovyZnak}/{@code escapeChar};
+		 * {@code únikovýZnak}/&#8203;{@code unikovyZnak}/&#8203;{@code 
+		 * escapeChar};
 		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
-		 * </ul>
 		 * 
 		 * <li>{@code číselnéVOhraničení}, {@code ciselneVOhraniceni},
-		 * {@code numericalInEnclosure} – <em>toto nastavenie je typu {@code 
+		 * {@code qwxnumericalInEnclosure} – <em>toto nastavenie je typu {@code 
 		 * typeboolean} – pozri pravidlá rozpoznávania nižšie;</em> názov
 		 * tohto nastavenia je skrátený, úplný názov by mal znieť „číselné
 		 * únikové (sekvencie) v ohraničení“ (ale to by bolo príliš dlhé);
-		 * ak je zapnuté nastavenie {@code únikovýVOhraničení}/{@code 
-		 * unikovyVOhraniceni}/{@code escapeInEnclosure}, tak zapne
+		 * ak je zapnuté nastavenie {@code únikovýVOhraničení}/&#8203;{@code 
+		 * unikovyVOhraniceni}/&#8203;{@code escapeInEnclosure}, tak zapne
 		 * rozpoznávanie numerických únikových sekvencií v rámci ohraničenia –
-		 * pozri aj nastavenie {@code číselnéÚnikové}/{@code 
-		 * ciselneUnikove}/{@code numericalEscapes};
+		 * pozri aj nastavenie {@code číselnéÚnikové}/&#8203;{@code 
+		 * ciselneUnikove}/&#8203;{@code qwxnumericalEscapes};
 		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
 		 * </ul>
 		 * 
 		 * <p><b>Pravidlá rozpoznávania pre hodnoty nastavení typu {@code 
-		 * typeboolean}:</b> Hodnota tohto typu nastaenia je vyhodnotená ako
+		 * typeboolean}:</b> Hodnota tohto typu nastavenia je vyhodnotená ako
 		 * {@code valfalse}, ak je reťazec hodnoty prázdny, rovný
 		 * {@code srg"0"} alebo ak sa začína na veľké alebo malé písmeno: f,
 		 * l alebo n. Vo všetkých ostatných prípadoch je hodnota nastavenia
@@ -8222,7 +8233,6 @@ public class Súbor implements Closeable
 		 * 
 		 * <p><b>Pozri aj:</b></p>
 		 * 
-		 * <!-- TODO – over, či sú správne zobrazené a dostupné odkazy. -->
 		 * <ul>
 		 * <li><i>Python Separator Separated Values Package.</i> <a
 		 * target="_blank" href="https://www.python.org/psf/">Python Software
@@ -8276,7 +8286,6 @@ public class Súbor implements Closeable
 		 * Rheia.</i> <a target="_blank"
 		 * href="https://pdf.truni.sk/horvath/Rheia-1-5/manual?tabulka-znakov">https://&#8203;pdf.&#8203;truni.&#8203;sk/&#8203;horvath/&#8203;Rheia-1-5/&#8203;manual?&#8203;tabulka-znakov</a>.
 		 * (Citované: 5. 11. 2022.)</li>
-		 * <!-- TODO – over, či sú správne zobrazené a dostupné odkazy. -->
 		 * </ul>
 		 * 
 		 * <p><b>Nekompatibilita formátov – rôzne oddeľovače</b></p>
@@ -8294,7 +8303,8 @@ public class Súbor implements Closeable
 		 * pri ukladaní do iného formátu cez Uložiť ako…) uvedené <i>„CSV
 		 * UTF-8 (oddelené čiarkami) (*.csv)“</i>:</p>
 		 * 
-		 * <p><image>csv-excel-export.png<alt/>Snímka obrazovky.</image></p>
+		 * <p><image>csv-excel-export.png" style="max-width:820px<alt/>Snímka
+		 * obrazovky.</image></p>
 		 * 
 		 * <p>… nie sú to vždy čiarky.</p>
 		 * 
@@ -8304,8 +8314,8 @@ public class Súbor implements Closeable
 		 * 
 		 * <p><image>csv-excel-ovladaci-panel-1.png<alt/>Snímka
 		 * obrazovky.</image></p>
-		 * <p><image>csv-excel-ovladaci-panel-2.png<alt/>Snímka
-		 * obrazovky.</image></p>
+		 * <p><image>csv-excel-ovladaci-panel-2.png"
+		 * style="max-width:820px<alt/>Snímka obrazovky.</image></p>
 		 * 
 		 * <p>V dialógovom okne zvoľme tlačidlo Ďalšie nastavenia:</p>
 		 * 
@@ -8582,7 +8592,8 @@ public class Súbor implements Closeable
 					for (++i; i < koniec; ++i)
 					{
 						znak = tabuľka.charAt(i);
-						if (('\n' == znak || '\r' == znak) && oddeľovač != znak)
+						if (('\n' == znak || '\r' == znak) &&
+							oddeľovač != znak)
 						{
 							if ('\n' == znak)
 							{
@@ -9098,18 +9109,16 @@ public class Súbor implements Closeable
 		 * ignoruje ich.</p>
 		 * 
 		 * <p>Inak, ak táto metóda nájde neznáme nastavenie alebo ak niektoré
-		 * nastavenie nie je v tvare <i>«názovNastavenia»</i><code>=</code><i
-		 * >«hodnotaNastavenia»</i>, tak vrhne výnimku {@link 
-		 * IllegalArgumentException IllegalArgumentException}. Toto je zoznam
-		 * povolených nastavení:</p>
+		 * nastavenie nie je v tvare <i>«názovNastavenia»</i><code
+		 * >=&#8203;</code><i>«hodnotaNastavenia»</i>, tak vrhne výnimku
+		 * {@link IllegalArgumentException IllegalArgumentException}. Toto je
+		 * zoznam povolených nastavení:</p>
 		 * 
 		 * <ul>
-		 * <li><b>všetky nastavenia, ktoré sú platné pre metódu {@link 
-		 * #čítajTabuľku(String, String...) čítajTabuľku}, okrem týchto:
-		 * {@code komentár}, {@code komentar}, {@code comment}, {@code 
-		 * číselnéÚnikové}, {@code ciselneUnikove}, {@code numericalEscapes},
-		 * {@code číselnéVOhraničení}, {@code ciselneVOhraniceni}, {@code 
-		 * numericalInEnclosure};</b></li>
+		 * <li>{@code kódovanie}, {@code kodovanie}, {@code encoding},
+		 * {@code charset} – kódovanie vstupného súboru – pozri aj metódu
+		 * {@link #otvorNaČítanie(String, String) otvorNaČítanie};
+		 * <br /><b>predvolená hodnota:</b> {@code srg"UTF-8"}</li>
 		 * 
 		 * <li>{@code pripojiť}, {@code pripojit}, {@code append} – <em>toto
 		 * nastavenie je typu {@code typeboolean} – pozri pravidlá
@@ -9122,17 +9131,24 @@ public class Súbor implements Closeable
 		 * boolean) otvorNaZápis};
 		 * <br /><b>predvolená hodnota:</b> {@code valfalse}</li>
 		 * 
-		 * <li>{@code novýRiadok}, {@code novyRiadok}, {@code newline},
-		 * {@code BOM}, {@code ohraničKaždúBunku}, {@code ohranicKazduBunku},
-		 * {@code encloseEachCell} – ignorované touto metódou; ich význam je
-		 * v opise metódy {@link #tabuľkaNaReťazec(String[][], String...)
-		 * tabuľkaNaReťazec}, do ktorej sa, samozrejme, posielajú tesne pred
-		 * zapísaním údajov do súboru – v rámci ich prevodu prostredníctvom
-		 * uvedenej metódy;</li>
+		 * <li><span style="background:#eee">{@code formát}, {@code format},
+		 * {@code oddeľovač}, {@code oddelovac}, {@code separator}, {@code 
+		 * ohraničenie}, {@code ohranicenie}, {@code enclosure}, {@code 
+		 * únikovýZnak}, {@code unikovyZnak}, {@code escapeChar}, {@code 
+		 * únikovýVOhraničení}, {@code unikovyVOhraniceni}, {@code 
+		 * escapeInEnclosure}, {@code orezaťZnaky}, {@code orezatZnaky},
+		 * {@code trimChars}, {@code novýRiadok}, {@code novyRiadok}, {@code 
+		 * newLine}, {@code BOM}, {@code ohraničKaždúBunku}, {@code 
+		 * ohranicKazduBunku}, {@code encloseEachCell} – ignorované touto
+		 * metódou; ich význam je v opise metódy {@link 
+		 * #tabuľkaNaReťazec(String[][], String...) tabuľkaNaReťazec}, do
+		 * ktorej sa, samozrejme, posielajú tesne pred zapísaním údajov do
+		 * súboru – v rámci ich prevodu prostredníctvom uvedenej
+		 * metódy;</span></li>
 		 * </ul>
 		 * 
 		 * <p><b>Pravidlá rozpoznávania pre hodnoty nastavení typu {@code 
-		 * typeboolean}:</b> Hodnota tohto typu nastaenia je vyhodnotená ako
+		 * typeboolean}:</b> Hodnota tohto typu nastavenia je vyhodnotená ako
 		 * {@code valfalse}, ak je reťazec hodnoty prázdny, rovný
 		 * {@code srg"0"} alebo ak sa začína na veľké alebo malé písmeno: f,
 		 * l alebo n. Vo všetkých ostatných prípadoch je hodnota nastavenia
@@ -9242,35 +9258,99 @@ public class Súbor implements Closeable
 		 * ich.</p>
 		 * 
 		 * <p>Inak, ak táto metóda nájde neznáme nastavenie alebo ak niektoré
-		 * nastavenie nie je v tvare <i>«názovNastavenia»</i><code>=</code><i
-		 * >«hodnotaNastavenia»</i>, tak vrhne výnimku {@link 
-		 * IllegalArgumentException IllegalArgumentException}. Toto je zoznam
-		 * povolených nastavení:</p>
+		 * nastavenie nie je v tvare <i>«názovNastavenia»</i><code
+		 * >=&#8203;</code><i>«hodnotaNastavenia»</i>, tak vrhne výnimku
+		 * {@link IllegalArgumentException IllegalArgumentException}. Toto je
+		 * zoznam povolených nastavení:</p>
 		 * 
 		 * <ul>
-		 * <li><b>všetky nastavenia, ktoré sú platné pre metódu {@link 
-		 * #reťazecNaTabuľku(String, String...) reťazecNaTabuľku}, okrem
-		 * nastavení {@code komentár}/{@code komentar}/{@code comment},
-		 * {@code číselnéÚnikové}/{@code ciselneUnikove}/{@code 
-		 * numericalEscapes} a {@code číselnéVOhraničení}/{@code 
-		 * ciselneVOhraniceni}/{@code numericalInEnclosure}, s ktorými táto
-		 * metóda nepracuje a považuje ich za chybné;</b></li>
+		 * <li><span style="background:#eee">{@code kódovanie}, {@code 
+		 * kodovanie}, {@code encoding}, {@code charset}, {@code pripojiť},
+		 * {@code pripojit}, {@code append} – ignorované touto metódou; ich
+		 * význam je v opise metódy {@link #zapíšTabuľku(String, String[][],
+		 * String...) zapíšTabuľku};</span></li>
 		 * 
-		 * <li>{@code pripojiť}, {@code pripojit}, {@code append} – ignorované
-		 * touto metódou; ich význam je v opise metódy {@link 
-		 * #zapíšTabuľku(String, String[][], String...) zapíšTabuľku};</li>
+
+
+		 * <li>{@code formát}, {@code format} – toto nastavenie je skratkou;
+		 * kombinuje natavenie viacerých iných nastavení naraz; platnými
+		 * hodnotami sú napríklad: {@code srg"CSV"}, {@code srg"SSV"},
+		 * {@code srg"UNX"}…, pričom podrobnosti sú rozpísané nižšie;
+		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
 		 * 
+		 * <li>{@code oddeľovač}, {@code oddelovac}, {@code separator} –
+		 * dovoľuje zmeniť znak oddeľovača údajov; predvoleným oddeľovačom je
+		 * tabulátor; ak je hodnota tohto parametra prázdna, tak nastavenie
+		 * nie je zmenené – oddeľovač musí byť definovaný;
+		 * <br /><b>predvolená hodnota:</b> {@code srg'\t'}</li>
+		 * 
+		 * <li>{@code ohraničenie}, {@code ohranicenie}, {@code enclosure} –
+		 * zapne ohraničovanie údajov; pre túto metódu ide o prepnutie do
+		 * režimu automatického ohraničovania tých buniek tabuľky, ktoré
+		 * obsahujú špeciálne znaky, konkrétne: znak oddeľovača (podľa
+		 * nastavenia {@code oddeľovač}), únikový znak (podľa nastavenia
+		 * {@code únikovýZnak}), znaky nového riadka (LF, {@code srg'\n'};
+		 * kód znaku 10) a návratu vozíka (CR, {@code srg'\r'}; kód znaku 13)
+		 * a samotný znak ohraničenia, ktorý je v tom prípade v rámci obsahu
+		 * bunky zdvojený (ak nie je aktívne nastavenie {@code 
+		 * únikovýVOhraničení});
+		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
+		 * 
+		 * <li>{@code únikovýZnak}, {@code unikovyZnak}, {@code escapeChar} –
+		 * umožňuje zmeniť predvolený únikový znak {@code \} na zadaný;
+		 * zadanie prázdneho reťazca znamená pre túto metódu zastavenie
+		 * vkladania únikových sekvencií do údajov – pozor(!), v tom prípade
+		 * musí byť buď zapnuté ohraničovanie (pozri nastavenie {@code 
+		 * ohraničenie} vyššie), alebo údaje tabuľky nesmú obsahovať žiadny
+		 * špeciálny znak (čítaj ďalej), ktorý by musel byť jedným alebo 
+		 * druhým spôsobom ošetrený, inak metóda vrhne počas spracovania
+		 * údajov výnimku {@link IllegalArgumentException
+		 * IllegalArgumentException};
+		 * únikovým znakom sú automaticky uvedené tieto špeciálne znaky 
+		 * v rámci údajov: nový riadok, návrat vozíka, znak oddeľovača
+		 * a samotný únikový znak (ktorý je v prípade jeho výskytu zdvojený);
+		 * <br /><b>predvolená hodnota:</b> {@code srg'\\'}</li>
+		 * 
+		 * <li>{@code únikovýVOhraničení}, {@code unikovyVOhraniceni},
+		 * {@code escapeInEnclosure} – možnosť nastavenia toho, či sa má
+		 * alebo nemá brať do úvahy únikový znak v rámci ohraničenia (kvázi
+		 * „hodnôt v úvodzovkách“ – pozri nastavenie {@code ohraničenie})
+		 * a aký znak to má byť; ak je toto nastavenie prázdne (predvolený
+		 * stav), tak nie sú v rámci ohraničenia používané únikové sekvencie
+		 * a samotný znak ohraničenia je odlíšený jeho zdvojením; inak je
+		 * použitý zadaný znak a platia rovnaké pravidlá ako pri nastavení
+		 * {@code únikovýZnak};
+		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
+		 * 
+		 * <li>{@code orezaťZnaky}, {@code orezatZnaky}, {@code trimChars} –
+		 * nastaví skupinu znakov, ktoré budú touto metódou aktívne(!) orezané
+		 * z hodnôt (údajov buniek) tabuľky pri ich exporte, čo nemusí byť
+		 * vždy žiaduce, preto treba toto nastavenie pri tejto metóde používať
+		 * obozretne (ak vôbec); ak je vypnuté, tak metóda v žiadnom prípade
+		 * nepridáva žiadne znaky do okolia oddeľovačov, v kontexte čoho sa
+		 * orezávanie môže zdať zbytočné;
+		 * 
+		 * pozor(!), toto nastavenie je filtrované; obidve metódy, ktoré ho
+		 * využívajú z neho odfiltrujú rezervované znaky, ktoré nesmú byť
+		 * orezávané, pretože majú kľúčový význam pri rozpoznávaní údajov
+		 * tabuľky: znaky návratu vozíka a nového riadka (CR, LF), oddeľovača
+		 * údajov, znak ohraničenia údajov (ak je toto nastavenie aktívne)
+		 * a únikový znak (mimo ohraničenia; ak je toto nastavenie aktívne);
+		 * <br /><b>predvolená hodnota:</b> <i>«žiadna»</i></li>
+		 * 
+
+
 		 * <li>{@code novýRiadok}, {@code novyRiadok}, {@code newline} –
 		 * umožňuje nakonfigurovať sekvenciu, ktorá bude použitá na
 		 * oddeľovanie riadkov údajov tabuľky; sú povolené len znaky nového
 		 * riadka \n (line feed – LF; kód znaku 10) a návratu vozíka \r
 		 * (carriage return – CR; kód znaku 13); parameter (nastavenie) môže
-		 * obsahovať rôzne tvary, ktoré vyjadrujú tieto dva znaky: únikové
-		 * sekvencie (\n, \r), priamo znaky s hodnotami kódov znakov 10 (LF)
-		 * a 13 (CR), písmená „n“ a „r“ (na veľkosti nezáleží) v rovnakom
-		 * význame ako pri únikových sekvenciách alebo sekvencie „LF“ a „CR“
-		 * (na veľkosti písmen nezáleží) tiež vo význame nového riadka
-		 * a návratu vozíka; príklady platných nastavení: {@code 
+		 * obsahovať rôzne tvary, ktoré vyjadrujú tieto dva znaky, konkrétne:
+		 * únikové sekvencie (\n, \r), priamo znaky s hodnotami kódov znakov
+		 * 10 (LF) a 13 (CR), písmená „n“ a „r“ (na veľkosti nezáleží)
+		 * v rovnakom význame ako pri únikových sekvenciách alebo sekvencie
+		 * „LF“ a „CR“ (na veľkosti písmen nezáleží) tiež vo význame nového
+		 * riadka a návratu vozíka; príklady platných nastavení: {@code 
 		 * novýRiadok=CRLF}, {@code novýRiadok=\r\n}, {@code novýRiadok=rn},
 		 * {@code novýRiadok=crn} – výsledkom všetkých uvedených bude
 		 * rovnaká sekvencia znakov: CR + LF, čo je bežná kombinácia znakov
@@ -9281,11 +9361,11 @@ public class Súbor implements Closeable
 		 * <br /><b>predvolená hodnota:</b> {@code srg"\r\n"}</li>
 		 * 
 		 * <li>{@code BOM} – zadaním prázdnej hodnoty sa dá vypnúť automatické
-		 * pridávanie značky endianity (BOM – {@code srg"\u005CFEFF"}) na
+		 * pridávanie značky endianity (BOM – {@code srg"\u005CuFEFF"}) na
 		 * začiatok údajov; ak je do tohto parametra (nastavenia) zadaná
 		 * ľubovoľná neprázdna hodnota, tak bude pridávanie značky
 		 * zapnuté;
-		 * <br /><b>predvolená hodnota:</b> {@code srg"\u005CFEFF"}</li>
+		 * <br /><b>predvolená hodnota:</b> {@code srg"\u005CuFEFF"}</li>
 		 * 
 		 * <li>{@code ohraničKaždúBunku}, {@code ohranicKazduBunku},
 		 * {@code encloseEachCell} – <em>toto nastavenie je typu {@code 
@@ -9294,18 +9374,44 @@ public class Súbor implements Closeable
 		 * hodnotu {@code valtrue} a je zapnuté ohraničovanie (pozri parameter
 		 * {@code ohraničenie}, ktorého vysvetlenie je zaradené do opisu metódy
 		 * {@link #reťazecNaTabuľku(String, String...) reťazecNaTabuľku}, ale
-		 * je, samozrejme, platný aj pre túto metódu, ako všetky parametre),
-		 * tak metóda ohraničí každú údajovú bunku, nielen tie, pre ktoré by
-		 * to bolo nevyhnutné;
+		 * je, samozrejme, platný aj pre túto metódu, ako väčšina ostatných
+		 * parametrov), tak metóda ohraničí každú údajovú bunku, nie len tie,
+		 * pre ktoré by to bolo nevyhnutné;
 		 * <br /><b>predvolená hodnota:</b> {@code valfalse}</li>
 		 * </ul>
 		 * 
 		 * <p><b>Pravidlá rozpoznávania pre hodnoty nastavení typu {@code 
-		 * typeboolean}:</b> Hodnota tohto typu nastaenia je vyhodnotená ako
+		 * typeboolean}:</b> Hodnota tohto typu nastavenia je vyhodnotená ako
 		 * {@code valfalse}, ak je reťazec hodnoty prázdny, rovný
 		 * {@code srg"0"} alebo ak sa začína na veľké alebo malé písmeno: f,
 		 * l alebo n. Vo všetkých ostatných prípadoch je hodnota nastavenia
 		 * vyhodnotená ako {@code valtrue}.</p>
+		 * 
+		 * <p><b>Podrobnosti nastavenia {@code formát}:</b></p>
+		 * 
+		 * <ul>
+		 * <li>{@code srg"CSV"} – formát zodpovedajúci originálnemu formátu
+		 * „comma separated values“ (čiarkou oddelené hodnoty) – nastavuje
+		 * tieto hodnoty nastavení: {@code srg"oddeľovač=,"}, {@code 
+		 * srg"únikovýZnak="}, {@code srg"ohraničenie=\""}.</li>
+		 * <li>{@code srg"SSV"} – vymyslený formát, ktorý má zastupovať
+		 * skratku „semicolon separated values“ (bodkočiarkou oddelené
+		 * hodnoty) – nastavuje tieto hodnoty nastavení: {@code 
+		 * srg"oddeľovač=;"}, {@code srg"únikovýZnak="}, {@code 
+		 * srg"ohraničenie=\""}.</li>
+		 * <li>{@code srg"UNX"} – zástupný symbol, ktorý vykoná nastavenia
+		 * kompatibilné so štýlom CSV súborov používaných v OS Unix („unix
+		 * style“) – konkrétne ide nastavenie týchto hodnôt nastavení:
+		 * {@code srg"oddeľovač=,"}, {@code srg"únikovýZnak=\\"}, {@code 
+		 * srg"ohraničenie="}.</li>
+		 * <li>{@code srg"TAB"} – zástupný symbol, ktorý vykoná nastavenia
+		 * formátu tabulátormi oddelených hodnôt – konkrétne ide nastavenie
+		 * týchto hodnôt nastavení: {@code srg"oddeľovač=\t"}, {@code 
+		 * srg"únikovýZnak=\\"}, {@code srg"ohraničenie="}.</li>
+		 * </ul>
+		 * 
+		 * <p><b>Pozri aj zdroje uvedené v opise metódy {@link 
+		 * #reťazecNaTabuľku(String, String...) reťazecNaTabuľku}.</b></p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Nastavenia uvedené v zozname
 		 * parametrov neskôr prepisujú hodnoty nastavení uvedených skôr.</p>

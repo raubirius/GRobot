@@ -38,8 +38,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
-import java.util.Random;
 import java.util.Vector;
+
+import knižnica.podpora.CERNMersenneTwister;
+import knižnica.podpora.RandomGenerator;
 
 // ---------------------------- //
 //  *** Trieda Zoznam<Typ> ***  //
@@ -104,7 +106,7 @@ public class Zoznam<Typ> extends Vector<Typ>
 	// Pozri aj: https://docs.oracle.com/javase/8/docs/api/java/util/Vector.html
 
 	// Inštancia náhodného generátora
-	private final static Random generátor = new Random();
+	private final static RandomGenerator generátor = new CERNMersenneTwister();
 
 	/**
 	 * <p>Táto trieda slúži na vytvorenie obráteného iterátora zoznamu.

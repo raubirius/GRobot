@@ -337,7 +337,7 @@ public class Filtre extends Zoznam<Filtre.Filter>
 	 * @return počet chýb zaznamenaných pri parsovaní zadaného reťazca;
 	 *     −1 ak bol zadaný nulový parameter ({@code valnull}),
 	 *     −2 ak bol zadaný prázdny reťazec ({@code srg""} alebo
-	 *     {@code srg"\u005CFEFF"} – BOM)
+	 *     {@code srg"\u005CuFEFF"} – BOM)
 	 */
 	public int parsuj(String blokTextu)
 	{

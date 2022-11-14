@@ -33,8 +33,6 @@
 
 package knižnica;
 
-import java.util.Random;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -60,6 +58,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
+
+import knižnica.podpora.CERNMersenneTwister;
+import knižnica.podpora.RandomGenerator;
 
 import static knižnica.Konštanty.PREVZATIE_ÚDAJOV;
 import static knižnica.Konštanty.ODOVZDANIE_ÚDAJOV;
@@ -326,7 +327,7 @@ public class Spojenie
 	// Generátor náhodných čísiel. (Je používaný pri vytváraní ohraničenia
 	// údajov odosielaných počas komunikácie prostredníctvom inštancií
 	// tejto triedy.)
-	private final static Random random = new Random();
+	private final static RandomGenerator generátor = new CERNMersenneTwister();
 
 	// Konštanta konca riadka.
 	private final static String EOL = "\r\n";
@@ -2430,7 +2431,7 @@ public class Spojenie
 			bajtyOdpovede = null;
 
 			// Inicializácia ďalších (dôležitých) súvisiacich údajov:
-			hranica = "--" + identifikátorÚdajov + "--" + random.nextInt();
+			hranica = "--" + identifikátorÚdajov + "--" + generátor.nextInt();
 			hlavičkaObsahuSprávy = "";
 
 			chvostObsahuSprávy = "";

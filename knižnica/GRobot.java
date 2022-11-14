@@ -14145,6 +14145,8 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 					else
 					{
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
 						aktuálneX = novéX;
 						aktuálneY = novéY;
 					}
@@ -14714,6 +14716,8 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 					else
 					{
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
 						aktuálneX = novéX;
 						aktuálneY = novéY;
 					}
@@ -14792,6 +14796,8 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 					else
 					{
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
 						aktuálneX = novéX;
 						aktuálneY = novéY;
 					}
@@ -14923,6 +14929,8 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 					else
 					{
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
 						aktuálneX = novéX;
 						aktuálneY = novéY;
 					}
@@ -15036,6 +15044,8 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 					else
 					{
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
 						aktuálneX = novéX;
 						aktuálneY = novéY;
 					}
@@ -16697,6 +16707,8 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 					else
 					{
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
 						aktuálneX = novéX;
 						aktuálneY = novéY;
 					}
@@ -16770,6 +16782,8 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 					else
 					{
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
 						aktuálneX = objekt.polohaX();
 						aktuálneY = objekt.polohaY();
 					}
@@ -16855,6 +16869,8 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 					else
 					{
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
 						aktuálneX = novéX;
 						aktuálneY = novéY;
 					}
@@ -16921,9 +16937,10 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 					else
 					{
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
 						aktuálneX = ÚdajeUdalostí.súradnicaMyšiX;
 						aktuálneY = ÚdajeUdalostí.súradnicaMyšiY;
-
 					}
 
 					if (kresliPerom) úsečka();
@@ -16998,6 +17015,8 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 					else
 					{
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
 						aktuálneX += Δx;
 						aktuálneY += Δy;
 					}
@@ -17497,6 +17516,8 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 					else
 					{
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
 						aktuálneX = novéX;
 						aktuálneY = novéY;
 					}
@@ -21503,6 +21524,8 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 					else
 					{
+						poslednéX = aktuálneX;
+						poslednéY = aktuálneY;
 						aktuálneX = cieľX;
 						aktuálneY = cieľY;
 					}
@@ -31001,18 +31024,18 @@ Toto bolo presunuté na úvodnú stránku:
 			 * tieto dve nastavenia sa stanú nedostupnými pre toto volanie
 			 * metódy.</p>
 			 * 
-			 * <ul><li>{@code srg"vráť"}, {@code srg"vráťcestu"} – vykoná
+			 * <ul><li>{@code srg"vráť"}, {@code srg"vráťCestu"} – vykoná
 			 * nastavenie {@code srg"zdvihniPero"}, zálohuje aktuálny stav
 			 * záznamu a/alebo uloženia cesty tohto robota, vytvorí z vajca
 			 * novú cestu, obnoví predchádzajúci stav záznamu cesty a vráti
 			 * cestu vytvorenú z vajca v návratovej hodnote tejto metódy.</li>
-			 * <li>{@code srg"vyplň"}, {@code srg"vyplňcestu"} – vykoná
+			 * <li>{@code srg"vyplň"}, {@code srg"vyplňCestu"} – vykoná
 			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
 			 * #kresliZáznamCesty(boolean)
 			 * kresliZáznamCesty}{@code (}{@code valfalse}{@code )} a metódu
 			 * {@link #vyplňTvar(Shape) kresliTvar}{@code (cesta)} s aktuálne
 			 * vytvorenou cestou z vajca.</li>
-			 * <li>{@code srg"kresli"}, {@code srg"kreslicestu"} – vykoná
+			 * <li>{@code srg"kresli"}, {@code srg"kresliCestu"} – vykoná
 			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
 			 * #kresliZáznamCesty(boolean)
 			 * kresliZáznamCesty}{@code (}{@code valfalse}{@code )} a metódu
@@ -38436,7 +38459,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * nakreslenie ľubovoľnej cesty:</p>
 			 * 
 			 * <pre CLASS="example">
-				{@link #začniCestu() začniCestu}();
+				{@link #začniCestu(boolean) začniCestu}({@code valtrue});
 				{@code currkresliZáznamCesty}({@code valfalse});
 
 				{@code comm// (Tu bude ľubovoľné kreslenie robotom.)}
