@@ -5699,7 +5699,7 @@ public class SVGPodpora
 	 * #htmlŠablóna(String[]) HTML} šablóne.</p>
 	 * 
 	 * <p><b>Príklad použitia:</b></p>
-	 * <!-- TODO over vzhľad -->
+	 * 
 	 * <pre CLASS="example">
 		{@link GRobot#svgPodpora svgPodpora}.{@code currštýl}().{@link Vector#add(java.lang.Object) add}({@code srg"svg &#123; background: "} + {@link SVGPodpora SVGPodpora}.
 			{@link SVGPodpora#farbaNaReťazec(Color, boolean) farbaNaReťazec}({@link Svet Svet}.{@link Svet#farbaPozadia() farbaPozadia}(), {@code valtrue}) + {@code srg"; &#125;"});

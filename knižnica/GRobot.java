@@ -863,7 +863,7 @@ Toto bolo presunuté na úvodnú stránku:
 			private Písmo písmoDoma = null;
 
 			// Zmena pootočenia tvaru robota po návrate domov
-			private Double pootočenieTvaruDoma = 0.0;
+			private Double pootočenieTvaruDoma = null;
 
 		// Aktuálny stav (základné vlastnosti)
 
@@ -3668,8 +3668,8 @@ Toto bolo presunuté na úvodnú stránku:
 				/*packagePrivate*/ static boolean zoznamZmenený1 = false;
 				/*packagePrivate*/ static boolean zoznamZmenený2 = false;
 
-				/*packagePrivate*/ static boolean zámokZoznamuRobotov1 = false;
-				/*packagePrivate*/ static boolean zámokZoznamuRobotov2 = false;
+				/*packagePrivate*/ static boolean zámokZoznamuRobotov1 = false; // časovač
+				/*packagePrivate*/ static boolean zámokZoznamuRobotov2 = false; // vyzviRoboty
 
 				/*packagePrivate*/ final static Vector<GRobot>
 					zoznamRobotov = new Vector<>();
@@ -4162,6 +4162,9 @@ Toto bolo presunuté na úvodnú stránku:
 			// Pomocný príznak prekreslenia ikony:
 			private static boolean trebaIkonu = true;
 
+			// Pomocný príznak inicializácie:
+			private boolean inicializujem = true;
+
 			private void inicializujRobot() // pôvodne: inicializujRobota()
 			{
 				if (null == Svet.hlavnýRobot)
@@ -4216,8 +4219,11 @@ Toto bolo presunuté na úvodnú stránku:
 				try {
 					menímPolohu = menímSmer = true;
 					domov();
+					pootočenieTvaruDoma = 0.0;
 				} finally {
 					menímPolohu = menímSmer = false;
+					inicializujem = false;
+					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 			}
 
@@ -4228,7 +4234,7 @@ Toto bolo presunuté na úvodnú stránku:
 			// v nekonečnom cykle):
 			private boolean menímPolohu = false, menímSmer = false;
 
-			// TODO – otestovať tieto nové veci… (2022-07-24)
+			// TODO – otestovať tieto nové veci… (2022-07-24)
 
 			private boolean povoľZmenuPolohy()
 			{
@@ -4732,6 +4738,8 @@ Toto bolo presunuté na úvodnú stránku:
 			/*packagePrivate*/ void kresliRobot( // pôvodne: kresliRobota
 				BufferedImage obrázok, Graphics2D grafika)
 			{
+				if (inicializujem) return;
+
 				boolean vráťKompozit = priehľadnosť < 1.0;
 				Composite záloha = null;
 
@@ -4839,7 +4847,7 @@ Toto bolo presunuté na úvodnú stránku:
 								null);
 						*/
 
-						// TODO — poriadne otestuj všetky vetvy tohto kreslenia,
+						// TODO — poriadne otestuj všetky vetvy tohto kreslenia,
 						// lebo táto vyzerá, že konečne funguje, ale „trafil“
 						// som to „na náhodu“ a na otestovanie ostatných vetiev
 						// nebol čas…
@@ -6254,6 +6262,7 @@ Toto bolo presunuté na úvodnú stránku:
 		// {
 		// 	???
 		// 	// inicializujRobot();
+		// 	???
 		// }
 
 		/**
@@ -9059,7 +9068,7 @@ Toto bolo presunuté na úvodnú stránku:
 				public void nahodnaVelkost(double miera)
 				{ náhodnáVeľkosť(miera); }
 
-				// TODO – otestuj!!
+				// TODO – otestuj:
 
 				/**
 				 * <p>Zmení pomer veľkosti robota na náhodnú hodnotu
@@ -12670,7 +12679,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public Rozmer rozmerDoma()
 				{
-					// TODO – test
+					// TODO – otestuj
 					if (null == veľkosťDoma || null == pomerDoma) return null;
 					return new Rozmery(2.0 * veľkosťDoma * pomerDoma,
 						2.0 * veľkosťDoma);
@@ -12758,7 +12767,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void rozmerDoma(Rozmer novýRozmer)
 				{
-					// TODO – test
+					// TODO – otestuj
 					if (null == novýRozmer)
 						veľkosťDoma = pomerDoma = null;
 					else
@@ -25091,7 +25100,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * na hranice svojho ohraničenia, posunie stav dotknutia
 				 * nasledujúcemu robotu v poradí.</p>
 				 * 
-				 * <pre C+LASS="example">
+				 * <pre CLASS="example">
 					{@code kwdimport} knižnica.*;
 
 					{@code kwdpublic} {@code typeclass} OplotenéRoboty {@code kwdextends} {@link GRobot GRobot}
@@ -38008,8 +38017,6 @@ Toto bolo presunuté na úvodnú stránku:
 			 * zlučovaných argumentov, automatickým formátovaním čísiel
 			 * a podobne.</p>
 			 * 
-			 * <!-- TODO ďalšie podrobnosti? -->
-			 * 
 			 * <p><b>Ukážka použitia:</b></p>
 			 * 
 			 * <pre CLASS="example">
@@ -38454,7 +38461,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * 
 			 * <p><image>kresli-zaznam-cesty.svg<alt/>Ukážka
 			 * kreslenia.<onerror>kresli-zaznam-cesty.png</onerror></image></p>
-			 * <!-- TODO over vzhľad -->
+			 * 
 			 * <p>Takto ju môžeme použiť spolu s ostatnými metódami na
 			 * nakreslenie ľubovoľnej cesty:</p>
 			 * 
@@ -43634,7 +43641,9 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public void vlastnýTvar(String súbor)
 			{
-				if (null != vlastnýTvarKreslenie)
+				// if (null != vlastnýTvarKreslenie)
+					// (zbytočný test, nič sa neušetrí; asi „sa tu“ chcelo
+					// ešte niečo robiť)
 					vlastnýTvarKreslenie = null;
 				vlastnýTvarObrázok = Obrázok.súborNaObrázok(súbor);
 				pôvodnáVeľkosť = veľkosť;
@@ -43688,7 +43697,9 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public void vlastnýTvar(Image obrázok)
 			{
-				if (null != vlastnýTvarKreslenie)
+				// if (null != vlastnýTvarKreslenie)
+					// (zbytočný test, nič sa neušetrí; asi „sa tu“ chcelo
+					// ešte niečo robiť)
 					vlastnýTvarKreslenie = null;
 				vlastnýTvarObrázok = obrázok;
 				pôvodnáVeľkosť = veľkosť;
@@ -43749,7 +43760,9 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public void vlastnýTvar(String súbor, boolean upravVeľkosťRobota)
 			{
-				if (null != vlastnýTvarKreslenie)
+				// if (null != vlastnýTvarKreslenie)
+					// (zbytočný test, nič sa neušetrí; asi „sa tu“ chcelo
+					// ešte niečo robiť)
 					vlastnýTvarKreslenie = null;
 				vlastnýTvarObrázok = Obrázok.súborNaObrázok(súbor);
 				if (upravVeľkosťRobota)
@@ -43758,7 +43771,6 @@ Toto bolo presunuté na úvodnú stránku:
 					// 	vlastnýTvarObrázok.getHeight(null)) / 4;
 					// toto už nie takto, treba upraviť výšku a šírku
 
-					// ‼TODO‼ otestovať
 					veľkosť = vlastnýTvarObrázok.getHeight(null) / 2.0;
 					if (0 == veľkosť) pomerVeľkosti = 0;
 					else pomerVeľkosti = (vlastnýTvarObrázok.getWidth(null) /
@@ -43817,7 +43829,9 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public void vlastnýTvar(Image obrázok, boolean upravVeľkosťRobota)
 			{
-				if (null != vlastnýTvarKreslenie)
+				// if (null != vlastnýTvarKreslenie)
+					// (zbytočný test, nič sa neušetrí; asi „sa tu“ chcelo
+					// ešte niečo robiť)
 					vlastnýTvarKreslenie = null;
 				vlastnýTvarObrázok = obrázok;
 				if (upravVeľkosťRobota)
@@ -43827,7 +43841,6 @@ Toto bolo presunuté na úvodnú stránku:
 					// veľkosť = (obrázok.getWidth(null) +
 					// 	obrázok.getHeight(null)) / 4;
 
-					// ‼TODO‼ otestovať
 					veľkosť = (double)obrázok.getHeight(null) / 2.0;
 					if (0 == veľkosť) pomerVeľkosti = 0;
 					else pomerVeľkosti = ((double)obrázok.getWidth(null) /
@@ -43886,7 +43899,9 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public void vlastnýTvar(KreslenieTvaru tvar)
 			{
-				if (null != vlastnýTvarObrázok)
+				// if (null != vlastnýTvarObrázok)
+					// (zbytočný test, nič sa neušetrí; asi „sa tu“ chcelo
+					// ešte niečo robiť)
 					vlastnýTvarObrázok = null;
 
 				/*if (null == tvar) // Toto nie je „bag,“ toto je „fíčr“ 😁…

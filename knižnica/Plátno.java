@@ -1913,6 +1913,12 @@ public class Plátno implements Priehľadnosť
 							obsah.obsah.append(pole[i]);
 						}
 					}
+					else if (argument instanceof Uhol)
+					{
+						String formátované = ((Uhol)argument).toString();
+						pridajMedzeru(obsah.obsah, formátované);
+						obsah.obsah.append(formátované);
+					}
 					else if (argument instanceof Number)
 					{
 						String formátované = Svet.formát.format(argument);

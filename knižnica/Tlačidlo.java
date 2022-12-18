@@ -699,67 +699,6 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	}
 
 
-	// TODO: Staré – vymazať
-	// 
-	// /**
-	//  * <p><a class="getter"></a> Zistí aktuálnu šírku tlačidla.</p>
-	//  * 
-	//  * @return aktuálna šírka tlačidla
-	//  * 
-	//  * @see #šírka(double)
-	//  */
-	// public int šírka() { return šírka; }
-	// 
-	// /** <p><a class="alias"></a> Alias pre {@link #šírka() šírka}.</p> */
-	// public int sirka() { return šírka; }
-	// 
-	// /**
-	//  * <p><a class="getter"></a> Zistí aktuálnu výšku tlačidla.</p>
-	//  * 
-	//  * @return aktuálna výška tlačidla
-	//  * 
-	//  * @see #výška(double)
-	//  */
-	// public int výška() { return výška; }
-	// 
-	// /** <p><a class="alias"></a> Alias pre {@link #výška() výška}.</p> */
-	// public int vyska() { return výška; }
-	// 
-	// /**
-	//  * <p><a class="setter"></a> Zmení šírku tlačidla.</p>
-	//  * 
-	//  * @param nováŠírka nová šírka tlačidla
-	//  * 
-	//  * @see #šírka()
-	//  */
-	// public void šírka(double nováŠírka)
-	// {
-	// 	double ox = polohaX();
-	// 	šírka = nováŠírka;
-	// 	polohaX(ox);
-	// }
-	// 
-	// /** <p><a class="alias"></a> Alias pre {@link #šírka(double) šírka}.</p> */
-	// public void sirka(double nováŠírka) { šírka(nováŠírka); }
-	// 
-	// /**
-	//  * <p><a class="setter"></a> Zmení výšku tlačidla.</p>
-	//  * 
-	//  * @param nováVýška nová výška tlačidla
-	//  * 
-	//  * @see #výška()
-	//  */
-	// public void výška(double nováVýška)
-	// {
-	// 	double oy = polohaY();
-	// 	výška = nováVýška;
-	// 	polohaY(oy);
-	// }
-	// 
-	// /** <p><a class="alias"></a> Alias pre {@link #výška(double) výška}.</p> */
-	// public void vyska(double nováVýška) { výška(nováVýška); }
-
-
 	/**
 	 * <p><a class="getter"></a> Zistí aktuálnu šírku tlačidla.</p>
 	 * 
@@ -1456,21 +1395,27 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	 * <p class="remark"><b>Poznámka:</b> Nie je garantované, že táto
 	 * vlastnosť bude rešpektovaná definíciou vzhľadu používateľského
 	 * rozhrania (L&F). Každá definícia vzhľadu komponentov sa môže
-	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.</p>
+	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.
+	 * (Najmenej na jednom testovanom systéme nemala zmena tejto
+	 * vlastnosti žiadny efekt.)</p>
 	 * 
 	 * @param nováFarba objekt určujúci novú farbu pozadia;
 	 *     jestvuje paleta predvolených farieb (pozri: {@link Farebnosť#biela
-	 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna čierna}…)
+	 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna
+	 *     čierna}…)
 	 */
 	public void farbaPozadia(Color nováFarba) { setBackground(nováFarba); }
 
 	/**
-	 * <p>Nastaví farbu a priehľadnosť pozadia tlačidla podľa zadaného objektu.</p>
+	 * <p>Nastaví farbu a priehľadnosť pozadia tlačidla podľa zadaného
+	 * objektu.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Nie je garantované, že táto
 	 * vlastnosť bude rešpektovaná definíciou vzhľadu používateľského
 	 * rozhrania (L&F). Každá definícia vzhľadu komponentov sa môže
-	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.</p>
+	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.
+	 * (Najmenej na jednom testovanom systéme nemala zmena tejto
+	 * vlastnosti žiadny efekt.)</p>
 	 * 
 	 * @param objekt objekt určujúci novú farbu pozadia
 	 */
@@ -1483,7 +1428,9 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	 * <p class="remark"><b>Poznámka:</b> Nie je garantované, že táto
 	 * vlastnosť bude rešpektovaná definíciou vzhľadu používateľského
 	 * rozhrania (L&F). Každá definícia vzhľadu komponentov sa môže
-	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.</p>
+	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.
+	 * (Najmenej na jednom testovanom systéme nemala zmena tejto
+	 * vlastnosti žiadny efekt.)</p>
 	 * 
 	 * @param r červená zložka novej farby; celé číslo v rozsahu 0 – 255
 	 * @param g zelená zložka novej farby; celé číslo v rozsahu 0 – 255
@@ -1506,7 +1453,9 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	 * <p class="remark"><b>Poznámka:</b> Nie je garantované, že táto
 	 * vlastnosť bude rešpektovaná definíciou vzhľadu používateľského
 	 * rozhrania (L&F). Každá definícia vzhľadu komponentov sa môže
-	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.</p>
+	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.
+	 * (Najmenej na jednom testovanom systéme nemala zmena tejto
+	 * vlastnosti žiadny efekt.)</p>
 	 * 
 	 * @param r červená zložka novej farby; celé číslo v rozsahu 0 – 255
 	 * @param g zelená zložka novej farby; celé číslo v rozsahu 0 – 255
@@ -1531,9 +1480,10 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	 * <p class="remark"><b>Poznámka:</b> Nie je garantované, že táto
 	 * vlastnosť bude rešpektovaná definíciou vzhľadu používateľského
 	 * rozhrania (L&F). Každá definícia vzhľadu komponentov sa môže
-	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.</p>
+	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.
+	 * (Najmenej na jednom testovanom systéme nemala zmena tejto
+	 * vlastnosti žiadny efekt.)</p>
 	 */
-	// TODO – overiť, či určite funguje
 	public void zdedenáFarbaPozadia() { farbaPozadia((Color)null); }
 
 	/** <p><a class="alias"></a> Alias pre {@link #zdedenáFarbaPozadia() zdedenáFarbaPozadia}.</p> */

@@ -66,6 +66,40 @@ public interface Smer
 	public final static double JUHOVYCHOD = 315.0;
 
 
+	// Poznámka: Nasledujúce konštanty musia byť definované tu, inak sa
+	//     neprenesú do triedy GRobot (a iných):
+
+
+	/** <p>Inštancia uhla zodpovedajúca smeru „východ“ – 0°.</p> */
+	public final static Uhol východ = new Uhol(VÝCHOD);
+	/** <p>Inštancia uhla zodpovedajúca smeru „východ“ – 0°.</p> */
+	public final static Uhol vychod = new Uhol(VYCHOD);
+	/** <p>Inštancia uhla zodpovedajúca smeru „severovýchod“ – 45°.</p> */
+	public final static Uhol severovýchod = new Uhol(SEVEROVÝCHOD);
+	/** <p>Inštancia uhla zodpovedajúca smeru „severovýchod“ – 45°.</p> */
+	public final static Uhol severovychod = new Uhol(SEVEROVYCHOD);
+	/** <p>Inštancia uhla zodpovedajúca smeru „sever“ – 90°.</p> */
+	public final static Uhol sever = new Uhol(SEVER);
+	/** <p>Inštancia uhla zodpovedajúca smeru „severozápad“ – 135°.</p> */
+	public final static Uhol severozápad = new Uhol(SEVEROZÁPAD);
+	/** <p>Inštancia uhla zodpovedajúca smeru „severozápad“ – 135°.</p> */
+	public final static Uhol severozapad = new Uhol(SEVEROZAPAD);
+	/** <p>Inštancia uhla zodpovedajúca smeru „západ“ – 180°.</p> */
+	public final static Uhol západ = new Uhol(ZÁPAD);
+	/** <p>Inštancia uhla zodpovedajúca smeru „západ“ – 180°.</p> */
+	public final static Uhol zapad = new Uhol(ZAPAD);
+	/** <p>Inštancia uhla zodpovedajúca smeru „juhozápad“ – 225°.</p> */
+	public final static Uhol juhozápad = new Uhol(JUHOZÁPAD);
+	/** <p>Inštancia uhla zodpovedajúca smeru „juhozápad“ – 225°.</p> */
+	public final static Uhol juhozapad = new Uhol(JUHOZAPAD);
+	/** <p>Inštancia uhla zodpovedajúca smeru „juh“ – 270°.</p> */
+	public final static Uhol juh = new Uhol(JUH);
+	/** <p>Inštancia uhla zodpovedajúca smeru „juhovýchod“ – 315°.</p> */
+	public final static Uhol juhovýchod = new Uhol(JUHOVÝCHOD);
+	/** <p>Inštancia uhla zodpovedajúca smeru „juhovýchod“ – 315°.</p> */
+	public final static Uhol juhovychod = new Uhol(JUHOVYCHOD);
+
+
 	// vpravo/doprava, vľavo… ; otoč[?] ; otočNa[Myš]
 
 	/** <p>Prototyp metódy na zistenie smeru/uhla objektu.</p> */

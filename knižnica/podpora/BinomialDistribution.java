@@ -464,10 +464,4 @@ public class BinomialDistribution
 	{
 		return getClass().getSimpleName() + "{n=" + n + "; p=" + p + "}";
 	}
-
-
-	// TODO: static getPoissonLike(λ) with variant getPoissonLike(λ, N)
-	// If N → ∞ and p → 0 in such a way that Np → λ, then the binomial
-	// distribution converges to the Poisson distribution with mean λ.
-	// See: https://mathworld.wolfram.com/BinomialDistribution.html
 }

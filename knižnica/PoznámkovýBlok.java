@@ -107,20 +107,6 @@ import static javax.swing.text.StyleConstants.ALIGN_RIGHT;
  * {@link PoznámkovýBlok#výška(double) výška}…, a nie zdedené metódy
  * ako {@link JTextPane#setLocation(int, int) setLocation},
  * {@link JTextPane#setSize(int, int) setSize}…</p>
- * 
- * <!-- p>Na obsluhu udalostí poznámkových blokov
- *	TODO
- * je určená metóda {@link ObsluhaUdalostí
- * ObsluhaUdalostí}{@code .}{ @ link ObsluhaUdalostí # voľbaXXX()
- * voľbaXXX}. Jej využitie ukazuje nasledujúci príklad:</p>
- * 
- * <pre CLASS="example">
-	< !-- TODO – jednoduchý editor skriptov -- >
-	</pre>
- * 
- * <p><b>Výsledok:</b></p>
- * 
- * <p><image>«TODO».png<alt/></image>Ukážka … TODO.</p -->
  */
 @SuppressWarnings("serial")
 public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
@@ -546,9 +532,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 		else if (8 == (prilepenieRoztiahnutie & 12))
 			y2 -= ((výška - výška1) / 2);
 
-		setBounds(0, 0, šírka2, výška2); // TODO – poznámka 28. 11. 2021 –
-			// netuším, aká je táto pripomienka stará a už netuším, čo mala
-			// (v čase jej vytvorenia) označovať.
+		setBounds(0, 0, šírka2, výška2);
 		rolovanie.setBounds(x2, y2, šírka2, výška2);
 	}
 
@@ -2087,7 +2071,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	 * 
 	 * @param nováFarba objekt určujúci novú farbu pozadia;
 	 *     jestvuje paleta predvolených farieb (pozri: {@link Farebnosť#biela
-	 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna čierna}…)
+	 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna
+	 *     čierna}…)
 	 */
 	public void farbaPozadia(Color nováFarba)
 	{
@@ -2846,9 +2831,6 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Táto metóda prekrýva originálnu
 	 * metódu {@link JTextPane#setCaretPosition(int)}. </p>
-	 * 
-	 * <!-- TODO – priebežne dopĺňať rovnaké poznámky ku všetkým prekrytým
-	 * metódam v programovacom rámci. -->
 	 * 
 	 * @param nováPozícia nová pozícia textového kurzora
 	 * 

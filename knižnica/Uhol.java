@@ -1055,7 +1055,7 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 		}
 
 	// Predvolený smer dialógov.
-	private final static Uhol sever = new Uhol(90);
+	// private final static Uhol sever = new Uhol(90);
 
 
 	/**

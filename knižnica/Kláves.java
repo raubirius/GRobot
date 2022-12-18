@@ -119,19 +119,19 @@ public class Kláves extends KeyEvent
 	/** <p>Kód klávesu Page Down ({@link KeyEvent#VK_PAGE_DOWN}).</p> */
 	public final static int STRANA_DOLE = KeyEvent.VK_PAGE_DOWN;
 
-	/** <p>Kód klávesu Page Up ({@link KeyEvent#VK_HOME}).</p> */
+	/** <p>Kód klávesu Home (začiatok; {@link KeyEvent#VK_HOME}).</p> */
 	public final static int HOME = KeyEvent.VK_HOME;
 
-	/** <p>Kód klávesu Page Up ({@link KeyEvent#VK_HOME}).</p> */
+	/** <p>Kód klávesu Home (začiatok; {@link KeyEvent#VK_HOME}).</p> */
 	public final static int ZAČIATOK = KeyEvent.VK_HOME;
 
-	/** <p>Kód klávesu Page Up ({@link KeyEvent#VK_HOME}).</p> */
+	/** <p>Kód klávesu Home (začiatok; {@link KeyEvent#VK_HOME}).</p> */
 	public final static int ZACIATOK = KeyEvent.VK_HOME;
 
-	/** <p>Kód klávesu Page Down ({@link KeyEvent#VK_END}).</p> */
+	/** <p>Kód klávesu End (koniec; {@link KeyEvent#VK_END}).</p> */
 	public final static int END = KeyEvent.VK_END;
 
-	/** <p>Kód klávesu Page Down ({@link KeyEvent#VK_END}).</p> */
+	/** <p>Kód klávesu End (koniec; {@link KeyEvent#VK_END}).</p> */
 	public final static int KONIEC = KeyEvent.VK_END;
 
 	/** <p>Kód klávesu tabulátor ({@link KeyEvent#VK_TAB}).</p> */
@@ -158,13 +158,13 @@ public class Kláves extends KeyEvent
 	/** <p>Kód klávesu Delete ({@link KeyEvent#VK_DELETE}).</p> */
 	public final static int DELETE = KeyEvent.VK_DELETE;
 
-	/** <p>Kód klávesu Insert (vložiť) ({@link KeyEvent#VK_INSERT}).</p> */
+	/** <p>Kód klávesu Insert (vložiť; {@link KeyEvent#VK_INSERT}).</p> */
 	public final static int INSERT = KeyEvent.VK_INSERT;
 
-	/** <p>Kód klávesu Insert (vložiť) ({@link KeyEvent#VK_INSERT}).</p> */
+	/** <p>Kód klávesu Insert (vložiť; {@link KeyEvent#VK_INSERT}).</p> */
 	public final static int VLOŽIŤ = KeyEvent.VK_INSERT;
 
-	/** <p>Kód klávesu Insert (vložiť) ({@link KeyEvent#VK_INSERT}).</p> */
+	/** <p>Kód klávesu Insert (vložiť; {@link KeyEvent#VK_INSERT}).</p> */
 	public final static int VLOZIT = KeyEvent.VK_INSERT;
 
 	/**

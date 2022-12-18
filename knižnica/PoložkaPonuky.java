@@ -652,11 +652,14 @@ public class PoložkaPonuky extends JMenuItem
 	 * <p class="remark"><b>Poznámka:</b> Nie je garantované, že táto
 	 * vlastnosť bude rešpektovaná definíciou vzhľadu používateľského
 	 * rozhrania (L&F). Každá definícia vzhľadu komponentov sa môže
-	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.</p>
+	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.
+	 * (Najmenej na jednom testovanom systéme nemala zmena tejto
+	 * vlastnosti žiadny efekt.)</p>
 	 * 
 	 * @param nováFarba objekt určujúci novú farbu pozadia;
 	 *     jestvuje paleta predvolených farieb (pozri: {@link Farebnosť#biela
-	 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna čierna}…)
+	 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna
+	 *     čierna}…)
 	 */
 	public void farbaPozadia(Color nováFarba) { setBackground(nováFarba); }
 
@@ -667,7 +670,9 @@ public class PoložkaPonuky extends JMenuItem
 	 * <p class="remark"><b>Poznámka:</b> Nie je garantované, že táto
 	 * vlastnosť bude rešpektovaná definíciou vzhľadu používateľského
 	 * rozhrania (L&F). Každá definícia vzhľadu komponentov sa môže
-	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.</p>
+	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.
+	 * (Najmenej na jednom testovanom systéme nemala zmena tejto
+	 * vlastnosti žiadny efekt.)</p>
 	 * 
 	 * @param objekt objekt určujúci novú farbu pozadia
 	 */
@@ -680,7 +685,9 @@ public class PoložkaPonuky extends JMenuItem
 	 * <p class="remark"><b>Poznámka:</b> Nie je garantované, že táto
 	 * vlastnosť bude rešpektovaná definíciou vzhľadu používateľského
 	 * rozhrania (L&F). Každá definícia vzhľadu komponentov sa môže
-	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.</p>
+	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.
+	 * (Najmenej na jednom testovanom systéme nemala zmena tejto
+	 * vlastnosti žiadny efekt.)</p>
 	 * 
 	 * @param r červená zložka novej farby; celé číslo v rozsahu 0 – 255
 	 * @param g zelená zložka novej farby; celé číslo v rozsahu 0 – 255
@@ -703,7 +710,9 @@ public class PoložkaPonuky extends JMenuItem
 	 * <p class="remark"><b>Poznámka:</b> Nie je garantované, že táto
 	 * vlastnosť bude rešpektovaná definíciou vzhľadu používateľského
 	 * rozhrania (L&F). Každá definícia vzhľadu komponentov sa môže
-	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.</p>
+	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.
+	 * (Najmenej na jednom testovanom systéme nemala zmena tejto
+	 * vlastnosti žiadny efekt.)</p>
 	 * 
 	 * @param r červená zložka novej farby; celé číslo v rozsahu 0 – 255
 	 * @param g zelená zložka novej farby; celé číslo v rozsahu 0 – 255
@@ -728,9 +737,10 @@ public class PoložkaPonuky extends JMenuItem
 	 * <p class="remark"><b>Poznámka:</b> Nie je garantované, že táto
 	 * vlastnosť bude rešpektovaná definíciou vzhľadu používateľského
 	 * rozhrania (L&F). Každá definícia vzhľadu komponentov sa môže
-	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.</p>
+	 * slobodne rozhodnúť o tom, či bude túto vlastnosť rešpektovať.
+	 * (Najmenej na jednom testovanom systéme nemala zmena tejto
+	 * vlastnosti žiadny efekt.)</p>
 	 */
-	 // TODO – overiť, či určite funguje
 	public void zdedenáFarbaPozadia() { farbaPozadia((Color)null); }
 
 	/** <p><a class="alias"></a> Alias pre {@link #zdedenáFarbaPozadia() zdedenáFarbaPozadia}.</p> */

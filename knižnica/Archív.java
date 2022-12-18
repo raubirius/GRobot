@@ -62,7 +62,8 @@ import static java.util.Calendar.*;
  * href="resources/apache-licence-2.0.html">Apache License – Version 2.0,
  * January 2004.</a></p>
  * 
- * <!-- TODO vyrobiť HTML verziu Apache Ant licencie a pripojiť sem. -->
+ * <!-- TODO overiť, či sa HTML verziu Apache Ant licencie dá otvoriť a či sa
+ * zobrazuje správne. -->
  * 
  * <p>Trieda {@code currArchív} poskytuje programátorské rozhranie na čo
  * najjednoduchšie vytvorenie archívu jeho zápis, čítanie alebo analýzu.

@@ -92,6 +92,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.awt.image.DirectColorModel;
 import java.awt.image.WritableRaster;
 
@@ -112,6 +113,7 @@ import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URLEncoder;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -1125,7 +1127,10 @@ public final class Svet extends JFrame
 				/*packagePrivate*/ final static String[] tlačidláDialógu =
 					{"Reset", "Miešať…", // Dialóg farieb
 					"Reset",  // Dialóg polohy
-					"Reset"}; // Dialóg smeru
+					"Reset",  // Dialóg smeru
+					"Reset"}; // Dialóg rozmeru
+				/*packagePrivate*/ final static String[] menovkyDialógu =
+					{"x:", "y:", "↔:", "↕:"}; // Dialóg rozmeru
 
 			// Príznak zobrazenia dialógu metódou „dialóg“ – keďže táto metóda
 			// používa zoznamy, kladieme väčší dôraz na to, aby sa nedostala do
@@ -1146,6 +1151,11 @@ public final class Svet extends JFrame
 			// spúšťaného metódou „dialóg“
 			private final static Vector<Uhol.PanelSmeru> voľbySmeruDialógu =
 				new Vector<>();
+
+			// Zoznam komponentov panelov rozmerov v poli dialógu spúšťaného
+			// metódou „dialóg“
+			private final static Vector<Rozmery.PanelRozmeru>
+				voľbyRozmerovDialógu = new Vector<>();
 
 			// Zoznam komponentov textových riadkov (polí) dialógu spúšťaného
 			// metódou „dialóg“
@@ -5431,6 +5441,23 @@ public final class Svet extends JFrame
 
 		// Vymazanie
 
+		// Rastre sveta na vyčistenie (reset):
+		private static int[] raster1 = null, raster2 = null;
+
+		/**
+		 * <p>Zresetuje raster sveta – úplne vyčistí jeho obsah. Táto funkcia
+		 * je využiteľná len v špeciálnych prípadoch – pozri metódu
+		 * {@link #prenes(JFrame, boolean) prenes(inéOkno, tam)}.</p>
+		 */
+		public static void resetujRaster()
+		{
+			if (null == raster1) raster1 = ((DataBufferInt)
+				obrázokSveta1.getRaster().getDataBuffer()).getData();
+			if (null == raster2) raster2 = ((DataBufferInt)
+				obrázokSveta2.getRaster().getDataBuffer()).getData();
+			Arrays.fill(raster1, 0); Arrays.fill(raster2, 0);
+		}
+
 		/**
 		 * <p>Vymaže obsah sveta. Má rovnaký efekt, ako keby sme za sebou
 		 * spustili metódy {@link Plátno#vymaž() podlaha.vymaž()}
@@ -5777,6 +5804,96 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Vráti bod so súradnicami relatívneho posunutia obrázkových
 		 * dlaždicových výplní.</p>
+		 * 
+		 * <!-- TODO:
+		 * Z nejakého dôvodu generátor dokumentácie systematicky odstraňoval
+		 * tento príklad z opisu metódy {@link #posunutieVýplne(double, double)
+		 * posunutieVýplne}. Tak som to presunul sem.
+		 * 
+		 * Overiť, či sa to tu už zobrazuje!
+		 *  -->
+		 * 
+		 * <p><b>Príklad:</b></p>
+		 * 
+		 * <p>Tento krátky príklad ukazuje vytvorenie a použitie dialógu na
+		 * úpravu vybraných parametrov aktuálneho (hlavného) robota.</p>
+		 * 
+		 * <pre CLASS="example">
+			{@code kwdimport} knižnica.*;
+
+			{@code kwdpublic} {@code typeclass} DialógParametrov {@code kwdextends} {@link GRobot GRobot}
+			{
+				{@code kwdprivate} {@link Farba Farba} farba = {@link Farebnosť#čierna čierna};
+				{@code kwdprivate} {@link Bod Bod} poloha = {@link Poloha#stred stred};
+				{@code kwdprivate} {@link Uhol Uhol} uhol = {@link Smer#sever sever};
+				{@code kwdprivate} {@link Rozmer Rozmer} rozmery = {@code kwdnew} {@link Rozmery Rozmery}({@code num80}, {@code num60});
+
+				{@code kwdprivate} DialógParametrov()
+				{
+					{@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@code valthis});
+					{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num1.5});
+					aktualizuj();
+				}
+
+				{@code kwdprivate} {@link String String}[] menovky = {{@code srg"Farba: "}, {@code srg"Poloha: "}, {@code valnull},
+					{@code srg"Uhol: "}, {@code srg"Rozmery: "}};
+
+				{@code kwdprivate} {@code typevoid} aktualizuj()
+				{
+					{@link Svet Svet}.{@link Svet#vymaž() vymaž}();
+
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(menovky[{@code num0}], {@link Farba Farba}.{@link Farba#farbaNaReťazec(Color) farbaNaReťazec}(farba));
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(menovky[{@code num1}], {@link Bod Bod}.{@link Bod#bodNaReťazec(Point2D) bodNaReťazec}(poloha));
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(menovky[{@code num3}], uhol);
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(menovky[{@code num4}], {@link Rozmery Rozmery}.{@link Rozmery#rozmeryNaReťazec(Rozmer) rozmeryNaReťazec}(rozmery));
+
+					{@link GRobot#farba(Color) farba}(farba);
+					{@link GRobot#poloha(Poloha) poloha}(poloha);
+					{@link GRobot#uhol(Smer) uhol}(uhol);
+					{@link GRobot#rozmer(Rozmer) rozmer}(rozmery);
+				}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliTvar() kresliTvar}()
+				{
+					{@link GRobot#obdĺžnik() obdĺžnik}();
+					{@link GRobot#dopredu() dopredu}();
+				}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#klik() klik}()
+				{
+					{@link Object Object}[] údaje = {farba, poloha, {@code srg'\n'}, uhol, rozmery};
+
+					{@code kwdif} ({@link Svet Svet}.{@link Svet#dialóg(String[], Object[]) dialóg}(menovky, údaje))
+					{
+						{@code kwdif} ({@code valnull} != údaje[{@code num0}] && údaje[{@code num0}] {@code kwdinstanceof} Farba)
+							farba = ({@link Farba Farba})údaje[{@code num0}];
+						{@code kwdif} ({@code valnull} != údaje[{@code num1}] && údaje[{@code num1}] {@code kwdinstanceof} {@link Bod Bod})
+							poloha = ({@link Bod Bod})údaje[{@code num1}];
+						{@code kwdif} ({@code valnull} != údaje[{@code num3}] && údaje[{@code num3}] {@code kwdinstanceof} {@link Uhol Uhol})
+							uhol = ({@link Uhol Uhol})údaje[{@code num3}];
+						{@code kwdif} ({@code valnull} != údaje[{@code num4}] && údaje[{@code num4}] {@code kwdinstanceof} {@link Rozmery Rozmery})
+							rozmery = ({@link Rozmery Rozmery})údaje[{@code num4}];
+
+						aktualizuj();
+					}
+				}
+
+				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
+				{
+					{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"DialógParametrov.cfg"});
+					{@code kwdnew} DialógParametrov();
+				}
+			}
+			</pre>
+		 * 
+		 * <p><b>Výsledok:</b></p>
+		 * 
+		 * <p>Po spustení aplikácie a kliknutí na plochu sa používateľovi
+		 * zobrazí dialóg (na obrázku nižšie), v ktorom bude môcť upravovať
+		 * vybrané parametre aktuálneho robota.</p>
+		 * 
+		 * <p><image>dialogParametrov.png<alt/>Vzhľad dialógu
+		 * parametrov.</image>Dialóg parametrov v OS Windows.</p>
 		 * 
 		 * @return objekt typu {@link Bod Bod} určujúci súradnice
 		 *     relatívneho posunutia obrázkových dlaždicových výplní
@@ -9543,6 +9660,12 @@ public final class Svet extends JFrame
 							Svet.oddeľovačPrvkovPoľa);
 						zásobníkS.append(pole[i]);
 					}
+				}
+				else if (argument instanceof Uhol)
+				{
+					String formátované = ((Uhol)argument).toString();
+					Plátno.pridajMedzeru(zásobníkS, formátované);
+					zásobníkS.append(formátované);
 				}
 				else if (argument instanceof Number)
 				{
@@ -14937,6 +15060,13 @@ public final class Svet extends JFrame
 		 * a s možnosťou zadania (zmeny) uhla prostredníctvom vstupného
 		 * poľa,</li>
 		 * 
+		 * <li>hodnota údajového typu {@link Rozmery Rozmery} (čo je trieda
+		 * programovacieho rámca GRobot), ktorá spôsobí, že na určenej pozícii
+		 * dialógu bude zobrazený panel na grafickú voľbu rozmerov
+		 * s predvolenou šírkou a výškou podľa hodnôt uložených v inštancii
+		 * {@link Rozmery Rozmery} a s možnosťou zadania (zmeny) rozmerov do
+		 * vstupných polí,</li>
+		 * 
 		 * <li>hodnota inštancie údajového typu {@link Enum Enum} – čiže
 		 * prvok enumeračného údajového typu; ktorý spôsobí, že na určenej
 		 * pozícii dialógu bude zobrazený panel so zoznamom rádiových
@@ -14945,11 +15075,14 @@ public final class Svet extends JFrame
 		 * zvoleného rádiového tlačidla (aktuálne zvolenej hodnoty v rámci
 		 * skupiny týchto tlačidiel),</li>
 		 * 
-		 * <!-- TODO ✓ doplniť možnosť vloženia Vectora/Zoznamu fungujúceho
-		 * podobne ako Enum, ale umožňujúceho vkladať dynamicky sa meniaci
-		 * zoznam položiek. Bude podporovať zobrazenie obrázkov Vector<Image>
-		 * (resp. Zoznam<Obrazok>). Ostatné objekty budú (asi) konvertované
-		 * na texty štandardnou metódou toString(). ✓ Otestovať? -->
+		 * <!--
+		 * ✓ Doplniť možnosť vloženia Vectora/Zoznamu fungujúceho podobne ako
+		 *   Enum, ale umožňujúceho vkladať dynamicky sa meniaci zoznam
+		 *   položiek. Bude podporovať zobrazenie obrázkov Vector<Image> (resp.
+		 *   Zoznam<Obrazok>). Ostatné objekty budú (asi) konvertované na texty
+		 *   štandardnou metódou toString().
+		 * ✓ Otestovať.
+		 * -->
 		 * 
 		 * <li>inštancia netriedeného zoznamu Javy ({@link Vector Vector},
 		 * resp. odvodeného, napr. {@link Zoznam Zoznam}), ktorá spôsobí, že
@@ -14994,13 +15127,12 @@ public final class Svet extends JFrame
 		 * </ol>
 		 * 
 		 * <!-- TODO: Skontrolovať opis, otestovať, prípadne doplniť novšie
-		 * prvky typu Farba, Bod, Uhol aj do príkladu použitia. -->
+		 * prvky typu Farba, Bod, Uhol, Rozmery aj do príkladu použitia. -->
 		 * 
 		 * <p>Ku každému prvku poľa {@code údaje} musí byť zadaný
 		 * korešpondujúci prvok poľa {@code popisy}, ktorý určí popis
-		 * komponentu. Výnimku tvoria znaky nových riadkov (bod 9.<!-- TODO
-		 * vždy aktualizovať číslo podľa toho, kde sa nachádza opis funkcie
-		 * \n nových riadkov --> vyššie),
+		 * komponentu. Výnimku tvoria znaky nových riadkov (pozri bod
+		 * s hodnotou údajového typu {@link Character Character} vyššie),
 		 * ktoré nesmú mať zadaný korešpondujúci reťazec – pri ňom treba zadať
 		 * namiesto platného reťazca hodnotu {@code valnull}, pretože platný
 		 * reťazec by sa automaticky priradil k ďalšiemu komponentu v dialógu,
@@ -15107,7 +15239,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <p><b>Výsledok:</b></p>
 		 * 
-		 * <p>Po spustení aplikácie je používateľovi zobrazený dialóg na
+		 * <p>Po spustení aplikácie sa používateľovi zobrazí dialóg na
 		 * obrázku nižšie.</p>
 		 * 
 		 * <table class="centered">
@@ -15158,8 +15290,8 @@ public final class Svet extends JFrame
 				dialógZobrazený = true;
 				int početKomponentov = 0, početPanelov = 0;
 				int poslednáFarba = 0, poslednáPoloha = 0, poslednýSmer = 0,
-					poslednýText = 0, poslednáVoľba = 0, poslednéHeslo = 0,
-					poslednýPanel = 0;
+					poslednéRozmery = 0, poslednýText = 0, poslednáVoľba = 0,
+					poslednéHeslo = 0, poslednýPanel = 0;
 
 				for (Object údaj : údaje)
 				{
@@ -15226,7 +15358,8 @@ public final class Svet extends JFrame
 						++poslednáPoloha;
 						if (voľbyPolohyDialógu.size() < poslednáPoloha)
 							voľbyPolohyDialógu.add(new Bod.PanelPolohy(
-								Svet.tlačidláDialógu[2], null, 0)
+								Svet.tlačidláDialógu[2], Svet.menovkyDialógu[0],
+								Svet.menovkyDialógu[1], null, 0)
 							// {{
 								// setPreferredSize(new Dimension(120, 20));
 								// setBackground(svetlozelená.svetlejšia());
@@ -15241,6 +15374,21 @@ public final class Svet extends JFrame
 						if (voľbySmeruDialógu.size() < poslednýSmer)
 							voľbySmeruDialógu.add(new Uhol.PanelSmeru(
 								Svet.tlačidláDialógu[3], null, 0)
+							// {{
+								// setPreferredSize(new Dimension(120, 20));
+								// setBackground(svetlozelená.svetlejšia());
+								// System.out.println(getPreferredSize());
+							// }}
+							);
+						početKomponentov += 2;
+					}
+					else if (údaj instanceof Rozmery)
+					{
+						++poslednéRozmery;
+						if (voľbyRozmerovDialógu.size() < poslednéRozmery)
+							voľbyRozmerovDialógu.add(new Rozmery.PanelRozmeru(
+								Svet.tlačidláDialógu[4], Svet.menovkyDialógu[2],
+								Svet.menovkyDialógu[3], null, 0)
 							// {{
 								// setPreferredSize(new Dimension(120, 20));
 								// setBackground(svetlozelená.svetlejšia());
@@ -15278,8 +15426,8 @@ public final class Svet extends JFrame
 				Object[] komponentyDialógu = komponentyÚdajov;
 				int[] indexyZdrojov = new int[údaje.length]; int i = 0, j = 0;
 				poslednáFarba = 0; poslednáPoloha = 0; poslednýSmer = 0;
-				poslednýText = 0; poslednáVoľba = 0; poslednéHeslo = 0;
-				poslednýPanel = 0;
+				poslednéRozmery = 0; poslednýText = 0; poslednáVoľba = 0;
+				poslednéHeslo = 0; poslednýPanel = 0;
 
 				// V obidvoch vetvách – i rastie kontinuálne s cyklom foreach.
 				if (početPanelov > 0)
@@ -15407,6 +15555,8 @@ public final class Svet extends JFrame
 							Bod.PanelPolohy panel =
 								voľbyPolohyDialógu.get(poslednáPoloha++);
 							panel.upravTextTlačidla(Svet.tlačidláDialógu[2]);
+							panel.upravTextyMenoviek(Svet.menovkyDialógu[0],
+								Svet.menovkyDialógu[1]);
 							panel.nastavPolohu((Bod)údaj);
 
 							if (j < popisy.length && null != popisy[j])
@@ -15427,6 +15577,27 @@ public final class Svet extends JFrame
 								voľbySmeruDialógu.get(poslednýSmer++);
 							panel.upravTextTlačidla(Svet.tlačidláDialógu[3]);
 							panel.nastavSmer((Uhol)údaj);
+
+							if (j < popisy.length && null != popisy[j])
+							{
+								if (popisyDialógu.size() < (l + 1))
+									popisyDialógu.add(new JLabel());
+								JLabel popis = popisyDialógu.get(l++);
+								popis.setText(popisy[j]);
+								aktívnyPanel.add(popis);
+							}
+							komponentyÚdajov[i] = panel;
+							aktívnyPanel.add(panel);
+							indexyZdrojov[i] = i;
+						}
+						else if (údaj instanceof Rozmery)
+						{
+							Rozmery.PanelRozmeru panel =
+								voľbyRozmerovDialógu.get(poslednéRozmery++);
+							panel.upravTextTlačidla(Svet.tlačidláDialógu[4]);
+							panel.upravTextyMenoviek(Svet.menovkyDialógu[2],
+								Svet.menovkyDialógu[3]);
+							panel.nastavRozmer((Rozmery)údaj);
 
 							if (j < popisy.length && null != popisy[j])
 							{
@@ -15629,6 +15800,21 @@ public final class Svet extends JFrame
 						indexyZdrojov[i] = j + 1;
 						j += 2;
 					}
+					else if (údaj instanceof Rozmery)
+					{
+						Rozmery.PanelRozmeru panel =
+							voľbyRozmerovDialógu.get(poslednéRozmery++);
+						panel.nastavRozmer((Rozmery)údaj);
+
+						if (i < popisy.length && null != popisy[i])
+							komponentyÚdajov[j] = popisy[i];
+						else
+							komponentyÚdajov[j] = "";
+						komponentyÚdajov[j + 1] = panel;
+
+						indexyZdrojov[i] = j + 1;
+						j += 2;
+					}
 					else if (údaj instanceof Enum)
 					{
 						EnumRadioPanel panel =
@@ -15722,6 +15908,11 @@ public final class Svet extends JFrame
 						údaje[i] = ((Uhol.PanelSmeru)komponentyÚdajov
 							[indexyZdrojov[i]]).dajSmer();
 					}
+					else if (údaj instanceof Rozmery)
+					{
+						údaje[i] = ((Rozmery.PanelRozmeru)komponentyÚdajov
+							[indexyZdrojov[i]]).dajRozmer();
+					}
 					else if (údaj instanceof Enum)
 					{
 						údaje[i] = ((EnumRadioPanel)komponentyÚdajov
@@ -15789,8 +15980,8 @@ public final class Svet extends JFrame
 				JOptionPane.INFORMATION_MESSAGE);
 		}
 
-			// Jednoduchý kód na zobrazenie trojice dialógov (TODO – treba
-				// vyrobiť obrázky na rôznych platformách a verziách OS):
+			// Jednoduchý kód na zobrazenie trojice dialógov (slúžilo na
+				// výrobu obrázkov na rôznych platformách a verziách OS):
 				// @Override public void klik()
 				// {
 				// 	if (ÚdajeUdalostí.myš().isControlDown())
@@ -16237,11 +16428,11 @@ public final class Svet extends JFrame
 		 * @param tlačidlo musí byť jeden z nasledujúcich predvolených textov:
 		 *     {@code srg"áno"}, {@code srg"nie"}, {@code srg"ok"},
 		 *     {@code srg"zrušiť"}, {@code srg"reset farby"},
-		 *     {@code srg"miešanie farby"}, {@code srg"reset polohy"} alebo
-		 *     {@code srg"reset smeru"} (na veľkosti písmen nezáleží;
-		 *     programovací rámec prijme aj predvolené texty bez diakritiky
-		 *     alebo bez medzier, ale v tom prípade je potrebné ju/ich
-		 *     vynechať v celom slove/texte)
+		 *     {@code srg"miešanie farby"}, {@code srg"reset polohy"},
+		 *     {@code srg"reset smeru"} alebo {@code srg"reset rozmeru"} (na
+		 *     veľkosti písmen nezáleží; programovací rámec prijme aj
+		 *     predvolené texty bez diakritiky alebo bez medzier, ale v tom
+		 *     prípade je potrebné ju/ich vynechať v celom slove/texte)
 		 * @return aktuálny text určeného tlačidla alebo {@code valnull} ak je
 		 *     hodnota argumentu neplatná
 		 */
@@ -16273,6 +16464,9 @@ public final class Svet extends JFrame
 			if (tlačidlo.equalsIgnoreCase("reset smeru") ||
 				tlačidlo.equalsIgnoreCase("resetsmeru"))
 				return tlačidláDialógu[3];
+			if (tlačidlo.equalsIgnoreCase("reset rozmeru") ||
+				tlačidlo.equalsIgnoreCase("resetrozmeru"))
+				return tlačidláDialógu[4];
 
 			return null;
 		}
@@ -16289,11 +16483,11 @@ public final class Svet extends JFrame
 		 * @param tlačidlo musí byť jeden z nasledujúcich predvolených textov:
 		 *     {@code srg"áno"}, {@code srg"nie"}, {@code srg"ok"},
 		 *     {@code srg"zrušiť"}, {@code srg"reset farby"},
-		 *     {@code srg"miešanie farby"}, {@code srg"reset polohy"} alebo
-		 *     {@code srg"reset smeru"} (na veľkosti písmen nezáleží;
-		 *     programovací rámec prijme aj predvolené texty bez diakritiky
-		 *     alebo bez medzier, ale v tom prípade je potrebné ju/ich
-		 *     vynechať v celom slove/texte)
+		 *     {@code srg"miešanie farby"}, {@code srg"reset polohy"},
+		 *     {@code srg"reset smeru"} alebo {@code srg"reset rozmeru"} (na
+		 *     veľkosti písmen nezáleží; programovací rámec prijme aj
+		 *     predvolené texty bez diakritiky alebo bez medzier, ale v tom
+		 *     prípade je potrebné ju/ich vynechať v celom slove/texte)
 		 * @param text nový text určeného tlačidla (ak je hodnota prvého
 		 *     argumentu neplatná, nebude mať volanie tejto metódy žiadny
 		 *     efekt)
@@ -16322,11 +16516,89 @@ public final class Svet extends JFrame
 			else if (tlačidlo.equalsIgnoreCase("reset smeru") ||
 				tlačidlo.equalsIgnoreCase("resetsmeru"))
 				tlačidláDialógu[3] = text;
+			else if (tlačidlo.equalsIgnoreCase("reset rozmeru") ||
+				tlačidlo.equalsIgnoreCase("resetrozmeru"))
+				tlačidláDialógu[4] = text;
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #textTlačidla(String, String) textTlačidla}.</p> */
 		public static void textTlacidla(String tlačidlo, String text)
 		{ textTlačidla(tlačidlo, text); }
+
+		/**
+		 * <p>Umožňuje overiť aktuálne definované znenie textu menovky
+		 * na niektorých paneloch volieb (pozri napríklad metódu
+		 * {@link #dialóg(String[], Object[], String) dialóg}).
+		 * Predvolené znenie textov menoviek sa dá zmeniť metódou
+		 * {@link #textMenovky(String, String) textMenovky(menovka, text)}.
+		 * Táto metóda prijíma text, ktorý považuje za univerzálny
+		 * identifikátor menovky a vráti skutočný text menovky.</p>
+		 * 
+		 * @param menovka musí byť jeden z nasledujúcich predvolených textov:
+		 *     {@code srg"menovka x"}, {@code srg"menovka y"}, {@code 
+		 *     srg"menovka šírky"} alebo {@code srg"menovka výšky"} (na
+		 *     veľkosti písmen nezáleží; programovací rámec prijme aj
+		 *     predvolené texty bez diakritiky alebo bez medzier, ale v tom
+		 *     prípade je potrebné ju/ich vynechať v celom slove/texte)
+		 * @return aktuálny text určenej menovky alebo {@code valnull} ak je
+		 *     hodnota argumentu neplatná
+		 */
+		public static String textMenovky(String menovka)
+		{
+			if (menovka.equalsIgnoreCase("menovka x") ||
+				menovka.equalsIgnoreCase("menovkax"))
+				return menovkyDialógu[0];
+			if (menovka.equalsIgnoreCase("menovka y") ||
+				menovka.equalsIgnoreCase("menovkay"))
+				return menovkyDialógu[1];
+			if (menovka.equalsIgnoreCase("menovka šírky") ||
+				menovka.equalsIgnoreCase("menovkašírky") ||
+				menovka.equalsIgnoreCase("menovka sirky") ||
+				menovka.equalsIgnoreCase("menovkasirky"))
+				return menovkyDialógu[2];
+			if (menovka.equalsIgnoreCase("menovka výšky") ||
+				menovka.equalsIgnoreCase("menovkavýšky") ||
+				menovka.equalsIgnoreCase("menovka sirky") ||
+				menovka.equalsIgnoreCase("menovkasirky"))
+				return menovkyDialógu[3];
+
+			return null;
+		}
+
+		/**
+		 * <p>Umožňuje upraviť text menovky na niektorých paneloch volieb
+		 * (pozri napríklad metódu {@link #dialóg(String[], Object[], String)
+		 * dialóg}).</p>
+		 * 
+		 * @param menovka musí byť jeden z nasledujúcich predvolených textov:
+		 *     {@code srg"menovka x"}, {@code srg"menovka y"}, {@code 
+		 *     srg"menovka šírky"} alebo {@code srg"menovka výšky"} (na
+		 *     veľkosti písmen nezáleží; programovací rámec prijme aj
+		 *     predvolené texty bez diakritiky alebo bez medzier, ale v tom
+		 *     prípade je potrebné ju/ich vynechať v celom slove/texte)
+		 * @param text nový text určenej menovky (ak je hodnota prvého
+		 *     argumentu neplatná, nebude mať volanie tejto metódy žiadny
+		 *     efekt)
+		 */
+		public static void textMenovky(String menovka, String text)
+		{
+			if (menovka.equalsIgnoreCase("menovka x") ||
+				menovka.equalsIgnoreCase("menovkax"))
+				menovkyDialógu[0] = text;
+			else if (menovka.equalsIgnoreCase("menovka y") ||
+				menovka.equalsIgnoreCase("menovkay"))
+				menovkyDialógu[1] = text;
+			else if (menovka.equalsIgnoreCase("menovka šírky") ||
+				menovka.equalsIgnoreCase("menovkašírky") ||
+				menovka.equalsIgnoreCase("menovka sirky") ||
+				menovka.equalsIgnoreCase("menovkasirky"))
+				menovkyDialógu[2] = text;
+			else if (menovka.equalsIgnoreCase("menovka výšky") ||
+				menovka.equalsIgnoreCase("menovkavýšky") ||
+				menovka.equalsIgnoreCase("menovka vysky") ||
+				menovka.equalsIgnoreCase("menovkavysky"))
+				menovkyDialógu[3] = text;
+		}
 
 
 		// Úvodná obrazovka
@@ -27630,7 +27902,7 @@ public final class Svet extends JFrame
 
 
 		// Optimalizovaná verzia metódy Line2D.ptLineDistSq.
-		// TODO: Odkaz na článok ICETA’20 (ak vyjde).
+		// TODO: Odkaz na článok ICETA’20.
 		private static double ptLineDistSq(double x1, double y1,
 			double x2, double y2, double px, double py)
 		{
@@ -27654,7 +27926,7 @@ public final class Svet extends JFrame
 		{ return Math.sqrt(ptLineDistSq(x1, y1, x2, y2, px, py)); }
 
 		// Optimalizovaná verzia metódy Line2D.ptSegDistSq.
-		// TODO: Odkaz na článok ICETA’20 (ak vyjde).
+		// TODO: Odkaz na článok ICETA’20.
 		private static double ptSegDistSq(double x1, double y1,
 			double x2, double y2, double px, double py)
 		{
@@ -29122,6 +29394,101 @@ public final class Svet extends JFrame
 		 */
 		public static JFrame oknoCelejObrazovky()
 		{ return oknoCelejObrazovky; }
+
+
+		/**
+		 * <p>Prenesie grafiku sveta do iného okna alebo späť. Toto je
+		 * pokročilá funkcia, ktorá dovoľuje preniesť grafické komponenty
+		 * sveta (zjednodušene kresliace plátna vrátane robotov) do iného,
+		 * zákaznícky definovaného okna. Táto funkcia nájde využitie, ak
+		 * chceme grafiku sveta preniesť do okna bez dekoru, pretože zmeniť
+		 * tento stav pri jestvujúcom okne (svete) nie je v Jave možné.</p>
+		 * 
+		 * <p><b>Na prevzatie:</b></p>
+		 * 
+		 * <p>Tento príklad: <a href="resources/testPrenosuOkna.7z"
+		 * target="_blank">testPrenosuOkna.7z</a> vytvorí okno bez dekoru
+		 * a bez pozadia. Po spustení sa zobrazí klasické okno. Keď do neho
+		 * používateľ klikne, okno zmizne a nad všetkými oknami sa zobrazí
+		 * vlastné okno (bez dekoru a pozadia), čo vytvorí dojem zobrazenia
+		 * aktuálneho robota (kresleného ako tyrkysovú kružnicu) „vo voľnom
+		 * priestore“:</p>
+		 * 
+		 * <p><image>testPrenosuOkna.png<alt/></image></p>
+		 * 
+		 * <p>Prepnutie späť je možné kliknutím na kružnicu.</p>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b> Keďže vlastné okno nemá
+		 * pozadie, musí byť pred každým prekreslením volaná metóda
+		 * {@link #resetujRaster() resetujRaster}, inak by sa každé kreslenie
+		 * pridalo k predchádzajúcemu nakreslenému obsahu.</p>
+		 * 
+		 * @param inéOkno okno, do ktorého alebo z ktorého majú byť prenesené
+		 *     grafické komponenty
+		 * @param tam smer prenosu: {@code valtrue} – komponenty sa prenesú
+		 *     do okna; {@code valfalse} – komponenty sa prenesú späť
+		 */
+		public static void prenes(JFrame inéOkno, boolean tam)
+		{
+			ComponentEvent componentEvent; ComponentListener[]
+
+			cls = inéOkno.getComponentListeners();
+			boolean jeTam = false; for (ComponentListener cl : cls)
+			if (cl == udalostiOkna) { jeTam = true; break; }
+
+			cls = svet.getComponentListeners();
+			boolean jeTu = false; for (ComponentListener cl : cls)
+			if (cl == udalostiOkna) { jeTu = true; break; }
+
+			if (tam && jeTu)
+			{
+				svet.removeComponentListener(udalostiOkna);
+				svet.removeWindowFocusListener(udalostiOkna);
+				svet.remove(hlavnýPanel);
+				svet.remove(panelVstupnéhoRiadka);
+
+				// inéOkno.setIconImage(svet.getIconImage());
+				// inéOkno.setTitle(svet.getTitle());
+				inéOkno.add(hlavnýPanel, BorderLayout.CENTER);
+				inéOkno.add(panelVstupnéhoRiadka, 	BorderLayout.SOUTH);
+				inéOkno.addComponentListener(udalostiOkna);
+				inéOkno.addWindowFocusListener(udalostiOkna);
+
+				KeyboardFocusManager.getCurrentKeyboardFocusManager().
+					addKeyEventDispatcher(koniecSveta);
+
+				componentEvent = new ComponentEvent(inéOkno,
+					ComponentEvent.COMPONENT_MOVED);
+				udalostiOkna.componentMoved(componentEvent);
+
+				componentEvent = new ComponentEvent(inéOkno,
+					ComponentEvent.COMPONENT_RESIZED);
+				udalostiOkna.componentResized(componentEvent);
+			}
+			else if (!tam && jeTam)
+			{
+				KeyboardFocusManager.getCurrentKeyboardFocusManager().
+					removeKeyEventDispatcher(koniecSveta);
+
+				inéOkno.remove(hlavnýPanel);
+				inéOkno.remove(panelVstupnéhoRiadka);
+				inéOkno.removeComponentListener(udalostiOkna);
+				inéOkno.removeWindowFocusListener(udalostiOkna);
+
+				svet.add(hlavnýPanel, BorderLayout.CENTER);
+				svet.add(panelVstupnéhoRiadka, BorderLayout.SOUTH);
+				svet.addComponentListener(udalostiOkna);
+				svet.addWindowFocusListener(udalostiOkna);
+
+				componentEvent = new ComponentEvent(svet,
+					ComponentEvent.COMPONENT_MOVED);
+				udalostiOkna.componentMoved(componentEvent);
+
+				componentEvent = new ComponentEvent(svet,
+					ComponentEvent.COMPONENT_RESIZED);
+				udalostiOkna.componentResized(componentEvent);
+			}
+		}
 
 
 		/**

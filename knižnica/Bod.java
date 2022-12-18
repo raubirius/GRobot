@@ -51,7 +51,7 @@ import java.awt.geom.Rectangle2D;
 
 import java.awt.image.BufferedImage;
 
-import java.text.DecimalFormat;
+// import java.text.DecimalFormat;
 
 import java.util.regex.Pattern;
 
@@ -1112,6 +1112,8 @@ public class Bod extends Point2D implements Poloha
 			private JSpinner upravX;
 			private JSpinner upravY;
 			private JButton tlačidloReset;
+			private JLabel menovkaX;
+			private JLabel menovkaY;
 			private JPanel panelPrvkov;
 
 			// Atribúty tohto panela polôh:
@@ -1128,11 +1130,14 @@ public class Bod extends Point2D implements Poloha
 			 * <p>Konštruktor.</p>
 			 * 
 			 * @param textReset text tlačidla resetu polohy
+			 * @param textX text menovky x-ovej súradnice
+			 * @param textY text menovky y-ovej súradnice
 			 * @param poloha predvolená poloha na paneli polôh
 			 * @param mierka mierka plochy na výber polohy, ktorá je súčasne
 			 *     ukážkou zvolenej polohy
 			 */
-			public PanelPolohy(String textReset, Poloha poloha, double mierka)
+			public PanelPolohy(String textReset, String textX,
+				String textY, Poloha poloha, double mierka)
 			{
 				if (null != poloha)
 				{
@@ -1181,6 +1186,9 @@ public class Bod extends Point2D implements Poloha
 					null == textReset ? "Reset" : textReset);
 				tlačidloReset.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+				menovkaX = new JLabel(null == textX ? "x:" : textX);
+				menovkaY = new JLabel(null == textY ? "y:" : textY);
+
 				setLayout(new BorderLayout());
 
 				panelPrvkov = new JPanel();
@@ -1213,7 +1221,7 @@ public class Bod extends Point2D implements Poloha
 					upravX.addChangeListener(e -> aktualizujPodľaSpinerov(e));
 
 					JPanel panel = new JPanel();
-					panel.add(new JLabel("X:"));
+					panel.add(menovkaX);
 					panel.add(upravX);
 					panel.setBorder(BorderFactory.
 						createEmptyBorder(0, 10, 0, 10));
@@ -1253,7 +1261,7 @@ public class Bod extends Point2D implements Poloha
 					upravY.addChangeListener(e -> aktualizujPodľaSpinerov(e));
 
 					JPanel panel = new JPanel();
-					panel.add(new JLabel("Y:"));
+					panel.add(menovkaY);
 					panel.add(upravY);
 					panel.setBorder(BorderFactory.
 						createEmptyBorder(0, 10, 0, 10));
@@ -1394,14 +1402,15 @@ public class Bod extends Point2D implements Poloha
 			// (Môžu nastať drobné odchýlky, ktoré sú neodsledovateľné, ale
 			// zhruba by sa panel mal vizuálne aj vnútorne nachádzať
 			// v požadovanom stave.)
-			private void aktualizujPanel(String textReset,
-				Poloha poloha, double mierka)
+			private void aktualizujPanel(String textReset, String textX,
+				String textY, Poloha poloha, double mierka)
 			{
 				// aktualizujFormát();
 				if (mierka <= 0.0 && faktorMierky != 0.25) mierka = 0.25;
 				aktualizujVeľkosťUkážky(mierka);
 
 				upravTextTlačidla(textReset);
+				upravTextyMenoviek(textX, textY);
 				nastavPolohu(poloha);
 			}
 
@@ -1507,7 +1516,7 @@ public class Bod extends Point2D implements Poloha
 			/**
 			 * <p>Získanie zvolenej polohy na paneli.</p>
 			 * 
-			 * @param nováPoloha nová predvolená poloha na paneli
+			 * @return aktuálna poloha na paneli
 			 */
 			public Bod dajPolohu()
 			{
@@ -1523,6 +1532,19 @@ public class Bod extends Point2D implements Poloha
 			{
 				if (null != textReset)
 					tlačidloReset.setText(textReset);
+			}
+
+			/**
+			 * <p>Upraví predvolené texty menoviek súradníc polohy (x, y) na
+			 * paneli.</p>
+			 * 
+			 * @param textX text menovky x-ovej súradnice na paneli rozmeru
+			 * @param textY text menovky y-ovej súradnice na paneli rozmeru
+			 */
+			public void upravTextyMenoviek(String textX, String textY)
+			{
+				if (null != textX) menovkaX.setText(textX);
+				if (null != textY) menovkaY.setText(textY);
 			}
 
 
@@ -1543,11 +1565,13 @@ public class Bod extends Point2D implements Poloha
 			public static Bod dialóg(String titulok, Poloha predvolenáPoloha)
 			{
 				if (null == panelPolohy)
-					panelPolohy = new PanelPolohy(
-						Svet.tlačidláDialógu[2], predvolenáPoloha, 0);
+					panelPolohy = new PanelPolohy(Svet.tlačidláDialógu[2],
+						Svet.menovkyDialógu[0], Svet.menovkyDialógu[1],
+						predvolenáPoloha, 0);
 				else
-					panelPolohy.aktualizujPanel(
-						Svet.tlačidláDialógu[2], predvolenáPoloha, 0);
+					panelPolohy.aktualizujPanel(Svet.tlačidláDialógu[2],
+						Svet.menovkyDialógu[0], Svet.menovkyDialógu[1],
+						predvolenáPoloha, 0);
 
 				Object[] komponenty = new Object[] {panelPolohy};
 

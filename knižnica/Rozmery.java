@@ -33,31 +33,24 @@
 
 package knižnica;
 
-import java.awt.Dimension;
-import java.awt.Shape;
-
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Rectangle2D;
-
-import java.util.regex.Pattern;
-
-/*
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import java.awt.image.BufferedImage;
 
-import java.text.DecimalFormat;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -73,8 +66,6 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import javax.swing.event.ChangeEvent;
-// import javax.swing.event.ChangeListener;
-*/
 
 
 // import knižnica.podpora.Alias; //
@@ -585,8 +576,6 @@ public class Rozmery extends Dimension2D implements Rozmer
 	{ return reťazecNaDimension2D(text); }
 
 
-	// TODO – otestovať:
-
 	/**
 	 * <p>Zistí, či je zadaný reťazec v rozpoznateľnom formáte
 	 * reprezentujúcom rozmery určitého objektu.
@@ -662,662 +651,611 @@ public class Rozmery extends Dimension2D implements Rozmer
 	{ return správnyFormát(text); }
 
 
-	// Skopírované z triedy Bod. Zatiaľ nevyužité. (TODO)
+	/**
+	 * <p>Inštancia, ktorej atribúty budú použité v {@linkplain #vyberRozmer()
+	 * dialógu výberu rozmerov,} ak nie sú zadané žiadne počiatočné
+	 * rozmery.</p>
+	 */
+	public final static Rozmer predvolený = new Rozmery(10, 10);
 
-	// 	// Panel polôh používaný v dialógoch výberu rozmeru a voľby
-		// 	// rôznych parametrov (pozri: Rozmery.vyberRozmer a Svet.dialóg).
-		// 	@SuppressWarnings("serial")
-		// 	/*packagePrivate*/ static class PanelRozmeru extends JPanel
-		// 	{
-		// 		// Formátovač súradníc pre textové pole spinera.
-		// 		private final static JFormattedTextField.AbstractFormatter
-		// 			formátovač = new JFormattedTextField.AbstractFormatter()
-		// 			{
-		// 				public Object stringToValue(String text)
-		// 				{
-		// 					java.lang.Double prevod =
-		// 						Svet.reťazecNaReálneČíslo(text);
-		// 					if (null == prevod) Svet.pípni();
-		// 					return prevod;
-		// 				}
-		// 
-		// 				public String valueToString(Object value)
-		// 				{
-		// 					if (value instanceof Number) return Svet.formát.
-		// 						format(((Number)value).doubleValue());
-		// 					Svet.pípni(); return "0";
-		// 				}
-		// 			};
-		// 
-		// 		// Továreň formátovača súradníc textového poľa spinera.
-		// 		private final static JFormattedTextField.AbstractFormatterFactory
-		// 			továreň = new JFormattedTextField.AbstractFormatterFactory()
-		// 			{
-		// 				public JFormattedTextField.AbstractFormatter
-		// 					getFormatter(JFormattedTextField tf)
-		// 				{
-		// 					return formátovač;
-		// 				}
-		// 			};
-		// 
-		// 		// Štýl čiary kreslenia osí:
-		// 		private BasicStroke čiaraOsí = new BasicStroke(
-		// 			(float)1.5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-		// 
-		// 		// Čiary osí:
-		// 		private Line2D.Double osX = null, osY = null;
-		// 
-		// 		// Objekty komponentu ukážky zvolenej rozmeru na paneli:
-		// 		private BufferedImage obrázokUkážky;
-		// 		private Graphics2D grafikaUkážky;
-		// 		private ImageIcon ikonaUkážky;
-		// 		private JLabel komponentUkážky;
-		// 
-		// 		// Ovládacie prvky (vstupné polia, tlačidlo resetu)
-		// 		// s ich panelom:
-		// 		private JSpinner upravX;
-		// 		private JSpinner upravY;
-		// 		private JButton tlačidloReset;
-		// 		private JPanel panelPrvkov;
-		// 
-		// 		// Atribúty tohto panela polôh:
-		// 		private double predvolenáŠírka = 0;
-		// 		private double predvolenáVýška = 0;
-		// 		private double zvolenáŠírka = 0;
-		// 		private double zvolenáVýška = 0;
-		// 		private double faktorMierky = 0.25;
-		// 		private int šírkaUkážky = 200;
-		// 		private int výškaUkážky = 150;
-		// 
-		// 
-		// 		/**
-		// 		 * <p>Konštruktor.</p>
-		// 		 * 
-		// 		 * @param textReset text tlačidla resetu rozmeru
-		// 		 * @param rozmery predvolené rozmery na paneli polôh
-		// 		 * @param mierka mierka plochy na výber rozmeru, ktorá je súčasne
-		// 		 *     ukážkou zvolenej rozmeru
-		// 		 */
-		// 		public PanelRozmeru(String textReset, Rozmer rozmer, double mierka)
-		// 		{
-		// 			if (null != rozmery)
-		// 			{
-		// 				predvolenáŠírka = rozmer.šírka();
-		// 				predvolenáVýška = rozmer.výška();
-		// 				zvolenáŠírka = predvolenáŠírka;
-		// 				zvolenáVýška = predvolenáVýška;
-		// 			}
-		// 
-		// 			if (mierka > 0.0) faktorMierky = mierka;
-		// 			// System.out.println("faktorMierky 1: " + faktorMierky);
-		// 
-		// 			if (0.25 != faktorMierky ||
-		// 				800 != Plátno.šírkaPlátna ||
-		// 				600 != Plátno.výškaPlátna)
-		// 			{
-		// 				double šírka = Plátno.šírkaPlátna * faktorMierky;
-		// 				double výška = Plátno.výškaPlátna * faktorMierky;
-		// 				// System.out.println("šírka 1: " + šírka);
-		// 				// System.out.println("výška 1: " + výška);
-		// 				if (100.0 >= šírka || 75.0 >= výška)
-		// 				{
-		// 					faktorMierky = Math.max(
-		// 						100.0 / (double)Plátno.šírkaPlátna,
-		// 						 75.0 / (double)Plátno.výškaPlátna);
-		// 					šírka = Plátno.šírkaPlátna * faktorMierky;
-		// 					výška = Plátno.výškaPlátna * faktorMierky;
-		// 					// System.out.println("šírka 2: " + šírka);
-		// 					// System.out.println("výška 2: " + výška);
-		// 					// System.out.println("faktorMierky 2: " + faktorMierky);
-		// 				}
-		// 				šírkaUkážky = (int)šírka;
-		// 				výškaUkážky = (int)výška;
-		// 			}
-		// 
-		// 			obrázokUkážky = new BufferedImage(
-		// 				šírkaUkážky, výškaUkážky, BufferedImage.TYPE_INT_ARGB);
-		// 			grafikaUkážky = obrázokUkážky.createGraphics();
-		// 			grafikaUkážky.addRenderingHints(Obrázok.hints);
-		// 			ikonaUkážky = new ImageIcon(obrázokUkážky);
-		// 			komponentUkážky = new JLabel(ikonaUkážky);
-		// 			komponentUkážky.setBorder(BorderFactory.
-		// 				createEmptyBorder(10, 10, 10, 10));
-		// 
-		// 			tlačidloReset = new JButton(
-		// 				null == textReset ? "Reset" : textReset);
-		// 			tlačidloReset.setAlignmentX(Component.CENTER_ALIGNMENT);
-		// 
-		// 			setLayout(new BorderLayout());
-		// 
-		// 			panelPrvkov = new JPanel();
-		// 			panelPrvkov.setLayout(new BoxLayout(
-		// 				panelPrvkov, BoxLayout.Y_AXIS));
-		// 
-		// 			add(komponentUkážky, BorderLayout.WEST);
-		// 			panelPrvkov.add(Box.createVerticalStrut(10));
-		// 
-		// 			{
-		// 				SpinnerNumberModel modelSpinera = new SpinnerNumberModel(
-		// 					(java.lang.Double)0.0, null, null,
-		// 					(java.lang.Double)1.0);
-		// 				upravX = new JSpinner(modelSpinera);
-		// 
-		// 				JSpinner.NumberEditor editor = new JSpinner.
-		// 					NumberEditor(upravX);/*, Svet.formát.toPattern());
-		// 				DecimalFormat formát = editor.getFormat();
-		// 				formát.setDecimalFormatSymbols(
-		// 					Svet.formát.getDecimalFormatSymbols());
-		// 				formát.setMaximumFractionDigits(20);*/
-		// 
-		// 				upravX.setEditor(editor);
-		// 
-		// 				JFormattedTextField textField = editor.getTextField();
-		// 				textField.setFormatterFactory(továreň);
-		// 				textField.setHorizontalAlignment(JTextField.CENTER);
-		// 				textField.setPreferredSize(new Dimension(50, 20));
-		// 
-		// 				upravX.addChangeListener(e -> aktualizujPodľaSpinerov(e));
-		// 
-		// 				JPanel panel = new JPanel();
-		// 				panel.add(new JLabel("Šírka:")); // TODO možnosť premenovať
-		// 				panel.add(upravX);
-		// 				panel.setBorder(BorderFactory.
-		// 					createEmptyBorder(0, 10, 0, 10));
-		// 
-		// 				panelPrvkov.add(panel);
-		// 				// panelPrvkov.add(upravX);
-		// 
-		// 				// JFormattedTextField textField = null;
-		// 				// JComponent editor = upravX.getEditor();
-		// 				// if (editor instanceof JSpinner.DefaultEditor)
-		// 				// 	textField = ((JSpinner.DefaultEditor)editor).getTextField();
-		// 			}
-		// 
-		// 			panelPrvkov.add(Box.createVerticalStrut(10));
-		// 			// panelPrvkov.add(Box.createRigidArea(new Dimension(100, 10)));
-		// 
-		// 			{
-		// 				SpinnerNumberModel modelSpinera = new SpinnerNumberModel(
-		// 					(java.lang.Double)0.0, null, null,
-		// 					(java.lang.Double)1.0);
-		// 				upravY = new JSpinner(modelSpinera);
-		// 
-		// 				JSpinner.NumberEditor editor = new JSpinner.
-		// 					NumberEditor(upravY);/*, Svet.formát.toPattern());
-		// 				DecimalFormat formát = editor.getFormat();
-		// 				formát.setDecimalFormatSymbols(
-		// 					Svet.formát.getDecimalFormatSymbols());
-		// 				formát.setMaximumFractionDigits(20);*/
-		// 
-		// 				upravY.setEditor(editor);
-		// 
-		// 				JFormattedTextField textField = editor.getTextField();
-		// 				textField.setFormatterFactory(továreň);
-		// 				textField.setHorizontalAlignment(JTextField.CENTER);
-		// 				textField.setPreferredSize(new Dimension(50, 20));
-		// 
-		// 				upravY.addChangeListener(e -> aktualizujPodľaSpinerov(e));
-		// 
-		// 				JPanel panel = new JPanel();
-		// 				panel.add(new JLabel("Výška:")); // TODO možnosť premenovať
-		// 				panel.add(upravY);
-		// 				panel.setBorder(BorderFactory.
-		// 					createEmptyBorder(0, 10, 0, 10));
-		// 
-		// 				panelPrvkov.add(panel);
-		// 				// panelPrvkov.add(upravY);
-		// 
-		// 				// JFormattedTextField textField = null;
-		// 				// JComponent editor = upravY.getEditor();
-		// 				// if (editor instanceof JSpinner.DefaultEditor)
-		// 				// 	textField = ((JSpinner.DefaultEditor)editor).getTextField();
-		// 			}
-		// 
-		// 			panelPrvkov.add(Box.createVerticalGlue());
-		// 			panelPrvkov.add(tlačidloReset);
-		// 			panelPrvkov.add(Box.createVerticalGlue());
-		// 
-		// 			add(panelPrvkov, BorderLayout.EAST);
-		// 
-		// 			komponentUkážky.addMouseListener(new MouseListener()
-		// 				{
-		// 					public void mouseClicked(MouseEvent e) {}
-		// 					public void mouseEntered(MouseEvent e) {}
-		// 					public void mouseExited(MouseEvent e) {}
-		// 					public void mousePressed(MouseEvent e)
-		// 					{ aktualizujPodľaMyši(e); }
-		// 					public void mouseReleased(MouseEvent e) {}
-		// 				});
-		// 
-		// 			komponentUkážky.addMouseMotionListener(
-		// 				new MouseMotionListener()
-		// 				{
-		// 					public void mouseMoved(MouseEvent e) {}
-		// 					public void mouseDragged(MouseEvent e)
-		// 					{ aktualizujPodľaMyši(e); }
-		// 				});
-		// 
-		// 			tlačidloReset.addActionListener(e ->
-		// 				{
-		// 					zvolenáŠírka = predvolenáŠírka;
-		// 					zvolenáVýška = predvolenáVýška;
-		// 					aktualizujUkážku();
-		// 					aktualizujEditory();
-		// 				});
-		// 
-		// 			aktualizujUkážku();
-		// 			aktualizujEditory();
-		// 		}
-		// 
-		// 		// Aktualizácia ukážky zvolenej rozmeru.
-		// 		private void aktualizujUkážku()
-		// 		{
-		// 			grafikaUkážky.setColor(Farebnosť.biela);
-		// 			grafikaUkážky.fillRect(0, 0, šírkaUkážky, výškaUkážky);
-		// 
-		// 			if (null == osX) osX = new Line2D.Double(
-		// 				0, výškaUkážky / 2, šírkaUkážky, výškaUkážky / 2);
-		// 			if (null == osY) osY = new Line2D.Double(
-		// 				šírkaUkážky / 2, 0, šírkaUkážky / 2, výškaUkážky);
-		// 
-		// 			int polomer = 2;
-		// 			Shape tvar = new Ellipse2D.Double(
-		// 				( zvolenáŠírka * faktorMierky +
-		// 					(šírkaUkážky / 2)) - polomer,
-		// 				(-zvolenáVýška * faktorMierky +
-		// 					(výškaUkážky / 2)) - polomer,
-		// 				2 * polomer, 2 * polomer);
-		// 
-		// 			grafikaUkážky.setColor(Farebnosť.svetlošedá);
-		// 			grafikaUkážky.setStroke(čiaraOsí);
-		// 			grafikaUkážky.draw(osX);
-		// 			grafikaUkážky.draw(osY);
-		// 
-		// 			grafikaUkážky.setColor(Farebnosť.čierna);
-		// 			grafikaUkážky.draw(tvar);
-		// 
-		// 			komponentUkážky.repaint();
-		// 		}
-		// 
-		// 		// // Aktualizuje rozmery zvoleného objektu podľa udalosti myši.
-		// 		// private void aktualizujPodľaMyši(MouseEvent e)
-		// 		// { ???
-		// 		// 	zvolenáŠírka = ( (e.getWidth() - 10) -
-		// 		// 		(šírkaUkážky / 2)) / faktorMierky;
-		// 		// 	zvolenáVýška = (-(e.getHeight() - 10) +
-		// 		// 		(výškaUkážky / 2)) / faktorMierky;
-		// 		// 	// System.out.println("  Zvolené rozmery: " +
-		// 		// 	// 	zvolenáŠírka + ", " + zvolenáVýška);
-		// 		// 	aktualizujUkážku();
-		// 		// 	aktualizujEditory();
-		// 		// }
-		// 
-		// 		// Aktualizuje rozmery zvoleného objektu podľa zmeny
-		// 		// v spineroch.
-		// 		private void aktualizujPodľaSpinerov(ChangeEvent e)
-		// 		{
-		// 			if (e.getSource() instanceof JSpinner)
-		// 			{
-		// 				JSpinner spiner = (JSpinner)e.getSource();
-		// 				Object v = spiner.getValue();
-		// 				if (v instanceof Number)
-		// 				{
-		// 					if (spiner == upravX)
-		// 					{
-		// 						zvolenáŠírka = ((Number)v).doubleValue();
-		// 						aktualizujUkážku();
-		// 					}
-		// 					else if (spiner == upravY)
-		// 					{
-		// 						zvolenáVýška = ((Number)v).doubleValue();
-		// 						aktualizujUkážku();
-		// 					}
-		// 				}
-		// 			}
-		// 		}
-		// 
-		// 		// Aktualizuje hodnoty zvolenej rozmeru v editoroch.
-		// 		private void aktualizujEditory()
-		// 		{
-		// 			upravX.setValue(zvolenáŠírka);
-		// 			// {
-		// 			// 	JSpinner.NumberEditor editor =
-		// 			// 		(JSpinner.NumberEditor)upravX.getEditor();
-		// 			// 	editor.commitEdit();
-		// 			// }
-		// 
-		// 			upravY.setValue(zvolenáVýška);
-		// 			// {
-		// 			// 	JSpinner.NumberEditor editor =
-		// 			// 		(JSpinner.NumberEditor)upravX.getEditor();
-		// 			// 	editor.commitEdit();
-		// 			// }
-		// 		}
-		// 
-		// 		// Aktualizuje tento panel do takého stavu, v akom by sa
-		// 		// nachádzal po konštrukcii so zadanými hodnotami parametrov.
-		// 		// (Môžu nastať drobné odchýlky, ktoré sú neodsledovateľné, ale
-		// 		// zhruba by sa panel mal vizuálne aj vnútorne nachádzať
-		// 		// v požadovanom stave.)
-		// 		private void aktualizujPanel(String textReset,
-		// 			Rozmer rozmer, double mierka)
-		// 		{
-		// 			// aktualizujFormát();
-		// 			if (mierka <= 0.0 && faktorMierky != 0.25) mierka = 0.25;
-		// 			aktualizujVeľkosťUkážky(mierka);
-		// 
-		// 			upravTextTlačidla(textReset);
-		// 			nastavRozmer(rozmery);
-		// 		}
-		// 
-		// 		/* *
-		// 		 * <p>Aktualizuje formáty čísiel podľa formátu sveta.</p>
-		// 		 * /
-		// 		public void aktualizujFormát()
-		// 		{
-		// 			{
-		// 				JSpinner.NumberEditor editor =
-		// 					(JSpinner.NumberEditor)upravX.getEditor();
-		// 
-		// 				System.out.println("TEST");
-		// 				System.out.println("editor.getFormat(): " + editor.getFormat());
-		// 
-		// 				DecimalFormat formát = editor.getFormat();
-		// 				formát.setDecimalFormatSymbols(
-		// 					Svet.formát.getDecimalFormatSymbols());
-		// 				formát.setMaximumFractionDigits(20);
-		// 			}
-		// 
-		// 			{
-		// 				JSpinner.NumberEditor editor =
-		// 					(JSpinner.NumberEditor)upravY.getEditor();
-		// 
-		// 				DecimalFormat formát = editor.getFormat();
-		// 				formát.setDecimalFormatSymbols(
-		// 					Svet.formát.getDecimalFormatSymbols());
-		// 				formát.setMaximumFractionDigits(20);
-		// 			}
-		// 
-		// 			aktualizujEditory();
-		// 		}*/
-		// 
-		// 		/**
-		// 		 * <p>Aktualizuje veľkosť ukážky zvolenej rozmeru.</p>
-		// 		 * 
-		// 		 * @param mierka mierka plochy na výber rozmeru, ktorá je súčasne
-		// 		 *     ukážkou zvolenej rozmeru
-		// 		 */
-		// 		public void aktualizujVeľkosťUkážky(double mierka)
-		// 		{
-		// 			// System.out.println("faktorMierky 1: " + faktorMierky +
-		// 			// 	" (" + mierka + ")");
-		// 			if (mierka > 0.0) faktorMierky = mierka;
-		// 
-		// 			if ((int)(Plátno.šírkaPlátna * faktorMierky) != šírkaUkážky ||
-		// 				(int)(Plátno.výškaPlátna * faktorMierky) != výškaUkážky)
-		// 			{
-		// 				double šírka = Plátno.šírkaPlátna * faktorMierky;
-		// 				double výška = Plátno.výškaPlátna * faktorMierky;
-		// 				// System.out.println("šírka 1: " + šírka);
-		// 				// System.out.println("výška 1: " + výška);
-		// 				if (100.0 >= šírka || 75.0 >= výška)
-		// 				{
-		// 					faktorMierky = Math.max(
-		// 						100.0 / (double)Plátno.šírkaPlátna,
-		// 						 75.0 / (double)Plátno.výškaPlátna);
-		// 					šírka = Plátno.šírkaPlátna * faktorMierky;
-		// 					výška = Plátno.výškaPlátna * faktorMierky;
-		// 					// System.out.println("šírka 2: " + šírka);
-		// 					// System.out.println("výška 2: " + výška);
-		// 					// System.out.println("faktorMierky 2: " +
-		// 					// 	faktorMierky);
-		// 				}
-		// 				šírkaUkážky = (int)šírka;
-		// 				výškaUkážky = (int)výška;
-		// 				osX = osY = null;
-		// 
-		// 				obrázokUkážky = new BufferedImage(
-		// 					šírkaUkážky, výškaUkážky, BufferedImage.TYPE_INT_ARGB);
-		// 				grafikaUkážky = obrázokUkážky.createGraphics();
-		// 				grafikaUkážky.addRenderingHints(Obrázok.hints);
-		// 				ikonaUkážky = new ImageIcon(obrázokUkážky);
-		// 				komponentUkážky.setIcon(ikonaUkážky);
-		// 			}
-		// 		}
-		// 
-		// 		/**
-		// 		 * <p>Nastavenie novej predvolenej rozmeru na paneli.</p>
-		// 		 * 
-		// 		 * @param novýRozmer nová predvolené rozmery na paneli
-		// 		 */
-		// 		public void nastavRozmer(Rozmer novýRozmer)
-		// 		{
-		// 			if (null == novýRozmer)
-		// 			{
-		// 				zvolenáŠírka = predvolenáŠírka = 0;
-		// 				zvolenáVýška = predvolenáVýška = 0;
-		// 			}
-		// 			else
-		// 			{
-		// 				predvolenáŠírka = novýRozmer.šírka();
-		// 				predvolenáVýška = novýRozmer.výška();
-		// 				zvolenáŠírka = predvolenáŠírka;
-		// 				zvolenáVýška = predvolenáVýška;
-		// 			}
-		// 
-		// 			aktualizujUkážku();
-		// 			aktualizujEditory();
-		// 		}
-		// 
-		// 		/**
-		// 		 * <p>Získanie zvolenej rozmeru na paneli.</p>
-		// 		 * 
-		// 		 * @param novýRozmer nová predvolené rozmery na paneli
-		// 		 */
-		// 		public Rozmery dajRozmer()
-		// 		{
-		// 			return new Rozmery(zvolenáŠírka, zvolenáVýška);
-		// 		}
-		// 
-		// 		/**
-		// 		 * <p>Upraví predvolený text tlačidla resetu rozmeru na paneli.</p>
-		// 		 * 
-		// 		 * @param textReset text tlačidla resetu rozmeru na paneli
-		// 		 */
-		// 		public void upravTextTlačidla(String textReset)
-		// 		{
-		// 			if (null != textReset)
-		// 				tlačidloReset.setText(textReset);
-		// 		}
-		// 
-		// 
-		// 		// Statický panel dialógu voľby rozmeru.
-		// 		private static PanelRozmeru panelRozmeru = null;
-		// 
-		// 		/**
-		// 		 * <p>Otvorí dialóg s panelom na výber rozmeru. Metóda prijíma
-		// 		 * parameter určujúci titulok dialógového okna a predvolený rozmer
-		// 		 * na paneli polôh. Ak je niektorá z hodnôt rovná {@code valnull},
-		// 		 * tak bude zvolená vhodná hodnota.</p>
-		// 		 * 
-		// 		 * @param titulok titulok okna dialógu
-		// 		 * @param predvolenýRozmer predvolené rozmery na paneli
-		// 		 * @return zvolené rozmery alebo {@code valnull} (ak používateľ
-		// 		 *     dialóg zavrel)
-		// 		 */
-		// 		public static Rozmery dialóg(String titulok, Rozmer predvolenýRozmer)
-		// 		{
-		// 			if (null == panelRozmeru)
-		// 				panelRozmeru = new PanelRozmeru(
-		// 					Svet.tlačidláDialógu[2], predvolenýRozmer, 0);
-		// 			else
-		// 				panelRozmeru.aktualizujPanel(
-		// 					Svet.tlačidláDialógu[2], predvolenýRozmer, 0);
-		// 
-		// 			Object[] komponenty = new Object[] {panelRozmeru};
-		// 
-		// 			if (JOptionPane.showOptionDialog(null == Svet.
-		// 				oknoCelejObrazovky ? GRobot.svet : Svet.
-		// 				oknoCelejObrazovky, komponenty, null == titulok ?
-		// 				"Voľba rozmeru" : titulok, JOptionPane.YES_NO_OPTION,
-		// 				JOptionPane.PLAIN_MESSAGE, null, Svet.odpovedeZadania,
-		// 				null) == JOptionPane.YES_OPTION)
-		// 				return panelRozmeru.dajRozmer();
-		// 
-		// 			return null;
-		// 		}
-		// 	}
-		// 
-		// 
-		// /**
-		//  * <p>Otvorí dialóg na výber rozmeru. Predvolenými rozmermi v otvorenom
-		//  * dialógu bude {@linkplain Rozmer#stred stred súradnicovej sústavy}.
-		//  * Po zvolení želanej rozmeru používateľom, vráti metóda zvolený rozmer
-		//  * v novom objekte typu {@link Rozmery Rozmery}. Ak používateľ dialóg
-		//  * zruší, tak metóda vráti hodnotu {@code valnull}.</p>
-		//  * 
-		//  * @return zvolené rozmery alebo {@code valnull}
-		//  */
-		// public static Rozmery vyberRozmer()
-		// { return PanelRozmeru.dialóg(null, stred); }
-		// 
-		// /**
-		//  * <p>Otvorí dialóg na výber rozmeru. Otvorený dialóg bude mať
-		//  * predvolený zadaný rozmer (argument {@code počiatočnýRozmer}). Po
-		//  * zvolení želanej rozmeru používateľom, vráti metóda zvolený rozmer
-		//  * v novom objekte typu {@link Rozmery Rozmery}. Ak používateľ dialóg
-		//  * zruší, tak metóda vráti hodnotu {@code valnull}.</p>
-		//  * 
-		//  * @param počiatočnýRozmer predvolené rozmery v novo otvorenom dialógu
-		//  * @return zvolené rozmery alebo {@code valnull}
-		//  */
-		// public static Rozmery vyberRozmer(Rozmer počiatočnýRozmer)
-		// { return PanelRozmeru.dialóg(null, počiatočnýRozmer); }
-		// 
-		// /**
-		//  * <p>Otvorí dialóg na výber rozmeru. Predvolenými rozmermi v otvorenom
-		//  * dialógu bude {@linkplain Rozmer#stred stred súradnicovej sústavy}.
-		//  * Po zvolení želanej rozmeru používateľom, vráti metóda zvolený rozmer
-		//  * v novom objekte typu {@link Rozmery Rozmery}. Ak používateľ dialóg
-		//  * zruší, tak metóda vráti hodnotu {@code valnull}. Programátor má
-		//  * možnosť zvoliť vlastný titulok dialógového okna.</p>
-		//  * 
-		//  * <p class="remark"><b>Poznámka:</b> Texty tlačidiel dialógu
-		//  * (vrátane tlačidla reset) sú upraviteľné volaním metódy {@link 
-		//  * Svet#textTlačidla(String, String) textTlačidla} triedy {@link 
-		//  * Svet Svet}.</p>
-		//  * 
-		//  * @param titulok vlastný titulok dialógu
-		//  * @return zvolené rozmery alebo {@code valnull}
-		//  */
-		// public static Rozmery vyberRozmer(String titulok)
-		// { return PanelRozmeru.dialóg(titulok, stred); }
-		// 
-		// /**
-		//  * <p>Otvorí dialóg na výber rozmeru. Otvorený dialóg bude
-		//  * mať predvolený zadaný rozmer (argument {@code počiatočnýRozmer}). Po
-		//  * zvolení želanej rozmeru používateľom, vráti metóda zvolený rozmer
-		//  * v novom objekte typu {@link Rozmery Rozmery}. Ak používateľ dialóg
-		//  * zruší, tak metóda vráti hodnotu {@code valnull}. Programátor má
-		//  * možnosť zvoliť vlastný titulok dialógového okna.</p>
-		//  * 
-		//  * <p class="remark"><b>Poznámka:</b> Texty tlačidiel dialógu
-		//  * (vrátane tlačidla reset) sú upraviteľné volaním metódy {@link 
-		//  * Svet#textTlačidla(String, String) textTlačidla} triedy {@link 
-		//  * Svet Svet}.</p>
-		//  * 
-		//  * @param titulok vlastný titulok dialógu
-		//  * @param počiatočnýRozmer predvolené rozmery v novo otvorenom dialógu
-		//  * @return zvolené rozmery alebo {@code valnull}
-		//  */
-		// public static Rozmery vyberRozmer(String titulok, Rozmer počiatočnýRozmer)
-		// { return PanelRozmeru.dialóg(titulok, počiatočnýRozmer); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer() vyberRozmer}.</p> */
-		// public static Rozmery dialógVýberRozmeru() { return vyberRozmer(); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer() vyberRozmer}.</p> */
-		// public static Rozmery dialogVyberRozmeru() { return vyberRozmer(); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(Rozmer) vyberRozmer}.</p> */
-		// public static Rozmery dialógVýberRozmeru(Rozmer počiatočnýRozmer)
-		// { return vyberRozmer(počiatočnýRozmer); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(Rozmer) vyberRozmer}.</p> */
-		// public static Rozmery dialogVyberRozmeru(Rozmer počiatočnýRozmer)
-		// { return vyberRozmer(počiatočnýRozmer); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String) vyberRozmer}.</p> */
-		// public static Rozmery dialógVýberRozmeru(String titulok)
-		// { return vyberRozmer(titulok); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String) vyberRozmer}.</p> */
-		// public static Rozmery dialogVyberRozmeru(String titulok)
-		// { return vyberRozmer(titulok); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String, Rozmer) vyberRozmer}.</p> */
-		// public static Rozmery dialógVýberRozmeru(String titulok, Rozmer počiatočnýRozmer) { return PanelRozmeru.dialóg(titulok, počiatočnýRozmer); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String, Rozmer) vyberRozmer}.</p> */
-		// public static Rozmery dialogVyberRozmeru(String titulok, Rozmer počiatočnýRozmer) { return PanelRozmeru.dialóg(titulok, počiatočnýRozmer); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer() vyberRozmer}.</p> */
-		// public static Rozmery zvoľRozmer()
-		// { return PanelRozmeru.dialóg(null, stred); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer() vyberRozmer}.</p> */
-		// public static Rozmery zvolRozmer() { return zvoľRozmer(); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer() vyberRozmer}.</p> */
-		// public static Rozmery dialógVoľbaRozmeru() { return zvoľRozmer(); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer() vyberRozmer}.</p> */
-		// public static Rozmery dialogVolbaRozmeru() { return zvoľRozmer(); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(Rozmer) vyberRozmer}.</p> */
-		// public static Rozmery zvoľRozmer(Rozmer počiatočnýRozmer)
-		// { return PanelRozmeru.dialóg(null, počiatočnýRozmer); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(Rozmer) vyberRozmer}.</p> */
-		// public static Rozmery zvolRozmer(Rozmer počiatočnýRozmer)
-		// { return zvoľRozmer(počiatočnýRozmer); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(Rozmer) vyberRozmer}.</p> */
-		// public static Rozmery dialógVoľbaRozmeru(Rozmer počiatočnýRozmer)
-		// { return zvoľRozmer(počiatočnýRozmer); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(Rozmer) vyberRozmer}.</p> */
-		// public static Rozmery dialogVolbaRozmeru(Rozmer počiatočnýRozmer)
-		// { return zvoľRozmer(počiatočnýRozmer); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String) vyberRozmer}.</p> */
-		// public static Rozmery zvoľRozmer(String titulok)
-		// { return PanelRozmeru.dialóg(titulok, stred); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String) vyberRozmer}.</p> */
-		// public static Rozmery zvolRozmer(String titulok)
-		// { return zvoľRozmer(titulok); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String) vyberRozmer}.</p> */
-		// public static Rozmery dialógVoľbaRozmeru(String titulok)
-		// { return zvoľRozmer(titulok); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String) vyberRozmer}.</p> */
-		// public static Rozmery dialogVolbaRozmeru(String titulok)
-		// { return zvoľRozmer(titulok); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String, Rozmer) vyberRozmer}.</p> */
-		// public static Rozmery zvoľRozmer(String titulok, Rozmer počiatočnýRozmer)
-		// { return PanelRozmeru.dialóg(titulok, počiatočnýRozmer); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String, Rozmer) vyberRozmer}.</p> */
-		// public static Rozmery zvolRozmer(String titulok, Rozmer počiatočnýRozmer) { return PanelRozmeru.dialóg(titulok, počiatočnýRozmer); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String, Rozmer) vyberRozmer}.</p> */
-		// public static Rozmery dialógVoľbaRozmeru(String titulok, Rozmer počiatočnýRozmer) { return PanelRozmeru.dialóg(titulok, počiatočnýRozmer); }
-		// 
-		// /** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String, Rozmer) vyberRozmer}.</p> */
-		// public static Rozmery dialogVolbaRozmeru(String titulok, Rozmer počiatočnýRozmer) { return PanelRozmeru.dialóg(titulok, počiatočnýRozmer); }
+	/** <p><a class="alias"></a> Alias pre {@link #predvolený predvolený}.</p> */
+	public final static Rozmer predvoleny = predvolený;
+
+
+		// Panel polôh používaný v dialógoch výberu rozmeru a voľby
+		// rôznych parametrov (pozri: Rozmery.vyberRozmer a Svet.dialóg).
+		@SuppressWarnings("serial")
+		/*packagePrivate*/ static class PanelRozmeru extends JPanel
+		{
+			// Formátovač súradníc pre textové pole spinera.
+			private final static JFormattedTextField.AbstractFormatter
+				formátovač = new JFormattedTextField.AbstractFormatter()
+				{
+					public Object stringToValue(String text)
+					{
+						java.lang.Double prevod =
+							Svet.reťazecNaReálneČíslo(text);
+						if (null == prevod) Svet.pípni();
+						return prevod;
+					}
+
+					public String valueToString(Object value)
+					{
+						if (value instanceof Number) return Svet.formát.
+							format(((Number)value).doubleValue());
+						Svet.pípni(); return "0";
+					}
+				};
+
+			// Továreň formátovača súradníc textového poľa spinera.
+			private final static JFormattedTextField.AbstractFormatterFactory
+				továreň = new JFormattedTextField.AbstractFormatterFactory()
+				{
+					public JFormattedTextField.AbstractFormatter
+						getFormatter(JFormattedTextField tf)
+					{
+						return formátovač;
+					}
+				};
+
+			// Štýl čiary kreslenia osí:
+			private BasicStroke čiaraObrysov = new BasicStroke(1.5f,
+				BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 0f,
+				new float[]{3, 2}, 0f);
+
+			// Objekty komponentu ukážky zvoleného rozmeru na paneli:
+			private BufferedImage obrázokUkážky;
+			private Graphics2D grafikaUkážky;
+			private ImageIcon ikonaUkážky;
+			private JLabel komponentUkážky;
+
+			// Ovládacie prvky (vstupné polia, tlačidlo resetu)
+			// s ich panelom:
+			private JSpinner upravX;
+			private JSpinner upravY;
+			private JButton tlačidloReset;
+			private JLabel menovkaŠírky;
+			private JLabel menovkaVýšky;
+			private JPanel panelPrvkov;
+
+			// Atribúty tohto panela polôh:
+			private double predvolenáŠírka = 0;
+			private double predvolenáVýška = 0;
+			private double zvolenáŠírka = 10;
+			private double zvolenáVýška = 10;
+			private double faktorMierky = 0.25;
+			private int šírkaUkážky = 200;
+			private int výškaUkážky = 150;
+
+
+			/**
+			 * <p>Konštruktor.</p>
+			 * 
+			 * @param textReset text tlačidla resetu rozmeru
+			 * @param textŠírky text menovky šírky
+			 * @param textVýšky text menovky výšky
+			 * @param rozmery predvolené rozmery na paneli polôh
+			 * @param mierka mierka plochy na výber rozmeru, ktorá je súčasne
+			 *     ukážkou zvoleného rozmeru
+			 */
+			public PanelRozmeru(String textReset, String textŠírky,
+				String textVýšky, Rozmer rozmer, double mierka)
+			{
+				if (null != rozmer)
+				{
+					predvolenáŠírka = rozmer.šírka();
+					predvolenáVýška = rozmer.výška();
+					zvolenáŠírka = predvolenáŠírka;
+					zvolenáVýška = predvolenáVýška;
+				}
+
+				if (mierka > 0.0) faktorMierky = mierka;
+
+				if (0.25 != faktorMierky ||
+					800 != Plátno.šírkaPlátna ||
+					600 != Plátno.výškaPlátna)
+				{
+					double šírka = Plátno.šírkaPlátna * faktorMierky;
+					double výška = Plátno.výškaPlátna * faktorMierky;
+
+					if (100.0 >= šírka || 75.0 >= výška)
+					{
+						faktorMierky = Math.max(
+							100.0 / (double)Plátno.šírkaPlátna,
+							 75.0 / (double)Plátno.výškaPlátna);
+						šírka = Plátno.šírkaPlátna * faktorMierky;
+						výška = Plátno.výškaPlátna * faktorMierky;
+					}
+					šírkaUkážky = (int)šírka;
+					výškaUkážky = (int)výška;
+				}
+
+				obrázokUkážky = new BufferedImage(
+					šírkaUkážky, výškaUkážky, BufferedImage.TYPE_INT_ARGB);
+				grafikaUkážky = obrázokUkážky.createGraphics();
+				grafikaUkážky.addRenderingHints(Obrázok.hints);
+				ikonaUkážky = new ImageIcon(obrázokUkážky);
+				komponentUkážky = new JLabel(ikonaUkážky);
+				komponentUkážky.setBorder(BorderFactory.
+					createEmptyBorder(10, 10, 10, 10));
+
+				tlačidloReset = new JButton(
+					null == textReset ? "Reset" : textReset);
+				tlačidloReset.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+				menovkaŠírky = new JLabel(
+					null == textŠírky ? "↔:" : textŠírky);
+				menovkaVýšky = new JLabel(
+					null == textVýšky ? "↕:" : textVýšky);
+
+				setLayout(new BorderLayout());
+
+				panelPrvkov = new JPanel();
+				panelPrvkov.setLayout(new BoxLayout(
+					panelPrvkov, BoxLayout.Y_AXIS));
+
+				add(komponentUkážky, BorderLayout.WEST);
+				panelPrvkov.add(Box.createVerticalStrut(10));
+
+				{
+					SpinnerNumberModel modelSpinera = new SpinnerNumberModel(
+						(java.lang.Double)0.0, (java.lang.Double)0.0, null,
+						(java.lang.Double)1.0);
+					upravX = new JSpinner(modelSpinera);
+
+					JSpinner.NumberEditor editor =
+						new JSpinner.NumberEditor(upravX);
+					editor.setPreferredSize(new Dimension(50, 20));
+
+					upravX.setEditor(editor);
+
+					JFormattedTextField textField = editor.getTextField();
+					textField.setFormatterFactory(továreň);
+					textField.setHorizontalAlignment(JTextField.CENTER);
+
+					upravX.addChangeListener(e -> aktualizujPodľaSpinerov(e));
+
+					JPanel panel = new JPanel();
+					panel.add(menovkaŠírky);
+					panel.add(upravX);
+					panel.setBorder(BorderFactory.
+						createEmptyBorder(0, 10, 0, 10));
+
+					panelPrvkov.add(panel);
+				}
+
+				panelPrvkov.add(Box.createVerticalStrut(10));
+
+				{
+					SpinnerNumberModel modelSpinera = new SpinnerNumberModel(
+						(java.lang.Double)0.0, (java.lang.Double)0.0, null,
+						(java.lang.Double)1.0);
+					upravY = new JSpinner(modelSpinera);
+
+					JSpinner.NumberEditor editor =
+						new JSpinner. NumberEditor(upravY);
+					editor.setPreferredSize(new Dimension(50, 20));
+
+					upravY.setEditor(editor);
+
+					JFormattedTextField textField = editor.getTextField();
+					textField.setFormatterFactory(továreň);
+					textField.setHorizontalAlignment(JTextField.CENTER);
+
+					upravY.addChangeListener(e -> aktualizujPodľaSpinerov(e));
+
+					JPanel panel = new JPanel();
+					panel.add(menovkaVýšky);
+					panel.add(upravY);
+					panel.setBorder(BorderFactory.
+						createEmptyBorder(0, 10, 0, 10));
+
+					panelPrvkov.add(panel);
+				}
+
+				panelPrvkov.add(Box.createVerticalGlue());
+				panelPrvkov.add(tlačidloReset);
+				panelPrvkov.add(Box.createVerticalGlue());
+
+				add(panelPrvkov, BorderLayout.EAST);
+
+				komponentUkážky.addMouseListener(new MouseListener()
+					{
+						public void mouseClicked(MouseEvent e) {}
+						public void mouseEntered(MouseEvent e) {}
+						public void mouseExited(MouseEvent e) {}
+						public void mousePressed(MouseEvent e)
+						{ aktualizujPodľaMyši(e); }
+						public void mouseReleased(MouseEvent e) {}
+					});
+
+				komponentUkážky.addMouseMotionListener(
+					new MouseMotionListener()
+					{
+						public void mouseMoved(MouseEvent e) {}
+						public void mouseDragged(MouseEvent e)
+						{ aktualizujPodľaMyši(e); }
+					});
+
+				tlačidloReset.addActionListener(e ->
+					{
+						zvolenáŠírka = predvolenáŠírka;
+						zvolenáVýška = predvolenáVýška;
+						aktualizujUkážku();
+						aktualizujEditory();
+					});
+
+				aktualizujUkážku();
+				aktualizujEditory();
+			}
+
+			// Aktualizácia ukážky zvoleného rozmeru.
+			private void aktualizujUkážku()
+			{
+				grafikaUkážky.setColor(Farebnosť.biela);
+				grafikaUkážky.fillRect(0, 0, šírkaUkážky, výškaUkážky);
+
+				double šírka = Math.abs(zvolenáŠírka / 2);
+				double výška = Math.abs(zvolenáVýška / 2);
+
+				Shape obdĺžnik = new Rectangle2D.Double(
+					-šírka * faktorMierky + (šírkaUkážky / 2),
+					-výška * faktorMierky + (výškaUkážky / 2),
+					šírka / 2, výška / 2);
+
+				grafikaUkážky.setColor(Farebnosť.svetlošedá);
+				grafikaUkážky.setStroke(čiaraObrysov);
+				grafikaUkážky.draw(obdĺžnik);
+
+				komponentUkážky.repaint();
+			}
+
+			// Aktualizuje rozmery zvoleného objektu podľa udalosti myši.
+			private void aktualizujPodľaMyši(MouseEvent e)
+			{
+				zvolenáŠírka = 2 * Math.abs( (e.getX() - 10) -
+					(šírkaUkážky / 2)) / faktorMierky;
+				zvolenáVýška = 2 * Math.abs(-(e.getY() - 10) +
+					(výškaUkážky / 2)) / faktorMierky;
+
+				aktualizujUkážku();
+				aktualizujEditory();
+			}
+
+			// Aktualizuje rozmery zvoleného objektu podľa zmeny
+			// v spineroch.
+			private void aktualizujPodľaSpinerov(ChangeEvent e)
+			{
+				if (e.getSource() instanceof JSpinner)
+				{
+					JSpinner spiner = (JSpinner)e.getSource();
+					Object v = spiner.getValue();
+					if (v instanceof Number)
+					{
+						if (spiner == upravX)
+						{
+							zvolenáŠírka = ((Number)v).doubleValue();
+							aktualizujUkážku();
+						}
+						else if (spiner == upravY)
+						{
+							zvolenáVýška = ((Number)v).doubleValue();
+							aktualizujUkážku();
+						}
+					}
+				}
+			}
+
+			// Aktualizuje hodnoty zvoleného rozmeru v editoroch.
+			private void aktualizujEditory()
+			{
+				upravX.setValue(zvolenáŠírka);
+				upravY.setValue(zvolenáVýška);
+			}
+
+			// Aktualizuje tento panel do takého stavu, v akom by sa
+			// nachádzal po konštrukcii so zadanými hodnotami parametrov.
+			// (Môžu nastať drobné odchýlky, ktoré sú neodsledovateľné, ale
+			// zhruba by sa panel mal vizuálne aj vnútorne nachádzať
+			// v požadovanom stave.)
+			private void aktualizujPanel(String textReset, String textŠírky,
+				String textVýšky, Rozmer rozmer, double mierka)
+			{
+				if (mierka <= 0.0 && faktorMierky != 0.25) mierka = 0.25;
+				aktualizujVeľkosťUkážky(mierka);
+
+				upravTextTlačidla(textReset);
+				upravTextyMenoviek(textŠírky, textVýšky);
+				nastavRozmer(rozmer);
+			}
+
+			/**
+			 * <p>Aktualizuje veľkosť ukážky zvoleného rozmeru.</p>
+			 * 
+			 * @param mierka mierka plochy na výber rozmeru, ktorá je súčasne
+			 *     ukážkou zvoleného rozmeru
+			 */
+			public void aktualizujVeľkosťUkážky(double mierka)
+			{
+				if (mierka > 0.0) faktorMierky = mierka;
+
+				if ((int)(Plátno.šírkaPlátna * faktorMierky) != šírkaUkážky ||
+					(int)(Plátno.výškaPlátna * faktorMierky) != výškaUkážky)
+				{
+					double šírka = Plátno.šírkaPlátna * faktorMierky;
+					double výška = Plátno.výškaPlátna * faktorMierky;
+
+					if (100.0 >= šírka || 75.0 >= výška)
+					{
+						faktorMierky = Math.max(
+							100.0 / (double)Plátno.šírkaPlátna,
+							 75.0 / (double)Plátno.výškaPlátna);
+						šírka = Plátno.šírkaPlátna * faktorMierky;
+						výška = Plátno.výškaPlátna * faktorMierky;
+					}
+					šírkaUkážky = (int)šírka;
+					výškaUkážky = (int)výška;
+
+					obrázokUkážky = new BufferedImage(
+						šírkaUkážky, výškaUkážky, BufferedImage.TYPE_INT_ARGB);
+					grafikaUkážky = obrázokUkážky.createGraphics();
+					grafikaUkážky.addRenderingHints(Obrázok.hints);
+					ikonaUkážky = new ImageIcon(obrázokUkážky);
+					komponentUkážky.setIcon(ikonaUkážky);
+				}
+			}
+
+			/**
+			 * <p>Nastavenie nového predvoleného rozmeru na paneli.</p>
+			 * 
+			 * @param novýRozmer nové predvolené rozmery na paneli
+			 */
+			public void nastavRozmer(Rozmer novýRozmer)
+			{
+				if (null == novýRozmer)
+				{
+					zvolenáŠírka = predvolenáŠírka = 10;
+					zvolenáVýška = predvolenáVýška = 10;
+				}
+				else
+				{
+					predvolenáŠírka = novýRozmer.šírka();
+					predvolenáVýška = novýRozmer.výška();
+					zvolenáŠírka = predvolenáŠírka;
+					zvolenáVýška = predvolenáVýška;
+				}
+
+				aktualizujUkážku();
+				aktualizujEditory();
+			}
+
+			/**
+			 * <p>Získanie zvoleného rozmeru na paneli.</p>
+			 * 
+			 * @return aktuálne zvolené rozmery na paneli
+			 */
+			public Rozmery dajRozmer()
+			{
+				return new Rozmery(zvolenáŠírka, zvolenáVýška);
+			}
+
+			/**
+			 * <p>Upraví predvolený text tlačidla resetu rozmeru na paneli.</p>
+			 * 
+			 * @param textReset text tlačidla resetu rozmeru na paneli
+			 */
+			public void upravTextTlačidla(String textReset)
+			{
+				if (null != textReset)
+					tlačidloReset.setText(textReset);
+			}
+
+			/**
+			 * <p>Upraví predvolené texty menoviek rozmerov (šírky a výšky) na
+			 * paneli.</p>
+			 * 
+			 * @param textŠírky text menovky šírky na paneli rozmeru
+			 * @param textVýšky text menovky výšky na paneli rozmeru
+			 */
+			public void upravTextyMenoviek(String textŠírky, String textVýšky)
+			{
+				if (null != textŠírky)
+					menovkaŠírky.setText(textŠírky);
+				if (null != textVýšky)
+					menovkaVýšky.setText(textVýšky);
+			}
+
+
+			// Statický panel dialógu voľby rozmeru.
+			private static PanelRozmeru panelRozmeru = null;
+
+			/**
+			 * <p>Otvorí dialóg s panelom na výber rozmeru. Metóda prijíma
+			 * parameter určujúci titulok dialógového okna a predvolený rozmer
+			 * na paneli polôh. Ak je niektorá z hodnôt rovná {@code valnull},
+			 * tak bude zvolená vhodná hodnota.</p>
+			 * 
+			 * @param titulok titulok okna dialógu
+			 * @param predvolenýRozmer predvolené rozmery na paneli
+			 * @return zvolené rozmery alebo {@code valnull} (ak používateľ
+			 *     dialóg zavrel)
+			 */
+			public static Rozmery dialóg(String titulok,
+				Rozmer predvolenýRozmer)
+			{
+				if (null == panelRozmeru)
+					panelRozmeru = new PanelRozmeru(Svet.tlačidláDialógu[4],
+						Svet.menovkyDialógu[2], Svet.menovkyDialógu[3],
+						predvolenýRozmer, 0);
+				else
+					panelRozmeru.aktualizujPanel(Svet.tlačidláDialógu[4],
+						Svet.menovkyDialógu[2], Svet.menovkyDialógu[3],
+						predvolenýRozmer, 0);
+
+				Object[] komponenty = new Object[] {panelRozmeru};
+
+				if (JOptionPane.showOptionDialog(null == Svet.
+					oknoCelejObrazovky ? GRobot.svet : Svet.
+					oknoCelejObrazovky, komponenty, null == titulok ?
+					"Voľba rozmeru" : titulok, JOptionPane.YES_NO_OPTION,
+					JOptionPane.PLAIN_MESSAGE, null, Svet.odpovedeZadania,
+					null) == JOptionPane.YES_OPTION)
+					return panelRozmeru.dajRozmer();
+
+				return null;
+			}
+		}
+
+
+	/**
+	 * <p>Otvorí dialóg na výber rozmeru. Predvolenými rozmermi v otvorenom
+	 * dialógu budú rozmery prevzaté z inštancie {@link #predvolený predvolený}.
+	 * Po zvolení želaného rozmeru používateľom, vráti metóda zvolený rozmer
+	 * v novom objekte typu {@link Rozmery Rozmery}. Ak používateľ dialóg
+	 * zruší, tak metóda vráti hodnotu {@code valnull}.</p>
+	 * 
+	 * @return zvolené rozmery alebo {@code valnull}
+	 */
+	public static Rozmery vyberRozmer()
+	{ return PanelRozmeru.dialóg(null, predvolený); }
+
+	/**
+	 * <p>Otvorí dialóg na výber rozmeru. Otvorený dialóg bude mať
+	 * predvolený zadaný rozmer (argument {@code počiatočnýRozmer}). Po
+	 * zvolení želaného rozmeru používateľom, vráti metóda zvolený rozmer
+	 * v novom objekte typu {@link Rozmery Rozmery}. Ak používateľ dialóg
+	 * zruší, tak metóda vráti hodnotu {@code valnull}.</p>
+	 * 
+	 * @param počiatočnýRozmer predvolené rozmery v novo otvorenom dialógu
+	 * @return zvolené rozmery alebo {@code valnull}
+	 */
+	public static Rozmery vyberRozmer(Rozmer počiatočnýRozmer)
+	{ return PanelRozmeru.dialóg(null, počiatočnýRozmer); }
+
+	/**
+	 * <p>Otvorí dialóg na výber rozmeru. Predvolenými rozmermi v otvorenom
+	 * dialógu budú rozmery prevzaté z inštancie {@link #predvolený predvolený}.
+	 * Po zvolení želaného rozmeru používateľom, vráti metóda zvolený rozmer
+	 * v novom objekte typu {@link Rozmery Rozmery}. Ak používateľ dialóg
+	 * zruší, tak metóda vráti hodnotu {@code valnull}. Programátor má
+	 * možnosť zvoliť vlastný titulok dialógového okna.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel dialógu
+	 * (vrátane tlačidla reset) sú upraviteľné volaním metódy {@link 
+	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link 
+	 * Svet Svet}.</p>
+	 * 
+	 * @param titulok vlastný titulok dialógu
+	 * @return zvolené rozmery alebo {@code valnull}
+	 */
+	public static Rozmery vyberRozmer(String titulok)
+	{ return PanelRozmeru.dialóg(titulok, predvolený); }
+
+	/**
+	 * <p>Otvorí dialóg na výber rozmeru. Otvorený dialóg bude
+	 * mať predvolený zadaný rozmer (argument {@code počiatočnýRozmer}). Po
+	 * zvolení želaného rozmeru používateľom, vráti metóda zvolený rozmer
+	 * v novom objekte typu {@link Rozmery Rozmery}. Ak používateľ dialóg
+	 * zruší, tak metóda vráti hodnotu {@code valnull}. Programátor má
+	 * možnosť zvoliť vlastný titulok dialógového okna.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Texty tlačidiel dialógu
+	 * (vrátane tlačidla reset) sú upraviteľné volaním metódy {@link 
+	 * Svet#textTlačidla(String, String) textTlačidla} triedy {@link 
+	 * Svet Svet}.</p>
+	 * 
+	 * @param titulok vlastný titulok dialógu
+	 * @param počiatočnýRozmer predvolené rozmery v novo otvorenom dialógu
+	 * @return zvolené rozmery alebo {@code valnull}
+	 */
+	public static Rozmery vyberRozmer(String titulok, Rozmer počiatočnýRozmer)
+	{ return PanelRozmeru.dialóg(titulok, počiatočnýRozmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer() vyberRozmer}.</p> */
+	public static Rozmery dialógVýberRozmeru() { return vyberRozmer(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer() vyberRozmer}.</p> */
+	public static Rozmery dialogVyberRozmeru() { return vyberRozmer(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(Rozmer) vyberRozmer}.</p> */
+	public static Rozmery dialógVýberRozmeru(Rozmer počiatočnýRozmer)
+	{ return vyberRozmer(počiatočnýRozmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(Rozmer) vyberRozmer}.</p> */
+	public static Rozmery dialogVyberRozmeru(Rozmer počiatočnýRozmer)
+	{ return vyberRozmer(počiatočnýRozmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String) vyberRozmer}.</p> */
+	public static Rozmery dialógVýberRozmeru(String titulok)
+	{ return vyberRozmer(titulok); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String) vyberRozmer}.</p> */
+	public static Rozmery dialogVyberRozmeru(String titulok)
+	{ return vyberRozmer(titulok); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String, Rozmer) vyberRozmer}.</p> */
+	public static Rozmery dialógVýberRozmeru(String titulok, Rozmer počiatočnýRozmer) { return PanelRozmeru.dialóg(titulok, počiatočnýRozmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String, Rozmer) vyberRozmer}.</p> */
+	public static Rozmery dialogVyberRozmeru(String titulok, Rozmer počiatočnýRozmer) { return PanelRozmeru.dialóg(titulok, počiatočnýRozmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer() vyberRozmer}.</p> */
+	public static Rozmery zvoľRozmer()
+	{ return PanelRozmeru.dialóg(null, predvolený); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer() vyberRozmer}.</p> */
+	public static Rozmery zvolRozmer() { return zvoľRozmer(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer() vyberRozmer}.</p> */
+	public static Rozmery dialógVoľbaRozmeru() { return zvoľRozmer(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer() vyberRozmer}.</p> */
+	public static Rozmery dialogVolbaRozmeru() { return zvoľRozmer(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(Rozmer) vyberRozmer}.</p> */
+	public static Rozmery zvoľRozmer(Rozmer počiatočnýRozmer)
+	{ return PanelRozmeru.dialóg(null, počiatočnýRozmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(Rozmer) vyberRozmer}.</p> */
+	public static Rozmery zvolRozmer(Rozmer počiatočnýRozmer)
+	{ return zvoľRozmer(počiatočnýRozmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(Rozmer) vyberRozmer}.</p> */
+	public static Rozmery dialógVoľbaRozmeru(Rozmer počiatočnýRozmer)
+	{ return zvoľRozmer(počiatočnýRozmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(Rozmer) vyberRozmer}.</p> */
+	public static Rozmery dialogVolbaRozmeru(Rozmer počiatočnýRozmer)
+	{ return zvoľRozmer(počiatočnýRozmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String) vyberRozmer}.</p> */
+	public static Rozmery zvoľRozmer(String titulok)
+	{ return PanelRozmeru.dialóg(titulok, predvolený); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String) vyberRozmer}.</p> */
+	public static Rozmery zvolRozmer(String titulok)
+	{ return zvoľRozmer(titulok); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String) vyberRozmer}.</p> */
+	public static Rozmery dialógVoľbaRozmeru(String titulok)
+	{ return zvoľRozmer(titulok); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String) vyberRozmer}.</p> */
+	public static Rozmery dialogVolbaRozmeru(String titulok)
+	{ return zvoľRozmer(titulok); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String, Rozmer) vyberRozmer}.</p> */
+	public static Rozmery zvoľRozmer(String titulok, Rozmer počiatočnýRozmer)
+	{ return PanelRozmeru.dialóg(titulok, počiatočnýRozmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String, Rozmer) vyberRozmer}.</p> */
+	public static Rozmery zvolRozmer(String titulok, Rozmer počiatočnýRozmer) { return PanelRozmeru.dialóg(titulok, počiatočnýRozmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String, Rozmer) vyberRozmer}.</p> */
+	public static Rozmery dialógVoľbaRozmeru(String titulok, Rozmer počiatočnýRozmer) { return PanelRozmeru.dialóg(titulok, počiatočnýRozmer); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #vyberRozmer(String, Rozmer) vyberRozmer}.</p> */
+	public static Rozmery dialogVolbaRozmeru(String titulok, Rozmer počiatočnýRozmer) { return PanelRozmeru.dialóg(titulok, počiatočnýRozmer); }
 
 
 	/**
