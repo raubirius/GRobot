@@ -112,22 +112,20 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * transformácií tvarov. Rámec nepodporuje žiadne zložitejšie výplne,
  * štýly/druhy čiar a nadpojenia čiar, posunutie počiatku transformácií,
  * ani štýlovanie prostredníctvom kaskádových štýlov (CSS) a podobne.
- * Trieda tieto vlastnosti ani nezachováva.
- * <small>(Jedinou drobnou výnimkou je automatický prevod vybraných CSS
- * definícií uvedených v <em>atribúte</em> {@code style="…"} na hodnoty
- * konkrétnych XML atribútov. Príklad: {@code <rect …
- * style="fill:blue" />} bude spracované tak, ako keby bolo uvedené
- * v tvare {@code <rect … fill="blue" />}. Avšak okrem vybraných CSS
- * definícií ako {@code fill}, {@code stroke}, {@code fill-opacity},
- * {@code stroke-opacity}, {@code stroke-width}
- * (a príbuzných ako: {@code stroke-dasharray}, {@code stroke-linecap},
- * {@code stroke-miterlimit}…)
- * a {@code transform} sú
- * všetky ostatné CSS definície ignorované. Tiež nie je analyzovaný
+ * Trieda tieto vlastnosti ani nezachováva. <small>(Jedinou drobnou
+ * výnimkou je automatický prevod vybraných CSS definícií uvedených
+ * v <em>atribúte</em> {@code style="…"} na hodnoty konkrétnych XML
+ * atribútov. Príklad: {@code <rect … style="fill:blue" />} bude
+ * spracované tak, ako keby bolo uvedené v tvare {@code <rect …
+ * fill="blue" />}. Avšak okrem vybraných CSS definícií ako {@code fill},
+ * {@code stroke}, {@code fill-opacity}, {@code stroke-opacity},
+ * {@code stroke-width} (a príbuzných ako: {@code stroke-dasharray},
+ * {@code stroke-linecap}, {@code stroke-miterlimit}…) a {@code transform}
+ * sú všetky ostatné CSS definície ignorované. Tiež nie je analyzovaný
  * obsah <em>značky</em> {@code <style> … </style>}, z čoho vyplýva, že
- * aj obsah atribútu {@code class} je ignorovaný.)</small>
- * Z toho dôvodu <b>nie je</b> vhodné použiť prorgamovací rámec na úpravu
- * SVG súborov, ktoré boli vytvorené inými softvérmi (napríklad <a
+ * aj obsah atribútu {@code class} je ignorovaný.)</small> Z toho dôvodu
+ * <b>nie je</b> vhodné použiť prorgamovací rámec na úpravu SVG súborov,
+ * ktoré boli vytvorené inými softvérmi (napríklad <a
  * href="https://inkscape.org/" target="_blank">Inkscape</a>). Stratilo
  * by sa príliš veľa informácií. Ukážky vhodného použitia tejto triedy
  * ukazujú nasledujúce príklady…</p>

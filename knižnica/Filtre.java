@@ -237,6 +237,19 @@ public class Filtre extends Zoznam<Filtre.Filter>
 
 
 	/**
+	 * <p>Predvolený konštruktor – vytvorí prázdny zoznam filtrov.</p>
+	 */
+	public Filtre() { super(); }
+
+	/**
+	 * <p>Vytvorí zoznam filtrov obsahujúci zadané filtre.</p>
+	 * 
+	 * @param filtre zoznam filtrov oddelený čiarkami
+	 */
+	public Filtre(Filter... filtre) { super(filtre); }
+
+
+	/**
 	 * <p>Prečíta zoznam filtrov zo zadaného konfiguračného súboru. Metóda
 	 * očakáva v súbore zoradené dvojice alebo trojice riadkov s významom
 	 * „regulárny výraz“ (vzor), „nahradenie“ (šablóna) a nepovinný riadok

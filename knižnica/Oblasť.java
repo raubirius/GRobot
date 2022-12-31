@@ -1083,7 +1083,7 @@ public class Oblasť extends Area implements Poloha
 
 	/**
 	 * <p>Nakreslí túto oblasť na aktívne plátno aktuálnou farbou (alebo
-	 * nátorom) a hrúbkou pera zadaného robota. Táto metóda nakreslí oblasť
+	 * náterom) a hrúbkou pera zadaného robota. Táto metóda nakreslí oblasť
 	 * tak, ako bola vytvorená. Keď ju chcete rotovať a/alebo posúvať,
 	 * použite metódu {@link GRobot#obkresliOblasť(Area)
 	 * obkresliOblasť}.</p>

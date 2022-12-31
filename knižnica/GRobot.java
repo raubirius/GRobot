@@ -4853,7 +4853,7 @@ Toto bolo presunuté na úvodnú stránku:
 						// nebol čas…
 
 						grafika.translate(prepočítanéX, prepočítanéY);
-						grafika.rotate(-α); grafika.scale(s, t);
+						grafika.rotate(-α); grafika.scale(t, s);
 						grafika.translate(šírkaObrázka / -2.0,
 							výškaObrázka / -2.0);
 
@@ -9076,14 +9076,21 @@ Toto bolo presunuté na úvodnú stránku:
 				 * mierky pomeru {@code num1.0} a násobkom tejto hodnoty
 				 * o zadanú mieru.</p>
 				 * 
+				 * <p>Pomer je s pravdepodobnosťou 50 % prevrátený, čiže
+				 * napríklad namiesto hodnoty {@linkplain #pomer(double)
+				 * pomeru} {@code num2.0} bude nastavená hodnota
+				 * {@code num1.0}{@code  / }{@code num2.0}{@code  = }{@code num0.5}.</p>
+				 * 
 				 * @param miera miera zmeny pomeru veľkosti v porovnaní
 				 *     s takou hodnotou pomeru veľkosti, ktorú by mal robot
 				 *     pri hodnote mierky pomeru {@code num1.0}
 				 */
 				public void náhodnýPomer(double miera)
 				{
-					pomerVeľkosti = Svet.náhodnéCeléČíslo((long)pôvodnýPomer,
-						(long)(pôvodnýPomer * miera));
+					pomerVeľkosti = Svet.náhodnéReálneČíslo(pôvodnýPomer,
+						pôvodnýPomer * miera);
+					if (Svet.náhodnéReálneČíslo() >= 0.5)
+						pomerVeľkosti = 1.0 / pomerVeľkosti;
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
@@ -9096,6 +9103,11 @@ Toto bolo presunuté na úvodnú stránku:
 				 * mierok veľkosti a pomeru veľkosti {@code num1.0}
 				 * a násobkov týchto hodnôt o zadanú mieru.</p>
 				 * 
+				 * <p>Pomer je s pravdepodobnosťou 50 % prevrátený, čiže
+				 * napríklad namiesto hodnoty {@linkplain #pomer(double)
+				 * pomeru} {@code num2.0} bude nastavená hodnota
+				 * {@code num1.0}{@code  / }{@code num2.0}{@code  = }{@code num0.5}.</p>
+				 * 
 				 * @param miera miera zmeny rozmeru veľkosti v porovnaní
 				 *     s takou hodnotou rozmeru veľkosti, ktorú by mal robot
 				 *     pri hodnote mierky rozmeru {@code num1.0}
@@ -9104,8 +9116,10 @@ Toto bolo presunuté na úvodnú stránku:
 				{
 					veľkosť = Svet.náhodnéCeléČíslo((long)pôvodnáVeľkosť,
 						(long)(pôvodnáVeľkosť * miera));
-					pomerVeľkosti = Svet.náhodnéCeléČíslo((long)pôvodnýPomer,
-						(long)(pôvodnýPomer * miera));
+					pomerVeľkosti = Svet.náhodnéReálneČíslo(pôvodnýPomer,
+						pôvodnýPomer * miera);
+					if (Svet.náhodnéReálneČíslo() >= 0.5)
+						pomerVeľkosti = 1.0 / pomerVeľkosti;
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
@@ -9119,6 +9133,11 @@ Toto bolo presunuté na úvodnú stránku:
 				 * a násobkov týchto hodnôt o zadané miery prislúchajúcich
 				 * údajov.</p>
 				 * 
+				 * <p>Pomer je s pravdepodobnosťou 50 % prevrátený, čiže
+				 * napríklad namiesto hodnoty {@linkplain #pomer(double)
+				 * pomeru} {@code num2.0} bude nastavená hodnota
+				 * {@code num1.0}{@code  / }{@code num2.0}{@code  = }{@code num0.5}.</p>
+				 * 
 				 * @param mieraVeľkosti miera zmeny veľkosti v porovnaní
 				 *     s takou hodnotou veľkosti, ktorú by mal robot pri
 				 *     hodnote mierky {@code num1.0}
@@ -9131,8 +9150,10 @@ Toto bolo presunuté na úvodnú stránku:
 				{
 					veľkosť = Svet.náhodnéCeléČíslo((long)pôvodnáVeľkosť,
 						(long)(pôvodnáVeľkosť * mieraVeľkosti));
-					pomerVeľkosti = Svet.náhodnéCeléČíslo((long)pôvodnýPomer,
-						(long)(pôvodnýPomer * mieraPomeru));
+					pomerVeľkosti = Svet.náhodnéReálneČíslo(pôvodnýPomer,
+						pôvodnýPomer * mieraPomeru);
+					if (Svet.náhodnéReálneČíslo() >= 0.5)
+						pomerVeľkosti = 1.0 / pomerVeľkosti;
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
@@ -13299,8 +13320,8 @@ Toto bolo presunuté na úvodnú stránku:
 						uhol(súbor.čítajVlastnosť("uhol", aktuálnyUhol));
 						uholOtáčania(súbor.čítajVlastnosť(
 							"uholOtáčania", uholOtáčania));
-						pootočenieTvaru(súbor.čítajVlastnosť("pootočenieTvaru",
-							pootočenieTvaru));
+						pootočenieTvaru(súbor.čítajVlastnosť(
+							"pootočenieTvaru", pootočenieTvaru));
 
 						vlastnosťS = súbor.čítajVlastnosť("farba",
 							Farba.farbaNaReťazec(farbaRobota));
@@ -13327,20 +13348,20 @@ Toto bolo presunuté na úvodnú stránku:
 							if (null != čítajVzor && čítajVzor.length > 0)
 								vzorPera = čítajVzor; else vzorPera = null;
 						}
-						hrúbkaČiary(súbor.čítajVlastnosť("hrúbkaPera",
-							polomerPera));
+						hrúbkaČiary(súbor.čítajVlastnosť(
+							"hrúbkaPera", polomerPera));
 
-						polohaPera(súbor.čítajVlastnosť("peroPoložené",
-							peroPoložené));
+						polohaPera(súbor.čítajVlastnosť(
+							"peroPoložené", peroPoložené));
 						if (súbor.čítajVlastnosť("viditeľnosť", viditeľný))
 							ukáž(); else skry();
 						veľkosť(súbor.čítajVlastnosť("veľkosť", veľkosť));
-						pomer(súbor.čítajVlastnosť("pomerVeľkosti",
-							pomerVeľkosti));
-						zaoblenieX(súbor.čítajVlastnosť("zaoblenieX",
-							zaoblenieX));
-						zaoblenieY(súbor.čítajVlastnosť("zaoblenieY",
-							zaoblenieY));
+						pomer(súbor.čítajVlastnosť(
+							"pomerVeľkosti", pomerVeľkosti));
+						zaoblenieX(súbor.čítajVlastnosť(
+							"zaoblenieX", zaoblenieX));
+						zaoblenieY(súbor.čítajVlastnosť(
+							"zaoblenieY", zaoblenieY));
 						pôvodnáVeľkosť = súbor.čítajVlastnosť(
 							"pôvodnáVeľkosť", pôvodnáVeľkosť);
 						pôvodnýPomer = súbor.čítajVlastnosť(
@@ -13352,14 +13373,14 @@ Toto bolo presunuté na úvodnú stránku:
 						vyplnený = súbor.čítajVlastnosť("vyplnený", vyplnený);
 
 						if (aktívnePlátno == podlaha)
-							vlastnosťS = súbor.čítajVlastnosť("plátno",
-								"podlaha");
+							vlastnosťS = súbor.čítajVlastnosť(
+								"plátno", "podlaha");
 						else if (aktívnePlátno == strop)
-							vlastnosťS = súbor.čítajVlastnosť("plátno",
-								"strop");
+							vlastnosťS = súbor.čítajVlastnosť(
+								"plátno", "strop");
 						else
-							vlastnosťS = súbor.čítajVlastnosť("plátno",
-								(String)null);
+							vlastnosťS = súbor.čítajVlastnosť(
+								"plátno", (String)null);
 
 						if (null != vlastnosťS)
 						{
@@ -13593,17 +13614,17 @@ Toto bolo presunuté na úvodnú stránku:
 							"posunVzoruPera", posunVzoruPeraDoma);
 						vzorPeraDoma = súbor.čítajVlastnosť(
 							"vzorPera", (float[])null);
-						polomerPeraDoma = súbor.čítajVlastnosť("hrúbkaPera",
-							polomerPeraDoma);
+						polomerPeraDoma = súbor.čítajVlastnosť(
+							"hrúbkaPera", polomerPeraDoma);
 
-						peroPoloženéDoma = súbor.čítajVlastnosť("peroPoložené",
-							peroPoloženéDoma);
-						viditeľnýDoma = súbor.čítajVlastnosť("viditeľnosť",
-							viditeľnýDoma);
-						veľkosťDoma = súbor.čítajVlastnosť("veľkosť",
-							veľkosťDoma);
-						pomerDoma = súbor.čítajVlastnosť("pomer",
-							pomerDoma);
+						peroPoloženéDoma = súbor.čítajVlastnosť(
+							"peroPoložené", peroPoloženéDoma);
+						viditeľnýDoma = súbor.čítajVlastnosť(
+							"viditeľnosť", viditeľnýDoma);
+						veľkosťDoma = súbor.čítajVlastnosť(
+							"veľkosť", veľkosťDoma);
+						pomerDoma = súbor.čítajVlastnosť(
+							"pomer", pomerDoma);
 
 						vlastnosťD = súbor.čítajVlastnosť("priehľadnosť",
 							null == priehľadnosťDoma ? (Double)null :
@@ -13622,8 +13643,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 						boolean aktivuj = súbor.čítajVlastnosť(
 							"aktívny", aktívny);
-						otáčanieTvaru = súbor.čítajVlastnosť("otáčanieTvaru",
-							otáčanieTvaru);
+						otáčanieTvaru = súbor.čítajVlastnosť(
+							"otáčanieTvaru", otáčanieTvaru);
 						gyroskop = súbor.čítajVlastnosť("gyroskop", gyroskop);
 						rýchlosť = súbor.čítajVlastnosť("rýchlosť", rýchlosť);
 						rýchlosťPosunu = súbor.čítajVlastnosť(
@@ -13636,8 +13657,8 @@ Toto bolo presunuté na úvodnú stránku:
 							"maximálnaRýchlosťPosunu", maximálnaRýchlosťPosunu);
 						maximálnaUhlováRýchlosť = súbor.čítajVlastnosť(
 							"maximálnaUhlováRýchlosť", maximálnaUhlováRýchlosť);
-						zrýchlenie = súbor.čítajVlastnosť("zrýchlenie",
-							zrýchlenie);
+						zrýchlenie = súbor.čítajVlastnosť(
+							"zrýchlenie", zrýchlenie);
 						zrýchleniePosunu = súbor.čítajVlastnosť(
 							"zrýchleniePosunu", zrýchleniePosunu);
 						uhlovéZrýchlenie = súbor.čítajVlastnosť(
@@ -13659,18 +13680,18 @@ Toto bolo presunuté na úvodnú stránku:
 							súbor.aktívnaSekcia.mennýPriestorVlastností =
 								mennýPriestor + "." + menoRobota + ".cieľ";
 
-						cieľAktívny = súbor.čítajVlastnosť("aktívny",
-							cieľAktívny);
+						cieľAktívny = súbor.čítajVlastnosť(
+							"aktívny", cieľAktívny);
 
-						vlastnosťS = súbor.čítajVlastnosť("poloha",
-							Bod.polohaNaReťazec(cieľX, cieľY));
+						vlastnosťS = súbor.čítajVlastnosť(
+							"poloha", Bod.polohaNaReťazec(cieľX, cieľY));
 						if (null != vlastnosťS)
 						{
 							bod = Bod.reťazecNaPolohu(vlastnosťS);
 							cieľX = bod.polohaX(); cieľY = bod.polohaY();
 						}
-						zastavVCieli = súbor.čítajVlastnosť("zastavV",
-							zastavVCieli);
+						zastavVCieli = súbor.čítajVlastnosť(
+							"zastavV", zastavVCieli);
 						zastavPoSpomalení = súbor.čítajVlastnosť(
 							"zastavPoSpomalení", zastavPoSpomalení);
 						zastavPoSpomaleníPosunu = súbor.čítajVlastnosť(
@@ -13759,16 +13780,16 @@ Toto bolo presunuté na úvodnú stránku:
 							Bod.polohaNaReťazec(this));
 						súbor.zapíšVlastnosť("uhol", aktuálnyUhol);
 						súbor.zapíšVlastnosť("uholOtáčania", uholOtáčania);
-						súbor.zapíšVlastnosť("pootočenieTvaru",
-							pootočenieTvaru);
+						súbor.zapíšVlastnosť(
+							"pootočenieTvaru", pootočenieTvaru);
 
 						súbor.zapíšVlastnosť("farba",
 							Farba.farbaNaReťazec(this));
 						súbor.zapíšVlastnosť("cieľováFarba",
 							null == cieľováFarba ? null :
 							Farba.farbaNaReťazec(cieľováFarba));
-						súbor.zapíšVlastnosť("použiKruhovýNáter",
-							použiKruhovýNáter);
+						súbor.zapíšVlastnosť(
+							"použiKruhovýNáter", použiKruhovýNáter);
 						súbor.zapíšVlastnosť("hrúbkaPera", polomerPera);
 						súbor.zapíšVlastnosť("vzorPera", vzorPera);
 						súbor.zapíšVlastnosť("posunVzoruPera", posunVzoruPera);
@@ -13781,8 +13802,8 @@ Toto bolo presunuté na úvodnú stránku:
 						súbor.zapíšVlastnosť("zaoblenieY", zaoblenieY);
 						súbor.zapíšVlastnosť("pôvodnáVeľkosť", pôvodnáVeľkosť);
 						súbor.zapíšVlastnosť("pôvodnýPomer", pôvodnýPomer);
-						súbor.zapíšVlastnosť("priehľadnosť",
-							Double.valueOf(priehľadnosť));
+						súbor.zapíšVlastnosť(
+							"priehľadnosť", Double.valueOf(priehľadnosť));
 						súbor.zapíšVlastnosť("vyplnený", vyplnený);
 
 						if (aktívnePlátno == podlaha)
@@ -13997,11 +14018,11 @@ Toto bolo presunuté na úvodnú stránku:
 							súbor.aktívnaSekcia.mennýPriestorVlastností =
 								mennýPriestor + "." + menoRobota + ".doma";
 
-						súbor.zapíšVlastnosť("poloha",
-							Bod.polohaNaReťazec(domaX, domaY));
+						súbor.zapíšVlastnosť(
+							"poloha", Bod.polohaNaReťazec(domaX, domaY));
 						súbor.zapíšVlastnosť("uhol", uholDoma);
-						súbor.zapíšVlastnosť("pootočenieTvaru",
-							pootočenieTvaruDoma);
+						súbor.zapíšVlastnosť(
+							"pootočenieTvaru", pootočenieTvaruDoma);
 
 						súbor.zapíšVlastnosť("farba",
 							null == farbaDoma ? null :
@@ -14011,12 +14032,13 @@ Toto bolo presunuté na úvodnú stránku:
 							null == cieľováFarbaDoma ? null :
 							Farba.farbaNaReťazec(cieľováFarbaDoma));
 
-						súbor.zapíšVlastnosť("zrušCieľovúFarbu",
-							zrušCieľovúFarbuDoma);
+						súbor.zapíšVlastnosť(
+							"zrušCieľovúFarbu", zrušCieľovúFarbuDoma);
 
 						súbor.zapíšVlastnosť("hrúbkaPera", polomerPeraDoma);
 						súbor.zapíšVlastnosť("vzorPera", vzorPeraDoma);
-						súbor.zapíšVlastnosť("posunVzoruPera", posunVzoruPeraDoma);
+						súbor.zapíšVlastnosť(
+							"posunVzoruPera", posunVzoruPeraDoma);
 
 						súbor.zapíšVlastnosť("peroPoložené", peroPoloženéDoma);
 						súbor.zapíšVlastnosť("viditeľnosť", viditeľnýDoma);
@@ -14040,21 +14062,21 @@ Toto bolo presunuté na úvodnú stránku:
 						súbor.zapíšVlastnosť("rýchlosť", rýchlosť);
 						súbor.zapíšVlastnosť("rýchlosťPosunu", rýchlosťPosunu);
 						súbor.zapíšVlastnosť("uhlováRýchlosť", uhlováRýchlosť);
-						súbor.zapíšVlastnosť("maximálnaRýchlosť",
-							maximálnaRýchlosť);
-						súbor.zapíšVlastnosť("maximálnaRýchlosťPosunu",
-							maximálnaRýchlosťPosunu);
-						súbor.zapíšVlastnosť("maximálnaUhlováRýchlosť",
-							maximálnaUhlováRýchlosť);
+						súbor.zapíšVlastnosť(
+							"maximálnaRýchlosť", maximálnaRýchlosť);
+						súbor.zapíšVlastnosť(
+							"maximálnaRýchlosťPosunu", maximálnaRýchlosťPosunu);
+						súbor.zapíšVlastnosť(
+							"maximálnaUhlováRýchlosť", maximálnaUhlováRýchlosť);
 						súbor.zapíšVlastnosť("zrýchlenie", zrýchlenie);
-						súbor.zapíšVlastnosť("zrýchleniePosunu",
-							zrýchleniePosunu);
-						súbor.zapíšVlastnosť("uhlovéZrýchlenie",
-							uhlovéZrýchlenie);
-						súbor.zapíšVlastnosť("trvanieAktivity",
-							Long.valueOf(trvanieAktivity));
-						súbor.zapíšVlastnosť("trvaniePasivity",
-							Long.valueOf(trvaniePasivity));
+						súbor.zapíšVlastnosť(
+							"zrýchleniePosunu", zrýchleniePosunu);
+						súbor.zapíšVlastnosť(
+							"uhlovéZrýchlenie", uhlovéZrýchlenie);
+						súbor.zapíšVlastnosť(
+							"trvanieAktivity", Long.valueOf(trvanieAktivity));
+						súbor.zapíšVlastnosť(
+							"trvaniePasivity", Long.valueOf(trvaniePasivity));
 
 
 						if (null == mennýPriestor)
@@ -14068,10 +14090,10 @@ Toto bolo presunuté na úvodnú stránku:
 						súbor.zapíšVlastnosť("poloha",
 							Bod.polohaNaReťazec(cieľX, cieľY));
 						súbor.zapíšVlastnosť("zastavV", zastavVCieli);
-						súbor.zapíšVlastnosť("zastavPoSpomalení",
-							zastavPoSpomalení);
-						súbor.zapíšVlastnosť("zastavPoSpomaleníPosunu",
-							zastavPoSpomaleníPosunu);
+						súbor.zapíšVlastnosť(
+							"zastavPoSpomalení", zastavPoSpomalení);
+						súbor.zapíšVlastnosť(
+							"zastavPoSpomaleníPosunu", zastavPoSpomaleníPosunu);
 					}
 					finally
 					{
@@ -26739,6 +26761,24 @@ Toto bolo presunuté na úvodnú stránku:
 			 * v opise metódy {@link GRobot#mimoHraníc(Bod[], double)
 			 * mimoHraníc}.</p>
 			 * 
+			 * <p> <br /><b>Otázky (Q) a odpovede (A):</b></p>
+			 * 
+			 * <table>
+			 * <tr><td><b>Q:</b> </td><td>Prečo sa nedá ohraničenie nastaviť
+			 * aj inak?</td></tr>
+			 * <tr><td><b>A:</b> </td><td>Z bezpečnostných dôvodov. (Pozri aj
+			 * odpoveď nižšie.)</td></tr>
+			 * 
+			 * <tr><td><b>Q:</b> </td><td>Prečo je ohraničenie nastavované
+			 * vždy so stredom na aktuálnej polohe? Nedalo by sa zadať ako
+			 * parameter ľubovoľný bod?</td></tr>
+			 * <tr><td><b>A:</b> </td><td>Nie, pretože potom by do tejto
+			 * metódy musel byť zakomponovaný celý mechanizmus kontroly
+			 * opustenia hraníc (pozri napríklad aj reakciu {@link 
+			 * GRobot#mimoHraníc(Bod[], double) mimoHraníc}), čo by bolo
+			 * zbytočne komplikované a riskantné.</td></tr>
+			 * </table>
+			 * 
 			 * @param ľaváHranica vzdialenosť od robota určujúca ľavé
 			 *     ohraničenie
 			 * @param dolnáHranica vzdialenosť od robota určujúca dolné
@@ -30951,7 +30991,7 @@ Toto bolo presunuté na úvodnú stránku:
 
 					{@link Bod Bod}[]
 
-					{@code comm// Vypočítame priesečníky priamky |AC| a kružnice {A; 2r} – sú dva:}
+					{@code comm// Vypočítame priesečníky priamky AC a kružnice {A; 2r} – sú dva:}
 					P = {@link Svet Svet}.{@link Svet#priesečníkyPriamkyAKružnice(Poloha, Poloha, Poloha, double) priesečníkyPriamkyAKružnice}(A, C, A, {@code num2} * polomer);
 
 					{@code comm// Z nich jeden je bod E – je to ten, ktorý je bližšie k bodu C:}
@@ -31268,13 +31308,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 * </table>
 			 * 
 			 * <p>Zostáva už len zistiť veľkosť polomeru <i>r</i>. Keď sa
-			 * pozrieme na úsečku |AE| alebo |BD| a uvedomíme si, že ich dĺžka
+			 * pozrieme na úsečku AE alebo BD a uvedomíme si, že ich dĺžka
 			 * je zhodná s priemerom kružnice K (<i>c</i> = 2<i>R</i>), tak
 			 * zistíme, že polomer <i>r</i> vieme zistiť ako rozdiel priemeru
 			 * kružnice K a ľubovoľnej zo strán <i>a</i> alebo
 			 * <i>b</i> trojuholníka Δ ABC.</p>
 			 * 
-			 * <p>Čiže buď budeme počítať rozdiel úsečiek
+			 * <p>Čiže buď budeme počítať rozdiel dĺžok úsečiek
 			 * |BD| − |BC| = <i>c</i> − <i>a</i>, alebo
 			 * |AE| − |AC| = <i>c</i> − <i>b</i>. Keďže dĺžky
 			 * |AE| = |BD| = |AB| = <i>c</i>
@@ -32351,8 +32391,7 @@ Toto bolo presunuté na úvodnú stránku:
 						pôvodnýPomer != pomerVeľkosti)
 					{
 						double mierka = veľkosť / pôvodnáVeľkosť;
-						double mierkaX = mierka * (pomerVeľkosti /
-							pôvodnýPomer);
+						double mierkaX = mierka * (pomerVeľkosti / pôvodnýPomer);
 						at.translate(prepočítanéX, prepočítanéY);
 						at.scale(mierkaX, mierka);
 						at.translate(-prepočítanéX, -prepočítanéY);
@@ -32455,8 +32494,7 @@ Toto bolo presunuté na úvodnú stránku:
 						pôvodnýPomer != pomerVeľkosti)
 					{
 						double mierka = veľkosť / pôvodnáVeľkosť;
-						double mierkaX = mierka * (pomerVeľkosti /
-							pôvodnýPomer);
+						double mierkaX = mierka * (pomerVeľkosti / pôvodnýPomer);
 						at.translate(prepočítanéX, prepočítanéY);
 						at.scale(mierkaX, mierka);
 						at.translate(-prepočítanéX, -prepočítanéY);
@@ -32620,8 +32658,7 @@ Toto bolo presunuté na úvodnú stránku:
 						pôvodnýPomer != pomerVeľkosti)
 					{
 						double mierka = veľkosť / pôvodnáVeľkosť;
-						double mierkaX = mierka * (pomerVeľkosti /
-							pôvodnýPomer);
+						double mierkaX = mierka * (pomerVeľkosti / pôvodnýPomer);
 						at.translate(prepočítanéX, prepočítanéY);
 						at.scale(mierkaX, mierka);
 						at.translate(-prepočítanéX, -prepočítanéY);
@@ -32866,8 +32903,7 @@ Toto bolo presunuté na úvodnú stránku:
 						pôvodnýPomer != pomerVeľkosti)
 					{
 						double mierka = veľkosť / pôvodnáVeľkosť;
-						double mierkaX = mierka * (pomerVeľkosti /
-							pôvodnýPomer);
+						double mierkaX = mierka * (pomerVeľkosti / pôvodnýPomer);
 						at.translate(prepočítanéX, prepočítanéY);
 						at.scale(mierkaX, mierka);
 						at.translate(-prepočítanéX, -prepočítanéY);
@@ -33210,8 +33246,7 @@ Toto bolo presunuté na úvodnú stránku:
 					pôvodnýPomer != pomerVeľkosti)
 				{
 					double mierka = veľkosť / pôvodnáVeľkosť;
-					double mierkaX = mierka * (pomerVeľkosti /
-						pôvodnýPomer);
+					double mierkaX = mierka * (pomerVeľkosti / pôvodnýPomer);
 					at.translate(prepočítanéX, prepočítanéY);
 					at.scale(mierkaX, mierka);
 					at.translate(-prepočítanéX, -prepočítanéY);
@@ -39048,8 +39083,7 @@ Toto bolo presunuté na úvodnú stránku:
 						pôvodnýPomer != pomerVeľkosti)
 					{
 						double mierka = veľkosť / pôvodnáVeľkosť;
-						double mierkaX = mierka * (pomerVeľkosti /
-							pôvodnýPomer);
+						double mierkaX = mierka * (pomerVeľkosti / pôvodnýPomer);
 						at.translate(prepočítanéX, prepočítanéY);
 						at.scale(mierkaX, mierka);
 						at.translate(-prepočítanéX, -prepočítanéY);
@@ -39115,8 +39149,7 @@ Toto bolo presunuté na úvodnú stránku:
 						pôvodnýPomer != pomerVeľkosti)
 					{
 						double mierka = veľkosť / pôvodnáVeľkosť;
-						double mierkaX = mierka * (pomerVeľkosti /
-							pôvodnýPomer);
+						double mierkaX = mierka * (pomerVeľkosti / pôvodnýPomer);
 						at.translate(prepočítanéX, prepočítanéY);
 						at.scale(mierkaX, mierka);
 						at.translate(-prepočítanéX, -prepočítanéY);
@@ -39225,8 +39258,7 @@ Toto bolo presunuté na úvodnú stránku:
 						pôvodnýPomer != pomerVeľkosti)
 					{
 						double mierka = veľkosť / pôvodnáVeľkosť;
-						double mierkaX = mierka * (pomerVeľkosti /
-							pôvodnýPomer);
+						double mierkaX = mierka * (pomerVeľkosti / pôvodnýPomer);
 						at.translate(prepočítanéX, prepočítanéY);
 						at.scale(mierkaX, mierka);
 						at.translate(-prepočítanéX, -prepočítanéY);
@@ -39483,8 +39515,7 @@ Toto bolo presunuté na úvodnú stránku:
 					pôvodnýPomer != pomerVeľkosti)
 				{
 					double mierka = veľkosť / pôvodnáVeľkosť;
-					double mierkaX = mierka * (pomerVeľkosti /
-						pôvodnýPomer);
+					double mierkaX = mierka * (pomerVeľkosti / pôvodnýPomer);
 					at.translate(prepočítanéX, prepočítanéY);
 					at.scale(mierkaX, mierka);
 					at.translate(-prepočítanéX, -prepočítanéY);
@@ -39536,12 +39567,10 @@ Toto bolo presunuté na úvodnú stránku:
 				at.rotate(toRadians(90 - aktuálnyUhol),
 					prepočítanéX, prepočítanéY);
 
-				if (pôvodnáVeľkosť != veľkosť ||
-					pôvodnýPomer != pomerVeľkosti)
+				if (pôvodnáVeľkosť != veľkosť || pôvodnýPomer != pomerVeľkosti)
 				{
 					double mierka = veľkosť / pôvodnáVeľkosť;
-					double mierkaX = mierka * (pomerVeľkosti /
-						pôvodnýPomer);
+					double mierkaX = mierka * (pomerVeľkosti / pôvodnýPomer);
 					at.translate(prepočítanéX, prepočítanéY);
 					at.scale(mierkaX, mierka);
 					at.translate(-prepočítanéX, -prepočítanéY);
@@ -42532,10 +42561,10 @@ Toto bolo presunuté na úvodnú stránku:
 			 * programovacieho rámca.</p>
 			 * 
 			 * <p>Táto mierka nemá vplyv na rozmery kreslenia tvarov robota
-			 * bezparametrickými verziami metód (napríklad {@link #kružnica()
-			 * kružnica()}), ani na mieru pohybu robota bezparametrickými
-			 * verziami metód pohybu (napríklad {@link #dopredu()
-			 * dopredu()}). Má vplyv iba na {@linkplain #vlastnýTvar(String)
+			 * bezparametrickými verziami metód (napríklad {@link #elipsa()
+			 * elipsa()}), ani na mieru pohybu robota bezparametrickými
+			 * verziami metód pohybu (napríklad {@link #posuňVpravo()
+			 * posuňVpravo()}). Má vplyv iba na {@linkplain #vlastnýTvar(String)
 			 * rozmer vlastného obrázkového tvaru robota.}</p>
 			 * 
 			 * @return aktuálna mierka pomeru veľkosti robota
@@ -43067,8 +43096,7 @@ Toto bolo presunuté na úvodnú stránku:
 						pôvodnýPomer != pomerVeľkosti)
 					{
 						double mierka = veľkosť / pôvodnáVeľkosť;
-						double mierkaX = mierka * (pomerVeľkosti /
-							pôvodnýPomer);
+						double mierkaX = mierka * (pomerVeľkosti / pôvodnýPomer);
 						at.translate(prepočítanéX, prepočítanéY);
 						at.scale(mierkaX, mierka);
 						at.translate(-prepočítanéX, -prepočítanéY);

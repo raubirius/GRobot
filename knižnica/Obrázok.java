@@ -54,6 +54,7 @@ import java.awt.image.DirectColorModel;
 import java.awt.image.Kernel;
 import java.awt.image.WritableRaster;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -77,6 +78,7 @@ import javax.swing.ImageIcon;
 import javax.imageio.ImageIO;
 
 
+import knižnica.apacheAntZIP.ZipEntry;
 import knižnica.podpora.AnimatedGifEncoder;
 import knižnica.podpora.GifDecoder;
 import static knižnica.Farebnosť.*;
@@ -312,7 +314,7 @@ import static knižnica.Konštanty.ZÁPIS_GIF_ANIMÁCIE;
  */
 public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 {
-	// Zoznam obrázkov prečítaných zo súboru
+	// Atribúty súvisiace s čítaním obrázkov zo súborov:
 
 		/*packagePrivate*/ static String priečinokObrázkov = "";
 
@@ -323,7 +325,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		/*packagePrivate*/ final static Vector<Icon> zoznamIkon =
 			new Vector<>();
 
-	// Zoznam všetkých vytvorených obrázkov programovacieho rámca
+	// Zoznam všetkých vytvorených obrázkov programovacieho rámca:
 
 		/*packagePrivate*/ final static Vector<Obrázok>
 			zoznamObrázkovKnižnice = new Vector<>();
@@ -332,7 +334,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 	/*packagePrivate*/ final static Vector<Obrázok> animácie = new Vector<>();
 
 
-	// Vnútorná trieda na rôzne operácie s objektami typu BufferedImage
+	// Vnútorná trieda na rôzne operácie s objektami typu BufferedImage.
 	/*packagePrivate*/ static class VykonajVObrázku
 	{
 		// Matice pre pole „rozmazanie“
@@ -1100,7 +1102,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 	// Zoznam obrázkov typu Image prevedených na BufferedImage
 		// (v ideálnom prípade zostane zoznam prázdny, lebo sa bude
 		// pracovať len s obrázkami typu BufferedImage, ale zaručené
-		// to byť nemôže)
+		// to byť nemôže).
 		private final static HashMap<Image, PrevedenýObrázok>
 			prevedenéObrázky = new HashMap<>();
 
@@ -1108,7 +1110,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		// typu BufferedImage (alebo odvodeného), ak nie je overí, či
 		// už nebol vykonávaný prevod – čiže či už sa obrázok nenachádza
 		// v zozname prevedených obrázkov a až potom vyrobí novú
-		// prevedenú inštanciu, ktorú zároveň uloží do spomenutého zoznamu
+		// prevedenú inštanciu, ktorú zároveň uloží do spomenutého zoznamu.
 		/*packagePrivate*/ static BufferedImage preveďNaBufferedImage(
 			Image obrázok)
 		{
@@ -1136,7 +1138,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		}
 
 
-	// Transformuje názov súboru na obrázok
+	// Transformuje názov súboru na obrázok.
 
 		/*packagePrivate*/ static BufferedImage súborNaObrázok(String súbor)
 		{
@@ -1198,7 +1200,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 			return obrázok;
 		}
 
-	// Transformuje názov súboru na ikonu
+	// Transformuje názov súboru na ikonu:
 
 		/*packagePrivate*/ static Icon súborNaIkonu(String súbor)
 		{
@@ -1243,8 +1245,38 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 			return ikona;
 		}
 
+	// Vráti vstupný prúd údajov položky archívu:
 
-	// Univerzálny objekt obrázka
+		private static InputStream dajPrúdZArchívu(
+			Archív archív, String názovPoložky)
+		{
+			názovPoložky = archív.overAKorigujNázovPoložky(názovPoložky);
+			ZipEntry položka = archív.vstup.getEntry(názovPoložky);
+
+			if (null == položka)
+				throw new GRobotException(
+					"Položka „" + názovPoložky + "“ nebola nájdená.",
+					"entryNotFound", názovPoložky);
+
+			// BufferedImage obrázok = null;
+			InputStream čítanie = null;
+
+			try
+			{
+				čítanie = archív.vstup.getInputStream(položka);
+				// obrázok = ImageIO.read(čítanie);
+			}
+			catch (IOException e)
+			{
+				GRobotException.vypíšChybovéHlásenia(e);
+			}
+
+			// return obrázok;
+			return čítanie;
+		}
+
+
+	// Univerzálny objekt obrázka.
 
 		// Nasledujúce dve metódy overujú, či zadaný objekt nižšieho typu
 		// (Image alebo BufferedImage) nie je vyššieho typu (Obrázok)
@@ -1278,7 +1310,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 
 
 	// Inštancia „hints“ na pridávanie antialiasingu do všetkých
-	// obrázkov sveta
+	// obrázkov sveta.
 	/*packagePrivate*/ final static RenderingHints hints = new RenderingHints(
 		RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	static
@@ -1291,24 +1323,20 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 			RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 	}
 
-	// Priehľadnosť obrázka
+	// Priehľadnosť obrázka:
 	/*packagePrivate*/ float priehľadnosť = 1.0f;
 
-	// Posun grafiky obrázka (na úpravu súradnicového systému)
+	// Posun grafiky obrázka (na úpravu súradnicového systému):
 	/*packagePrivate*/ double posunX, posunY;
 
-	// Nevyhnutné na vymazanie a používané pri niektorých operáciách
+	// Nevyhnutné na vymazanie a používané pri niektorých operáciách:
 	/*packagePrivate*/ int[] údajeObrázka;
 	private int[] údajeOperácie;
 
 	// Faktor pre potreby metód bledší(), tmavší()…
 	private final static double faktor = 0.7;
 
-	// Používané pre viaceré aktívne filtre
-	// private float[][] filterObrázka;
-	// private double[][] filterObrázka;
-
-	// Kreslič obrázka – robot, ktorý bude určený na kreslenie do obrázka
+	// Kreslič obrázka – robot, ktorý bude určený na kreslenie do obrázka:
 	private GRobot kreslič = null;
 
 	// Kreslenie obrázka na zadané súradnice do zadaného grafického
@@ -1365,7 +1393,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 
 	// Keď sa zmenia rozmery plátna, musí sa upraviť aj posun obrázkov,
 	// inak by zostali kvázi nepoužiteľné (v súvislosti s kreslením
-	// na nich)
+	// na nich).
 	/*packagePrivate*/ void upravPosun()
 	{
 		grafika.translate(-posunX, -posunY);
@@ -1471,7 +1499,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 	}
 
 
-	// Statické metódy
+	// Statické metódy.
 
 		/**
 		 * <p>Ak sú všetky obrázky uložené v spoločnom priečinku, môžeme pre
@@ -1481,9 +1509,24 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * prázdneho reťazca alebo hodnoty {@code valnull} používanie
 		 * priečinka zrušíme.</p>
 		 * 
+		 * <p>Cesta je používaná pri čítaní všetkých obrázkov, okrem
+		 * {@linkplain Obrázok#čítaj(Archív, String) čítania z archívu.} Čiže
+		 * napríklad pri čítaní metódou {@link Obrázok#čítaj(String)
+		 * čítaj(súbor)}, vypĺňaní metódami {@link GRobot#vyplňTvar(Shape,
+		 * String) GRobot.vyplňTvar(tvar, súbor)}, {@link 
+		 * GRobot#vyplňOblasť(Area, String) GRobot.vyplňOblasť(oblasť, súbor)}
+		 * (atď.), kreslení metódami {@link GRobot#obrázok(String)
+		 * GRobot.obrázok(súbor)}, {@link Plátno#obrázok(String)
+		 * Plátno.obrázok(súbor)} (atď.), ale aj pri nastavovaní vlastného
+		 * tvaru robota {@link GRobot#vlastnýTvar(String)
+		 * GRobot.vlastnýTvar(súbor)} a v mnohých iných situáciách (pozri aj
+		 * metódu {@link Svet#priečinokObrázkov(String)
+		 * Svet.priečinokObrázkov(priečinok)}).</p>
+		 * 
 		 * @param priečinok názov priečinka, relatívna cesta, prípadne
 		 *     prázdny reťazec alebo {@code valnull}
 		 * 
+		 * @see #priečinokObrázkov()
 		 * @see Svet#priečinokObrázkov()
 		 */
 		public static void priečinokObrázkov(String priečinok)
@@ -1505,6 +1548,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * 
 		 * @return aktuálny priečinok, z ktorého sú obrázky prečítané
 		 * 
+		 * @see #priečinokObrázkov(String)
 		 * @see Svet#priečinokObrázkov(String)
 		 */
 		public static String priečinokObrázkov()
@@ -1533,21 +1577,32 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * všetky metódy pracujúce s obrázkami alebo zvukmi, ktoré
 		 * prijímajú názov súboru ako parameter.)</p>
 		 * 
-		 * <p>Táto metóda je schopná čítať aj animácie
-		 * uložené vo formáte GIF (z dôvodu obmedzení tohto formátu ho
-		 * neodporúčame používať na ukladanie nových animácií) a tiež sekvencie
-		 * uložené v číslovaných obrázkových súboroch vo formáte PNG (čo je
-		 * lepšia alternatíva na ukladanie plnofarebných animácií, na druhej
-		 * strane má tú nevýhodu, že nevie automaticky uložiť informácie
+		 * <p>Táto metóda je schopná čítať aj animácie uložené vo formáte GIF
+		 * (z dôvodu obmedzení tohto formátu ho neodporúčame používať na
+		 * ukladanie nových animácií) a tiež sekvencie uložené v číslovaných
+		 * obrázkových súboroch vo formáte PNG (čo je lepšia alternatíva na
+		 * ukladanie plnofarebných animácií; pri použití tejto verzie metódy
+		 * má však tú nevýhodu, že nevie automaticky uložiť informácie
 		 * o trvaní zobrazenia jednotlivých snímok a predvolene pracuje
-		 * s hodnotou 40 ms nastavenou pre každú snímku). Podrobnejšie
+		 * s hodnotou 40 ms nastavenou pre každú snímku; túto nevýhodu nemá
+		 * čítanie sekvencie z archívu – pozri poznámku nižšie). Podrobnejšie
 		 * informácie o PNG sekvenciách sú v opise metódy {@link #ulož(String,
 		 * boolean) ulož(súbor, prepísať)}.</p>
 		 * 
 		 * <p class="attention"><b>Upozornenie:</b> Pri čítaní animácie z PNG
-		 * sekvencie sú do vnútorného zoznamu zdrojov sveta uložené všetky
-		 * obrázky sekvencie. (Príklad s PNG sekvenciou je uvedený nižšie,
-		 * pod príkladom s animovaným GIFom.)</p>
+		 * sekvencie (príklad s PNG sekvenciou je uvedený nižšie, pod
+		 * príkladom s animovaným GIFom) sú do vnútorného zoznamu zdrojov
+		 * sveta uložené všetky obrázky sekvencie. To je ďalšia nevýhoda, lebo
+		 * obrazové informácie snímok sú uchovávané duplicitne. Túto nevýhodu
+		 * nemá čítanie sekvencie z archívu (pozri poznámku nižšie).</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Od verzie 2.18 sa PNG sekvencie
+		 * dajú jednoducho čítať aj z {@linkplain Archív archívu (ZIP).}
+		 * Výhodou je uchovanie celej animácie v jednom súbore, úspora
+		 * vnútornej pamäte programovacieho rámca a tiež automatické uchovanie
+		 * informácií o časovaní snímok (v samostatnej položke archívu).
+		 * Pozri aj príklad v opise metódy {@link Obrázok#čítaj(Archív,
+		 * String) Obrázok.čítaj(archív, názovPoložky)}.</p>
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
@@ -2177,6 +2232,405 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		/** <p><a class="alias"></a> Alias pre {@link #čítaj(String) čítaj}.</p> */
 		public static Obrazok precitaj(String súbor)
 		{ return new Obrazok(čítaj(súbor)); }
+
+
+		// Filtre názvu súboru časovania snímok PNG sekvencie:
+		final static Filtre názovSúboruČasovania = new Filtre(
+			new Filtre.Filter("-?\\*+-?", "-"),
+			new Filtre.Filter("(?i:\\.png$)", ".tim"),
+			new Filtre.Filter("-+\\.tim", ".tim"));
+
+		// Súbor na čítanie časovania snímok PNG sekvencie:
+		final static Súbor súborČasovania = new Súbor();
+
+		/**
+		 * <p>Prečíta do vnútornej pamäte sveta obrázok zo zadaného archívu
+		 * a vytvorí z neho nový objekt typu {@link Obrázok Obrázok}. Archív
+		 * musí byť vopred otvorený na čítanie. Inak metóda funguje veľmi
+		 * podobne ako metóda {@link #čítaj(String) čítaj(súbor)}.</p>
+		 * 
+		 * <p>Obrázok prečítaný z archívu je chápaný ako objekt a po prečítaní
+		 * zostáva uložený vo vnútornej pamäti sveta. Z nej môže byť v prípade
+		 * potreby odstránený metódou {@link Svet#uvoľni(Obrázok)
+		 * Svet.uvoľni(ktorý)} (<small>kde <code>ktorý</code> je inštancia
+		 * obrázka</small>).</p>
+		 * 
+		 * <p>Táto metóda neberie do úvahy nastavenie {@linkplain 
+		 * #priečinokObrázkov(String) priečinka obrázkov.} Ak je obrázok
+		 * v archíve uložený v nejakom priečinku, treba ako názov položky
+		 * uviesť celú cestu.</p>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
+		 * použiteľná len v prípade, že je archív otvorený na
+		 * <b>{@linkplain Archív#otvorNaČítanie(String) čítanie.}</b></p>
+		 * 
+		 * <p><b>Príklad:</b></p>
+		 * 
+		 * <p>Nižšie sú fragmenty kódu, ktorými sa dá zapísať aj prečítať PNG
+		 * sekvencia z archívu. Kód treba korektne uzavrieť do štruktúr
+		 * {@code kwdtry}-{@code kwdcatch}, obrázok na zápis treba vopred
+		 * pripraviť (naprogramovať jeho vyrobenie), ale inak je kód
+		 * pripravený na použitie.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Pri zápise a čítaní PNG sekvencie
+		 * v archíve sú automaticky uchovávané informácie o časovaní snímok
+		 * v samostatnej položke archívu, ktorej názov je odvodený zo šablóny
+		 * PNG sekvencie. Čítanie PNG sekvencie z archívu má aj tú výhodu, že
+		 * parciálne obrázky sekvencie nie sú duplicitne ukladané v pamäti
+		 * sveta.</p>
+		 * 
+		 * <pre CLASS="example">
+			{@code comm// (deklarácie)}
+			{@link Archív Archív} archív = {@code kwdnew} {@link Archív#Archív() Archív}();
+			{@link Obrázok Obrázok} obrázok = {@code comm/*… obrázok treba vytvoriť …*}{@code comm/;}
+
+			{@code comm// Takto sa dá obrázok zapísať:}
+			archív.{@link Archív#otvorNaZápis(String) otvorNaZápis}({@code srg"archív-png.zip"});
+			obrázok.{@link Obrázok#ulož(Archív, String) ulož}(archív, {@code srg"názov-*.png"});
+			archív.{@link Archív#zavri() zavri}();
+
+			{@code comm// prípadne takto:}
+			archív.{@link Archív#otvorNaZápis(String) otvorNaZápis}({@code srg"archív-png.zip"});
+			archív.{@link Archív#pridajPoložku(String, Obrázok) pridajPoložku}({@code srg"názov-*.png"}, obrázok);
+			archív.{@link Archív#zavri() zavri}();
+
+
+			{@code comm// A takto potom prečítať}
+			archív.{@link Archív#otvorNaČítanie(String) otvorNaČítanie}({@code srg"archív-png.zip"});
+			obrázok = {@link Obrázok Obrázok}.{@link Obrázok#čítaj(Archív, String) čítaj}(archív, {@code srg"názov-*.png"});
+			archív.{@link Archív#zavri() zavri}();
+
+			{@code comm// prípadne takto:}
+			archív.{@link Archív#otvorNaČítanie(String) otvorNaČítanie}({@code srg"archív-png.zip"});
+			obrázok = archív.{@link Archív#obrázok(String) obrázok}({@code srg"názov-*.png"});
+			archív.{@link Archív#zavri() zavri}();
+			</pre>
+		 * 
+		 * 
+		 * @param archív archív, z ktorého má byť obrázok prečítaný
+		 * @param názovPoložky názov položky s obrázkom v archíve (vrátane
+		 *     úplnej cesty) alebo šablóna sekvencie animácie
+		 * @return obrázok v novom objekte typu {@link Obrázok Obrázok}
+		 *     (prípadne {@code valnull}, ak pokus o prečítanie sekvencie
+		 *     zlyhal z pamäťových dôvodov)
+		 * 
+		 * @throws GRobotException ak archív nie je otvorený na čítanie
+		 *     (identifikátor {@code archiveNotOpenForReading}) alebo zadaná
+		 *     položka s obrázkom nebola nájdená (identifikátor
+		 *     {@code entryNotFound})
+		 */
+		public static Obrázok čítaj(Archív archív, String názovPoložky)
+		{
+			if (null == archív || null == archív.vstup)
+				throw new GRobotException(
+					"Archív nie je otvorený na čítanie.",
+					"archiveNotOpenForReading");
+
+			Obrázok novýObrázok = null;
+
+			int prvýIndex = názovPoložky.indexOf('*');
+
+			if (-1 != prvýIndex)
+			{
+				String prípona = názovPoložky.substring(
+					názovPoložky.lastIndexOf('.') + 1);
+
+				if (!prípona.toLowerCase().equals("png") &&
+					!prípona.toLowerCase().equals("jpg") &&
+					!prípona.toLowerCase().equals("jpeg"))
+					throw new GRobotException("Šablóna „" + názovPoložky +
+						"“ nie je použiteľná.", "invalidImageTemplate",
+						názovPoložky);
+
+				int poslednýIndex = 1 + názovPoložky.lastIndexOf('*');
+				String prefix = názovPoložky.substring(0, prvýIndex);
+				String postfix = názovPoložky.substring(poslednýIndex);
+				String formát = "%0" + (poslednýIndex - prvýIndex) + "d";
+
+				String menoPoložky = null;
+				InputStream čítanie = null;
+				BufferedImage obrázokZPrúdu = null;
+				int i = 0, n = 0;
+
+				// Postupujeme rovnako ako v metóde čítaj(String), ale
+				// namiesto overovania existencie série súborov na
+				// disku/ceste/medzi zdrojmi, čítame archív:
+				for (; i <= 1; ++i)
+				{
+					if (1 == i)
+					{
+						do {
+							menoPoložky = prefix + String.format(
+								Locale.ENGLISH, formát, ++n) + postfix;
+						} while (null != archív.vstup.getEntry(menoPoložky));
+						--n;
+					}
+
+					menoPoložky = prefix + String.format(
+						Locale.ENGLISH, formát, i) + postfix;
+
+					try
+					{
+						čítanie = dajPrúdZArchívu(archív, menoPoložky);
+						obrázokZPrúdu = ImageIO.read(čítanie);
+
+						if (null != ObsluhaUdalostí.počúvadlo)
+							synchronized (ÚdajeUdalostí.zámokUdalostí)
+							{
+								ObsluhaUdalostí.počúvadlo.sekvencia(
+									ČÍTANIE_PNG_SEKVENCIE,
+									menoPoložky, null, i, n);
+							}
+
+						synchronized (ÚdajeUdalostí.zámokUdalostí)
+						{
+							int početPočúvajúcich =
+								GRobot.počúvajúciSúbory.size();
+							for (int j = 0; j < početPočúvajúcich; ++j)
+							{
+								GRobot počúvajúci =
+									GRobot.počúvajúciSúbory.get(j);
+								počúvajúci.sekvencia(ČÍTANIE_PNG_SEKVENCIE,
+									menoPoložky, null, i, n);
+							}
+						}
+
+						break;
+					}
+					catch (Exception e)
+					{
+						// Ignorované…
+					}
+				}
+
+				if (null == obrázokZPrúdu)
+					throw new GRobotException("Položka „" + menoPoložky +
+						"“ nebola nájdená.", "entryNotFound", menoPoložky);
+
+				// Obrázok je vytvorený podľa prvej nájdenej položky:
+				novýObrázok = new Obrázok(
+					obrázokZPrúdu.getWidth(null),
+					obrázokZPrúdu.getHeight(null));
+
+				novýObrázok.grafika.translate(
+					-novýObrázok.posunX, -novýObrázok.posunY);
+				novýObrázok.grafika.drawImage(obrázokZPrúdu, 0, 0, null);
+				novýObrázok.grafika.translate(
+					novýObrázok.posunX, novýObrázok.posunY);
+
+				if (i > 0)
+				{
+					// Ak mala prvá položka poradové číslo 1, tak je to zároveň
+					// prvá snímka animácie…
+					novýObrázok.trvanie = 40;
+					novýObrázok.pridajĎalšiu(obrázokZPrúdu,
+						novýObrázok.trvanie);
+
+					for (;;)
+					{
+						menoPoložky = prefix + String.format(
+							Locale.ENGLISH, formát, ++i) + postfix;
+
+						// Potom sa číta sekvencia položiek archívu, dokedy sú
+						// nachádzané ďalšie a ďalšie položky:
+						try
+						{
+							čítanie = dajPrúdZArchívu(archív, menoPoložky);
+							obrázokZPrúdu = ImageIO.read(čítanie);
+
+							novýObrázok.pridajĎalšiu(obrázokZPrúdu,
+								novýObrázok.trvanie);
+
+							if (null != ObsluhaUdalostí.počúvadlo)
+								synchronized (ÚdajeUdalostí.zámokUdalostí)
+								{
+									ObsluhaUdalostí.počúvadlo.sekvencia(
+										ČÍTANIE_PNG_SEKVENCIE,
+										menoPoložky, null, i, n);
+								}
+
+							synchronized (ÚdajeUdalostí.zámokUdalostí)
+							{
+								int početPočúvajúcich =
+									GRobot.počúvajúciSúbory.size();
+								for (int j = 0; j < početPočúvajúcich; ++j)
+								{
+									GRobot počúvajúci =
+										GRobot.počúvajúciSúbory.get(j);
+									počúvajúci.sekvencia(ČÍTANIE_PNG_SEKVENCIE,
+										menoPoložky, null, i, n);
+								}
+							}
+						}
+						catch (OutOfMemoryError e)
+						{
+							Svet.uvoľni(novýObrázok);
+							novýObrázok = null;
+							for (int j = 0; j <= i; ++j)
+								Svet.uvoľni(prefix + String.format(
+									Locale.ENGLISH, formát, j) + postfix);
+
+							if (null != ObsluhaUdalostí.počúvadlo)
+								synchronized (ÚdajeUdalostí.zámokUdalostí)
+								{
+									ObsluhaUdalostí.počúvadlo.sekvencia(
+										CHYBA_ČÍTANIA_PNG_SEKVENCIE,
+										menoPoložky, null, i, n);
+								}
+
+								synchronized (ÚdajeUdalostí.zámokUdalostí)
+								{
+									int početPočúvajúcich =
+										GRobot.počúvajúciSúbory.size();
+									for (int j = 0; j < početPočúvajúcich; ++j)
+									{
+										GRobot počúvajúci =
+											GRobot.počúvajúciSúbory.get(j);
+										počúvajúci.sekvencia(
+											CHYBA_ČÍTANIA_PNG_SEKVENCIE,
+											menoPoložky, null, i, n);
+									}
+								}
+
+							return null;
+						}
+						catch (Exception e)
+						{
+							break;
+						}
+					}
+
+					novýObrázok.snímka = 0;
+					novýObrázok.dajGrafikuSnímky(0);
+
+					// Prečítaj časovanie:
+					try {
+						String menoČasovania = názovSúboruČasovania
+							.použi(názovPoložky);
+						if (null != archív.vstup.getEntry(menoČasovania))
+						{
+							súborČasovania.pripojArchív(archív);
+							súborČasovania.otvorNaČítanie(menoČasovania);
+							double[] časovanie = súborČasovania.čítajVlastnosť(
+								"tim", (double[])null);
+							súborČasovania.zavri();
+							súborČasovania.pripojArchív(null);
+							for (int j = 0; j < časovanie.length &&
+								j < novýObrázok.snímky.size(); ++j)
+								novýObrázok.trvanie(j, časovanie[j]);
+						}
+					} catch (Exception e) {
+						// Ignorované, časovanie nie je povinné…
+					}
+				}
+			}
+			else
+			{
+				// Prečítaj prípadnú animáciu gifu.
+				if (názovPoložky.toLowerCase().endsWith(".gif"))
+				{
+					InputStream čítanie = dajPrúdZArchívu(archív, názovPoložky);
+
+					// Použije triedu GifDecoder na prečítanie všetkých snímok
+					// (ak je ich viac než jedna).
+					GifDecoder gifDecoder = new GifDecoder();
+					gifDecoder.read(čítanie);
+
+					int n = gifDecoder.getFrameCount();
+
+					for (int i = 0; i < n; ++i)
+					{
+						BufferedImage snímka = gifDecoder.getFrame(i);
+						int trvanie = gifDecoder.getDelay(i);
+
+						// Prvá položka zároveň vytvorí obrázok:
+						if (null == novýObrázok)
+						{
+							novýObrázok = new Obrázok(
+								snímka.getWidth(null),
+								snímka.getHeight(null));
+
+							novýObrázok.grafika.translate(
+								-novýObrázok.posunX, -novýObrázok.posunY);
+							novýObrázok.grafika.drawImage(snímka, 0, 0, null);
+							novýObrázok.grafika.translate(
+								novýObrázok.posunX, novýObrázok.posunY);
+						}
+
+						novýObrázok.pridajĎalšiu(snímka, trvanie);
+
+						if (null != ObsluhaUdalostí.počúvadlo)
+							synchronized (ÚdajeUdalostí.zámokUdalostí)
+							{
+								ObsluhaUdalostí.počúvadlo.sekvencia(
+									ČÍTANIE_GIF_ANIMÁCIE,
+									názovPoložky, snímka, i - 1, n);
+							}
+
+						synchronized (ÚdajeUdalostí.zámokUdalostí)
+						{
+							int početPočúvajúcich =
+								GRobot.počúvajúciSúbory.size();
+							for (int j = 0; j < početPočúvajúcich; ++j)
+							{
+								GRobot počúvajúci =
+									GRobot.počúvajúciSúbory.get(j);
+								počúvajúci.sekvencia(
+									ČÍTANIE_GIF_ANIMÁCIE,
+									názovPoložky, snímka, i - 1, n);
+							}
+						}
+					}
+
+					if (n > 1)
+					{
+						novýObrázok.snímka = 0;
+						novýObrázok.dajGrafikuSnímky(0);
+					}
+				}
+				else
+				{
+					InputStream čítanie = null;
+					BufferedImage obrázokZPrúdu = null;
+
+					try
+					{
+						čítanie = dajPrúdZArchívu(archív, názovPoložky);
+						obrázokZPrúdu = ImageIO.read(čítanie);
+					}
+					catch (IOException e)
+					{ GRobotException.vypíšChybovéHlásenia(e, true); }
+
+					if (null == obrázokZPrúdu)
+						throw new GRobotException("Položka „" + názovPoložky +
+							"“ nebola nájdená.", "entryNotFound", názovPoložky);
+
+					novýObrázok = new Obrázok(
+						obrázokZPrúdu.getWidth(null),
+						obrázokZPrúdu.getHeight(null));
+
+					novýObrázok.grafika.translate(
+						-novýObrázok.posunX, -novýObrázok.posunY);
+					novýObrázok.grafika.drawImage(obrázokZPrúdu, 0, 0, null);
+					novýObrázok.grafika.translate(
+						novýObrázok.posunX, novýObrázok.posunY);
+				}
+			}
+
+			return novýObrázok;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #čítaj(Archív, String) čítaj}.</p> */
+		public static Obrazok citaj(Archív archív, String názovPoložky)
+		{ return new Obrazok(čítaj(archív, názovPoložky)); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #čítaj(Archív, String) čítaj}.</p> */
+		public static Obrázok prečítaj(Archív archív, String názovPoložky)
+		{ return čítaj(archív, názovPoložky); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #čítaj(Archív, String) čítaj}.</p> */
+		public static Obrazok precitaj(Archív archív, String názovPoložky)
+		{ return new Obrazok(čítaj(archív, názovPoložky)); }
 
 
 		// Jedna nestatická metóda:
@@ -7156,6 +7610,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * súbory vyhovujúce kritériám šablóny názvov súborov animovanej
 		 * sekvencie.</p>
 		 * 
+		 * <p class="remark"><b>Poznámka:</b> Od verzie 2.18 sa PNG sekvencie
+		 * dajú jednoducho zapisovať aj do {@linkplain Archív archívu (ZIP).}
+		 * Výhodou je uchovanie celej animácie v jednom súbore, úspora
+		 * vnútornej pamäte programovacieho rámca a tiež automatické uchovanie
+		 * informácií o časovaní snímok (v samostatnej položke archívu).
+		 * Pozri aj príklad v opise metódy {@link Obrázok#čítaj(Archív,
+		 * String) Obrázok.čítaj(archív, názovPoložky)}.</p>
+		 * 
 		 * <p>Podobne funguje komunikácia pri určovaní výsledného počtu snímok
 		 * ak je druhý parameter tejto metódy ({@code prepísať}) rovný
 		 * {@code valtrue} a na pevnom disku jestvuje sekvencia s vyšším
@@ -7779,6 +8241,10 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 			}
 		}
 
+		/** <p><a class="alias"></a> Alias pre {@link #ulož(String, boolean) ulož}.</p> */
+		public void uloz(String súbor, boolean prepísať)
+		{ ulož(súbor, prepísať); }
+
 
 		// --- Pomocná trieda použitá pri ukladaní vo formáte GIF --- //
 
@@ -7919,9 +8385,312 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		// --- Pomocná trieda použitá pri ukladaní vo formáte GIF --- //
 
 
-		/** <p><a class="alias"></a> Alias pre {@link #ulož(String, boolean) ulož}.</p> */
-		public void uloz(String súbor, boolean prepísať)
-		{ ulož(súbor, prepísať); }
+		/**
+		 * <p>Uloží obsah obrázka do archívu ako položku so zadaným názvom.
+		 * Archív musí byť vopred otvorený na zápis. Ak je názov položky
+		 * šablóna PNG sekvencie, tak bude do archívu pridaných toľko
+		 * položiek, koľko by bolo vytvorených súborov sekvencie, pričom ich
+		 * názvy budú korešpondovať s názvami súborov sekvencie. Ďalej pre
+		 * túto metódu platí súhrn relevantných informácií uvedených v opisoch
+		 * nasledujúcich dvoch metód:</p>
+		 * 
+		 * <ul>
+		 * <li>{@link #ulož(String, boolean) ulož}{@code (súbor,
+		 * prepísať)};</li>
+		 * <li>{@link Archív#pridajPoložku(String, byte[])
+		 * Archív.pridajPoložku}{@code (názovPoložky, údajePoložky)}.</li>
+		 * </ul>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
+		 * použiteľná len v prípade, že je archív otvorený na
+		 * <b>{@linkplain Archív#otvorNaZápis(String) zápis.}</b></p>
+		 * 
+		 * <p>Pozri aj príklad v opise metódy {@link Obrázok#čítaj(Archív,
+		 * String) Obrázok.čítaj(archív, názovPoložky)}.</p>
+		 * 
+		 * @param archív inštancia archívu, do ktorého má byť tento obrázok
+		 *     pridaný ako položka
+		 * @param názovPoložky názov položky v archíve alebo šablóna názvov
+		 *     položiek, ak chceme zapísať PNG sekvenciu animácie
+		 * @return položky archívu knižnice <a href="https://ant.apache.org/"
+		 *     target="_blank">Apache Ant</a> <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipEntry.java"
+		 *     target="_blank"><code>ZipEntry</code></a> na vykonanie prípadných
+		 *     ďalších úprav (nastavenie komentárov položiek, úprava ich dátumu
+		 *     podľa vlastných potrieb a podobne)
+		 * 
+		 * @throws GRobotException ak bol zadaný názov súboru s neplatnou
+		 *     príponou, ak archív nie je otvorený na zápis, ak bol názov
+		 *     položky zamlčaný (bola zadaná hodnota {@code valnull})
+		 *     alebo v prípade pokusu o vloženie duplicitnej položky
+		 */
+		public ZipEntry[] ulož(Archív archív, String názovPoložky)
+		{
+			if (null == archív || null == archív.výstup)
+				throw new GRobotException(
+					"Archív nie je otvorený na zápis.",
+					"archiveNotOpenForWriting");
+
+			if (!snímky.isEmpty())
+			{
+				snímka = overIndexSnímky(snímka);
+				uložGrafikuSnímky(snímka);
+			}
+
+			int prvýIndex = názovPoložky.indexOf('*');
+			final Vector<ZipEntry> položky = new Vector<>();
+
+			if (-1 != prvýIndex)
+			{
+				String prípona = názovPoložky.substring(
+					názovPoložky.lastIndexOf('.') + 1);
+
+				if (!prípona.toLowerCase().equals("png"))
+					throw new GRobotException("Šablóna „" + názovPoložky +
+						"“ nie je použiteľná.", "invalidImageTemplate",
+						názovPoložky);
+
+				int poslednýIndex = 1 + názovPoložky.lastIndexOf('*');
+				String prefix = názovPoložky.substring(0, prvýIndex);
+				String postfix = názovPoložky.substring(poslednýIndex);
+				String formát = "%0" + (poslednýIndex - prvýIndex) + "d";
+
+				int n = snímky.size();
+				ByteArrayOutputStream uložiťDo = null;
+				String menoPoložky = null;
+
+				if (0 == n)
+				{
+					// Jediný súbor PNG:
+					menoPoložky = prefix + String.format(
+						Locale.ENGLISH, formát, 0) + postfix;
+
+					uložiťDo = new ByteArrayOutputStream();
+
+					try
+					{
+						ImageIO.write(this, prípona, uložiťDo);
+						položky.add(archív.pridajPoložku(menoPoložky,
+							uložiťDo.toByteArray()));
+
+						if (null != ObsluhaUdalostí.počúvadlo)
+							synchronized (ÚdajeUdalostí.zámokUdalostí)
+							{
+								ObsluhaUdalostí.počúvadlo.sekvencia(
+									ZÁPIS_PNG_SEKVENCIE,
+									this, menoPoložky, 0, 0);
+							}
+
+						synchronized (ÚdajeUdalostí.zámokUdalostí)
+						{
+							int početPočúvajúcich =
+								GRobot.počúvajúciSúbory.size();
+							for (int i = 0; i < početPočúvajúcich; ++i)
+							{
+								GRobot počúvajúci =
+									GRobot.počúvajúciSúbory.get(i);
+								počúvajúci.sekvencia(
+									ZÁPIS_PNG_SEKVENCIE,
+									this, menoPoložky, 0, 0);
+							}
+						}
+					}
+					catch (IOException e)
+					{ GRobotException.vypíšChybovéHlásenia(e, true); }
+				}
+				else
+				{
+					// Sekvencia súborov PNG:
+					for (int i = 0; i < n; ++i)
+					{
+						Snímka snímka = snímky.get(i);
+
+						menoPoložky = prefix + String.format(
+							Locale.ENGLISH, formát, i + 1) + postfix;
+
+						uložiťDo = new ByteArrayOutputStream();
+
+						try
+						{
+							ImageIO.write(snímka, prípona, uložiťDo);
+							položky.add(archív.pridajPoložku(menoPoložky,
+								uložiťDo.toByteArray()));
+
+							if (null != ObsluhaUdalostí.počúvadlo)
+								synchronized (ÚdajeUdalostí.zámokUdalostí)
+								{
+									ObsluhaUdalostí.počúvadlo.sekvencia(
+										ZÁPIS_PNG_SEKVENCIE,
+										snímka, menoPoložky, i + 1, n);
+								}
+
+							synchronized (ÚdajeUdalostí.zámokUdalostí)
+							{
+								int početPočúvajúcich =
+									GRobot.počúvajúciSúbory.size();
+								for (int j = 0; j < početPočúvajúcich; ++j)
+								{
+									GRobot počúvajúci =
+										GRobot.počúvajúciSúbory.get(j);
+									počúvajúci.sekvencia(
+										ZÁPIS_PNG_SEKVENCIE,
+										snímka, menoPoložky, i + 1, n);
+								}
+							}
+						}
+						catch (IOException e)
+						{ GRobotException.vypíšChybovéHlásenia(e, true); }
+					}
+
+					// Zapíš časovanie:
+					try {
+						String menoČasovania = názovSúboruČasovania
+							.použi(názovPoložky);
+
+						double[] časovanie = new double[snímky.size()];
+						for (int j = 0; j < časovanie.length; ++j)
+							časovanie[j] = trvanie(j);
+
+						súborČasovania.pripojArchív(archív);
+						súborČasovania.otvorNaZápis(menoČasovania);
+						súborČasovania.zapíšVlastnosť("tim", časovanie);
+						súborČasovania.zavri();
+						súborČasovania.pripojArchív(null);
+					} catch (Exception e) {
+						// Ignorované, časovanie nie je povinné…
+					}
+				}
+			}
+			else
+			{
+				ByteArrayOutputStream uložiťDo = new ByteArrayOutputStream();
+
+				String prípona = názovPoložky.substring(
+					názovPoložky.lastIndexOf('.') + 1);
+
+				if (prípona.toLowerCase().equals("png"))
+				{
+					// Súbory png:
+					try {
+						ImageIO.write(this, prípona, uložiťDo);
+						položky.add(archív.pridajPoložku(názovPoložky,
+							uložiťDo.toByteArray()));
+					}
+					catch (IOException e)
+					{ GRobotException.vypíšChybovéHlásenia(e, true); }
+				}
+				else if (prípona.toLowerCase().equals("jpg") ||
+					prípona.toLowerCase().equals("jpeg"))
+				{
+					// Pre jpeg musíme zmeniť farebný model z ARGB na RGB
+					// Pozri: http://archives.java.sun.com/cgi-bin/wa?A2=ind0404&L=java2d-interest&D=0&P=2727
+
+					WritableRaster raster = getRaster();
+					WritableRaster novýRaster = raster.createWritableChild(
+						0, 0, šírka, výška, 0, 0, new int[] {0, 1, 2});
+
+					DirectColorModel farebnýModel =
+						(DirectColorModel)getColorModel();
+
+					DirectColorModel novýFarebnýModel =
+						new DirectColorModel(farebnýModel.getPixelSize(),
+						farebnýModel.getRedMask(),
+						farebnýModel.getGreenMask(),
+						farebnýModel.getBlueMask());
+
+					BufferedImage rgbBuffer = new BufferedImage(
+						novýFarebnýModel, novýRaster, false, null);
+
+					try {
+						ImageIO.write(rgbBuffer, prípona, uložiťDo);
+						položky.add(archív.pridajPoložku(názovPoložky,
+							uložiťDo.toByteArray()));
+					}
+					catch (IOException e)
+					{ GRobotException.vypíšChybovéHlásenia(e, true); }
+				}
+				else if (prípona.toLowerCase().equals("gif"))
+				{
+					AnimatedGifEncoder age = new AnimatedGifEncoder();
+					age.start(uložiťDo);
+
+					if (0 >= opakuj)
+						age.setRepeat(0);
+					else if (1 != opakuj)
+						age.setRepeat(opakuj);
+
+					int n = snímky.size();
+
+					if (0 == n)
+					{
+						age.setDelay(0);
+						SnímkaGIFu snímkaGIFu = new SnímkaGIFu(this);
+
+						if (null != snímkaGIFu.transparentná)
+							age.setTransparent(snímkaGIFu.transparentná);
+
+						age.addFrame(snímkaGIFu);
+					}
+					else
+					{
+						for (int i = 0; i < n; ++i)
+						{
+							Snímka snímka = snímky.get(i);
+							age.setDelay(snímka.trvanie);
+							SnímkaGIFu snímkaGIFu = new SnímkaGIFu(snímka);
+
+							if (null != snímkaGIFu.transparentná)
+								age.setTransparent(snímkaGIFu.transparentná);
+
+							age.addFrame(snímkaGIFu);
+
+							if (null != ObsluhaUdalostí.počúvadlo)
+								synchronized (ÚdajeUdalostí.zámokUdalostí)
+								{
+									ObsluhaUdalostí.počúvadlo.sekvencia(
+										ZÁPIS_GIF_ANIMÁCIE,
+										snímka, názovPoložky, i + 1, n);
+								}
+
+								synchronized (ÚdajeUdalostí.zámokUdalostí)
+								{
+									int početPočúvajúcich =
+										GRobot.počúvajúciSúbory.size();
+									for (int j = 0; j < početPočúvajúcich; ++j)
+									{
+										GRobot počúvajúci =
+											GRobot.počúvajúciSúbory.get(j);
+										počúvajúci.sekvencia(ZÁPIS_GIF_ANIMÁCIE,
+											snímka, názovPoložky, i + 1, n);
+									}
+								}
+						}
+					}
+
+					age.finish();
+
+					try {
+						položky.add(archív.pridajPoložku(názovPoložky,
+							uložiťDo.toByteArray()));
+					}
+					catch (IOException e)
+					{ GRobotException.vypíšChybovéHlásenia(e, true); }
+				}
+				else
+				{
+					throw new GRobotException("Neplatný formát obrázka: " +
+						prípona, "invalidImageFormat", prípona);
+				}
+			}
+
+			return položky.toArray(prázdnePoleZipEntry);
+		}
+
+		// Prázdne pole položiek ZipEntry na typovú konverziu vektora na pole:
+		private final static ZipEntry[] prázdnePoleZipEntry = new ZipEntry[0];
+
+		/** <p><a class="alias"></a> Alias pre {@link #ulož(Archív, String) ulož}.</p> */
+		public ZipEntry[] uloz(Archív archív, String názovPoložky)
+		{ return ulož(archív, názovPoložky); }
 
 
 	// Vloženie do schránky
@@ -9030,10 +9799,10 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 			if (!snímky.isEmpty())
 			{
 				Snímka snímka = snímky.get(this.snímka);
-				return snímka.trvanie * 1000.0;
+				return snímka.trvanie / 1000.0;
 			}
 
-			return trvanie * 1000.0;
+			return trvanie / 1000.0;
 		}
 
 		/**
@@ -9061,10 +9830,10 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 			{
 				indexSnímky = overIndexSnímky(indexSnímky);
 				Snímka snímka = snímky.get(indexSnímky);
-				return snímka.trvanie * 1000.0;
+				return snímka.trvanie / 1000.0;
 			}
 
-			return trvanie * 1000.0;
+			return trvanie / 1000.0;
 		}
 
 		/**

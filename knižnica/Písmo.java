@@ -285,7 +285,7 @@ public class Písmo extends Font
 	 * table.txtAttrList tr th:nth-child(3),
 	 * table.txtAttrList tr td:nth-child(3)
 	 * { width: 60%; }
-	 * --></style><!-- TODO – presunúť do štýlu – pohľadať duplicity. -->
+	 * --></style>
 	 * 
 	 * <table class="shadedTable txtAttrList">
 	 * <tr><th>Tvar atribútu</th><th>Význam atribútu</th><th>Očakávané

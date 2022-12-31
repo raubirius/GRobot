@@ -305,6 +305,24 @@ import knižnica.podpora.RandomGenerator;
  * 
  * <p> </p>
  * 
+ * <p class="remark"><b>Poznámka:</b> Táto trieda používa na generovanie
+ * pseudonáhodných čísiel implementáciu Mersennovho twistera z CERNu z roku
+ * 1999. Uvedená implementácia bola použitá aj v rámci procesu implementácie
+ * vlastnej optimalizovanej verzie generátora pseudonáhodných čísiel
+ * s binomickým rozložením. (Pozri zdroj nižšie.)</p>
+ * 
+ * <p><b>Súvisiaci zdroj:</b></p>
+ * 
+ * <ul>
+ * <li><small>Horváth, Roman</small>: Optimisation of Algorithms Generating
+ * Pseudorandom Integers with Binomial Distribution. <em>ICETA 2022.</em>
+ * Danver : Institute of Electrical and Electronics Engineers, 2022. ISBN
+ * 979-8-3503-2032-9. Pp. 197–201. <a target="_blank"
+ * href="resources/Horvath-ICETA-2022.pdf"><i>[prevziať]</i></a></li>
+ * </ul>
+ * 
+ * <p> </p>
+ * 
  * <p><b>Ďalšie zdroje:</b></p>
  * 
  * <p>Môžeme povedať, že algoritmus použitý v triede {@code currPlazma} je
@@ -319,7 +337,7 @@ import knižnica.podpora.RandomGenerator;
  * Citované: 27. 11. 2019.</li>
  * </ul>
  * 
- * <p>To znamená, že ide o základnú neoptimalizovanú verziu vhodnú na
+ * <p>Uvdedený zdroj obsahuje základnú neoptimalizovanú verziu vhodnú na
  * samoštúdium (pretože veci príliš nekomplikuje). Verzia algoritmu použitá
  * v tejto triede ňou bola inšpirovaná, ale výsledná implementácia je
  * odlišná.</p>

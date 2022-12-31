@@ -434,6 +434,26 @@ import static knižnica.Konštanty.ĽAVÉ;
 	}
 	</pre>
  * 
+ * <p> </p>
+ * 
+ * <p class="remark"><b>Poznámka:</b> Táto trieda používa na generovanie
+ * pseudonáhodných čísiel implementáciu Mersennovho twistera z CERNu z roku
+ * 1999. Uvedená implementácia bola použitá aj v rámci procesu implementácie
+ * vlastnej optimalizovanej verzie generátora pseudonáhodných čísiel
+ * s binomickým rozložením. (Pozri zdroj nižšie.)</p>
+ * 
+ * <p><b>Súvisiaci zdroj:</b></p>
+ * 
+ * <ul>
+ * <li><small>Horváth, Roman</small>: Optimisation of Algorithms Generating
+ * Pseudorandom Integers with Binomial Distribution. <em>ICETA 2022.</em>
+ * Danver : Institute of Electrical and Electronics Engineers, 2022. ISBN
+ * 979-8-3503-2032-9. Pp. 197–201. <a target="_blank"
+ * href="resources/Horvath-ICETA-2022.pdf"><i>[prevziať]</i></a></li>
+ * </ul>
+ * 
+ * <p> </p>
+ * 
  * @see javax.swing.JFrame
  */
 @SuppressWarnings("serial")
@@ -1769,7 +1789,7 @@ public final class Svet extends JFrame
 
 			// Hľadanie priesečníkov
 
-				// Hľadá priesečník dvoch úsečiek |AB| a |CD| alebo aspoň
+				// Hľadá priesečník dvoch úsečiek AB a CD alebo aspoň
 				// priamok určených súradnicami počiatočných a koncových
 				// bodov úsečiek: A[x0, y0], B[x1, y1], C[x2, y2] a D[x3, y3].
 				// Zadaný bod (inštancia «priesečník») prijme súradnice
@@ -1778,7 +1798,7 @@ public final class Svet extends JFrame
 				// na úsečkách (vymedzených úsekoch), alebo mimo nich – niekde
 				// na priamkach určených bodmi. Ak sú úsečky paralelné, tak
 				// vznikne výnimka.
-				/*packagePrivate*/ static boolean priesečníkÚsečiek(
+				/*packagePrivate*/ static int priesečníkÚsečiek(
 					double x0, double y0, double x1, double y1,
 					double x2, double y2, double x3, double y3,
 					Bod priesečník)
@@ -1808,9 +1828,14 @@ public final class Svet extends JFrame
 					double t2 = (Δx10 * Δy02 - Δy10 * Δx02) / menovateľ;
 
 					priesečník.poloha(x0 + t1 * Δx10, y0 + t1 * Δy10);
-					// Ak je návratová hodnota true, tak ide zároveň
-					// o priesečník úsečiek určených zadanými súradnicami bodov
-					return t1 >= 0.0 && t1 <= 1.0 && t2 >= 0.0 && t2 <= 1.0;
+					// Ak je návratová hodnota 3, tak ide zároveň o priesečník
+					// úsečiek určených zadanými súradnicami bodov. Hodnoty
+					// 1 a 2 hovoria o priesečníku priamky a úsečky (sú dva
+					// varianty) a hodnota 0 hovorí, že ide o priesečník
+					// priamok.
+					return
+						((t1 >= 0.0 && t1 <= 1.0) ? 1 : 0) +
+						((t2 >= 0.0 && t2 <= 1.0) ? 2 : 0);
 				}
 
 
@@ -5805,13 +5830,13 @@ public final class Svet extends JFrame
 		 * <p>Vráti bod so súradnicami relatívneho posunutia obrázkových
 		 * dlaždicových výplní.</p>
 		 * 
-		 * <!-- TODO:
-		 * Z nejakého dôvodu generátor dokumentácie systematicky odstraňoval
+		 * <!--
+		 * ✓ Z nejakého dôvodu generátor dokumentácie systematicky odstraňoval
 		 * tento príklad z opisu metódy {@link #posunutieVýplne(double, double)
 		 * posunutieVýplne}. Tak som to presunul sem.
 		 * 
-		 * Overiť, či sa to tu už zobrazuje!
-		 *  -->
+		 * (Hádam to tu už zostane.)
+		 * -->
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
@@ -9089,12 +9114,65 @@ public final class Svet extends JFrame
 		// Orezanie textov (súvisí s tabuľkou v triede Súbor, ale má
 		// všeobecné využitie)
 
+			// TODO: overiť správne zobrazenie tabuliek.
+
 		/**
 		 * <p>Oreže sekvenciu znakov prvého parametra o znaky zadané do
 		 * sekvencie znakov druhého parametra. Orezanie v tomto kontexte
 		 * znamená odstránenie určitých znakov zo začiatku a konca sekvencie,
 		 * pričom zoznam znakov, ktoré majú byť vynechané obsahuje sekvencia
 		 * zadaná do druhého parametra.</p>
+		 * 
+		 * <p><b>Niekoľko príkladov tabuliek orezávania:</b></p>
+		 * 
+		 * <table class="shadedTable">
+		 * 	<tr><th>reťazec/rez</th><th>{@code srg"nami"}</th>
+		 * <th>{@code srg"SR"}</th></tr>
+		 * 	<tr><th>{@code srg"Riman"}</th><td>{@code srg"R"}</td>
+		 * <td>{@code srg"iman"}</td></tr>
+		 * 	<tr><th>{@code srg"Ramin"}</th><td>{@code srg"R"}</td>
+		 * <td>{@code srg"amin"}</td></tr>
+		 * 	<tr><th>{@code srg"SONAR"}</th><td>{@code srg"SONAR"}</td>
+		 * <td>{@code srg"ONA"}</td></tr>
+		 * </table>
+		 * <table class="shadedTable">
+		 * 	<tr><th>reťazec/rez</th><th>{@code srg"Kadejkuvyč"}</th>
+		 * <th>{@code srg"Kadejkuvyčž "}</th>
+		 * <th>{@code srg"KadejkuvyčŽ"}</th></tr>
+		 * 	<tr><th>{@code srg"KedyŽujeŤavaŽuvačku"}</th>
+		 * <td>{@code srg"ŽujeŤavaŽ"}</td>
+		 * <td>{@code srg"ŽujeŤavaŽ"}</td><td>{@code srg"Ť"}</td></tr>
+		 * 	<tr><th>{@code srg"Kedy žuje ťava žuvačku"}</th>
+		 * <td>{@code srg" žuje ťava ž"}</td><td>{@code srg"ť"}</td>
+		 * <td>{@code srg" žuje ťava ž"}</td></tr>
+		 * </table>
+		 * <table class="shadedTable">
+		 * 	<tr><th>reťazec/rez</th><th>{@code srg" "}</th>
+		 * <th>{@code srg"\tnrme "}</th><th>{@code srg"\r\n\t"}</th>
+		 * <th>{@code srg"\r\n\ttil"}</th><th>{@code srg"\r\n\t "}</th></tr>
+		 * 	<tr><th>{@code srg"zrej me "}</th><td>{@code srg"zrej me"}</td>
+		 * <td>{@code srg"zrej"}</td><td>{@code srg"zrej me "}</td>
+		 * <td>{@code srg"zrej me "}</td><td>{@code srg"zrej me"}</td></tr>
+		 * 	<tr><th>{@code srg" zrej me"}</th><td>{@code srg"zrej me"}</td>
+		 * <td>{@code srg"zrej"}</td><td>{@code srg" zrej me"}</td>
+		 * <td>{@code srg" zrej me"}</td><td>{@code srg"zrej me"}</td></tr>
+		 * 	<tr><th>{@code srg"\t neo \t \r\n lit\n"}</th>
+		 * <td>{@code srg"\t neo \t \r\n lit\n"}</td>
+		 * <td>{@code srg"o \t \r\n lit\n"}</td>
+		 * <td>{@code srg" neo \t \r\n lit"}</td>
+		 * <td>{@code srg" neo \t \r\n "}</td>
+		 * <td>{@code srg"neo \t \r\n lit"}</td></tr>
+		 * 	<tr><th>{@code srg"\n lot \t \r\n eni\t"}</th>
+		 * <td>{@code srg"\n lot \t \r\n eni\t"}</td>
+		 * <td>{@code srg"\n lot \t \r\n eni"}</td>
+		 * <td>{@code srg" lot \t \r\n eni"}</td>
+		 * <td>{@code srg" lot \t \r\n en"}</td>
+		 * <td>{@code srg"lot \t \r\n eni"}</td></tr>
+		 * 	<tr><th>{@code srg" \t\r\n\t "}</th>
+		 * <td>{@code srg"\t\r\n\t"}</td><td>{@code srg"\r\n"}</td>
+		 * <td>{@code srg" \t\r\n\t "}</td><td>{@code srg" \t\r\n\t "}</td>
+		 * <td>{@code srg""}</td></tr>
+		 * </table>
 		 * 
 		 * @param sekvenciu sekvencia znakov, ktorá má byť orezaná
 		 * @param znakmi sekvencia znakov obsahujúca znaky, ktoré majú byť
@@ -9106,7 +9184,6 @@ public final class Svet extends JFrame
 		public static CharSequence orež(
 			CharSequence sekvenciu, CharSequence znakmi)
 		{
-			// TODO: Otestuj túto verziu.
 			int koniec = sekvenciu.length(), počet = znakmi.length();
 
 			if (null == sekvenciu || 0 == koniec ||
@@ -9155,6 +9232,10 @@ public final class Svet extends JFrame
 		 * parametra. Orezanie v tomto kontexte znamená odstránenie určitých
 		 * znakov zo začiatku a konca reťazca. Zoznam znakov, ktoré majú byť
 		 * vynechané obsahuje druhý parameter.</p>
+		 * 
+		 * <p>Príklady orezávania usporiadané v tabuľkách sú v opise metódy
+		 * {@link #orež(CharSequence, CharSequence) orež}{@code (sekvenciu,
+		 * znakmi)}.</p>
 		 * 
 		 * @param reťazec reťazec, ktorý má byť orezaný
 		 * @param znakmi reťazec obsahujúci znaky, ktoré majú byť orezané
@@ -10204,8 +10285,8 @@ public final class Svet extends JFrame
 		 * oblasti.</p></td></tr>
 		 * </table>
 		 * 
-		 * <!-- TODO – ak bude čas, tak ukážka vzhľadu
-		 * na rôznych platformách. -->
+		 * <!-- TODO – systémová ikona – ak bude čas, tak:
+		 * 		ukážka vzhľadu na rôznych platformách. -->
 		 * 
 		 * @param popis popis zobrazovaný pri ukázaní na ikonu
 		 *     v systémovej oblasti
@@ -10487,7 +10568,8 @@ public final class Svet extends JFrame
 		 * String...) systémová ikona}, tak v jej kontexte zobrazí zadanú
 		 * správu s titulkom.</p>
 		 * 
-		 * <!-- TODO – ukážka vzhľadu na rôznych platformách. -->
+		 * <!-- TODO – systémová ikona – ak bude čas, tak:
+		 * 		ukážka vzhľadu na rôznych platformách. -->
 		 * 
 		 * @param správa text správy
 		 * @param titulok text titulku
@@ -10515,7 +10597,8 @@ public final class Svet extends JFrame
 		 * String...) systémová ikona}, tak v jej kontexte zobrazí zadanú
 		 * správu.</p>
 		 * 
-		 * <!-- TODO – ukážka vzhľadu na rôznych platformách. -->
+		 * <!-- TODO – systémová ikona – ak bude čas, tak:
+		 * 		ukážka vzhľadu na rôznych platformách. -->
 		 * 
 		 * @param správa text správy
 		 * @return {@code valtrue} pri úspechu; {@code valfalse}
@@ -10538,7 +10621,8 @@ public final class Svet extends JFrame
 		 * String...) systémová ikona}, tak v jej kontexte zobrazí zadané
 		 * informačné oznámenie s titulkom.</p>
 		 * 
-		 * <!-- TODO – ukážka vzhľadu na rôznych platformách. -->
+		 * <!-- TODO – systémová ikona – ak bude čas, tak:
+		 * 		ukážka vzhľadu na rôznych platformách. -->
 		 * 
 		 * @param informácia text informácie
 		 * @param titulok text titulku
@@ -10566,7 +10650,8 @@ public final class Svet extends JFrame
 		 * String...) systémová ikona}, tak v jej kontexte zobrazí zadané
 		 * informačné oznámenie.</p>
 		 * 
-		 * <!-- TODO – ukážka vzhľadu na rôznych platformách. -->
+		 * <!-- TODO – systémová ikona – ak bude čas, tak:
+		 * 		ukážka vzhľadu na rôznych platformách. -->
 		 * 
 		 * @param informácia text informácie
 		 * @return {@code valtrue} pri úspechu; {@code valfalse}
@@ -10589,7 +10674,8 @@ public final class Svet extends JFrame
 		 * String...) systémová ikona}, tak v jej kontexte zobrazí zadané
 		 * varovné oznámenie s titulkom.</p>
 		 * 
-		 * <!-- TODO – ukážka vzhľadu na rôznych platformách. -->
+		 * <!-- TODO – systémová ikona – ak bude čas, tak:
+		 * 		ukážka vzhľadu na rôznych platformách. -->
 		 * 
 		 * @param varovanie text varovania
 		 * @param titulok text titulku
@@ -10617,7 +10703,8 @@ public final class Svet extends JFrame
 		 * String...) systémová ikona}, tak v jej kontexte zobrazí zadané
 		 * varovné oznámenie.</p>
 		 * 
-		 * <!-- TODO – ukážka vzhľadu na rôznych platformách. -->
+		 * <!-- TODO – systémová ikona – ak bude čas, tak:
+		 * 		ukážka vzhľadu na rôznych platformách. -->
 		 * 
 		 * @param varovanie text varovania
 		 * @return {@code valtrue} pri úspechu; {@code valfalse}
@@ -10640,7 +10727,8 @@ public final class Svet extends JFrame
 		 * String...) systémová ikona}, tak v jej kontexte zobrazí zadané
 		 * chybové oznámenie s titulkom.</p>
 		 * 
-		 * <!-- TODO – ukážka vzhľadu na rôznych platformách. -->
+		 * <!-- TODO – systémová ikona – ak bude čas, tak:
+		 * 		ukážka vzhľadu na rôznych platformách. -->
 		 * 
 		 * @param chyba text chyby
 		 * @param titulok text titulku
@@ -10668,7 +10756,8 @@ public final class Svet extends JFrame
 		 * String...) systémová ikona}, tak v jej kontexte zobrazí zadané
 		 * chybové oznámenie.</p>
 		 * 
-		 * <!-- TODO – ukážka vzhľadu na rôznych platformách. -->
+		 * <!-- TODO – systémová ikona – ak bude čas, tak:
+		 * 		ukážka vzhľadu na rôznych platformách. -->
 		 * 
 		 * @param chyba text chyby
 		 * @return {@code valtrue} pri úspechu; {@code valfalse}
@@ -15126,8 +15215,8 @@ public final class Svet extends JFrame
 		 * pozícii bude umiestnený vstupný prvok na zadanie hesla.</li>
 		 * </ol>
 		 * 
-		 * <!-- TODO: Skontrolovať opis, otestovať, prípadne doplniť novšie
-		 * prvky typu Farba, Bod, Uhol, Rozmery aj do príkladu použitia. -->
+		 * <!-- TODO: Priebežne doplniť pribúdajúce typové prvky. Odkázať sa
+		 * na pokročilejšie príklady použitia, napr.: #posunutieVýplne() -->
 		 * 
 		 * <p>Ku každému prvku poľa {@code údaje} musí byť zadaný
 		 * korešpondujúci prvok poľa {@code popisy}, ktorý určí popis
@@ -15405,7 +15494,7 @@ public final class Svet extends JFrame
 					{
 						početKomponentov += 2;
 					}
-					else if (údaj instanceof JScrollPane) // TODO zdokumentovať
+					else if (údaj instanceof JScrollPane)
 					{
 						početKomponentov += 2;
 					}
@@ -15648,7 +15737,7 @@ public final class Svet extends JFrame
 							aktívnyPanel.add(panel);
 							indexyZdrojov[i] = i;
 						}
-						else if (údaj instanceof JScrollPane) // TODO zdokumentovať
+						else if (údaj instanceof JScrollPane)
 						{
 							if (j < popisy.length && null != popisy[j])
 							{
@@ -15843,7 +15932,7 @@ public final class Svet extends JFrame
 						indexyZdrojov[i] = j + 1;
 						j += 2;
 					}
-					else if (údaj instanceof JScrollPane) // TODO zdokumentovať
+					else if (údaj instanceof JScrollPane)
 					{
 						if (i < popisy.length && null != popisy[i])
 							komponentyÚdajov[j] = popisy[i];
@@ -15926,7 +16015,7 @@ public final class Svet extends JFrame
 							getSelectedValue());
 						komponentyÚdajov[indexyZdrojov[i]] = null;
 					}
-					else if (údaj instanceof JScrollPane) // TODO zdokumentovať
+					else if (údaj instanceof JScrollPane)
 					{
 						komponentyÚdajov[indexyZdrojov[i]] = null;
 					}
@@ -18420,6 +18509,53 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #rozložNaPrvočísla(long) rozložNaPrvočísla}.</p> */
 		public static long[] rozlozNaPrvocisla(long číslo)
 		{ return rozložNaPrvočísla(číslo); }
+
+
+		/**
+		 * <p>Vypočíta číselný koreň (digital root; alebo opakovaný digitálny
+		 * súčet) absolútnej hodnoty zadaného čísla v desiatkovej číselnej
+		 * sústave.</p>
+		 * 
+		 * @param číslo číslo, ktorého koreň má byť vypočítaný
+		 * @return číselný koreň zadaného čísla vypočítaný podľa zadaného
+		 *     koreňa číselnej sústavy
+		 */
+		public static long číselnýKoreň(long číslo)
+		{ return číselnýKoreň(číslo, 10); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #číselnýKoreň(long) číselnýKoreň}.</p> */
+		public static long ciselnyKoren(long číslo) { return číselnýKoreň(číslo); }
+
+		/**
+		 * <p>Vypočíta číselný koreň (digital root; alebo opakovaný digitálny
+		 * súčet) absolútnej hodnoty zadaného čísla podľa zadaného číselného
+		 * základu.</p>
+		 * 
+		 * @param číslo číslo, ktorého koreň má byť vypočítaný
+		 * @param základ číselný základ (číselnej sústavy, v ktorej je číslo
+		 *     vyjadrené)
+		 * @return číselný koreň zadaného čísla vypočítaný podľa zadaného
+		 *     koreňa číselnej sústavy
+		 */
+		public static long číselnýKoreň(long číslo, long základ)
+		{
+			if (číslo < 0) číslo = -číslo;
+			long súčet;
+			do {
+				súčet = 0;
+				while (číslo > 0)
+				{
+					súčet += číslo % základ;
+					číslo /= základ;
+				}
+				číslo = súčet;
+			} while (číslo >= základ);
+			return súčet;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #číselnýKoreň(long, long) číselnýKoreň}.</p> */
+		public static long ciselnyKoren(long číslo, long základ)
+		{ return číselnýKoreň(číslo, základ); }
 
 
 		// Štandardný vstup
@@ -21825,6 +21961,10 @@ public final class Svet extends JFrame
 		 * Long#MIN_VALUE MIN_VALUE} a {@link Long Long}{@code .}{@link 
 		 * Long#MAX_VALUE MAX_VALUE}.)</p>
 		 * 
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda používa Mersennov
+		 * twistr z CERNu (1999). Pozri aj poznámku v hlavnom opise
+		 * {@linkplain Svet tejto triedy.}</p>
+		 * 
 		 * @return vygenerované náhodné celé číslo
 		 */
 		public static long náhodnéCeléČíslo() { return generátor.nextLong(); }
@@ -21835,6 +21975,10 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Generovanie náhodného celého čísla v rozsahu od nula (vrátane)
 		 * po zadanú hodnotu parametra (vrátane).</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda používa Mersennov
+		 * twistr z CERNu (1999). Pozri aj poznámku v hlavnom opise
+		 * {@linkplain Svet tejto triedy.}</p>
 		 * 
 		 * @param hodnota horná hranica generovania náhodných čísel
 		 * @return vygenerované náhodné celé číslo
@@ -21855,6 +21999,10 @@ public final class Svet extends JFrame
 		 * chápaný ako uzavretý interval – ⟨min; max⟩. Ak je spodná hranica
 		 * väčšia ako horná, tak sú metódou vnútorne prevrátené.</p>
 		 * 
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda používa Mersennov
+		 * twistr z CERNu (1999). Pozri aj poznámku v hlavnom opise
+		 * {@linkplain Svet tejto triedy.}</p>
+		 * 
 		 * @param min spodná hranica generovania náhodných čísel (vrátane)
 		 * @param max horná hranica generovania náhodných čísel (vrátane)
 		 * @return vygenerované náhodné celé číslo
@@ -21873,6 +22021,10 @@ public final class Svet extends JFrame
 		 * <p>Generovanie náhodného reálneho čísla v rozsahu od nula (vrátane)
 		 * po jeden (vynímajúc).</p>
 		 * 
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda používa Mersennov
+		 * twistr z CERNu (1999). Pozri aj poznámku v hlavnom opise
+		 * {@linkplain Svet tejto triedy.}</p>
+		 * 
 		 * @return vygenerované náhodné reálne číslo
 		 */
 		public static double náhodnéReálneČíslo() { return generátor.nextDouble(); }
@@ -21883,6 +22035,10 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Generovanie náhodného reálneho čísla v rozsahu od nula (vrátane)
 		 * po zadanú hodnotu parametra (vynímajúc).</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda používa Mersennov
+		 * twistr z CERNu (1999). Pozri aj poznámku v hlavnom opise
+		 * {@linkplain Svet tejto triedy.}</p>
 		 * 
 		 * @param hodnota horná (nezahrnutá) hranica generovania náhodných
 		 *     čísel
@@ -21899,6 +22055,10 @@ public final class Svet extends JFrame
 		 * <p>Generovanie náhodného reálneho čísla v zadanom rozsahu. Zadaný
 		 * interval je polovične otvorený – ⟨min; max). Ak je spodná hranica
 		 * väčšia ako horná, tak sú metódou vnútorne prevrátené.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Táto metóda používa Mersennov
+		 * twistr z CERNu (1999). Pozri aj poznámku v hlavnom opise
+		 * {@linkplain Svet tejto triedy.}</p>
 		 * 
 		 * @param min spodná hranica generovania náhodných čísel (vrátane)
 		 * @param max horná hranica generovania náhodných čísel (vynímajúc)
@@ -22607,6 +22767,19 @@ public final class Svet extends JFrame
 		 * k nemu mala viesť systémovo nezávislá relatívna cesta. Zadaním
 		 * prázdneho reťazca alebo hodnoty {@code valnull} používanie
 		 * priečinka zrušíme.</p>
+		 * 
+		 * <p>Cesta je používaná pri čítaní všetkých obrázkov, okrem
+		 * {@linkplain Obrázok#čítaj(Archív, String) čítania z archívu.} Čiže
+		 * napríklad pri čítaní metódou {@link Obrázok#čítaj(String)
+		 * čítaj(súbor)}, vypĺňaní metódami {@link GRobot#vyplňTvar(Shape,
+		 * String) GRobot.vyplňTvar(tvar, súbor)}, {@link 
+		 * GRobot#vyplňOblasť(Area, String) GRobot.vyplňOblasť(oblasť, súbor)}
+		 * (atď.), kreslení metódami {@link GRobot#obrázok(String)
+		 * GRobot.obrázok(súbor)}, {@link Plátno#obrázok(String)
+		 * Plátno.obrázok(súbor)} (atď.), ale aj pri nastavovaní vlastného
+		 * tvaru robota {@link GRobot#vlastnýTvar(String)
+		 * GRobot.vlastnýTvar(súbor)} a v mnohých iných situáciách (pozri
+		 * zoznam odkazov nižšie – nemusí byť úplný).</p>
 		 * 
 		 * @param priečinok názov priečinka, relatívna cesta, prípadne
 		 *     prázdny reťazec alebo {@code valnull}
@@ -25896,7 +26069,7 @@ public final class Svet extends JFrame
 		 * a koncovým bodom B[x<sub>2</sub>, y<sub>2</sub>]. Ak sa hodnota
 		 * parametra {@code t} bude nachádzať mimo povoleného (resp.
 		 * odporúčaného) rozashu ⟨0; 1⟩, tak vypočítame bod ležiaci na priamke
-		 * určenej hraničnými bodmi A a B, ktorý neleží na úsečke |AB|.</p>
+		 * určenej hraničnými bodmi A a B, ktorý neleží na úsečke AB.</p>
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
@@ -26610,9 +26783,9 @@ public final class Svet extends JFrame
 
 
 		/**
-		 * <p>Hľadá priesečník dvoch úsečiek |AB| a |CD|. Úsečky sú určené
-		 * súradnicami počiatočných a koncových bodov – |AB|: A[x0, y0],
-		 * B[x1, y1] a |CD|: C[x2, y2], D[x3, y3]. Ak priesečník jestvuje,
+		 * <p>Hľadá priesečník dvoch úsečiek AB a CD. Úsečky sú určené
+		 * súradnicami počiatočných a koncových bodov – AB: A[x0, y0],
+		 * B[x1, y1] a CD: C[x2, y2], D[x3, y3]. Ak priesečník jestvuje,
 		 * tak metóda vráti inštanciu triedy {@link Bod Bod} so súradnicami
 		 * priesečníka, inak metóda vráti hodnotu {@code valnull}.</p>
 		 * 
@@ -26648,7 +26821,7 @@ public final class Svet extends JFrame
 			try
 			{
 				Bod priesečník = new Bod();
-				if (priesečníkÚsečiek(x0, y0, x1, y1,
+				if (3 == priesečníkÚsečiek(x0, y0, x1, y1,
 					x2, y2, x3, y3, priesečník))
 					return priesečník;
 				return null;
@@ -26667,7 +26840,7 @@ public final class Svet extends JFrame
 
 
 		/**
-		 * <p>Hľadá priesečník dvoch úsečiek |AB| a |CD|. Úsečky sú určené
+		 * <p>Hľadá priesečník dvoch úsečiek AB a CD. Úsečky sú určené
 		 * polohami bodov v štyroch parametroch. Ak priesečník jestvuje,
 		 * tak metóda vráti inštanciu triedy {@link Bod Bod} so súradnicami
 		 * priesečníka, inak metóda vráti hodnotu {@code valnull}.</p>
@@ -26685,7 +26858,7 @@ public final class Svet extends JFrame
 			try
 			{
 				Bod priesečník = new Bod();
-				if (priesečníkÚsečiek(A.polohaX(), A.polohaY(),
+				if (3 == priesečníkÚsečiek(A.polohaX(), A.polohaY(),
 					B.polohaX(), B.polohaY(), C.polohaX(), C.polohaY(),
 					D.polohaX(), D.polohaY(), priesečník)) return priesečník;
 				return null;
@@ -26703,13 +26876,13 @@ public final class Svet extends JFrame
 
 
 		/**
-		 * <p>Hľadá priesečník dvoch úsečiek |AB| a |CD|. Úsečky sú určené
+		 * <p>Hľadá priesečník dvoch úsečiek AB a CD. Úsečky sú určené
 		 * polohami bodov v poli parametra, ktoré musí obsahovať aspoň štyri
 		 * prvky. Ak priesečník jestvuje, tak metóda vráti inštanciu triedy
 		 * {@link Bod Bod} so súradnicami priesečníka, inak metóda vráti
 		 * hodnotu {@code valnull}.</p>
 		 * 
-		 * @param poleBodov polohy bodov úsečiek |AB| a |CD|
+		 * @param poleBodov polohy bodov úsečiek AB a CD
 		 * @return priesečník v inštancii triedy {@link Bod Bod} alebo
 		 *     {@code valnull}
 		 */
@@ -26721,7 +26894,7 @@ public final class Svet extends JFrame
 			try
 			{
 				Bod priesečník = new Bod();
-				if (priesečníkÚsečiek(
+				if (3 == priesečníkÚsečiek(
 					poleBodov[0].polohaX(), poleBodov[0].polohaY(),
 					poleBodov[1].polohaX(), poleBodov[1].polohaY(),
 					poleBodov[2].polohaX(), poleBodov[2].polohaY(),
@@ -26738,6 +26911,124 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #priesečníkÚsečiek(Poloha[]) priesečníkÚsečiek}.</p> */
 		public final static Bod priesecnikUseciek(Poloha[] poleBodov)
 		{ return priesečníkÚsečiek(poleBodov); }
+
+
+		/**
+		 * <p>Hľadá priesečník priamky AB a úsečky CD. Obidve čiary sú
+		 * určené súradnicami dvoch bodov – AB: A[x0, y0], B[x1, y1] a CD:
+		 * C[x2, y2], D[x3, y3], pričom pre úsečku ide zároveň o ohraničujúce
+		 * body. Ak priesečník jestvuje, tak metóda vráti inštanciu triedy
+		 * {@link Bod Bod} so súradnicami priesečníka, inak metóda vráti
+		 * hodnotu {@code valnull}.</p>
+		 * 
+		 * @param x0 x-ová súradnica bodu A
+		 * @param y0 y-ová súradnica bodu A
+		 * @param x1 x-ová súradnica bodu B
+		 * @param y1 y-ová súradnica bodu B
+		 * @param x2 x-ová súradnica bodu C
+		 * @param y2 y-ová súradnica bodu C
+		 * @param x3 x-ová súradnica bodu D
+		 * @param y3 y-ová súradnica bodu D
+		 * @return priesečník v inštancii triedy {@link Bod Bod} alebo
+		 *     {@code valnull}
+		 */
+		public final static Bod priesečníkPriamkyAÚsečky(
+			double x0, double y0, double x1, double y1,
+			double x2, double y2, double x3, double y3)
+		{
+			try
+			{
+				Bod priesečník = new Bod();
+				if (1 < priesečníkÚsečiek(x0, y0, x1, y1,
+					x2, y2, x3, y3, priesečník))
+					return priesečník;
+				return null;
+			}
+			catch (GRobotException e)
+			{
+				return null;
+			}
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #priesečníkPriamkyAÚsečky(double, double, double, double, double, double, double, double) priesečníkPriamkyAÚsečky}.</p> */
+		public final static Bod priesecnikPriamkyAUsecky(
+			double x0, double y0, double x1, double y1,
+			double x2, double y2, double x3, double y3)
+		{ return priesečníkPriamkyAÚsečky(x0, y0, x1, y1, x2, y2, x3, y3); }
+
+
+		/**
+		 * <p>Hľadá priesečník priamky AB a úsečky CD. Čiary sú určené
+		 * polohami bodov v štyroch parametroch. Ak priesečník jestvuje,
+		 * tak metóda vráti inštanciu triedy {@link Bod Bod} so súradnicami
+		 * priesečníka, inak metóda vráti hodnotu {@code valnull}.</p>
+		 * 
+		 * @param A poloha bodu A
+		 * @param B poloha bodu B
+		 * @param C poloha bodu C
+		 * @param D poloha bodu D
+		 * @return priesečník v inštancii triedy {@link Bod Bod} alebo
+		 *     {@code valnull}
+		 */
+		public final static Bod priesečníkPriamkyAÚsečky(
+			Poloha A, Poloha B, Poloha C, Poloha D)
+		{
+			try
+			{
+				Bod priesečník = new Bod();
+				if (1 < priesečníkÚsečiek(A.polohaX(), A.polohaY(),
+					B.polohaX(), B.polohaY(), C.polohaX(), C.polohaY(),
+					D.polohaX(), D.polohaY(), priesečník)) return priesečník;
+				return null;
+			}
+			catch (GRobotException e)
+			{
+				return null;
+			}
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #priesečníkPriamkyAÚsečky(Poloha, Poloha, Poloha, Poloha) priesečníkPriamkyAÚsečky}.</p> */
+		public final static Bod priesecnikPriamkyAUsecky(
+			Poloha A, Poloha B, Poloha C, Poloha D)
+		{ return priesečníkPriamkyAÚsečky(A, B, C, D); }
+
+
+		/**
+		 * <p>Hľadá priesečník priamky AB a úsečky CD. Čiary sú určené
+		 * polohami bodov v poli parametra, ktoré musí obsahovať aspoň štyri
+		 * prvky. Ak priesečník jestvuje, tak metóda vráti inštanciu triedy
+		 * {@link Bod Bod} so súradnicami priesečníka, inak metóda vráti
+		 * hodnotu {@code valnull}.</p>
+		 * 
+		 * @param poleBodov polohy bodov patriacich čiaram AB a CD
+		 * @return priesečník v inštancii triedy {@link Bod Bod} alebo
+		 *     {@code valnull}
+		 */
+		public final static Bod priesečníkPriamkyAÚsečky(Poloha[] poleBodov)
+		{
+			if (null == poleBodov || 4 > poleBodov.length/* NOPE ||
+				null == poleBodov[0] || null == poleBodov[1] ||
+				null == poleBodov[2] || null == poleBodov[3]*/) return null;
+			try
+			{
+				Bod priesečník = new Bod();
+				if (1 < priesečníkÚsečiek(
+					poleBodov[0].polohaX(), poleBodov[0].polohaY(),
+					poleBodov[1].polohaX(), poleBodov[1].polohaY(),
+					poleBodov[2].polohaX(), poleBodov[2].polohaY(),
+					poleBodov[3].polohaX(), poleBodov[3].polohaY(),
+					priesečník)) return priesečník;
+				return null;
+			}
+			catch (GRobotException e)
+			{
+				return null;
+			}
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #priesečníkPriamkyAÚsečky(Poloha[]) priesečníkPriamkyAÚsečky}.</p> */
+		public final static Bod priesecnikPriamkyAUsecky(Poloha[] poleBodov)
+		{ return priesečníkPriamkyAÚsečky(poleBodov); }
 
 
 		/**
@@ -27090,7 +27381,7 @@ public final class Svet extends JFrame
 
 
 		/**
-		 * <p>Hľadá priesečníky priamky |AB| a kružnice určenej súradnicami
+		 * <p>Hľadá priesečníky priamky AB a kružnice určenej súradnicami
 		 * stredu S a polomeru r. Súradnice bodov priamky a stredu kružnice
 		 * sú určené parametrami tejto metódy takto: A[x1, y1]; B[x2, y2];
 		 * S[x3, y3]. Parameter r je polomerom kružnice. Ak jestvuje aspoň
@@ -27233,7 +27524,7 @@ public final class Svet extends JFrame
 		}
 
 		/**
-		 * <p>Hľadá priesečníky priamky |AB| a kružnice určenej polohou
+		 * <p>Hľadá priesečníky priamky AB a kružnice určenej polohou
 		 * stredu S a polomeru r. Ak jestvuje aspoň jeden priesečník, tak
 		 * metóda vráti pole bodov určujúcich súradnice priesečníkov (pole
 		 * môže obsahovať jeden alebo dva prvky/body). Ak nejestvuje ani
@@ -27262,7 +27553,7 @@ public final class Svet extends JFrame
 
 
 		/**
-		 * <p>Hľadá priesečníky úsečky |AB| a kružnice so stredom
+		 * <p>Hľadá priesečníky úsečky AB a kružnice so stredom
 		 * S a polomerom r. Ak jestvuje jeden priesečník, metóda vráti
 		 * jednoprvkové pole. Ak jestvujú dva priesečníky, metóda vráti
 		 * dvojprvkové pole bodov so súradnicami priesečníkov. Ak nejestvuje
@@ -27282,7 +27573,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <p><b>Vizualizácia výsledku:</b></p>
 		 * 
-		 * <p>Obrázok nižšie zobrazuje úsečku |AB|, kružnicu k so stredom S
+		 * <p>Obrázok nižšie zobrazuje úsečku AB, kružnicu k so stredom S
 		 * a polomerom r a ich priesečník (v tejto situácii je len jeden) P.</p>
 		 * 
 		 * <p><image>priesecniky-usecky-a-kruznice.svg<alt/><onerror>priesecniky-usecky-a-kruznice.png</onerror></image></p>
@@ -27392,7 +27683,7 @@ public final class Svet extends JFrame
 		}
 
 		/**
-		 * <p>Hľadá priesečníky úsečky |AB| a kružnice so stredom
+		 * <p>Hľadá priesečníky úsečky AB a kružnice so stredom
 		 * S a polomerom r. Ak jestvuje jeden priesečník, metóda vráti
 		 * jednoprvkové pole. Ak jestvujú dva priesečníky, metóda vráti
 		 * dvojprvkové pole bodov so súradnicami priesečníkov. Ak nejestvuje
@@ -27496,7 +27787,7 @@ public final class Svet extends JFrame
 		}
 
 		/**
-		 * <p>Nájde najbližší bod na priamke |AB| k zadanému voľnému bodu
+		 * <p>Nájde najbližší bod na priamke AB k zadanému voľnému bodu
 		 * V a vráti jeho súradnice v objekte typu {@link Bod Bod}.</p>
 		 * 
 		 * @param V poloha voľného bodu V
@@ -27520,7 +27811,7 @@ public final class Svet extends JFrame
 		}
 
 		/**
-		 * <p>Nájde najbližší bod na priamke |AB| k zadanému voľnému bodu
+		 * <p>Nájde najbližší bod na priamke AB k zadanému voľnému bodu
 		 * V a vráti jeho súradnice v objekte typu {@link Bod Bod}. Bod
 		 * a priamka sú určené polohami bodov v poli parametra, ktoré musí
 		 * obsahovať aspoň tri prvky. Prvý prvok určuje bod V a ďalšie dva
@@ -27693,7 +27984,7 @@ public final class Svet extends JFrame
 		}
 
 		/**
-		 * <p>Nájde najbližší bod na úsečke |AB| k zadanému voľnému bodu
+		 * <p>Nájde najbližší bod na úsečke AB k zadanému voľnému bodu
 		 * V a vráti jeho súradnice v objekte typu {@link Bod Bod}.</p>
 		 * 
 		 * @param V poloha voľného bodu V
@@ -27717,7 +28008,7 @@ public final class Svet extends JFrame
 		}
 
 		/**
-		 * <p>Nájde najbližší bod na úsečke |AB| k zadanému voľnému bodu
+		 * <p>Nájde najbližší bod na úsečke AB k zadanému voľnému bodu
 		 * V a vráti jeho súradnice v objekte typu {@link Bod Bod}. Bod
 		 * a úsečka sú určené polohami bodov v poli parametra, ktoré musí
 		 * obsahovať aspoň tri prvky. Prvý prvok určuje bod V a ďalšie dva
@@ -27758,15 +28049,61 @@ public final class Svet extends JFrame
 		 * <p><b>Príklad:</b></p>
 		 * 
 		 * <pre CLASS="example">
-			«príklad – ospravedlňujeme sa, pracujeme na doplnení…»
-			<!-- TODO – nájdenie a grafické znázornenie bodu… -->
+			{@code kwdimport} knižnica.*;
+
+			{@code kwdpublic} {@code typeclass} BodNaKružnici {@code kwdextends} GRobot
+			{
+				{@code kwdprivate} Bod myš = {@code valnull};
+
+				{@code kwdprivate} BodNaKružnici()
+				{
+					{@code valsuper}({@code num300}, {@code num300});
+					{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num3});
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#zelená zelená});
+					{@link GRobot#veľkosť(double) veľkosť}({@code num50});
+					{@link {@link {@link Svet Svet}.{@link Svet#prekresli() prekresli}();
+				}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliTvar() kresliTvar}()
+				{
+					{@link GRobot#krúžok() krúžok}();
+
+					{@code kwdif} ({@code valnull} == myš) {@code kwdreturn};
+					{@link {@link Bod Bod} bod = {@link {@link {@link Svet Svet}.{@link Svet#najbližšíBodNaKružnici(Poloha, Poloha, double) najbližšíBodNaKružnici}(myš, {@code valthis}, {@link GRobot#veľkosť() veľkosť}());
+
+					{@link GRobot#farba(Color) farba}({@link Farebnosť#červená červená});
+					{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num0.33});
+
+					{@link GRobot#skočNaMyš() skočNaMyš}(); {@link GRobot#kružnica(double) kružnica}({@code num3.5});
+					{@link GRobot#choďNa(double, double) choďNa}(bod); {@link GRobot#kružnica(double) kružnica}({@code num3.5});
+				}
+
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#pohybMyši() pohybMyši}()
+				{
+					myš = {@link {@link {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyši() polohaMyši}();
+					{@link {@link {@link Svet Svet}.{@link Svet#prekresli() prekresli}();
+				}
+
+				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link {@link String String}[] args)
+				{
+					{@link {@link {@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}("BodNaKružnici.cfg");
+					{@link {@link {@link Svet Svet}.{@link Svet#nekresli() nekresli}();
+					{@code kwdnew} BodNaKružnici();
+					{@link {@link {@link Svet Svet}.{@link Svet#zbaľ() zbaľ}();
+				}
+			}
 			</pre>
 		 * 
 		 * <p><b>Výsledok:</b></p>
 		 * 
-		 * <p><image>«názov».png<alt/></image>«Popis…»<!-- TODO -->.</p>
+		 * <p><image>bodNaKruznici.png<alt/></image></p>
 		 * 
-		 * <!-- TODO dokončiť opis. -->
+		 * <p>Pohyb myši spôsobí zmenu zapamätaných súradníc a prekreslenie.
+		 * V kreslení vlastného tvaru sa po nakreslení tvaru krúžku nakreslia
+		 * dve malé tenké červené kružnice s čiarou medzi ich stredmi, pričom
+		 * prvá z nich je na naposledy zapamätanej pozícii pri pohybe myšou
+		 * a je k tejto polohe najbližším bodom ležiacim na kružnici
+		 * reprezentujúcej vlastný tvar robota.</p>
 		 * 
 		 * @param x0 x-ová súradnica voľného bodu
 		 * @param y0 y-ová súradnica voľného bodu
@@ -27902,7 +28239,6 @@ public final class Svet extends JFrame
 
 
 		// Optimalizovaná verzia metódy Line2D.ptLineDistSq.
-		// TODO: Odkaz na článok ICETA’20.
 		private static double ptLineDistSq(double x1, double y1,
 			double x2, double y2, double px, double py)
 		{
@@ -27926,7 +28262,6 @@ public final class Svet extends JFrame
 		{ return Math.sqrt(ptLineDistSq(x1, y1, x2, y2, px, py)); }
 
 		// Optimalizovaná verzia metódy Line2D.ptSegDistSq.
-		// TODO: Odkaz na článok ICETA’20.
 		private static double ptSegDistSq(double x1, double y1,
 			double x2, double y2, double px, double py)
 		{
@@ -27959,6 +28294,16 @@ public final class Svet extends JFrame
 		 * Line2D.ptLineDist(x1, y1, x2, y2, x0, y0)}, ale vnútornú
 		 * (rovnomennú) optimalizovanú verziu jednej z implementácií tejto
 		 * metódy.</p>
+		 * 
+		 * <p><b>Súvisiaci zdroj:</b></p>
+		 * 
+		 * <ul>
+		 * <li><small>Horváth, Roman – Fialová, Jana</small>: The Creation of
+		 * Simulation with an Algorithm Optimisation in Java for the Teaching
+		 * Process. <em>ICETA 2020.</em> Danvers : IEEE, 2020. ISBN
+		 * 978-0-7381-2366-0. Pp. 160–166. <a target="_blank"
+		 * href="resources/Horvath-Fialova-ICETA-2020.pdf"><i>[prevziať]</i></a></li>
+		 * </ul>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> V skutočnosti by sme nemali
 		 * hovoriť, že ide o „metódu jazyka Java.“ Je to statická metóda
@@ -28035,7 +28380,7 @@ public final class Svet extends JFrame
 		{ return ptLineDist(x1, y1, x2, y2, x0, y0); }
 
 		/**
-		 * <p>Vypočíta vzdialenosť od zadaného voľného bodu V k priamke |AB|.
+		 * <p>Vypočíta vzdialenosť od zadaného voľného bodu V k priamke AB.
 		 * Pozri aj opis metódy {@link #vzdialenosťBoduOdPriamky(double,
 		 * double, double, double, double, double) vzdialenosťBoduOdPriamky},
 		 * ktorej správanie táto metóda kopíruje.</p>
@@ -28097,6 +28442,16 @@ public final class Svet extends JFrame
 		 * Line2D.ptSegDist(x1, y1, x2, y2, x0, y0)}, ale vnútornú
 		 * (rovnomennú) optimalizovanú verziu jednej z implementácií tejto
 		 * metódy.</p>
+		 * 
+		 * <p><b>Súvisiaci zdroj:</b></p>
+		 * 
+		 * <ul>
+		 * <li><small>Horváth, Roman – Fialová, Jana</small>: The Creation of
+		 * Simulation with an Algorithm Optimisation in Java for the Teaching
+		 * Process. <em>ICETA 2020.</em> Danvers : IEEE, 2020. ISBN
+		 * 978-0-7381-2366-0. Pp. 160–166. <a target="_blank"
+		 * href="resources/Horvath-Fialova-ICETA-2020.pdf"><i>[prevziať]</i></a></li>
+		 * </ul>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> V skutočnosti by sme nemali
 		 * hovoriť, že ide o „metódu jazyka Java.“ Je to statická metóda
@@ -28232,7 +28587,7 @@ public final class Svet extends JFrame
 		{ return ptSegDist(x1, y1, x2, y2, x0, y0); }
 
 		/**
-		 * <p>Vypočíta vzdialenosť od zadaného voľného bodu V k úsečke |AB|.
+		 * <p>Vypočíta vzdialenosť od zadaného voľného bodu V k úsečke AB.
 		 * Pozri aj opis metódy {@link #vzdialenosťBoduOdÚsečky(double,
 		 * double, double, double, double, double) vzdialenosťBoduOdÚsečky},
 		 * ktorej správanie táto metóda kopíruje.</p>
@@ -28254,10 +28609,10 @@ public final class Svet extends JFrame
 			B.polohaX(), B.polohaY(), V.polohaX(), V.polohaY()); }
 
 		/**
-		 * <p>Vypočíta vzdialenosť medzi voľným bodom V a úsečkou |AB|, ktoré
+		 * <p>Vypočíta vzdialenosť medzi voľným bodom V a úsečkou AB, ktoré
 		 * sú určené polohami bodov v poli parametra {@code poleBodov}. Pole
 		 * musí obsahovať aspoň tri prvky. Prvý prvok obsahuje súradnice
-		 * voľného bodu V a ďalšie dva prvky určujúce body úsečky |AB|. Pozri
+		 * voľného bodu V a ďalšie dva prvky určujúce body úsečky AB. Pozri
 		 * aj opis metódy {@link #vzdialenosťBoduOdÚsečky(double, double,
 		 * double, double, double, double) vzdialenosťBoduOdÚsečky}, ktorej
 		 * správanie táto metóda kopíruje.</p>
@@ -28482,13 +28837,12 @@ public final class Svet extends JFrame
 		{ return vzdialenosťKružníc(poleBodov, polomer1, polomer2); }
 
 
-		// TODO – správne zaradiť zdroj (k správnemu opisu):
-		// Zdroj: http://www.vb-helper.com/howto_distance_segment_to_segment.html
-		// Pozri tiež: http://www.geometrictools.com/Documentation/DistanceLine3Line3.pdf
-		//     Uložené do: DistanceLine3Line3.pdf (TODO: dať kópiu k dispozícii)
+		// TODO – overiť správne zobrazenie:
+		// • http://www.vb-helper.com/howto_distance_segment_to_segment.html
+		// • http://www.geometrictools.com/Documentation/DistanceLine3Line3.pdf
 
 		/**
-		 * <p>Vypočíta vzdialenosť medzi dvomi úsečkami |AB| a |CD|. Ak sa
+		 * <p>Vypočíta vzdialenosť medzi dvomi úsečkami AB a CD. Ak sa
 		 * úsečky pretínajú, tak je vzdialenosť nulová. V opačnom prípade
 		 * metóda nájde najbližšie body úsečiek a vypočíta vzdialenosť medzi
 		 * nimi.</p>
@@ -28533,6 +28887,30 @@ public final class Svet extends JFrame
 		 * target="_blank">vzdialenost-useciek.7z</a> vizualizujúci princíp
 		 * hľadania vzdialenosti úsečiek.</p>
 		 * 
+		 * <p> </p>
+		 * 
+		 * <p><b>Užitočné zdroje:</b></p>
+		 * 
+		 * <p>Implementácia algoritmu v jazyku Visual Basic:</p>
+		 * 
+		 * <ul><li><a href="http://www.vb-helper.com/howto_distance_segment_to_segment.html"
+		 * target="_blank"><em>Find the shortest distance between two line
+		 * segments.</em> Rocky Mountain Computer Consulting, Inc. 2010.
+		 * Citované: 2020.</a> (<a target="_blank"
+		 * href="resources/howto-distance-segment-to-segment.html">Filtrovaná
+		 * kópia zdroja.</a>)</li></ul>
+		 * 
+		 * <p>Štrnásťstranová podrobná analýza a implementácia algoritmu v 3D
+		 * priestore:</p>
+		 * 
+		 * <ul><li><a target="_blank"
+		 * href="http://www.geometrictools.com/Documentation/DistanceLine3Line3.pdf"
+		 *><small>Eberly, David</small>: <em>Robust Computation of Distance
+		 * Between Line Segments.</em> Geometric Tools, Redmond WA 98052.
+		 * 2018–2020. Citované: 2020.</a> (<a target="_blank"
+		 * href="resources/DistanceLine3Line3.pdf">Kópia dokumentu na
+		 * prevzatie.</a>)</li></ul>
+		 * 
 		 * @param x1 x-ová súradnica určujúceho bodu A prvej úsečky
 		 * @param y1 y-ová súradnica určujúceho bodu A prvej úsečky
 		 * @param x2 x-ová súradnica určujúceho bodu B prvej úsečky
@@ -28575,7 +28953,7 @@ public final class Svet extends JFrame
 		{ return vzdialenosťÚsečiek(x1, y1, x2, y2, x3, y3, x4, y4); }
 
 		/**
-		 * <p>Vypočíta vzdialenosť medzi dvomi úsečkami |AB| a |CD|. Ak sa
+		 * <p>Vypočíta vzdialenosť medzi dvomi úsečkami AB a CD. Ak sa
 		 * úsečky pretínajú, tak je vzdialenosť nulová. V opačnom prípade
 		 * metóda nájde najbližšie body úsečiek a vypočíta vzdialenosť medzi
 		 * nimi. Pozri aj opis metódy {@link #vzdialenosťÚsečiek(double,
@@ -28600,7 +28978,7 @@ public final class Svet extends JFrame
 			B.polohaY(), C.polohaX(), C.polohaY(), D.polohaX(), D.polohaY()); }
 
 		/**
-		 * <p>Vypočíta vzdialenosť medzi dvomi úsečkami |AB| a |CD|, pričom
+		 * <p>Vypočíta vzdialenosť medzi dvomi úsečkami AB a CD, pričom
 		 * ich určujúce body sú prvkami poľa {@code poleBodov}. To znamená,
 		 * že pole musí obsahovať aspoň štyri prvky. Prvé dva prvky sú
 		 * určujúce body prvej úsečky (A, B) a ďalšie dva druhej (C, D).
@@ -28679,7 +29057,9 @@ public final class Svet extends JFrame
 		 * {@linkplain Line2D#ptLineDist(double, double, double, double,
 		 * double, double) metóda}, ktorá tento algoritmus implementuje.
 		 * Programovací rámec GRobot vnútorne implementuje vlastnú
-		 * optimalizovanú verziu jednej z implementácií tejto metódy.)</p>
+		 * optimalizovanú verziu jednej z implementácií tejto metódy – pozri:
+		 * {@link #vzdialenosťBoduOdPriamky(double, double, double, double,
+		 * double, double) vzdialenosťBoduOdPriamky}.)</p>
 		 * 
 		 * <p><image>vzdialenost-priamky-od-kruznice.svg<alt/><onerror>vzdialenost-priamky-od-kruznice.png</onerror></image>Grafické
 		 * znázornenie vzdialenosti úsečky od kružnice (červenou), ktorú
@@ -28711,7 +29091,7 @@ public final class Svet extends JFrame
 		{ return ptLineDist(x1, y1, x2, y2, x3, y3) - r; }
 
 		/**
-		 * <p>Vypočíta vzdialenosť medzi určenou priamkou |AB| a kružnicou
+		 * <p>Vypočíta vzdialenosť medzi určenou priamkou AB a kružnicou
 		 * so stredom S a polomerom r. Pozri aj opis metódy {@link 
 		 * #vzdialenosťPriamkyOdKružnice(double, double, double, double,
 		 * double, double, double) vzdialenosťPriamkyOdKružnice}, ktorej
@@ -28734,7 +29114,7 @@ public final class Svet extends JFrame
 			B.polohaY(), S.polohaX(), S.polohaY()) - r; }
 
 		/**
-		 * <p>Vypočíta vzdialenosť medzi určenou priamkou |AB| a kružnicou
+		 * <p>Vypočíta vzdialenosť medzi určenou priamkou AB a kružnicou
 		 * so stredom S a polomerom r, pričom body A, B a stred S sú určené
 		 * prvkami poľa {@code poleBodov}. To znamená, že pole musí obsahovať
 		 * aspoň tri prvky. Prvé dva prvky sú určujúce body priamky (A a B)
@@ -28812,7 +29192,7 @@ public final class Svet extends JFrame
 		{ return ptSegDist(x1, y1, x2, y2, x3, y3) - r; }
 
 		/**
-		 * <p>Vypočíta vzdialenosť medzi určenou úsečkou |AB| a kružnicou
+		 * <p>Vypočíta vzdialenosť medzi určenou úsečkou AB a kružnicou
 		 * so stredom S a polomerom r. Pozri aj opis metódy {@link 
 		 * #vzdialenosťÚsečkyOdKružnice(double, double, double, double,
 		 * double, double, double) vzdialenosťÚsečkyOdKružnice}, ktorej
@@ -28835,7 +29215,7 @@ public final class Svet extends JFrame
 			B.polohaY(), S.polohaX(), S.polohaY()) - r; }
 
 		/**
-		 * <p>Vypočíta vzdialenosť medzi určenou úsečkou |AB| a kružnicou
+		 * <p>Vypočíta vzdialenosť medzi určenou úsečkou AB a kružnicou
 		 * so stredom S a polomerom r, pričom body A, B a stred S sú určené
 		 * prvkami poľa {@code poleBodov}. To znamená, že pole musí obsahovať
 		 * aspoň tri prvky. Prvé dva prvky sú určujúce body úsečky (A a B)

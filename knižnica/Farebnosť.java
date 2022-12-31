@@ -808,7 +808,7 @@ public interface Farebnosť
 	 * <p><b>Tabuľka farieb zoradených tak, ako sú umiestnené v tomto
 	 * poli farieb:</b></p>
 	 * 
-	 * <style>
+	 * <style><!--
 	 * svg.color-box
 	 * {
 	 * 	width: 24;
@@ -823,7 +823,7 @@ public interface Farebnosť
 	 * 	stroke-width: 2;
 	 * 	stroke: black;
 	 * }
-	 * </style>
+	 * --></style>
 	 * 
 	 * <table>
 	 * <tr>

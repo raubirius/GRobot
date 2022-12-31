@@ -98,6 +98,26 @@ import knižnica.podpora.RandomGenerator;
  * jeho prechádzania. Mohlo by dôjsť k nepredvídateľným vedľajším efektom
  * alebo by to mohlo viesť ku vzniku výnimky.</p>
  * 
+ * <p> </p>
+ * 
+ * <p class="remark"><b>Poznámka:</b> Táto trieda používa na generovanie
+ * pseudonáhodných čísiel implementáciu Mersennovho twistera z CERNu z roku
+ * 1999. Uvedená implementácia bola použitá aj v rámci procesu implementácie
+ * vlastnej optimalizovanej verzie generátora pseudonáhodných čísiel
+ * s binomickým rozložením. (Pozri zdroj nižšie.)</p>
+ * 
+ * <p><b>Súvisiaci zdroj:</b></p>
+ * 
+ * <ul>
+ * <li><small>Horváth, Roman</small>: Optimisation of Algorithms Generating
+ * Pseudorandom Integers with Binomial Distribution. <em>ICETA 2022.</em>
+ * Danver : Institute of Electrical and Electronics Engineers, 2022. ISBN
+ * 979-8-3503-2032-9. Pp. 197–201. <a target="_blank"
+ * href="resources/Horvath-ICETA-2022.pdf"><i>[prevziať]</i></a></li>
+ * </ul>
+ * 
+ * <p> </p>
+ * 
  * @see java.util.Vector Vector&lt;E&gt;
  */
 @SuppressWarnings("serial")
@@ -835,6 +855,10 @@ public class Zoznam<Typ> extends Vector<Typ>
 	/**
 	 * <p>Vráti náhodný prvok zoznamu. Zároveň nastaví vnútorné {@linkplain 
 	 * #počítadlo() počítadlo} na hodnotu prvku, ktorý bol vrátený.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda používa Mersennov
+	 * twistr z CERNu (1999). Pozri aj poznámku v hlavnom opise
+	 * {@linkplain Zoznam tejto triedy.}</p>
 	 * 
 	 * @return náhodný prvok zoznamu
 	 */

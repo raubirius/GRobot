@@ -613,6 +613,24 @@ import knižnica.podpora.RandomGenerator;
  * <ul><li><a href="http://www.neilwallis.com/projects/java/water/index.php"
  * target="_blank"><small>Wallis, Neil</small>: <em>Simulate ripples on
  * water.</em> December 2004. (Citované zhruba: 2014 – 2016.)</a></li></ul>
+ * 
+ * <p> </p>
+ * 
+ * <p class="remark"><b>Poznámka:</b> Táto trieda používa na generovanie
+ * pseudonáhodných čísiel implementáciu Mersennovho twistera z CERNu z roku
+ * 1999. Uvedená implementácia bola použitá aj v rámci procesu implementácie
+ * vlastnej optimalizovanej verzie generátora pseudonáhodných čísiel
+ * s binomickým rozložením. (Pozri zdroj nižšie.)</p>
+ * 
+ * <p><b>Súvisiaci zdroj:</b></p>
+ * 
+ * <ul>
+ * <li><small>Horváth, Roman</small>: Optimisation of Algorithms Generating
+ * Pseudorandom Integers with Binomial Distribution. <em>ICETA 2022.</em>
+ * Danver : Institute of Electrical and Electronics Engineers, 2022. ISBN
+ * 979-8-3503-2032-9. Pp. 197–201. <a target="_blank"
+ * href="resources/Horvath-ICETA-2022.pdf"><i>[prevziať]</i></a></li>
+ * </ul>
  */
 public class Vlnenie
 {
@@ -1747,7 +1765,12 @@ public class Vlnenie
 	}
 
 	/**
-	 * <p>Pridá náhodný šum k úrovniam hladiny vlnenia – pridá náhodné vzruchy.</p>
+	 * <p>Pridá náhodný šum k úrovniam hladiny vlnenia – pridá náhodné
+	 * vzruchy.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda používa Mersennov
+	 * twistr z CERNu (1999). Pozri aj poznámku v hlavnom opise
+	 * {@linkplain Vlnenie tejto triedy.}</p>
 	 * 
 	 * @param spodnáHranicaŠumu najnižšia možná vygenerovaná náhodná hodnota,
 	 *     ktorá bude pridaná k hladine vlnenia (odporúčaná je záporná hodnota

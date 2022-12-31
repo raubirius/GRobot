@@ -62,9 +62,6 @@ import static java.util.Calendar.*;
  * href="resources/apache-licence-2.0.html">Apache License – Version 2.0,
  * January 2004.</a></p>
  * 
- * <!-- TODO overiť, či sa HTML verziu Apache Ant licencie dá otvoriť a či sa
- * zobrazuje správne. -->
- * 
  * <p>Trieda {@code currArchív} poskytuje programátorské rozhranie na čo
  * najjednoduchšie vytvorenie archívu jeho zápis, čítanie alebo analýzu.
  * Programovací rámec umožňuje prepojenie iných súčastí (napríklad
@@ -2469,6 +2466,37 @@ public class Archív implements Closeable
 	public byte[] udajePolozky(String názovPoložky)
 	{ return údajePoložky(názovPoložky); }
 
+	/**
+	 * <p>Prečíta do vnútornej pamäte sveta obrázok z tohto archívu a vytvorí
+	 * z neho nový objekt typu {@link Obrázok Obrázok}. Táto metóda
+	 * v skutočnosti volá metódu {@link Obrázok#čítaj(Archív, String)
+	 * čítaj(archív, názovPoložky)}, ktorá sa spolieha na fungovanie ďalších
+	 * metód rámca.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
+	 * použiteľná len v prípade, že je archív otvorený na
+	 * <b>{@linkplain #otvorNaČítanie(String) čítanie.}</b></p>
+	 * 
+	 * <p>Pozri aj príklad v opise metódy {@link Obrázok#čítaj(Archív,
+	 * String) Obrázok.čítaj(archív, názovPoložky)}.</p>
+	 * 
+	 * @param názovPoložky názov položky, z ktorej má byť prečítaný obrázok,
+	 *     prípadne sekvencia animácie
+	 * @return obrázok prečítaný zo zadanej položky alebo {@code valnull}, ak
+	 *     pokus o prečítanie sekvencie súborov zlyhal z pamäťových dôvodov
+	 * 
+	 * @throws GRobotException ak archív nie je otvorený na čítanie
+	 *     (identifikátor {@code archiveNotOpenForReading}) alebo zadaná
+	 *     položka s obrázkom nebola nájdená (identifikátor
+	 *     {@code entryNotFound})
+	 */
+	public Obrázok obrázok(String názovPoložky)
+	{ return Obrázok.čítaj(this, názovPoložky); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #obrázok(String) obrázok}.</p> */
+	public Obrazok obrazok(String názovPoložky)
+	{ return Obrázok.citaj(this, názovPoložky); }
+
 
 	/**
 	 * <p>Pridá do archívu údaje zo zadaného súboru. Metóda dovoľuje zmeniť
@@ -2499,6 +2527,7 @@ public class Archív implements Closeable
 	 *     v prípade pokusu o vloženie duplicitnej položky
 	 * 
 	 * @see #pridajPoložku(String, byte[])
+	 * @see #pridajPoložku(String, Obrázok)
 	 * @see #cestaVArchíve()
 	 * @see #cestaNaDisku()
 	 */
@@ -2584,6 +2613,7 @@ public class Archív implements Closeable
 	 *     alebo v prípade pokusu o vloženie duplicitnej položky
 	 * 
 	 * @see #pridajPoložku(String, String)
+	 * @see #pridajPoložku(String, Obrázok)
 	 * @see #cestaVArchíve()
 	 * @see #cestaNaDisku()
 	 */
@@ -2615,6 +2645,48 @@ public class Archív implements Closeable
 	/** <p><a class="alias"></a> Alias pre {@link #pridajPoložku(String, byte[]) pridajPoložku}.</p> */
 	public ZipEntry pridajPolozku(String názovPoložky, byte[] údajePoložky)
 		throws IOException { return pridajPoložku(názovPoložky, údajePoložky); }
+
+
+	/**
+	 * <p>Zapíše obrázok do položky archívu so zadaným názvom. Táto metóda
+	 * v skutočnosti volá metódu {@link Obrázok#ulož(Archív, String)
+	 * Obrázok.ulož(archív, názovPoložky)}, ktorá sa spolieha na fungovanie
+	 * ďalších metód rámca.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Táto metóda je
+	 * použiteľná len v prípade, že je archív otvorený na
+	 * <b>{@linkplain #otvorNaZápis(String) zápis.}</b></p>
+	 * 
+	 * <p>Pozri aj príklad v opise metódy {@link Obrázok#čítaj(Archív,
+	 * String) Obrázok.čítaj(archív, názovPoložky)}.</p>
+	 * 
+	 * @param názovPoložky názov pridávanej položky (nesmie byť zamlčaný)
+	 * @param obrázok obrázok, ktorého obsah má byť pridaný ako ďalšia položka
+	 *     (prípadne položky)
+	 * @return položky archívu knižnice <a href="https://ant.apache.org/"
+	 *     target="_blank">Apache Ant</a> <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipEntry.java"
+	 *     target="_blank"><code>ZipEntry</code></a> na vykonanie prípadných
+	 *     ďalších úprav (nastavenie komentárov položiek, úprava ich dátumu
+	 *     podľa vlastných potrieb a podobne)
+	 * 
+	 * @exception IOException ak vznikla chyba vo vstupno-výstupnej
+	 *     operácii
+	 * @throws GRobotException ak bol zadaný názov súboru s neplatnou
+	 *     príponou, ak archív nie je otvorený na zápis, ak bol názov
+	 *     položky zamlčaný (bola zadaná hodnota {@code valnull})
+	 *     alebo v prípade pokusu o vloženie duplicitnej položky
+	 * 
+	 * @see #pridajPoložku(String, String)
+	 * @see #pridajPoložku(String, byte[])
+	 * @see #cestaVArchíve()
+	 * @see #cestaNaDisku()
+	 */
+	public ZipEntry[] pridajPoložku(String názovPoložky, Obrázok obrázok)
+		throws IOException { return obrázok.ulož(this, názovPoložky); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #pridajPoložku(String, Obrázok) pridajPoložku}.</p> */
+	public ZipEntry[] pridajPolozku(String názovPoložky, Obrázok obrázok)
+		throws IOException { return pridajPoložku(názovPoložky, obrázok); }
 
 
 	/**
