@@ -2489,6 +2489,10 @@ public class Archív implements Closeable
 	 *     (identifikátor {@code archiveNotOpenForReading}) alebo zadaná
 	 *     položka s obrázkom nebola nájdená (identifikátor
 	 *     {@code entryNotFound})
+	 * 
+	 * @see Obrázok#čítaj(Archív, String)
+	 * @see Obrázok#ulož(Archív, String)
+	 * @see Archív#pridajPoložku(String, Obrázok)
 	 */
 	public Obrázok obrázok(String názovPoložky)
 	{ return Obrázok.čítaj(this, názovPoložky); }
@@ -2680,6 +2684,9 @@ public class Archív implements Closeable
 	 * @see #pridajPoložku(String, byte[])
 	 * @see #cestaVArchíve()
 	 * @see #cestaNaDisku()
+	 * @see Obrázok#čítaj(Archív, String)
+	 * @see Obrázok#ulož(Archív, String)
+	 * @see Archív#obrázok(String)
 	 */
 	public ZipEntry[] pridajPoložku(String názovPoložky, Obrázok obrázok)
 		throws IOException { return obrázok.ulož(this, názovPoložky); }

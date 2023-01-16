@@ -18516,9 +18516,15 @@ public final class Svet extends JFrame
 		 * súčet) absolútnej hodnoty zadaného čísla v desiatkovej číselnej
 		 * sústave.</p>
 		 * 
+		 * <p>Ćíselný koreň čísla 13 (v desiatkovej číselnej sústave) je 4,
+		 * lebo 1 + 3 je 4. Číselný koreň čísla 29 je 2, lebo 2 + 9 je 11
+		 * a 1 + 1 je 2.</p>
+		 * 
 		 * @param číslo číslo, ktorého koreň má byť vypočítaný
 		 * @return číselný koreň zadaného čísla vypočítaný podľa zadaného
 		 *     koreňa číselnej sústavy
+		 * 
+		 * @see #číselnýKoreň(long, long)
 		 */
 		public static long číselnýKoreň(long číslo)
 		{ return číselnýKoreň(číslo, 10); }
@@ -18536,6 +18542,8 @@ public final class Svet extends JFrame
 		 *     vyjadrené)
 		 * @return číselný koreň zadaného čísla vypočítaný podľa zadaného
 		 *     koreňa číselnej sústavy
+		 * 
+		 * @see #číselnýKoreň(long)
 		 */
 		public static long číselnýKoreň(long číslo, long základ)
 		{
@@ -28061,7 +28069,7 @@ public final class Svet extends JFrame
 					{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num3});
 					{@link GRobot#farba(Color) farba}({@link Farebnosť#zelená zelená});
 					{@link GRobot#veľkosť(double) veľkosť}({@code num50});
-					{@link {@link {@link Svet Svet}.{@link Svet#prekresli() prekresli}();
+					{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
 				}
 
 				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliTvar() kresliTvar}()
@@ -28069,7 +28077,7 @@ public final class Svet extends JFrame
 					{@link GRobot#krúžok() krúžok}();
 
 					{@code kwdif} ({@code valnull} == myš) {@code kwdreturn};
-					{@link {@link Bod Bod} bod = {@link {@link {@link Svet Svet}.{@link Svet#najbližšíBodNaKružnici(Poloha, Poloha, double) najbližšíBodNaKružnici}(myš, {@code valthis}, {@link GRobot#veľkosť() veľkosť}());
+					{@link Bod Bod} bod = {@link Svet Svet}.{@link Svet#najbližšíBodNaKružnici(Poloha, Poloha, double) najbližšíBodNaKružnici}(myš, {@code valthis}, {@link GRobot#veľkosť() veľkosť}());
 
 					{@link GRobot#farba(Color) farba}({@link Farebnosť#červená červená});
 					{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num0.33});
@@ -28080,16 +28088,16 @@ public final class Svet extends JFrame
 
 				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#pohybMyši() pohybMyši}()
 				{
-					myš = {@link {@link {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyši() polohaMyši}();
-					{@link {@link {@link Svet Svet}.{@link Svet#prekresli() prekresli}();
+					myš = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#polohaMyši() polohaMyši}();
+					{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
 				}
 
-				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link {@link String String}[] args)
+				{@code kwdpublic} {@code kwdstatic} {@code typevoid} main({@link String String}[] args)
 				{
-					{@link {@link {@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}("BodNaKružnici.cfg");
-					{@link {@link {@link Svet Svet}.{@link Svet#nekresli() nekresli}();
+					{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"BodNaKružnici.cfg"});
+					{@link Svet Svet}.{@link Svet#nekresli() nekresli}();
 					{@code kwdnew} BodNaKružnici();
-					{@link {@link {@link Svet Svet}.{@link Svet#zbaľ() zbaľ}();
+					{@link Svet Svet}.{@link Svet#zbaľ() zbaľ}();
 				}
 			}
 			</pre>

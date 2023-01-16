@@ -4521,79 +4521,6 @@ Toto bolo presunuté na úvodnú stránku:
 				cx[3] = veľkosť * 1.405;  cy[3] = veľkosťY * 1.405;
 				cx[4] = veľkosť * 0.415;  cy[4] = veľkosťY * 0.415;
 
-				/* * /
-				// Dva „neúspešné“ pokusy v jednom. Fungovali pre trojzubec,
-				// ktorý sa celý zmestil do kružnice (a bol na jej báze
-				// prepočítavaný), ale keď prišla vlastnosť šírky, prestalo
-				// to platiť. Prvý v podstate reprezentuje mierne modifikovaný
-				// pôvodný spôsob. Druhý bol pokus o nápravu…
-
-				// Prvý mal všetky:
-				// 	fx = x + cos(α) * cx // [1, 2, 3, 4, 4, 3, 2, 1]
-				// 	fy = y + sin(α) * cy
-
-				// double x = aktuálneX - cos(α) * cx[0];
-				// double y = aktuálneY - sin(α) * cy[0];
-
-				// Druhý vyzeral takto:
-
-				double α = toRadians(aktuálnyUhol + pootočenieTvaru);
-				double x = aktuálneX - cos(α) * cx[0] + sin(α) * cx[0];
-				double y = aktuálneY - sin(α) * cx[0] - cos(α) * cy[0];
-
-				// u1: 26.5°  —  0.4625122517784973  rad
-				// u2: 18.5°  —  0.32288591161895097 rad
-				// u3: 45°    —  0.7853981633974483  rad
-
-				fx[0] = (int)Svet.prepočítajX(
-					x + cos(α) * cx[1] - sin(α) * cy[1]);
-				fy[0] = (int)Svet.prepočítajY(
-					// y + sin(α) * cy[1]
-					y + sin(α) * cx[1] + cos(α) * cy[1]);
-
-				α += 0.4625122517784973; // u1
-				fx[1] = (int)Svet.prepočítajX(
-					x + cos(α) * cx[2] - sin(α) * cy[2]);
-				fy[1] = (int)Svet.prepočítajY(
-					// y + sin(α) * cy[2]
-					y + sin(α) * cx[2] + cos(α) * cy[2]);
-
-				α += 0.32288591161895097; // u2
-				fx[2] = (int)Svet.prepočítajX(
-					x + cos(α) * cx[3] - sin(α) * cy[3]);
-				fy[2] = (int)Svet.prepočítajY(
-					// y + sin(α) * cy[3]
-					y + sin(α) * cx[3] + cos(α) * cy[3]);
-
-				α += 0.7853981633974483; // u3
-				fx[3] = (int)Svet.prepočítajX(
-					x + cos(α) * cx[4] - sin(α) * cy[4]);
-				fy[3] = (int)Svet.prepočítajY(
-					// y + sin(α) * cy[4]
-					y + sin(α) * cx[4] + cos(α) * cy[4]);
-
-				α += 3.141592653589793;  // 180°
-				fx[4] = (int)Svet.prepočítajX(
-					x + cos(α) * cx[4] - sin(α) * cy[4]);
-				fy[4] = (int)Svet.prepočítajY(
-					// y + sin(α) * cy[4]
-					y + sin(α) * cx[4] + cos(α) * cy[4]);
-
-				α += 0.7853981633974483; // u3
-				fx[5] = (int)Svet.prepočítajX(
-					x + cos(α) * cx[3] - sin(α) * cy[3]);
-				fy[5] = (int)Svet.prepočítajY(
-					// y + sin(α) * cy[3]
-					y + sin(α) * cx[3] + cos(α) * cy[3]);
-
-				α += 0.32288591161895097; // u2
-				fx[6] = (int)Svet.prepočítajX(
-					x + cos(α) * cx[2] - sin(α) * cy[2]);
-				fy[6] = (int)Svet.prepočítajY(
-					// y + sin(α) * cy[2]
-					y + sin(α) * cx[2] + cos(α) * cy[2]);
-				/* */
-
 				fat.setToTranslation(aktuálneX, aktuálneY);
 				fat.rotate(toRadians(aktuálnyUhol + pootočenieTvaru));
 
@@ -4649,43 +4576,6 @@ Toto bolo presunuté na úvodnú stránku:
 				cx[2] = veľkosť * 0.6;  cy[2] = veľkosťY * 0.6;
 				cx[3] = veľkosť * 1.2;  cy[3] = veľkosťY * 1.2;
 				cx[4] = veľkosť * 2.0;  cy[4] = veľkosťY * 2.0;
-
-				/* * /
-				// Po vzore metódy prepočítajPolygón bola najprv uchovaná
-				// staršia verzia (ktorá deformovala polygón pri obdĺžnikových
-				// proporciách tvaru) a nižšie implementovaná novšia verzia.
-
-				double α = toRadians(aktuálnyUhol + pootočenieTvaru);
-				double x = aktuálneX - cos(α) * cx[1];
-				double y = aktuálneY - sin(α) * cy[1];
-
-				fx[0] = (int)Svet.prepočítajX(x + cos(α) * cx[4]); // 20.0
-				fy[0] = (int)Svet.prepočítajY(y + sin(α) * cy[4]);
-
-				α += 0.3490658503988659; // 20°
-				fx[1] = (int)Svet.prepočítajX(x + cos(α) * cx[2]); // 6.0
-				fy[1] = (int)Svet.prepočítajY(y + sin(α) * cy[2]);
-
-				α += 0.3490658503988659; // 20°
-				fx[2] = (int)Svet.prepočítajX(x + cos(α) * cx[3]); // 12.0
-				fy[2] = (int)Svet.prepočítajY(y + sin(α) * cy[3]);
-
-				α += 0.8726646259971648; // 50°
-				fx[3] = (int)Svet.prepočítajX(x + cos(α) * cx[0]); // 4.0
-				fy[3] = (int)Svet.prepočítajY(y + sin(α) * cy[0]);
-
-				α += 3.141592653589793;  // 180°
-				fx[4] = (int)Svet.prepočítajX(x + cos(α) * cx[0]); // 4.0
-				fy[4] = (int)Svet.prepočítajY(y + sin(α) * cy[0]);
-
-				α += 0.8726646259971648; // 50°
-				fx[5] = (int)Svet.prepočítajX(x + cos(α) * cx[3]); // 12.0
-				fy[5] = (int)Svet.prepočítajY(y + sin(α) * cy[3]);
-
-				α += 0.3490658503988659; // 20°
-				fx[6] = (int)Svet.prepočítajX(x + cos(α) * cx[2]); // 6.0
-				fy[6] = (int)Svet.prepočítajY(y + sin(α) * cy[2]);
-				/* */
 
 				fat.setToTranslation(aktuálneX, aktuálneY);
 				fat.rotate(toRadians(aktuálnyUhol + pootočenieTvaru));
@@ -4758,18 +4648,11 @@ Toto bolo presunuté na úvodnú stránku:
 					null == vlastnýTvarKreslenie)
 				{
 					prepočítajPolygón();
-					// grafika.setColor(farbaRobota);
 					nastavFarbuAleboVýplňPodľaRobota(grafika);
 
 					if (vyplnený)
 					{
 						grafika.fillPolygon(fx, fy, 7);
-						// grafika.fill(new Ellipse2D.Double(
-						// 	fx[2] - polomerPera / 2, fy[2] - polomerPera / 2,
-						// 	polomerPera, polomerPera));
-						// grafika.fill(new Ellipse2D.Double(
-						// 	fx[5] - polomerPera / 2, fy[5] - polomerPera / 2,
-						// 	polomerPera, polomerPera));
 					}
 					else
 					{
@@ -4829,23 +4712,6 @@ Toto bolo presunuté na úvodnú stránku:
 							pootočenieTvaru - 90);
 						double s = veľkosť / pôvodnáVeľkosť;
 						double t = s * (pomerVeľkosti / pôvodnýPomer);
-
-						/* Zlý spôsob
-						prepočítanéX /= t;
-						prepočítanéY /= s;
-
-						grafika.scale(s, t);
-						grafika.rotate(-α, prepočítanéX, prepočítanéY);
-
-						if (relevantný instanceof Obrázok)
-							((Obrázok)relevantný).kresliNaStred(
-								(int)prepočítanéX, (int)prepočítanéY, grafika);
-						else
-							grafika.drawImage(relevantný,
-								(int)(prepočítanéX - (šírkaObrázka / 2.0)),
-								(int)(prepočítanéY - (výškaObrázka / 2.0)),
-								null);
-						*/
 
 						// TODO — poriadne otestuj všetky vetvy tohto kreslenia,
 						// lebo táto vyzerá, že konečne funguje, ale „trafil“
@@ -5977,7 +5843,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				/*packagePrivate*/ void kresli(Area oblasť)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
@@ -5991,7 +5856,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				/*packagePrivate*/ void vyplň(Area oblasť)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(oblasť);
@@ -14194,11 +14058,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(novéX),
 								Svet.prepočítajY(novéY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(novéX),
-							(int)Svet.prepočítajY(novéY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -14566,11 +14425,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(novéX),
 								Svet.prepočítajY(novéY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(novéX),
-							(int)Svet.prepočítajY(novéY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -14765,11 +14619,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(novéX),
 								Svet.prepočítajY(novéY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(novéX),
-							(int)Svet.prepočítajY(novéY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -14845,11 +14694,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(novéX),
 								Svet.prepočítajY(novéY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(novéX),
-							(int)Svet.prepočítajY(novéY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -14978,11 +14822,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(novéX),
 								Svet.prepočítajY(novéY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(novéX),
-							(int)Svet.prepočítajY(novéY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -15093,11 +14932,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(novéX),
 								Svet.prepočítajY(novéY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(novéX),
-							(int)Svet.prepočítajY(novéY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -15194,11 +15028,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(novéX),
 								Svet.prepočítajY(novéY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(novéX),
-							(int)Svet.prepočítajY(novéY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -15269,11 +15098,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(novéX),
 								Svet.prepočítajY(novéY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(novéX),
-							(int)Svet.prepočítajY(novéY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -15397,11 +15221,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(novéX),
 								Svet.prepočítajY(novéY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(novéX),
-							(int)Svet.prepočítajY(novéY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -15505,11 +15324,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(novéX),
 								Svet.prepočítajY(novéY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(novéX),
-							(int)Svet.prepočítajY(novéY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -16756,11 +16570,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(novéX),
 								Svet.prepočítajY(novéY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(novéX),
-							(int)Svet.prepočítajY(novéY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -16831,11 +16640,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(objekt.polohaX()),
 								Svet.prepočítajY(objekt.polohaY()));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(objekt.polohaX()),
-							(int)Svet.prepočítajY(objekt.polohaY()));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -16918,11 +16722,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(novéX),
 								Svet.prepočítajY(novéY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(novéX),
-							(int)Svet.prepočítajY(novéY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -16986,11 +16785,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(ÚdajeUdalostí.súradnicaMyšiX),
 								Svet.prepočítajY(ÚdajeUdalostí.súradnicaMyšiY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(ÚdajeUdalostí.súradnicaMyšiX),
-							(int)Svet.prepočítajY(ÚdajeUdalostí.súradnicaMyšiY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -17064,11 +16858,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(aktuálneX),
 								Svet.prepočítajY(aktuálneY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(aktuálneX),
-							(int)Svet.prepočítajY(aktuálneY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -17158,11 +16947,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(novéX),
 								Svet.prepočítajY(novéY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(novéX),
-							(int)Svet.prepočítajY(novéY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -17229,11 +17013,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(objekt.polohaX()),
 								Svet.prepočítajY(objekt.polohaY()));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(objekt.polohaX()),
-							(int)Svet.prepočítajY(objekt.polohaY()));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -17311,11 +17090,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(novéX),
 								Svet.prepočítajY(novéY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(novéX),
-							(int)Svet.prepočítajY(novéY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -17374,11 +17148,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(ÚdajeUdalostí.súradnicaMyšiX),
 								Svet.prepočítajY(ÚdajeUdalostí.súradnicaMyšiY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(ÚdajeUdalostí.súradnicaMyšiX),
-							(int)Svet.prepočítajY(ÚdajeUdalostí.súradnicaMyšiY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -17447,11 +17216,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(aktuálneX),
 								Svet.prepočítajY(aktuálneY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(aktuálneX),
-							(int)Svet.prepočítajY(aktuálneY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -17565,11 +17329,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(novéX),
 								Svet.prepočítajY(novéY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(novéX),
-							(int)Svet.prepočítajY(novéY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -17746,11 +17505,6 @@ Toto bolo presunuté na úvodnú stránku:
 							cesta.moveTo(
 								Svet.prepočítajX(novéX),
 								Svet.prepočítajY(novéY));
-						/*
-						cesta.addPoint(
-							(int)Svet.prepočítajX(novéX),
-							(int)Svet.prepočítajY(novéY));
-						*/
 					}
 
 					// Kontrola ohraničenia
@@ -17946,7 +17700,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 					if (kresliPerom)
 					{
-						// grafikaAktívnehoPlátna.setColor(farbaRobota);
 						nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 						nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 						grafikaAktívnehoPlátna.setStroke(čiara);
@@ -27592,7 +27345,6 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 					else
 					{
-						// grafikaAktívnehoPlátna.setColor(farbaRobota);
 						nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 						nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 						grafikaAktívnehoPlátna.fillRect(0, 0,
@@ -27978,7 +27730,6 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public void bod()
 			{
-				// grafikaAktívnehoPlátna.setColor(farbaRobota);
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
@@ -28158,7 +27909,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
@@ -28238,7 +27988,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(kruh);
@@ -28378,7 +28127,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
@@ -28468,7 +28216,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(elipsa);
@@ -28626,7 +28373,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
@@ -28722,7 +28468,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(štvorec);
@@ -28895,7 +28640,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
@@ -29005,7 +28749,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(obdĺžnik);
@@ -29132,7 +28875,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
@@ -29195,7 +28937,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(hviezda);
@@ -29329,7 +29070,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
@@ -29405,7 +29145,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(kruh);
@@ -29560,7 +29299,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
@@ -29655,7 +29393,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(elipsa);
@@ -30052,7 +29789,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
@@ -30144,7 +29880,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(štvorec);
@@ -30332,7 +30067,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
@@ -30450,7 +30184,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(obdĺžnik);
@@ -30852,7 +30585,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
@@ -30911,7 +30643,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(hviezda);
@@ -31915,7 +31646,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (!kresliTvary) return new Polygon(fx, fy, 7);
 
-				// grafikaAktívnehoPlátna.setColor(farbaRobota);
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
@@ -31977,7 +31707,6 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (!kresliTvary) return new Polygon(fx, fy, 7);
 
-				// grafikaAktívnehoPlátna.setColor(farbaRobota);
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
@@ -32029,7 +31758,6 @@ Toto bolo presunuté na úvodnú stránku:
 				poslednýTypTvaru = TypTvaru.OBRYS;
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
@@ -32065,7 +31793,6 @@ Toto bolo presunuté na úvodnú stránku:
 				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.fill(tvar);
@@ -32303,7 +32030,6 @@ Toto bolo presunuté na úvodnú stránku:
 				poslednýTypTvaru = TypTvaru.OBRYS;
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 					grafikaAktívnehoPlátna.setStroke(čiara);
@@ -32323,32 +32049,12 @@ Toto bolo presunuté na úvodnú stránku:
 						double prepočítanéX = Svet.prepočítajX(aktuálneX);
 						double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
-						/*
-						if (pôvodnáVeľkosť != veľkosť ||
-							pôvodnýPomer != pomerVeľkosti)
-						{
-							double mierka = veľkosť / pôvodnáVeľkosť;
-							double mierkaX = mierka * (pomerVeľkosti /
-								pôvodnýPomer);
-							at.translate(prepočítanéX, prepočítanéY);
-							at.scale(mierkaX, mierka);
-							at.translate(-prepočítanéX, -prepočítanéY);
-						}
-
-						at.rotate(toRadians(90 - aktuálnyUhol),
-							prepočítanéX, prepočítanéY);
-
-						at.translate(aktuálneX, -aktuálneY);
-						tvar = at.createTransformedShape(tvar);
-						*/
-
-						// TODO: (Asi vymazať spôsob v komentári vyššie?) Pri
-						// používaní tejto metódy som zistil, že transformácie
-						// rotácie a zmeny mierky musia byť vymenené, inak
-						// vznikalo skosenie tvaru pri nerovnomernej mierke
-						// (rozdielnej v dvoch osiach; pretože mierka sa
-						// postupne „otáčala,“ až sa pri 90° „vymenila“ –>
-						// x za y a tak to šlo dookola).
+						// Pri používaní tejto metódy som zistil, že
+						// transformácie rotácie a zmeny mierky musia byť
+						// vymenené, inak vznikalo skosenie tvaru pri
+						// nerovnomernej mierke (rozdielnej v dvoch osiach;
+						// pretože mierka sa postupne „otáčala,“ až sa pri 90°
+						// „vymenila“ –> x za y a tak to šlo dookola).
 
 						at.rotate(toRadians(90 - aktuálnyUhol),
 							prepočítanéX, prepočítanéY);
@@ -32434,7 +32140,6 @@ Toto bolo presunuté na úvodnú stránku:
 				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 				if (kresliTvary)
 				{
-					// grafikaAktívnehoPlátna.setColor(farbaRobota);
 					nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
@@ -37247,7 +36952,6 @@ Toto bolo presunuté na úvodnú stránku:
 					return rozloženieTextu.getOutline(transformácie);
 				}
 
-				// grafikaAktívnehoPlátna.setColor(farbaRobota);
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
@@ -37477,7 +37181,6 @@ Toto bolo presunuté na úvodnú stránku:
 					return rozloženieTextu.getOutline(transformácie);
 				}
 
-				// grafikaAktívnehoPlátna.setColor(farbaRobota);
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
@@ -38098,11 +37801,7 @@ Toto bolo presunuté na úvodnú stránku:
 				cesta.moveTo(
 					Svet.prepočítajX(aktuálneX),
 					Svet.prepočítajY(aktuálneY));
-				/*
-				cesta.addPoint(
-					(int)Svet.prepočítajX(aktuálneX),
-					(int)Svet.prepočítajY(aktuálneY));
-				*/
+
 				záznamCesty = true;
 				aktualizujStavPera();
 				záznamCestyBezPolohyPera = true;
@@ -38150,11 +37849,7 @@ Toto bolo presunuté na úvodnú stránku:
 				cesta.moveTo(
 					Svet.prepočítajX(aktuálneX),
 					Svet.prepočítajY(aktuálneY));
-				/*
-				cesta.addPoint(
-					(int)Svet.prepočítajX(aktuálneX),
-					(int)Svet.prepočítajY(aktuálneY));
-				*/
+
 				záznamCesty = true;
 				aktualizujStavPera();
 				záznamCestyBezPolohyPera = !rešpektujPolohuPera;
@@ -38275,17 +37970,9 @@ Toto bolo presunuté na úvodnú stránku:
 			public void vyplňCestu()
 			{
 				poslednýTypTvaru = TypTvaru.VÝPLŇ;
-				/*
-				 * @throws RuntimeException ak cesta nejestvuje
-				if (0 == cesta.npoints) throw new RuntimeException("Cesta " +
-					"nejestvuje. Na jej vytvorenie použite pred začatím " +
-					"pohybu robota po podlahe alebo strope metódu " +
-					"začniCestu().");
-				*/
 				záznamCesty = false;
 				aktualizujStavPera();
 				záznamCestyBezPolohyPera = true;
-				// grafikaAktívnehoPlátna.setColor(farbaRobota);
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 				grafikaAktívnehoPlátna.fill(cesta);
@@ -38351,22 +38038,13 @@ Toto bolo presunuté na úvodnú stránku:
 			public void kresliCestu()
 			{
 				poslednýTypTvaru = TypTvaru.OBRYS;
-				/*
-				 * @throws RuntimeException ak cesta nejestvuje
-				if (0 == cesta.npoints) throw new RuntimeException("Cesta " +
-					"nejestvuje. Na jej vytvorenie použite pred začatím " +
-					"pohybu robota po podlahe alebo strope metódu " +
-					"začniCestu().");
-				*/
 				záznamCesty = false;
 				aktualizujStavPera();
 				záznamCestyBezPolohyPera = true;
-				// grafikaAktívnehoPlátna.setColor(farbaRobota);
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 				grafikaAktívnehoPlátna.setStroke(čiara);
 				grafikaAktívnehoPlátna.draw(cesta);
-				// grafikaAktívnehoPlátna.drawPolyline(cesta.xpoints, cesta.ypoints, cesta.npoints);
 				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				Svet.automatickéPrekreslenie();
 			}
@@ -38404,13 +38082,7 @@ Toto bolo presunuté na úvodnú stránku:
 			public void obkresliCestu()
 			{
 				poslednýTypTvaru = TypTvaru.OBRYS;
-				/*
-				 * @throws RuntimeException ak cesta nejestvuje
-				if (0 == cesta.npoints) throw new RuntimeException("Cesta " +
-					"nejestvuje. Na jej vytvorenie použite pred začatím " +
-					"pohybu robota po podlahe alebo strope metódu " +
-					"začniCestu().");
-				*/
+
 				if (záznamCesty)
 				{
 					cesta.closePath();
@@ -38419,7 +38091,6 @@ Toto bolo presunuté na úvodnú stránku:
 					záznamCestyBezPolohyPera = true;
 				}
 
-				// grafikaAktívnehoPlátna.setColor(farbaRobota);
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 				grafikaAktívnehoPlátna.setStroke(čiara);
@@ -38721,14 +38392,7 @@ Toto bolo presunuté na úvodnú stránku:
 				// kresliCestu, vyplňCestu…
 				if (záznamCesty)
 					poslednýTypTvaru = vyplnený ? TypTvaru.VÝPLŇ : TypTvaru.OBRYS;
-				/*
-				 * @throws RuntimeException ak cesta nejestvuje
-				if (0 == cesta.npoints) throw new RuntimeException("Cesta " +
-					"nejestvuje. Na jej vytvorenie použite pred začatím " +
-					"pohybu robota po podlahe alebo strope metódu " +
-					"začniCestu().");
-				Ak cesta nejestvuje, metóda spôsobí vznik výnimky.
-				*/
+
 				záznamCesty = false;
 				aktualizujStavPera();
 				záznamCestyBezPolohyPera = true;
@@ -39057,7 +38721,6 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public void obkresliOblasť(Area oblasť)
 			{
-				// grafikaAktívnehoPlátna.setColor(farbaRobota);
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 				grafikaAktívnehoPlátna.setStroke(čiara);
@@ -39122,7 +38785,6 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public void vyplňOblasť(Area oblasť)
 			{
-				// grafikaAktívnehoPlátna.setColor(farbaRobota);
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
@@ -39153,7 +38815,6 @@ Toto bolo presunuté na úvodnú stránku:
 						at.translate(prepočítanéX, prepočítanéY);
 						at.scale(mierkaX, mierka);
 						at.translate(-prepočítanéX, -prepočítanéY);
-						// System.out.println("mierka: " + mierka);
 					}
 
 					at.translate(aktuálneX, -aktuálneY);
@@ -42556,9 +42217,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 * robotom. Má vplyv aj na kreslenie {@linkplain Oblasť oblastí}
 			 * a {@linkplain Shape tvarov Javy} robotom. V tej súvislosti aj
 			 * na zisťovanie prítomnosti {@linkplain #bodVTvare(double,
-			 * double, Shape) bodov v tvaroch}<!-- TODO – fakt? overiť…-->
-			 * a prípadne na ďalšie súvisiace vlastnosti/funkcie
-			 * programovacieho rámca.</p>
+			 * double, Shape) bodov v tvaroch} a prípadne na ďalšie súvisiace
+			 * vlastnosti/funkcie programovacieho rámca.</p>
 			 * 
 			 * <p>Táto mierka nemá vplyv na rozmery kreslenia tvarov robota
 			 * bezparametrickými verziami metód (napríklad {@link #elipsa()

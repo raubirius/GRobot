@@ -1136,13 +1136,13 @@ public class Súbor implements Closeable
 			if (obj instanceof Sekcia)
 			{
 				Sekcia iná = (Sekcia)obj;
-				return názov.equals(iná.názov);
+				return názov.equals(iná.názov); // TODO: zvážiť použitie IgnoreCase (možno by to malo byť voliteľné)
 			}
 
 			if (obj instanceof CharSequence)
 			{
 				CharSequence chs = (CharSequence)obj;
-				return názov.equals(chs.toString());
+				return názov.equals(chs.toString()); // TODO: zvážiť použitie IgnoreCase (možno by to malo byť voliteľné)
 			}
 
 			return false;
@@ -1227,7 +1227,6 @@ public class Súbor implements Closeable
 		private boolean čítamVlastnosti = false;
 
 		/*packagePrivate*/ Sekcia aktívnaSekcia = new Sekcia();
-		// private Sekcia predvolenáSekcia = aktívnaSekcia;
 
 	// Statické súkromné metódy
 
@@ -1260,8 +1259,6 @@ public class Súbor implements Closeable
 		{
 			zaraďRezervovanéSekcie();
 			Sekcia pôvodnáSekcia = aktívnaSekcia;
-
-			// dumpSections("Idem zapisovať.");
 
 			for (Sekcia sekcia : sekcie)
 			{
@@ -1772,7 +1769,6 @@ public class Súbor implements Closeable
 
 						názov = názov.trim();
 
-						// dumpSections("Pridávam sekciu (" + názov + ").");
 						zaraďRezervovanéSekcie();
 
 						if (1 >= sekcie.size() &&
@@ -1788,7 +1784,6 @@ public class Súbor implements Closeable
 							aktivujSekciu(názov);
 						}
 
-						// dumpSections("Po pridaní sekcie.");
 						continue;
 					}
 				}
@@ -2081,14 +2076,12 @@ public class Súbor implements Closeable
 
 			if (null != čítanie) čítajVlastnosti();
 			zaraďRezervovanéSekcie();
-			// dumpSections("Aktivuj sekciu A.");
 
 			Sekcia sekcia = dajSekciu(názov);
 			if (null == sekcia) sekcia = new Sekcia(názov);
 
 			aktívnaSekcia = sekcia;
 			zaraďRezervovanéSekcie();
-			// dumpSections("Aktivuj sekciu B.");
 		}
 
 
@@ -2113,15 +2106,9 @@ public class Súbor implements Closeable
 			názov = názov.trim();
 
 			if (null != čítanie) čítajVlastnosti();
-			// dumpSections("Pred mazaním.");
 
 			if (null != aktívnaSekcia && aktívnaSekcia.equals(názov))
 				aktívnaSekcia = null;
-
-			// if (null != predvolenáSekcia && predvolenáSekcia.equals(názov))
-			// 	predvolenáSekcia = null;
-
-			// dumpSections("Po kontrole rezervovaných.");
 
 			try
 			{
@@ -2145,18 +2132,6 @@ public class Súbor implements Closeable
 						zaraďRezervovanéSekcie();
 					}
 				}
-
-				// if (null == predvolenáSekcia)
-				// {
-				// 	predvolenáSekcia = dajSekciu("");
-				// 	if (null == predvolenáSekcia)
-				// 	{
-				// 		predvolenáSekcia = new Sekcia();
-				// 		zaraďRezervovanéSekcie();
-				// 	}
-				// }
-
-				// dumpSections("Po mazaní.");
 			}
 		}
 
@@ -2196,7 +2171,7 @@ public class Súbor implements Closeable
 			zaraďRezervovanéSekcie();
 
 			overPlatnosťNázvuSekcie(názov);
-			if (aktívnaSekcia.názov.equals(názov)) return;
+			if (aktívnaSekcia.názov.equals(názov)) return; // TODO: zvážiť použitie IgnoreCase (možno by to malo byť voliteľné)
 
 			int indexOf = sekcie.indexOf(názov);
 			if (-1 != indexOf)
@@ -4923,33 +4898,56 @@ public class Súbor implements Closeable
 
 		/**
 		 * <p>Priradí k tomuto súboru zadanú inštanciu {@linkplain Archív
-		 * archívu}. Metódy…
-
-		 <br />TODO (dokončiť opis: pripojenie má viacero výhodných
-		 * dôsledkov…)<br />
-
-		 * … automatické otvorenie…
-
-		 <br />
-
-		 Zápis:
-
-		 <br />…<br />
-
-		 * vrhne výnimku {@link GRobotException GRobotException} s jazykovým
-		 * identifikátorom {@code duplicateEntry} (Položka „<em>názov
-		 * položky</em>“ už v archíve jestvuje.)
-
-		 <br />
-
-		 * Hodnota {@code valnull} znamená, že prípadný pripojený archív má
-		 * byť od tohto súboru odpojený a súbor má opäť fungovať samostatne
-		 * (zapisujúc a čítajúc údaje priamo z pevného disku, prípadne zo
-		 * zdrojov).</p>
+		 * archívu}. Používanie inštancie sa nezmení, ale najbližšie volanie
+		 * metód {@code otvorNa…} (čítanie alebo zápis; všetky verzie)
+		 * neotvorí súbor na disku (alebo inom zdroji), ale vyhľadá alebo
+		 * vytvorí položku v archíve. Archív musí byť buď vopred otvorený na
+		 * čítanie alebo zápis (podľa toho, čo chceme vykonať), alebo musí byť
+		 * povolené {@linkplain Archív#umožniťAutomatickéOtvorenie(boolean)
+		 * automatické otvorenie archívu.} Inak vznikne pri pokuse o otvorenie
+		 * súboru (v tomto prípade prenesene položky archívu) výnimka
+		 * ({@link GRobotException GRobotException}; {@code 
+		 * archiveNotOpenForReading} alebo {@code 
+		 * archiveNotOpenForWriting}).</p>
 		 * 
-
+		 * <p>Hodnota {@code valnull} parametra {@code archív} znamená, že
+		 * prípadný pripojený archív má byť od tohto súboru odpojený a súbor
+		 * má opäť fungovať samostatne (zapisujúc a čítajúc údaje priamo
+		 * z pevného disku, prípadne zo zdrojov).</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Ak je dôsledkom volania tejto
+		 * metódy zmena (t. j. je pripojený nový/odlišný archív alebo je
+		 * jestvujúci archív odpojený), tak metóda automaticky zavrie prípadný
+		 * otvorený súbor alebo položku archívu.</p>
+		 * 
+		 * <p>Pripojenie archívu uľahčuje prácu s textovými (potenciálne
+		 * konfiguračnými) súbormi uloženými v archíve, má to viacero
+		 * výhodných dôsledkov, ale sú tu aj určité obmedzenia:</p>
+		 * 
+		 * <ol>
+		 * <li>Nie je možné otvoriť položku v archíve na pripojenie:
+		 * <s>{@link #otvorNaZápis(String, boolean)
+		 * otvorNaZápis}{@code (}{@code srg"názov.txt"}{@code , 
+		 * }{@code valtrue}{@code )}</s>. Toto obmedzenie súvisí s ďalším
+		 * bodom…</li>
+		 * <li>Nie je možné vytvoriť duplicitnú položku v archíve – pokus
+		 * o otvorenie jestvujúcej položky v archíve otvorenom na zápis vrhne
+		 * výnimku {@link GRobotException GRobotException} s jazykovým
+		 * identifikátorom {@code duplicateEntry} (Položka „<em>názov
+		 * položky</em>“ už v archíve jestvuje.)</li>
+		 * </ol>
+		 * 
+		 * <p>Uvedené obmedzenia súvisia s princípom práce s archívom. Archív
+		 * otvorený na zápis je vždy prázdny, pripravený prijímať (a baliť)
+		 * nové položky. Nedá sa otvoriť jestvujúci archív na zápis a v ňom
+		 * upravovať jestvujúce položky. To by sme museli najprv archív
+		 * rozbaliť do dočasného priečinka, vykonať želané zmeny a archív
+		 * opätovne zbaliť. Ak jestvuje v archíve otvorenom na zápis určitá
+		 * položka, znamená to, že bola v tomto cykle zápisu už zbalená a nedá
+		 * sa meniť.</p>
+		 * 
 		 * <!-- TODO príklad použitia -->
-
+		 * 
 		 * @param archív inštancia archívu na pripojenie
 		 * 
 		 * @see #archívPriradený()

@@ -31,6 +31,7 @@ package knižnica;
 
 import knižnica.Zoznam;
 
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,7 +49,181 @@ import java.util.regex.Pattern;
  * má spracovanie po úspešnej aplikácii tohto filtra (ako prvku v zozname
  * filtrov) zastaviť (a nemá sa pokračovať ďalším filtrom v rámci zoznamu).</p>
  * 
- * <!-- TODO: Vhodný príklad použitia -->
+ * <p><b>Príklady použitia:</b></p>
+ * 
+ * <p>Nižšie sú fragmenty kódov demonštrujúce rôzne situácie. (Sú v nich
+ * použité rôzne spôsoby konštrukcie filtrov.)</p>
+ * 
+ * <p>Prvý príklad odfiltruje meno šablóny PNG sekvencie a vytvorí z neho meno
+ * konfiguračného súboru časovania.</p>
+ * 
+ * <pre CLASS="example">
+	{@code kwdfinal} {@link String String} názovPoložky = {@code srg"animácia-***.png"};
+
+	{@code kwdfinal} Filtre filterNázvuSúboru = {@code kwdnew} {@link Filtre#Filtre(Filter...) Filtre}(
+		{@code kwdnew} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}({@code srg"-?\\*+-?"}, {@code srg"-"}),
+		{@code kwdnew} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}({@code srg"(?i:\\.png$)"}, {@code srg".tim"}),
+		{@code kwdnew} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}({@code srg"-+\\.tim"}, {@code srg".tim"}));
+
+	{@link String String} názovSúboru = filterNázvuSúboru.{@link Filtre#použi(String) použi}(názovPoložky);
+	{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"názovSúboru: "} + názovSúboru);
+	</pre>
+ * 
+ * <p><b>Výsledok:</b></p>
+ * 
+ * <pre CLASS="example">
+	názovSúboru: animácia.tim
+	</pre>
+ * 
+ * <p>V druhom príklade filtre hľadajú adresy v atribútoch {@code href} HTML
+ * kódu, ale len v tele HTML dokumentu:</p>
+ * 
+ * <pre CLASS="example">
+	{@link String String} odpoveď = {@code srg"<!DOCTYPE html>\r\n<html>\r\n<head>"} +
+		{@code srg"\r\n<meta charset=\"UTF-8\" />\r\n<title>Titulok</title>"} +
+		{@code srg"\r\n<link href=\"style.css\" rel=\"stylesheet\" "} +
+		{@code srg"type=\"text/css\" />\r\n</head>\r\n\r\n<body>\r\n\r\n"} +
+		{@code srg"<header><h1>Nadpis v hlavičke</h1></header>\r\n\r\n"} +
+		{@code srg"<section>\r\n\r\n<div>\r\n\t<p><a href=\"https://"} +
+		{@code srg"pdf.truni.sk/\">Pedagogická fakulta</a></p>\r\n</div>"} +
+		{@code srg"\r\n\r\n</section>\r\n</body>\r\n</html>"};
+
+	{@code kwdfinal} Filtre hľadajAdresy = {@code kwdnew} {@link Filtre#Filtre(String...) Filtre}(
+		{@code srg"[ \r\n\t]+"}, {@code srg" "},
+		{@code srg".*?<body"}, {@code srg""},
+		{@code srg".*?href=\"([^\"]+)"}, {@code srg"$1\n"},
+		{@code srg"[^\n]+$"}, {@code srg""});
+
+	{@code kwdfinal} {@link Pattern Pattern} rozdeľAdresy = {@link Pattern Pattern}.{@link Pattern#compile(String) compile}("\n");
+
+	odpoveď = hľadajAdresy.{@link Filtre#použi(String) použi}(odpoveď);
+	{@code kwdfinal} {@link String String}[] adresy = rozdeľAdresy.{@link Pattern#split(CharSequence) split}(odpoveď);
+	{@code kwdfor} ({@link String String} adresa : adresy)
+		{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"adresa: "} + adresa);
+	</pre>
+ * 
+ * <p><b>Výsledok:</b></p>
+ * 
+ * <pre CLASS="example">
+	adresa: https://pdf.truni.sk/
+	</pre>
+ * 
+ * <p>Tretí príklad spojí riadky kódované algoritmom Base64 do jedného reťazca
+ * a odfiltruje začiatočný identifikátor {@code data:…}.</p>
+ * 
+ * <pre CLASS="example">
+	{@code kwdfinal} Filtre spojBase64 = {@code kwdnew} {@link Filtre#Filtre() Filtre}();
+	spojBase64.{@link Filtre#pridaj(String, String) pridaj}({@code srg"^\\s*data:.*?;base64,"}, {@code srg""});
+	spojBase64.{@link Filtre#pridaj(String, String) pridaj}({@code srg"\\s+"}, {@code srg""});
+
+	String naSpojenie = {@code srg"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAg"} +
+		{@code srg"CAYAAABzenr0AAABb0lEQVR42mN48IDh/0BihlEHjDqA\r\n\tFMV37jP/X3JZ/3/8kdT/"} +
+		{@code srg"ert6/rNvXPWfYcMGMFbePuV/xOFssDxIHdUdMPmC7X+F7dPhFuLDIHUg\r\n\t9VRxwM37"} +
+		{@code srg"bP8DDxUSZTE69j1QDNZPtgNAmp3316AYyrd56f/MY7H/V1/R/H/pLjdY3dW7HP83XVP5\r"} +
+		{@code srg"\n\tX3Ai4r/QlkUo6m32NuJ1BF4HoPs8+nDG/3N3+PD6COSopKPJGCFBsgNAcYhsCMh3pC"} +
+		{@code srg"RYkHpk/bjS\r\n\tBAOu1I6c4EA+JyeLIYcEyDxsuQOrA0BZCTnOCQU7vugQ3TIfbtbCy0"} +
+		{@code srg"bEOQCUz2GaQAmOkoIGOSpA\r\n\t5QRRDgAVMjBNoNROiQNAuQO5sCLKASwb18I1wbIauR"} +
+		{@code srg"iURZETI1EOwKeBrPKeVAcMeAgMeBoY8Fww\r\n\t4OXAgJeEA14X4KsNCeUKkHzasQTKa0"} +
+		{@code srg"Ny2wPIcU5xe2DAW0SDok2Ir1WMXGKCLAXlc1BWo0mreLRj\r\n\tMmwdAABfpbXzmG2kBQ"} +
+		{@code srg"AAAABJRU5ErkJggg=="};
+
+	{@link String String} spojené = spojBase64.{@link Filtre#použi(String) použi}(naSpojenie);
+	{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"spojené: "} + spojené);
+	</pre>
+ * 
+ * <p><b>Výsledok:</b></p>
+ * 
+ * <p>Výsledkom bude reťazec vhodný na prevod z kódovania Base64 do binárneho
+ * tvaru (tu je umelo zalomený na zlepšenie čitateľnosti):</p>
+ * 
+ * <pre CLASS="example">
+	spojené: iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABb0lEQVR42mN48IDh/0BihlE
+	HjDqAFMV37jP/X3JZ/3/8kdT/ert6/rNvXPWfYcMGMFbePuV/xOFssDxIHdUdMPmC7X+F7dPhFuLDIHU
+	g9VRxwM37bP8DDxUSZTE69j1QDNZPtgNAmp3316AYyrd56f/MY7H/V1/R/H/pLjdY3dW7HP83XVP5X3A
+	i4r/QlkUo6m32NuJ1BF4HoPs8+nDG/3N3+PD6COSopKPJGCFBsgNAcYhsCMh3pCRYkHpk/bjSBAOu1I6
+	c4EA+JyeLIYcEyDxsuQOrA0BZCTnOCQU7vugQ3TIfbtbCy0bEOQCUz2GaQAmOkoIGOSpA5QRRDgAVMjB
+	NoNROiQNAuQO5sCLKASwb18I1wbIauRiURZETI1EOwKeBrPKeVAcMeAgMeBoY8Fww4OXAgJeEA14X4Ks
+	NCeUKkHzasQTKa0Ny2wPIcU5xe2DAW0SDok2Ir1WMXGKCLAXlc1BWo0mreLRjMmwdAABfpbXzmG2kBQA
+	AAABJRU5ErkJggg==
+	</pre>
+ * 
+ * <p>Posledný príklad hľadá riadky časových značiek titulkov vo formáte SRT
+ * a v nájdených riadkoch identifikuje počiatočnú a koncovú časovú známku.</p>
+ * 
+ * <pre CLASS="example">
+	{@code kwdfinal} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter} filterČasu = {@code kwdnew} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}(
+		{@code srg"([0-9]+):([0-9]+):([0-9]+),([0-9]+)"}, {@code valnull});
+
+	{@code typelong} dajČas({@link String String} s)
+	{
+		{@link Matcher Matcher} ma = filterČasu.zhoda(s);
+		{@code kwdif} (ma.matches())
+		{
+			{@code typedouble} mili = {@link Svet Svet}.{@link Svet#reťazecNaReálneČíslo(String) reťazecNaReálneČíslo}({@code srg"0,"} + ma.group({@code num4}));
+			{@code kwdreturn} {@link Svet Svet}.{@link Svet#reťazecNaCeléČíslo(String) reťazecNaCeléČíslo}(ma.{@link Matcher#group(int) group}({@code num1})) * {@code num3600000} + {@code comm// hr}
+				{@link Svet Svet}.{@link Svet#reťazecNaCeléČíslo(String) reťazecNaCeléČíslo}(ma.{@link Matcher#group(int) group}({@code num2})) * {@code num60000} + {@code comm// mt}
+				{@link Svet Svet}.{@link Svet#reťazecNaCeléČíslo(String) reťazecNaCeléČíslo}(ma.{@link Matcher#group(int) group}({@code num3})) * {@code num1000} + {@code comm// sc}
+				(long)(mili * {@code num1000.0}); {@code comm// ms}
+		}
+		{@code kwdreturn} -{@code num1};
+	}
+
+
+	{@code kwdfinal} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter} časTitulkov = {@code kwdnew} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}(
+		{@code srg"^\\s*([0-9:,]+)\\s*-->\\s*([0-9:,]+)\\s*$"}, {@code valnull});
+
+	{@link String String}[] titulky = {
+		{@code srg"1"},
+		{@code srg"00:00:00,000 --> 00:00:02,750"},
+		{@code srg"No a teraz úplná zmena."},
+		{@code srg""},
+		{@code srg"2"},
+		{@code srg"00:00:03,500 --> 00:00:07,500"},
+		{@code srg"Toto je úplne neznámy chlapík:"},
+		{@code srg"Thomas Fantet de Lagny"},
+		{@code srg""},
+		{@code srg"3"},
+		{@code srg"00:00:07,875 --> 00:00:09,750"},
+		{@code srg"To je matematik…"},
+	};
+
+	{@code kwdfor} ({@link String String} údaj : titulky)
+	{
+		{@code kwdif} (údaj.{@link String#isEmpty() isEmpty}()) {@code kwdcontinue};
+
+		{@link Matcher Matcher} ma = časTitulkov.{@link Filter#zhoda(String) zhoda}(údaj);
+
+		{@code kwdif} (ma.{@link Matcher#matches() matches}())
+		{
+			{@code typelong} začiatok = dajČas(ma.{@link Matcher#group(int) group}({@code num1}));
+			{@code typelong} koniec = dajČas(ma.{@link Matcher#group(int) group}({@code num2}));
+			{@code comm// …}
+			{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"začiatok: "} + začiatok);
+			{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"koniec: "} + koniec);
+		}
+		{@code kwdelse} {@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"nie je čas"});
+	}
+	</pre>
+ * 
+ * <p><b>Výsledok:</b></p>
+ * 
+ * <pre CLASS="example">
+	nie je čas
+	začiatok: 0
+	koniec: 2750
+	nie je čas
+	nie je čas
+	začiatok: 3500
+	koniec: 7500
+	nie je čas
+	nie je čas
+	nie je čas
+	začiatok: 7875
+	koniec: 9750
+	nie je čas
+	</pre>
+ * 
+ * 
  * 
  * @see Zoznam
  * @see Filtre.Filter
@@ -248,46 +423,118 @@ public class Filtre extends Zoznam<Filtre.Filter>
 	 */
 	public Filtre(Filter... filtre) { super(filtre); }
 
+	/**
+	 * <p>Vytvorí zoznam filtrov obsahujúci zadané filtre.</p>
+	 * 
+	 * @param filtre kolekcia obsahujúca zoznam filtrov
+	 */
+	public Filtre(Collection<Filter> filtre) { super(filtre); }
+
+	/**
+	 * <p>Vytvorí zoznam filtrov obsahujúci zadané filtre.</p>
+	 * 
+	 * @param filtre zoznam reťazcov oddelený čiarkami, prípadne pole, ktoré
+	 *     budú spracované metódou {@link #parsuj(String[])
+	 *     parsuj}{@code (konfiguračnéPole)}
+	 */
+	public Filtre(String... filtre) { parsuj(filtre); }
 
 	/**
 	 * <p>Prečíta zoznam filtrov zo zadaného konfiguračného súboru. Metóda
 	 * očakáva v súbore zoradené dvojice alebo trojice riadkov s významom
 	 * „regulárny výraz“ (vzor), „nahradenie“ (šablóna) a nepovinný riadok
-	 * príznaku zastavenia spracovania. Dvojice/trojice riadkov môžu byť
-	 * oddelené ľubovoľným množstvom prázdnych riadkov.</p>
+	 * <i>príznaku zastavenia spracovania</i> (<code>*</code>).
+	 * Dvojice/trojice riadkov môžu byť oddelené ľubovoľným množstvom
+	 * prázdnych riadkov.</p>
 	 * 
-	 * <p>Fungovanie metódy je zariadené tak, aby prvý neprázdny riadok bol
-	 * považovaný za regulárny výraz, ktorý označuje filter a ďalší tesne za
-	 * ním nasledujúci riadok za nahradenie. Nahradenie môže byť aj prázdne
-	 * (keď chceme, aby filter obsah zadaného reťazca úplne vymazal). Ak je
-	 * na samostatnom riadku nájdená hviezdička, tak tá nesie význam príznaku
-	 * zastavenia a použije sa na posledný nad ňou definovaný filter.</p>
+	 * <p>Trojice sú od dvojíc odlíšené jednoducho: jediným platným tretím
+	 * riadkom je riadok obsahujúci iba hviezdičku (čo je neplatný regulárny
+	 * výraz, takže nemôže byť začiatkom ďalšej dvojice alebo trojice).
+	 * Dvojice/trojice riadkov môžu byť oddelené prázdnymi riadkami na
+	 * zlepšenie čitateľnosti konfiguračného súboru. Prázdne riadky sú
+	 * ignorované, okrem jediného prípadu – ak ide o druhý riadok
+	 * dvojice/trojice.</p>
 	 * 
-	 * <p>Príznak zastavenia indikuje, že proces filtrovania sa má po úspešnom
-	 * spracovaní filtra, ktorý má tento príznak nastavený zastaviť (t. j., že
-	 * sa nemá pokračovať ďalšími filtrami v zozname). Keby mali tento príznak
-	 * nastavený všetky filtre v zozname, tak sa spracovanie zastaví po prvom
-	 * úspešnom spracovaní reťazca niektorým z filtrov.</p>
+	 * <p>Technicky je fungovanie metódy je zariadené tak, aby nenastávali
+	 * sporné situácie. Riadky sú čítané sekvenčne a sú vyhodnocované
+	 * takto:</p>
 	 * 
-	 * <!-- p><b>Príklady zoznamov filtrov:</b></p -->
+	 * <ol>
+	 * <li>Prvý neprázdny riadok v sekvencii je považovaný za regulárny výraz,
+	 *     ktorý označuje filter.</li>
+	 * <li>Ďalší tesne za ním nasledujúci riadok je považovaný za nahradenie.
+	 *     Toto nahradenie môže byť aj prázdne (keď chceme, aby filter obsah
+	 *     zadaného reťazca úplne vymazal). Ak je regulárny výraz z prvého
+	 *     riadka korektný, tak po spracovaní druhého riadka pribudne do
+	 *     zoznamu nový filter, inak sa navýši počítadlo chýb. (Chyby v druhom
+	 *     riadku sa počas vytvárania filtra nedajú overiť. Tie sa prejavia až
+	 *     počas používania filtra.)</li>
+	 * <li>Ak je na ďalšom samostatnom riadku nájdená hviezdička, ktorá nesie
+	 *     význam <i>príznaku zastavenia,</i> tak sa použije na posledný nad
+	 *     ňou definovaný filter. (<b>Pozor!</b> Ak je hviezdička prvým
+	 *     neprázdnym riadkom súboru a zoznam filtrov už obsahuje nejaké
+	 *     položky, tak sa príznak použije na posledný jestvujúci filter
+	 *     v zozname. Naopak, ak je zoznam filtrov prázdny, tak „osamelá“
+	 *     hviezdička navýši počítadlo chýb.)</li>
+	 * <li>Ďalej sa opakovane postupuje od bodu jeden až do konca súboru.
+	 *     Neúplné alebo chybné definície sú ignorované (nezastavia
+	 *     spracovanie súboru), pričom počet chýb bude v návratovej hodnote
+	 *     tejto metódy. Počet chýb bude zahŕňať aj neúplnú definíciu.</li>
+	 * </ol>
 	 * 
-	 * <!-- pre CLASS="example" -->
-		<!-- TODO -->
-		<!-- /pre -->
+	 * <p><i>Príznak zastavenia</i> indikuje, že proces filtrovania sa má po
+	 * úspešnom spracovaní toho filtra, ktorý má tento príznak nastavený
+	 * zastaviť (t. j., že sa nemá pokračovať ďalšími filtrami v zozname).
+	 * Keby mali tento príznak nastavený všetky filtre v zozname, tak sa
+	 * spracovanie zastaví po prvom úspešnom spracovaní reťazca niektorým
+	 * z filtrov.</p>
 	 * 
-	 * <!-- hr / -->
+	 * <p><b>Príklady zoznamov filtrov:</b></p>
 	 * 
-	 * <!-- pre CLASS="example" -->
-		<!-- TODO -->
-		<!-- /pre -->
+	 * <p>Toto sú ukážky toho, ako môžu byť uložené v súboroch zoznamy filtrov
+	 * prvých troch príkladov z {@linkplain Filtre hlavného opisu triedy}:</p>
 	 * 
-	 * <!-- hr / -->
+	 * <pre CLASS="example">
+		-?\*+-?
+		-
+
+		(?i:\.png$)
+		.tim
+
+		-+\.tim
+		.tim
+
+
+		</pre>
 	 * 
-	 * <!-- pre CLASS="example" -->
-		<!-- TODO -->
-		<!-- /pre -->
+	 * <hr />
 	 * 
-	 * <!-- hr / -->
+	 * <pre CLASS="example">
+		[ \r\n\t]+
+		 
+
+		.*?&lt;body
+
+
+		.*?href="([^"]+)
+		$1\n
+
+		[^\n]+$
+
+
+		</pre>
+	 * 
+	 * <hr />
+	 * 
+	 * <pre CLASS="example">
+		^\\s*data:.*?;base64,
+
+		\\s+
+		§
+
+		</pre>
+	 * 
+	 * <hr />
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Na indikáciu toho, že aktuálny
 	 * riadok neoznačuje začiatok nového filtra, ale vzťahuje sa k poslednému
@@ -295,15 +542,16 @@ public class Filtre extends Zoznam<Filtre.Filter>
 	 * regulárny výraz, ktorý by mal oznaćovať nový filtre bol nezmyselný –
 	 * samostatná {@code *} by znamenala „ľubovoľné opakovanie ničoho.“</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Počet úspešne pridaných filtrov
-	 * zodpovedá zmene veľkosti zoznamu filtrov pred a po volaní tejto
-	 * metódy. (Použite napríklad odvodenú metódu {@link Zoznam#veľkosť()
-	 * veľkosť})</p>
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda nemaže zoznam filtrov,
+	 * takže počet úspešne pridaných filtrov sa dá zistiť podľa toho, ako sa
+	 * zmenila veľkosti zoznamu filtrov pred a po volaní tejto metódy. (Na
+	 * zistenie veľkosti zoznamu použite napríklad odvodenú metódu {@link 
+	 * Zoznam#veľkosť() veľkosť}.)</p>
 	 * 
 	 * @param názovSúboru názov súboru, z ktorého majú byť prečítané definície
 	 *     filtrov
 	 * @return počet chýb zaznamenaných pri čítaní filtrov alebo −1, ak súbor
-	 *     nejestvuje
+	 *     nejestvuje; počet chýb 
 	 */
 	public int čítaj(String názovSúboru)
 	{
@@ -318,8 +566,39 @@ public class Filtre extends Zoznam<Filtre.Filter>
 			vzorParsovania = null;
 
 			while (null != (riadokParsovania = súbor.čítajRiadok()))
-				početChýb += pridajRiadokParsovania();
+			{
+				if (-1 != riadokParsovania.indexOf('\\'))
+				{
+					StringBuffer upravenýRiadok =
+						new StringBuffer(riadokParsovania);
 
+					for (int indexOf = 0; -1 != (indexOf =
+						upravenýRiadok.indexOf("\\", indexOf)); ++indexOf)
+					{
+						upravenýRiadok.deleteCharAt(indexOf);
+						if (indexOf < upravenýRiadok.length())
+						switch (upravenýRiadok.charAt(indexOf))
+						{
+							case 'n': upravenýRiadok.
+								setCharAt(indexOf, '\n'); break;
+							case 'r': upravenýRiadok.
+								setCharAt(indexOf, '\r'); break;
+							case 't': upravenýRiadok.
+								setCharAt(indexOf, '\t'); break;
+							case 'b': upravenýRiadok.
+								setCharAt(indexOf, '\b'); break;
+							case 'f': upravenýRiadok.
+								setCharAt(indexOf, '\f'); break;
+						}
+					}
+
+					riadokParsovania = new String(upravenýRiadok);
+				}
+
+				početChýb += pridajRiadokParsovania();
+			}
+
+			if (null != vzorParsovania) ++početChýb;
 			súbor.zavri();
 		}
 		catch (Throwable t)
@@ -341,10 +620,11 @@ public class Filtre extends Zoznam<Filtre.Filter>
 	 * je rozdelený na riadky, ktoré sú spracúvané rovnako ako keby boli
 	 * prečítané zo súboru: pozri opis metódy {@link #čítaj(String) čítaj}.</p>
 	 * 
-	 * <p class="remark"><b>Poznámka:</b> Počet úspešne pridaných filtrov
-	 * zodpovedá zmene veľkosti zoznamu filtrov pred a po volaní tejto
-	 * metódy. (Použite napríklad odvodenú metódu {@link Zoznam#veľkosť()
-	 * veľkosť})</p>
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda nemaže zoznam filtrov,
+	 * takže počet úspešne pridaných filtrov sa dá zistiť podľa toho, ako sa
+	 * zmenila veľkosti zoznamu filtrov pred a po volaní tejto metódy. (Na
+	 * zistenie veľkosti zoznamu použite napríklad odvodenú metódu {@link 
+	 * Zoznam#veľkosť() veľkosť}.)</p>
 	 * 
 	 * @param blokTextu blok konfiguračného textu obsahujúci definície filtrov
 	 * @return počet chýb zaznamenaných pri parsovaní zadaného reťazca;
@@ -393,6 +673,54 @@ public class Filtre extends Zoznam<Filtre.Filter>
 			riadokParsovania = blokTextu.substring(začiatok, koniec);
 			početChýb += pridajRiadokParsovania();
 		}
+
+		if (null != vzorParsovania) ++početChýb;
+
+		return početChýb;
+	}
+
+
+	/**
+	 * <p>Pridá filtre podľa zadaného konfiguračného poľa. Metóda považuje
+	 * pole reťazcov za riadky, ktoré sú spracúvané rovnako ako keby boli
+	 * prečítané zo súboru: pozri opis metódy {@link #čítaj(String) čítaj}.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Táto metóda nemaže zoznam filtrov,
+	 * takže počet úspešne pridaných filtrov sa dá zistiť podľa toho, ako sa
+	 * zmenila veľkosti zoznamu filtrov pred a po volaní tejto metódy. (Na
+	 * zistenie veľkosti zoznamu použite napríklad odvodenú metódu {@link 
+	 * Zoznam#veľkosť() veľkosť}.)</p>
+	 * 
+	 * @param konfiguračnéPole konfiguračné pole obsahujúce definície filtrov
+	 * @return počet chýb zaznamenaných pri parsovaní zadaného poľa;
+	 *     −1 ak bol zadaný nulový parameter ({@code valnull}),
+	 *     −2 ak bolo zadané prázdne pole
+	 */
+	public int parsuj(String[] konfiguračnéPole)
+	{
+		if (null == konfiguračnéPole) return -1;
+		if (0 == konfiguračnéPole.length) return -2;
+
+		int početChýb = 0;
+		vzorParsovania = null;
+		boolean prvý = true;
+
+		for (int i = 0; i < konfiguračnéPole.length; ++i)
+		{
+			riadokParsovania = konfiguračnéPole[i];
+			if (null == riadokParsovania) continue;
+
+			if (prvý && riadokParsovania.length() > 0 &&
+				'\uFEFF' == riadokParsovania.charAt(0))
+			{
+				riadokParsovania = riadokParsovania.substring(1);
+				prvý = false;
+			}
+
+			početChýb += pridajRiadokParsovania();
+		}
+
+		if (null != vzorParsovania) ++početChýb;
 
 		return početChýb;
 	}

@@ -2282,7 +2282,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * <pre CLASS="example">
 			{@code comm// (deklarácie)}
 			{@link Archív Archív} archív = {@code kwdnew} {@link Archív#Archív() Archív}();
-			{@link Obrázok Obrázok} obrázok = {@code comm/*… obrázok treba vytvoriť …*}{@code comm/;}
+			{@link Obrázok Obrázok} obrázok = {@code comm/*… obrázok treba vytvoriť …*}{@code comm/};
 
 			{@code comm// Takto sa dá obrázok zapísať:}
 			archív.{@link Archív#otvorNaZápis(String) otvorNaZápis}({@code srg"archív-png.zip"});
@@ -2318,6 +2318,10 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 *     (identifikátor {@code archiveNotOpenForReading}) alebo zadaná
 		 *     položka s obrázkom nebola nájdená (identifikátor
 		 *     {@code entryNotFound})
+		 * 
+		 * @see Obrázok#ulož(Archív, String)
+		 * @see Archív#obrázok(String)
+		 * @see Archív#pridajPoložku(String, Obrázok)
 		 */
 		public static Obrázok čítaj(Archív archív, String názovPoložky)
 		{
@@ -8422,6 +8426,10 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 *     príponou, ak archív nie je otvorený na zápis, ak bol názov
 		 *     položky zamlčaný (bola zadaná hodnota {@code valnull})
 		 *     alebo v prípade pokusu o vloženie duplicitnej položky
+		 * 
+		 * @see Obrázok#čítaj(Archív, String)
+		 * @see Archív#obrázok(String)
+		 * @see Archív#pridajPoložku(String, Obrázok)
 		 */
 		public ZipEntry[] ulož(Archív archív, String názovPoložky)
 		{

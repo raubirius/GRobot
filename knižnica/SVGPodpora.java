@@ -38,6 +38,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GradientPaint;
+import java.awt.Image;
 import java.awt.LinearGradientPaint;
 import java.awt.MultipleGradientPaint;
 import java.awt.Paint;
@@ -5602,12 +5603,13 @@ public class SVGPodpora
 	 * informácie uvedené v opise metódy {@link #pridaj(Shape, GRobot,
 	 * String...) pridaj(tvar, tvorca, atribúty)}.</p>
 	 * 
-	 * <p>Ak potrebujete pridať iný typ čiary, použite principiálne tento
-	 * algoritmus (ale zabezpečte, aby mal tvorca vypnuté {@linkplain 
-	 * GRobot#nevypĺňajTvary() vypĺňanie tvarov} – to je predvolené nastavenie
-	 * robota, ale ak ste ho zmenili, treba ho pred týmto algoritmom vrátiť
-	 * do pôvodného stavu; metóda {@code currpridajÚsečku} tento stav
-	 * automaticky zálohuje, nastavuje a obnovuje tak ako treba):</p>
+	 * <p>Ak potrebujete pridať iný typ čiary (napríklad oblúk), tak použite
+	 * principiálne nasledujúci algoritmus (ale zabezpečte, aby mal tvorca
+	 * <b>vypnuté</b> {@linkplain GRobot#nevypĺňajTvary() vypĺňanie tvarov} –
+	 * to je síce predvolené nastavenie robota, ale ak ste ho zmenili, treba
+	 * ho pred týmto algoritmom vrátiť do pôvodného stavu; mimochodom, metóda
+	 * {@code currpridajÚsečku} tento stav vnútorne automaticky zálohuje,
+	 * nastavuje a obnovuje):</p>
 	 * 
 	 * <pre CLASS="example">
 		{@link GRobot#začniCestu() začniCestu}();
@@ -5968,6 +5970,43 @@ public class SVGPodpora
 
 
 	/**
+	 * <p><b style='color:red'>Zatiaľ neimplementované!</b> Tento opis sa
+	 * vzťahuje na plánovanú funkčnosť.</p>
+	 * 
+	 * <p>Vytvorí zo zadaného obrázka novú (špeciálnu) SVG {@linkplain 
+	 * #definície() definíciu} a vráti odkaz na ňu. Definícia bude obsahovať
+	 * obrázkový náter kódovaný algorimom Base64 a transformovaný podľa
+	 * aktuálnych transformačných nastavení obrázkových náterov sveta:
+	 * {@linkplain Svet#posunutieVýplne(double, double) posunutia,}
+	 * {@linkplain Svet#mierkaVýplne(double, double) mierky} a {@linkplain 
+	 * Svet#otočenieVýplne(double, double, double) otočenia.}</p>
+	 * 
+	 * @param obrázok obrázok, ktorý bude pridaný medzi (špeciálne) SVG
+	 *     {@linkplain #definície() definície} ako nový náter
+	 * @return odkaz na vytvorenú (špeciálnu) SVG {@linkplain #definície()
+	 *     definíciu}
+	 */
+	public String náterPodľaObrázka(Image obrázok)
+	{
+		// TODO
+		throw new RuntimeException("Zatiaľ neimplementované!");
+		/*
+			obrázok.getWidth()
+			obrázok.getHeight()
+
+		transform=
+			rotate(Svet.otočVýplňΑ Svet.otočVýplňX Svet.otočVýplňY)
+			translate(Svet.posuňVýplňX, Svet.posuňVýplňY)
+			scale(Svet.mierkaVýplneX Svet.mierkaVýplneY)
+		*/
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #náterPodľaObrázka(Image) náterPodľaObrázka}.</p> */
+	public String naterPodlaObrazka(Image obrázok)
+	{ return náterPodľaObrázka(obrázok); }
+
+
+	/**
 	 * <p>Vloží do vnútorného zásobníka tejto inštancie nový tvar
 	 * reprezentujúci text (znaky, textovú informáciu) s prípadnou
 	 * sériou atribútov. Pri kreslení (až vo fáze kreslenia, čiže text
@@ -6173,6 +6212,85 @@ public class SVGPodpora
 	 */
 	public void pridajText(String text, String... atribúty)
 	{ pridajText(text, Svet.hlavnýRobot, atribúty); }
+
+
+	/**
+	 * <p><b style='color:red'>Zatiaľ neimplementované!</b> Tento opis sa
+	 * vzťahuje na plánovanú funkčnosť.</p>
+	 * 
+	 * <p>Vloží do vnútorného zásobníka tejto inštancie nový tvar
+	 * reprezentujúci obrázok (bitovú mapu) s prípadnou sériou atribútov. Pri
+	 * procese pridávania sú zo zadaného robota prevzaté niektoré atribúty,
+	 * ktoré spresnia spôsob kreslenia obrázka (konkrétne poloha, mierky,
+	 * spôsob kreslenia obrázokov a pootočenie robota).</p>
+	 * 
+	 * <p>Trieda pri {@linkplain #zapíš(String, String, boolean) ukladaní
+	 * tvarov do súboru} použije XML/SVG značku {@code <image>}, ku
+	 * ktorej priradí sériu základných a zadaných atribútov. Obsahom značky
+	 * {@code <image>} bude zadaný obrázok kódovaný algoritmom Base64.</p>
+	 * 
+	 * <p class="remark"><b>Poznámky:</b> Atribúty bez mena sú ignorované
+	 * a na rozdiel od metódy {@link #pridaj(Shape, String[]) pridaj(tvar,
+	 * atribúty)} sú v tejto metóde atribúty s hodnotou {@code valnull}
+	 * pri spracovaní odstránené, čo sa dá využiť na úpravu niektorých
+	 * predvolene vytváraných atribútov – napríklad na reset predvoleného
+	 * pootočenia, ktoré sa ukladá vo forme transformácie otočenia do atribútu
+	 * {@code transform}. Atribút {@code transform} má pritom špeciálny spôsob
+	 * spracovania. Ak jeho hodnota nie je rovná {@code valnull}, tak je
+	 * pripojená k pôvodnej (hoci aj vygenerovanej) hodnote. To znamená, že
+	 * v prípade tohto atribútu má zmysel i jeho opakovaný výskyt v zozname
+	 * atribútov.</p>
+	 * 
+	 * <p class="caution"><b>Pozor!</b> Základné atribúty obrázka (to jest
+	 * poloha: {@code x}, {@code y}, obsah: {@code href} a rozmery:
+	 * {@code width}, {@code height}) sú v prípade ich platnosti počas
+	 * prevodu do XML/SVG tvaru prepísané konkrétnymi hodnotami, preto ich
+	 * nastavenie touto metódou buď nemá zmysel (najmä v prípade obsahu),
+	 * alebo sa ich efekt nemusí prejaviť.</p>
+	 * 
+	 * <!-- TODO príklad použitia -->
+	 * 
+	 * @param obrázok rastrový obrázok, ktorý bude pridaný do SVG kódu
+	 * @param tvorca robot, z ktorého budú prevzaté niektoré parametre
+	 *     užitočné počas vytvárania prislúchajúcej SVG definície tvaru
+	 * @param atribúty séria dvojíc reťazcov určujúca doplňujúce atribúty
+	 *     výsledného SVG tvaru (obrázka)
+	 * 
+	 */
+	public void pridajObrázok(Image obrázok, GRobot tvorca, String... atribúty)
+	{
+		// TODO
+		throw new RuntimeException("Zatiaľ neimplementované!");
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #pridajObrázok(Image, GRobot, String...) pridajObrázok}.</p> */
+	public void pridajObrazok(Image obrázok, GRobot tvorca, String... atribúty)
+	{ pridajObrázok(obrázok, tvorca, atribúty); }
+
+	/**
+	 * <p><b style='color:red'>Zatiaľ neimplementované!</b> Tento opis sa
+	 * vzťahuje na plánovanú funkčnosť.</p>
+	 * 
+	 * <p>Vloží do vnútorného zásobníka tejto inštancie nový tvar
+	 * reprezentujúci obrázok (bitovú mapu) s prípadnou sériou atribútov.</p>
+	 * 
+	 * <p>Metóda funguje rovnako ako metóda {@link #pridajObrázok(Image,
+	 * GRobot, String[]) pridajObrázok(obrázok, tvorca, atribúty)} s tým, že
+	 * na doplnenie chýbajúcich atribútov (poloha, orientácia…) je použitý
+	 * {@linkplain Svet#hlavnýRobot() hlavný robot}.</p>
+	 * 
+	 * @param obrázok obrázok, ktorý má byť pridaný k ostatným SVG tvarom
+	 * @param atribúty séria dvojíc reťazcov určujúca doplňujúce atribúty
+	 *     obrázka
+	 * 
+	 * @see #pridajObrázok(Image, GRobot, String[])
+	 */
+	public void pridajObrázok(Image obrázok, String... atribúty)
+	{ pridajObrázok(obrázok, Svet.hlavnýRobot, atribúty); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #pridajObrázok(Image, String...) pridajObrázok}.</p> */
+	public void pridajObrazok(Image obrázok, String... atribúty)
+	{ pridajObrázok(obrázok, atribúty); }
 
 
 	// Hodnoty atribútov nesmú obsahovať rezervované znaky
