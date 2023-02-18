@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2022 by Roman Horváth
+ // Copyright © 2010 – 2023 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -33,8 +33,10 @@
 
 package knižnica;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GradientPaint;
@@ -72,6 +74,7 @@ import java.util.Stack;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLInputFactory;
@@ -3398,10 +3401,14 @@ public class SVGPodpora
 
 	// Trieda reprezentujúca údajovú štruktúru tvaru s asociovanými
 	// atribútmi
-	private class Tvar
+	/*packagePrivate*/ class Tvar
 	{
 		public Shape tvar;
 		public final Atribúty atribúty;
+
+		// Tento objekt slúži na identifikáciu rôznych situácií v kontexte
+		// exportu do SVG inštancie – pozri GRobot.svgExport.
+		public Object kontext = null;
 
 		// Zoznam rozpoznaných transformácií
 		private Transformácia[] transformácie = null;
@@ -3414,7 +3421,7 @@ public class SVGPodpora
 	}
 
 	// Vnútorný zoznam tvarov tejto inštancie
-	private final Vector<Tvar> tvary = new Vector<>();
+	/*packagePrivate*/ final Vector<Tvar> tvary = new Vector<>();
 
 	/**
 	 * <p>Vráti počet tvarov, ktoré sú momentálne uskladnené v tejto
@@ -3440,7 +3447,7 @@ public class SVGPodpora
 	 * definícií} tejto inštancie. To znamená, že všetky vnútorne uskladnené
 	 * tvary a (špeciálne) definície budú z tejto inštancie odstránené.</p>
 	 */
-	public void vymaž() { tvary.clear(); definície.clear(); }
+	public void vymaž() { tvary.clear(); definície.clear(); idOrezania = 0; }
 
 	/** <p><a class="alias"></a> Alias pre {@link #vymaž() vymaž}.</p> */
 	public void vymaz() { vymaž(); }
@@ -5407,12 +5414,18 @@ public class SVGPodpora
 	{
 		Atribúty zoznam = new Atribúty();
 
-		if (tvorca.priehľadnosť() < 1.0)
 		{
-			if (tvorca.priehľadnosť() > 0.0)
-				zoznam.put("opacity", "" + tvorca.priehľadnosť());
-			else
-				zoznam.put("opacity", "0.0");
+			Composite kompozit = tvorca.grafikaAktívnehoPlátna.getComposite();
+			if (kompozit instanceof AlphaComposite)
+				zoznam.put("opacity", "" + ((AlphaComposite)
+					kompozit).getAlpha());
+			/*else if (tvorca.priehľadnosť() < 1.0)
+			{
+				if (tvorca.priehľadnosť() > 0.0)
+					zoznam.put("opacity", "" + tvorca.priehľadnosť());
+				else
+					zoznam.put("opacity", "0.0");
+			}*/
 		}
 
 		Paint náter = tvorca.dajNáterPodľaRobota();
@@ -5568,11 +5581,20 @@ public class SVGPodpora
 							zoznam.put(atribúty[i], atribúty[i + 1]);
 						else
 							zoznam.put(atribúty[i],
-								pôvodnáHodnota.trim() + " " + atribúty[i + 1]);
+								pôvodnáHodnota.trim() + " " +
+								atribúty[i + 1]);
 					}
 					else zoznam.put(atribúty[i], atribúty[i + 1]);
 				}
 			}
+
+		Shape clip = tvorca.grafikaAktívnehoPlátna.getClip();
+		if (null != clip)
+		{
+			String orezanie = dajOrezanie(clip);
+			if (null != orezanie)
+				zoznam.put("clip-path", orezanie);
+		}
 
 		// for (Map.Entry<String, String> entry : zoznam.entrySet())
 		// 	System.out.println("\t" + entry.getKey() +
@@ -5580,6 +5602,82 @@ public class SVGPodpora
 
 		Tvar záznam = new Tvar(tvar, zoznam);
 		tvary.add(záznam);
+
+		if (GRobot.podlaha.grafikaPlátna == tvorca.grafikaAktívnehoPlátna)
+			záznam.kontext = GRobot.podlaha;
+		else if (GRobot.strop.grafikaPlátna == tvorca.grafikaAktívnehoPlátna)
+			záznam.kontext = GRobot.strop;
+		else if (Svet.grafikaSveta1 == tvorca.grafikaAktívnehoPlátna ||
+			Svet.grafikaSveta2 == tvorca.grafikaAktívnehoPlátna)
+			záznam.kontext = GRobot.svet;
+		else
+		{
+			Obrázok obrázok = null;
+			if (tvorca.obrázokAktívnehoPlátna instanceof Obrázok)
+			{
+				obrázok = (Obrázok)tvorca.obrázokAktívnehoPlátna;
+				for (Obrázok obr : Tlač.vylúčenieKontextov)
+					if (obrázok == obr)
+					{
+						obrázok = null;
+						break;
+					}
+			}
+			if (null == obrázok) záznam.kontext = tvorca;
+			else záznam.kontext = obrázok;
+		}
+	}
+
+
+	// Poradové číslo id orezania:
+	private int idOrezania = 0;
+
+	// Atribúty orezania (predvolene sú prázdne, ale táto inštancia umožňuje
+	// tento stav v budúcnosti upravovať):
+	private final Atribúty atribútyOrezania = new Atribúty();
+
+	// Regulárny výraz na hľadanie jestvujúceho orezania v definíciách:
+	private final static Pattern hľadajOrezanie = Pattern.compile(
+		"^<clipPath id=\"(grobot-cut-\\pN+)\">(.*)</clipPath>$");
+
+	/**
+	 * <p>Vráti odkaz na orezanie, ktoré je definované v špeciálnych
+	 * definíciách tejto SVG inštancie podľa zadaného tvaru. Ak orezanie
+	 * nejestvuje a ani nemohlo byť podľa zadaného tvaru vytvorené nové, tak
+	 * metóda vráti hodnotu {@code valnull}.<!-- TODO?? Ešte niečo doplniť?
+	 * poznámky? spresňujúce informácie? --></p>
+	 * 
+	 * @param klip tvar určujúci orezanie
+	 * @return odkaz na orezanie zo zoznamu špeciálnych definícií (alebo
+	 *     {@code valnull})
+	 * <!-- TODO?? Ešte niečo doplniť? @see? @throws? -->
+	 */
+	public String dajOrezanie(Shape klip)
+	{
+		if (null == klip) return null;
+
+		Tvar tvar = new Tvar(klip, atribútyOrezania);
+		String tvarOrezania = dajSVG(tvar);
+		String idOrezania = null;
+
+		for (String definícia : definície)
+		{
+			Matcher zhoda = hľadajOrezanie.matcher(definícia);
+			if (zhoda.matches() && tvarOrezania.equals(zhoda.group(2)))
+			{
+				idOrezania = zhoda.group(1);
+				break;
+			}
+		}
+
+		if (null == idOrezania)
+		{
+			idOrezania = "grobot-cut-" + (this.idOrezania++);
+			definície.add("<clipPath id=\"" + idOrezania + "\">" +
+				tvarOrezania + "</clipPath>");
+		}
+
+		return "url(#" + idOrezania + ")";
 	}
 
 
@@ -6178,7 +6276,8 @@ public class SVGPodpora
 							zoznam.put(atribúty[i], atribúty[i + 1]);
 						else
 							zoznam.put(atribúty[i],
-								pôvodnáHodnota.trim() + " " + atribúty[i + 1]);
+								pôvodnáHodnota.trim() + " " +
+								atribúty[i + 1]);
 					}
 					else zoznam.put(atribúty[i], atribúty[i + 1]);
 				}
@@ -6192,6 +6291,33 @@ public class SVGPodpora
 				.replaceAll("\"", "&quot;"), Svet.grafikaSveta1),
 			zoznam);
 		tvary.add(záznam);
+
+		if (GRobot.podlaha.grafikaPlátna == tvorca.grafikaAktívnehoPlátna)
+			záznam.kontext = GRobot.podlaha;
+		else if (GRobot.strop.grafikaPlátna == tvorca.grafikaAktívnehoPlátna)
+			záznam.kontext = GRobot.strop;
+		else if (Svet.grafikaSveta1 == tvorca.grafikaAktívnehoPlátna ||
+			Svet.grafikaSveta2 == tvorca.grafikaAktívnehoPlátna)
+			záznam.kontext = GRobot.svet;
+		else
+		{
+			Obrázok obrázok = null;
+			if (tvorca.obrázokAktívnehoPlátna instanceof Obrázok)
+			{
+				obrázok = (Obrázok)tvorca.obrázokAktívnehoPlátna;
+				for (Obrázok obr : Tlač.vylúčenieKontextov)
+					if (obrázok == obr)
+					{
+						obrázok = null;
+						break;
+					}
+			}
+			if (null == obrázok) záznam.kontext = tvorca;
+			else záznam.kontext = obrázok;
+			// TODO: preniesť kreslenie do obrázka do definícií a pri každom
+			// nakreslení tohto obrázka pridať novú (korektne transformovanú)
+			// referenciu na túto definíciu; v podstate klon
+		}
 	}
 
 	/**
@@ -6378,8 +6504,8 @@ public class SVGPodpora
 			{
 				tvar.atribúty.put("cx", "" + tvar3.getCenterX());
 				tvar.atribúty.put("cy", "" + tvar3.getCenterY());
-				tvar.atribúty.put("rx", "" + tvar3.getWidth());
-				tvar.atribúty.put("ry", "" + tvar3.getHeight());
+				tvar.atribúty.put("rx", "" + tvar3.getWidth() / 2);
+				tvar.atribúty.put("ry", "" + tvar3.getHeight() / 2);
 
 				xmlSVG.append("<ellipse ");
 			}
@@ -6663,16 +6789,49 @@ public class SVGPodpora
 
 		int početZapísaných = 0;
 
-		// Pomocný reťazcový zásobník
-		StringBuffer $TVARY = new StringBuffer();
+		// Pomocné reťazcové zásobníky
+		StringBuffer $TVARY[] = {new StringBuffer(), new StringBuffer(),
+			new StringBuffer(), new StringBuffer(), new StringBuffer()};
 
 		// Vyjadrenie inštancií triedy Tvar vo formáte SVG…
 		for (Tvar tvar : tvary)
 		{
-			if (0 != početZapísaných) $TVARY.append("\r\n");
-			$TVARY.append("  ");
-			$TVARY.append(dajSVG(tvar));
+			StringBuffer $TVARY_SB;
+			if (tvar.kontext == GRobot.podlaha)
+				$TVARY_SB = $TVARY[0];
+			else if (tvar.kontext instanceof GRobot)
+				$TVARY_SB = $TVARY[1];
+			else if (tvar.kontext == GRobot.svet)
+				$TVARY_SB = $TVARY[3];
+			else if (tvar.kontext == GRobot.strop)
+				$TVARY_SB = $TVARY[4];
+			else
+				$TVARY_SB = $TVARY[2];
+
+			// if (0 != početZapísaných) $TVARY_SB.append("\r\n");
+			if (0 != $TVARY_SB.length()) $TVARY_SB.append("\r\n");
+			$TVARY_SB.append("  ");
+			$TVARY_SB.append(dajSVG(tvar));
+
+			/* LADENIE (begin) */
+			$TVARY_SB.append("<!-- i: ");
+			for (int i = 0; i < 5; ++i)
+				if ($TVARY_SB == $TVARY[i])
+				{
+					$TVARY_SB.append(i);
+					$TVARY_SB.append(" ");
+				}
+			$TVARY_SB.append("-->");
+			/* LADENIE (end) */
+
 			++početZapísaných;
+		}
+
+		// Spojenie pomocných zásobníkov
+		for (int i = 1; i < 5; ++i)
+		{
+			if (0 != $TVARY[0].length()) $TVARY[0].append("\r\n");
+			$TVARY[0].append($TVARY[i]);
 		}
 
 		// Pomocný reťazcový zásobník
@@ -6756,10 +6915,10 @@ public class SVGPodpora
 					riadok = riadok.replace("$DEFS", $DEFINÍCIE);
 
 				if (-1 != riadok.indexOf("$TVARY"))
-					riadok = riadok.replace("$TVARY", $TVARY);
+					riadok = riadok.replace("$TVARY", $TVARY[0]);
 
 				if (-1 != riadok.indexOf("$SHAPES"))
-					riadok = riadok.replace("$SHAPES", $TVARY);
+					riadok = riadok.replace("$SHAPES", $TVARY[0]);
 
 				zápis.write(riadok + "\r\n");
 			}
@@ -6886,17 +7045,49 @@ public class SVGPodpora
 		// Zásobník výsledného SVG reťazca
 		StringBuffer svgFormát = new StringBuffer();
 
-		// Pomocný reťazcový zásobník na uloženie exportovaných tvarov
-		StringBuffer $TVARY = new StringBuffer();
+		// Pomocné reťazcové zásobníky na uloženie exportovaných tvarov
+		StringBuffer $TVARY[] = {new StringBuffer(), new StringBuffer(),
+			new StringBuffer(), new StringBuffer(), new StringBuffer()};
 
 		// Vyjadrenie inštancií triedy Tvar vo formáte SVG…
-		{ boolean prvý = true;
+		{ // boolean prvý = true;
 		for (Tvar tvar : tvary)
 		{
-			if (prvý) prvý = false; else $TVARY.append("\r\n");
-			$TVARY.append("  ");
-			$TVARY.append(dajSVG(tvar));
+			StringBuffer $TVARY_SB;
+			if (tvar.kontext == GRobot.podlaha)
+				$TVARY_SB = $TVARY[0];
+			else if (tvar.kontext instanceof GRobot)
+				$TVARY_SB = $TVARY[1];
+			else if (tvar.kontext == GRobot.svet)
+				$TVARY_SB = $TVARY[3];
+			else if (tvar.kontext == GRobot.strop)
+				$TVARY_SB = $TVARY[4];
+			else
+				$TVARY_SB = $TVARY[2];
+
+			// if (prvý) prvý = false; else $TVARY_SB.append("\r\n");
+			if (0 != $TVARY_SB.length()) $TVARY_SB.append("\r\n");
+			$TVARY_SB.append("  ");
+			$TVARY_SB.append(dajSVG(tvar));
+
+			/* LADENIE (begin) */
+			$TVARY_SB.append("<!-- i: ");
+			for (int i = 0; i < 5; ++i)
+				if ($TVARY_SB == $TVARY[i])
+				{
+					$TVARY_SB.append(i);
+					$TVARY_SB.append(" ");
+				}
+			$TVARY_SB.append("-->");
+			/* LADENIE (end) */
 		}}
+
+		// Spojenie pomocných zásobníkov
+		for (int i = 1; i < 5; ++i)
+		{
+			if (0 != $TVARY[0].length()) $TVARY[0].append("\r\n");
+			$TVARY[0].append($TVARY[i]);
+		}
 
 		// Pomocný reťazcový zásobník
 		StringBuffer $DEFINÍCIE = new StringBuffer();
@@ -6977,10 +7168,10 @@ public class SVGPodpora
 				riadok = riadok.replace("$DEFS", $DEFINÍCIE);
 
 			if (-1 != riadok.indexOf("$TVARY"))
-				riadok = riadok.replace("$TVARY", $TVARY);
+				riadok = riadok.replace("$TVARY", $TVARY[0]);
 
 			if (-1 != riadok.indexOf("$SHAPES"))
-				riadok = riadok.replace("$SHAPES", $TVARY);
+				riadok = riadok.replace("$SHAPES", $TVARY[0]);
 
 			svgFormát.append(riadok);
 			svgFormát.append("\r\n");

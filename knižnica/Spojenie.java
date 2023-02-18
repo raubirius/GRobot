@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2022 by Roman Horváth
+ // Copyright © 2010 – 2023 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -286,11 +286,11 @@ import static knižnica.Konštanty.ODOVZDANIE_ÚDAJOV;
 	{@code comm// (ak chceme sledovať priebeh)}
 	{@code comm//  @Override public void sekvencia(int kódSpracovania, Object zdroj,}
 	{@code comm//  	Object cieľ, long stav, long celkovo)}
-	{@code comm//  {}
+	{@code comm//  &#123;}
 	{@code comm//  	if (stav > celkovo) stav = celkovo;}
 	{@code comm//  	percento = (int)((stav * 100) / celkovo);}
 	{@code comm//  	System.out.println(percento + " %");}
-	{@code comm//  }}
+	{@code comm//  &#125;}
 	</pre>
  * 
  * <p> </p>
@@ -396,6 +396,8 @@ public class Spojenie
 
 	// Atribút uchovávajúci hlavičku obsahu odosielanej správy.
 	private String hlavičkaObsahuSprávy = "";
+		// Poznámka: Pozor, toto sú hlavičky obsahu. Hlavičky HTTP požiadavky
+		// sa nastavujú cez setRequestProperty; pozri aj: pridajHlavičky(…)
 
 	// Atribút uchovávajúci chvost obsahu odosielanej správy.
 	private String chvostObsahuSprávy = "";
@@ -1952,7 +1954,7 @@ public class Spojenie
 	 * textová, pokúsi sa názov prevziať z údajov prijatých v odpovedi. Ak
 	 * zlyhá, prevezme názov z požiadavky odoslanej na server (z parametra
 	 * {@code vzdialenýSúbor} metódy {@link #otvor(String) otvor} alebo jej
-	 * klonu). V tom prípade overí {@linkplain  #dajTypObsahuOdpovede()
+	 * klonu). V tom prípade overí {@linkplain #dajTypObsahuOdpovede()
 	 * typu obsahu odpovede} a ak je {@code text/html}, upraví príponu na
 	 * {@code .html}.</p>
 	 * 
@@ -2405,6 +2407,7 @@ public class Spojenie
 	 * @see #otvorLokalitu(String)
 	 * @see #hlavičkyPoslané()
 	 * @see #pridajHlavičky(String...)
+	 * @see #pridajObsah(String)
 	 * @see #pridajÚdaj(String, String)
 	 * @see #pošliSúbor(String, String, String)
 	 * @see #zavri()
@@ -2514,6 +2517,7 @@ public class Spojenie
 	 * @see #otvorLokalitu(String)
 	 * @see #hlavičkyPoslané()
 	 * @see #pridajHlavičky(String...)
+	 * @see #pridajObsah(String)
 	 * @see #pridajÚdaj(String, String)
 	 * @see #pošliSúbor(String, String, String)
 	 * @see #dajÚdajePožiadavky()
@@ -2592,6 +2596,7 @@ public class Spojenie
 	 * @see #otvor(String)
 	 * @see #hlavičkyPoslané()
 	 * @see #pridajHlavičky(String...)
+	 * @see #pridajObsah(String)
 	 * @see #pridajÚdaj(String, String)
 	 * @see #pošliSúbor(String, String, String)
 	 * @see #zavri()
@@ -2799,6 +2804,27 @@ public class Spojenie
 
 
 	/**
+	 * <p>Pridá k obsahu tejto správy „surový“ (nijako neupravovaný) obsah.
+	 * (Platia rovnaké informácie ako pri {@linkplain #pridajÚdaj(String,
+	 * String) pridávaní údajov}: Správa vzniká v okamihu {@linkplain 
+	 * #otvor(String) otvorenia spojenia}… Pozri aj rôzne príklady
+	 * v {@linkplain Spojenie hlavnom opise tejto triedy.})</p>
+	 * 
+	 * @param obsah obsah na odoslanie
+	 * @return {@code valtrue} v prípade úspechu, inak {@code valfalse}
+	 * 
+	 * @see #pridajÚdaj(String, String)
+	 * @see #otvor(String)
+	 * @see #zavri()
+	 */
+	public boolean pridajObsah(String obsah)
+	{
+		if (hlavičkaPoslaná) return false;
+		hlavičkaObsahuSprávy += obsah;
+		return true;
+	}
+
+	/**
 	 * <p>Pridá údajové pole so zadaným názvom a hodnotou k tejto správe.
 	 * Správa vzniká v okamihu {@linkplain #otvor(String) otvorenia
 	 * spojenia}.</p>
@@ -2809,6 +2835,7 @@ public class Spojenie
 	 * 
 	 * @see #pridajÚdaj(String, long)
 	 * @see #pridajÚdaj(String, double)
+	 * @see #pridajObsah(String)
 	 * @see #otvor(String)
 	 * @see #zavri()
 	 */
@@ -2856,6 +2883,7 @@ public class Spojenie
 	 * 
 	 * @see #pridajÚdaj(String, String)
 	 * @see #pridajÚdaj(String, double)
+	 * @see #pridajObsah(String)
 	 * @see #otvor(String)
 	 * @see #zavri()
 	 */
@@ -2877,6 +2905,7 @@ public class Spojenie
 	 * 
 	 * @see #pridajÚdaj(String, String)
 	 * @see #pridajÚdaj(String, long)
+	 * @see #pridajObsah(String)
 	 * @see #otvor(String)
 	 * @see #zavri()
 	 */
@@ -3292,7 +3321,7 @@ public class Spojenie
 	 * aktuálne spojenie. Ak bolo vykonanie tejto metódy úspešné, má zmysel
 	 * volať metódy slúžiace na zisťovanie údajov o odpovedi ako:
 	 * {@link #dajOdpoveď() dajOdpoveď}, {@link #dajBajtyOdpovede()
-	 * dajBajtyOdpovede} (podľa {@linkplain  #dajTypObsahuOdpovede()
+	 * dajBajtyOdpovede} (podľa {@linkplain #dajTypObsahuOdpovede()
 	 * typu obsahu odpovede}), {@link #dajVeľkosťOdpovede()
 	 * dajVeľkosťOdpovede}, {@link #dajÚdajePožiadavky() dajÚdajePožiadavky}
 	 * {@link #dajÚdajeOdpovede() dajÚdajeOdpovede} a tak ďalej.</p>
@@ -3303,6 +3332,7 @@ public class Spojenie
 	 * @see #otvor(String, String, String, String...)
 	 * @see #hlavičkyPoslané()
 	 * @see #pridajHlavičky(String...)
+	 * @see #pridajObsah(String)
 	 * @see #pridajÚdaj(String, String)
 	 * @see #pošliSúbor(String, String, String)
 	 * @see #dajOdpoveď()

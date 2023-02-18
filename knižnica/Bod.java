@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2022 by Roman Horváth
+ // Copyright © 2010 – 2023 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -387,7 +387,7 @@ public class Bod extends Point2D implements Poloha
 	 * Napríklad vypočítať stred úsečky – nastavením súradníc tejto
 	 * inštancie na hodnotu prvého bodu úsečky (napr. metódou {@link 
 	 * #poloha(Poloha) poloha}), posunutím súradníc tejto inštancie
-	 * o hodnotu druhého bodu úsečky (napr. metódou {@link  #posuň(Poloha)
+	 * o hodnotu druhého bodu úsečky (napr. metódou {@link #posuň(Poloha)
 	 * posuň}) a zmenou mierky tejto inštancie o hodnotu {@code num0.5}
 	 * (napr. metódou {@link #mierka(double) mierka}). Tiež môžeme
 	 * zrkladliť body okolo osí (zápornými hodnotami mierok) a podobne.</p>

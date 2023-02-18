@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2022 by Roman Horváth
+ // Copyright © 2010 – 2023 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -236,6 +236,14 @@ public class Filtre extends Zoznam<Filtre.Filter>
 	 * Filtre} a zároveň môže slúžiť na sprostredkovanie jednoduchších úkonov
 	 * s regulárnymi výrazmi.</p>
 	 * 
+	 * <hr />
+	 * 
+	 * <p>Príklad využitia tejto triedy ukazuje miniprojekt dostupný tu: <a
+	 * target="_blank" href="https://github.com/raubirius/FilterFiles"
+	 * >FilterFiles</a>. (Tento miniprojekt bol pôvodne inšpiráciou na vznik
+	 * tejto triedy rámca, ktorá bola potom spätne do tohto miniprojektu
+	 * zapracovaná.)</p>
+	 * 
 	 * @see Filtre
 	 */
 	public static class Filter
@@ -252,7 +260,7 @@ public class Filtre extends Zoznam<Filtre.Filter>
 		/**
 		 * <p>Tento atribút obsahuje šablónu nahrádzania vloženú do parametra
 		 * {@linkplain Filtre.Filter#Filtre.Filter(String, String)
-		 * konštruktora}{@code nahradenie}.</p>
+		 * konštruktora} {@code nahradenie}.</p>
 		 */
 		public String nahradenie;
 

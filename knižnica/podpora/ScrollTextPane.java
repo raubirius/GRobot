@@ -59,7 +59,7 @@ import javax.swing.text.DocumentFilter.FilterBypass;
  * rozširovaná…</p>
  * 
  * @author Roman Horváth
- * @version 2022-01-31
+ * @version 31. 1. 2022
  */
 @SuppressWarnings("serial")
 public class ScrollTextPane extends JScrollPane
@@ -573,8 +573,8 @@ public class ScrollTextPane extends JScrollPane
 
 	/**
 	 * <p>Nastaví tento komponent na úpravy alebo len na čítanie podľa hodnoty
-	  * parametra {@code editable}. Ak je parameter rovný {@code true}, tak je
-	  * komponent určený na úpravy, v opačnom prípade len na čítanie.</p>
+	 * parametra {@code editable}. Ak je parameter rovný {@code true}, tak je
+	 * komponent určený na úpravy, v opačnom prípade len na čítanie.</p>
 	 * 
 	 * <p>Volanie tejto metódy spôsobí pri zmene stavu spustenie udalosti
 	 * {@code PropertyChange} ({@code "editable"}).</p>

@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2022 by Roman Horváth
+ // Copyright © 2010 – 2023 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -902,7 +902,7 @@ public class Plazma
 			{@code kwdprivate} {@link Obrázok Obrázok} obrázok = {@code kwdnew} {@link Obrázok Obrázok}({@code num250}, {@code num250});
 
 			{@code comm// Inštancia generátora plazmy prepojená na obrázok.}
-			{@code kwdprivate} {@link Plazma Plazma}  plazma  = {@code kwdnew} {@link Plazma#Plazma(Obrázok) Plazma}(obrázok);
+			{@code kwdprivate} {@link Plazma Plazma} plazma = {@code kwdnew} {@link Plazma#Plazma(Obrázok) Plazma}(obrázok);
 
 			{@code comm// Inštancia deja generujúca v strede obrázka plazmovú guľôčku}
 			{@code comm// s polomerom 10 bodov.}

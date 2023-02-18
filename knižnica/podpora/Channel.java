@@ -70,7 +70,7 @@ public class Channel implements AudioFunction
 	/**
 	 * <p>Endianity data type flag.</p>
 	 */
-	public final static boolean BIG_ENDIAN  = true;
+	public final static boolean BIG_ENDIAN = true;
 
 	/**
 	 * <p>Duration of the sine wave buffer. Legend: 0.1 means about a 100 ms.</p>

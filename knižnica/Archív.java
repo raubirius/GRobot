@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2022 by Roman Horváth
+ // Copyright © 2010 – 2023 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -736,12 +736,12 @@ public class Archív implements Closeable
 	 * ceste určenej vlastnosťou {@link #cestaNaDisku(String) cestaNaDisku}
 	 * (prípadne inak, napríklad cestou určenou priamo v názve archívu).</p>
 	 * 
-	 * <p class="attention"><b>Upozornenie:</b> Ak použijete objekt  <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipOutputStream.java"
+	 * <p class="attention"><b>Upozornenie:</b> Ak použijete objekt <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipOutputStream.java"
 	 * target="_blank"><code>ZipOutputStream</code></a>, ktorý je návratovou
 	 * hodnotou tejto metódy na pridávanie nových položiek, tak táto trieda
 	 * programovacieho rámca nebude schopná detegovať duplicitné položky, ani
 	 * spätne pracovať s pridanými položkami, pretože ich evidenciu vykonáva
-	 * vo vlastnej réžii nad rámec možností triedy  <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipOutputStream.java"
+	 * vo vlastnej réžii nad rámec možností triedy <a href="https://github.com/raubirius/GRobot/blob/master/kni%C5%BEnica/apacheAntZIP/ZipOutputStream.java"
 	 * target="_blank"><code>ZipOutputStream</code></a>.</p>
 	 * 
 	 * @param názov meno archívu
@@ -2058,7 +2058,7 @@ public class Archív implements Closeable
 	 * položky. Cieľový súbor nesmie byť touto metódou prepísaný. Ak
 	 * jestvuje, tak vznikne výnimka. (Ak chcete cieľový súbor prepísať,
 	 * použite metódu {@link #uložPoložku(String, String, boolean)
-	 * uložPoložku(názovPoložky, názovSúboru, true)}.)  Metóda automaticky
+	 * uložPoložku(názovPoložky, názovSúboru, true)}.) Metóda automaticky
 	 * vytvorí cestu k cieľovému súboru (ak cesta nejestvuje). Ak chcete
 	 * tomuto správaniu zabrániť, tak použite iný variant tejto metódy
 	 * (napríklad {@link #uložPoložku(String, String, boolean, boolean)

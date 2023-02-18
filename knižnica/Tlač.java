@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2022 by Roman Horváth
+ // Copyright © 2010 – 2023 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -338,6 +338,12 @@ public abstract class Tlač implements Printable, Pageable
 	// a vertikálny rozmer A4.)
 	private final Vector<Obrazok> obrázky = new Vector<>();
 
+	// Tento sekundárny zoznam je používaný výhradne na vylúčenie kontextov
+	// tlače pri SVG exporte. Pozri napríklad SVGPodpora.pridaj(Shape, GRobot,
+	// String...).
+	/*packagePrivate*/ final static Vector<Obrazok> vylúčenieKontextov =
+	new Vector<>();
+
 	// Aktuálny počet strán.
 	private int početStrán;
 
@@ -489,6 +495,7 @@ public abstract class Tlač implements Printable, Pageable
 				{
 					obrázok = new Obrazok(šírka, výška);
 					obrázky.add(obrázok);
+					vylúčenieKontextov.add(obrázok);
 				}
 			}
 

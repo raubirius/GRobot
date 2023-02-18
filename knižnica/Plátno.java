@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2022 by Roman Horváth
+ // Copyright © 2010 – 2023 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -6896,10 +6896,14 @@ public class Plátno implements Priehľadnosť
 		 * <p class="remark"><b>Poznámka:</b> Pri takomto orezávaní nie
 		 * je na všetkých platformách a/alebo implementáciách virtuálneho
 		 * stroja Javy dostupná funkcia anti-aliasingu, čo zjednodušene
-		 * povedané znamená, že okraje orezanej kresby budú „zúbkaté.“
+		 * povedané znamená, že okraje orezanej kresby môžu byť „zúbkaté.“
 		 * Ak sa chcete tejto nedokonalosti vyhnúť, použite radšej funkciu
 		 * {@linkplain #použiMasku masky}. Tá dovoľuje ovplyvňovať
-		 * úroveň priehľadnosti s jemnosťou na jednotlivé body rastra.</p>
+		 * úroveň priehľadnosti s jemnosťou na jednotlivé body rastra.
+		 * (<b>Poznámka:</b> Naopak, pri {@linkplain GRobot#svgExport
+		 * exporte} kreslenia do inštancie {@link SVGPodpora SVGPodpora}
+		 * je výhodnejšie pracovať s orezávaním – čiže práve s touto
+		 * metódou alebo jej variantmi.)</p>
 		 * 
 		 * @param tvar tvar ({@link Shape Shape}) alebo {@link Oblasť
 		 *     Oblasť}
@@ -6930,10 +6934,14 @@ public class Plátno implements Priehľadnosť
 		 * <p class="remark"><b>Poznámka:</b> Pri takomto orezávaní nie
 		 * je na všetkých platformách a/alebo implementáciách virtuálneho
 		 * stroja Javy dostupná funkcia anti-aliasingu, čo zjednodušene
-		 * povedané znamená, že okraje orezanej kresby budú „zúbkaté.“
+		 * povedané znamená, že okraje orezanej kresby môžu byť „zúbkaté.“
 		 * Ak sa chcete tejto nedokonalosti vyhnúť, použite radšej funkciu
 		 * {@linkplain #použiMasku masky}. Tá dovoľuje ovplyvňovať
-		 * úroveň priehľadnosti s jemnosťou na jednotlivé body rastra.</p>
+		 * úroveň priehľadnosti s jemnosťou na jednotlivé body rastra.
+		 * (<b>Poznámka:</b> Naopak, pri {@linkplain GRobot#svgExport
+		 * exporte} kreslenia do inštancie {@link SVGPodpora SVGPodpora}
+		 * je výhodnejšie pracovať s orezávaním – čiže práve s touto
+		 * metódou alebo jej variantmi.)</p>
 		 * 
 		 * @param tvar tvar ({@link Shape Shape}) alebo {@link Oblasť
 		 *     Oblasť}
@@ -9540,6 +9548,25 @@ public class Plátno implements Priehľadnosť
 		 * záleží na výsledku výpočtov algoritmu. Napríklad úplne čierne
 		 * úplne nepriehľadné body masky neovplyvnia priehľadnosť bodov
 		 * na plátne.</p>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b> Maska nie je pri
+		 * {@linkplain GRobot#svgExport exporte} kreslenia do inštancie
+		 * {@link SVGPodpora SVGPodpora} použitá priamo, pretože pracuje
+		 * s rastrom obrázkov/plátien. Ak chcete do {@linkplain 
+		 * SVGPodpora SVG podpory} exportovať vlastnú masku, použite
+		 * kombináciu {@linkplain SVGPodpora#definície() vlastnej
+		 * definície} (vložením záznamu <code>&lt;mask
+		 * id="<em>ID masky</em>"&gt;…&lt;/mask&gt;</code>) a {@linkplain 
+		 * SVGPodpora#prepíšAtribút(int, String, Object) atribútu}
+		 * <code>mask="url(#<em>ID masky</em>)"</code>. Podrobnosti o SVG
+		 * maskách nájdete napríklad tu:<br /><i>Clipping and masking –
+		 * SVG : Scalable Vector Graphics | MDN.</i> Mozilla Developer
+		 * Network, <a
+		 * href="https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Clipping_and_masking#masking"
+		 * target="_blank">developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Clipping_and_masking#masking.</a>
+		 * Naposledy pristúpené: 28. januára 2023.<br />Môžete tiež použiť
+		 * orezávanie – {@linkplain #kresliDo(Shape) pozri napríklad
+		 * tu.}</p>
 		 * 
 		 * @param maska obrázok, ktorý bude použitý ako maska
 		 * @return {@code valtrue} ak bola operácia úspešná

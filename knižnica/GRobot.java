@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2022 by Roman Horváth
+ // Copyright © 2010 – 2023 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -1561,7 +1561,7 @@ Toto bolo presunuté na úvodnú stránku:
 						if (koncová)
 						{
 							boolean vráťKompozit = cieľ.priehľadnosť < 1.0;
-							Composite záloha = null;
+							Composite záloha = grafika.getComposite();
 
 							double aktuálneX_Záloha = cieľ.aktuálneX;
 							double aktuálneY_Záloha = cieľ.aktuálneY;
@@ -1589,7 +1589,7 @@ Toto bolo presunuté na úvodnú stránku:
 						else
 						{
 							boolean vráťKompozit = robot.priehľadnosť < 1.0;
-							Composite záloha = null;
+							Composite záloha = grafika.getComposite();
 
 							double aktuálneX_Záloha = robot.aktuálneX;
 							double aktuálneY_Záloha = robot.aktuálneY;
@@ -4306,6 +4306,7 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				boolean vráťKompozit = priehľadnosť < 1.0;
 				Composite zálohaKompozitu = null;
+				Line2D.Double úsečka = null;
 
 				if (vráťKompozit)
 				{
@@ -4326,7 +4327,7 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.setPaint(náter);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 
-					grafikaAktívnehoPlátna.draw(new Line2D.Double(
+					grafikaAktívnehoPlátna.draw(úsečka = new Line2D.Double(
 						Svet.prepočítajX(poslednéX), Svet.prepočítajY(poslednéY),
 						Svet.prepočítajX(aktuálneX), Svet.prepočítajY(aktuálneY)));
 				}
@@ -4335,7 +4336,7 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.setColor(farbaRobota);
 					grafikaAktívnehoPlátna.setStroke(čiara);
 
-					grafikaAktívnehoPlátna.draw(new Line2D.Double(
+					grafikaAktívnehoPlátna.draw(úsečka = new Line2D.Double(
 						Svet.prepočítajX(poslednéX), Svet.prepočítajY(poslednéY),
 						Svet.prepočítajX(aktuálneX), Svet.prepočítajY(aktuálneY)));
 				}
@@ -4351,9 +4352,11 @@ Toto bolo presunuté na úvodnú stránku:
 						(float)x1P, (float)y1P, cieľováFarba));
 					grafikaAktívnehoPlátna.setStroke(čiara);
 
-					grafikaAktívnehoPlátna.draw(
+					grafikaAktívnehoPlátna.draw(úsečka =
 						new Line2D.Double(x0P, y0P, x1P, y1P));
 				}
+
+				if (null != svgExport) svgExport.pridaj(úsečka, this);
 
 				if (vráťKompozit)
 					grafikaAktívnehoPlátna.setComposite(zálohaKompozitu);
@@ -4402,8 +4405,9 @@ Toto bolo presunuté na úvodnú stránku:
 			private final double[] mat = new double[6];
 
 			// Tento atribút je permanentné pole slúžiace na určenie
-			// podielov kruhového náteru:
-			private final float[] podiely = new float[] {0.0f, 1.0f};
+			// predvolených podielov kruhového náteru:
+			private final static float[] predvolenéPodiely =
+				new float[] {0.0f, 1.0f};
 
 			// Príznak návratu a záloha kompozitu vlastnosti grafiky. Tento
 			// kompozit súvisí s priehľadnosťou.
@@ -4443,8 +4447,8 @@ Toto bolo presunuté na úvodnú stránku:
 					grafika.setPaint(new RadialGradientPaint(
 						(float)Svet.prepočítajX(aktuálneX),
 						(float)Svet.prepočítajY(aktuálneY),
-						(float)veľkosť, podiely, new Color[]
-						{farbaRobota, cieľováFarba}));
+						(float)veľkosť, predvolenéPodiely,
+						new Color[] {farbaRobota, cieľováFarba}));
 				}
 				else
 				{
@@ -4488,8 +4492,8 @@ Toto bolo presunuté na úvodnú stránku:
 					return new RadialGradientPaint(
 						(float)Svet.prepočítajX(aktuálneX),
 						(float)Svet.prepočítajY(aktuálneY),
-						(float)veľkosť, podiely, new Color[]
-						{farbaRobota, cieľováFarba});
+						(float)veľkosť, predvolenéPodiely,
+						new Color[] {farbaRobota, cieľováFarba});
 
 				double α = toRadians(aktuálnyUhol);
 				double cosα = cos(α) * veľkosť;
@@ -4659,6 +4663,28 @@ Toto bolo presunuté na úvodnú stránku:
 						grafika.setStroke(čiara);
 						grafika.drawPolygon(fx, fy, 7);
 					}
+
+					if (null != svgExport)
+					{
+						Shape polygon = new Polygon(fx, fy, 7);
+
+						Graphics2D zálohaGrafiky =
+							grafikaAktívnehoPlátna;
+						TypTvaru zálohaTypu = poslednýTypTvaru;
+						try
+						{
+							grafikaAktívnehoPlátna = grafika;
+							poslednýTypTvaru = vyplnený ?
+								TypTvaru.VÝPLŇ : TypTvaru.OBRYS;
+
+							svgExport.pridaj(polygon, this);
+						}
+						finally
+						{
+							poslednýTypTvaru = zálohaTypu;
+							grafikaAktívnehoPlátna = zálohaGrafiky;
+						}
+					}
 				}
 				else if (null == vlastnýTvarKreslenie)
 				{
@@ -4730,6 +4756,9 @@ Toto bolo presunuté na úvodnú stránku:
 
 						grafika.setTransform(transformácie);
 					}
+
+					if (null != svgExport)
+						svgExport.pridajObrázok(relevantný, this);
 				}
 				else
 				{
@@ -4991,14 +5020,78 @@ Toto bolo presunuté na úvodnú stránku:
 									Svet.prepočítajY(s.cieľ.aktuálneY + Δy2));
 							}
 
+							Paint náterSpojnice;
+
 							if (farba.equals(farbaKonca))
+							{
+								náterSpojnice = farba;
 								grafika.setColor(farba);
+							}
 							else
-								grafika.setPaint(new GradientPaint(
-									čiaraSpojnice.getP1(), farba,
-									čiaraSpojnice.getP2(), farbaKonca));
+								grafika.setPaint(náterSpojnice =
+									new GradientPaint(
+										čiaraSpojnice.getP1(), farba,
+										čiaraSpojnice.getP2(), farbaKonca));
 
 							grafika.draw(čiaraSpojnice);
+
+							if (null != svgExport)
+							{
+								// TODO: Test:
+
+								Graphics2D zálohaGrafiky =
+									grafikaAktívnehoPlátna;
+								Farba zálohaFarby = farbaRobota;
+								Stroke zálohaČiary = čiara;
+								TypTvaru zálohaTypu = poslednýTypTvaru;
+								Paint zálohaNáteru = náter;
+								try
+								{
+									grafikaAktívnehoPlátna = grafika;
+									if (farba instanceof Farba)
+										farbaRobota = (Farba)farba;
+									else
+										farbaRobota = new Farba(farba);
+									čiara = grafika.getStroke();
+									poslednýTypTvaru = TypTvaru.OBRYS;
+									náter = náterSpojnice;
+									svgExport.pridaj(čiaraSpojnice, this);
+								}
+								finally
+								{
+									náter = zálohaNáteru;
+									poslednýTypTvaru = zálohaTypu;
+									čiara = zálohaČiary;
+									farbaRobota = zálohaFarby;
+									grafikaAktívnehoPlátna = zálohaGrafiky;
+								}
+
+								/*String orezanie = svgExport.
+									dajOrezanie(grafika.getClip());
+
+								if (null != orezanie)
+									svgExport.pridaj(čiaraSpojnice, this,
+										"stroke", svgExport.náterNaReťazec(
+											náterSpojnice), "clip-path",
+										orezanie);
+								else
+									svgExport.pridaj(čiaraSpojnice, this,
+										"stroke", svgExport.náterNaReťazec(
+											náterSpojnice));*/
+
+
+								/*final Color f1 = farba, f2 = farbaKonca;
+								kresliTvar(obrázok, grafika, s.robot, r ->
+									{
+										r.farba(f1);
+										if (!f1.equals(f2)) r.cieľováFarba(f2);
+
+										r.skočNa(čiaraSpojnice.getP1().getX(),
+											čiaraSpojnice.getP1().getY());
+										r.choďNa(čiaraSpojnice.getP2().getX(),
+											čiaraSpojnice.getP2().getY());
+									});*/
+							}
 
 							if ((null != s.značkaZačiatku &&
 								null != s.značkaZačiatku.vlastnéOrezanie) ||
@@ -5115,14 +5208,77 @@ Toto bolo presunuté na úvodnú stránku:
 									Svet.prepočítajY(s.cieľ.aktuálneY + Δy2));
 							}
 
+							Paint náterSpojnice;
+
 							if (farba.equals(farbaKonca))
+							{
+								náterSpojnice = farba;
 								grafika.setColor(farba);
+							}
 							else
-								grafika.setPaint(new GradientPaint(
-									čiaraSpojnice.getP1(), farba,
-									čiaraSpojnice.getP2(), farbaKonca));
+								grafika.setPaint(náterSpojnice =
+									new GradientPaint(
+										čiaraSpojnice.getP1(), farba,
+										čiaraSpojnice.getP2(), farbaKonca));
 
 							grafika.draw(čiaraSpojnice);
+
+							if (null != svgExport)
+							{
+								// TODO: Test:
+
+								Graphics2D zálohaGrafiky =
+									grafikaAktívnehoPlátna;
+								Farba zálohaFarby = farbaRobota;
+								Stroke zálohaČiary = čiara;
+								TypTvaru zálohaTypu = poslednýTypTvaru;
+								Paint zálohaNáteru = náter;
+								try
+								{
+									grafikaAktívnehoPlátna = grafika;
+									if (farba instanceof Farba)
+										farbaRobota = (Farba)farba;
+									else
+										farbaRobota = new Farba(farba);
+									čiara = grafika.getStroke();
+									poslednýTypTvaru = TypTvaru.OBRYS;
+									náter = náterSpojnice;
+									svgExport.pridaj(čiaraSpojnice, this);
+								}
+								finally
+								{
+									náter = zálohaNáteru;
+									poslednýTypTvaru = zálohaTypu;
+									čiara = zálohaČiary;
+									farbaRobota = zálohaFarby;
+									grafikaAktívnehoPlátna = zálohaGrafiky;
+								}
+
+								/*String orezanie = svgExport.
+									dajOrezanie(grafika.getClip());
+
+								if (null != orezanie)
+									svgExport.pridaj(čiaraSpojnice, this,
+										"stroke", svgExport.náterNaReťazec(
+											náterSpojnice), "clip-path",
+										orezanie);
+								else
+									svgExport.pridaj(čiaraSpojnice, this,
+										"stroke", svgExport.náterNaReťazec(
+											náterSpojnice));*/
+
+								/*final Color f1 = farba, f2 = farbaKonca;
+								kresliTvar(obrázok, grafika, s.robot, r ->
+									{
+										r.farba(f1);
+										if (!f1.equals(f2)) r.cieľováFarba(f2);
+
+										r.skočNa(čiaraSpojnice.getP1().getX(),
+											čiaraSpojnice.getP1().getY());
+										r.choďNa(čiaraSpojnice.getP2().getX(),
+											čiaraSpojnice.getP2().getY());
+									});*/
+							}
 
 							if (null != s.značkaZačiatku)
 							{
@@ -5549,6 +5705,46 @@ Toto bolo presunuté na úvodnú stránku:
 							maximálneY + minimálneY),
 						(int)(maximálneX - minimálneX),
 						(int)(maximálneY - minimálneY));
+
+					if (null != svgExport)
+					{
+						// TODO: nahradiť jestvujúci tvar pôsobiska
+						// v svgExporte novým – aktualizácia na základe
+						// nejakého atribútu, narýchlo unikátneho ID,
+						// ideálne špecifickým atribútom vo vlastnom mennom
+						// priestore (alebo využiť niečo v rámci jestvujúcich
+						// menných priestorov)
+						// 
+						// zvážiť, či tu nie sú ešte iné kreslenia, pre ktoré
+						// by toto mohlo platiť – asi prinajmenšom tvar
+						// robota
+						// 
+						// oprava: toto bude riešiť implementovanie
+						// zhromažďovania tvarov do vrstiev podľa plátien,
+						// obrázkov a podobne…
+
+						Graphics2D zálohaGrafiky = grafikaAktívnehoPlátna;
+						try
+						{
+							grafikaAktívnehoPlátna = grafika;
+
+							svgExport.pridaj(
+								new Rectangle(
+									(int)Svet.prepočítajX(minimálneX),
+									(int)(Svet.prepočítajY(minimálneY) -
+										maximálneY + minimálneY),
+									(int)(maximálneX - minimálneX),
+									(int)(maximálneY - minimálneY)),
+								"fill", SVGPodpora.farbaNaReťazec(
+									farbaPôsobiska, true),
+								"fill-opacity", SVGPodpora.alfaNaReťazec(
+									farbaPôsobiska));
+						}
+						finally
+						{
+							grafikaAktívnehoPlátna = zálohaGrafiky;
+						}
+					}
 				}
 
 
@@ -5849,6 +6045,21 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.draw(oblasť);
 					// aktualizujPôsobisko(oblasť.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+					{
+						TypTvaru zálohaTypu = poslednýTypTvaru;
+						try
+						{
+							poslednýTypTvaru = TypTvaru.OBRYS;
+							svgExport.pridaj(oblasť, this);
+						}
+						finally
+						{
+							poslednýTypTvaru = zálohaTypu;
+						}
+					}
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -5861,6 +6072,21 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.fill(oblasť);
 					// aktualizujPôsobisko(oblasť.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+					{
+						TypTvaru zálohaTypu = poslednýTypTvaru;
+						try
+						{
+							poslednýTypTvaru = TypTvaru.VÝPLŇ;
+							svgExport.pridaj(oblasť, this);
+						}
+						finally
+						{
+							poslednýTypTvaru = zálohaTypu;
+						}
+					}
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -5874,14 +6100,16 @@ Toto bolo presunuté na úvodnú stránku:
 							obrázok.getWidth()  * Svet.mierkaVýplneX,
 							obrázok.getHeight() * Svet.mierkaVýplneY)));
 
+					Area a; // TODO
+
 					if (0 == Svet.otočVýplňΑ)
-						grafikaAktívnehoPlátna.fill(oblasť);
+						grafikaAktívnehoPlátna.fill(a = oblasť);
 					else
 					{
 						double β = toRadians(Svet.otočVýplňΑ);
 						grafikaAktívnehoPlátna.rotate(-β,
 							Svet.otočVýplňX, Svet.otočVýplňY);
-						Area a = oblasť.createTransformedArea(
+						/*Area*/ a = oblasť.createTransformedArea( // TODO
 							AffineTransform.getRotateInstance(β,
 							Svet.otočVýplňX, Svet.otočVýplňY));
 
@@ -5889,6 +6117,21 @@ Toto bolo presunuté na úvodnú stránku:
 
 						grafikaAktívnehoPlátna.rotate(β,
 							Svet.otočVýplňX, Svet.otočVýplňY);
+					}
+
+					if (null != svgExport)
+					{
+						TypTvaru zálohaTypu = poslednýTypTvaru;
+						try
+						{
+							poslednýTypTvaru = TypTvaru.VÝPLŇ;
+							svgExport.pridaj(a, this, "fill", // TODO
+								svgExport.náterPodľaObrázka(obrázok));
+						}
+						finally
+						{
+							poslednýTypTvaru = zálohaTypu;
+						}
 					}
 
 					// aktualizujPôsobisko(oblasť.getBounds2D());
@@ -5905,6 +6148,8 @@ Toto bolo presunuté na úvodnú stránku:
 					float priehľadnosť = (obrázok instanceof Obrázok) ?
 						((Obrázok)obrázok).priehľadnosť : 1.0f;
 
+					Area a = oblasť; // TODO
+
 					if (priehľadnosť > 0)
 					{
 						grafikaAktívnehoPlátna.setPaint(
@@ -5913,7 +6158,7 @@ Toto bolo presunuté na úvodnú stránku:
 								relevantný.getWidth(null)  * Svet.mierkaVýplneX,
 								relevantný.getHeight(null) * Svet.mierkaVýplneY)));
 
-						Area a = oblasť; double β = 0.0;
+						double β = 0.0;
 
 						if (0 != Svet.otočVýplňΑ)
 						{
@@ -5946,6 +6191,37 @@ Toto bolo presunuté na úvodnú stránku:
 
 						// aktualizujPôsobisko(oblasť.getBounds2D());
 						Svet.automatickéPrekreslenie();
+					}
+
+					if (null != svgExport)
+					{
+						TypTvaru zálohaTypu = poslednýTypTvaru;
+						try
+						{
+							poslednýTypTvaru = TypTvaru.VÝPLŇ;
+							if (1 != priehľadnosť)
+								svgExport.pridaj(// a,
+									oblasť, // TODO – pozri podobnú situáciu
+										// okolo riadka 32322
+									this, "fill", // TODO
+									svgExport.náterPodľaObrázka(relevantný),
+									"fill-opacity", "" + priehľadnosť);
+
+								// TODO: Pozor, v SVG podpore sa berie do
+								// úvahy AlphaComposite grafiky – treba
+								// overiť, či treba alebo vďaka tomu netreba
+								// nastavovať fill-opacity.
+
+							else
+								svgExport.pridaj(// a,
+									oblasť, // TODO – pozri…
+									this, "fill", // TODO
+									svgExport.náterPodľaObrázka(relevantný));
+						}
+						finally
+						{
+							poslednýTypTvaru = zálohaTypu;
+						}
 					}
 				}
 
@@ -17706,6 +17982,21 @@ Toto bolo presunuté na úvodnú stránku:
 						grafikaAktívnehoPlátna.draw(oblúk);
 						aktualizujPôsobisko(oblúk.getBounds2D());
 						obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+						if (null != svgExport)
+						{
+							TypTvaru zálohaTypu = poslednýTypTvaru;
+							try
+							{
+								poslednýTypTvaru = TypTvaru.OBRYS;
+								svgExport.pridaj(oblúk, this);
+							}
+							finally
+							{
+								poslednýTypTvaru = zálohaTypu;
+							}
+						}
+
 						Svet.automatickéPrekreslenie();
 					}
 					else if (viditeľný) Svet.automatickéPrekreslenie();
@@ -27352,6 +27643,23 @@ Toto bolo presunuté na úvodnú stránku:
 							obrázokAktívnehoPlátna.getHeight());
 						obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					}
+
+					if (null != svgExport)
+					{
+						TypTvaru zálohaTypu = poslednýTypTvaru;
+						try
+						{
+							poslednýTypTvaru = TypTvaru.VÝPLŇ;
+							svgExport.pridaj(new Rectangle(0, 0,
+								obrázokAktívnehoPlátna.getWidth(),
+								obrázokAktívnehoPlátna.getHeight()), this);
+						}
+						finally
+						{
+							poslednýTypTvaru = zálohaTypu;
+						}
+					}
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -27749,6 +28057,28 @@ Toto bolo presunuté na úvodnú stránku:
 							Svet.prepočítajY(aktuálneY) - (polomerPera / 2),
 							polomerPera, polomerPera));
 
+				if (null != svgExport)
+				{
+					TypTvaru zálohaTypu = poslednýTypTvaru;
+					try
+					{
+						poslednýTypTvaru = TypTvaru.VÝPLŇ;
+						if (polomerPera < 2)
+							svgExport.pridaj(new Rectangle(
+								(int)Svet.prepočítajX(aktuálneX),
+								(int)Svet.prepočítajY(aktuálneY), 1, 1), this);
+						else
+							svgExport.pridaj(new Ellipse2D.Double(
+								Svet.prepočítajX(aktuálneX) - (polomerPera / 2),
+								Svet.prepočítajY(aktuálneY) - (polomerPera / 2),
+								polomerPera, polomerPera), this);
+					}
+					finally
+					{
+						poslednýTypTvaru = zálohaTypu;
+					}
+				}
+
 				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				Svet.automatickéPrekreslenie();
 			}
@@ -27915,6 +28245,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.draw(kružnica);
 					aktualizujPôsobisko(polomer/* + (polomerPera / 2)*/);
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(kružnica, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -27993,6 +28327,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.fill(kruh);
 					aktualizujPôsobisko(polomer);
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(kruh, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -28133,6 +28471,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.draw(elipsa);
 					aktualizujPôsobisko(elipsa.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(elipsa, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 				return elipsa;
@@ -28221,6 +28563,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.fill(elipsa);
 					aktualizujPôsobisko(elipsa.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(elipsa, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -28379,6 +28725,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.draw(štvorec);
 					aktualizujPôsobisko(štvorec.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(štvorec, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -28473,6 +28823,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.fill(štvorec);
 					aktualizujPôsobisko(štvorec.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(štvorec, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -28646,6 +29000,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.draw(obdĺžnik);
 					aktualizujPôsobisko(obdĺžnik.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(obdĺžnik, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -28754,6 +29112,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.fill(obdĺžnik);
 					aktualizujPôsobisko(obdĺžnik.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(obdĺžnik, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -28881,6 +29243,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.draw(hviezda);
 					aktualizujPôsobisko(hviezda.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(hviezda, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -28942,6 +29308,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.fill(hviezda);
 					aktualizujPôsobisko(hviezda.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(hviezda, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -29076,6 +29446,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.draw(kružnica);
 					aktualizujPôsobisko(veľkosť/* + (polomerPera / 2)*/);
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(kružnica, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -29150,6 +29524,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.fill(kruh);
 					aktualizujPôsobisko(veľkosť);
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(kruh, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -29305,6 +29683,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.draw(elipsa);
 					aktualizujPôsobisko(elipsa.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(elipsa, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 				return elipsa;
@@ -29398,6 +29780,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.fill(elipsa);
 					aktualizujPôsobisko(elipsa.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(elipsa, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -29554,6 +29940,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.draw(elipsa);
 					aktualizujPôsobisko(elipsa.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(elipsa, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 				return elipsa;
@@ -29640,6 +30030,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.fill(elipsa);
 					aktualizujPôsobisko(elipsa.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(elipsa, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -29795,6 +30189,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.draw(štvorec);
 					aktualizujPôsobisko(štvorec.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(štvorec, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -29885,6 +30283,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.fill(štvorec);
 					aktualizujPôsobisko(štvorec.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(štvorec, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -30073,6 +30475,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.draw(obdĺžnik);
 					aktualizujPôsobisko(obdĺžnik.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(obdĺžnik, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -30189,6 +30595,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.fill(obdĺžnik);
 					aktualizujPôsobisko(obdĺžnik.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(obdĺžnik, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -30362,6 +30772,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.draw(obdĺžnik);
 					aktualizujPôsobisko(obdĺžnik.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(obdĺžnik, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -30471,6 +30885,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.fill(obdĺžnik);
 					aktualizujPôsobisko(obdĺžnik.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(obdĺžnik, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -30591,6 +31009,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.draw(hviezda);
 					aktualizujPôsobisko(hviezda.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(hviezda, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -30648,6 +31070,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.fill(hviezda);
 					aktualizujPôsobisko(hviezda.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(hviezda, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 
@@ -31660,6 +32086,10 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 
 				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+				
+				if (null != svgExport)
+					svgExport.pridaj(new Polygon(fx, fy, 7), this);
+				
 				Svet.automatickéPrekreslenie();
 				return null;
 			}
@@ -31721,6 +32151,10 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 
 				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+				
+				if (null != svgExport)
+					svgExport.pridaj(new Polygon(fx, fy, 7), this);
+				
 				Svet.automatickéPrekreslenie();
 				return null;
 			}
@@ -31764,6 +32198,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.draw(tvar);
 					aktualizujPôsobisko(tvar.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(tvar, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 				return tvar;
@@ -31798,6 +32236,10 @@ Toto bolo presunuté na úvodnú stránku:
 					grafikaAktívnehoPlátna.fill(tvar);
 					aktualizujPôsobisko(tvar.getBounds2D());
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+					if (null != svgExport)
+						svgExport.pridaj(tvar, this);
+
 					Svet.automatickéPrekreslenie();
 				}
 				return tvar;
@@ -31862,14 +32304,18 @@ Toto bolo presunuté na úvodnú stránku:
 							obrázok.getWidth()  * Svet.mierkaVýplneX,
 							obrázok.getHeight() * Svet.mierkaVýplneY)));
 
+					Shape s; // TODO
+
 					if (0 == Svet.otočVýplňΑ)
-						grafikaAktívnehoPlátna.fill(tvar);
+						grafikaAktívnehoPlátna.fill(s = tvar); // TODO
 					else
 					{
 						double β = toRadians(Svet.otočVýplňΑ);
 						grafikaAktívnehoPlátna.rotate(-β,
 							Svet.otočVýplňX, Svet.otočVýplňY);
-						Shape s = AffineTransform.getRotateInstance(β,
+
+						// TODO
+						/*Shape*/ s = AffineTransform.getRotateInstance(β,
 							Svet.otočVýplňX, Svet.otočVýplňY).
 							createTransformedShape(tvar);
 
@@ -31877,6 +32323,22 @@ Toto bolo presunuté na úvodnú stránku:
 
 						grafikaAktívnehoPlátna.rotate(β,
 							Svet.otočVýplňX, Svet.otočVýplňY);
+					}
+
+					if (null != svgExport)
+					{
+						// TODO: Otestovať, či sa týmto dosiahne rovnaký
+						// efekt, ako transformáciami vyššie.
+						svgExport.pridaj(
+
+							// s,
+								// Pozor, tam hore „čarujem“ s otáčaním
+								// plátna a tvaru podľa otočenia výplne, ale
+								// pri exporte do SVG sa výplň otáča inak.
+							tvar,
+
+							this, "fill",
+							svgExport.náterPodľaObrázka(obrázok));
 					}
 
 					aktualizujPôsobisko(tvar.getBounds2D());
@@ -31979,6 +32441,21 @@ Toto bolo presunuté na úvodnú stránku:
 								Svet.otočVýplňX, Svet.otočVýplňY);
 						}
 
+						if (null != svgExport)
+						{
+							// TODO: Otestovať…
+							if (1 != priehľadnosť)
+								svgExport.pridaj(// s,
+									tvar, // TODO – pozri podobnú situáciu
+										// okolo riadka 32322
+									this, "fill",
+									svgExport.náterPodľaObrázka(relevantný),
+									"fill-opacity", "" + priehľadnosť);
+							else
+								svgExport.pridaj(s, this, "fill",
+									svgExport.náterPodľaObrázka(relevantný));
+						}
+
 						Svet.automatickéPrekreslenie();
 					}
 				}
@@ -32073,9 +32550,18 @@ Toto bolo presunuté na úvodnú stránku:
 						at.translate(aktuálneX, -aktuálneY);
 						tvar = at.createTransformedShape(tvar);
 
+						// TODO: V zásade, nasledujúce dva príkazy sú
+						// identické s príkazmi vo vetve vyššie. Dalo by sa to
+						// prerobiť tak, aby sa tieto príkazy vykonali mimo
+						// if-else a if-else by sa zmenil len na if
+						// s transformáciou, ale chce to potom otestovať, či sa
+						// v niečom náhodou nemýlim…
 						grafikaAktívnehoPlátna.draw(tvar);
 						aktualizujPôsobisko(tvar.getBounds2D());
 					}
+
+					if (null != svgExport)
+						svgExport.pridaj(tvar, this);
 
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
@@ -32175,9 +32661,13 @@ Toto bolo presunuté na úvodnú stránku:
 						at.translate(aktuálneX, -aktuálneY);
 						tvar = at.createTransformedShape(tvar);
 
+						// TODO: podobne ako pri kreslení tvaru
 						grafikaAktívnehoPlátna.fill(tvar);
 						aktualizujPôsobisko(tvar.getBounds2D());
 					}
+
+					if (null != svgExport)
+						svgExport.pridaj(tvar, this);
 
 					obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 					Svet.automatickéPrekreslenie();
@@ -32342,6 +32832,14 @@ Toto bolo presunuté na úvodnú stránku:
 					{
 						grafikaAktívnehoPlátna.rotate(β,
 							Svet.otočVýplňX, Svet.otočVýplňY);
+					}
+
+					if (null != svgExport)
+					{
+						// TODO: Toto nie je také priamočiare, ako som si
+						// myslel. Hore sa dosť „čaruje“…
+						svgExport.pridaj(tvar, this, "fill", // TODO 32322
+							svgExport.náterPodľaObrázka(obrázok));
 					}
 
 					Svet.automatickéPrekreslenie();
@@ -32559,6 +33057,18 @@ Toto bolo presunuté na úvodnú stránku:
 						{
 							grafikaAktívnehoPlátna.rotate(β,
 								Svet.otočVýplňX, Svet.otočVýplňY);
+						}
+
+						if (null != svgExport)
+						{
+							// TOOD: overiť, čo sa to tam hore čaruje…
+							if (1 != priehľadnosť)
+								svgExport.pridaj(tvar, this, "fill", // TODO 32322
+									svgExport.náterPodľaObrázka(relevantný),
+									"fill-opacity", "" + priehľadnosť);
+							else
+								svgExport.pridaj(tvar, this, "fill", // TODO 32322
+									svgExport.náterPodľaObrázka(relevantný));
 						}
 
 						Svet.automatickéPrekreslenie();
@@ -35293,6 +35803,9 @@ Toto bolo presunuté na úvodnú stránku:
 				if (1.0 != mierka)
 					grafikaAktívnehoPlátna.setTransform(transformácie);
 
+				if (null != svgExport) // (TODO: započítať spôsob kreslenia, mierku, test)
+					svgExport.pridajObrázok(obrázok, this);
+
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -35605,6 +36118,10 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 
 				grafikaAktívnehoPlátna.setTransform(transformácie);
+
+				if (null != svgExport) // (TODO: započítať spôsob kreslenia, posun stredu rotácie, mierku, test)
+					svgExport.pridajObrázok(obrázok, this);
+
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -35869,6 +36386,9 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (1.0 != mierka)
 					grafikaAktívnehoPlátna.setTransform(transformácie);
+
+				if (null != svgExport) // (TODO: započítať spôsob kreslenia, mierku, test)
+					svgExport.pridajObrázok(relevantný, this);
 
 				Svet.automatickéPrekreslenie();
 			}
@@ -36296,6 +36816,10 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 
 				grafikaAktívnehoPlátna.setTransform(transformácie);
+
+				if (null != svgExport) // (TODO: započítať spôsob kreslenia, posun stredu rotácie, mierku, test)
+					svgExport.pridajObrázok(relevantný, this);
+
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -36518,6 +37042,10 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 
 				grafikaAktívnehoPlátna.setTransform(transformácie);
+
+				if (null != svgExport) // (TODO: započítať spôsob kreslenia, posun stredu rotácie, mierky, test)
+					svgExport.pridajObrázok(obrázok, this);
+
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -36738,6 +37266,10 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 
 				grafikaAktívnehoPlátna.setTransform(transformácie);
+
+				if (null != svgExport) // (TODO: započítať spôsob kreslenia, posun stredu rotácie, mierky, test)
+					svgExport.pridajObrázok(relevantný, this);
+
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -37063,6 +37595,9 @@ Toto bolo presunuté na úvodnú stránku:
 						prepočítanéX, prepočítanéY);
 				}
 
+				if (null != svgExport)
+					svgExport.pridajText(text, this);
+
 				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				Svet.automatickéPrekreslenie();
 				return null;
@@ -37227,6 +37762,9 @@ Toto bolo presunuté na úvodnú stránku:
 						// 	(float)(prepočítanéY - (lineheight / 2.0) +
 						// 		ascent));
 					}
+
+					if (null != svgExport)
+						svgExport.pridajText(text, this);
 				}
 				else
 				{
@@ -37290,6 +37828,23 @@ Toto bolo presunuté na úvodnú stránku:
 
 					grafikaAktívnehoPlátna.rotate(α,
 						prepočítanéX + Δx, prepočítanéY - Δy);
+
+					if (null != svgExport)
+					{
+						double zálohaUhla = aktuálnyUhol;
+						aktuálnyUhol = 90.0;
+						try
+						{
+							// TODO: Overiť, či to bude robiť to isté (ako na plátne).
+							svgExport.pridajText(text, this, "transform",
+								"rotate(" + (-α) + "," + (prepočítanéX + Δx) +
+								"," + (prepočítanéY - Δy));
+						}
+						finally
+						{
+							aktuálnyUhol = zálohaUhla;
+						}
+					}
 				}
 
 				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
@@ -37978,6 +38533,10 @@ Toto bolo presunuté na úvodnú stránku:
 				grafikaAktívnehoPlátna.fill(cesta);
 				// grafikaAktívnehoPlátna.fillPolygon(cesta);
 				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+				if (null != svgExport)
+					svgExport.pridaj(cesta, this);
+
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -38046,6 +38605,10 @@ Toto bolo presunuté na úvodnú stránku:
 				grafikaAktívnehoPlátna.setStroke(čiara);
 				grafikaAktívnehoPlátna.draw(cesta);
 				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+				if (null != svgExport)
+					svgExport.pridaj(cesta, this);
+
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -38097,6 +38660,10 @@ Toto bolo presunuté na úvodnú stránku:
 				grafikaAktívnehoPlátna.draw(cesta);
 				// grafikaAktívnehoPlátna.drawPolygon(cesta);
 				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+
+				if (null != svgExport)
+					svgExport.pridaj(cesta, this);
+
 				Svet.automatickéPrekreslenie();
 			}
 
@@ -38725,11 +39292,13 @@ Toto bolo presunuté na úvodnú stránku:
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 				grafikaAktívnehoPlátna.setStroke(čiara);
 
+				Area a; // TODO – asi zbytočné; pozri niźšie…
+
 				if (aktuálnyUhol == 90 && aktuálneX == 0 &&
 					aktuálneY == 0 && pôvodnáVeľkosť == veľkosť &&
 					pôvodnýPomer == pomerVeľkosti)
 				{
-					grafikaAktívnehoPlátna.draw(oblasť);
+					grafikaAktívnehoPlátna.draw(a = oblasť);
 					aktualizujPôsobisko(oblasť.getBounds2D());
 				}
 				else
@@ -38753,10 +39322,27 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 
 					at.translate(aktuálneX, -aktuálneY);
-					Area a = oblasť.createTransformedArea(at);
+					/*Area*/ a = oblasť.createTransformedArea(at); // TODO: táto
+						// nová inštancia by mala byť zbytočná. Metóda
+						// createTransformedArea pôvodnú oblasť nezmení…
 
+					// TODO: Podobne, ako v metóde kresliTvar(Shape, boolean).
 					grafikaAktívnehoPlátna.draw(a);
 					aktualizujPôsobisko(a.getBounds2D());
+				}
+
+				if (null != svgExport)
+				{
+					TypTvaru zálohaTypu = poslednýTypTvaru;
+					try
+					{
+						poslednýTypTvaru = TypTvaru.OBRYS;
+						svgExport.pridaj(a, this);
+					}
+					finally
+					{
+						poslednýTypTvaru = zálohaTypu;
+					}
 				}
 
 				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
@@ -38788,11 +39374,13 @@ Toto bolo presunuté na úvodnú stránku:
 				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
 				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
 
+				Area a; // TODO
+
 				if (aktuálnyUhol == 90 && aktuálneX == 0 &&
 					aktuálneY == 0 && pôvodnáVeľkosť == veľkosť &&
 					pôvodnýPomer == pomerVeľkosti)
 				{
-					grafikaAktívnehoPlátna.fill(oblasť);
+					grafikaAktívnehoPlátna.fill(a = oblasť);
 					aktualizujPôsobisko(oblasť.getBounds2D());
 				}
 				else
@@ -38818,10 +39406,27 @@ Toto bolo presunuté na úvodnú stránku:
 					}
 
 					at.translate(aktuálneX, -aktuálneY);
-					Area a = oblasť.createTransformedArea(at);
+					/*Area*/ a = oblasť.createTransformedArea(at); // TODO
 
+					// TODO: Podobne, ako v metóde obkresliOblasť(Area).
+
+					// TODO
 					grafikaAktívnehoPlátna.fill(a);
 					aktualizujPôsobisko(a.getBounds2D());
+				}
+
+				if (null != svgExport)
+				{
+					TypTvaru zálohaTypu = poslednýTypTvaru;
+					try
+					{
+						poslednýTypTvaru = TypTvaru.VÝPLŇ;
+						svgExport.pridaj(a, this);
+					}
+					finally
+					{
+						poslednýTypTvaru = zálohaTypu;
+					}
 				}
 
 				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
@@ -38942,6 +39547,22 @@ Toto bolo presunuté na úvodnú stránku:
 				{
 					grafikaAktívnehoPlátna.rotate(β,
 						Svet.otočVýplňX, Svet.otočVýplňY);
+				}
+
+				if (null != svgExport)
+				{
+					TypTvaru zálohaTypu = poslednýTypTvaru;
+					try
+					{
+						// TODO: Otestovať…
+						poslednýTypTvaru = TypTvaru.VÝPLŇ;
+						svgExport.pridaj(oblasť, this, "fill", // TODO 32322
+							svgExport.náterPodľaObrázka(obrázok));
+					}
+					finally
+					{
+						poslednýTypTvaru = zálohaTypu;
+					}
 				}
 
 				Svet.automatickéPrekreslenie();
@@ -39115,6 +39736,27 @@ Toto bolo presunuté na úvodnú stránku:
 					{
 						grafikaAktívnehoPlátna.rotate(β,
 							Svet.otočVýplňX, Svet.otočVýplňY);
+					}
+
+					if (null != svgExport)
+					{
+						TypTvaru zálohaTypu = poslednýTypTvaru;
+						try
+						{
+							// TODO: Otestovať… (hore sa čaruje)
+							poslednýTypTvaru = TypTvaru.VÝPLŇ;
+							if (1 != priehľadnosť)
+								svgExport.pridaj(oblasť, this, "fill", // TODO 32322
+									svgExport.náterPodľaObrázka(relevantný),
+									"fill-opacity", "" + priehľadnosť);
+							else
+								svgExport.pridaj(oblasť, this, "fill", // TODO 32322
+									svgExport.náterPodľaObrázka(relevantný));
+						}
+						finally
+						{
+							poslednýTypTvaru = zálohaTypu;
+						}
 					}
 
 					Svet.automatickéPrekreslenie();
@@ -39804,8 +40446,8 @@ Toto bolo presunuté na úvodnú stránku:
 					{
 						s.farba = farbaRobota;
 						s.čiara = čiara;
-						s.orezanieZačiatku = null;
-						s.orezanieKonca = null;
+						s.spracujOrezanieZačiatku(null);
+						s.spracujOrezanieKonca(null);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -39886,8 +40528,8 @@ Toto bolo presunuté na úvodnú stránku:
 					{
 						s.farba = farbaRobota;
 						s.čiara = čiara;
-						s.orezanieZačiatku = null;
-						s.orezanieKonca = null;
+						s.spracujOrezanieZačiatku(null);
+						s.spracujOrezanieKonca(null);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -39962,8 +40604,8 @@ Toto bolo presunuté na úvodnú stránku:
 						else
 							s.farba = new Farba(farba);
 						s.čiara = čiara;
-						s.orezanieZačiatku = null;
-						s.orezanieKonca = null;
+						s.spracujOrezanieZačiatku(null);
+						s.spracujOrezanieKonca(null);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -40051,8 +40693,8 @@ Toto bolo presunuté na úvodnú stránku:
 						else
 							s.farba = new Farba(farba);
 						s.čiara = čiara;
-						s.orezanieZačiatku = null;
-						s.orezanieKonca = null;
+						s.spracujOrezanieZačiatku(null);
+						s.spracujOrezanieKonca(null);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -40124,8 +40766,8 @@ Toto bolo presunuté na úvodnú stránku:
 						else
 							s.farba = objekt.farba();
 						s.čiara = čiara;
-						s.orezanieZačiatku = null;
-						s.orezanieKonca = null;
+						s.spracujOrezanieZačiatku(null);
+						s.spracujOrezanieKonca(null);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -40212,8 +40854,8 @@ Toto bolo presunuté na úvodnú stránku:
 						else
 							s.farba = objekt.farba();
 						s.čiara = čiara;
-						s.orezanieZačiatku = null;
-						s.orezanieKonca = null;
+						s.spracujOrezanieZačiatku(null);
+						s.spracujOrezanieKonca(null);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -40282,8 +40924,8 @@ Toto bolo presunuté na úvodnú stránku:
 					{
 						s.farba = farbaRobota;
 						s.čiara = čiara;
-						s.orezanieZačiatku = null;
-						s.orezanieKonca = null;
+						s.spracujOrezanieZačiatku(null);
+						s.spracujOrezanieKonca(null);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -40358,8 +41000,8 @@ Toto bolo presunuté na úvodnú stránku:
 						else
 							s.farba = new Farba(farba);
 						s.čiara = čiara;
-						s.orezanieZačiatku = null;
-						s.orezanieKonca = null;
+						s.spracujOrezanieZačiatku(null);
+						s.spracujOrezanieKonca(null);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -40433,8 +41075,8 @@ Toto bolo presunuté na úvodnú stránku:
 						else
 							s.farba = objekt.farba();
 						s.čiara = čiara;
-						s.orezanieZačiatku = null;
-						s.orezanieKonca = null;
+						s.spracujOrezanieZačiatku(null);
+						s.spracujOrezanieKonca(null);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -40501,8 +41143,8 @@ Toto bolo presunuté na úvodnú stránku:
 					{
 						s.farba = farbaRobota;
 						s.čiara = čiara;
-						s.orezanieZačiatku = orezanieZačiatku;
-						s.orezanieKonca = orezanieKonca;
+						s.spracujOrezanieZačiatku(orezanieZačiatku);
+						s.spracujOrezanieKonca(orezanieKonca);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -40590,8 +41232,8 @@ Toto bolo presunuté na úvodnú stránku:
 					{
 						s.farba = farbaRobota;
 						s.čiara = čiara;
-						s.orezanieZačiatku = orezanieZačiatku;
-						s.orezanieKonca = orezanieKonca;
+						s.spracujOrezanieZačiatku(orezanieZačiatku);
+						s.spracujOrezanieKonca(orezanieKonca);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -40673,8 +41315,8 @@ Toto bolo presunuté na úvodnú stránku:
 						else
 							s.farba = new Farba(farba);
 						s.čiara = čiara;
-						s.orezanieZačiatku = orezanieZačiatku;
-						s.orezanieKonca = orezanieKonca;
+						s.spracujOrezanieZačiatku(orezanieZačiatku);
+						s.spracujOrezanieKonca(orezanieKonca);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -40769,8 +41411,8 @@ Toto bolo presunuté na úvodnú stránku:
 						else
 							s.farba = new Farba(farba);
 						s.čiara = čiara;
-						s.orezanieZačiatku = orezanieZačiatku;
-						s.orezanieKonca = orezanieKonca;
+						s.spracujOrezanieZačiatku(orezanieZačiatku);
+						s.spracujOrezanieKonca(orezanieKonca);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -40849,8 +41491,8 @@ Toto bolo presunuté na úvodnú stránku:
 						else
 							s.farba = objekt.farba();
 						s.čiara = čiara;
-						s.orezanieZačiatku = orezanieZačiatku;
-						s.orezanieKonca = orezanieKonca;
+						s.spracujOrezanieZačiatku(orezanieZačiatku);
+						s.spracujOrezanieKonca(orezanieKonca);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -40943,8 +41585,8 @@ Toto bolo presunuté na úvodnú stránku:
 						else
 							s.farba = objekt.farba();
 						s.čiara = čiara;
-						s.orezanieZačiatku = orezanieZačiatku;
-						s.orezanieKonca = orezanieKonca;
+						s.spracujOrezanieZačiatku(orezanieZačiatku);
+						s.spracujOrezanieKonca(orezanieKonca);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -41020,8 +41662,8 @@ Toto bolo presunuté na úvodnú stránku:
 					{
 						s.farba = farbaRobota;
 						s.čiara = čiara;
-						s.orezanieZačiatku = orezanieZačiatku;
-						s.orezanieKonca = orezanieKonca;
+						s.spracujOrezanieZačiatku(orezanieZačiatku);
+						s.spracujOrezanieKonca(orezanieKonca);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -41103,8 +41745,8 @@ Toto bolo presunuté na úvodnú stránku:
 						else
 							s.farba = new Farba(farba);
 						s.čiara = čiara;
-						s.orezanieZačiatku = orezanieZačiatku;
-						s.orezanieKonca = orezanieKonca;
+						s.spracujOrezanieZačiatku(orezanieZačiatku);
+						s.spracujOrezanieKonca(orezanieKonca);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -41184,8 +41826,8 @@ Toto bolo presunuté na úvodnú stránku:
 						else
 							s.farba = objekt.farba();
 						s.čiara = čiara;
-						s.orezanieZačiatku = orezanieZačiatku;
-						s.orezanieKonca = orezanieKonca;
+						s.spracujOrezanieZačiatku(orezanieZačiatku);
+						s.spracujOrezanieKonca(orezanieKonca);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -41224,8 +41866,8 @@ Toto bolo presunuté na úvodnú stránku:
 							s.farbaKonca = new Farba(farbaKonca);
 
 						s.čiara = čiara;
-						s.orezanieZačiatku = orezanieZačiatku;
-						s.orezanieKonca = orezanieKonca;
+						s.spracujOrezanieZačiatku(orezanieZačiatku);
+						s.spracujOrezanieKonca(orezanieKonca);
 						Svet.automatickéPrekreslenie();
 						return s;
 					}
@@ -43769,10 +44411,14 @@ Toto bolo presunuté na úvodnú stránku:
 			 * <p class="remark"><b>Poznámka:</b> Pri takomto orezávaní nie
 			 * je na všetkých platformách a/alebo implementáciách virtuálneho
 			 * stroja Javy dostupná funkcia anti-aliasingu, čo zjednodušene
-			 * povedané znamená, že okraje orezanej kresby budú „zúbkaté.“
+			 * povedané znamená, že okraje orezanej kresby môžu byť „zúbkaté.“
 			 * Ak sa chcete tejto nedokonalosti vyhnúť, použite radšej funkciu
 			 * {@linkplain Plátno#použiMasku masky}. Tá dovoľuje ovplyvňovať
-			 * úroveň priehľadnosti s jemnosťou na jednotlivé body rastra.</p>
+			 * úroveň priehľadnosti s jemnosťou na jednotlivé body rastra.
+			 * (<b>Poznámka:</b> Naopak, pri {@linkplain GRobot#svgExport
+			 * exporte} kreslenia do inštancie {@link SVGPodpora SVGPodpora}
+			 * je výhodnejšie pracovať s orezávaním – čiže práve s touto
+			 * metódou alebo jej variantmi.)</p>
 			 * 
 			 * @param tvar tvar ({@link Shape Shape}) alebo {@link Oblasť
 			 *     Oblasť}
@@ -43808,10 +44454,14 @@ Toto bolo presunuté na úvodnú stránku:
 			 * <p class="remark"><b>Poznámka:</b> Pri takomto orezávaní nie
 			 * je na všetkých platformách a/alebo implementáciách virtuálneho
 			 * stroja Javy dostupná funkcia anti-aliasingu, čo zjednodušene
-			 * povedané znamená, že okraje orezanej kresby budú „zúbkaté.“
+			 * povedané znamená, že okraje orezanej kresby môžu byť „zúbkaté.“
 			 * Ak sa chcete tejto nedokonalosti vyhnúť, použite radšej funkciu
 			 * {@linkplain Plátno#použiMasku masky}. Tá dovoľuje ovplyvňovať
-			 * úroveň priehľadnosti s jemnosťou na jednotlivé body rastra.</p>
+			 * úroveň priehľadnosti s jemnosťou na jednotlivé body rastra.
+			 * (<b>Poznámka:</b> Naopak, pri {@linkplain GRobot#svgExport
+			 * exporte} kreslenia do inštancie {@link SVGPodpora SVGPodpora}
+			 * je výhodnejšie pracovať s orezávaním – čiže práve s touto
+			 * metódou alebo jej variantmi.)</p>
 			 * 
 			 * @param tvar tvar ({@link Shape Shape}) alebo {@link Oblasť
 			 *     Oblasť}
@@ -43996,6 +44646,46 @@ Toto bolo presunuté na úvodnú stránku:
 	 * SVG.</p>
 	 */
 	public final static SVGPodpora svgPodpora = new SVGPodpora();
+
+	/**
+	 * <p>Atribút na export kreslenia tohto robota do zadanej inštancie
+	 * {@link SVGPodpora SVGPodpora}. Predvolená hodnota je {@code valnull}.
+	 * Keď je do atribútu vložená ľubovoľná inštancia triedy {@link SVGPodpora
+	 * SVGPodpora}, tak sa všetky kreslené tvary, texty a obrázky počas
+	 * kreslenia pridajú do vloženej inštancie cez metódy:</p>
+	 * 
+	 * <ul>
+	 * <li>{@link SVGPodpora#pridaj(Shape, GRobot, String...) pridaj(tvar,
+	 *     tvorca, atribúty)},</li>
+	 * <li>{@link SVGPodpora#pridaj(Shape, String...) pridaj(tvar, atribúty)}
+	 *     (len v prípade kreslenia pôsobiska, pri ktorom sú vlastnosti tvorcu
+	 *     irelevantné),</li>
+	 * <!-- li>{@link SVGPodpora#pridajÚsečku(GRobot, String...)
+	 *     pridajÚsečku(tvorca, atribúty)},</li -->
+	 * <li>{@link SVGPodpora#pridajText(String, GRobot, String...)
+	 *     pridajText(text, tvorca, atribúty)}</li>
+	 * <li>a {@link SVGPodpora#pridajObrázok(Image, GRobot, String...)
+	 *     pridajObrázok(obrázok, tvorca, atribúty)},</li>
+	 * </ul>
+	 * 
+	 * <p>kde <i>tvorcom</i> bude tento robot.</p>
+	 * 
+	 * <p class="caution"><b>Pozor!</b> Tento atribút nie je statický, na
+	 * rozdiel od rovnomenného atribútu sveta (pozri {@link Svet#svgExport
+	 * Svet.svgExport}). To znamená, že týmto atribútom sa dá nastaviť alebo
+	 * zrušiť export každému robotu individuálne.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Všetky metódy sa usilujú
+	 * pridávať kreslené objekty v správnom kontexte – kreslenie na podlahu,
+	 * strop, svet… Zatiaľ nie je dokončená správna implementácia kreslenia
+	 * do obrázka, ktorá bude časom pridávať klonovateľné definície, ale
+	 * zatiaľ iba kreslí objekty v samostatnej vrstve. Odporúčame sa preto
+	 * zatiaľ vyhnúť kresleniu do obrázkov počas exportu do formátu SVG,
+	 * pretože toto správanie sa v budúcnosti zmení.</p>
+	 * 
+	 * @see Svet#svgExport
+	 */
+	public SVGPodpora svgExport = null;
 }
 
 // :wrap=none:

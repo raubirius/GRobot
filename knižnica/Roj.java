@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2022 by Roman Horváth
+ // Copyright © 2010 – 2023 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -1379,7 +1379,7 @@ public class Roj
 		 * transformácií budú zrušené:</p>
 		 * 
 		 * <p>To znamená, že transformované súradnice [{@link #x1 x1},
-		 * {@link #y1 y1}, {@link  #z1 z1}] budú skopírované do originálnych
+		 * {@link #y1 y1}, {@link #z1 z1}] budú skopírované do originálnych
 		 * súradníc [{@link #x0 x0}, {@link #y0 y0}, {@link #z0 z0}]
 		 * a hodnoty transformácií posunutia ({@link #dx dx}, {@link #dy dy},
 		 * {@link #dz dz}) a pootočenia (uhly {@link #alfa alfa}, {@link #beta

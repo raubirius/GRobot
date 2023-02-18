@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2022 by Roman Horváth
+ // Copyright © 2010 – 2023 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -2983,10 +2983,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * <p class="remark"><b>Poznámka:</b> Pri takomto orezávaní nie
 		 * je na všetkých platformách a/alebo implementáciách virtuálneho
 		 * stroja Javy dostupná funkcia anti-aliasingu, čo zjednodušene
-		 * povedané znamená, že okraje orezanej kresby budú „zúbkaté.“
+		 * povedané znamená, že okraje orezanej kresby môžu byť „zúbkaté.“
 		 * Ak sa chcete tejto nedokonalosti vyhnúť, použite radšej funkciu
 		 * {@linkplain Plátno#použiMasku masky}. Tá dovoľuje ovplyvňovať
-		 * úroveň priehľadnosti s jemnosťou na jednotlivé body rastra.</p>
+		 * úroveň priehľadnosti s jemnosťou na jednotlivé body rastra.
+		 * (<b>Poznámka:</b> Naopak, pri {@linkplain GRobot#svgExport
+		 * exporte} kreslenia do inštancie {@link SVGPodpora SVGPodpora}
+		 * je výhodnejšie pracovať s orezávaním – čiže práve s touto
+		 * metódou alebo jej variantmi.)</p>
 		 * 
 		 * @param tvar tvar ({@link Shape Shape}) alebo {@link Oblasť
 		 *     Oblasť}
@@ -3014,10 +3018,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * <p class="remark"><b>Poznámka:</b> Pri takomto orezávaní nie
 		 * je na všetkých platformách a/alebo implementáciách virtuálneho
 		 * stroja Javy dostupná funkcia anti-aliasingu, čo zjednodušene
-		 * povedané znamená, že okraje orezanej kresby budú „zúbkaté.“
+		 * povedané znamená, že okraje orezanej kresby môžu byť „zúbkaté.“
 		 * Ak sa chcete tejto nedokonalosti vyhnúť, použite radšej funkciu
 		 * {@linkplain Plátno#použiMasku masky}. Tá dovoľuje ovplyvňovať
-		 * úroveň priehľadnosti s jemnosťou na jednotlivé body rastra.</p>
+		 * úroveň priehľadnosti s jemnosťou na jednotlivé body rastra.
+		 * (<b>Poznámka:</b> Naopak, pri {@linkplain GRobot#svgExport
+		 * exporte} kreslenia do inštancie {@link SVGPodpora SVGPodpora}
+		 * je výhodnejšie pracovať s orezávaním – čiže práve s touto
+		 * metódou alebo jej variantmi.)</p>
 		 * 
 		 * @param tvar tvar ({@link Shape Shape}) alebo {@link Oblasť
 		 *     Oblasť}
@@ -5060,6 +5068,25 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * prípadoch záleží na výsledku výpočtov algoritmu. Napríklad
 		 * úplne čierne úplne nepriehľadné body masky neovplyvnia
 		 * priehľadnosť bodov na obrázku.</p>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b> Maska nie je pri
+		 * {@linkplain GRobot#svgExport exporte} kreslenia do inštancie
+		 * {@link SVGPodpora SVGPodpora} použitá priamo, pretože pracuje
+		 * s rastrom obrázkov/plátien. Ak chcete do {@linkplain 
+		 * SVGPodpora SVG podpory} exportovať vlastnú masku, použite
+		 * kombináciu {@linkplain SVGPodpora#definície() vlastnej
+		 * definície} (vložením záznamu <code>&lt;mask
+		 * id="<em>ID masky</em>"&gt;…&lt;/mask&gt;</code>) a {@linkplain 
+		 * SVGPodpora#prepíšAtribút(int, String, Object) atribútu}
+		 * <code>mask="url(#<em>ID masky</em>)"</code>. Podrobnosti o SVG
+		 * maskách nájdete napríklad tu:<br /><i>Clipping and masking –
+		 * SVG : Scalable Vector Graphics | MDN.</i> Mozilla Developer
+		 * Network, <a
+		 * href="https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Clipping_and_masking#masking"
+		 * target="_blank">developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Clipping_and_masking#masking.</a>
+		 * Naposledy pristúpené: 28. januára 2023.<br />Môžete tiež použiť
+		 * orezávanie – {@linkplain #kresliDo(Shape) pozri napríklad
+		 * tu.}</p>
 		 * 
 		 * @param maska obrázok, ktorý bude použitý ako maska
 		 * @return {@code valtrue} ak bola operácia úspešná
@@ -7369,7 +7396,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * {@linkplain Svet#farbaPozadia(Color) farba pozadia} je zmiešaná
 		 * so všetkými polopriehľadnými bodmi, pretože formát GIF
 		 * nepodporuje čiastočnú priehľadnosť bodov a aktuálna hodnota
-		 * {@linkplain  #opakovaniaAnimácie(int) počtu opakovaní animácie}
+		 * {@linkplain #opakovaniaAnimácie(int) počtu opakovaní animácie}
 		 * zároveň určí počet opakovaní uložený a používaný v tomto
 		 * súborovom formáte, pričom pri ukladaní má hodnota {@code num0}
 		 * rovnaký význam ako akákoľvek záporná hodnota, čiže nekonečný
@@ -7401,7 +7428,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 
 				{@code comm// Zoznam modrých farieb použitých na tieňovanie lopty.}
 				{@code kwdprivate} {@code kwdfinal} {@link Zoznam Zoznam}&lt;{@link Farba Farba}&gt; farby = {@code kwdnew} {@link Zoznam#Zoznam(Object[]) Zoznam}&lt;{@link Farba Farba}&gt;(
-					{@code kwdnew} {@link Farba#Farba(int, int, int) Farba}( {@code num0},  {@code num0}, {@code num224}), {@code kwdnew} {@link Farba#Farba(int, int, int) Farba}({@code num16}, {@code num16}, {@code num232}),
+					{@code kwdnew} {@link Farba#Farba(int, int, int) Farba}( {@code num0}, {@code num0}, {@code num224}), {@code kwdnew} {@link Farba#Farba(int, int, int) Farba}({@code num16}, {@code num16}, {@code num232}),
 					{@code kwdnew} {@link Farba#Farba(int, int, int) Farba}({@code num32}, {@code num32}, {@code num240}), {@code kwdnew} {@link Farba#Farba(int, int, int) Farba}({@code num48}, {@code num48}, {@code num248}),
 					{@code kwdnew} {@link Farba#Farba(int, int, int) Farba}({@code num64}, {@code num64}, {@code num255}));
 

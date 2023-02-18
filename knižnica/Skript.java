@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2022 by Roman Horváth
+ // Copyright © 2010 – 2023 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -2918,7 +2918,7 @@ public abstract class Skript
 				finally
 				{
 					if (ladenie && null != ObsluhaUdalostí.počúvadlo &&
-						ObsluhaUdalostí.počúvadlo.ladenie( -1, null,
+						ObsluhaUdalostí.počúvadlo.ladenie(-1, null,
 							VYPÍSAŤ_SKRIPT))
 					{
 						prekresli(-1);
@@ -5756,7 +5756,7 @@ public abstract class Skript
 	 */
 	public static String textChyby(int kódChyby)
 	{
-		int kód  = kódChyby % 100;
+		int kód = kódChyby % 100;
 
 		if (kód >= 50)
 		{
