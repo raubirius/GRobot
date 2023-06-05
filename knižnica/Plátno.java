@@ -2508,7 +2508,7 @@ public class Plátno implements Priehľadnosť
 				// 
 				// Toto riešenie bolo zvolené na základe skúsenosti, že táto
 				// chyba sa prejavovala väčšinou v režime prekresľovania
-				// s pomocou časovača (a dlho sa ju nedarilo odhaliť, pretože
+				// pomocou časovača (a dlho sa ju nedarilo odhaliť, pretože
 				// autor frameworku pozabudol na to, že pred časom
 				// implementoval režim ladenia, ktorý bolo treba zapnúť –
 				// Svet.režimLadenia(true); bez neho by sa k zdroju chyby
@@ -3597,7 +3597,7 @@ public class Plátno implements Priehľadnosť
 		 * inštancia farebnosti {@link Farebnosť#žiadna žiadna}. So získanou
 		 * farbou môžeme ďalej pracovať – napríklad ju upravovať alebo
 		 * zisťovať jej vlastnosti (farebné zložky…). Testovať, či má bod
-		 * konkrétnu farbu, môžeme napríklad s pomocou metódy
+		 * konkrétnu farbu, môžeme napríklad pomocou metódy
 		 * {@link #farbaBodu(double, double,
 		 * Color) farbaBodu(x, y, farba)}.</p>
 		 * 
@@ -3623,7 +3623,7 @@ public class Plátno implements Priehľadnosť
 		 * inštancia farebnosti {@link Farebnosť#žiadna žiadna}. So získanou
 		 * farbou môžeme ďalej pracovať – napríklad ju upravovať alebo
 		 * zisťovať jej vlastnosti (farebné zložky…). Testovať, či má bod
-		 * konkrétnu farbu, môžeme napríklad s pomocou metódy
+		 * konkrétnu farbu, môžeme napríklad pomocou metódy
 		 * {@link #farbaBodu(Poloha, Color)
 		 * farbaBodu(objekt, farba)}.</p>
 		 * 
@@ -3646,7 +3646,7 @@ public class Plátno implements Priehľadnosť
 		 * <p>Zistí, či sa farba bodu (jedného pixela) na zadaných súradniciach
 		 * zhoduje so zadanou farbou. Ak sú zadané súradnice mimo plochy
 		 * plátna, je vrátená hodnota {@code valfalse}. Testovať farbu
-		 * s pomocou tejto metódy môžeme napríklad takto:</p>
+		 * pomocou tejto metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
 			{@code kwdif} ({@code currfarbaBodu}({@code num3.0}, {@code num5.0}, {@link Farebnosť#modrá modrá})) …
@@ -3676,7 +3676,7 @@ public class Plátno implements Priehľadnosť
 		 * <p>Zistí, či sa farba bodu (jedného pixela) na súradniciach zadaného
 		 * objektu zhoduje so zadanou farbou. Ak sú zadané súradnice mimo plochy
 		 * plátna, je vrátená hodnota {@code valfalse}. Testovať farbu
-		 * s pomocou tejto metódy môžeme napríklad takto:</p>
+		 * pomocou tejto metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
 			{@code kwdif} ({@code currfarbaBodu}({@code valthis}, {@link Farebnosť#modrá modrá})) …
@@ -3884,7 +3884,7 @@ public class Plátno implements Priehľadnosť
 		 * <p>Zistí farbu bodu (jedného pixela) na súradniciach myši. So
 		 * získanou farbou môžeme ďalej pracovať – napríklad ju upravovať
 		 * alebo zisťovať jej vlastnosti (farebné zložky…). Testovať, či má
-		 * bod konkrétnu farbu, môžeme napríklad s pomocou metódy {@link 
+		 * bod konkrétnu farbu, môžeme napríklad pomocou metódy {@link 
 		 * #farbaNaMyši(Color) farbaNaMyši(farba)}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Ak by súradnice myši boli náhodou
@@ -3909,7 +3909,7 @@ public class Plátno implements Priehľadnosť
 
 		/**
 		 * <p>Zistí, či sa farba bodu (jedného pixela) na súradniciach myši
-		 * zhoduje so zadanou farbou. Testovať farbu s pomocou tejto
+		 * zhoduje so zadanou farbou. Testovať farbu pomocou tejto
 		 * metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
@@ -6345,7 +6345,7 @@ public class Plátno implements Priehľadnosť
 		/**
 		 * <p><a class="getter"></a> Zistí (dočasnú) hodnotu <b>požiadavky na
 		 * zmenu</b> odsadenia konzolových textov plátna (podlahy alebo
-		 * stropu) s pomocou virtuálneho tabulátora. Ak nie je aktívna žiadna
+		 * stropu) pomocou virtuálneho tabulátora. Ak nie je aktívna žiadna
 		 * <b>požiadavka na zmenu</b> odsadenia, tak táto metóda vráti hodnotu
 		 * {@code valnull}.</p>
 		 * 
@@ -6365,7 +6365,7 @@ public class Plátno implements Priehľadnosť
 		 * bude použité na tomto mieste pri výpise textov konzoly.</p>
 		 * 
 		 * @return aktuálna hodnota požiadavky na zmenu odsadenia textov
-		 *     plátna s pomocou virtuálneho tabulátora alebo {@code valnull}
+		 *     plátna pomocou virtuálneho tabulátora alebo {@code valnull}
 		 * 
 		 * @see #virtuálnyTabulátor(Integer)
 		 * @see #odsadeniePrvéhoRiadka()
@@ -6387,7 +6387,7 @@ public class Plátno implements Priehľadnosť
 		/**
 		 * <p><a class="setter"></a> Nastaví novú (dočasnú) hodnotu požiadavky
 		 * na zmenu odsadenia konzolových textov plátna (podlahy alebo stropu)
-		 * s pomocou virtuálneho tabulátora.</p>
+		 * pomocou virtuálneho tabulátora.</p>
 		 * 
 		 * <p>Platí to isté ako je uvedené v opise metódy
 		 * {@link #virtuálnyTabulátor() virtuálnyTabulátor()}. Ak je
@@ -6395,7 +6395,7 @@ public class Plátno implements Priehľadnosť
 		 * {@code odsadenie} hodnotu {@code valnull}.</p>
 		 * 
 		 * @param odsadenie nová požiadavka na zmenu odsadenia
-		 *     textov konzoly s pomocou virtuálneho tabulátora
+		 *     textov konzoly pomocou virtuálneho tabulátora
 		 * 
 		 * @see #virtuálnyTabulátor()
 		 * @see #odsadeniePrvéhoRiadka()
@@ -6968,7 +6968,7 @@ public class Plátno implements Priehľadnosť
 	// Vnútorná konzola (zväčša práca s textami konzoly)
 
 		/**
-		 * <p>Príznak automatického rolovania textov vnútornej konzoly s pomocou
+		 * <p>Príznak automatického rolovania textov vnútornej konzoly pomocou
 		 * kolieska myši. Predvolená hodnota tohto príznaku je {@code valtrue}.
 		 * Rovnomenná metóda ({@link #rolujTexty() rolujTexty}) slúži na
 		 * okamžité vykonanie rolovania textov vnútornej konzoly podľa
@@ -7272,7 +7272,7 @@ public class Plátno implements Priehľadnosť
 		 * <p><image>otvor-webovy-odkaz.png<alt/>Ukážka okna s webovým
 		 * odkazom.</image>Ukážka výsledného okna.</p>
 		 * 
-		 * @param identifikátor identifikátor aktívneho slova, s pomocou
+		 * @param identifikátor identifikátor aktívneho slova, pomocou
 		 *     ktorého bude toto slovo odlišované od ostatných aktívnych slov
 		 * @param argumenty zoznam argumentov rôzneho údajového typu
 		 *     oddelený čiarkami (ako pri metóde {@link #vypíš(Object[])
@@ -10517,7 +10517,7 @@ public class Plátno implements Priehľadnosť
 		 * okna sveta, je obrázok zo schránky odstránený.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Zvlnenú verziu obrázka
-		 * plátna je možné vložiť do schránky s pomocou metódy
+		 * plátna je možné vložiť do schránky pomocou metódy
 		 * {@link Schránka#obrázok(Image) Schránka.obrázok(obrázok)}
 		 * a inštancie zvlneného obrázka, ktorá sa dá získať volaním metódy
 		 * {@link Vlnenie#zvlnenýRaster() Vlnenie.zvlnenýRaster()}.</p>
@@ -10666,7 +10666,7 @@ public class Plátno implements Priehľadnosť
 		 * aby bolo možné s vlnením ďalej pracovať. Ak vlnenie nie je pre
 		 * toto plátno definované, tak metóda definuje nové neaktívne vlnenie
 		 * s predvolenou úrovňou útlmu {@code num26}. <small>(Overiť to,
-		 * či je definovaná inštancia vlnenia, je možné s pomocou metódy
+		 * či je definovaná inštancia vlnenia, je možné pomocou metódy
 		 * {@link #máVlnenie() máVlnenie}.)</small> Naopak, metóda
 		 * {@link #jestvujúceVlnenie() jestvujúceVlnenie} vráti inštanciu
 		 * vlnenia len v takom prípade, že jestvuje. <small>(V opačnom
@@ -10758,14 +10758,14 @@ public class Plátno implements Priehľadnosť
 		 * {@linkplain Svet#spustiČasovač() časovač}, tak by vlnenie nemohlo
 		 * fungovať, preto je časovač touto metódou spúšťaný automaticky.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
 		 * <p class="caution"><b>Pozor!</b> Ak vlnenie nie je definované,
 		 * tak metóda {@link #vlnenie() vlnenie} definuje nové neaktívne
 		 * vlnenie s predvolenou úrovňou útlmu {@code num26}. Overiť to, či
-		 * je definovaná inštancia vlnenia, je možné s pomocou metódy
+		 * je definovaná inštancia vlnenia, je možné pomocou metódy
 		 * {@link #máVlnenie() máVlnenie}. Metóda
 		 * {@link #jestvujúceVlnenie() jestvujúceVlnenie} vráti inštanciu
 		 * vlnenia len v prípade, že jestvuje. V opačnom prípade vráti hodnotu
@@ -10820,14 +10820,14 @@ public class Plátno implements Priehľadnosť
 		 * byť časovač spustený automaticky. Umožňuje to parameter
 		 * {@code ajČasovač}.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
 		 * <p class="caution"><b>Pozor!</b> ak vlnenie nie je definované,
 		 * tak metóda {@link #vlnenie() vlnenie} definuje nové neaktívne
 		 * vlnenie s predvolenou úrovňou útlmu {@code num26}. Overiť to, či
-		 * je definovaná inštancia vlnenia, je možné s pomocou metódy
+		 * je definovaná inštancia vlnenia, je možné pomocou metódy
 		 * {@link #máVlnenie() máVlnenie}. Metóda
 		 * {@link #jestvujúceVlnenie() jestvujúceVlnenie} vráti inštanciu
 		 * vlnenia len v prípade, že jestvuje. V opačnom prípade vráti hodnotu
@@ -10885,14 +10885,14 @@ public class Plátno implements Priehľadnosť
 		 * {@linkplain Svet#spustiČasovač() časovač}, tak by vlnenie nemohlo
 		 * fungovať, preto je časovač touto metódou spúšťaný automaticky.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
 		 * <p class="caution"><b>Pozor!</b> Ak vlnenie nie je definované,
 		 * tak metóda {@link #vlnenie() vlnenie} definuje nové neaktívne
 		 * vlnenie s predvolenou úrovňou útlmu {@code num26}. Overiť to, či
-		 * je definovaná inštancia vlnenia, je možné s pomocou metódy
+		 * je definovaná inštancia vlnenia, je možné pomocou metódy
 		 * {@link #máVlnenie() máVlnenie}. Metóda
 		 * {@link #jestvujúceVlnenie() jestvujúceVlnenie} vráti inštanciu
 		 * vlnenia len v prípade, že jestvuje. V opačnom prípade vráti hodnotu
@@ -10952,14 +10952,14 @@ public class Plátno implements Priehľadnosť
 		 * byť časovač spustený automaticky. Umožňuje to parameter
 		 * {@code ajČasovač}.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
 		 * <p class="caution"><b>Pozor!</b> Ak vlnenie nie je definované,
 		 * tak metóda {@link #vlnenie() vlnenie} definuje nové neaktívne
 		 * vlnenie s predvolenou úrovňou útlmu {@code num26}. Overiť to, či
-		 * je definovaná inštancia vlnenia, je možné s pomocou metódy
+		 * je definovaná inštancia vlnenia, je možné pomocou metódy
 		 * {@link #máVlnenie() máVlnenie}. Metóda
 		 * {@link #jestvujúceVlnenie() jestvujúceVlnenie} vráti inštanciu
 		 * vlnenia len v prípade, že jestvuje. V opačnom prípade vráti hodnotu

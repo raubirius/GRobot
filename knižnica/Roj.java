@@ -64,7 +64,7 @@ import static java.lang.Math.*;
  * majú poskytovať čo najväčšiu flexibilitu. Väčšina z nich slúži na
  * umiestnenie bodu do priestoru. Základná trojica atribútov sú pôvodné
  * súradnice bodu v priestore [{@linkplain Bod#x0 x0}, {@linkplain Bod#y0
- * y0}, {@linkplain Bod#z0 z0}]. Z nich sú s pomocou atribútov posunutia
+ * y0}, {@linkplain Bod#z0 z0}]. Z nich sú pomocou atribútov posunutia
  * [{@linkplain Bod#dx dx}, {@linkplain Bod#dy dy}, {@linkplain Bod#dz dz}],
  * stredu rotácie [{@linkplain Bod#xs xs}, {@linkplain Bod#ys ys},
  * {@linkplain Bod#zs zs}] a uhlov rotácie ({@linkplain Bod#alfa alfa},
@@ -112,7 +112,7 @@ import static java.lang.Math.*;
 	{@code kwdimport} knižnica.*;
 	{@code kwdimport} {@link java.awt.Shape java.awt.Shape};
 
-	{@code comm// SVG ikonky boli vyrobené (s pomocou vektorového grafického editora}
+	{@code comm// SVG ikonky boli vyrobené (pomocou vektorového grafického editora}
 	{@code comm// Inkscape) z bitmapovej verzie ikon voľne dostupných na webovej stránke:}
 	{@code comm// https://icon-library.net/icon/menu-icon-png-3-lines-20.html.}
 	{@code comm// }
@@ -298,7 +298,7 @@ import static java.lang.Math.*;
 				{@code comm//  roj.mierka(500);}
 				{@code comm//  roj.nastavKameru(0, 50, 30);}
 
-			{@code comm// Výpočet pomocných parametrov, s pomocou ktorých vložíme}
+			{@code comm// Výpočet pomocných parametrov, pomocou ktorých vložíme}
 			{@code comm// niekoľko bodov do roja:}
 			{@code typeint} n = mená.length; {@code comm// počet bodov}
 			{@code typedouble} r = {@code num15};       {@code comm// polomer kružnice, na ktorej budú umestnené}
@@ -559,7 +559,7 @@ import static java.lang.Math.*;
 				prekresliRoj = {@code valtrue};
 			}
 
-			{@code comm// Posunutie s pomocou vnútorných vlastností dx až dz bodov roja.}
+			{@code comm// Posunutie pomocou vnútorných vlastností dx až dz bodov roja.}
 			{@code kwdpublic} {@code typevoid} posuňBody({@code typedouble} Δx, {@code typedouble} Δy, {@code typedouble} Δz)
 			{
 				{@code kwdfor} ({@link Roj.Bod Roj.Bod} bod : roj.{@link Roj#body() body}())
@@ -575,7 +575,7 @@ import static java.lang.Math.*;
 				prekresliRoj = {@code valtrue};
 			}
 
-			{@code comm// Pootočenie s pomocou vnútorných vlastností alfa až gama bodov roja.}
+			{@code comm// Pootočenie pomocou vnútorných vlastností alfa až gama bodov roja.}
 			{@code kwdpublic} {@code typevoid} pootočBody({@code typedouble} Δα, {@code typedouble} Δβ, {@code typedouble} Δγ)
 			{
 				{@code kwdfor} ({@link Roj.Bod Roj.Bod} bod : roj.{@link Roj#body() body}())
@@ -973,7 +973,7 @@ public class Roj
 
 	/**
 	 * <p>Trieda uchovávajúca údaje o jednom bode roja. Kreslenie, aktivitu
-	 * a potrebné prepočty zabezpečuje programátor s pomocou vstavaných metód
+	 * a potrebné prepočty zabezpečuje programátor pomocou vstavaných metód
 	 * alebo na základe údajov o bode.</p>
 	 */
 	public class Bod implements Comparable<Bod>
@@ -1292,7 +1292,7 @@ public class Roj
 		 * byť v tomto prípade kreslenie zadaným robotom, ale export tvarov
 		 * do inštancie triedy {@link SVGPodpora SVGPodpora} (buď do
 		 * {@linkplain GRobot#svgPodpora predvolenej,} alebo do inak určenej)
-		 * s pomocou zadaného robota a s prípadným využitím inštancie
+		 * pomocou zadaného robota a s prípadným využitím inštancie
 		 * {@link Roj#bod bod} roja.</p>
 		 * 
 		 * <!-- TODO príklad použitia, inak bude nepochopiteľné, ako to bolo

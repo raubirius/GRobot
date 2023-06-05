@@ -191,7 +191,7 @@ import static knižnica.Konštanty.ODOVZDANIE_ÚDAJOV;
  * metódy {@link #dajOdpoveď() dajOdpoveď}):</p>
  * 
  * <p class="remark"><b>Poznámka:</b> Budeme predpokladať, že odpoveď sa
- * bude zhodovať s nasledujúcou šablónou vyjadrenou s pomocou regulárneho
+ * bude zhodovať s nasledujúcou šablónou vyjadrenou pomocou regulárneho
  * výrazu:<br />
  *  <br /><code>ERR[+\-]{0,1}[0-9]+: «správa»</code><br /> <br />
  * Príklady:<br />  {@code ERR0: OK}<br />  {@code ERR-1: No error.}<br

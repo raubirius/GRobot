@@ -2391,7 +2391,7 @@ public class Súbor implements Closeable
 		/**
 		 * <p>Vytvorí zoznam všetkých položiek umiestnených na zadanej ceste.
 		 * Je pravdepodobné, že zoznam bude zhodný so zoznamom vytvoreným
-		 * s pomocou metódy {@link #zoznamSúborovAPriečinkov(String)
+		 * pomocou metódy {@link #zoznamSúborovAPriečinkov(String)
 		 * zoznamSúborovAPriečinkov}, no tento zoznam môže obsahovať aj
 		 * také položky, ktoré nie sú klasifikované ani ako súbory, ani ako
 		 * priečinky (napríklad systémové odkazy, aliasy, jednotky…).</p>

@@ -60,7 +60,7 @@ import knižnica.podpora.BeepChannel;
 
 /**
  * <p>Táto trieda dovoľuje programátorovi podrobnejšie pracovať so zvukom,
- * ktorý prečítal s pomocou metódy {@link Svet#čítajZvuk(String)
+ * ktorý prečítal pomocou metódy {@link Svet#čítajZvuk(String)
  * čítajZvuk}.</p>
  * 
  * <p><b>Príklad:</b></p>

@@ -48,7 +48,7 @@ import java.awt.geom.Rectangle2D;
  * ľubovoľná plocha, ktorá môže byť napríklad obkreslená čiarou,
  * vyplnená farbou, použitá na {@linkplain GRobot#nekresliDo(Shape)
  * obmedzenie kreslenia}, prípadne na ďalšie účely. Na tvorbe oblasti sa
- * môže podieľať zvolený robot alebo ju môžeme vytvoriť s pomocou útvarov
+ * môže podieľať zvolený robot alebo ju môžeme vytvoriť pomocou útvarov
  * ({@link Shape Shape}) Javy. Každý robot je schopný produkovať útvary,
  * ktoré môžu byť využité na vytvorenie oblasti. Filozofia je taká, že
  * zavoláme metódu robota na nakreslenie útvaru alebo výpis textu (ktoré
@@ -413,7 +413,7 @@ import java.awt.geom.Rectangle2D;
 		{@code comm// v tomto príklade vytvorený napevno. Keby sme ho chceli}
 		{@code comm// parametrizovať (získať možnosť úpravy jeho polohy, prípadne}
 		{@code comm// orientáciu a podobne), museli by sme sa zamerať na požadované}
-		{@code comm// časti metódy – poloha chumáčov je nastavená s pomocou trojice:}
+		{@code comm// časti metódy – poloha chumáčov je nastavená pomocou trojice:}
 		{@code comm// riadiaca štruktúra switch a volanie metód smer a dopredu;}
 		{@code comm// s úpravou orientácie oblaku by to bolo komplikovanejšie, na to}
 		{@code comm// by bolo potrebné metódu mierne prepracovať.}
@@ -687,7 +687,7 @@ public class Oblasť extends Area implements Poloha
 	 * <p>Zamestná zadaného robota na účely tvorby tejto oblasti. Oblasť
 	 * môže byť vytvorená aj bez pomoci robota (prostriedkami Javy),
 	 * avšak na využitie možností robota, je jednoduchšie zamestnať
-	 * robot, ktorý pomôže vytvoriť oblasť s pomocou svojich prostriedkov
+	 * robot, ktorý pomôže vytvoriť oblasť pomocou svojich prostriedkov
 	 * na kreslenie útvarov a písanie textov (resp. „kreslenie“ textov).
 	 * Každý robot stráca súčasne so zamestnaním schopnosť kreslenia
 	 * a vypĺňania útvarov (okrem kreslenia a vypĺňania cesty) a písania

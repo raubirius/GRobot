@@ -463,7 +463,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 
 		// Pri vypĺňaní farbou „z plechovky“ (semienkové vypĺňanie)
 		// vznikali na okrajoch vypĺňanej oblasti aliasy, ktoré rieši
-		// táto metóda s pomocou miešania farieb
+		// táto metóda pomocou miešania farieb
 		private static void riešAlias()
 		{
 			///////////////////////////////////////////////////////////////
@@ -4623,7 +4623,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * <p>Obrázok vyššie porovnáva rôzne metódy prevodu obrázka do
 		 * odtieňov šedej. Vľavo hore je pôvodný farebný obrázok, vedľa neho
 		 * je obrázok prevedený metódou {@link #čiernobiely() čiernobiely()}
-		 * (priemerovanie zložiek), vľavo dole je verzia prevedená s pomocou
+		 * (priemerovanie zložiek), vľavo dole je verzia prevedená pomocou
 		 * tejto metódy s parametrom {@code vyvážiťZložky} rovným
 		 * {@code valtrue} a vpravo dole je použitá metóda {@link 
 		 * #čiernobiely(double, double, double) čiernobiely(váhaČervenej,
@@ -8843,7 +8843,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * aby bolo možné s vlnením ďalej pracovať. Ak vlnenie nie je pre
 		 * tento obrázok definované, tak metóda definuje nové neaktívne
 		 * vlnenie s predvolenou úrovňou útlmu {@code num26}. <small>(Overiť
-		 * to, či je definovaná inštancia vlnenia, je možné s pomocou metódy
+		 * to, či je definovaná inštancia vlnenia, je možné pomocou metódy
 		 * {@link #máVlnenie() máVlnenie}.)</small> Naopak, metóda
 		 * {@link #jestvujúceVlnenie() jestvujúceVlnenie} vráti inštanciu
 		 * vlnenia len v takom prípade, že jestvuje. <small>(V opačnom
@@ -8936,14 +8936,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * {@linkplain Svet#spustiČasovač() časovač}, tak by vlnenie nemohlo
 		 * fungovať, preto je časovač touto metódou spúšťaný automaticky.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
 		 * <p class="caution"><b>Pozor!</b> Ak vlnenie nie je definované,
 		 * tak metóda {@link #vlnenie() vlnenie} definuje nové neaktívne
 		 * vlnenie s predvolenou úrovňou útlmu {@code num26}. Overiť to, či
-		 * je definovaná inštancia vlnenia, je možné s pomocou metódy
+		 * je definovaná inštancia vlnenia, je možné pomocou metódy
 		 * {@link #máVlnenie() máVlnenie}. Metóda
 		 * {@link #jestvujúceVlnenie() jestvujúceVlnenie} vráti inštanciu
 		 * vlnenia len v prípade, že jestvuje. V opačnom prípade vráti hodnotu
@@ -8999,14 +8999,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * byť časovač spustený automaticky. Umožňuje to parameter
 		 * {@code ajČasovač}.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
 		 * <p class="caution"><b>Pozor!</b> Ak vlnenie nie je definované,
 		 * tak metóda {@link #vlnenie() vlnenie} definuje nové neaktívne
 		 * vlnenie s predvolenou úrovňou útlmu {@code num26}. Overiť to, či
-		 * je definovaná inštancia vlnenia, je možné s pomocou metódy
+		 * je definovaná inštancia vlnenia, je možné pomocou metódy
 		 * {@link #máVlnenie() máVlnenie}. Metóda
 		 * {@link #jestvujúceVlnenie() jestvujúceVlnenie} vráti inštanciu
 		 * vlnenia len v prípade, že jestvuje. V opačnom prípade vráti hodnotu
@@ -9065,14 +9065,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * {@linkplain Svet#spustiČasovač() časovač}, tak by vlnenie nemohlo
 		 * fungovať, preto je časovač touto metódou spúšťaný automaticky.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
 		 * <p class="caution"><b>Pozor!</b> Ak vlnenie nie je definované,
 		 * tak metóda {@link #vlnenie() vlnenie} definuje nové neaktívne
 		 * vlnenie s predvolenou úrovňou útlmu {@code num26}. Overiť to, či
-		 * je definovaná inštancia vlnenia, je možné s pomocou metódy
+		 * je definovaná inštancia vlnenia, je možné pomocou metódy
 		 * {@link #máVlnenie() máVlnenie}. Metóda
 		 * {@link #jestvujúceVlnenie() jestvujúceVlnenie} vráti inštanciu
 		 * vlnenia len v prípade, že jestvuje. V opačnom prípade vráti hodnotu
@@ -9133,14 +9133,14 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * byť časovač spustený automaticky. Umožňuje to parameter
 		 * {@code ajČasovač}.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
 		 * <p class="caution"><b>Pozor!</b> Ak vlnenie nie je definované,
 		 * tak metóda {@link #vlnenie() vlnenie} definuje nové neaktívne
 		 * vlnenie s predvolenou úrovňou útlmu {@code num26}. Overiť to, či
-		 * je definovaná inštancia vlnenia, je možné s pomocou metódy
+		 * je definovaná inštancia vlnenia, je možné pomocou metódy
 		 * {@link #máVlnenie() máVlnenie}. Metóda
 		 * {@link #jestvujúceVlnenie() jestvujúceVlnenie} vráti inštanciu
 		 * vlnenia len v prípade, že jestvuje. V opačnom prípade vráti hodnotu

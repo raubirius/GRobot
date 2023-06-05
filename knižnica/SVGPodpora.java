@@ -690,7 +690,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * 
  * <p><b>Výsledok:</b></p>
  * 
- * <p><image>SVGTvarRobota.png<alt/>Ukážka zmeny tvaru robota s pomocou
+ * <p><image>SVGTvarRobota.png<alt/>Ukážka zmeny tvaru robota pomocou
  * SVG tvarov tesne po prvom spustení.</image>Ukážka vzhľadu okna po
  * prvom spustení aplikácie<br /><small>(ukážka je zmenšená)</small>.</p>
  * 
@@ -888,7 +888,7 @@ import static knižnica.Konštanty.KRESLI_NA_STRED;
  * <p><b>Príklad:</b></p>
  * 
  * <p>Tento príklad ukazuje vytvorenie fraktálneho útvaru rastlinky
- * s pomocou korytnačej grafiky grafického robota a jej uloženie do HTML
+ * pomocou korytnačej grafiky grafického robota a jej uloženie do HTML
  * súboru obsahujúceho SVG definíciu. Generovanie rastlinky používa
  * náhodné čísla, preto každé spustenie vygeneruje a uloží unikátny
  * obrázok. V skutočnosti sú ukladané dva súbory – rastrový obrázok vo
@@ -3512,7 +3512,7 @@ public class SVGPodpora
 		r.{@link GRobot#skočNa(Shape) skočNa}(tvar);
 
 		{@code comm//  3. Potom využiť aktuálnu polohu robota na výrobu}
-		{@code comm//     presunutého tvaru (s pomocou transformácie):}
+		{@code comm//     presunutého tvaru (pomocou transformácie):}
 		tvar = {@link SVGPodpora SVGPodpora}.{@link SVGPodpora#dajVýsledný(Shape, Transformácia, Transformácia[]) dajVýsledný}(tvar,
 			{@code kwdnew} {@link SVGPodpora.Transformácia#SVGPodpora.Transformácia(int, Double[]) Transformácia}({@link SVGPodpora.Transformácia Transformácia}.{@link SVGPodpora.Transformácia#POSUN POSUN},
 				-r.{@link GRobot#polohaX() polohaX}(), r.{@link GRobot#polohaY() polohaY}()));

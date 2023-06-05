@@ -252,7 +252,7 @@ public class Archív implements Closeable
 	 * archívu.</p>
 	 * 
 	 * <p class="tip"><b>Tip:</b> Názov archívu môže byť od cesty oddelený
-	 * s pomocou konštruktora, ktorý prijíma cestu a názov archívu zvlášť
+	 * pomocou konštruktora, ktorý prijíma cestu a názov archívu zvlášť
 	 * {@link #Archív(String, String) Archív(cesta, názov)}, alebo s použitím
 	 * metódy {@link #cestaNaDisku(String) cestaNaDisku} na dodatočné
 	 * nastavenie cesty k archívu.</p>
@@ -319,7 +319,7 @@ public class Archív implements Closeable
 	 * názvu archívu.</p>
 	 * 
 	 * <p class="tip"><b>Tip:</b> Názov archívu môže byť od cesty oddelený
-	 * s pomocou použitia metódy {@link #cestaNaDisku(String) cestaNaDisku}
+	 * pomocou použitia metódy {@link #cestaNaDisku(String) cestaNaDisku}
 	 * alebo konštruktorom, ktorý prijíma cestu a názov archívu zvlášť:
 	 * {@link #Archív(String, String) Archív(cesta, názov)}.</p>
 	 * 

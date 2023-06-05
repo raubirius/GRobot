@@ -74,7 +74,7 @@ import knižnica.podpora.RandomGenerator;
  * jedným z {@linkplain #Plazma(Obrázok, int) konštruktorov} plazmového
  * generátora.</p>
  * 
- * <p>Generátor je tiež programovateľný asynchrónne a to s pomocou takzvaných
+ * <p>Generátor je tiež programovateľný asynchrónne a to pomocou takzvaných
  * {@linkplain #pridajZdroj(double, double, double, int, int, int, int)
  * zdrojov} a {@linkplain #dej(Runnable) deja}, ktorými sa dajú docieliť rôzne
  * dynamické efekty. Každý {@linkplain #pridajZdroj(double, double, double,

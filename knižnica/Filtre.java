@@ -60,10 +60,10 @@ import java.util.regex.Pattern;
  * <pre CLASS="example">
 	{@code kwdfinal} {@link String String} názovPoložky = {@code srg"animácia-***.png"};
 
-	{@code kwdfinal} Filtre filterNázvuSúboru = {@code kwdnew} {@link Filtre#Filtre(Filter...) Filtre}(
-		{@code kwdnew} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}({@code srg"-?\\*+-?"}, {@code srg"-"}),
-		{@code kwdnew} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}({@code srg"(?i:\\.png$)"}, {@code srg".tim"}),
-		{@code kwdnew} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}({@code srg"-+\\.tim"}, {@code srg".tim"}));
+	{@code kwdfinal} {@code currFiltre} filterNázvuSúboru = {@code kwdnew} {@link Filtre#Filtre(Filter...) Filtre}(
+		{@code kwdnew} {@code currFiltre}.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}({@code srg"-?\\*+-?"}, {@code srg"-"}),
+		{@code kwdnew} {@code currFiltre}.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}({@code srg"(?i:\\.png$)"}, {@code srg".tim"}),
+		{@code kwdnew} {@code currFiltre}.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}({@code srg"-+\\.tim"}, {@code srg".tim"}));
 
 	{@link String String} názovSúboru = filterNázvuSúboru.{@link Filtre#použi(String) použi}(názovPoložky);
 	{@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}({@code srg"názovSúboru: "} + názovSúboru);
@@ -88,7 +88,7 @@ import java.util.regex.Pattern;
 		{@code srg"pdf.truni.sk/\">Pedagogická fakulta</a></p>\r\n</div>"} +
 		{@code srg"\r\n\r\n</section>\r\n</body>\r\n</html>"};
 
-	{@code kwdfinal} Filtre hľadajAdresy = {@code kwdnew} {@link Filtre#Filtre(String...) Filtre}(
+	{@code kwdfinal} {@code currFiltre} hľadajAdresy = {@code kwdnew} {@link Filtre#Filtre(String...) Filtre}(
 		{@code srg"[ \r\n\t]+"}, {@code srg" "},
 		{@code srg".*?<body"}, {@code srg""},
 		{@code srg".*?href=\"([^\"]+)"}, {@code srg"$1\n"},
@@ -112,11 +112,11 @@ import java.util.regex.Pattern;
  * a odfiltruje začiatočný identifikátor {@code data:…}.</p>
  * 
  * <pre CLASS="example">
-	{@code kwdfinal} Filtre spojBase64 = {@code kwdnew} {@link Filtre#Filtre() Filtre}();
+	{@code kwdfinal} {@code currFiltre} spojBase64 = {@code kwdnew} {@link Filtre#Filtre() Filtre}();
 	spojBase64.{@link Filtre#pridaj(String, String) pridaj}({@code srg"^\\s*data:.*?;base64,"}, {@code srg""});
 	spojBase64.{@link Filtre#pridaj(String, String) pridaj}({@code srg"\\s+"}, {@code srg""});
 
-	String naSpojenie = {@code srg"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAg"} +
+	{@link String String} naSpojenie = {@code srg"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAg"} +
 		{@code srg"CAYAAABzenr0AAABb0lEQVR42mN48IDh/0BihlEHjDqA\r\n\tFMV37jP/X3JZ/3/8kdT/"} +
 		{@code srg"ert6/rNvXPWfYcMGMFbePuV/xOFssDxIHdUdMPmC7X+F7dPhFuLDIHUg\r\n\t9VRxwM37"} +
 		{@code srg"bP8DDxUSZTE69j1QDNZPtgNAmp3316AYyrd56f/MY7H/V1/R/H/pLjdY3dW7HP83XVP5\r"} +
@@ -151,7 +151,7 @@ import java.util.regex.Pattern;
  * a v nájdených riadkoch identifikuje počiatočnú a koncovú časovú známku.</p>
  * 
  * <pre CLASS="example">
-	{@code kwdfinal} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter} filterČasu = {@code kwdnew} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}(
+	{@code kwdfinal} {@code currFiltre}.{@link Filtre.Filter#Filtre.Filter(String, String) Filter} filterČasu = {@code kwdnew} {@code currFiltre}.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}(
 		{@code srg"([0-9]+):([0-9]+):([0-9]+),([0-9]+)"}, {@code valnull});
 
 	{@code typelong} dajČas({@link String String} s)
@@ -169,7 +169,7 @@ import java.util.regex.Pattern;
 	}
 
 
-	{@code kwdfinal} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter} časTitulkov = {@code kwdnew} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}(
+	{@code kwdfinal} {@code currFiltre}.{@link Filtre.Filter#Filtre.Filter(String, String) Filter} časTitulkov = {@code kwdnew} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}(
 		{@code srg"^\\s*([0-9:,]+)\\s*-->\\s*([0-9:,]+)\\s*$"}, {@code valnull});
 
 	{@link String String}[] titulky = {

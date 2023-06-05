@@ -70,7 +70,7 @@ import static knižnica.Farebnosť.*;
  * o farebné zložky (červenej, zelenej a modrej) na namiešanie
  * výslednej farby a zložku (ne)priehľadnosti (0 znamená neviditeľná
  * farba, 255 znamená úplne nepriehľadná farba). Táto trieda umožňuje
- * definovať farby aj s pomocou neceločíselných rozsahov – od 0.0 po 1.0,
+ * definovať farby aj pomocou neceločíselných rozsahov – od 0.0 po 1.0,
  * ktoré sú zase používané napríklad v metódach pracujúcich
  * s {@linkplain Plátno#priehľadnosť(double) (ne)priehľadnosťou plátna}.</p>
  * 
@@ -90,7 +90,7 @@ import static knižnica.Farebnosť.*;
  * 
  * <p>Rovnako ako originálna trieda {@link Color Color} i trieda
  * {@code currFarba} pracuje buď v predvolenom sRGB farebnom priestore,
- * alebo vo farebnom priestore definovanom s pomocou triedy {@link 
+ * alebo vo farebnom priestore definovanom pomocou triedy {@link 
  * ColorSpace ColorSpace}. Každá farba má vlastnú úroveň
  * (ne)priehľadnosti, ktorá je predvolene nastavená na «nepriehľadnú»
  * alebo môže byť určená v rámci povoleného rozsahu (pozri konštruktory

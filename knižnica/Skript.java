@@ -354,7 +354,7 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
  * vykonáva <em>«príkaz/blok»</em>;<br />ak je kladná, tak sa hodnota
  * premennej (ak nie je cyklus anonymný) bude meniť od hodnoty 1 po hodnotu
  * <em>«hranice»</em>; ak je záporná, tak sa bude meniť od jej hodnoty po
- * hodnotu −1 (vďaka tomu sa dá s pomocou absolútnej hodnoty simulovať
+ * hodnotu −1 (vďaka tomu sa dá pomocou absolútnej hodnoty simulovať
  * klesajúci cyklus, ale má to háčik pri niektorých algoritmoch, pretože
  * nenulová hodnota hranice má pri tomto cykle vždy za následok nenulový
  * počet opakovaní; prípadné zamedzenie vykonania cyklu pri zápornej hranici
@@ -666,7 +666,7 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
 								{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Vykonávanie bolo prerušené."});
 								{@link Svet Svet}.{@link Svet#predvolenáFarbaTextu() predvolenáFarbaTextu}();
 								{@code comm// Ďalšie podrobnosti by sme mohli vypísať}
-								{@code comm// napríklad s pomocou nasledujúceho úryvku kódu:}
+								{@code comm// napríklad pomocou nasledujúceho úryvku kódu:}
 								{@code comm//    "na riadku", riadok, ":", GRobot.riadok,}
 								{@code comm//    príkaz}
 							}
@@ -692,7 +692,7 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
 							{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}(príkaz);
 							{@link Svet Svet}.{@link Svet#predvolenáFarbaTextu() predvolenáFarbaTextu}();
 								{@code comm// Ďalšie podrobnosti by sme mohli vypísať}
-								{@code comm// napríklad s pomocou nasledujúcich úryvkov kódu:}
+								{@code comm// napríklad pomocou nasledujúcich úryvkov kódu:}
 								{@code comm//    "Číslo chyby", Svet.kódPoslednejChyby()}
 								{@code comm//    "Riadok chyby ", riadok}
 							{@code kwdreturn} {@code valfalse};
@@ -1346,7 +1346,7 @@ public abstract class Skript
 		return null;
 	}
 
-	// Príznak poslednej návratovej hodnoty metódy volanej s pomocou
+	// Príznak poslednej návratovej hodnoty metódy volanej pomocou
 	// mechanizmu reflexie Javy.
 	private static Object poslednáNávratováHodnota = null;
 
@@ -4198,7 +4198,7 @@ public abstract class Skript
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Názvy premenných nie sú
 		 * citlivé na veľkosť písmen. Ich zoznamy sú konštruované
-		 * s pomocou parametra {@link String String}<code>.</code>{@link 
+		 * pomocou parametra {@link String String}<code>.</code>{@link 
 		 * String#CASE_INSENSITIVE_ORDER}.</p>
 		 * 
 		 * @param typ typ premenných zoznamu – povolené sú len:

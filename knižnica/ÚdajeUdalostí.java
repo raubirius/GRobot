@@ -105,6 +105,8 @@ public class ÚdajeUdalostí
 		/*packagePrivate*/ static MouseWheelEvent
 			poslednáUdalosťRolovania = null;
 
+		/*packagePrivate*/ static Okno oknoUdalosti = null;
+
 		/*packagePrivate*/ static Plátno poslednéVymazanéPlátno = null;
 
 		/*packagePrivate*/ static String poslednýOdkaz = null;
@@ -152,10 +154,32 @@ public class ÚdajeUdalostí
 	 * presunutieOkna} alebo {@link ObsluhaUdalostí#zmenaVeľkostiOkna()
 	 * zmenaVeľkostiOkna}.</p>
 	 * 
+	 * <p>Táto metóda sa odlišuje od metódy oknoUdalosti() tým, … TODO</p>
+	 * 
 	 * @return objekt typu {@link ComponentEvent
 	 *     ComponentEvent} s informáciami o poslednej udalosti okna
+	 * 
+	 * @see #oknoUdalosti()
 	 */
 	public static ComponentEvent okno() { return poslednáUdalosťOkna; }
+
+	/**
+	 * <p>Vráti okno poslednej takej udalosti, ktorá sa viaže na okná. Môže
+	 * ísť o pustenie súboru, zmenu veľkosti, polohy okna a podobne. Ak je
+	 * návratová hodnota tejto metódy rovná {@code valnull}, tak udalosť
+	 * vznikla v okne sveta (inak ide o inštanciu okna, ktoré udalosť
+	 * vyvolalo). Pozor, udalosti, ktoré nie sú viazané na okná túto
+	 * vlastnosť nemenia, takže pri nich nemá zmysel jej hodnotu kontrolovať.
+	 * Vrátená hodnota by nezodpovedala aktuálnemu stavu.</p>
+	 * 
+	 * <p>Táto metóda sa odlišuje od metódy okno() tým, … TODO</p>
+	 * 
+	 * @return okno poslednej takej udalosti, ktorá sa viaže na okná
+	 * 
+	 * @see #okno()
+	 */
+	public static Okno oknoUdalosti() { return oknoUdalosti; }
+
 
 	/**
 	 * <p>Vráti objekt s informáciami o poslednej udalosti okna súvisiacej

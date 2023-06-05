@@ -108,7 +108,7 @@ import static java.lang.Math.toRadians;
  * dokumentáciu pre túto triedu.
  * 
  * Pravdepodobne sa premenuje „Dokumentácia…“ na „Programovanie v Jave
- * s pomocou…“
+ * pomocou…“
  * Potom treba pridať aj úvodné slovo o tom, čo všetko programovanie v Jave
  * môže znamenať (o vyznavačoch „surového“ programovania – bez všelijakých
  * pomocných prvkov) a o tom, aký prístup volí tento programovací rámec
@@ -411,7 +411,7 @@ import static java.lang.Math.toRadians;
  * Funkčnosť metód sa tým, samozrejme, nemení, ibaže bez explicitného
  * uvedenia „get“ a „set“ v názve ich nie je možné na prvý pohľad (podľa
  * názvu) rozoznať, preto sa to usilujeme kompenzovať aspoň v dokumentácii
- * s pomocou ikon. Jestvujú vlastnosti, ktoré nemajú žiadny setter. Z toho
+ * pomocou ikon. Jestvujú vlastnosti, ktoré nemajú žiadny setter. Z toho
  * vyplýva, že sú určené len na čítanie. Výskyt opačného typu vlastností
  * (len na zápis) je v praxi veľmi zriedkavý. Obvykle by každá vlastnosť
  * mala mať možnosť čítania hodnoty. V tomto rámci sa vlastnosti určené len
@@ -1340,7 +1340,7 @@ Toto bolo presunuté na úvodnú stránku:
 				private class ZnačkaČiary
 				{
 					// Definícia kreslenia tvaru značky – kreslí sa
-					// s pomocou súvisiacich robotov:
+					// pomocou súvisiacich robotov:
 					private KreslenieTvaru kreslenie;
 
 					// Definuje vlastné orezanie tohto konca spojnice pre
@@ -1725,7 +1725,7 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 				/**
-				 * <p>Definuje začiatočnú značku čiary spojnice s pomocou
+				 * <p>Definuje začiatočnú značku čiary spojnice pomocou
 				 * rozhrania, ktoré v programovacom rámci zároveň slúži na
 				 * definovanie vlastného tvaru robota. Hodnota {@code valnull}
 				 * znamená, že značka začiatku spojnice nemá byť kreslená.</p>
@@ -1809,7 +1809,7 @@ Toto bolo presunuté na úvodnú stránku:
 				{ return definujZnačkuZačiatku(kreslenie); }
 
 				/**
-				 * <p>Definuje koncovú značku čiary spojnice s pomocou
+				 * <p>Definuje koncovú značku čiary spojnice pomocou
 				 * rozhrania, ktoré v programovacom rámci zároveň slúži na
 				 * definovanie vlastného tvaru robota. Hodnota {@code valnull}
 				 * znamená, že značka konca spojnice nemá byť kreslená.</p>
@@ -1839,7 +1839,7 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 				/**
-				 * <p>Definuje začiatočnú značku čiary spojnice s pomocou
+				 * <p>Definuje začiatočnú značku čiary spojnice pomocou
 				 * rozhrania, ktoré v programovacom rámci zároveň slúži na
 				 * definovanie vlastného tvaru robota a s vlastným spôsobom
 				 * orezania (ktoré sa vzťahuje aj na prípadnú koncovú značku).
@@ -1906,7 +1906,7 @@ Toto bolo presunuté na úvodnú stránku:
 				{ return definujZnačkuZačiatku(kreslenie, vlastnéOrezanie); }
 
 				/**
-				 * <p>Definuje koncovú značku čiary spojnice s pomocou
+				 * <p>Definuje koncovú značku čiary spojnice pomocou
 				 * rozhrania, ktoré v programovacom rámci zároveň slúži na
 				 * definovanie vlastného tvaru robota a s vlastným spôsobom
 				 * orezania (ktoré sa vzťahuje aj na prípadnú začiatočnú
@@ -2948,11 +2948,11 @@ Toto bolo presunuté na úvodnú stránku:
 				 * vysvetľované príčiny a technické detaily (ak ich
 				 * nepotrebujete alebo nechcete vedieť, môžete tento odsek
 				 * preskočiť) a v nasledujúcich odsekoch sú opísané dôsledky
-				 * a vyslovené odporúčania. Orezanie sa deje s pomocou
+				 * a vyslovené odporúčania. Orezanie sa deje pomocou
 				 * tvarov Javy, ktoré sa skladajú z menších častí (čiara,
 				 * krivka, posunutie…) a sú za normálnych okolností
 				 * „nepohyblivé.“ Na to, aby bolo orezanie použiteľné, je
-				 * nevyhnutné tvary „rozhýbať.“ To sa deje s pomocou
+				 * nevyhnutné tvary „rozhýbať.“ To sa deje pomocou
 				 * geometrických transformácií. Každý tvar orezania je pri
 				 * použití transformovaný podľa aktuálneho smeru a polohy
 				 * robota umiestneného na prislúchajúcom zakončení spojnice.
@@ -3031,7 +3031,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * <p>Tento príklad ukazuje spôsob definovania dvoch robotov
 				 * v tvare hviezdy prepojených správne orezanou spojnicou,
 				 * ktorej jeden koniec má definovanú značku v tvare šípky.
-				 * Oba roboty je možné presúvať a otáčať s pomocou myši.
+				 * Oba roboty je možné presúvať a otáčať pomocou myši.
 				 * Na otáčanie robota je potrebné držať stlačený kláves
 				 * {@code Shift}.</p>
 				 * 
@@ -7606,7 +7606,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * na výrobu opakujúceho sa excentrického náteru s kruhovým
 				 * farebným prechodom. Náter je použitý na vyplnenie kruhu
 				 * generovaného robotom. Rozdielnosť súradnicových priestorov
-				 * Javy a programovacieho rámca je vyriešená s pomocou
+				 * Javy a programovacieho rámca je vyriešená pomocou
 				 * prislúchajúcich metód triedy {@link Svet Svet}.</p>
 				 * 
 				 * <pre CLASS="example">
@@ -13197,15 +13197,16 @@ Toto bolo presunuté na úvodnú stránku:
 				/**
 				 * <p><a class="setter"></a> Pomenuje alebo zruší meno tohto
 				 * robota. Meno robota je používané pri zápise a obnove
-				 * vlastností robota s pomocou {@linkplain 
+				 * vlastností robota pomocou {@linkplain 
 				 * Svet#použiKonfiguráciu(String) konfiguračného súboru}
 				 * a {@linkplain Svet#interaktívnyRežim(boolean)
 				 * interaktívnym režimom}.</p>
 				 * 
 				 * <p>Zadané meno musí byť unikátne, nesmie byť prázdne ani
-				 * rezervované, nesmie sa začínať ani končiť bodkou a nesmie
-				 * obsahovať znak rovná sa. Na zrušenie mena tohto robota
-				 * treba zavolať túto metódu s argumentom {@code valnull}.</p>
+				 * rezervované, nesmie sa začínať bodkočiarkou, začínať ani
+				 * končiť bodkou a nesmie obsahovať znak rovná sa. Na zrušenie
+				 * mena tohto robota treba zavolať túto metódu s argumentom
+				 * {@code valnull}.</p>
 				 * 
 				 * <p>Rezervované mená sú: {@code srg"svet"},
 				 * {@code srg"podlaha"}, {@code srg"strop"}
@@ -15870,7 +15871,7 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 				/**
-				 * <p>Zistí smer k bodu zadanému s pomocou odchýlok súradníc
+				 * <p>Zistí smer k bodu zadanému pomocou odchýlok súradníc
 				 * v horizontálnom a vertikáklom smere [Δx, Δy]. Ak sú zadané
 				 * súradnice [0, 0], metóda vráti hodnotu 360. Efekt je
 				 * rovnaký, ako keby robot stál v bode [0, 0] a použili by sme
@@ -16291,7 +16292,7 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 				/**
-				 * <p>Nasmeruje robot smerom zadaným s pomocou súradníc [Δx, Δy].
+				 * <p>Nasmeruje robot smerom zadaným pomocou súradníc [Δx, Δy].
 				 * Ak je zadané [0, 0], smer robota sa nezmení. Inak je
 				 * vypočítaný uhol smeru medzi aktuálnou polohou robota
 				 * a súradnicami zmenenými o hodnoty [Δx, Δy]. Efekt je
@@ -17869,7 +17870,7 @@ Toto bolo presunuté na úvodnú stránku:
 					// skomplikovalo výpočty, tak sme to zjednodušili
 					// a rozdelili na dve vetvy…
 
-					// Keďže oblúk je teraz kreslený s pomocou tvaru Javy, bolo
+					// Keďže oblúk je teraz kreslený pomocou tvaru Javy, bolo
 					// treba vyriešiť presunutie robota na novú pozíciu. Je
 					// riešené tromi jednoduchými krokmi: posunom robota do
 					// stredu otáčania, pootočením o uhol otáčania a posunom
@@ -18117,7 +18118,7 @@ Toto bolo presunuté na úvodnú stránku:
 					// skomplikovalo výpočty, tak sme to zjednodušili
 					// a rozdelili na dve vetvy…
 
-					// Keďže oblúk je teraz kreslený s pomocou tvaru Javy, bolo
+					// Keďže oblúk je teraz kreslený pomocou tvaru Javy, bolo
 					// treba vyriešiť presunutie robota na novú pozíciu. Je
 					// riešené tromi jednoduchými krokmi: posunom robota do
 					// stredu otáčania, pootočením o uhol otáčania a posunom
@@ -18481,7 +18482,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * 
 				 * <p><image>chod-na-po-obluku.png<alt/>Použitie metódy
 				 * choďNaPoOblúku.</image>Vzor pripomínajúci siločiary
-				 * nakreslený s pomocou metódy
+				 * nakreslený pomocou metódy
 				 * {@code currchoďNaPoOblúku}.</p>
 				 * 
 				 * @param x x-ová súradnica cieľového bodu
@@ -24277,7 +24278,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * <p class="remark"><b>Poznámka:</b> Mechanizmus výziev nie
 				 * je taký efektívny ako definícia vlastného {@linkplain Zoznam
 				 * zoznamu robotov} (prípadne inštancií odvodených tried)
-				 * a vykonanie hromadnej akcie s pomocou tohto zoznamu. Slúži
+				 * a vykonanie hromadnej akcie pomocou tohto zoznamu. Slúži
 				 * predovšedkým na umožnenie hromadného spracovania bez
 				 * nevyhnutnosti vytvárania takého zoznamu (napríklad pri
 				 * malom počte robotov alebo predtým, než sa programátor
@@ -24359,7 +24360,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * <p class="remark"><b>Poznámka:</b> Mechanizmus výziev nie
 				 * je taký efektívny ako definícia vlastného {@linkplain Zoznam
 				 * zoznamu robotov} (prípadne inštancií odvodených tried)
-				 * a vykonanie hromadnej akcie s pomocou tohto zoznamu. Slúži
+				 * a vykonanie hromadnej akcie pomocou tohto zoznamu. Slúži
 				 * predovšedkým na umožnenie hromadného spracovania bez
 				 * nevyhnutnosti vytvárania takého zoznamu (napríklad pri
 				 * malom počte robotov alebo predtým, než sa programátor
@@ -24451,7 +24452,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * <p class="remark"><b>Poznámka:</b> Mechanizmus výziev nie
 				 * je taký efektívny ako definícia vlastného {@linkplain Zoznam
 				 * zoznamu robotov} (prípadne inštancií odvodených tried)
-				 * a vykonanie hromadnej akcie s pomocou tohto zoznamu. Slúži
+				 * a vykonanie hromadnej akcie pomocou tohto zoznamu. Slúži
 				 * predovšedkým na umožnenie hromadného spracovania bez
 				 * nevyhnutnosti vytvárania takého zoznamu (napríklad pri
 				 * malom počte robotov alebo predtým, než sa programátor
@@ -25059,7 +25060,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * Svet.vyzviRoboty(kľúč)} alebo {@link 
 				 * GRobot#vyzviRoboty(int) GRobot.vyzviRoboty(kľúč)}.
 				 * Rozhodovanie o účele aktuálnej výzvy v tele tejto reakcie
-				 * je možné určiť s pomocou hodnoty kľúča, ktorého hodnotu
+				 * je možné určiť pomocou hodnoty kľúča, ktorého hodnotu
 				 * zadávame pri volaní metód {@link Svet#vyzviRoboty(int)
 				 * Svet.vyzviRoboty(kľúč)}, {@link GRobot#vyzviRoboty(int)
 				 * GRobot.vyzviRoboty(kľúč)}.</p>
@@ -25070,7 +25071,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * uvedomiť, že to nemusí byť nevyhnutne objekt typu
 				 * {@link GRobot GRobot}, ale aj ľubovoľný objekt odvodeného
 				 * údajového typu, ktorý môže obsahovať množstvo doplnkových
-				 * údajov. Autora môžeme vždy spracovať s pomocou mechanizmu
+				 * údajov. Autora môžeme vždy spracovať pomocou mechanizmu
 				 * pretypovania. <b>Pozri nasledujúci kód.</b></p>
 				 * 
 				 * <pre CLASS="example">
@@ -25281,7 +25282,7 @@ Toto bolo presunuté na úvodnú stránku:
 						}
 
 						{@code comm// Reakcia na narazenie na hranice ohraničenia robota. Tento robot dokončí}
-						{@code comm// svoj pohyb a s pomocou mechanizmu výzvy bude dotknutý ďalší robot v poradí.}
+						{@code comm// svoj pohyb a pomocou mechanizmu výzvy bude dotknutý ďalší robot v poradí.}
 						{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@code currmimoHraníc}({@link Bod Bod}[] poleBodov, {@code typedouble} uhol)
 						{
 							{@link Bod Bod} poloha = {@link GRobot#poloha() poloha}();
@@ -27065,7 +27066,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * farebnosti {@link Farebnosť#žiadna žiadna}. So získanou farbou
 			 * môžeme ďalej pracovať – napríklad ju upravovať alebo zisťovať
 			 * jej vlastnosti (farebné zložky, priehľadnosť…). Testovať, či má
-			 * bod konkrétnu farbu, môžeme napríklad s pomocou metódy {@link 
+			 * bod konkrétnu farbu, môžeme napríklad pomocou metódy {@link 
 			 * #farbaBodu(Color) farbaBodu(farba)}.</p>
 			 * 
 			 * @return farba bodu (objekt typu {@link Farba Farba}) na
@@ -27106,7 +27107,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * (podlahy alebo stropu) v mieste, kde robot práve stojí je
 			 * zhodná so zadanou farbou. Ak sa robot nachádza mimo
 			 * kresliaceho plátna, je vrátená hodnota {@code valfalse}.
-			 * Testovať farbu s pomocou tejto metódy môžeme napríklad takto:</p>
+			 * Testovať farbu pomocou tejto metódy môžeme napríklad takto:</p>
 			 * 
 			 * <pre CLASS="example">
 				{@code kwdif} ({@code currfarbaBodu}({@link Farebnosť#modrá modrá})) …
@@ -27146,7 +27147,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * (podlahy alebo stropu) v mieste, kde robot práve stojí je
 			 * zhodná s farbou zadaného objektu. Ak sa robot nachádza mimo
 			 * kresliaceho plátna, je vrátená hodnota {@code valfalse}.
-			 * Testovať farbu s pomocou tejto metódy môžeme napríklad takto:</p>
+			 * Testovať farbu pomocou tejto metódy môžeme napríklad takto:</p>
 			 * 
 			 * <pre CLASS="example">
 				{@code kwdif} ({@code currfarbaBodu}({@link Farebnosť#modrá modrá})) …
@@ -27254,7 +27255,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * farbou môžeme ďalej pracovať – napríklad ju upravovať alebo
 			 * zisťovať jej vlastnosti (farebné zložky, priehľadnosť…).
 			 * Testovať, či má bod konkrétnu farbu môžeme napríklad
-			 * s pomocou metódy {@link #farbaNaMyši(Color)
+			 * pomocou metódy {@link #farbaNaMyši(Color)
 			 * farbaNaMyši(farba)}.</p>
 			 * 
 			 * <p class="remark"><b>Poznámka:</b> Ak by súradnice myši boli náhodou
@@ -27300,7 +27301,7 @@ Toto bolo presunuté na úvodnú stránku:
 			/**
 			 * <p>Zistí, či je farba bodu (jedného pixela) aktívneho plátna
 			 * robota (podlahy alebo stropu) na súradniciach myši zhodná so
-			 * zadanou farbou. Testovať farbu s pomocou tejto metódy môžeme
+			 * zadanou farbou. Testovať farbu pomocou tejto metódy môžeme
 			 * napríklad takto:</p>
 			 * 
 			 * <pre CLASS="example">
@@ -36493,7 +36494,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * <p><b>Príklad:</b></p>
 			 * 
 			 * <p>Nasledujúci príklad ukazuje možnosti transformácie obrázkov
-			 * s pomocou programovacieho rámca GRobot. Príklad je interaktívny.
+			 * pomocou programovacieho rámca GRobot. Príklad je interaktívny.
 			 * Po preložení a spustení sú na obrazovke zobrazené informácie
 			 * o tom, ako je možné zobrazený obrázok transformovať, pričom
 			 * používateľ rýchlo zistí, že obrázkom (a jeho transformáciami)
@@ -40015,7 +40016,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * umiestnený na koniec vnútorného zoznamu robotov. Poradie
 			 * umiestnenia robotov v tomto zozname ovplyvňuje poradie kreslenia
 			 * robotov nachádzajúcich sa v spoločnej vrstve. Pri štandardnom
-			 * spracovaní s pomocou {@linkplain #vyzviRoboty(int) výzvy} treba
+			 * spracovaní pomocou {@linkplain #vyzviRoboty(int) výzvy} treba
 			 * počítať s tým, že tento robot bude odteraz vyzývaný ako posledný
 			 * (bez ohľadu na umiestnenie do vrstiev).</p>
 			 * 
@@ -40048,7 +40049,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * umiestnený na začiatok vnútorného zoznamu robotov. Poradie
 			 * umiestnenia robotov v tomto zozname ovplyvňuje poradie kreslenia
 			 * robotov nachádzajúcich sa v spoločnej vrstve. Pri štandardnom
-			 * spracovaní s pomocou {@linkplain #vyzviRoboty(int) výzvy} treba
+			 * spracovaní pomocou {@linkplain #vyzviRoboty(int) výzvy} treba
 			 * počítať s tým, že tento robot bude odteraz vyzývaný ako prvý
 			 * (bez ohľadu na umiestnenie do vrstiev).</p>
 			 * 
@@ -40082,7 +40083,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * prvok ďalej v rámci vnútorného zoznamu robotov. Poradie
 			 * umiestnenia robotov v tomto zozname ovplyvňuje poradie
 			 * kreslenia robotov nachádzajúcich sa v spoločnej vrstve. Pri
-			 * štandardnom spracovaní s pomocou {@linkplain #vyzviRoboty(int)
+			 * štandardnom spracovaní pomocou {@linkplain #vyzviRoboty(int)
 			 * výzvy} to bude znamenať, že tento robot bude odteraz vyzývaný
 			 * o niečo neskôr (poradie vyzývania nesúvisí s umiestnením
 			 * robotov do vrstiev).</p>
@@ -40124,7 +40125,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * skôr v rámci vnútorného zoznamu robotov. Poradie umiestnenia
 			 * robotov v tomto zozname ovplyvňuje poradie kreslenia robotov
 			 * nachádzajúcich sa v spoločnej vrstve. Pri štandardnom spracovaní
-			 * s pomocou {@linkplain #vyzviRoboty(int) výzvy} to bude znamenať,
+			 * pomocou {@linkplain #vyzviRoboty(int) výzvy} to bude znamenať,
 			 * že tento robot bude odteraz vyzývaný o niečo skôr
 			 * (poradie vyzývania nesúvisí s umiestnením robotov do vrstiev).</p>
 			 * 
@@ -40168,7 +40169,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * poradie kreslenia robotov nachádzajúcich sa v spoločnej vrstve,
 			 * pričom roboty s nižším poradovým číslom sú kreslené skôr, preto
 			 * sú v rámci jednej vrstvy zobrazené pod svojími rovesníkmi.
-			 * Pri štandardnom spracovaní s pomocou {@linkplain 
+			 * Pri štandardnom spracovaní pomocou {@linkplain 
 			 * #vyzviRoboty(int) výzvy} bude tento robot odteraz vyzývaný
 			 * tesne po zadanom robote
 			 * (poradie vyzývania nesúvisí s umiestnením robotov do vrstiev).</p>
@@ -40219,7 +40220,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * kreslenia robotov nachádzajúcich sa v spoločnej vrstve, pričom
 			 * roboty s nižším poradovým číslom sú kreslené skôr, preto sú
 			 * v rámci jednej vrstvy zobrazené pod svojími rovesníkmi. Pri
-			 * štandardnom spracovaní s pomocou {@linkplain #vyzviRoboty(int)
+			 * štandardnom spracovaní pomocou {@linkplain #vyzviRoboty(int)
 			 * výzvy} bude tento robot odteraz vyzývaný skôr, než zadaný robot
 			 * (poradie vyzývania nesúvisí s umiestnením robotov do vrstiev).</p>
 			 * 
@@ -43157,7 +43158,7 @@ Toto bolo presunuté na úvodnú stránku:
 			/* cancelled – zbytočné po zovšeobecnení; Area je tiež Shape… *
 			 * 
 			 * <p><a class="setter"></a> Definuje kolíznu oblasť, ktorú bude od tohto okamihu
-			 * využívať robot na detekciu kolízií s pomocou metódy {@link 
+			 * využívať robot na detekciu kolízií pomocou metódy {@link 
 			 * #koliduje(GRobot) koliduje}. Použitie kolíznej oblasti je
 			 * v rozpoznávaní kolízií presnejšie, ale značne pomalšie než
 			 * predvolený spôsob detekcie kolízií (kružnicami; pozri metódu
@@ -43208,7 +43209,7 @@ Toto bolo presunuté na úvodnú stránku:
 			/**
 			 * <p><a class="setter"></a> S pomocou zadaného tvaru definuje
 			 * novú kolíznu oblasť, ktorú bude od tohto okamihu využívať
-			 * robot na detekciu kolízií s pomocou metódy {@link 
+			 * robot na detekciu kolízií pomocou metódy {@link 
 			 * #koliduje(GRobot) koliduje}.
 			 * Použitie kolíznej oblasti je v rozpoznávaní kolízií presnejšie,
 			 * ale značne pomalšie než predvolený spôsob detekcie kolízií
@@ -43333,7 +43334,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * <p>Tento základný prístup však nemusí vždy vyhovovať. Ak chceme
 			 * dosiahnuť presné zistenie kolízie, musíme zvoliť iný spôsob.
 			 * Roboty podporujú určenie {@linkplain #kolíznaOblasť(Shape)
-			 * kolíznej oblasti}. Zistenie stretu dvoch robotov s pomocou
+			 * kolíznej oblasti}. Zistenie stretu dvoch robotov pomocou
 			 * {@linkplain Oblasť oblastí} je <em>presné, ale náročnejšie na
 			 * výpočet,</em> takže je zároveň aj pomalšie. Použitie kolíznych
 			 * oblastí je potrebné vopred dobre zvážiť. Odporúčame ich

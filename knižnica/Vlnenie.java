@@ -57,7 +57,7 @@ import knižnica.podpora.RandomGenerator;
  * je v rámci programovacieho rámca tiež použitý automaticky a to v čase
  * kreslenia vlniaceho sa objektu.</p>
  * 
- * <p>Vlnenie pracuje s pomocou dvoch výškových máp (obrazne nazývaných
+ * <p>Vlnenie pracuje pomocou dvoch výškových máp (obrazne nazývaných
  * v tejto dokumentácii aj hladinou), ktoré sú striedavo prepočítavané tak,
  * ako keby tvorili striedajúce sa snímky postupujúcej animácie. Na základe
  * hodnoty aktuálnej snímky mapy je výsledný obraz v každom okamihu animácie
@@ -391,7 +391,7 @@ import knižnica.podpora.RandomGenerator;
 
 			{@code kwdelse} {@code kwdif} ({@link GRobot.ÚdajeUdalostí ÚdajeUdalostí}.{@link GRobot.ÚdajeUdalostí#kláves(int) kláves}({@link GRobot.Kláves Kláves}.{@link GRobot.Kláves#VK_E VK_E}))
 			{
-				{@code comm// Intenzívne, búrlivé, rozvlnenie obrazu s pomocou samého seba}
+				{@code comm// Intenzívne, búrlivé, rozvlnenie obrazu pomocou samého seba}
 				{@code comm// zadaného ako mapy vlnenia:}
 				vlnenie.{@link #pridajVzruch(Image) pridajVzruch}(predloha);
 			}
@@ -718,7 +718,7 @@ public class Vlnenie
 	 * 
 	 * <p>Trieda {@code currVlnenie} je naprogramovaná tak, aby bola použiteľná
 	 * aj mimo programovacieho rámca GRobot. V takom prípade je potrebné
-	 * vytvoriť jej inštanciu s pomocou tohto konštruktora. Ten prijíma
+	 * vytvoriť jej inštanciu pomocou tohto konštruktora. Ten prijíma
 	 * inštanciu obrázka {@link BufferedImage BufferedImage}, ktorý musí byť
 	 * typu {@link BufferedImage#TYPE_INT_ARGB BufferedImage.TYPE_INT_ARGB},
 	 * inak konštrukcia vlnenia zlyhá. Útlm určuje rýchlosť utlmenia vzruchov
@@ -877,12 +877,12 @@ public class Vlnenie
 
 	/**
 	 * <p>Zistí aktuálnu úroveň prahu používaného pri aktivácii a deaktivácii
-	 * hladiny s pomocou masky, čo zahŕňa aj aktiváciu alebo deaktiváciu
+	 * hladiny pomocou masky, čo zahŕňa aj aktiváciu alebo deaktiváciu
 	 * s použitím tvarov. Prah stanovuje hodnotu, pod ktorou už body masky
 	 * nie sú brané do úvahy. Predvolená hodnota je {@code num24}.</p>
 	 * 
 	 * @return aktuálna úroveň prahu používaného pri aktivácii a deaktivácii
-	 *     hladiny s pomocou masky
+	 *     hladiny pomocou masky
 	 * 
 	 * @see #úroveňPrahu(int)
 	 * @see #aktivujHladinu(Image)
@@ -907,12 +907,12 @@ public class Vlnenie
 
 	/**
 	 * <p>Určí novú úroveň prahu používaného pri aktivácii a deaktivácii hladiny
-	 * s pomocou masky, čo zahŕňa aj aktiváciu alebo deaktiváciu s použitím
+	 * pomocou masky, čo zahŕňa aj aktiváciu alebo deaktiváciu s použitím
 	 * tvarov. Prah stanoví hodnotu, pod ktorou už body masky nebudú brané do
 	 * úvahy. <small>(Predvolená hodnota je {@code num24}.)</small>
 	 * 
 	 * @param úroveň nová úroveň prahu používaného pri aktivácii a deaktivácii
-	 *     hladiny s pomocou masky
+	 *     hladiny pomocou masky
 	 * 
 	 * @see #úroveňPrahu()
 	 * @see #aktivujHladinu(Image)
@@ -4777,7 +4777,7 @@ public class Vlnenie
 
 						// Teraz je potrebné zdeformovať pôvodný obrázok na
 						// základe výšky/amplitúdy vĺn. To sa dosahuje
-						// s pomocou výpočtu vysunutia bodu zobrazovaného
+						// pomocou výpočtu vysunutia bodu zobrazovaného
 						// z pôvodného obrázka na aktuálnej pozícii. Presne
 						// ako pri reálnej vodnej hladine – lúče prenikajúce
 						// cez vodnú hladinu sú lámané. Výpočet vysunutia je

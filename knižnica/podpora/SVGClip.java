@@ -3,7 +3,7 @@ package knižnica.podpora;
 
 // Toto je jedna z externých podporných tried, ku ktorým nie je priamo
 // vyhotovená dokumentácia. Je to pomocná trieda slúžiaca na transfer SVG
-// údajov (najmä s pomocou schránky operačného systému). (Pozri tiež triedu
+// údajov (najmä pomocou schránky operačného systému). (Pozri tiež triedu
 // FileTransferable v rámci tohto balíčka.) Licencia a zdroje sú uvedené
 // nižšie v anglickom jazyku.
 // 

@@ -120,7 +120,7 @@ import javax.swing.JButton;
  * 
  * <p><image>robotOvladanyTlacidlami.png<alt/>Ukážka činnosti príkladu
  * s robotom ovládaným tlačidlami.</image>Ukážka nakreslenia
- * jednoduchej lomenej<br />čiary s pomocou robota ovládaného
+ * jednoduchej lomenej<br />čiary pomocou robota ovládaného
  * tlačidlami<br /><small>(plátno ukážky je zmenšené)</small>.</p>
  */
 @SuppressWarnings("serial")
@@ -1951,7 +1951,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	 * význam. Síce toto nastavenie môžete bez negatívnych následkov
 	 * vykonať aj bez toho, ale prejaví sa až po nastavení základného
 	 * obrázka. Tu je príklad rozdielu obrázkov normálneho (základného)
-	 * a označeného tlačidla (oba boli nakreslené a uložené s pomocou
+	 * a označeného tlačidla (oba boli nakreslené a uložené pomocou
 	 * robota):</p>
 	 * 
 	 * <table class="centered"><tr>

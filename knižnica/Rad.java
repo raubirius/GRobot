@@ -39,7 +39,7 @@ package knižnica;
  * postupností.<onerror>grafy-rad.png</onerror></image>Ukážky pílových
  * číselných postupností.</p>
  * 
- * <p>Metóda {@link #daj() daj} generuje rad algoritmicky (s pomocou
+ * <p>Metóda {@link #daj() daj} generuje rad algoritmicky (pomocou
  * niekoľkých súkromných stavových premenných). Zjednodušene (s jednotkovým
  * krokom a bez korekcií hodnôt) je postup generovania takýto:</p>
  * 

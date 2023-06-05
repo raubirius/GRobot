@@ -71,7 +71,7 @@ import knižnica.podpora.SVGClip;
  * (prilepenie, „vloženie“) informácie zo schránky (terminológia v tejto
  * oblasti sa v súčasnosti, žiaľ, značne rôzni). Vo svete robota tieto
  * skratky nefungujú automaticky. Ak chceme, aby aplikácia vytvorená
- * s pomocou robota používala schránku, musíme prepojiť náležité
+ * pomocou robota používala schránku, musíme prepojiť náležité
  * {@linkplain PoložkaPonuky položky ponuky} (ktoré musíme vytvoriť)
  * a prepojiť s funkcionalitou (volaním metód a prípadným
  * doprogramovaním) tejto statickej triedy. Ako bolo práve čiastočne

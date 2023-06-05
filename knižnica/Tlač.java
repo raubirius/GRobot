@@ -71,7 +71,7 @@ import java.util.Vector;
  * 
  * <p><b>Príklad:</b></p>
  * 
- * <p>Tento príklad ukazuje tlač dvoch stránok s pomocou nástrojov
+ * <p>Tento príklad ukazuje tlač dvoch stránok pomocou nástrojov
  * programovacieho rámca.</p>
  * 
  * <pre CLASS="example">
@@ -599,7 +599,7 @@ public abstract class Tlač implements Printable, Pageable
 	 * hodnoty na uchovanie rôznych chybových stavov, ale treba vopred
 	 * dostatočne dobre zvážiť, či by to neprinieslo komplikácie alebo rôzne
 	 * nepredvídateľné dôsledky. Rozhodnutie ponechávame na autorov softvéru
-	 * vytváraného s pomocou tohto rámca.</p>
+	 * vytváraného pomocou tohto rámca.</p>
 	 * 
 	 * @param početStrán nový počet strán tejto inštancie tlače
 	 * 
@@ -1266,7 +1266,7 @@ public abstract class Tlač implements Printable, Pageable
 	 * Text je rozbíjaný podľa maximálnej šírky (pravého okraja), ktorú môže
 	 * dosiahnuť na riadku. Vrátený blok môže byť prispôsobený (napríklad
 	 * mu môže byť upravené riadkovanie) a je pripravený na rendrovanie
-	 * s pomocou metódy {@link #kresliTextDo(Graphics, CharSequence, int,
+	 * pomocou metódy {@link #kresliTextDo(Graphics, CharSequence, int,
 	 * int, int, int, BlokSlov, boolean, int) kresliTextDo} (spúšťanej
 	 * s rovnakým grafickým kontextom a rovnakým nastavením fontu, inak bude
 	 * výsledok nepredvídateľný).</p>

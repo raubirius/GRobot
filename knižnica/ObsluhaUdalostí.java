@@ -198,7 +198,7 @@ import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
  * 
  * <!-- Udalosti zverejnené vo vyššie uvedenom zozname môžeme považovať za
  * „štandardné.“ (Z pohľadu programovacieho rámca GRobot.) Obsluha
- * udalostí podporuje ešte tri ďalšie udalosti, s pomocou ktorých je možné
+ * udalostí podporuje ešte tri ďalšie udalosti, pomocou ktorých je možné
  * využiť automaticky vytváraný konfiguračný súbor programovacieho rámca
  * GRobot.</p -->
  * 
@@ -439,7 +439,7 @@ public class ObsluhaUdalostí
 	 * odštartovať metódou {@link Svet#spustiČasovač(double)
 	 * spustiČasovač} a zastaviť metódou {@link Svet#zastavČasovač()
 	 * zastavČasovač}. Informácie o poslednej udalosti časovača sa dajú
-	 * získať s pomocou metódy {@link ÚdajeUdalostí#tik()
+	 * získať pomocou metódy {@link ÚdajeUdalostí#tik()
 	 * ÚdajeUdalostí.tik()}.</p>
 	 * 
 	 * <p>Časovač pre všetky roboty automaticky spúšta metódu {@link 
@@ -607,9 +607,9 @@ public class ObsluhaUdalostí
 	 * potrebujete využívať metódy (nástroje) triedy {@link Graphics2D
 	 * Graphics2D}, použite metódu {@link Plátno#grafika()
 	 * podlaha.grafika()} (resp. {@link Plátno#grafika()
-	 * strop.grafika()}) na prevzatie grafického objektu, s pomocou
+	 * strop.grafika()}) na prevzatie grafického objektu, pomocou
 	 * ktorého môžete tiež dokresľovať obsah plátien (v podstate
-	 * rovnocenne ako pri kreslení s pomocou robota, avšak treba mať na
+	 * rovnocenne ako pri kreslení pomocou robota, avšak treba mať na
 	 * pamäti, že grafika plátna pracuje s odlišným súradnicovým
 	 * priestorom, než grafický programovací rámec).</p>
 	 * 
@@ -629,7 +629,7 @@ public class ObsluhaUdalostí
 	 * objekt sveta (získaný metódou {@link Svet#grafika()
 	 * Svet.grafika()}) na dokreslenie (krátkodobého) grafického obsahu.
 	 * Treba podotknúť že spomenutý objekt {@code grafika} pracuje
-	 * v súradnicovom priestore Javy a všetko, čo s pomocou neho
+	 * v súradnicovom priestore Javy a všetko, čo pomocou neho
 	 * nakreslíte, bude na obrazovke zobrazené len do najbližšieho
 	 * prekreslenia.
 	 * (O súradnicových priestoroch sa podrobnejšie píše napríklad
@@ -746,7 +746,7 @@ public class ObsluhaUdalostí
 	public void obnovenie() {}
 
 	/**
-	 * <p>Spustená pri pri prvom zobrazení okna sveta. Na získanie objektu
+	 * <p>Spustená pri prvom zobrazení okna sveta. Na získanie objektu
 	 * s podrobnejšími údajmi o tejto udalosti použite metódu
 	 * {@link ÚdajeUdalostí#aktivitaOkna() ÚdajeUdalostí.aktivitaOkna()}.</p>
 	 * 
@@ -1185,6 +1185,10 @@ public class ObsluhaUdalostí
 	 * <p>Spustená po dokončení ťahania súboru z externej aplikácie. Ak bolo
 	 * z externej aplikácie potiahnutých viac súborov, tak bude táto
 	 * reakcia spustená pre každý z nich osobitne.</p>
+	 * 
+	 * <p>Ak je {@linkplain ÚdajeUdalostí#oknoUdalosti() okno udalosti} rovné
+	 * {@code valnull}, tak udalosť vznikla v okne sveta (inak ide o inštanciu
+	 * okna, ktoré udalosť vyvolalo).</p>
 	 * 
 	 * <p><b>Príklad:</b></p>
 	 * 

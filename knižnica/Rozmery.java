@@ -315,7 +315,7 @@ public class Rozmery extends Dimension2D implements Rozmer
 	/**
 	 * <p>Táto statická metóda prevedie rozmery zadaného tvaru
 	 * z implementácie rozmerov Javy do implementácie rozmerov
-	 * programovacieho rámca GRobot. (Vykoná to s pomocou tzv. ohraničujúceho
+	 * programovacieho rámca GRobot. (Vykoná to pomocou tzv. ohraničujúceho
 	 * obdĺžnika – bounding box – metódou {@link Shape#getBounds2D()
 	 * getBounds2D()} tvarov Javy. Takže technicky ide o prevod rozmerov
 	 * získaných z inštancie {@link Rectangle2D Rectangle2D} na objekt

@@ -516,7 +516,7 @@ public final class Svet extends JFrame
 					predvolenýNázovKonfiguračnéhoSúboru = "grobot.cfg";
 				private static String názovKonfiguračnéhoSúboru = null;
 				/*packagePrivate*/ final static Súbor konfiguračnýSúbor = new Súbor();
-				private static String predvolenáSekciaKonfigurácie = "";
+				/*packagePrivate*/ static String predvolenáSekciaKonfigurácie = "";
 				private static boolean prvéSpustenie = true;
 
 				private static void uložKonfiguráciu()
@@ -551,6 +551,17 @@ public final class Svet extends JFrame
 							GRobot počúvajúci = GRobot.počúvajúciSúbory.get(i);
 							if (počúvajúci.konfiguráciaZmenená() ||
 								počúvajúci.konfiguraciaZmenena())
+							{
+								žiadnaZmena = false;
+								break;
+							}
+						}
+
+						int početOkien = Okno.všetkyOkná.size();
+						for (int i = 0; i < početOkien; ++i)
+						{
+							Okno okno = Okno.všetkyOkná.get(i);
+							if (okno.konfiguráciaZmenená())
 							{
 								žiadnaZmena = false;
 								break;
@@ -773,6 +784,10 @@ public final class Svet extends JFrame
 							počúvajúci.zapíšKonfiguráciu(konfiguračnýSúbor);
 							počúvajúci.zapisKonfiguraciu(konfiguračnýSúbor);
 						}
+
+						int početOkien = Okno.všetkyOkná.size();
+						for (int i = 0; i < početOkien; ++i)
+							Okno.všetkyOkná.get(i).uložKonfiguráciu();
 					}
 					catch (Exception e)
 					{ GRobotException.vypíšChybovéHlásenia(e); }
@@ -975,6 +990,7 @@ public final class Svet extends JFrame
 						if (dtde.isDataFlavorSupported(
 							DataFlavor.javaFileListFlavor))
 						{
+							ÚdajeUdalostí.oknoUdalosti = null;
 							ÚdajeUdalostí.poslednáSúradnicaMyšiX =
 								ÚdajeUdalostí.súradnicaMyšiX;
 							ÚdajeUdalostí.poslednáSúradnicaMyšiY =
@@ -1037,6 +1053,8 @@ public final class Svet extends JFrame
 								if (transferData != null &&
 									transferData.size() > 0)
 								{
+									ÚdajeUdalostí.oknoUdalosti = null;
+
 									for (File file : transferData)
 									{
 										String menoSúboru =
@@ -1221,7 +1239,7 @@ public final class Svet extends JFrame
 
 			// Zoznam kurzorov (a ďalšie pomocné premenné s nimi súvisiace)
 
-				private final static Cursor prázdnyKurzor = Toolkit.
+				/*packagePrivate*/ final static Cursor prázdnyKurzor = Toolkit.
 					getDefaultToolkit().createCustomCursor(
 						new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB),
 						new Point(0, 0), "prázdny");
@@ -2213,6 +2231,7 @@ public final class Svet extends JFrame
 
 				synchronized (ÚdajeUdalostí.zámokMyši)
 				{
+					ÚdajeUdalostí.oknoUdalosti = null;
 					ÚdajeUdalostí.poslednáUdalosťMyši = e;
 					aktuálnyIntervalKofeínu = intervalKofeínu;
 					hlavnýPanel.requestFocusInWindow();
@@ -2246,6 +2265,7 @@ public final class Svet extends JFrame
 			{
 				synchronized (ÚdajeUdalostí.zámokMyši)
 				{
+					ÚdajeUdalostí.oknoUdalosti = null;
 					ÚdajeUdalostí.poslednáSúradnicaMyšiX =
 						ÚdajeUdalostí.súradnicaMyšiX;
 					ÚdajeUdalostí.poslednáSúradnicaMyšiY =
@@ -2362,6 +2382,7 @@ public final class Svet extends JFrame
 			{
 				synchronized (ÚdajeUdalostí.zámokMyši)
 				{
+					ÚdajeUdalostí.oknoUdalosti = null;
 					ÚdajeUdalostí.poslednáSúradnicaMyšiX =
 						ÚdajeUdalostí.súradnicaMyšiX;
 					ÚdajeUdalostí.poslednáSúradnicaMyšiY =
@@ -2424,6 +2445,7 @@ public final class Svet extends JFrame
 					}
 					else
 					{
+						ÚdajeUdalostí.oknoUdalosti = null;
 						ÚdajeUdalostí.poslednáSúradnicaMyšiX =
 							ÚdajeUdalostí.súradnicaMyšiX;
 						ÚdajeUdalostí.poslednáSúradnicaMyšiY =
@@ -2470,6 +2492,7 @@ public final class Svet extends JFrame
 					}
 					else
 					{
+						ÚdajeUdalostí.oknoUdalosti = null;
 						ÚdajeUdalostí.poslednáSúradnicaMyšiX =
 							ÚdajeUdalostí.súradnicaMyšiX;
 						ÚdajeUdalostí.poslednáSúradnicaMyšiY =
@@ -2556,6 +2579,7 @@ public final class Svet extends JFrame
 			{
 				synchronized (ÚdajeUdalostí.zámokMyši)
 				{
+					ÚdajeUdalostí.oknoUdalosti = null;
 					ÚdajeUdalostí.poslednáSúradnicaMyšiX =
 						ÚdajeUdalostí.súradnicaMyšiX;
 					ÚdajeUdalostí.poslednáSúradnicaMyšiY =
@@ -2619,6 +2643,7 @@ public final class Svet extends JFrame
 			{
 				synchronized (ÚdajeUdalostí.zámokKlávesnice)
 				{
+					ÚdajeUdalostí.oknoUdalosti = null;
 					ÚdajeUdalostí.poslednáUdalosťKlávesnice = e;
 					aktuálnyIntervalKofeínu = intervalKofeínu;
 
@@ -2648,6 +2673,7 @@ public final class Svet extends JFrame
 			{
 				synchronized (ÚdajeUdalostí.zámokKlávesnice)
 				{
+					ÚdajeUdalostí.oknoUdalosti = null;
 					ÚdajeUdalostí.poslednáUdalosťKlávesnice = e;
 					aktuálnyIntervalKofeínu = intervalKofeínu;
 
@@ -2684,6 +2710,7 @@ public final class Svet extends JFrame
 
 				synchronized (ÚdajeUdalostí.zámokKlávesnice)
 				{
+					ÚdajeUdalostí.oknoUdalosti = null;
 					ÚdajeUdalostí.poslednáUdalosťKlávesnice = e;
 					aktuálnyIntervalKofeínu = intervalKofeínu;
 
@@ -2710,6 +2737,7 @@ public final class Svet extends JFrame
 
 			public void componentHidden(ComponentEvent e)
 			{
+				ÚdajeUdalostí.oknoUdalosti = null;
 				ÚdajeUdalostí.poslednáUdalosťOkna = e;
 
 				if (null != oknoCelejObrazovky &&
@@ -2742,6 +2770,7 @@ public final class Svet extends JFrame
 
 			public void componentShown(ComponentEvent e)
 			{
+				ÚdajeUdalostí.oknoUdalosti = null;
 				ÚdajeUdalostí.poslednáUdalosťOkna = e;
 
 				if (null != ObsluhaUdalostí.počúvadlo)
@@ -2763,6 +2792,7 @@ public final class Svet extends JFrame
 
 			public void componentMoved(ComponentEvent e)
 			{
+				ÚdajeUdalostí.oknoUdalosti = null;
 				ÚdajeUdalostí.poslednáUdalosťOkna = e;
 
 				if (null != ObsluhaUdalostí.počúvadlo)
@@ -2784,6 +2814,7 @@ public final class Svet extends JFrame
 
 			public void componentResized(ComponentEvent e)
 			{
+				ÚdajeUdalostí.oknoUdalosti = null;
 				ÚdajeUdalostí.poslednáUdalosťOkna = e;
 
 				if (null != ObsluhaUdalostí.počúvadlo)
@@ -2826,6 +2857,7 @@ public final class Svet extends JFrame
 
 			public void windowActivated(WindowEvent e)
 			{
+				ÚdajeUdalostí.oknoUdalosti = null;
 				ÚdajeUdalostí.poslednáUdalosťAktivityOkna = e;
 
 				if (null != ObsluhaUdalostí.počúvadlo)
@@ -2851,6 +2883,7 @@ public final class Svet extends JFrame
 
 			public void windowDeactivated(WindowEvent e)
 			{
+				ÚdajeUdalostí.oknoUdalosti = null;
 				ÚdajeUdalostí.poslednáUdalosťAktivityOkna = e;
 
 				if (null != ObsluhaUdalostí.počúvadlo)
@@ -2881,6 +2914,7 @@ public final class Svet extends JFrame
 
 			public void windowOpened(WindowEvent e)
 			{
+				ÚdajeUdalostí.oknoUdalosti = null;
 				ÚdajeUdalostí.poslednáUdalosťAktivityOkna = e;
 
 				if (null != ObsluhaUdalostí.počúvadlo)
@@ -2904,6 +2938,7 @@ public final class Svet extends JFrame
 
 			public void windowClosing(WindowEvent e)
 			{
+				ÚdajeUdalostí.oknoUdalosti = null;
 				ÚdajeUdalostí.poslednáUdalosťAktivityOkna = e;
 				boolean zavrieť = true;
 				// System.out.println("zatvaranie");
@@ -2965,6 +3000,7 @@ public final class Svet extends JFrame
 				// a prekryl by minimalizáciu
 				if (0 != (stav & ICONIFIED))
 				{
+					ÚdajeUdalostí.oknoUdalosti = null;
 					ÚdajeUdalostí.poslednáUdalosťAktivityOkna = e;
 
 					if (null != ObsluhaUdalostí.počúvadlo)
@@ -2989,6 +3025,7 @@ public final class Svet extends JFrame
 				}
 				else if (0 != (stav & MAXIMIZED_BOTH))
 				{
+					ÚdajeUdalostí.oknoUdalosti = null;
 					ÚdajeUdalostí.poslednáUdalosťAktivityOkna = e;
 
 					if (null != ObsluhaUdalostí.počúvadlo)
@@ -3013,6 +3050,7 @@ public final class Svet extends JFrame
 				}
 				else if (NORMAL == stav)
 				{
+					ÚdajeUdalostí.oknoUdalosti = null;
 					ÚdajeUdalostí.poslednáUdalosťAktivityOkna = e;
 
 					if (null != ObsluhaUdalostí.počúvadlo)
@@ -3152,7 +3190,7 @@ public final class Svet extends JFrame
 		setFont(Plátno.predvolenéPísmoKonzoly);
 	}
 
-	private final static Svet svet = new Svet();
+	/*packagePrivate*/ final static Svet svet = new Svet();
 
 	/*packagePrivate*/ static Svet dajSvet() { return svet; }
 
@@ -3195,7 +3233,7 @@ public final class Svet extends JFrame
 		 * <p><a class="getter"></a> Vráti hlavný robot. Hlavný robot je
 		 * predvolene prvý vytvorený robot. Tento robot je považovaný za
 		 * vlastníka sveta. On asistuje pri vytvorení okna aplikácie,
-		 * s pomocou neho sú spracované niektoré úlohy… O svoje privilégium
+		 * pomocou neho sú spracované niektoré úlohy… O svoje privilégium
 		 * by mohol prísť jedine v prípade, že by bol (pravdepodobne omylom)
 		 * {@linkplain #uvoľni(GRobot) uvoľnený}. V takom prípade by bol
 		 * nahradený najbližším definovaným robotom s posunutím všetkých
@@ -3238,7 +3276,7 @@ public final class Svet extends JFrame
 		 * <p class="remark"><b>Poznámka:</b> Mechanizmus výziev nie je taký
 		 * efektívny ako definícia vlastného {@linkplain Zoznam zoznamu robotov}
 		 * (prípadne inštancií odvodených tried) a vykonanie hromadnej akcie
-		 * s pomocou tohto zoznamu. Slúži predovšedkým na umožnenie hromadného
+		 * pomocou tohto zoznamu. Slúži predovšedkým na umožnenie hromadného
 		 * spracovania bez nevyhnutnosti vytvárania takého zoznamu (napríklad
 		 * pri malom počte robotov alebo predtým, než sa programátor
 		 * podrobnejšie oboznámi s možnosťami zoznamov).</p>
@@ -3317,7 +3355,7 @@ public final class Svet extends JFrame
 		 * <p class="remark"><b>Poznámka:</b> Mechanizmus výziev nie je taký
 		 * efektívny ako definícia vlastného {@linkplain Zoznam zoznamu robotov}
 		 * (prípadne inštancií odvodených tried) a vykonanie hromadnej akcie
-		 * s pomocou tohto zoznamu. Slúži predovšedkým na umožnenie hromadného
+		 * pomocou tohto zoznamu. Slúži predovšedkým na umožnenie hromadného
 		 * spracovania bez nevyhnutnosti vytvárania takého zoznamu (napríklad
 		 * pri malom počte robotov alebo predtým, než sa programátor
 		 * podrobnejšie oboznámi s možnosťami zoznamov).</p>
@@ -3404,7 +3442,7 @@ public final class Svet extends JFrame
 		 * <p class="remark"><b>Poznámka:</b> Mechanizmus výziev nepovažujeme
 		 * za taký efektívny ako je definícia vlastného {@linkplain Zoznam
 		 * zoznamu robotov} (prípadne inštancií odvodených tried) a nasledujúce
-		 * vykonanie hromadnej akcie s pomocou tohto vlastného zoznamu. Výzvy
+		 * vykonanie hromadnej akcie pomocou tohto vlastného zoznamu. Výzvy
 		 * slúžia predovšedkým na umožnenie hromadného spracovania bez
 		 * nevyhnutnosti vytvárania takého zoznamu (napríklad v prípade, keď
 		 * nepovažujeme vytvorenie vlastného zoznamu za významný prínos,
@@ -3911,6 +3949,10 @@ public final class Svet extends JFrame
 		 * #zobrazený() zobrazený}.</p>
 		 * 
 		 * @return {@code valtrue} – áno; {@code valfalse} – nie
+		 * 
+		 * @see #zobrazený()
+		 * @see #zobraz()
+		 * @see #skry()
 		 */
 		public static boolean viditeľný()
 		{
@@ -3938,6 +3980,10 @@ public final class Svet extends JFrame
 		 * #viditeľný() viditeľný}.</p>
 		 * 
 		 * @return {@code valtrue} – áno; {@code valfalse} – nie
+		 * 
+		 * @see #viditeľný()
+		 * @see #zobraz()
+		 * @see #skry()
 		 */
 		public static boolean zobrazený()
 		{
@@ -3955,6 +4001,10 @@ public final class Svet extends JFrame
 		 * <p>Skryje hlavné okno. Zároveň spôsobí, že okno sveta nebude
 		 * automaticky zobrazené pri štarte. Aplikácia sa môže inicializovať
 		 * a potom zobraziť hlavné okno metódou {@link #zobraz() zobraz}.</p>
+		 * 
+		 * @see #zobraz()
+		 * @see #viditeľný()
+		 * @see #zobrazený()
 		 */
 		public static void skry()
 		{
@@ -3968,6 +4018,10 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Zobrazí hlavné okno (svet). Metóda je protikladom metódy
 		 * {@link #skry() skry}.</p>
+		 * 
+		 * @see #skry()
+		 * @see #viditeľný()
+		 * @see #zobrazený()
 		 */
 		public static void zobraz()
 		{
@@ -3988,6 +4042,8 @@ public final class Svet extends JFrame
 		 * metódy {@link #zmeňRozmeryPlátien(int, int) zmeňRozmeryPlátien}.</p>
 		 * 
 		 * @see #uvoľni()
+		 * @see #zbaľ()
+		 * @see #vystreď()
 		 */
 		public static void upevni() { svet.setResizable(false); }
 
@@ -4036,6 +4092,8 @@ public final class Svet extends JFrame
 		 * disku zmenil).</p>
 		 * 
 		 * @see #upevni()
+		 * @see #zbaľ()
+		 * @see #vystreď()
 		 */
 		public static void uvoľni() { svet.setResizable(true); }
 
@@ -4045,6 +4103,10 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Prispôsobí veľkosť okna tak, aby sa do neho pohodlne vošli všetky
 		 * viditeľné komponenty.</p>
+		 * 
+		 * @see #upevni()
+		 * @see #uvoľni()
+		 * @see #vystreď()
 		 */
 		public static void zbaľ() { svet.pack(); }
 
@@ -4053,6 +4115,10 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Presunie okno tak, aby sa nachádzalo v strede obrazovky.</p>
+		 * 
+		 * @see #upevni()
+		 * @see #uvoľni()
+		 * @see #zbaľ()
 		 */
 		public static void vystreď() { svet.setLocationRelativeTo(null); }
 
@@ -7872,7 +7938,7 @@ public final class Svet extends JFrame
 		 * je zmenšené)</small>.</p></td><td> </td>
 		 * <td
 		 * style="vertical-align:top"><p><image>upravPriehladnost2.png<alt/></image>
-		 * Fáza prelivu obrázkov s pomocou priehľadnosti<br />(zhruba
+		 * Fáza prelivu obrázkov pomocou priehľadnosti<br />(zhruba
 		 * v polovici procesu)<br /><small>(plátno na obrázku je
 		 * zmenšené)</small>.</p></td><td> </td>
 		 * <td
@@ -8245,7 +8311,7 @@ public final class Svet extends JFrame
 			// boli zamietnuté. Napríklad, aby tu bol implementovaný
 			// mechanizmus, ktorý by zabraňoval príliš častému automatickéhu
 			// prekresľovaniu, alebo aby bol mechanizmus automatického
-			// prekresľovania s pomocou časovača predvolene implicitne
+			// prekresľovania pomocou časovača predvolene implicitne
 			// implementovaný. Žiadny spôsob by nebol ideálny alebo
 			// dostatočne „efektívny.“ Keby sa zabraňovalo „príliš častému
 			// automatickému prekresľovaniu,“ tak by buď vznikali situácie,
@@ -8637,7 +8703,7 @@ public final class Svet extends JFrame
 		 * <p>Pridá do hlavnej ponuky položku so zadaným textom. Zvolenie položky
 		 * vyvolá reakciu {@link ObsluhaUdalostí#voľbaPoložkyPonuky()
 		 * voľbaPoložkyPonuky} v triede obsluhy udalostí. V tej je možné
-		 * položku identifikovať s pomocou metódy
+		 * položku identifikovať pomocou metódy
 		 * {@link ÚdajeUdalostí#položkaPonuky() ÚdajeUdalostí.položkaPonuky}
 		 * ktorá vracia objekt typu {@link PoložkaPonuky PoložkaPonuky}.
 		 * Ten môžeme porovnať s hodnotou vrátenou z tejto metódy (ktorú si
@@ -10029,6 +10095,21 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #novýKurzorMyši(Image, int, int, String) novýKurzorMyši}.</p> */
 		public static void novyKurzorMysi(Image predloha, double x, double y, String meno) { novýKurzorMyši(predloha, (int)x, (int)y, meno); }
 
+
+		// Vráti kurzor podľa názvu.
+		/*packagePrivate*/ static Cursor dajKurzorMyši(String meno)
+		{
+			if (kurzory.containsKey(meno))
+				return kurzory.get(meno);
+
+			if (systémovéNázvyKurzorov.containsKey(meno))
+				return Cursor.getPredefinedCursor(
+					systémovéNázvyKurzorov.get(meno));
+
+			return null;
+		}
+
+
 		/**
 		 * <p>Zmení hlavnému oknu tvar kurzora myši buď na vlastný tvar kurzora
 		 * vytvorený prostredníctvom metódy {@link 
@@ -10073,27 +10154,15 @@ public final class Svet extends JFrame
 				return;
 			}
 
-			if (kurzory.containsKey(meno))
+			Cursor kurzor = dajKurzorMyši(meno);
+
+			if (null != kurzor)
 			{
-				svet.getContentPane().
-					setCursor(kurzory.get(meno));
+				svet.getContentPane().setCursor(kurzor);
 
 				// Pre celú obrazovku:
 				if (null != oknoCelejObrazovky)
-					oknoCelejObrazovky.setCursor(
-						svet.getContentPane().getCursor());
-				return;
-			}
-
-			if (systémovéNázvyKurzorov.containsKey(meno))
-			{
-				svet.getContentPane().setCursor(Cursor.
-					getPredefinedCursor(systémovéNázvyKurzorov.get(meno)));
-
-				// Pre celú obrazovku:
-				if (null != oknoCelejObrazovky)
-					oknoCelejObrazovky.setCursor(
-						svet.getContentPane().getCursor());
+					oknoCelejObrazovky.setCursor(kurzor);
 				return;
 			}
 
@@ -10932,7 +11001,7 @@ public final class Svet extends JFrame
 		 * <p>Vráti grafický objekt sveta na kreslenie v reakcii {@link 
 		 * ObsluhaUdalostí#dokreslenie() ObsluhaUdalostí.dokreslenie()}.
 		 * Tento objekt pracuje v súradnicovom priestore Javy a všetko, čo
-		 * s pomocou neho nakreslíte, bude na obrazovke zobrazené len do
+		 * pomocou neho nakreslíte, bude na obrazovke zobrazené len do
 		 * najbližšieho prekreslenia. Jeho používanie je vyhradené
 		 * viac-menej iba pre skúsených programátorov. Žiadny robot nedokáže
 		 * priamo kresliť do tohto objektu, ale niektoré metódy robotov môžu
@@ -11796,8 +11865,14 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Zmení stav automatického overovania počiatočnej polohy okna po
-		 * jeho inicializácii. Z toho vyplýva, že tento stav (príznak) má
-		 * zmysel meniť len pred inicializáciou okna sveta. Najlepšie pred
+		 * jeho inicializácii. Ak je stav overovania nastavený na {@code 
+		 * valtrue}, tak sa počas inicializácie okna (sveta) overí či je
+		 * umiestnené v rámci aktuálnych obrazoviek (zariadení) a ak nie, tak
+		 * bude automaticky presunuté na primárnu obrazovku (resp. predvolené
+		 * zobrazovacie zariadenie).</p>
+		 * 
+		 * <p>Z vyššie uvedených informácií vyplýva, že tento stav (príznak)
+		 * má zmysel meniť len pred inicializáciou okna sveta. Najlepšie pred
 		 * {@linkplain #použiKonfiguráciu() použitím konfigurácie.} Po
 		 * inicializácii okna sveta už nie je poloha okna overovaná
 		 * automaticky, ale dá sa vykonať týmto (alebo podobným) kódom:</p>
@@ -11812,6 +11887,7 @@ public final class Svet extends JFrame
 		 * @see #použiKonfiguráciu()
 		 * @see #overujPočiatočnúPolohuOkna()
 		 * @see #overujPočiatočnúPolohuOkna(boolean)
+		 * @see #premiestniNaZariadenie()
 		 */
 		public static void overujPočiatočnúPolohuOkna(boolean overuj)
 		{ overujPočiatočnúPolohuOkna = overuj; }
@@ -12653,7 +12729,7 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Ak je pre zadaný súbor asociovaný príkaz na tlač dokumentu,
 		 * tak otvorí prislúchajúci tlačový dialóg operačného systému,
-		 * s pomocou ktorého bude možné súbor (dokument) vytlačiť.</p>
+		 * pomocou ktorého bude možné súbor (dokument) vytlačiť.</p>
 		 * 
 		 * @param súbor súbor (dokument), ktorý má byť vytlačený podľa
 		 *     predvoleného nastavenia OS
@@ -13009,7 +13085,7 @@ public final class Svet extends JFrame
 					{@link Svet Svet}.{@link Svet#príkazovýRiadok príkazovýRiadok}.{@link Svet.PríkazovýRiadok#čítajKonfiguráciu(Súbor) čítajKonfiguráciu}(súbor);
 				}
 
-				{@code comm// (Prekresľovanie s pomocou časovača, aby bola činnosť}
+				{@code comm// (Prekresľovanie pomocou časovača, aby bola činnosť}
 				{@code comm// konzoly svižnejšia.)}
 				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#tik() tik}()
 				{
@@ -13056,7 +13132,7 @@ public final class Svet extends JFrame
 			{@code kwdpublic} {@code typeclass} GrafickáKonzola {@code kwdextends} {@link GRobot GRobot}
 			{
 				{@code comm// Súčasť alternatívnej implementácie rolovania a posúvania textov}
-				{@code comm// vnútornej konzoly stropu s pomocou klávesnice.}
+				{@code comm// vnútornej konzoly stropu pomocou klávesnice.}
 				{@code comm// }
 				{@code comm// Poznámka: Nahradené príkazom Svet.skratkyStropu(true);}
 				{@code comm// }
@@ -13095,7 +13171,7 @@ public final class Svet extends JFrame
 					{@link Plátno strop}.{@link Plátno#písmo(String, double) písmo}({@code srg"Consolas"}, {@code num14});
 
 					{@code comm// Súčasť alternatívnej implementácie rolovania a posúvania textov}
-					{@code comm// vnútornej konzoly stropu s pomocou klávesnice.}
+					{@code comm// vnútornej konzoly stropu pomocou klávesnice.}
 					{@code comm/*Svet.pridajKlávesovúSkratku(home, Kláves.HOME);}
 					{@code commSvet.pridajKlávesovúSkratku(end,  Kláves.END);}
 					{@code commSvet.pridajKlávesovúSkratku(hore, Kláves.HORE);}
@@ -13133,7 +13209,7 @@ public final class Svet extends JFrame
 					{@link String String} skratka = {@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#príkazSkratky() príkazSkratky}();
 
 					{@code comm// Súčasť alternatívnej implementácie rolovania a posúvania textov}
-					{@code comm// vnútornej konzoly stropu s pomocou klávesnice.}
+					{@code comm// vnútornej konzoly stropu pomocou klávesnice.}
 					{@code comm/*if (skratka == home) strop.posunutieTextov(}
 					{@code comm	strop.posunutieTextovX(), strop.poslednáVýškaTextu());}
 					{@code commelse if (skratka == end)}
@@ -13338,7 +13414,7 @@ public final class Svet extends JFrame
 				{@code comm	&#125;}
 				{@code comm&#125;&#42;/}
 
-				{@code comm// (Prekresľovanie s pomocou časovača, aby bola činnosť}
+				{@code comm// (Prekresľovanie pomocou časovača, aby bola činnosť}
 				{@code comm// konzoly svižnejšia.)}
 				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#tik() tik}()
 				{
@@ -16788,11 +16864,11 @@ public final class Svet extends JFrame
 		 * <p>Obrázok pre túto verziu metódy musíte definovať sami. Nie je
 		 * predpísaný spôsob, ale priam sa ponúka využitie triedy {@link 
 		 * Obrázok Obrázok} a mechanizmu {@linkplain 
-		 * GRobot#kresliNaObrázok(Obrázok) kreslenia na obrázok s pomocou
+		 * GRobot#kresliNaObrázok(Obrázok) kreslenia na obrázok pomocou
 		 * robota}. Treba pri tom zvážiť viacero okolností. Zobrazenie
 		 * úvodnej obrazovky je očakávané v čase, keď ešte hlavné okno nie
 		 * je zobrazené. V podstate v čase, keď ešte nejestvuje žiadny
-		 * robot. Preto, ak chceme používať kreslenie s pomocou robota, musíme
+		 * robot. Preto, ak chceme používať kreslenie pomocou robota, musíme
 		 * jedného na tento účel vytvoriť. Prvý vytvorený robot je zároveň
 		 * {@linkplain #hlavnýRobot() hlavný robot} zodpovedný za
 		 * vytvorenie a zobrazenie hlavného okna. Preto musíme pred jeho
@@ -17947,7 +18023,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Vráti reťazec zadaný do vstupného riadka po potvrdení klávesom
-		 * {@code Enter}. Vstup s pomocou vstupného riadka sa zahajuje metódou
+		 * {@code Enter}. Vstup pomocou vstupného riadka sa zahajuje metódou
 		 * {@link #začniVstup() začniVstup}.</p>
 		 * 
 		 * @return objekt typu {@link java.lang.String String} obsahujúci
@@ -17988,7 +18064,7 @@ public final class Svet extends JFrame
 		 * <p>Vráti celé číslo zadané do vstupného riadka po potvrdení
 		 * klávesom {@code Enter}. Metóda vráti hodnotu {@code valnull}
 		 * v prípade, že do vstupného riadka nebolo zadané celé číslo.
-		 * Vstup s pomocou vstupného riadka sa zahajuje metódou {@link 
+		 * Vstup pomocou vstupného riadka sa zahajuje metódou {@link 
 		 * #začniVstup() začniVstup}.</p>
 		 * 
 		 * @return objekt typu {@link Long} obsahujúci zadané celé číslo,
@@ -18018,7 +18094,7 @@ public final class Svet extends JFrame
 		 * <p>Vráti reálne číslo zadané do vstupného riadka po potvrdení
 		 * klávesom {@code Enter}. Metóda vráti hodnotu {@code valnull}
 		 * v prípade, že do vstupného riadka nebolo zadané reálne číslo.
-		 * Vstup s pomocou vstupného riadka sa zahajuje metódou {@link 
+		 * Vstup pomocou vstupného riadka sa zahajuje metódou {@link 
 		 * #začniVstup() začniVstup}.</p>
 		 * 
 		 * @return objekt typu {@link java.lang.Double Double} obsahujúci
@@ -18284,7 +18360,7 @@ public final class Svet extends JFrame
 			// Pokúsi sa identifikovať prvý znak v reťazci. Najprv sa
 			// berie do úvahy platná hodnota rímskeho znaku. Neplatné
 			// znaky spôsobia okamžité vrátenie hodnoty null. Potom sa
-			// s pomocou ďalšej metódy pokúsi algoritmus zvýšiť
+			// pomocou ďalšej metódy pokúsi algoritmus zvýšiť
 			// identifikovanú hodnotu o vrátený činiteľ. (To platí aj
 			// pri všetkých ďalších pokusoch o identifikáciu znaku.)
 			int posledná = hodnotaRímskehoZnaku(rímske.charAt(0));
@@ -18373,7 +18449,7 @@ public final class Svet extends JFrame
 		// Táto sekcia patrí k metóde jePrvočíslo. Je to implementácia
 		// vnútorného mechanizmu hľadania prvočísiel, ktorý je spomínaný
 		// v poznámke v opise tejto metódy. Správnosť overovania prvočísiel
-		// bola úspešne overená pre prvých milión čísiel a to s pomocou
+		// bola úspešne overená pre prvých milión čísiel a to pomocou
 		// nasledujúceho (síce výpočtovo náročného, zato primitívneho)
 		// princípu:
 		// 
@@ -18661,7 +18737,7 @@ public final class Svet extends JFrame
 		 * z iného procesu alebo zo súboru). V prípade konečného vstupného
 		 * prúdu je po dosiahnutí jeho konca spustená reakcia {@link 
 		 * ObsluhaUdalostí#koniecVstupu() koniecVstupu}. Overiť to, či je
-		 * štandardný vstup (stále) aktívny sa dá s pomocou metódy {@link 
+		 * štandardný vstup (stále) aktívny sa dá pomocou metódy {@link 
 		 * #štandardnýVstupAktívny() štandardnýVstupAktívny}. Určiť iné
 		 * kódovanie údajov zo štandardného vstupu sa dá volaním inej
 		 * verzie tejto metódy: {@link #aktivujŠtandardnýVstup(String)
@@ -18843,7 +18919,7 @@ public final class Svet extends JFrame
 					{@code comm// Nasleduje príklad použitia čítania štandardného vstupu}
 					{@code comm// s použitím programovacieho rámca GRobot…}
 					<hr/>
-					{@code comm// Počet určíme s pomocou reťazca zadaného do prvého argumentu}
+					{@code comm// Počet určíme pomocou reťazca zadaného do prvého argumentu}
 					{@code comm// aplikácie, pričom najmenší povolený počet je 1.}
 					{@code typeint} počet = {@code num1};
 					{@code kwdif} (args.length &gt; {@code num0})
@@ -20141,7 +20217,7 @@ public final class Svet extends JFrame
 				{@code kwdprivate} SpustiSkript({@link String String}[] args)
 				{
 					{@code comm// V skripte (nižšie) sú interaktívne inštancie vždy explicitne určené}
-					{@code comm// s pomocou riadkov začínajúcich sa zavináčom. Keby to tak nebolo,}
+					{@code comm// pomocou riadkov začínajúcich sa zavináčom. Keby to tak nebolo,}
 					{@code comm// museli by byť interaktívne inštancie zapnuté týmito príkazmi:}
 					{@code comm// }
 					{@code comm// 	interaktívnyRežim(true);}
@@ -21503,7 +21579,7 @@ public final class Svet extends JFrame
 		 * Plátno#vypíšAktívneSlovo(String, Object[])
 		 * strop.vypíšAktívneSlovo(String, Object...)}.</p>
 		 * 
-		 * @param identifikátor identifikátor aktívneho slova, s pomocou
+		 * @param identifikátor identifikátor aktívneho slova, pomocou
 		 *     ktorého bude toto slovo odlišované od ostatných aktívnych slov
 		 * @param argumenty zoznam argumentov rôzneho údajového typu
 		 *     oddelený čiarkami
@@ -22711,7 +22787,7 @@ public final class Svet extends JFrame
 		 * <p>Prečíta do vnútornej pamäte sveta zadaný obrázok zo súboru a vráti
 		 * ho v objekte typu {@link Image Image}. Obrázok nie je zobrazený.
 		 * Podobnú úlohu plní metóda {@link #čítajObrázky(Object[])
-		 * Svet.čítajObrázky(Object... súbory)}, ale s pomocou nej nie je
+		 * Svet.čítajObrázky(Object... súbory)}, ale pomocou nej nie je
 		 * možné získať objekt typu {@link Image Image} na ďalšie
 		 * spracovanie. Obrázok môže byť v prípade potreby (napríklad ak sa
 		 * obsah súboru na disku zmenil) z vnútornej pamäte odstránený
@@ -23252,8 +23328,9 @@ public final class Svet extends JFrame
 		 * a {@link Farebnosť#antracitová antracitová}.</p>
 		 * 
 		 * @param nováFarba objekt určujúci novú farbu plochy;
-		 *     jestvuje paleta predvolených farieb (pozri: {@link Farebnosť#biela
-		 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna čierna}…)
+		 *     jestvuje paleta predvolených farieb (pozri: {@link 
+		 *     Farebnosť#biela biela}, {@link Farebnosť#červená červená},
+		 *     {@link Farebnosť#čierna čierna}…)
 		 * 
 		 * @see #vymaž()
 		 */
@@ -23338,7 +23415,7 @@ public final class Svet extends JFrame
 		 * inštancia farebnosti {@link Farebnosť#žiadna žiadna}. So získanou
 		 * farbou môžeme ďalej pracovať – napríklad ju upravovať alebo
 		 * zisťovať jej vlastnosti (farebné zložky…). Testovať, či má bod
-		 * konkrétnu farbu, môžeme napríklad s pomocou metódy
+		 * konkrétnu farbu, môžeme napríklad pomocou metódy
 		 * {@link #farbaBodu(double, double, Color)
 		 * farbaBodu(x, y, farba)}.</p>
 		 * 
@@ -23363,7 +23440,7 @@ public final class Svet extends JFrame
 		 * farebnosti {@link Farebnosť#žiadna žiadna} farba. So získanou farbou
 		 * môžeme ďalej pracovať – napríklad ju upravovať alebo zisťovať jej
 		 * vlastnosti (farebné zložky…). Testovať, či má bod konkrétnu farbu
-		 * môžeme napríklad s pomocou metódy
+		 * môžeme napríklad pomocou metódy
 		 * {@link #farbaBodu(Poloha, Color)
 		 * farbaBodu(objekt, farba)}.</p>
 		 * 
@@ -23385,7 +23462,7 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Zistí, či sa farba bodu (jedného pixela) na zadaných súradniciach
 		 * zhoduje so zadanou farbou. Ak sú zadané súradnice mimo plochy
-		 * sveta, je vrátená hodnota {@code valfalse}. Testovať farbu s pomocou
+		 * sveta, je vrátená hodnota {@code valfalse}. Testovať farbu pomocou
 		 * tejto metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
@@ -23415,7 +23492,7 @@ public final class Svet extends JFrame
 		 * <p>Zistí, či sa farba bodu (jedného pixela) na súradniciach zadaného
 		 * objektu zhoduje so zadanou farbou. Ak sú súradnice zadaného objektu
 		 * mimo plochy sveta, je vrátená hodnota {@code valfalse}. Testovať
-		 * farbu s pomocou tejto metódy môžeme napríklad takto:</p>
+		 * farbu pomocou tejto metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
 			{@code kwdif} ({@link Svet Svet}.{@code currfarbaBodu}({@code valthis}, {@link Farebnosť#modrá modrá})) …
@@ -23616,7 +23693,7 @@ public final class Svet extends JFrame
 		 * <p>Zistí farbu bodu (jedného pixela) na súradniciach myši. So získanou
 		 * farbou môžeme ďalej pracovať – napríklad ju upravovať alebo
 		 * zisťovať jej vlastnosti (farebné zložky…). Testovať, či má bod
-		 * konkrétnu farbu, môžeme napríklad s pomocou metódy {@link 
+		 * konkrétnu farbu, môžeme napríklad pomocou metódy {@link 
 		 * #farbaNaMyši(Color) farbaNaMyši(farba)}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Ak by súradnice myši boli náhodou
@@ -23705,7 +23782,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Zistí, či sa farba bodu (jedného pixela) na súradniciach myši
-		 * zhoduje so zadanou farbou. Testovať farbu s pomocou tejto
+		 * zhoduje so zadanou farbou. Testovať farbu pomocou tejto
 		 * metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
@@ -23736,7 +23813,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Zistí, či sa farba bodu (jedného pixela) na súradniciach myši
-		 * zhoduje so zadanou farbou. Testovať farbu s pomocou tejto
+		 * zhoduje so zadanou farbou. Testovať farbu pomocou tejto
 		 * metódy môžeme napríklad takto:</p>
 		 * 
 		 * <pre CLASS="example">
@@ -24124,7 +24201,7 @@ public final class Svet extends JFrame
 		 * ho v objekte typu {@link Zvuk Zvuk}. Zvuk nie je prehraný. Podobnú
 		 * úlohu plní metóda {@link #čítajZvuky(Object[])
 		 * Svet.čítajZvuky(Object... súbory)} (pozri pre viac informácií),
-		 * ale s pomocou nej nie je možné získať objekt typu {@link Zvuk Zvuk}
+		 * ale pomocou nej nie je možné získať objekt typu {@link Zvuk Zvuk}
 		 * na prípadné ďalšie spracovanie. Zvuk môže byť v prípade potreby
 		 * (napríklad ak sa obsah súboru na disku zmenil) z vnútornej pamäte
 		 * odstránený metódou {@link Svet#uvoľni(String)
@@ -25767,7 +25844,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <p>Hlavný rozdiel medzi interpoláciou a aproximáciou je, že
 		 * (zjednodušene povedané) interpolácia prechádza všetkými bodmi,
-		 * s pomocou ktorých počíta „chýbajúce“ hodnoty a aproximácia
+		 * pomocou ktorých počíta „chýbajúce“ hodnoty a aproximácia
 		 * vychádza z prvého bodu, vchádza do posledného bodu a hodnotami
 		 * ostantných bodov sa iba riadi – môže, ale nemusí nimi prechádzať
 		 * (zväčša ani neprechádza). Lineárnou aproximáciou sa tento rámec
@@ -25785,7 +25862,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <p>S pomocou lineárnej interpolácie je možné získať ľubovoľnú
 		 * „priamočiaru“ hodnotu ležiacu medzi hodnotami {@code a}
-		 * a {@code b} a to s pomocou parametra {@code t}. Parameter
+		 * a {@code b} a to pomocou parametra {@code t}. Parameter
 		 * {@code t} by mal nadobúdať hodnoty medzi {@code num0.0}
 		 * a {@code num1.0}. Keď je lineárna interpolácia použitá
 		 * napríklad so začiatočnými a koncovými súradnicami bodu
@@ -25797,13 +25874,13 @@ public final class Svet extends JFrame
 		 * na úsečke medzi určenými súradnicami bodov.</p>
 		 * 
 		 * <p><image>linearnaInterpolacia.png<alt/>Body vypočítané
-		 * s použitím lineárnej interpolácie.</image>Body vypočítané s pomocou
+		 * s použitím lineárnej interpolácie.</image>Body vypočítané pomocou
 		 * lineárnej interpolácie ležiace na nakreslenej úsečke.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Podmieňovací spôsob („by mali“)
 		 * použitý výššie v súvislosti hodnotou parametra {@code t} bol
 		 * použitý úmyselne. Zamerajme sa na príklad kreslenia bodov (podľa
-		 * súradníc vypočítaných s pomocou lineárnej interpolácie) ležiacich
+		 * súradníc vypočítaných pomocou lineárnej interpolácie) ležiacich
 		 * na úsečke s počiatočným bodom A[x<sub>1</sub>, y<sub>1</sub>]
 		 * a koncovým bodom B[x<sub>2</sub>, y<sub>2</sub>]. Ak sa hodnota
 		 * parametra {@code t} bude nachádzať mimo povoleného (resp.
@@ -25813,7 +25890,7 @@ public final class Svet extends JFrame
 		 * <p><b>Príklad:</b></p>
 		 * 
 		 * <p>Nasledujúci príklad nakreslí body ležiace na úsečke vypočítané
-		 * s pomocou lineárnej interpolácie.</p>
+		 * pomocou lineárnej interpolácie.</p>
 		 * 
 		 * <pre CLASS="example">
 			{@code kwdfinal} {@link Bod Bod}[] body = {@code kwdnew} {@link Bod Bod}([{@code num2}];
@@ -26930,7 +27007,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
-		 * <p>Obrázok vyššie sa dá vykresliť s pomocou nasledujúceho
+		 * <p>Obrázok vyššie sa dá vykresliť pomocou nasledujúceho
 		 * príkladu. Príklad ukazuje definíciu pomocnej triedy {@code 
 		 * Kružnica}, definíciu štyroch kružníc a nájdenie a zobrazenie
 		 * všetkých ich priesečníkov. (Podrobnosti sú v komentároch.)</p>
@@ -29783,7 +29860,7 @@ public final class Svet extends JFrame
 			koncovýBlokStropu = 0;
 
 		// Súčasť implementácie rolovania a posúvania textov
-		// vnútornej konzoly podlahy alebo stropu s pomocou klávesnice.
+		// vnútornej konzoly podlahy alebo stropu pomocou klávesnice.
 		private final static String home = "home";
 		private final static String end  = "end";
 		private final static String hore = "hore";
@@ -29818,7 +29895,7 @@ public final class Svet extends JFrame
 					boolean nepokračuj = true;
 
 					// Súčasť implementácie rolovania a posúvania textov
-					// vnútornej konzoly podlahy s pomocou klávesnice.
+					// vnútornej konzoly podlahy pomocou klávesnice.
 					if (príkaz == home)
 						GRobot.podlaha.posunutieTextov(
 							GRobot.podlaha.posunutieTextovX(),
@@ -29858,7 +29935,7 @@ public final class Svet extends JFrame
 					boolean nepokračuj = true;
 
 					// Súčasť implementácie rolovania a posúvania textov
-					// vnútornej konzoly stropu s pomocou klávesnice.
+					// vnútornej konzoly stropu pomocou klávesnice.
 					if (príkaz == home)
 						GRobot.strop.posunutieTextov(
 							GRobot.strop.posunutieTextovX(),
@@ -30368,7 +30445,7 @@ public final class Svet extends JFrame
 			if (zapnúť || skratkyPodlahy)
 			{
 				// Súčasť implementácie rolovania a posúvania textov
-				// vnútornej konzoly stropu s pomocou klávesnice.
+				// vnútornej konzoly stropu pomocou klávesnice.
 				pridajKlávesovúSkratku(home, Kláves.VK_HOME, 0, false);
 				pridajKlávesovúSkratku(end, Kláves.VK_END, 0, false);
 				pridajKlávesovúSkratku(hore, Kláves.VK_UP, 0, false);
@@ -30390,7 +30467,7 @@ public final class Svet extends JFrame
 			else
 			{
 				// Súčasť implementácie rolovania a posúvania textov
-				// vnútornej konzoly stropu s pomocou klávesnice.
+				// vnútornej konzoly stropu pomocou klávesnice.
 				odoberKlávesovúSkratku(home);
 				odoberKlávesovúSkratku(end);
 				odoberKlávesovúSkratku(hore);
@@ -30448,7 +30525,7 @@ public final class Svet extends JFrame
 			if (zapnúť || skratkyStropu)
 			{
 				// Súčasť implementácie rolovania a posúvania textov
-				// vnútornej konzoly podlahy s pomocou klávesnice.
+				// vnútornej konzoly podlahy pomocou klávesnice.
 				pridajKlávesovúSkratku(home, Kláves.VK_HOME, 0, false);
 				pridajKlávesovúSkratku(end, Kláves.VK_END, 0, false);
 				pridajKlávesovúSkratku(hore, Kláves.VK_UP, 0, false);
@@ -30470,7 +30547,7 @@ public final class Svet extends JFrame
 			else
 			{
 				// Súčasť implementácie rolovania a posúvania textov
-				// vnútornej konzoly podlahy s pomocou klávesnice.
+				// vnútornej konzoly podlahy pomocou klávesnice.
 				odoberKlávesovúSkratku(home);
 				odoberKlávesovúSkratku(end);
 				odoberKlávesovúSkratku(hore);
@@ -30533,7 +30610,7 @@ public final class Svet extends JFrame
 		 * bolo možné ďalej pracovať. Ak svet nemá definované vlnenie, tak
 		 * metóda definuje nové neaktívne vlnenie s predvolenou úrovňou
 		 * útlmu {@code num26}. <small>(Overiť to, či je definovaná
-		 * inštancia vlnenia, je možné s pomocou metódy {@link #máVlnenie()
+		 * inštancia vlnenia, je možné pomocou metódy {@link #máVlnenie()
 		 * máVlnenie}.)</small> Naopak, metóda {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie} vráti inštanciu vlnenia len v takom prípade,
 		 * že jestvuje. <small>(V opačnom prípade vráti metóda
@@ -30626,14 +30703,14 @@ public final class Svet extends JFrame
 		 * {@linkplain Svet#spustiČasovač() časovač}, tak by vlnenie nemohlo
 		 * fungovať, preto je časovač touto metódou spúšťaný automaticky.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
 		 * <p class="caution"><b>Pozor!</b> Ak vlnenie nie je definované,
 		 * tak metóda {@link #vlnenie() vlnenie} definuje nové neaktívne
 		 * vlnenie s predvolenou úrovňou útlmu {@code num26}. Overiť to, či
-		 * je definovaná inštancia vlnenia, je možné s pomocou metódy
+		 * je definovaná inštancia vlnenia, je možné pomocou metódy
 		 * {@link #máVlnenie() máVlnenie}. Metóda
 		 * {@link #jestvujúceVlnenie() jestvujúceVlnenie} vráti inštanciu
 		 * vlnenia len v prípade, že jestvuje. V opačnom prípade vráti hodnotu
@@ -30688,14 +30765,14 @@ public final class Svet extends JFrame
 		 * byť časovač spustený automaticky. Umožňuje to parameter
 		 * {@code ajČasovač}.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
 		 * <p class="caution"><b>Pozor!</b> Ak vlnenie nie je definované,
 		 * tak metóda {@link #vlnenie() vlnenie} definuje nové neaktívne
 		 * vlnenie s predvolenou úrovňou útlmu {@code num26}. Overiť to, či
-		 * je definovaná inštancia vlnenia, je možné s pomocou metódy
+		 * je definovaná inštancia vlnenia, je možné pomocou metódy
 		 * {@link #máVlnenie() máVlnenie}. Metóda
 		 * {@link #jestvujúceVlnenie() jestvujúceVlnenie} vráti inštanciu
 		 * vlnenia len v prípade, že jestvuje. V opačnom prípade vráti hodnotu
@@ -30753,14 +30830,14 @@ public final class Svet extends JFrame
 		 * {@linkplain Svet#spustiČasovač() časovač}, tak by vlnenie nemohlo
 		 * fungovať, preto je časovač touto metódou spúšťaný automaticky.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
 		 * <p class="caution"><b>Pozor!</b> Ak vlnenie nie je definované,
 		 * tak metóda {@link #vlnenie() vlnenie} definuje nové neaktívne
 		 * vlnenie s predvolenou úrovňou útlmu {@code num26}. Overiť to, či
-		 * je definovaná inštancia vlnenia, je možné s pomocou metódy
+		 * je definovaná inštancia vlnenia, je možné pomocou metódy
 		 * {@link #máVlnenie() máVlnenie}. Metóda
 		 * {@link #jestvujúceVlnenie() jestvujúceVlnenie} vráti inštanciu
 		 * vlnenia len v prípade, že jestvuje. V opačnom prípade vráti hodnotu
@@ -30820,14 +30897,14 @@ public final class Svet extends JFrame
 		 * byť časovač spustený automaticky. Umožňuje to parameter
 		 * {@code ajČasovač}.</p>
 		 * 
-		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou s pomocou
+		 * <p>Inštanciu vlnenia je možné získať a pracovať s ňou pomocou
 		 * metódy {@link #vlnenie() vlnenie} alebo {@link #jestvujúceVlnenie()
 		 * jestvujúceVlnenie}.</p>
 		 * 
 		 * <p class="caution"><b>Pozor!</b> Ak vlnenie nie je definované,
 		 * tak metóda {@link #vlnenie() vlnenie} definuje nové neaktívne
 		 * vlnenie s predvolenou úrovňou útlmu {@code num26}. Overiť to, či
-		 * je definovaná inštancia vlnenia, je možné s pomocou metódy
+		 * je definovaná inštancia vlnenia, je možné pomocou metódy
 		 * {@link #máVlnenie() máVlnenie}. Metóda
 		 * {@link #jestvujúceVlnenie() jestvujúceVlnenie} vráti inštanciu
 		 * vlnenia len v prípade, že jestvuje. V opačnom prípade vráti hodnotu
