@@ -24308,8 +24308,10 @@ Toto bolo presunuté na úvodnú stránku:
 						do {
 							zoznamZmenený2 = false;
 							reštart = false;
-							for (GRobot tento : zoznamRobotov)
+							int počet = zoznamRobotov.size();
+							for (int i = 0; i < počet; ++i)
 							{
+								GRobot tento = zoznamRobotov.get(i);
 								tento.prijatieVýzvy(this, -1);
 								tento.prijatieVyzvy(this, -1);
 								if (zoznamZmenený2)
@@ -24397,8 +24399,10 @@ Toto bolo presunuté na úvodnú stránku:
 						do {
 							zoznamZmenený2 = false;
 							reštart = false;
-							for (GRobot tento : zoznamRobotov)
+							int počet = zoznamRobotov.size();
+							for (int i = 0; i < počet; ++i)
 							{
+								GRobot tento = zoznamRobotov.get(i);
 								tento.prijatieVýzvy(this, kľúč);
 								tento.prijatieVyzvy(this, kľúč);
 								if (zoznamZmenený2)
@@ -24516,8 +24520,10 @@ Toto bolo presunuté na úvodnú stránku:
 							do {
 								zoznamZmenený2 = false;
 								reštart = false;
-								for (GRobot tento : zoznamRobotov)
+								int počet = zoznamRobotov.size();
+								for (int i = 0; i < počet; ++i)
 								{
+									GRobot tento = zoznamRobotov.get(i);
 									tento.prijatieVýzvy(this, kľúč);
 									tento.prijatieVyzvy(this, kľúč);
 									if (zoznamZmenený2)
@@ -31506,7 +31512,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @param polomer polomer určujúci veľkosť vajíčka; ide o polomer
 			 *     kružnice so stredom S – pozri schému vyššie
 			 * @param nastavenia nepovinný zoznam nastavení (podrobnosti sú
-			 *     v rámci opisu; vyššie)
+			 *     uvedené v rámci opisu; vyššie)
 			 * @return {@code valnull} alebo tvar vytvorený po použití
 			 *     nastavení {@code srg"vráť"}, {@code srg"vyplň"} alebo
 			 *     {@code srg"kresli"}
@@ -31792,18 +31798,18 @@ Toto bolo presunuté na úvodnú stránku:
 			 * tieto dve nastavenia sa stanú nedostupnými pre toto volanie
 			 * metódy.</p>
 			 * 
-			 * <ul><li>{@code srg"vráť"}, {@code srg"vráťcestu"} – vykoná
+			 * <ul><li>{@code srg"vráť"}, {@code srg"vráťCestu"} – vykoná
 			 * nastavenie {@code srg"zdvihniPero"}, zálohuje aktuálny stav
 			 * záznamu a/alebo uloženia cesty tohto robota, vytvorí z n-uholníka
 			 * novú cestu, obnoví predchádzajúci stav záznamu cesty a vráti
 			 * cestu vytvorenú z n-uholníka v návratovej hodnote tejto metódy.</li>
-			 * <li>{@code srg"vyplň"}, {@code srg"vyplňcestu"} – vykoná
+			 * <li>{@code srg"vyplň"}, {@code srg"vyplňCestu"} – vykoná
 			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
 			 * #kresliZáznamCesty(boolean)
 			 * kresliZáznamCesty}{@code (}{@code valfalse}{@code )} a metódu
 			 * {@link #vyplňTvar(Shape) kresliTvar}{@code (cesta)} s aktuálne
 			 * vytvorenou cestou z n-uholníka.</li>
-			 * <li>{@code srg"kresli"}, {@code srg"kreslicestu"} – vykoná
+			 * <li>{@code srg"kresli"}, {@code srg"kresliCestu"} – vykoná
 			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
 			 * #kresliZáznamCesty(boolean)
 			 * kresliZáznamCesty}{@code (}{@code valfalse}{@code )} a metódu
@@ -32015,8 +32021,261 @@ Toto bolo presunuté na úvodnú stránku:
 			}
 
 			/** <p><a class="alias"></a> Alias pre {@link #nUholník(double, int, String...) nUholník}.</p> */
-			public Shape nUholnik(double dĺžka, int n, String... nastavenia)
-			{ return nUholník(dĺžka, n, nastavenia); }
+			public Shape nUholnik(double rozmer, int n, String... nastavenia)
+			{ return nUholník(rozmer, n, nastavenia); }
+
+
+			/**
+			 * <p>Nakreslí <em>n</em> lupeňov umiestnených na pomyselnej
+			 * kružnici so zadaným polomerom. Metóda funguje podobne ako
+			 * metódy {@link #vajce(double, String...) vajce} a {@link 
+			 * #nUholník(double, int, String...) nUholník}. Využíva podobné
+			 * nastavenia, ktoré vedú k podobnému správaniu, preto je dobré
+			 * prezrieť si aj ich dokumentáciu.</p>
+			 * 
+			 * <p>Podobne ako uvedené metódy, aj táto metóda najskôr vykoná
+			 * niekoľko prípravných príkazov a potom príkazy, ktoré skutočne
+			 * kreslia lupene. V tomto prípade slúžia prípravné príkazy na
+			 * zistenie kľúčových bodov kreslenia lupeňov.</p>
+			 * 
+			 * <p>Metóda môže prijať nepovinný zoznam reťazcových parametrov
+			 * ({@code nastavenia}), ktoré umožňujú vykonať nasledujúce zmeny
+			 * správania metódy:</p>
+			 * 
+			 * <ul><li>{@code srg"zaznamenajCestu"}, {@code srg"cesta"},
+			 * {@code srg"cestu"} – zapne zaznamenávanie cesty pre záverečnú
+			 * sériu príkazov kresliacich lupene. Tento príkaz zároveň prikáže
+			 * dočasne zdvihnúť pero (počas vykonávania tejto metódy), aby sa
+			 * lupene nenakreslili. Tvar bude uložený v {@linkplain #cesta()
+			 * ceste}. Po skončení vykonávania metódy je obnovená pôvodná
+			 * poloha pera.
+			 * (Ak bolo pero zdvihnuté, zostane zdvihnuté a po skončení
+			 * vykonávania metódy sa nepoloží.)
+			 * Toto nastavenie sa stane nedostupným v prípade, že bolo použité
+			 * niektoré z nastavení {@code srg"vráť"}, {@code srg"vyplň"} alebo
+			 * {@code srg"kresli"} (pozri nižšie).</li>
+			 * <li>{@code srg"nezaznamenajCestu"}, {@code srg"necesta"},
+			 * {@code srg"necestu"} – vypne zaznamenávanie cesty zapnuté podľa
+			 * predchádzajúceho nastavenia, ale nezruší zdvihnutie pera.
+			 * Toto nastavenie sa stane nedostupným v prípade, že bolo použité
+			 * niektoré z nastavení {@code srg"vráť"}, {@code srg"vyplň"} alebo
+			 * {@code srg"kresli"} (pozri nižšie).</li>
+			 * <li>{@code srg"zdvihniPero"}, {@code srg"nepero"} – dočasne
+			 * zdvihne pero – počas vykonávania tejto metódy. Po skončení
+			 * vykonávania metódy je obnovená pôvodná poloha pera.</li>
+			 * <li>{@code srg"nezdvíhajPero"}, {@code srg"nezdvihniPero"},
+			 * {@code srg"pero"} – eliminuje akciu dočasného zdvíhania pera.
+			 * Toto má význam vykonať najmä po nastavení {@code srg"cesta"}
+			 * (alebo jeho alternatívy), ktorý zároveň prikazuje dočasne
+			 * zdvihnúť pero. Takže kombináciou nastavení: {@code srg"cesta"}
+			 * a {@code srg"pero"} (v uvedenom poradí) sa dá docieliť súčasné
+			 * zaznamenanie cesty aj nakreslenie lupeňov. Pozor, ak bolo pero
+			 * zdvihnuté, toto nastavenie ho nepoloží. Toto nastavenie len
+			 * zruší automatické dočasné zdvíhanie pera, ale ak chceme lupene
+			 * nakresliť, treba mať pero položené už pred volaním tejto
+			 * metódy.</li></ul>
+			 * 
+			 * <p>Nasledujúce tri nastavenia zrušia efekt nastavení
+			 * {@code srg"cesta"} alebo {@code srg"necesta"} a spôsobia, že
+			 * tieto dve nastavenia sa stanú nedostupnými pre toto volanie
+			 * metódy.</p>
+			 * 
+			 * <ul><li>{@code srg"vráť"}, {@code srg"vráťCestu"} – vykoná
+			 * nastavenie {@code srg"zdvihniPero"}, zálohuje aktuálny stav
+			 * záznamu a/alebo uloženia cesty tohto robota, vytvorí z tvaru
+			 * lupeňov novú cestu, obnoví predchádzajúci stav záznamu cesty
+			 * a vráti cestu vytvorenú z lupeňov v návratovej hodnote tejto
+			 * metódy.</li>
+			 * <li>{@code srg"vyplň"}, {@code srg"vyplňCestu"} – vykoná
+			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
+			 * #kresliZáznamCesty(boolean)
+			 * kresliZáznamCesty}{@code (}{@code valfalse}{@code )} a metódu
+			 * {@link #vyplňTvar(Shape) kresliTvar}{@code (cesta)} s aktuálne
+			 * vytvorenou cestou z lupeňov.</li>
+			 * <li>{@code srg"kresli"}, {@code srg"kresliCestu"} – vykoná
+			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
+			 * #kresliZáznamCesty(boolean)
+			 * kresliZáznamCesty}{@code (}{@code valfalse}{@code )} a metódu
+			 * {@link #kresliTvar(Shape) kresliTvar}{@code (cesta)} s aktuálne
+			 * vytvorenou cestou z lupeňov.</li></ul>
+			 * 
+			 * <p>Parametre nastavení sú vyhodnocované postupne, to znamená, že
+			 * tie neskoršie uvedené môžu zrušiť alebo čiastočne zrušiť akcie
+			 * tých skôr uvedených. Medzery, spojovníky a podčiarkovníky sú
+			 * z parametrov pred ich vyhodnotením vymazané. Na veľkosti písmen
+			 * nezáleží.</p>
+			 * 
+			 * @param polomer polomer pomyselnej kružnice, od ktorej sa odvíja
+			 *     kreslenie lupeňov
+			 * @param n počet lupeňov
+			 * @param odklon odklon pri kreslení oblúkov lupeňov; ak je nulový,
+			 *     tak sa oblúky začínajú kresliť kolmo na pomyselnú
+			 *     východiskovú kružnicu lupeňov; rôznymi odchýlkami sa dajú
+			 *     dosiahnuť zaujímavé tvary
+			 * @param nastavenia nepovinný zoznam nastavení (podrobnosti sú
+			 *     uvedené v rámci opisu; vyššie)
+			 * @return {@code valnull} alebo tvar vytvorený po použití
+			 *     nastavení {@code srg"vráť"}, {@code srg"vyplň"} alebo
+			 *     {@code srg"kresli"}
+			 */
+			@SuppressWarnings("fallthrough")
+			public Shape lupene(double polomer, int n, double odklon, String... nastavenia)
+			{
+				boolean zaznamenajCestu = false;
+				boolean zdvihniPero = false;
+				boolean zálohujCestu = false;
+				boolean vráťCestu = false;
+				boolean kresliCestu = false;
+				boolean vyplňCestu = false;
+
+				for (String nastavenie : nastavenia)
+				{
+					if (null == nastavenie) continue;
+					nastavenie = nastavenie.trim().replaceAll("[-_  \t]+",
+						"").toLowerCase();
+					if (nastavenie.isEmpty()) continue;
+
+					switch (nastavenie)
+					{
+					case "cesta": case "cestu":
+					case "zaznamenajcestu":
+						if (!vráťCestu)
+						{
+							zaznamenajCestu = true;
+							zdvihniPero = true;
+						}
+						break;
+
+					case "necesta": case "necestu":
+					case "nezaznamenajcestu":
+						if (!vráťCestu)
+							zaznamenajCestu = false;
+						break;
+
+					case "zdvihnipero": case "nepero":
+						zdvihniPero = true;
+						break;
+
+					case "nezdvíhajpero": case "nezdvihajpero":
+					case "nezdvihnipero": case "pero":
+						zdvihniPero = false;
+						break;
+
+					case "kresli": case "kreslicestu":
+					case "vyplň": case "vyplňcestu":
+					case "vypln": case "vyplncestu":
+						if (nastavenie.equals("kresli") ||
+							nastavenie.equals("kreslicestu"))
+							kresliCestu = true;
+						else
+							vyplňCestu = true;
+
+						// no-break; //
+
+					case "vráť": case "vráťcestu":
+					case "vrat": case "vratcestu":
+						zaznamenajCestu = true;
+						zdvihniPero = true;
+						zálohujCestu = true;
+						vráťCestu = true;
+						break;
+					}
+				}
+
+				// Vytvorenie záloh:
+				boolean nekresli = Svet.nekresli;
+				Bod S = new Bod(aktuálneX, aktuálneY);
+				double au = aktuálnyUhol;
+				double pu = poslednýUhol;
+				boolean pp = peroPoložené;
+				double px = poslednéX;
+				double py = poslednéY;
+
+				Path2D.Double c = null;
+				boolean zc = false, zcbpp = true, kzc = true;
+
+				double uhol = 360.0 / n;
+				double začiatok = au - uhol / 2;
+				Bod[] body = new Bod[n];
+
+				if (zálohujCestu)
+				{
+					c = cesta; cesta = new Path2D.Double();
+					zc = záznamCesty; záznamCesty = false;
+					zcbpp = záznamCestyBezPolohyPera;
+					kzc = kresliZáznamCesty;
+					if (kresliCestu || vyplňCestu)
+						kresliZáznamCesty(false);
+				}
+
+				if (zdvihniPero)
+				{
+					peroPoložené = false;
+					aktualizujStavPera();
+				}
+				Svet.nekresli = true;
+
+				try
+				{
+					for (int i = 0; i < n; ++i)
+					{
+						poloha(S);
+						uhol(začiatok + uhol * i);
+						skoč(polomer);
+						body[i] = poloha();
+					}
+
+					if (zaznamenajCestu) začniCestu();
+
+					poloha(body[n - 1]);
+					for (int i = 0; i < n; ++i)
+					{
+						otočNa(S);
+						vpravo(180 + odklon);
+						choďNaPoOblúku(body[i]);
+					}
+
+					if (zaznamenajCestu)
+					{
+						uzavriCestu();
+						if (vráťCestu)
+						{
+							Shape tátoCesta = new Path2D.Double(cesta);
+							if (vyplňCestu) vyplňTvar(tátoCesta);
+							if (kresliCestu) kresliTvar(tátoCesta);
+							return tátoCesta;
+						}
+					}
+
+					return null;
+				}
+				finally
+				{
+					// Vrátenie záloh:
+					aktuálneX = S.x;
+					aktuálneY = S.y;
+
+					poslednéX = px;
+					poslednéY = py;
+
+					aktuálnyUhol = au;
+					poslednýUhol = pu;
+					peroPoložené = pp;
+
+					if (zálohujCestu)
+					{
+						cesta = c;
+						záznamCesty = zc;
+						záznamCestyBezPolohyPera = zcbpp;
+						kresliZáznamCesty = kzc;
+					}
+
+					aktualizujStavPera();
+
+					Svet.nekresli = nekresli;
+					Svet.automatickéPrekreslenie();
+				}
+			}
 
 
 			/**
@@ -44683,6 +44942,344 @@ Toto bolo presunuté na úvodnú stránku:
 	 * zatiaľ iba kreslí objekty v samostatnej vrstve. Odporúčame sa preto
 	 * zatiaľ vyhnúť kresleniu do obrázkov počas exportu do formátu SVG,
 	 * pretože toto správanie sa v budúcnosti zmení.</p>
+	 * 
+	 * <p><b>Príklad:</b></p>
+	 * 
+	 * <p>Tento príklad vytvorí jednoduché testovacie prostredie na skúmanie
+	 * možností atribútu {@link #svgExport svgExport}. Zapína príkazový
+	 * riadok rámca, uchováva jeho históriu a implementuje viacero dodatočných
+	 * pomocných príkazov – na mazanie textov konzoly, obsahu statickej
+	 * inštancie SVG podpory, výpis obsahu SVG podpory, uloženie SVG súboru
+	 * a špeciálny testovací prípad „alfa beta,“ ktorého využitie v podstate
+	 * vyžaduje reštart prostredia, lebo vytvára inštancie robotov, ktoré
+	 * sa nedajú odstrániť. (Tu ponechávame priestor na tvorivosť – vedeli by
+	 * ste to doriešiť?)</p>
+	 * 
+	 * <pre CLASS="example">
+		{@code kwdimport} java.awt.{@link Color Color};
+		{@code kwdimport} java.awt.{@link Shape Shape};
+		{@code kwdimport} knižnica.*;
+
+		{@code kwdpublic} {@code typeclass} TestSVGExport {@code kwdextends} {@link GRobot GRobot}
+		{
+			{@code comm// Konštruktor.}
+			{@code kwdprivate} TestSVGExport()
+			{
+				{@code valsuper}({@link Svet Svet}.{@link Svet#šírkaZariadenia() šírkaZariadenia}(), {@link Svet Svet}.{@link Svet#výškaZariadenia() výškaZariadenia}());
+				{@link Svet Svet}.{@link Svet#maximalizuj() maximalizuj}();
+
+				{@link Svet Svet}.{@link Svet#začniVstup() začniVstup}();
+				{@link Svet Svet}.{@link Svet#neskrývajVstupnýRiadok() neskrývajVstupnýRiadok}();
+				{@link GRobot#interaktívnyRežim(boolean) interaktívnyRežim}({@code valtrue});
+
+				{@link Svet Svet}.{@link Svet#aktivujHistóriuVstupnéhoRiadka() aktivujHistóriuVstupnéhoRiadka}();
+				{@link Svet Svet}.{@link Svet#uchovajHistóriuVstupnéhoRiadka() uchovajHistóriuVstupnéhoRiadka}();
+
+				{@link Svet Svet}.{@link Svet#skratkyStropu(boolean) skratkyStropu}({@code valtrue});
+				{@link Plátno strop}.{@link Plátno#automatickéZobrazovanieLíšt(boolean) automatickéZobrazovanieLíšt}({@code valtrue});
+				{@link Plátno strop}.{@link Plátno#zmeňOdsadenieSprava(Integer) zmeňOdsadenieSprava}({@code num30});
+				{@link Plátno strop}.{@link Plátno#písmo(String, double) písmo}({@code srg"Segoe UI Light"}, {@code num14});
+
+				{@link GRobot#skry() skry}();
+				{@link #svgExport svgExport} = {@link #svgPodpora svgPodpora};
+				{@link Svet Svet}.{@link Svet#svgExport svgExport} = {@link #svgPodpora svgPodpora};
+			}
+
+
+			{@code comm// Spustí skript:}
+			{@code comm// }
+			{@code comm//  • ak je parameter súbor true, tak je reťazec obsah považovaný za názov}
+			{@code comm//    súboru so skriptom;}
+			{@code comm//  • ak je parameter súbor false, tak je reťazec obsah považovaný skript}
+			{@code comm//    priamo určený na vykonanie}
+			{@code comm// }
+			{@code comm// a vypíše prípadné chyby.}
+			{@code kwdpublic} {@code kwdstatic} {@code typevoid} skript({@link String String} obsah, {@code typeboolean} súbor)
+			{
+				{@link Skript Skript} skript = {@link Svet Svet}.{@link Svet#vyrobSkript(String, boolean) vyrobSkript}(obsah, súbor);
+				skript.{@link Skript#vypíš() vypíš}();
+				{@code typeint} riadok = skript.{@link Skript#vykonaj() vykonaj}();
+				{@code kwdif} (riadok > {@code num0})
+				{
+					výpisChyby();
+					chyba({@link Svet Svet}.{@link Svet#S(Object...) S}({@code srg"Riadok: "}, riadok));
+				}
+			}
+
+
+			{@code comm// Príkaz na výpis chybových hlásení.}
+			{@code kwdpublic} {@code kwdstatic} {@code typevoid} chyba({@link String String} chyba)
+			{
+				{@link Farba Farba} f = {@link Plátno strop}.{@link Plátno#farbaTextu() farbaTextu}();
+				{@link Plátno strop}.{@link Plátno#farbaTextu(Color) farbaTextu}({@link Skript Skript}.{@link Skript#farbaLadenia(String) farbaLadenia}({@code srg"chyba"}));
+				{@link Svet Svet}.{@link Svet#vypíšRiadok(Object...) vypíšRiadok}(chyba);
+				{@link Plátno strop}.{@link Plátno#farbaTextu(Color) farbaTextu}(f);
+			}
+
+			{@code comm// Nový príkaz: cls – anglická skratka „clear screen“ používaná na}
+			{@code comm// vymazanie konzoly; keďže „vymaž“ vymaže texty aj grafiku a „vymaž}
+			{@code comm// texty“ je presmerované do metódy: Súbor.vymaž("");}
+			{@code kwdpublic} {@code kwdstatic} {@code typevoid} cls() { {@link Svet Svet}.{@link Svet#vymažTexty() vymažTexty}(); }
+
+			{@code comm// Nový príkaz: clear – vyčistí (vymaže všetky tvary) statickú inštanciu}
+			{@code comm// SVG podpory. (Pozri aj komentár vyššie.)}
+			{@code kwdpublic} {@code kwdstatic} {@code typevoid} clear() { {@link #svgPodpora svgPodpora}.{@link SVGPodpora#vymaž() vymaž}(); }
+
+			{@code comm// Nový príkaz: vysyp – ekvivalent anglického „dump“ – „vysype“ (vypíše)}
+			{@code comm// aktuálny obsah statickej inštancie SVG podpory.}
+			{@code kwdpublic} {@code kwdstatic} {@code typevoid} vysyp() { {@link Svet Svet}.{@link Svet#vypíšRiadok(Object...) vypíšRiadok}({@link #svgPodpora svgPodpora}.{@link SVGPodpora#dajSVG() dajSVG}()); }
+
+			{@code comm// Nový príkaz: ulož – určený na zjednodušenie ukladania SVG súborov.}
+			{@code kwdpublic} {@code kwdstatic} {@code typevoid} uloz({@link String String} meno) { ulož(meno, {@code valfalse}); }
+			{@code kwdpublic} {@code kwdstatic} {@code typevoid} ulož({@link String String} meno) { ulož(meno, {@code valfalse}); }
+			{@code kwdpublic} {@code kwdstatic} {@code typevoid} uloz({@link String String} meno, {@code typeboolean} prepíš)
+			{ ulož(meno, prepíš); }
+			{@code kwdpublic} {@code kwdstatic} {@code typevoid} ulož({@link String String} meno, {@code typeboolean} prepíš)
+			{
+				{@code kwdif} (!prepíš && {@link Súbor Súbor}.{@link Súbor#jestvuje(String) jestvuje}(meno))
+				{
+					chyba({@link Svet Svet}.{@link Svet#S(Object...) S}({@code srg"Súbor"}, meno, {@code srg"už jestvuje."}));
+					{@code kwdreturn};
+				}
+
+				{@code typeint} počet = {@link #svgPodpora svgPodpora}.{@link SVGPodpora#zapíš(String) zapíš}(meno, {@code valnull}, prepíš);
+
+				{@code kwdif} ({@code num0} <= počet)
+					{@link Svet Svet}.{@link Svet#vypíšRiadok(Object...) vypíšRiadok}({@code srg"Počet zapísaných tvarov:"}, počet);
+				{@code kwdelse}
+					chyba({@code srg"Zápis zlyhal."});
+			}
+
+			{@code comm// Neúspešné spracovanie potvrdeného príkazu.}
+			{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#potvrdenieVstupu() potvrdenieVstupu}() { výpisChyby(); }
+
+			{@code comm// Vypíše poslednú chybu skriptu.}
+			{@code kwdprivate} {@code kwdstatic} {@code typevoid} výpisChyby()
+			{
+				{@code typeint} kód = {@link Svet Svet}.{@link Svet#kódPoslednejChyby() kódPoslednejChyby}();
+				{@code kwdswitch} (kód)
+				{
+				{@code kwdcase} {@link GRobot#CHYBA_NEZNÁMY_PRÍKAZ CHYBA_NEZNÁMY_PRÍKAZ}:
+					chyba({@code srg"Neznámy príkaz."});
+					{@code kwdbreak};
+
+				{@code kwdcase} {@link GRobot#CHYBA_VYKONANIA_PRÍKAZU CHYBA_VYKONANIA_PRÍKAZU}:
+					{@link GRobotException GRobotException}.{@link GRobotException.Chyba Chyba} chyba = {@link GRobotException GRobotException}.{@link GRobotException#denník denník}.{@link GRobotException.Denník#posledný() posledný}();
+					{@code kwdfor} ({@code typeint} i = {@code num0}; {@code valnull} != chyba.{@link GRobotException.Chyba#výnimka výnimka} &&
+						{@code valnull} == chyba.{@link GRobotException.Chyba#výnimka výnimka}.{@link Exception#getMessage() getMessage}() && i < {@code num3}; ++i)
+					{
+						chyba = {@link GRobotException GRobotException}.{@link GRobotException#denník denník}.{@link GRobotException.Denník#predchádzajúci() predchádzajúci}();
+						{@code kwdif} ({@link GRobotException GRobotException}.{@link GRobotException#denník denník}.{@link GRobotException.Denník#prejdenýDokola() prejdenýDokola}())
+						{
+							chyba = {@code valnull};
+							{@code kwdbreak};
+						}
+					}
+
+					{@code kwdif} ({@code valnull} == chyba) chyba({@link Svet Svet}.{@link Svet#textPoslednejChyby() textPoslednejChyby}());
+					{@code kwdelse} {@code kwdif} ({@code valnull} != chyba.{@link GRobotException.Chyba#správa správa}) chyba(chyba.{@link GRobotException.Chyba#správa správa});
+					{@code kwdelse} {@code kwdif} ({@code valnull} != chyba.{@link GRobotException.Chyba#výnimka výnimka} &&
+						{@code valnull} != chyba.{@link GRobotException.Chyba#výnimka výnimka}.{@link Exception#getMessage() getMessage}())
+						chyba(chyba.{@link GRobotException.Chyba#výnimka výnimka}.{@link Exception#getMessage() getMessage}());
+					{@code kwdelse} chyba({@link Svet Svet}.{@link Svet#textPoslednejChyby() textPoslednejChyby}());
+					{@code kwdbreak};
+
+				{@code kwddefault}:
+					chyba({@link Svet Svet}.{@link Svet#textPoslednejChyby() textPoslednejChyby}());
+				}
+			}
+
+			{@code comm// Úspešné spracovanie potvrdeného príkazu.}
+			{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#spracovaniePríkazu() spracovaniePríkazu}()
+			{
+				{@link Object Object} hodnota = {@link Skript Skript}.{@link Skript#poslednáNávratováHodnota() poslednáNávratováHodnota}();
+				{@code kwdif} ({@code valnull} != hodnota)
+				{
+					{@link Farba Farba} f = {@link Plátno strop}.{@link Plátno#farbaTextu() farbaTextu}();
+					{@code kwdif} ((hodnota {@code kwdinstanceof} {@link Double Double}) || (hodnota {@code kwdinstanceof} {@link Float Float}) ||
+						(hodnota {@code kwdinstanceof} {@link Integer Integer}) || (hodnota {@code kwdinstanceof} {@link Long Long}))
+					{
+						{@link Plátno strop}.{@link Plátno#farbaTextu(Color) farbaTextu}({@link Skript Skript}.{@link Skript#farbaLadenia(String) farbaLadenia}({@code srg"číslo"}));
+						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object...) vypíšRiadok}(hodnota);
+					}
+					{@code kwdelse} {@code kwdif} (hodnota {@code kwdinstanceof} {@link Boolean Boolean})
+					{
+						{@link Plátno strop}.{@link Plátno#farbaTextu(Color) farbaTextu}({@link Skript Skript}.{@link Skript#farbaLadenia(String) farbaLadenia}({@code srg"číslo"}));
+						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object...) vypíšRiadok}(hodnota);
+					}
+					{@code kwdelse} {@code kwdif} (hodnota {@code kwdinstanceof} {@link String String})
+					{
+						{@link Plátno strop}.{@link Plátno#farbaTextu(Color) farbaTextu}({@link Skript Skript}.{@link Skript#farbaLadenia(String) farbaLadenia}({@code srg"reťazec"}));
+						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object...) vypíšRiadok}(hodnota);
+					}
+					{@code kwdelse} {@code kwdif} (hodnota {@code kwdinstanceof} {@link Color Color})
+					{
+						{@link Plátno strop}.{@link Plátno#farbaTextu(Color) farbaTextu}({@link Skript Skript}.{@link Skript#farbaLadenia(String) farbaLadenia}({@code srg"farba"}));
+						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object...) vypíšRiadok}({@link Farba Farba}.{@link Farba#farbaNaReťazec(Color) farbaNaReťazec}(({@link Color Color})hodnota));
+					}
+					{@code kwdelse} {@code kwdif} (hodnota {@code kwdinstanceof} {@link Shape Shape})
+					{
+						{@code comm// Ignorované.}
+					}
+					{@code kwdelse}
+					{
+						{@link Plátno strop}.{@link Plátno#farbaTextu(Color) farbaTextu}({@link Farebnosť#purpurová purpurová});
+						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object...) vypíšRiadok}(hodnota.{@link Object#getClass() getClass}().{@link Class#getName() getName}(), {@code srg":"}, hodnota);
+					}
+					{@link Plátno strop}.{@link Plátno#farbaTextu(Color) farbaTextu}(f);
+				}
+			}
+
+			{@code comm// Reakcia na tik časovača. Obsahuje len časované prekresľovanie sveta.}
+			{@code kwd@}Override {@code kwdpublic} {@code kwdvoid} {@link GRobot#tik() tik}()
+			{ {@code kwdif} ({@link Svet Svet}.{@link Svet#neboloPrekreslené() neboloPrekreslené}()) {@link Svet Svet}.{@link Svet#prekresli() prekresli}(); }
+
+			{@code comm// Hlavná metóda.}
+			{@code kwdpublic} {@code kwdstatic} {@code kwdvoid} main({@link String String}[] args)
+			{
+				{@link Svet Svet}.{@link Svet#režimLadenia(boolean, boolean) režimLadenia}({@code valtrue}, {@code valtrue});
+				{@link Svet Svet}.{@link Svet#interaktívnyRežim(boolean) interaktívnyRežim}({@code valtrue});
+
+				{@code comm// Obsluha udalostí ladenia. (Udalosti ladenia je v tomto rámci}
+				{@code comm// možné obsluhovať len takto.)}
+				{@code kwdnew} {@link ObsluhaUdalostí ObsluhaUdalostí}()
+				{
+					{@code kwd@}Override {@code kwdpublic} {@code kwdboolean} {@link ObsluhaUdalostí#ladenie(int, String, int) ladenie}(
+						{@code kwdint} riadok, {@link String String} príkaz, {@code kwdint} správa)
+					{
+						{@code kwdswitch} (správa)
+						{
+						{@code kwdcase} {@link GRobot#ZABRÁNIŤ_VYKONANIU ZABRÁNIŤ_VYKONANIU}: {@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}(príkaz); {@code kwdbreak};
+						{@code kwdcase} {@link GRobot#VYPÍSAŤ_PRÍKAZ VYPÍSAŤ_PRÍKAZ}: <code class="comment">/&ast;case VYPÍSAŤ_SKRIPT:&ast;/</code> {@code kwdreturn} {@code valtrue};
+
+						{@code kwdcase} {@link GRobot#UKONČENIE_CHYBOU UKONČENIE_CHYBOU}:
+							{
+								{@code kwdif} ({@link Svet Svet}.{@link Svet#kódPoslednejChyby() kódPoslednejChyby}() > {@code num0}) výpisChyby();
+								{@code kwdelse} chyba(príkaz);
+								{@code kwdif} (riadok > {@code num0}) chyba({@link Svet Svet}.{@link Svet#S(Object...) S}({@code srg"Riadok: "}, riadok));
+							}
+							{@code kwdreturn} {@code valfalse};
+						}
+						{@code kwdreturn} {@code valsuper}.{@link ObsluhaUdalostí#ladenie(int, String, int) ladenie}(riadok, príkaz, správa);
+					}
+				};
+
+				{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"TestSVGExport.cfg"});
+				{@link Svet Svet}.{@link Svet#skry() skry}(); {@link Svet Svet}.{@link Svet#nekresli() nekresli}();
+
+				{@code kwdtry} { {@code kwdnew} TestSVGExport(); }
+				{@code kwdcatch} ({@link Throwable Throwable} t) { t.{@link Throwable#printStackTrace() printStackTrace}(); }
+				{@link Svet Svet}.{@link Svet#prekresli() prekresli}(); {@link Svet Svet}.{@link Svet#zobraz() zobraz}(); {@link Svet Svet}.{@link Svet#spustiČasovač(double) spustiČasovač}({@code num0.5});
+			}
+
+
+			{@code comm// Od tohto miesta nižšie nasledujú všetky potrebné súčasti na}
+			{@code comm// implementáciu vlastného príkazu „alfa beta,“ ktorý naplní statickú}
+			{@code comm// inštanciu SVG podpory tvarmi generovanými dvoma robotmi (alfou}
+			{@code comm// a betou), ktoré kreslia vlastný tvar elipsy s menom uprostred}
+			{@code comm// a orezané spojnice medzi nimi ukončené šípkami. Príkaz po vykonaní}
+			{@code comm// vypíše aktuálny obsah statickej inštancie SVG podpory.}
+
+			{@code comm// Deklarácie (resp. definície „prázdnych“) robotov:}
+			{@code kwdprivate} {@code kwdstatic} {@link GRobot GRobot} alfa = {@code valnull}, beta = {@code valnull};
+
+			{@code comm// Definícia kreslenia vlastného tvaru robotov (elipsy s menom}
+			{@code comm// robota v strede):}
+			{@code kwdprivate} {@code kwdstatic} {@link KreslenieTvaru KreslenieTvaru} tvarAlfaBeta = r ->
+			{
+				r.{@link GRobot#elipsa(double) elipsa}({@code num2});
+				r.{@link GRobot#text(String) text}(r.{@link GRobot#meno() meno}());
+			};
+
+			{@code comm// Definícia kreslenia koncových značiek čiar spojníc:}
+			{@code kwdprivate} {@code kwdstatic} {@link KreslenieTvaru KreslenieTvaru} tvarŠípky = r ->
+			{
+				r.{@link GRobot#vpravo(double) vpravo}({@code num30});
+				r.{@link GRobot#dopredu(double) dopredu}({@code num10});
+				r.{@link GRobot#zdvihniPero() zdvihniPero}();
+				r.{@link GRobot#vzad(double) vzad}({@code num10});
+				r.{@link GRobot#vľavo(double) vľavo}({@code num60});
+				r.{@link GRobot#položPero() položPero}();
+				r.{@link GRobot#dopredu(double) dopredu}({@code num10});
+			};
+
+			{@code comm// Samotný príkaz: alfa beta.}
+			{@code kwdpublic} {@code kwdstatic} {@code kwdvoid} alfaBeta()
+			{
+				{@code comm// Vytvorenie inštancie alfy, ak nejestvuje:}
+				{@code kwdif} ({@code valnull} == alfa)
+					alfa = {@code kwdnew} {@link GRobot GRobot}()
+					{{
+						{@link GRobot#meno(String) meno}({@code srg"Alfa"});
+						{@link GRobot#vlastnýTvar(KreslenieTvaru) vlastnýTvar}(tvarAlfaBeta);
+						{@link GRobot#veľkosť(double) veľkosť}({@code num20});
+						{@link GRobot#skočNa(double, double) skočNa}(-{@code num100}, {@code num100});
+						{@link GRobot#nekresliTvary() nekresliTvary}();
+					}};
+
+				{@code comm// Vytvorenie inštancie bety, ak nejestvuje:}
+				{@code kwdif} ({@code valnull} == beta)
+					beta = {@code kwdnew} {@link GRobot GRobot}()
+					{{
+						{@link GRobot#meno(String) meno}({@code srg"Beta"});
+						{@link GRobot#vlastnýTvar(KreslenieTvaru) vlastnýTvar}(tvarAlfaBeta);
+						{@link GRobot#veľkosť(double) veľkosť}({@code num30});
+						{@link GRobot#skočNa(double, double) skočNa}({@code num100}, {@code num100});
+						{@link GRobot#nekresliTvary() nekresliTvary}();
+					}};
+
+				{@code comm// Vytvorenie (definovanie) spojníc a ich vlastností:}
+				{@code kwdif} ({@code valnull} != alfa && {@code valnull} != beta)
+				{
+					alfa.{@link GRobot#spojnica(GRobot, Shape, Shape) spojnica}(beta, alfa.{@link GRobot#elipsa(double) elipsa}({@code num2}), beta.{@link GRobot#elipsa(double) elipsa}({@code num2}))
+						.{@link GRobot.Spojnica#definujZnačkuKonca(KreslenieTvaru) definujZnačkuKonca}(tvarŠípky).{@link GRobot.Spojnica#vysunutie(double) vysunutie}({@code num10});
+
+					beta.{@link GRobot#spojnica(GRobot, Shape, Shape) spojnica}(alfa, beta.{@link GRobot#elipsa(double) elipsa}({@code num2}), alfa.{@link GRobot#elipsa(double) elipsa}({@code num2}))
+						.{@link GRobot.Spojnica#definujZnačkuKonca(KreslenieTvaru) definujZnačkuKonca}(tvarŠípky).{@link GRobot.Spojnica#vysunutie(double) vysunutie}({@code num10});
+				}
+
+				{@code comm// Vygenerovanie (pridanie) obsahu do statickej inštancie SVG podpory:}
+				alfa.{@link #svgExport svgExport} = beta.{@link #svgExport svgExport} = {@link #svgPodpora svgPodpora};
+				{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
+				alfa.{@link #svgExport svgExport} = beta.{@link #svgExport svgExport} = {@code valnull};
+
+				{@code comm// Výpis aktuálneho obsahu statickej inštancie SVG podpory:}
+				skript({@code srg"cls\nvysyp"}, {@code valfalse});
+			}
+		}
+		</pre>
+	 * 
+	 * <p>A nasledujúce dva skripty sa s týmto príkladom dajú použiť.</p>
+	 * 
+	 * <p><code>TestExportElipsy.GRScript</code>:</p>
+	 * 
+	 * <pre CLASS="example">
+		hrúbka čiary 2
+		farba červená
+		veľkosť 20
+		elipsa 2
+		obdĺžnik 2
+		farba modrá
+		veľkosť 30
+		elipsa 2
+		obdĺžnik 2
+		farba zelená
+		vpred 20
+		</pre>
+	 * 
+	 * <p><code>TestSVGExport.GRScript</code>:</p>
+	 * 
+	 * <pre CLASS="example">
+		hrúbka čiary 3
+		farba červená
+		kružnica 50
+		vpred 50
+		kruh 25
+		farba modrá
+		choď po oblúku 45, 25
+		farba zelená
+		kružnica 50
+		</pre>
 	 * 
 	 * @see Svet#svgExport
 	 */

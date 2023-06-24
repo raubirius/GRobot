@@ -529,8 +529,7 @@ public final class Svet extends JFrame
 					int početRegistrovanýchRobotov = 0;
 
 					for (GRobot tento : GRobot.zoznamRobotov)
-						if (tento.jeRegistrovaný)
-							++početRegistrovanýchRobotov;
+						if (tento.jeRegistrovaný) ++početRegistrovanýchRobotov;
 
 					if (0 == početRegistrovanýchRobotov &&
 						históriaVstupnéhoRiadkaNezmenená &&
@@ -839,9 +838,12 @@ public final class Svet extends JFrame
 
 					try
 					{
-						for (GRobot počúvajúci : GRobot.počúvajúciSúbory)
+						int početPočúvajúcich = GRobot.počúvajúciSúbory.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
 							try
 							{
+								GRobot počúvajúci = GRobot.
+									počúvajúciSúbory.get(i);
 								// konfiguračnýSúbor.otvorNaČítanie(
 								// 	názovKonfiguračnéhoSúboru);
 
@@ -2126,8 +2128,12 @@ public final class Svet extends JFrame
 					if (null != ObsluhaUdalostí.počúvadlo)
 						ObsluhaUdalostí.počúvadlo.tik();
 
-					for (GRobot počúvajúci : GRobot.počúvajúciSystém)
+					int početPočúvajúcich = GRobot.počúvajúciSystém.size();
+					for (int i = 0; i < početPočúvajúcich; ++i)
+					{
+						GRobot počúvajúci = GRobot.počúvajúciSystém.get(i);
 						počúvajúci.tik();
+					}
 				}
 
 				} // násobTiky – koniec
@@ -3305,8 +3311,11 @@ public final class Svet extends JFrame
 				do {
 					GRobot.zoznamZmenený2 = false;
 					reštart = false;
-					for (GRobot tento : GRobot.zoznamRobotov)
+
+					int počet = GRobot.zoznamRobotov.size();
+					for (int i = 0; i < počet; ++i)
 					{
+						GRobot tento = GRobot.zoznamRobotov.get(i);
 						tento.prijatieVýzvy(null, -1);
 						tento.prijatieVyzvy(null, -1);
 						if (GRobot.zoznamZmenený2)
@@ -3390,8 +3399,11 @@ public final class Svet extends JFrame
 				do {
 					GRobot.zoznamZmenený2 = false;
 					reštart = false;
-					for (GRobot tento : GRobot.zoznamRobotov)
+
+					int počet = GRobot.zoznamRobotov.size();
+					for (int i = 0; i < počet; ++i)
 					{
+						GRobot tento = GRobot.zoznamRobotov.get(i);
 						tento.prijatieVýzvy(null, kľúč);
 						tento.prijatieVyzvy(null, kľúč);
 						if (GRobot.zoznamZmenený2)
@@ -3505,8 +3517,11 @@ public final class Svet extends JFrame
 					do {
 						GRobot.zoznamZmenený2 = false;
 						reštart = false;
-						for (GRobot tento : GRobot.zoznamRobotov)
+
+						int počet = GRobot.zoznamRobotov.size();
+						for (int i = 0; i < počet; ++i)
 						{
+							GRobot tento = GRobot.zoznamRobotov.get(i);
 							tento.prijatieVýzvy(null, kľúč);
 							tento.prijatieVyzvy(null, kľúč);
 							if (GRobot.zoznamZmenený2)
@@ -8369,8 +8384,8 @@ public final class Svet extends JFrame
 				for (GRobot tento : GRobot.zoznamRobotov)
 				{
 					if (tento.viditeľný)
-						tento.kresliSpojnice(obrázokSveta2,
-							grafikaSveta2);
+						tento.kresliSpojnice(
+							obrázokSveta2, grafikaSveta2);
 				}
 
 				// Zobraz všetkých viditeľných robotov vo vrstvách
@@ -11115,6 +11130,13 @@ public final class Svet extends JFrame
 			GRobot.zoznamRobotov.remove(ktorý);
 			GRobot.záložnýZoznamRobotov.remove(ktorý);
 
+			GRobot.počúvajúciKlávesnicu.remove(ktorý);
+			GRobot.počúvajúciMyš.remove(ktorý);
+			GRobot.počúvajúciVstupnýRiadok.remove(ktorý);
+			GRobot.počúvajúciRozhranie.remove(ktorý);
+			GRobot.počúvajúciSystém.remove(ktorý);
+			GRobot.počúvajúciSúbory.remove(ktorý);
+
 			GRobot.Vrstva.vlož(index1, --index2);
 
 			if (ktorý == hlavnýRobot)
@@ -11208,6 +11230,14 @@ public final class Svet extends JFrame
 					ktorý.uvoľni();
 					GRobot.zoznamRobotov.remove(i--);
 					GRobot.záložnýZoznamRobotov.remove(ktorý);
+
+					GRobot.počúvajúciKlávesnicu.remove(ktorý);
+					GRobot.počúvajúciMyš.remove(ktorý);
+					GRobot.počúvajúciVstupnýRiadok.remove(ktorý);
+					GRobot.počúvajúciRozhranie.remove(ktorý);
+					GRobot.počúvajúciSystém.remove(ktorý);
+					GRobot.počúvajúciSúbory.remove(ktorý);
+
 					if (ktorý == hlavnýRobot) hlavnýRobot = null;
 				}
 			}

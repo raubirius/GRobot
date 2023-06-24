@@ -128,6 +128,9 @@ import static javax.swing.JFrame.NORMAL;
  */
 public class Okno
 {
+	// TODO: Implementovať možnosť presunu tlačidiel (prípadne iných
+	// komponentov) do okna alebo priamo ich vytvorenia v okne…
+
 	// Príznak overovania počiatočnej polohy okna (po inicializácii):
 	private static boolean overujPočiatočnúPolohuOkna = true;
 
@@ -627,7 +630,7 @@ public class Okno
 	 * <p>Prečíta konfiguráciu tohto okna z konfiguračného súboru.
 	 * Konfigurácia musí byť zapnutá (pozri napríklad metódu {@link 
 	 * Svet#použiKonfiguráciu(String) Svet.použiKonfiguráciu(názovSúboru)})
-	 * a okno musí mať meno (pozri metódu {@link #meno(String} meno}).</p>
+	 * a okno musí mať meno (pozri metódu {@link #meno(String) meno}).</p>
 	 * 
 	 * <p>Parametre polohy a rozmerov okna tejto metódy určujú počiatočné
 	 * (predvolené) hodnoty týchto údajov. Neskôr budú nahradené aktuálnymi
@@ -751,6 +754,9 @@ public class Okno
 			null == oknoCelejObrazovky ? okno : oknoCelejObrazovky,
 			WindowEvent.WINDOW_CLOSING));
 	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #zavrieť() zavrieť}.</p> */
+	public void zavriet() { zavrieť(); }
 
 
 	// Udalosti okna – ObsluhaUdalostí.počúvadlo myši, klávesnice
@@ -2264,14 +2270,16 @@ public class Okno
 
 
 	/**
-	 * <p>Vráti inštanciu {@linkplain #Obrázok obrázka} obsiahnutého v tomto
+	 * <p>Vráti inštanciu {@linkplain Obrázok obrázka} obsiahnutého v tomto
 	 * okne.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Táto metóda vracia typ {@link 
 	 * Obrázok Obrázok} (s diakritikou), pretože nie je technicky možné, aby
-	 * vracala inštanciu typu {@link Obrazok Obrazok} (bez diakritiky), avšak
-	 * ak je vrátená inštancia typu {@link Obrazok Obrazok}, tak sa dá po
-	 * typovej kontrole dodatočne pretypovať.</p>
+	 * cielene vracala inštanciu všeobecnejšieho (odvodeného) typu {@link 
+	 * Obrazok Obrazok} (bez diakritiky). Tento typ však môže do okna vložiť
+	 * programátor metódou {@link #obrázok(Obrázok) obrázok(obrázok)}. Vtedy
+	 * je možné vrátenú inštancia dodatočne pretypovať (po typovej kontrole)
+	 * na typ {@link Obrazok Obrazok}.</p>
 	 * 
 	 * @return inštancia obrázka, ktorý tvorí grafický obsah tohto okna
 	 */
@@ -2334,8 +2342,6 @@ public class Okno
 	 *     jestvuje paleta predvolených farieb (pozri: {@link Farebnosť#biela
 	 *     biela}, {@link Farebnosť#červená červená}, {@link Farebnosť#čierna
 	 *     čierna}…)
-	 * 
-	 * @see #vymaž()
 	 */
 	public void farbaPlochy(Color nováFarba)
 	{ hlavnýPanel.setBackground(nováFarba); }

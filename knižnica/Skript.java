@@ -2656,10 +2656,13 @@ public abstract class Skript
 
 		if (null == aktuálnaInštancia)
 		{
-			for (GRobot robot : GRobot.zoznamRobotov)
-				if (robot.interaktívnyRežim &&
-					robot.vykonajPríkaz(príkaz))
+			int početRobotov = GRobot.zoznamRobotov.size();
+			for (int i = 0; i < početRobotov; ++i)
+			{
+				GRobot robot = GRobot.zoznamRobotov.get(i);
+				if (robot.interaktívnyRežim && robot.vykonajPríkaz(príkaz))
 					++početÚspechov;
+			}
 
 			if (0 == početÚspechov && Svet.interaktívnyRežim &&
 				Svet.vykonajPríkaz(príkaz)) ++početÚspechov;
