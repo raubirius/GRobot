@@ -530,6 +530,44 @@ public class Spojenie
 	}
 
 
+	/**
+	 * <p>Sieťová komunikácia je zložitá, preto bolo 7. 7. 2023 implementované
+	 * toto rozhranie ladenia. Jeho použitie je jednoduché: každá inštancia
+	 * triedy {@link Spojenie Spojenie} obsahuje verejný atribút {@link 
+	 * Spojenie#ladenie ladenie}, ktorý je typu tohto rozhrania a predvolene
+	 * je nastavený na {@code valnull}. Keďže toto rozhranie má jedinú metódu
+	 * dá sa použiť ako funkcionálne rozhranie napríklad takto:</p>
+	 * 
+	 * <pre CLASS="example">
+		spojenie.{@link Spojenie#ladenie ladenie} = (l) -> { {@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}(l); };
+		</pre>
+	 * 
+	 * <p>Tak sa dá veľmi jednoduchým spôsobom rozhodnúť, čo sa má udiať
+	 * s údajmi ladenia generovanými touto triedou počas jej používania.</p>
+	 */
+	public static interface Ladenie {
+		/**
+		 * <p>Táto metóda prijme údaj ladenia v reťazci.</p>
+		 * @param laď reťazec s informáciou ladenia
+		 */
+		public void ladenie(String laď);
+	}
+
+	/**
+	 * <p>Atribút rozhrania {@link Ladenie Ladenie}, ktorým sa dá bližšie
+	 * špecifikovať spôsob spracovania údajov ladenia generovaných aktuálnou
+	 * inštanciou spojenia.</p>
+	 */
+	public Ladenie ladenie = null;
+
+	// Metóda kontrolujúca nastavenie atribútu ladenia a zabezpečujúca jeho
+	// využitie.
+	private void ladenie(String laď)
+	{
+		if (null != ladenie) ladenie.ladenie(laď);
+	}
+
+
 	// Odošle hlavičku správy na server.
 	private boolean pošliHlavičku()
 	{
@@ -537,7 +575,7 @@ public class Spojenie
 
 		try
 		{
-			// System.out.println("Hlavička: „" + hlavičkaObsahuSprávy + "“");
+			/*#*/ ladenie("Hlavička: „" + hlavičkaObsahuSprávy + "“");
 			byte[] bytes = hlavičkaObsahuSprávy.getBytes("UTF-8");
 
 			spojenie.setRequestProperty("Content-Length",
@@ -546,7 +584,7 @@ public class Spojenie
 
 			údajePožiadavky = spojenie.getRequestProperties();
 
-			// System.out.println("Do output: " + spojenie.getDoOutput());
+			/*#*/ ladenie("Do output: " + spojenie.getDoOutput());
 
 			výstup = spojenie.getOutputStream();
 			výstup.write(bytes);
@@ -571,7 +609,7 @@ public class Spojenie
 
 		try
 		{
-			// System.out.println("Chvost: „" + chvostObsahuSprávy + "“");
+			/*#*/ ladenie("Chvost: „" + chvostObsahuSprávy + "“");
 			výstup.write(chvostObsahuSprávy.getBytes("UTF-8"));
 			výstup.flush();
 			chvostPoslaný = true;
@@ -628,7 +666,7 @@ public class Spojenie
 		{
 			if (!odpoveďPrečítaná) try
 			{
-				// System.out.println("Čítam súbor…");
+				/*#*/ ladenie("Čítam súbor…");
 
 				// Aj pri tomto protokole budú viaceré z údajov prečítané
 				// korektne (rovnako, ako keby išlo o komunikáciu so
@@ -662,10 +700,10 @@ public class Spojenie
 				catch (Exception e)
 				{ GRobotException.vypíšChybovéHlásenia(e/*, false*/); }
 
-				// System.out.println("Údaje odpovede: " + údajeOdpovede);
-				// System.out.println("Typ obsahu: " + typObsahu);
-				// System.out.println("Veľkosť: " + veľkosťOdpovede);
-				// System.out.println("Kód odpovede: " + kódOdpovede);
+				/*#*/ ladenie("Údaje odpovede: " + údajeOdpovede);
+				/*#*/ ladenie("Typ obsahu: " + typObsahu);
+				/*#*/ ladenie("Veľkosť: " + veľkosťOdpovede);
+				/*#*/ ladenie("Kód odpovede: " + kódOdpovede);
 
 				try
 				{
@@ -757,8 +795,8 @@ public class Spojenie
 								veľkosťOdpovede = odpoveď.length();
 							}
 
-							// System.out.println("  Textová odpoveď: " +
-							// 	odpoveď.length());
+							/*#*/ ladenie("  Textová odpoveď: " +
+							/*#*/ 	odpoveď.length());
 						}
 					}
 				}
@@ -807,8 +845,8 @@ public class Spojenie
 						}
 					}
 
-					// System.out.println("  Bajty odpovede: " +
-					// 	bajtyOdpovede.length);
+					/*#*/ ladenie("  Bajty odpovede: " +
+					/*#*/ 	bajtyOdpovede.length);
 				}
 				else try { čítač.close(); } catch (Exception e)
 				{ GRobotException.vypíšChybovéHlásenia(e/*, false*/); }
@@ -826,7 +864,7 @@ public class Spojenie
 		}
 		else if ((chvostPoslaný || pošliChvost()) && !odpoveďPrečítaná) try
 		{
-			// System.out.println("Čítam odpoveď…");
+			/*#*/ ladenie("Čítam odpoveď…");
 
 			údajeOdpovede = spojenie.getHeaderFields();
 			typObsahu = spojenie.getContentType();
@@ -836,13 +874,13 @@ public class Spojenie
 			else
 				sekvenciaTransferuCelkovo += veľkosťOdpovede;
 
-			// System.out.println("Typ obsahu: " + typObsahu);
-			// System.out.println("Veľkosť: " + veľkosťOdpovede);
+			/*#*/ ladenie("Typ obsahu: " + typObsahu);
+			/*#*/ ladenie("Veľkosť: " + veľkosťOdpovede);
 
 			if (spojenie instanceof HttpURLConnection)
 				kódOdpovede = ((HttpURLConnection)spojenie).getResponseCode();
 
-			// System.out.println("Kód odpovede: " + kódOdpovede);
+			/*#*/ ladenie("Kód odpovede: " + kódOdpovede);
 
 			try
 			{
@@ -931,8 +969,8 @@ public class Spojenie
 							veľkosťOdpovede = odpoveď.length();
 						}
 
-						// System.out.println("  Textová odpoveď: " +
-						// 	odpoveď.length());
+						/*#*/ ladenie("  Textová odpoveď: " +
+						/*#*/ 	odpoveď.length());
 					}
 				}
 			}
@@ -980,8 +1018,8 @@ public class Spojenie
 					}
 				}
 
-				// System.out.println("  Bajty odpovede: " +
-				// 	bajtyOdpovede.length);
+				/*#*/ ladenie("  Bajty odpovede: " +
+				/*#*/ 	bajtyOdpovede.length);
 			}
 			else try { čítač.close(); } catch (Exception e)
 			{ GRobotException.vypíšChybovéHlásenia(e/*, false*/); }
@@ -2103,7 +2141,7 @@ public class Spojenie
 					typMalým = typObsahu.substring(0, indexOf).
 						trim().toLowerCase();
 
-				// System.out.println(typMalým);
+				/*#*/ ladenie("Typ malým: " + typMalým);
 
 				if (názovSúboru.isEmpty())
 				{
@@ -2621,15 +2659,15 @@ public class Spojenie
 			this.vzdialenýSúbor = "";
 			int indexOf;
 
-			// System.out.println("Analyzujem: " + sb);
+			/*#*/ ladenie("Analyzujem: " + sb);
 
 			indexOf = sb.indexOf("://");
 			if (-1 != indexOf)
 			{
 				this.protokol = sb.substring(0, indexOf);
 				sb.delete(0, indexOf + 3);
-				// System.out.println("Nový protokol: " + this.protokol);
-				// System.out.println("  sb: " + sb);
+				/*#*/ ladenie("Nový protokol: " + this.protokol);
+				/*#*/ ladenie("  sb: " + sb);
 			}
 
 			indexOf = sb.indexOf("/");
@@ -2637,15 +2675,15 @@ public class Spojenie
 			{
 				this.doména = sb.substring(0, indexOf);
 				sb.delete(0, indexOf + 1);
-				// System.out.println("Nová doména: " + this.doména);
-				// System.out.println("  sb: " + sb);
+				/*#*/ ladenie("Nová doména: " + this.doména);
+				/*#*/ ladenie("  sb: " + sb);
 			}
 			else
 			{
 				this.doména = sb.toString();
 				sb.setLength(0);
-				// System.out.println("Nová doména: " + this.doména);
-				// System.out.println("  sb: " + sb);
+				/*#*/ ladenie("Nová doména: " + this.doména);
+				/*#*/ ladenie("  sb: " + sb);
 			}
 
 			indexOf = this.doména.indexOf(":");
@@ -2655,7 +2693,7 @@ public class Spojenie
 				{
 					this.port = Integer.parseInt(
 						this.doména.substring(indexOf + 1));
-					// System.out.println("Nový port: " + this.port);
+					/*#*/ ladenie("Nový port: " + this.port);
 				}
 				catch (Exception e)
 				{
@@ -2668,7 +2706,7 @@ public class Spojenie
 				}
 
 				this.doména = this.doména.substring(0, indexOf);
-				// System.out.println("Úprava domény: " + this.doména);
+				/*#*/ ladenie("Úprava domény: " + this.doména);
 			}
 
 			indexOf = sb.lastIndexOf("/");
@@ -2676,26 +2714,26 @@ public class Spojenie
 			{
 				this.vzdialenáCesta = sb.substring(0, indexOf);
 				sb.delete(0, indexOf + 1);
-				// System.out.println("Nová vzdialená cesta: " +
-				// 	this.vzdialenáCesta);
-				// System.out.println("  sb: " + sb);
+				/*#*/ ladenie("Nová vzdialená cesta: " +
+				/*#*/ 	this.vzdialenáCesta);
+				/*#*/ ladenie("  sb: " + sb);
 
 				this.vzdialenýSúbor = sb.toString();
-				// System.out.println("Nový vzdialený súbor: " +
-				// 	this.vzdialenýSúbor);
+				/*#*/ ladenie("Nový vzdialený súbor: " +
+				/*#*/ 	this.vzdialenýSúbor);
 			}
 			else if (0 != sb.length())
 			{
 				this.vzdialenýSúbor = sb.toString();
-				// System.out.println("Nový vzdialený súbor: " +
-				// 	this.vzdialenýSúbor);
+				/*#*/ ladenie("Nový vzdialený súbor: " +
+				/*#*/ 	this.vzdialenýSúbor);
 			}
 
 
 			try
 			{
 				zostavKoreň();
-				// System.out.println("Koreň: " + this.koreň);
+				/*#*/ ladenie("Koreň: " + this.koreň);
 			}
 			catch (Exception e)
 			{
@@ -2707,8 +2745,8 @@ public class Spojenie
 
 			if (otvor(this.vzdialenýSúbor))
 			{
-				// System.out.println("Vzdialený súbor „" +
-				// 	this.vzdialenýSúbor + "“ bol úspešne otvorený.");
+				/*#*/ ladenie("Vzdialený súbor „" +
+				/*#*/ 	this.vzdialenýSúbor + "“ bol úspešne otvorený.");
 
 				vráťZmeny = false;
 				return true;
@@ -3152,7 +3190,7 @@ public class Spojenie
 		{
 			if (spojenie instanceof HttpURLConnection)
 			{
-				// System.out.println("Prevádzam požiadavku na POST.");
+				/*#*/ ladenie("Prevádzam požiadavku na POST.");
 				((HttpURLConnection)spojenie).setRequestMethod("POST");
 			}
 
@@ -3236,14 +3274,14 @@ public class Spojenie
 
 			while ((prečítaných = prúdSúboru.read(údajeSúboru)) > 0)
 			{
-				// System.out.println("  Odosielam údaje: " + prečítaných);
+				/*#*/ ladenie("  Odosielam údaje: " + prečítaných);
 				výstup.write(údajeSúboru, 0, prečítaných);
 				prečítanáVeľkosť += prečítaných;
 				sekvenciaTransferuStav += prečítaných;
 				sekvenciaTransferuÚdajov(ODOVZDANIE_ÚDAJOV);
 			}
 
-			// System.out.println("Odoslaných údajov: " + prečítanáVeľkosť);
+			/*#*/ ladenie("Odoslaných údajov: " + prečítanáVeľkosť);
 			if (veľkosťPrílohy != prečítanáVeľkosť)
 			{
 				GRobotException.vypíšChybovéHlásenie(

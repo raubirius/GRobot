@@ -859,7 +859,7 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
  * ktoré s ním úzko súvisia sú rozmiestnené na viacerých miestach
  * dokumentácie. Užitočné príklady použitia nájdete napríklad […]</p -->
  * 
- * <!-- TODO: Zvážiť výrobu komplexnňeho príkladu použitia (vyššie sa
+ * <!-- TODO: Zvážiť výrobu komplexného príkladu použitia (vyššie sa
  * aspoň odkazujem na príklady použitia v rámci dokumentácie). -->
  * 
 <!--

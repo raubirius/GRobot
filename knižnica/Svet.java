@@ -130,6 +130,7 @@ import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -146,6 +147,7 @@ import javax.swing.KeyStroke;
 import javax.swing.OverlayLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 
 import javax.imageio.ImageIO;
@@ -154,6 +156,7 @@ import javax.imageio.ImageIO;
 import knižnica.podpora.BeepChannel;
 import knižnica.podpora.CERNMersenneTwister;
 import knižnica.podpora.EnumRadioPanel;
+import knižnica.podpora.FileTransferable;
 import knižnica.podpora.VectorListPanel;
 import knižnica.podpora.ExecuteShellCommand;
 import knižnica.podpora.PerlinNoise;
@@ -998,10 +1001,14 @@ public final class Svet extends JFrame
 							ÚdajeUdalostí.poslednáSúradnicaMyšiY =
 								ÚdajeUdalostí.súradnicaMyšiY;
 
-							ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(
-								dtde.getLocation().getX());
-							ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(
-								dtde.getLocation().getY());
+							int eGetX = (int)dtde.getLocation().getX();
+							int eGetY = (int)dtde.getLocation().getY();
+
+							ÚdajeUdalostí.pôvodnáSúradnicaMyšiX = eGetX;
+							ÚdajeUdalostí.pôvodnáSúradnicaMyšiY = eGetY;
+
+							ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(eGetX);
+							ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(eGetY);
 
 							if (null != ObsluhaUdalostí.počúvadlo)
 							{
@@ -1057,6 +1064,7 @@ public final class Svet extends JFrame
 								{
 									ÚdajeUdalostí.oknoUdalosti = null;
 
+									// ťahanieUkončené
 									for (File file : transferData)
 									{
 										String menoSúboru =
@@ -1429,6 +1437,15 @@ public final class Svet extends JFrame
 
 		// Inicializácia grafiky
 
+			/**
+			 * <p>Tento špeciálny atribút je predvolene nastavený na
+			 * {@code valtrue}. Vtedy rámec pri inicializácii sveta a/alebo
+			 * okien vykonáva zmenu vzhľadu (Look and Feel – LAF) na
+			 * systémovú schému. Keď je však vopred nastavený na
+			 * {@code valfalse} rámec tieto zmeny nebude vykonávať.</p>
+			 */
+			public static boolean zmenaLAF = true;
+
 			/*packagePrivate*/ static void inicializujGrafiku()
 			{
 				if (inicializované) return;
@@ -1442,7 +1459,7 @@ public final class Svet extends JFrame
 				inicializované = true;
 
 				// Nastavenie systémového Look&Feel:
-				try { UIManager.setLookAndFeel(UIManager.
+				if (zmenaLAF) try { UIManager.setLookAndFeel(UIManager.
 					getSystemLookAndFeelClassName());
 					// Tento „hack“ je tu z dôvodu zabránenia zmeny nastavení
 					// vzhľadu prvkov rámca po dodatočnej inicializácii dialógov
@@ -1802,14 +1819,10 @@ public final class Svet extends JFrame
 			// Prepočítanie súradníc myši do súradnicového priestoru frameworku
 
 				private static double korekciaMyšiX(double x)
-				{
-					return x - (hlavnýPanel.getWidth() / 2.0);
-				}
+				{ return x - (hlavnýPanel.getWidth() / 2.0); }
 
 				private static double korekciaMyšiY(double y)
-				{
-					return -y + (hlavnýPanel.getHeight() / 2.0);
-				}
+				{ return -y + (hlavnýPanel.getHeight() / 2.0); }
 
 
 			// Hľadanie priesečníkov
@@ -2277,11 +2290,17 @@ public final class Svet extends JFrame
 					ÚdajeUdalostí.poslednáSúradnicaMyšiY =
 						ÚdajeUdalostí.súradnicaMyšiY;
 
-					ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
-					ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
+					int eGetX = e.getX();
+					int eGetY = e.getY();
+
+					ÚdajeUdalostí.pôvodnáSúradnicaMyšiX = eGetX;
+					ÚdajeUdalostí.pôvodnáSúradnicaMyšiY = eGetY;
+
+					ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(eGetX);
+					ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(eGetY);
 					e.translatePoint(
-						(int)ÚdajeUdalostí.súradnicaMyšiX - e.getX(),
-						(int)ÚdajeUdalostí.súradnicaMyšiY - e.getY());
+						(int)ÚdajeUdalostí.súradnicaMyšiX - eGetX,
+						(int)ÚdajeUdalostí.súradnicaMyšiY - eGetY);
 
 					if (e.getButton() == MouseEvent.BUTTON1)
 					{
@@ -2394,11 +2413,17 @@ public final class Svet extends JFrame
 					ÚdajeUdalostí.poslednáSúradnicaMyšiY =
 						ÚdajeUdalostí.súradnicaMyšiY;
 
-					ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
-					ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
+					int eGetX = e.getX();
+					int eGetY = e.getY();
+
+					ÚdajeUdalostí.pôvodnáSúradnicaMyšiX = eGetX;
+					ÚdajeUdalostí.pôvodnáSúradnicaMyšiY = eGetY;
+
+					ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(eGetX);
+					ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(eGetY);
 					e.translatePoint(
-						(int)ÚdajeUdalostí.súradnicaMyšiX - e.getX(),
-						(int)ÚdajeUdalostí.súradnicaMyšiY - e.getY());
+						(int)ÚdajeUdalostí.súradnicaMyšiX - eGetX,
+						(int)ÚdajeUdalostí.súradnicaMyšiY - eGetY);
 
 					if (e.getButton() == MouseEvent.BUTTON1)
 					{
@@ -2445,6 +2470,9 @@ public final class Svet extends JFrame
 			{
 				synchronized (ÚdajeUdalostí.zámokMyši)
 				{
+					int eGetX = e.getX();
+					int eGetY = e.getY();
+
 					if (null != robotMyši)
 					{
 						if (robotMyši.spracuj(e)) return;
@@ -2457,13 +2485,16 @@ public final class Svet extends JFrame
 						ÚdajeUdalostí.poslednáSúradnicaMyšiY =
 							ÚdajeUdalostí.súradnicaMyšiY;
 
-						ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
-						ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
+						ÚdajeUdalostí.pôvodnáSúradnicaMyšiX = eGetX;
+						ÚdajeUdalostí.pôvodnáSúradnicaMyšiY = eGetY;
+
+						ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(eGetX);
+						ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(eGetY);
 					}
 
 					e.translatePoint(
-						(int)ÚdajeUdalostí.súradnicaMyšiX - e.getX(),
-						(int)ÚdajeUdalostí.súradnicaMyšiY - e.getY());
+						(int)ÚdajeUdalostí.súradnicaMyšiX - eGetX,
+						(int)ÚdajeUdalostí.súradnicaMyšiY - eGetY);
 
 					ÚdajeUdalostí.poslednáUdalosťMyši = e;
 					aktuálnyIntervalKofeínu = intervalKofeínu;
@@ -2492,6 +2523,9 @@ public final class Svet extends JFrame
 			{
 				synchronized (ÚdajeUdalostí.zámokMyši)
 				{
+					int eGetX = e.getX();
+					int eGetY = e.getY();
+
 					if (null != robotMyši)
 					{
 						if (robotMyši.spracuj(e)) return;
@@ -2504,13 +2538,16 @@ public final class Svet extends JFrame
 						ÚdajeUdalostí.poslednáSúradnicaMyšiY =
 							ÚdajeUdalostí.súradnicaMyšiY;
 
-						ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
-						ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
+						ÚdajeUdalostí.pôvodnáSúradnicaMyšiX = eGetX;
+						ÚdajeUdalostí.pôvodnáSúradnicaMyšiY = eGetY;
+
+						ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(eGetX);
+						ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(eGetY);
 					}
 
 					e.translatePoint(
-						(int)ÚdajeUdalostí.súradnicaMyšiX - e.getX(),
-						(int)ÚdajeUdalostí.súradnicaMyšiY - e.getY());
+						(int)ÚdajeUdalostí.súradnicaMyšiX - eGetX,
+						(int)ÚdajeUdalostí.súradnicaMyšiY - eGetY);
 
 					ÚdajeUdalostí.poslednáUdalosťMyši = e;
 					aktuálnyIntervalKofeínu = intervalKofeínu;
@@ -2591,11 +2628,17 @@ public final class Svet extends JFrame
 					ÚdajeUdalostí.poslednáSúradnicaMyšiY =
 						ÚdajeUdalostí.súradnicaMyšiY;
 
-					ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
-					ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
+					int eGetX = e.getX();
+					int eGetY = e.getY();
+
+					ÚdajeUdalostí.pôvodnáSúradnicaMyšiX = eGetX;
+					ÚdajeUdalostí.pôvodnáSúradnicaMyšiY = eGetY;
+
+					ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(eGetX);
+					ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(eGetY);
 					e.translatePoint(
-						(int)ÚdajeUdalostí.súradnicaMyšiX - e.getX(),
-						(int)ÚdajeUdalostí.súradnicaMyšiY - e.getY());
+						(int)ÚdajeUdalostí.súradnicaMyšiX - eGetX,
+						(int)ÚdajeUdalostí.súradnicaMyšiY - eGetY);
 
 					ÚdajeUdalostí.poslednáUdalosťMyši =
 						ÚdajeUdalostí.poslednáUdalosťRolovania = e;
@@ -3162,6 +3205,10 @@ public final class Svet extends JFrame
 					ÚdajeUdalostí.súradnicaMyšiX;
 				ÚdajeUdalostí.poslednáSúradnicaMyšiY =
 					ÚdajeUdalostí.súradnicaMyšiY;
+
+				// Uloží pôvodné súradnice myši.
+				ÚdajeUdalostí.pôvodnáSúradnicaMyšiX = eGetX;
+				ÚdajeUdalostí.pôvodnáSúradnicaMyšiY = eGetY;
 
 				// Prepočíta a uloží novú polohu myši.
 				ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(eGetX);
@@ -10299,6 +10346,10 @@ public final class Svet extends JFrame
 
 			{@code kwdpublic} {@code typeclass} AplikáciaVSystémovejOblasti {@code kwdextends} {@link GRobot GRobot}
 			{
+				{@code comm// Tento atribút bude riadiť to, či pri pokuse o zavretie okna okno iba}
+				{@code comm// skryjeme alebo vykonáme predvolenú akciu (zavrieme aplikáciu):}
+				{@code kwdprivate} {@code typeboolean} skry = {@code valfalse};
+
 				{@code kwdprivate} AplikáciaVSystémovejOblasti()
 				{
 					{@code comm// Nastavenie titulku okna.}
@@ -10316,10 +10367,21 @@ public final class Svet extends JFrame
 					{@code comm// a dvomi položkami kontextovej ponuky:}
 					{@code kwdif} ({@link Svet Svet}.{@link Svet#systémováIkona(Image, String...) systémováIkona}(ikona, {@code srg"Obnoviť"}, {@code valnull}, {@code srg"Ukončiť"}))
 					{
-						{@code comm// Ak je systémová ikona podporovaná, tak zmeníme akciu zatvorenia}
-						{@code comm// okna z predvoleného zavretia aplikácie na jej skrytie…}
-						{@link GRobot#svet svet}.{@link javax.swing.JFrame#setDefaultCloseOperation(int) setDefaultCloseOperation}(
-							{@link javax.swing javax.swing}.{@link javax.swing.JFrame JFrame}.{@link javax.swing.JFrame#HIDE_ON_CLOSE HIDE_ON_CLOSE});
+						{@code comm// Ak je systémová ikona podporovaná, tak povolíme skrývanie}
+						{@code comm// namiesto zatvárania:}
+						skry = {@code valtrue};
+
+						{@code comm// Poznámka: Keby sme zmenili akciu zatvorenia okna z predvoleného}
+						{@code comm// zavretia aplikácie na jej skrytie (riadky s naznačeným}
+						{@code comm// komentárom nižšie, dosiahli by sme nekonistentné správanie}
+						{@code comm// systémových ovládacích prvkov a položky ponuky Koniec.}
+						{@code comm// Systémové prvky (ako je systémová ikona zavretia okna a položka}
+						{@code comm// systémovej ponuky Zavrieť) by okno skrývali a položka ponuky}
+						{@code comm// Koniec by iba posielala správu o zavretí okna. (Keby sme túto}
+						{@code comm// správu iba zamietli reakciou zavretie a nevykonali nič iné, tak}
+						{@code comm// položka by v podstate prestala fungovať.)}
+						{@code comm// }{@link GRobot#svet svet}.{@link javax.swing.JFrame#setDefaultCloseOperation(int) setDefaultCloseOperation}(
+						{@code comm// } {@link javax.swing javax.swing}.{@link javax.swing.JFrame JFrame}.{@link javax.swing.JFrame#HIDE_ON_CLOSE HIDE_ON_CLOSE});
 
 							{@code comm// (poznámka: teraz má používateľ len dve možnosti zavretia}
 							{@code comm// tejto aplikácie s použitím jej grafického používateľského}
@@ -10352,7 +10414,8 @@ public final class Svet extends JFrame
 				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#voľbaSystémovejIkony() voľbaSystémovejIkony}()
 				{
 					{@code comm// Predvolenou akciou dvojitého kliknutia na ikonu v systémovej oblasti}
-					{@code comm// bude skrytie systémovej ikony a zobrazenie okna aplikácie (ak je skryté).}
+					{@code comm// bude skrytie systémovej ikony a zobrazenie okna aplikácie (ak je}
+					{@code comm// skryté).}
 					{@link Svet Svet}.{@link Svet#zobrazSystémovúIkonu(boolean) zobrazSystémovúIkonu}({@code valfalse});
 					{@code kwdif} (!{@link Svet Svet}.{@link Svet#viditeľný() viditeľný}()) {@link Svet Svet}.{@link Svet#zobraz() zobraz}();
 				}
@@ -10370,16 +10433,23 @@ public final class Svet extends JFrame
 						{@code comm// Poznámka: Index 1 má oddeľovač.}
 
 					{@code kwdcase} {@code num2}:
-						{@code comm// Druhá položka (technicky tretia) kontextovej ponuky aplikáciu zavrie.}
-						{@link Svet Svet}.{@link Svet#zavrieť() zavrieť}();
+						{@code comm// Druhá položka (technicky tretia) kontextovej ponuky aplikáciu}
+						{@code comm// ukončí.}
+						{@link Svet Svet}.{@link Svet#koniec() koniec}();
 						{@code kwdbreak};
 					}
 				}
 
 				{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@link GRobot#zavretie zavretie}()
 				{
-					{@code comm// Touto reakciou vypneme klasickú akciu zavretia okna.}
-					{@code kwdreturn} {@code valfalse};
+					{@code kwdif} (skry)
+					{
+						{@code comm// Touto vetvou vypneme klasickú akciu zavretia okna.}
+						{@link Svet Svet}.{@link Svet#skry() skry}();
+						{@code kwdreturn} {@code valfalse};
+					}
+
+					{@code kwdreturn} {@code valtrue};
 				}
 
 				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#skrytieOkna() skrytieOkna}()
@@ -11896,7 +11966,7 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Zmení stav automatického overovania počiatočnej polohy okna po
 		 * jeho inicializácii. Ak je stav overovania nastavený na {@code 
-		 * valtrue}, tak sa počas inicializácie okna (sveta) overí či je
+		 * valtrue}, tak sa počas inicializácie okna (sveta) overí, či je
 		 * umiestnené v rámci aktuálnych obrazoviek (zariadení) a ak nie, tak
 		 * bude automaticky presunuté na primárnu obrazovku (resp. predvolené
 		 * zobrazovacie zariadenie).</p>
@@ -22547,6 +22617,193 @@ public final class Svet extends JFrame
 
 		/** <p><a class="alias"></a> Alias pre {@link #obrázokDoSchránky() obrázokDoSchránky}.</p> */
 		public static boolean grafikaDoSchranky() { return obrázokDoSchránky(); }
+
+
+		// Vytvorenie ťahania súborov zo sveta.
+
+		// Súkromná trieda sprostredkúvajúca ťahanie súborov zo sveta.
+		private static class FileTransferHandler extends TransferHandler
+		{
+			private List<File> zoznam;
+			private int akcia;
+			private TransferHandler th;
+
+			public FileTransferHandler(List<File> zoznam, int akcia,
+				TransferHandler th)
+			{
+				this.zoznam = zoznam;
+				this.akcia = akcia;
+				this.th = th;
+			}
+
+			@Override public int getSourceActions(JComponent c)
+			{
+				return akcia;
+			}
+
+			@Override protected Transferable createTransferable(JComponent c)
+			{
+				// System.out.println("zoznam: " + zoznam);
+				// System.out.println("zoznam.size(): " + zoznam.size());
+				FileTransferable ft = new FileTransferable(zoznam);
+				// System.out.println("ft: " + ft);
+				return ft;
+			}
+
+			@Override protected void exportDone(JComponent zdroj,
+				Transferable údaje, int akcia)
+			{
+				super.exportDone(zdroj, údaje, akcia);
+
+				// pustenieSúboru
+				if (null != ObsluhaUdalostí.počúvadlo)
+				{
+					ObsluhaUdalostí.počúvadlo.
+						ťahanieUkončené(zdroj, údaje, akcia);
+					ObsluhaUdalostí.počúvadlo.
+						tahanieUkoncene(zdroj, údaje, akcia);
+				}
+
+				int početPočúvajúcich = GRobot.
+					počúvajúciRozhranie.size();
+				for (int i = 0; i < početPočúvajúcich; ++i)
+				{
+					GRobot počúvajúci = GRobot.
+						počúvajúciRozhranie.get(i);
+					počúvajúci.ťahanieUkončené(
+						zdroj, údaje, akcia);
+					počúvajúci.tahanieUkoncene(
+						zdroj, údaje, akcia);
+				}
+
+				// System.out.println("exportDone:");
+				// System.out.println("  zdroj: " + zdroj);
+				// System.out.println("  údaje: " + údaje);
+				// System.out.println("  akcia: " + akcia);
+
+				zdroj.setTransferHandler(th);
+			}
+		}
+
+
+		/**
+		 * <p>Vytvorí operáciu ťahania súborov. Ide o akciu ťahania jedného
+		 * alebo viacerých súborov z aktuálnej aplikácie – aktuálneho sveta.
+		 * Operácia je implementovaná tak, že si všetky potrebné informácie
+		 * zisťuje sama, takže všetko, čo treba zadať je: 1. <em>typ
+		 * akcie,</em> čo môže byť:</p>
+		 * 
+		 * <ul>
+		 * <li>{@link TransferHandler#COPY COPY} – kopírovanie,</li>
+		 * <li>{@link TransferHandler#COPY_OR_MOVE COPY_OR_MOVE} – kopírovanie
+		 * alebo presun,</li>
+		 * <li>{@link TransferHandler#LINK LINK} – vytvorenie prepojenia
+		 * (odkazu…),</li>
+		 * <li>{@link TransferHandler#MOVE MOVE} – presun</li>
+		 * <li>alebo {@link TransferHandler#NONE NONE} – žiadna akcia (ťahanie
+		 * nebude fungovať)</li>
+		 * </ul>
+		 * 
+		 * <p class="tip"><b>Tip:</b> Akcie by mali byť importované z triedy
+		 * {@link TransferHandler TransferHandler}, ale jednotka ({@code num1})
+		 * znamená „kopírovať“ a dá sa použiť, ak si nie ste istí, akú akciu
+		 * máte použiť.</p>
+		 * 
+		 * <p>a 2. <em>zoznam súborov</em> (názvy s prípadnou cestou;
+		 * parameter: {@code súbory}).</p>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b> Na správne fungovanie
+		 * potrebuje spustenie tejto operácie udalosť myši. Táto metóda
+		 * automaticky používa poslednú zapamätanú udalosť myši rámca. Ideálne
+		 * je, aby to bola udalosť stlačenia tlačidla myši. Ak použijete túto
+		 * metódu v reakcii na stlačenie tlačidla myši, nemali by ste
+		 * zaznamenať žiadne problémy pri jej používaní.</p>
+		 * 
+		 * <p class="warning"><b>Varovanie!</b> Počas testovania nám
+		 * z neznámeho dôvodu nefungovalo ťahanie s inou akciou než
+		 * kopírovanie. Môžete skúsiť, či vám nebude fungovať aj iná akcia,
+		 * ale nám to nešlo…</p>
+		 * 
+		 * @param ako typ akcie ťahania súborov – pozri vyššie
+		 * @param súbory zoznam súborov, ktoré majú byť ťahané
+		 * @return {@code valfalse} ak ťahanie nie je možné z dôvodu chýbajúcej
+		 *     udalosti myši, inak {@code valtrue}
+		 */
+		public static boolean ťahajSúbory(int ako, String... súbory)
+		{
+			if (null == ÚdajeUdalostí.poslednáUdalosťMyši) return false;
+
+			MouseEvent pôvodnáUdalosť = ÚdajeUdalostí.poslednáUdalosťMyši;
+
+			/*if (!(pôvodnáUdalosť.getComponent() instanceof JComponent))
+				return false;
+
+			final JComponent komponent =
+				(JComponent)pôvodnáUdalosť.getComponent();*/
+
+			final JComponent komponent = hlavnýPanel;
+
+			final MouseEvent udalosťMyši = new MouseEvent(
+				komponent,
+				pôvodnáUdalosť.getID(),
+				pôvodnáUdalosť.getWhen(),
+				pôvodnáUdalosť.getModifiers(),
+				ÚdajeUdalostí.pôvodnáSúradnicaMyšiX,
+				ÚdajeUdalostí.pôvodnáSúradnicaMyšiY,
+				pôvodnáUdalosť.getXOnScreen(),
+				pôvodnáUdalosť.getYOnScreen(),
+				pôvodnáUdalosť.getClickCount(),
+				pôvodnáUdalosť.isPopupTrigger(),
+				pôvodnáUdalosť.getButton()
+			);
+
+			final Vector<File> zoznam = new Vector<>();
+			for (String súbor : súbory)
+			{
+				// System.out.println("súbor: " + súbor);
+				// System.out.println("new File(súbor): " + new File(súbor));
+				zoznam.add(new File(súbor));
+			}
+
+			TransferHandler th = komponent.getTransferHandler();
+
+			FileTransferHandler ťahanie = new FileTransferHandler(
+				zoznam, ako, th);
+
+			// System.out.println("ťahanie: " + ťahanie);
+			// System.out.println("udalosťMyši: " + udalosťMyši);
+			// System.out.println("komponent: " + komponent);
+
+			komponent.setTransferHandler(ťahanie);
+
+			// System.out.println("komponent.getTransferHandler(): " +
+			// 	komponent.getTransferHandler());
+
+			ťahanie.exportAsDrag(komponent, udalosťMyši, ako);
+			return true;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #ťahajSúbory(int, String...) ťahajSúbory}.</p> */
+		public static void tahajSubory(int ako, String... súbory)
+		{ ťahajSúbory(ako, súbory); }
+
+		/**
+		 * <p>Vytvorí operáciu ťahania súborov. Toto je odľahčená verzia metódy
+		 * {@link #ťahajSúbory(int, String...) ťahajSúbory}{@code (akcia,
+		 * súbory)}. Do parametra {@code akcia} dopĺňa hodnotu {@link 
+		 * TransferHandler#COPY COPY} – kopírovanie. Ďalšie podrobnosti nájdete
+		 * v opise širšej verzie tejto metódy.</p>
+		 * 
+		 * @param súbory zoznam súborov, ktoré majú byť ťahané
+		 * @return {@code valfalse} ak ťahanie nie je možné z dôvodu chýbajúcej
+		 *     udalosti myši, inak {@code valtrue}
+		 */
+		public static boolean ťahajSúbory(String... súbory)
+		{ return ťahajSúbory(TransferHandler.COPY, súbory); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #ťahajSúbory(String...) ťahajSúbory}.</p> */
+		public static void tahajSubory(String... súbory)
+		{ ťahajSúbory(súbory); }
 
 
 	// --- Obrázky

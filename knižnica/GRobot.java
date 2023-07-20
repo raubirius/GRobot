@@ -46,6 +46,8 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
 
+import java.awt.datatransfer.Transferable;
+
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -76,6 +78,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
@@ -3764,9 +3767,19 @@ Toto bolo presunuté na úvodnú stránku:
 						getDeclaringClass().equals(GRobot.class) ||
 						!getClass().getMethod("tahanieSuborov").
 						getDeclaringClass().equals(GRobot.class) ||
-						!getClass().getMethod("pustenieSúboru", String.class).
+						!getClass().getMethod("pustenieSúboru",
+							String.class).
 						getDeclaringClass().equals(GRobot.class) ||
-						!getClass().getMethod("pustenieSuboru", String.class).
+						!getClass().getMethod("pustenieSuboru",
+							String.class).
+						getDeclaringClass().equals(GRobot.class) ||
+						!getClass().getMethod("ťahanieUkončené",
+							JComponent.class, Transferable.class,
+							Integer.class).
+						getDeclaringClass().equals(GRobot.class) ||
+						!getClass().getMethod("tahanieUkoncene",
+							JComponent.class, Transferable.class,
+							Integer.class).
 						getDeclaringClass().equals(GRobot.class) ||
 						!getClass().getMethod("farbaAktívnehoSlova",
 							String.class).
@@ -26029,7 +26042,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * <p>Opis fungovania tejto metódy je totožný s opisom fungovania
 				 * metódy {@link ObsluhaUdalostí ObsluhaUdalostí}{@code .}{@link 
 				 * ObsluhaUdalostí#pustenieSúboru(String)
-				 * pustenieSúboru}{@code ()}.</p>
+				 * pustenieSúboru}{@code (súbor)}.</p>
 				 * 
 				 * @param súbor úplná cesta a meno súboru
 				 */
@@ -26040,6 +26053,29 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 				/**
+				 * <p>Táto metóda je predvolene prázdna a je určená na
+				 * prekrytie v niektorej z tried odvodených od robota.</p>
+				 * 
+				 * <p>Opis fungovania tejto metódy je totožný s opisom fungovania
+				 * metódy {@link ObsluhaUdalostí ObsluhaUdalostí}{@code .}{@link 
+				 * ObsluhaUdalostí#ťahanieUkončené(JComponent, Transferable, int)
+				 * ťahanieUkončené}{@code (zdroj, údaje, akcia)}.</p>
+				 * 
+				 * @param zdroj komponent, ktorý bol zdrojom údajov
+				 * @param údaje údaje, ktoré boli prenesené, prípadne
+				 *     {@code valnull}, ak je akcia {@link Transferable#NONE
+				 *     NONE}.
+				 * @param akcia akcia, ktorá bola (s údajmi) vykonaná; pozri aj
+				 *     opis metódy {@link Svet#ťahajSúbory(int, String...)
+				 *     ťahajSúbory}
+				 */
+				public void ťahanieUkončené(JComponent zdroj, Transferable údaje, int akcia) {}
+
+				/** <p><a class="alias"></a> Alias pre {@link #ťahanieUkončené(JComponent, Transferable, int) ťahanieUkončené}.</p> */
+				public void tahanieUkoncene(JComponent zdroj, Transferable údaje, int akcia) {}
+
+
+				/**
 				 * <p>Táto metóda je predvolene prázdna, resp. predvolene vracia
 				 * hodnotu {@code valnull}. Je určená na prekrytie v niektorej
 				 * z tried odvodených od robota.</p>
@@ -26047,7 +26083,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * <p>Opis fungovania tejto metódy je totožný s opisom fungovania
 				 * metódy {@link ObsluhaUdalostí ObsluhaUdalostí}{@code .}{@link 
 				 * ObsluhaUdalostí#farbaAktívnehoSlova(String)
-				 * farbaAktívnehoSlova}{@code ()}.</p>
+				 * farbaAktívnehoSlova}{@code (slovo)}.</p>
 				 * 
 				 * @param slovo identifikátor aktívneho slova vnútornej konzoly
 				 * @return nová farba aktívneho slova alebo {@code valnull}
@@ -32346,10 +32382,10 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 
 				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
-				
+
 				if (null != svgExport)
 					svgExport.pridaj(new Polygon(fx, fy, 7), this);
-				
+
 				Svet.automatickéPrekreslenie();
 				return null;
 			}
@@ -32411,10 +32447,10 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 
 				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
-				
+
 				if (null != svgExport)
 					svgExport.pridaj(new Polygon(fx, fy, 7), this);
-				
+
 				Svet.automatickéPrekreslenie();
 				return null;
 			}

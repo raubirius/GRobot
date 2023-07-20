@@ -75,6 +75,8 @@ public class ÚdajeUdalostí
 		/*packagePrivate*/ static boolean tlačidloMyši2 = false;
 		/*packagePrivate*/ static boolean tlačidloMyši3 = false;
 		/*packagePrivate*/ static int tlačidloMyši = 0;
+		/*packagePrivate*/ static int pôvodnáSúradnicaMyšiX = 0;
+		/*packagePrivate*/ static int pôvodnáSúradnicaMyšiY = 0;
 		/*packagePrivate*/ static double súradnicaMyšiX = 0;
 		/*packagePrivate*/ static double súradnicaMyšiY = 0;
 		/*packagePrivate*/ static double poslednáSúradnicaMyšiX = 0;
@@ -154,7 +156,12 @@ public class ÚdajeUdalostí
 	 * presunutieOkna} alebo {@link ObsluhaUdalostí#zmenaVeľkostiOkna()
 	 * zmenaVeľkostiOkna}.</p>
 	 * 
-	 * <p>Táto metóda sa odlišuje od metódy oknoUdalosti() tým, … TODO</p>
+	 * <p><b>Pozri aj:</b> metódu {@link #oknoUdalosti() oknoUdalosti}. Hlavný
+	 * rozdiel je v návratovej hodnote. Táto metóda vracia komponent okna
+	 * použiteľný v kontexte vyššie uvedených metód. Metóda {@link 
+	 * #oknoUdalosti() oknoUdalosti} má omnoho širšie využite a vracia buď
+	 * inštanciu okna, ktoré udalosť vyvolalo, alebo hodnotu {@code valnull}
+	 * v historickom kontexte – keď udalosť vyvolal svet.</p>
 	 * 
 	 * @return objekt typu {@link ComponentEvent
 	 *     ComponentEvent} s informáciami o poslednej udalosti okna
@@ -172,7 +179,10 @@ public class ÚdajeUdalostí
 	 * vlastnosť nemenia, takže pri nich nemá zmysel jej hodnotu kontrolovať.
 	 * Vrátená hodnota by nezodpovedala aktuálnemu stavu.</p>
 	 * 
-	 * <p>Táto metóda sa odlišuje od metódy okno() tým, … TODO</p>
+	 * <p><b>Pozri aj:</b> metódu {@link #okno() okno}. Hlavný rozdiel je
+	 * v návratovej hodnote. Metóda {@link #okno() okno} vracia komponent okna
+	 * použiteľný v kontexte určitých reakcií – pozri jej opis – a táto metóda
+	 * má širšie využitie – pozri vyššie.</p>
 	 * 
 	 * @return okno poslednej takej udalosti, ktorá sa viaže na okná
 	 * 
@@ -411,7 +421,7 @@ public class ÚdajeUdalostí
 	{ return poslednáUdalosťKlávesnice.getKeyCode(); }
 
 	/**
-	 * <p>Overí či pri poslednej udalosti klávesnice bol zadaný určený
+	 * <p>Overí, či pri poslednej udalosti klávesnice bol zadaný určený
 	 * {@code znak}.</p>
 	 * 
 	 * @param znak znak, ktorého zhodu chceme overiť

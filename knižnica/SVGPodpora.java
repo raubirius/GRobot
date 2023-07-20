@@ -74,6 +74,7 @@ import java.util.Stack;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,6 +87,7 @@ import javax.xml.stream.XMLStreamReader;
 import knižnica.podpora.SimpleTextShape;
 import static knižnica.Konštanty.KRESLI_ROTOVANÉ;
 import static knižnica.Konštanty.KRESLI_NA_STRED;
+import static java.awt.MultipleGradientPaint.CycleMethod.*;
 
 
 // --------------------------- //
@@ -3096,11 +3098,11 @@ public class SVGPodpora
 	// aliasmi).
 	private String[] svgŠablóna =
 	{
-		"<?xml version=\"1.0\" encoding=\"$KÓDOVANIE\"" +
-		" standalone=\"no\"?>", "<svg xmlns=\"http://www.w3.org/2000/svg" +
-		"\" width=\"$ŠÍRKA\" height=\"$VÝŠKA\">", "<title>$TITULOK</title>",
-		"$ŠTÝL", "$DEFINÍCIE<g stroke-linecap=\"round\" stroke-linejoin=" +
-		"\"round\">", "$TVARY", "</g>", "</svg>"
+		"<?xml version=\"1.0\" encoding=\"$KÓDOVANIE\" standalone=\"no\"?>",
+		"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"$ŠÍRKA\" height=" +
+		"\"$VÝŠKA\">", "<title>$TITULOK</title>", "$ŠTÝL",
+		"$DEFINÍCIE<g stroke-linecap=\"round\" stroke-linejoin=\"round\">",
+		"$TVARY", "</g>", "</svg>"
 	};
 
 
@@ -3386,6 +3388,7 @@ public class SVGPodpora
 	}
 	/* */
 
+
 	// Trieda umožňujúca vytvoriť zásobník atribútov
 	@SuppressWarnings("serial")
 	private class Atribúty extends TreeMap<String, String>
@@ -3396,11 +3399,9 @@ public class SVGPodpora
 		public Atribúty(SortedMap<String, String> m) { super(m); }
 	}
 
-	// Zásobník série atribútov
-	private final Stack<Atribúty> zásobníkAtribútov = new Stack<>();
 
 	// Trieda reprezentujúca údajovú štruktúru tvaru s asociovanými
-	// atribútmi
+	// atribútmi.
 	/*packagePrivate*/ class Tvar
 	{
 		public Shape tvar;
@@ -3410,7 +3411,7 @@ public class SVGPodpora
 		// exportu do SVG inštancie – pozri GRobot.svgExport.
 		public Object kontext = null;
 
-		// Zoznam rozpoznaných transformácií
+		// Zoznam rozpoznaných transformácií.
 		private Transformácia[] transformácie = null;
 
 		public Tvar(Shape tvar, Atribúty atribúty)
@@ -3420,8 +3421,183 @@ public class SVGPodpora
 		}
 	}
 
-	// Vnútorný zoznam tvarov tejto inštancie
-	/*packagePrivate*/ final Vector<Tvar> tvary = new Vector<>();
+	// Trieda potrebná na vytvorenie zásobníka vektorov tvarov:
+	@SuppressWarnings("serial")
+	/*packagePrivate*/ class Tvary extends Vector<Tvar> {}
+
+	// Vnútorný zoznam tvarov tejto inštancie.
+	/*packagePrivate*/ Tvary tvary = new Tvary();
+
+
+	// Trieda reprezentujúca údajovú štruktúru slúžiacu na uchovanie
+	// rôznych definícií (<defs>) jazyka SVG.
+	/*packagePrivate*/ class Vymedzenie
+	{
+		public Object obsah;
+		public final Atribúty atribúty;
+
+		public Vymedzenie(Object obsah, Atribúty atribúty)
+		{
+			this.obsah = obsah;
+			this.atribúty = new Atribúty(atribúty);
+		}
+	}
+
+	// Trieda potrebná na vytvorenie zásobníka vektorov vymedzení:
+	@SuppressWarnings("serial")
+	private class Vymedzenia extends Vector<Vymedzenie>
+	{
+		Vymedzenie dajPodľaID(String id)
+		{
+			// System.out.println("id: " + id);
+			for (Vymedzenie vymedzenie : this)
+			{
+				/*{
+					Set<String> kľúče = vymedzenie.atribúty.keySet();
+					for (String atribút : kľúče)
+						System.out.println(atribút + ": " +
+							vymedzenie.atribúty.get(atribút));
+				}*/
+
+				String id2 = vymedzenie.atribúty.get("id");
+				// System.out.println("id2: " + id2);
+				if (null != id2 && id2.equals(id)) return vymedzenie;
+			}
+			return null;
+		}
+	}
+
+	// Vnútorný zoznam definícií tejto inštancie.
+	/*packagePrivate*/ Vymedzenia vymedzenia = new Vymedzenia();
+
+
+	/**<!-- TODO: Pridať opis – používať opatrne, dá sa tým veľa pokaziť. -->*/
+	public final class Spracovanie
+	{
+		// Reakcie na nevyužité alebo neznáme prvky počas analýzy XML obsahu:
+		private Consumer<XMLStreamReader> počiatočnýElement = null;
+		private Consumer<XMLStreamReader> koncovýElement = null;
+		private Consumer<XMLStreamReader> nepoužitýPočiatočnýElement = null;
+		private Consumer<XMLStreamReader> nepoužitýKoncovýElement = null;
+		private Consumer<XMLStreamReader> inýPrvok = null;
+		private Consumer<XMLStreamReader> začiatokSkupiny = null;
+
+
+		// Zásobníky presmerovaní:
+		private Stack<Tvary> presmerovaniaTvarov = null;
+		private Stack<Vymedzenia> presmerovaniaVymedzení = null;
+
+		// Na použitie v reakciách na neznáme elementy:
+
+		/**<!-- TODO: Pridať opis. -->*/
+		public void pridajTvar(Shape tvar, Atribúty atribúty)
+		{ tvary.add(new Tvar(tvar, atribúty)); }
+
+		/**<!-- TODO: Pridať opis. -->*/
+		public void pridajVymedzenie(Object obsah, Atribúty atribúty)
+		{ vymedzenia.add(new Vymedzenie(obsah, atribúty)); }
+
+		/**<!-- TODO: Pridať opis – funguje len počas analýzy SVG údajov, čiže len počas vykonávania niektorej z reakcií. -->*/
+		public void presmerujTvary(SVGPodpora svgPodpora)
+		{
+			if (null != svgPodpora && null != presmerovaniaTvarov)
+			{
+				presmerovaniaTvarov.push(tvary);
+				tvary = svgPodpora.tvary;
+			}
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #vráťPresmerovanieTvarov() vráťPresmerovanieTvarov}.</p> */
+		public void vratPresmerovanieTvarov()
+		{ vráťPresmerovanieTvarov(); }
+
+		/**<!-- TODO: Pridať opis – funguje len počas analýzy SVG údajov, čiže len počas vykonávania niektorej z reakcií. -->*/
+		public void vráťPresmerovanieTvarov()
+		{
+			if (null != presmerovaniaTvarov)
+				tvary = presmerovaniaTvarov.pop();
+		}
+
+
+		/**<!-- TODO: Pridať opis – funguje len počas analýzy SVG údajov, čiže len počas vykonávania niektorej z reakcií. -->*/
+		public void presmerujVymedzenia(SVGPodpora svgPodpora)
+		{
+			if (null != svgPodpora && null != presmerovaniaVymedzení)
+			{
+				presmerovaniaVymedzení.push(vymedzenia);
+				vymedzenia = svgPodpora.vymedzenia;
+			}
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #vráťPresmerovanieVymedzení() vráťPresmerovanieVymedzení}.</p> */
+		public void vratPresmerovanieVymedzeni()
+		{ vráťPresmerovanieVymedzení(); }
+
+		/**<!-- TODO: Pridať opis – funguje len počas analýzy SVG údajov, čiže len počas vykonávania niektorej z reakcií. -->*/
+		public void vráťPresmerovanieVymedzení()
+		{
+			if (null != presmerovaniaVymedzení)
+				vymedzenia = presmerovaniaVymedzení.pop();
+		}
+
+
+		/** <p><a class="alias"></a> Alias pre {@link #akPočiatočnýElement(Consumer) akPočiatočnýElement}.</p> */
+		public void akPociatocnyElement(Consumer<XMLStreamReader> reakcia)
+		{ akPočiatočnýElement(reakcia); }
+
+		/**<!-- TODO: Pridať opis – reakcia na výskyt úplne každého počiatočného elementu počas spracovania. -->*/
+		public void akPočiatočnýElement(Consumer<XMLStreamReader> reakcia)
+		{ počiatočnýElement = reakcia; }
+
+
+		/** <p><a class="alias"></a> Alias pre {@link #akKoncovýElement(Consumer) akKoncovýElement}.</p> */
+		public void akKoncovyElement(Consumer<XMLStreamReader> reakcia)
+		{ akKoncovýElement(reakcia); }
+
+		/**<!-- TODO: Pridať opis – reakcia na výskyt úplne každého koncového elementu počas spracovania. -->*/
+		public void akKoncovýElement(Consumer<XMLStreamReader> reakcia)
+		{ koncovýElement = reakcia; }
+
+
+		/** <p><a class="alias"></a> Alias pre {@link #akNepoužitýPočiatočnýElement(Consumer) akNepoužitýPočiatočnýElement}.</p> */
+		public void akNepouzityPociatocnyElement(Consumer<XMLStreamReader> reakcia)
+		{ akNepoužitýPočiatočnýElement(reakcia); }
+
+		/**<!-- TODO: Pridať opis – reakcia na výskyt nepoužitého počiatočného elementu počas spracovania. -->*/
+		public void akNepoužitýPočiatočnýElement(Consumer<XMLStreamReader> reakcia)
+		{ nepoužitýPočiatočnýElement = reakcia; }
+
+
+		/** <p><a class="alias"></a> Alias pre {@link #akNepoužitýKoncovýElement(Consumer) akNepoužitýKoncovýElement}.</p> */
+		public void akNepouzityKoncovyElement(Consumer<XMLStreamReader> reakcia)
+		{ akNepoužitýKoncovýElement(reakcia); }
+
+		/**<!-- TODO: Pridať opis – reakcia na výskyt nepoužitého koncového elementu počas spracovania. -->*/
+		public void akNepoužitýKoncovýElement(Consumer<XMLStreamReader> reakcia)
+		{ nepoužitýKoncovýElement = reakcia; }
+
+
+		/** <p><a class="alias"></a> Alias pre {@link #akInýPrvok(Consumer) akInýPrvok}.</p> */
+		public void akInyPrvok(Consumer<XMLStreamReader> reakcia)
+		{ akInýPrvok(reakcia); }
+
+		/**<!-- TODO: Pridať opis – reakcia na výskyt neznámeho (alias nespracúvaného) prvku počas spracovania. -->*/
+		public void akInýPrvok(Consumer<XMLStreamReader> reakcia)
+		{ inýPrvok = reakcia; }
+
+
+		/** <p><a class="alias"></a> Alias pre {@link #akZačiatokSkupiny(Consumer) akZačiatokSkupiny}.</p> */
+		public void akZaciatokSkupiny(Consumer<XMLStreamReader> reakcia)
+		{ akZačiatokSkupiny(reakcia); }
+
+		/**<!-- TODO: Pridať opis – reakcia na výskyt počiatočného elementu skupiny (<g>) počas spracovania. -->*/
+		public void akZačiatokSkupiny(Consumer<XMLStreamReader> reakcia)
+		{ začiatokSkupiny = reakcia; }
+	}
+
+	/**<!-- TODO: Pridať opis. -->*/
+	public final Spracovanie spracovanie = new Spracovanie();
+
 
 	/**
 	 * <p>Vráti počet tvarov, ktoré sú momentálne uskladnené v tejto
@@ -3447,7 +3623,7 @@ public class SVGPodpora
 	 * definícií} tejto inštancie. To znamená, že všetky vnútorne uskladnené
 	 * tvary a (špeciálne) definície budú z tejto inštancie odstránené.</p>
 	 */
-	public void vymaž() { tvary.clear(); definície.clear(); idOrezania = 0; }
+	public void vymaž() { tvary.clear(); vymedzenia.clear(); definície.clear(); idOrezania = 0; }
 
 	/** <p><a class="alias"></a> Alias pre {@link #vymaž() vymaž}.</p> */
 	public void vymaz() { vymaž(); }
@@ -3681,9 +3857,9 @@ public class SVGPodpora
 
 	/**
 	 * <p>Poskytne netransformovaný tvar uložený vo vnútornom zásobníku
-	 * tejto inštancie so zadaným „poradovým číslom,“ respektíve indexom,
-	 * to znamená, že nula označuje prvý tvar v zásobníku. Ak je zadaný
-	 * index záporný, metóda bude hľadať tvar od konca zásobníka, to
+	 * tejto inštancie so zadaným „poradovým číslom,“ respektíve indexom.
+	 * To znamená, že nula označuje prvý tvar v zásobníku. Ak je zadaný
+	 * index záporný, metóda bude hľadať tvar od konca zásobníka. To
 	 * znamená, že index {@code num-1} označuje posledný tvar vložený do
 	 * vnútorného zásobníka. Ak index ani po úprave zo zápornej hodnoty
 	 * na kladnú neukazuje na jestvujúci tvar, to znamená, že jeho
@@ -4191,15 +4367,23 @@ public class SVGPodpora
 
 	/**
 	 * <p>Poskytne zoznam názvov atribútov asociovaných s tvarom so zadaným
-	 * indexom. Ak je zadaný index záporný, metóda vytvorí zoznam atribútov
-	 * pre tvar od konca zásobníka tvarov. To znamená, že index {@code num-1}
-	 * označuje posledný tvar vložený do vnútorného zásobníka tvarov. Ak
-	 * požadovaný tvar nejestvuje, tak táto metóda vráti hodnotu {@code 
-	 * valnull}, inak vráti pole reťazcov (hoci aj prázdne).</p>
+	 * indexom. Ak je zadaný index záporný, tak metóda vytvorí zoznam atribútov
+	 * pre tvar od konca vnútorného zásobníka tvarov. To znamená, že index
+	 * {@code num-1} označuje posledný tvar vložený do vnútorného zásobníka
+	 * tvarov. Ak požadovaný tvar nejestvuje, tak táto metóda namiesto zoznamu
+	 * vráti hodnotu {@code valnull}, inak vráti pole reťazcov (hoci aj
+	 * prázdne).</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> V rôznych fázach vývoja boli v tejto
+	 * triede implementované dve rôzne metódy, ktorých výsledok je identický,
+	 * len sa k nemu dopracúvajú iným spôsobom: {@link #dajAtribúty(int)
+	 * dajAtribúty} a {@link #zoznamAtribútov(int) zoznamAtribútov}. Z dôvodu
+	 * zachovania spätnej kompatibility boli obidve metódy v tejto triede
+	 * ponechané.</p>
 	 * 
 	 * @param index index požadovaného tvaru z vnútorného zásobníka
-	 * @return reťazec s hodnotou požadovaného atribútu alebo
-	 *     {@code valnull}
+	 * @return pole reťazcov s názvami atribútov asociovaných s vyšetrovaným
+	 *     tvarom alebo {@code valnull}
 	 */
 	public String[] dajAtribúty(int index)
 	{
@@ -4259,6 +4443,8 @@ public class SVGPodpora
 	 * triedy).<!-- Ak sa farbu nepodarí zistiť, tak metóda vráti hodnotu
 	 * {@code valnull}. --></p>
 	 * 
+	 * <p>Pozri aj príbuznú metódu: {@link #náterVýplne(int) náterVýplne}</p>
+	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Táto metóda vracia ako
 	 * predvolenú farbu (to jest, ak nie je definovaný atribút {@code fill})
 	 * čiernu farbu. Hodnota {@code valnull} je vrátená len tom v prípade,
@@ -4291,11 +4477,215 @@ public class SVGPodpora
 	/** <p><a class="alias"></a> Alias pre {@link #farbaVýplne(int) farbaVýplne}.</p> */
 	public Farba farbaVyplne(int index) { return farbaVýplne(index); }
 
+
+	// Prevezme hodnotu zadaného atribútu z tvaru so zadaným indexom. Očakáva
+	// reťazec prevzatej hodnoty v tvare url(#id) a vráti inštanciu lineárneho
+	// alebo radiálneho náteru, ak jestvuje definícia vo vymedzeniach
+	// so zadaným id. Inak vráti null.
+	private Paint dajNáter(int index, String atribút)
+	{
+		String náter = dajAtribút(index, atribút);
+		if (null != náter)
+		{
+			if (náter.startsWith("url(#") && náter.endsWith(")"))
+			{
+				Vymedzenie vymedzenie = vymedzenia.dajPodľaID(
+					náter.substring(5, náter.length() - 1));
+				// System.out.println("vymedzenie: " + vymedzenie);
+
+				if (null != vymedzenie)
+				{
+					if (vymedzenie.obsah instanceof LinearGradientPaint)
+					{
+						/*String href = vymedzenie.atribúty.get("href");
+						if (null != href && href.startsWith("url(#") &&
+							href.endsWith(")"))
+						{
+							Vymedzenie rodič = vymedzenia.dajPodľaID(
+								href.substring(5, href.length() - 1));
+							if (rodič.obsah instanceof LinearGradientPaint)
+							{
+								double x1 = 
+									, y1 = 
+									, x2 = 
+									, y2 = 
+									;
+
+								// TODO: dokončiť, keď bude hotové zapamätanie
+								// stopiek.
+								float[] stopky = 
+								Color[] farby = 
+
+								MultipleGradientPaint.CycleMethod cycleMethod = 
+ 
+								AffineTransform gradientTransform = 
+
+								if (atribúty.containsKey("spreadMethod"))
+									cycleMethod = 
+
+								if (atribúty.containsKey("gradientTransform"))
+									gradientTransform = 
+
+								if (atribúty.containsKey("x1"))
+									x1 = 
+
+								if ((atribúty.containsKey("y1")))
+									y1 = 
+
+								if ((atribúty.containsKey("x2")))
+									x2 = 
+
+								if ((atribúty.containsKey("y2")))
+									y2 = 
+							}
+						}*/
+
+						String gradientUnits = vymedzenie.
+							atribúty.get("gradientUnits");
+						if (null != gradientUnits && gradientUnits.equals(
+							"objectBoundingBox"))
+						{
+							// TODO: overiť: dajVýsledný alebo pôvodný a potom
+							// transformovať aj gradient? 🤔
+							Shape tvar = dajVýsledný(index);
+							if (null != tvar)
+							{
+								Rectangle2D hranice = tvar.getBounds2D();
+								LinearGradientPaint lgp =
+									(LinearGradientPaint)vymedzenie.obsah;
+
+								// TODO: Do dokumentácie dať, že neodporúčame
+								// používanie SVG gradientov s objectBoundingBox,
+								// lebo nebudú aplikované úplne správne.
+								// Transformácia Javy má pravdepodobne nejakú
+								// implementačnú nepresnosť, ktorú nevieme
+								// ovplyvniť.
+
+								double šírka = hranice.getWidth();
+								double výška = hranice.getHeight();
+								double x0 = hranice.getX();
+								double y0 = hranice.getY();
+
+								// Vytvorenie matice nového používateľského
+								// súradnicového systému (pozri:
+								// https://svgwg.org/svg2-draft/coords.html):
+								AffineTransform nováTransformácia =
+									new AffineTransform(
+										šírka, 0, // škálovanie na šírku hraníc
+										0, výška, // škálovanie na výšku hraníc
+										x0, y0);  // posunutie na (x0, y0) roh
+												  // hraníc
+
+								// Kombinácia jestvujúcej transformácie
+								// s novou maticou:
+								AffineTransform konečnáTransformácia =
+									new AffineTransform(lgp.getTransform());
+								konečnáTransformácia.concatenate(
+									nováTransformácia);
+
+								return new LinearGradientPaint(
+									lgp.getStartPoint(), lgp.getEndPoint(),
+									lgp.getFractions(), lgp.getColors(),
+									lgp.getCycleMethod(), lgp.getColorSpace(),
+									konečnáTransformácia);
+							}
+						}
+					}
+					else if (vymedzenie.obsah instanceof RadialGradientPaint)
+					{
+						String gradientUnits = vymedzenie.
+							atribúty.get("gradientUnits");
+						if (null != gradientUnits && gradientUnits.equals(
+							"objectBoundingBox"))
+						{
+							// TODO: overiť: dajVýsledný alebo pôvodný a potom
+							// transformovať aj gradient? 🤔
+							Shape tvar = dajVýsledný(index);
+							if (null != tvar)
+							{
+								Rectangle2D hranice = tvar.getBounds2D();
+								RadialGradientPaint rgp =
+									(RadialGradientPaint)vymedzenie.obsah;
+
+								double šírka = hranice.getWidth();
+								double výška = hranice.getHeight();
+								double x0 = hranice.getX();
+								double y0 = hranice.getY();
+
+								// Vytvorenie matice nového používateľského
+								// súradnicového systému (pozri:
+								// https://svgwg.org/svg2-draft/coords.html):
+								AffineTransform nováTransformácia =
+									new AffineTransform(
+										šírka, 0, // škálovanie na šírku hraníc
+										0, výška, // škálovanie na výšku hraníc
+										x0, y0);  // posunutie na (x0, y0) roh
+												  // hraníc
+
+								// Kombinácia jestvujúcej transformácie
+								// s novou maticou:
+								AffineTransform konečnáTransformácia =
+									new AffineTransform(rgp.getTransform());
+								konečnáTransformácia.concatenate(
+									nováTransformácia);
+
+								return new RadialGradientPaint(
+									rgp.getCenterPoint(), rgp.getRadius(),
+									rgp.getFocusPoint(), rgp.getFractions(),
+									rgp.getColors(), rgp.getCycleMethod(),
+									rgp.getColorSpace(), konečnáTransformácia);
+							}
+						}
+					}
+
+					if (vymedzenie.obsah instanceof Paint)
+						return (Paint)vymedzenie.obsah;
+				}
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * <p>Pokúsi sa zistiť typ náteru výplne tvaru asociovaného so zadaným
+	 * indexom. Možnosti metódy sú obmedzené na zisťovanie lineárneho alebo
+	 * radiálneho gradientu (inak povedané: priamočiareho alebo kruhového
+	 * farebného prechodu) alebo výplne plnou farbou. V podstate ak sa
+	 * nepodarí identifikovať jeden z uvedených gradientov, tak metóda zavolá
+	 * príbuznú metódu {@link #farbaVýplne(int) farbaVýplne}.</p>
+	 * 
+	 * @param index index tvaru v rámci vnútorného zásobníka (táto
+	 *     metóda používa na zistenie hodnoty atribútu metódu {@link 
+	 *     #dajAtribút(int, String) dajAtribút}, takže pre hodnotu indexu
+	 *     pri tejto metóde platí to isté ako pre hodnotu indexu pri
+	 *     metóde {@link #dajAtribút(int, String) dajAtribút})
+	 * @return objekt typu {@link Paint Paint} alebo {@code valnull}
+	 */
+	public Paint náterVýplne(int index)
+	{
+		// TODO: Overiť, či fill-opacity ovplyvňuje aj gradient. Ak áno,
+		// treba to nejako zapracovať alebo upozorniť v dokumentácii, že
+		// toto treba spracovať pre gradienty zvlášť…
+
+		Paint náter = dajNáter(index, "fill");
+		if (null != náter) return náter;
+		// System.out.println("farbaVýplne: " + farbaVýplne(index));
+		return farbaVýplne(index);
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #náterVýplne(int) náterVýplne}.</p> */
+	public Paint naterVyplne(int index) { return náterVýplne(index); }
+
+
 	/**
 	 * <p>Pokúsi sa zistiť farbu čiary tvaru asociovaného so zadaným
 	 * indexom. Možnosti metódy sú obmedzené (pozri informácie v opise
 	 * triedy). Ak sa farbu nepodarí zistiť, tak metóda vráti hodnotu
 	 * {@code valnull}.</p>
+	 * 
+	 * <p>Pozri aj príbuznú metódu: {@link #náterČiary(int) náterČiary}</p>
 	 * 
 	 * @param index index tvaru v rámci vnútorného zásobníka (táto
 	 *     metóda používa na zistenie hodnoty atribútu metódu {@link 
@@ -4318,6 +4708,37 @@ public class SVGPodpora
 
 	/** <p><a class="alias"></a> Alias pre {@link #farbaČiary(int) farbaČiary}.</p> */
 	public Farba farbaCiary(int index) { return farbaČiary(index); }
+
+
+	/**
+	 * <p>Pokúsi sa zistiť typ náteru čiary tvaru asociovaného so zadaným
+	 * indexom. Možnosti metódy sú obmedzené na zisťovanie lineárneho alebo
+	 * radiálneho gradientu (inak povedané: priamočiareho alebo kruhového
+	 * farebného prechodu) alebo čiary kreslenej plnou farbou. V podstate ak
+	 * sa nepodarí identifikovať jeden z uvedených gradientov, tak metóda
+	 * zavolá príbuznú metódu {@link #farbaČiary(int) farbaČiary}.</p>
+	 * 
+	 * @param index index tvaru v rámci vnútorného zásobníka (táto
+	 *     metóda používa na zistenie hodnoty atribútu metódu {@link 
+	 *     #dajAtribút(int, String) dajAtribút}, takže pre hodnotu indexu
+	 *     pri tejto metóde platí to isté ako pre hodnotu indexu pri
+	 *     metóde {@link #dajAtribút(int, String) dajAtribút})
+	 * @return objekt typu {@link Paint Paint} alebo {@code valnull}
+	 */
+	public Paint náterČiary(int index)
+	{
+		// TODO: Overiť, či stroke-opacity ovplyvňuje aj gradient. Ak áno,
+		// treba to nejako zapracovať alebo upozorniť v dokumentácii, že
+		// toto treba spracovať pre gradienty zvlášť…
+
+		Paint náter = dajNáter(index, "stroke");
+		if (null != náter) return náter;
+		return farbaČiary(index);
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #náterČiary(int) náterČiary}.</p> */
+	public Paint naterCiary(int index) { return náterČiary(index); }
+
 
 	/**
 	 * <p>Pokúsi sa zistiť hrúbku čiary tvaru asociovaného so zadaným
@@ -5267,16 +5688,24 @@ public class SVGPodpora
 
 
 	/**
-	 * <p>Poskytne zoznam atribútov, ktoré sú asociované s tvarom so
-	 * zadaným indexom. Ak je zadaný index záporný, tak metóda vytvorí
-	 * zoznam atribútov pre tvar od konca vnútorného zásobníka tvarov,
-	 * to znamená, že index {@code num-1} označuje posledný tvar vložený
-	 * do zásobníka. Ak požadovaný tvar nejestvuje, tak metóda namiesto
-	 * zoznamu vráti hodnotu {@code valnull}.</p>
+	 * <p>Poskytne zoznam názvov atribútov asociovaných s tvarom so zadaným
+	 * indexom. Ak je zadaný index záporný, tak metóda vytvorí zoznam atribútov
+	 * pre tvar od konca vnútorného zásobníka tvarov. To znamená, že index
+	 * {@code num-1} označuje posledný tvar vložený do vnútorného zásobníka
+	 * tvarov. Ak požadovaný tvar nejestvuje, tak táto metóda namiesto zoznamu
+	 * vráti hodnotu {@code valnull}, inak vráti pole reťazcov (hoci aj
+	 * prázdne).</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> V rôznych fázach vývoja boli v tejto
+	 * triede implementované dve rôzne metódy, ktorých výsledok je identický,
+	 * len sa k nemu dopracúvajú iným spôsobom: {@link #dajAtribúty(int)
+	 * dajAtribúty} a {@link #zoznamAtribútov(int) zoznamAtribútov}. Z dôvodu
+	 * zachovania spätnej kompatibility boli obidve metódy v tejto triede
+	 * ponechané.</p>
 	 * 
 	 * @param index index vyšetrovaného tvaru z vnútorného zásobníka
-	 * @return pole reťazcov s názvami atribútov asociovaných
-	 *     s vyšetrovaným tvarom alebo {@code valnull}
+	 * @return pole reťazcov s názvami atribútov asociovaných s vyšetrovaným
+	 *     tvarom alebo {@code valnull}
 	 */
 	public String[] zoznamAtribútov(int index)
 	{
@@ -5295,14 +5724,17 @@ public class SVGPodpora
 	/** <p><a class="alias"></a> Alias pre {@link #zoznamAtribútov(int) zoznamAtribútov}.</p> */
 	public String[] zoznamAtributov(int index) { return zoznamAtribútov(index); }
 
+
 	/**
 	 * <p>Vloží do vnútorného zásobníka tejto inštancie ďalší tvar
-	 * s prípadnou sériou atribútov. Trieda pri {@linkplain 
-	 * #zapíš(String, String, boolean) ukladaní tvarov do súboru}
+	 * s prípadnou sériou atribútov. Atribúty sú zadávané vo forme zoznamu
+	 * parametrov {@code atribúty}, ktorý je vyhodnocovaný po dvojiciach
+	 * prvkov. Prvý prvok znamená názov atribútu, druhý hodnotu. Trieda pri
+	 * {@linkplain #zapíš(String, String, boolean) ukladaní tvarov do súboru}
 	 * nájde vhodnú reprezentáciu zadaného tvaru vo forme XML/SVG značky
 	 * (pozri aj metódu {@link #dajSVG(int) dajSVG(index)}), ku ktorej
-	 * priradí sériu zadaných atribútov. (Atribúty bez mena alebo
-	 * s hodnotou {@code valnull} sú ignorované.)</p>
+	 * priradí sériu zadaných atribútov. (Atribúty bez mena alebo s hodnotou
+	 * {@code valnull} sú ignorované.)</p>
 	 * 
 	 * <p class="caution"><b>Pozor!</b> Atribúty, ktoré sú kľúčové pri
 	 * vyjadrení konkrétneho tvaru (napr. {@code cx}, {@code cy}, {@code r}
@@ -5326,6 +5758,397 @@ public class SVGPodpora
 		Tvar záznam = new Tvar(tvar, zoznam);
 		tvary.add(záznam);
 	}
+
+
+	// ————
+
+	/**
+	 * <p>Vráti počet vymedzení, ktoré sú momentálne prítomné v tejto
+	 * inštancii podpory SVG formátu. Vymedzenia mohli byť pridané počas
+	 * {@linkplain #čítaj(String) čítania zo súboru} alebo napríklad metódou
+	 * {@link #pridajVymedzenie(Object, String[]) pridajVymedzenie}.</p>
+	 * 
+	 * <hr />
+	 * 
+	 * <p><b>Definícia vymedzenia</b></p>
+	 * 
+	 * <p>Vymedzenia inštancie SVG podpory môžu byť ľubovoľné objekty, ku
+	 * ktorým môžu byť asociované principiálne rovnaké skupiny atribútov ako
+	 * je to pri tvaroch. Počas čítania SVG súboru sú medzi vymedzenia
+	 * automaticky zaraďované napríklad lineárne alebo radiálne gradienty.
+	 * (Tie sa potom dajú identifikovať prostredníctvom atribútu {@code id},
+	 * ale metódy {@link #náterVýplne(int) náterVýplne}.a {@link 
+	 * #náterČiary(int) náterČiary} ich vyhľadávajú automaticky.)</p>
+	 * 
+	 * <p>Keďže vymedzenie môže byť objekt ľubovoľného typu, musí byť po
+	 * prevzatí vymedzenia zo zásobníka vykonaná kontrola (operátorom
+	 * {@code typeinstanceof}) a pretypovanie podľa očakávaného a/alebo
+	 * požadovaného typu objektu.</p>
+	 * 
+	 * <p>Počas {@linkplain #zapíš(String, String, boolean) zápisu} obsahu SVG
+	 * podpory do súboru môžu byť niektoré vymedzenia využité, ale nemusia. To
+	 * závisí od toho, či sú od vymedzení závislé zapisované tvary.</p>
+	 * 
+	 * <hr />
+	 * 
+	 * @return aktuálny počet vymedzení tejto inštancie
+	 */
+	public int početVymedzení() { return vymedzenia.size(); }
+
+	// TODO: tvary, ktoré sú v SVG medzi definíciami automaticky presúvať do
+	// vymedzení a implementovať element <use>.
+
+	/** <p><a class="alias"></a> Alias pre {@link #početVymedzení() početVymedzení}.</p> */
+	public int pocetVymedzeni() { return početVymedzení(); }
+
+
+	/**
+	 * <p>Odstráni vymedzenie tejto inštancie so zadaným indexom. Táto metóda
+	 * odstráni samotný objekt vymedzenia aj atribúty s ním asociované. Ako
+	 * v ostatných prípadoch, index nula označuje prvé vymedzenie v zásobníku.
+	 * <!-- -->
+	 * Ak je zadaný index záporný, tak bude metóda brať do úvahy vymedzenie od
+	 * konca zásobníka. To znamená, že index {@code num-1} označuje posledné
+	 * vymedzenie v zásobníku.
+	 * <!-- -->
+	 * Ak index ani po úprave zo zápornej hodnoty na kladnú neukazuje na
+	 * jestvujúce vymedzenie, to znamená, že jeho hodnota je mimo rozsahu
+	 * {@code num0} až {@link #počet() počet()}{@code  - }{@code num1}, tak
+	 * metóda vráti hodnotu {@code valnull}.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Pozri definíciu vymedzenia
+	 * v opise metódy {@link #početVymedzení() početVymedzení}.</p>
+	 * 
+	 * @param index index vymedzenia, ktoré má byť vymazané
+	 */
+	public void vymažVymedzenie(int index)
+	{
+		if (index < 0) index = vymedzenia.size() + index;
+		if (index >= 0 && index < vymedzenia.size()) vymedzenia.remove(index);
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #vymažVymedzenie(int) vymažVymedzenie}.</p> */
+	public void vymazVymedzenie(int index) { vymažVymedzenie(index); }
+
+
+	/**
+	 * <p>Poskytne objekt vymedzenia uložený vo vnútornom zásobníku tejto
+	 * inštancie so zadaným „poradovým číslom,“ respektíve indexom. To znamená,
+	 * že nula označuje prvé vymedzenie v zásobníku. Ak je zadaný index
+	 * záporný, metóda bude hľadať vymedzenie od konca zásobníka. To znamená,
+	 * že index {@code num-1} označuje posledné vymedzenie vložené do
+	 * vnútorného zásobníka.
+	 * <!-- -->
+	 * Ak index ani po úprave zo zápornej hodnoty na kladnú neukazuje na
+	 * jestvujúce vymedzenie, to znamená, že jeho hodnota je mimo rozsahu
+	 * {@code num0} až {@link #počet() počet()}{@code  - }{@code num1}, tak
+	 * metóda vráti hodnotu {@code valnull}.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Pozri definíciu vymedzenia
+	 * v opise metódy {@link #početVymedzení() početVymedzení}.</p>
+	 * 
+	 * @param index index požadovaného vymedzenia z vnútorného zásobníka
+	 * @return objekt vymedzenia uložený vo vnútornom zásobníku pod zadaným
+	 *     indexom alebo {@code valnull}
+	 */
+	public Object dajVymedzenie(int index)
+	{
+		if (index < 0) index = vymedzenia.size() + index;
+		if (index >= 0 && index < vymedzenia.size())
+			return vymedzenia.get(index).obsah;
+		return null;
+	}
+
+
+	/**
+	 * <p>Prepíše objekt vymedzenia určený indexom v rámci vnútorného
+	 * zásobníka vymedzení. Všetky atribúty asociované s vymedzením zostanú
+	 * zachované. Ak je zadaný index záporný, tak metóda prepíše objekt
+	 * vymedzenia počítaného od konca zásobníka. To znamená, že index {@code 
+	 * num-1} označuje posledné vymedzenie v zásobníku. Ak kladný alebo
+	 * záporný index ukáže na vymedzenie mimo zásobníka, tak metóda nevykoná
+	 * žiadnu akciu. Ak je hodnota argumentu {@code vymedzenie} rovná
+	 * {@code valnull}, tak metóda tiež nevykoná žiadnu akciu – vymedzenie
+	 * nesmie byť nedefinované; na vymazanie vymedzenia (aj s atribútmi) treba
+	 * použiť metódu {@link #vymažVymedzenie(int) vymažVymedzenie}.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Pozri definíciu vymedzenia
+	 * v opise metódy {@link #početVymedzení() početVymedzení}.</p>
+	 * 
+	 * @param index index vymedzenia vo vnútornom zásobníku (hodnoty mimo
+	 *     platného rozsahu sú ignorované)
+	 * @param vymedzenie nové vymedzenie – objekt, ktorým má byť nahradené
+	 *     jestvujúce vymedzenie vo vnútornom zásobníku vymedzení (hodnota
+	 *     {@code valnull} je ignorovaná)
+	 */
+	public void prepíšVymedzenie(int index, Object vymedzenie)
+	{
+		if (null == vymedzenie) return;
+		if (index < 0) index = vymedzenia.size() + index;
+		if (index >= 0 && index < vymedzenia.size())
+			vymedzenia.get(index).obsah = vymedzenie;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #prepíšVymedzenie(int, Object) prepíšVymedzenie}.</p> */
+	public void prepisVymedzenie(int index, Object vymedzenie)
+	{ prepíšVymedzenie(index, vymedzenie); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #prepíšVymedzenie(int, Object) prepíšVymedzenie}.</p> */
+	public void nahraďVymedzenie(int index, Object vymedzenie)
+	{ prepíšVymedzenie(index, vymedzenie); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #prepíšVymedzenie(int, Object) prepíšVymedzenie}.</p> */
+	public void nahradVymedzenie(int index, Object vymedzenie)
+	{ prepíšVymedzenie(index, vymedzenie); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #prepíšVymedzenie(int, Object) prepíšVymedzenie}.</p> */
+	public void nastavVymedzenie(int index, Object vymedzenie)
+	{ prepíšVymedzenie(index, vymedzenie); }
+
+
+	/**
+	 * <p>Poskytne hodnotu atribútu asociovaného s objektom vymedzenia so
+	 * zadaným indexom. Ak je zadaný index záporný, metóda bude hľadať atribút
+	 * pre vymedzenie od konca zásobníka. To znamená, že index {@code num-1}
+	 * označuje posledné vymedzenie vložené do vnútorného zásobníka. Ak
+	 * požadovaný atribút (alebo vymedzenie) nejestvuje, tak metóda vráti
+	 * hodnotu {@code valnull}.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Pozri definíciu vymedzenia
+	 * v opise metódy {@link #početVymedzení() početVymedzení}.</p>
+	 * 
+	 * <p class="caution"><b>Pozor!</b> Atribúty, ktoré sú kľúčové pri
+	 * vyjadrení konkrétneho vymedzenia (napr. {@code cx}, {@code cy},
+	 * {@code r} atď. pri radiálnom gradiente, {@code x1}, {@code y1} atď.
+	 * pri lineárnom gradiente a podobne) sú použité ešte počas konštrukcie
+	 * objektu vymedzenia, ktorý je nemenný (angl. immutable), čiže jeho
+	 * dodatočná úprava na základe zmien hodnôt týchto atribútov nie je možná.
+	 * Avšak {@linkplain #prepíšAtribútVymedzenia(int, String, Object) rôzne
+	 * úpravy} týchto atribútov zakázané nie sú, preto ich prečítanie touto
+	 * metódou nemusí poskytovať výsledky konzistentné so stavom objektu
+	 * vymedzenia. Odporúčame kľúčovéh hodnoty overovať priamo v objekte
+	 * vymedzenia, napríklad metódami gradientov: {@link 
+	 * RadialGradientPaint#getCenterPoint() getCenterPoint()}, {@link 
+	 * RadialGradientPaint#getRadius() getRadius()}, {@link 
+	 * LinearGradientPaint#getStartPoint() getStartPoint()}… Naopak, atribúty
+	 * ako je identifikátor {@code id} má zmysel čítať len touto metódou.</p>
+	 * 
+	 * @param index index požadovaného vymedzenia z vnútorného zásobníka
+	 * @param meno názov požadovaného atribútu asociovaného s vymedzením
+	 * @return reťazec s hodnotou požadovaného atribútu alebo
+	 *     {@code valnull}
+	 */
+	public String dajAtribútVymedzenia(int index, String meno)
+	{
+		if (index < 0) index = vymedzenia.size() + index;
+		if (index >= 0 && index < vymedzenia.size())
+			return vymedzenia.get(index).atribúty.get(meno);
+		return null;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #dajAtribútVymedzenia(int, String) dajAtribútVymedzenia}.</p> */
+	public String dajAtributVymedzenia(int index, String meno)
+	{ return dajAtribútVymedzenia(index, meno); }
+
+
+	/**
+	 * <p>Poskytne zoznam názvov atribútov asociovaných s vymedzením so zadaným
+	 * indexom. Ak je zadaný index záporný, tak metóda vytvorí zoznam atribútov
+	 * pre vymedzenie od konca vnútorného zásobníka vymedzení. To znamená, že
+	 * index {@code num-1} označuje posledné vymedzenie vložené do vnútorného
+	 * zásobníka vymedzení. Ak požadované vymedzenie nejestvuje, tak táto
+	 * metóda namiesto zoznamu vráti hodnotu {@code valnull}, inak vráti pole
+	 * reťazcov (hoci aj prázdne).</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Pozri definíciu vymedzenia
+	 * v opise metódy {@link #početVymedzení() početVymedzení}.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> V rôznych fázach vývoja boli v tejto
+	 * triede implementované dve rôzne metódy na vytváranie zoznamov atribútov
+	 * tvarov: {@link #dajAtribúty(int) dajAtribúty} a {@link 
+	 * #zoznamAtribútov(int) zoznamAtribútov} (pozri aj ich opisy). Z dôvodu
+	 * zachovania konzistentnosti boli definované dve obdobné metódy aj na
+	 * tvorbu zoznamov atribútov vymedzení: {@link #dajAtribútyVymedzenia(int)
+	 * dajAtribútyVymedzenia} a {@link #zoznamAtribútovVymedzenia(int)
+	 * zoznamAtribútovVymedzenia}.</p>
+	 * 
+	 * @param index index vymedzenia, pre ktoré chceme získať zoznam názvov
+	 *     atribútov
+	 * @return pole reťazcov s názvami atribútov asociovaných s požadovaným
+	 *     vymedzením alebo {@code valnull}
+	 */
+	public String[] dajAtribútyVymedzenia(int index)
+	{
+		if (index < 0) index = vymedzenia.size() + index;
+		if (index >= 0 && index < vymedzenia.size())
+			return vymedzenia.get(index).atribúty.keySet().
+				toArray(prázdnePoleAtribútov);
+		return null;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #dajAtribútyVymedzenia(int) dajAtribútyVymedzenia}.</p> */
+	public String[] dajAtributyVymedzenia(int index)
+	{ return dajAtribútyVymedzenia(index); }
+
+
+	/*public String dajSVGVymedzenia(int index)
+	{
+		// TODO ??? Implementovať aj toto ???
+		if (index < 0) index = vymedzenia.size() + index;
+		if (index >= 0 && index < vymedzenia.size())
+			return dajSVG(vymedzenia.get(index));
+		return null;
+	}*/
+
+
+	/**
+	 * <p>Prepíše, vloží novú alebo odstráni hodnotu atribútu asociovaného
+	 * s vymedzením so zadaným indexom. Ak je index záporný, metóda bude
+	 * hľadať vymedzenie od konca zásobníka. To znamená, že index {@code num-1}
+	 * označuje posledné vymedzenie vložené do vnútorného zásobníka. Okrem toho
+	 * musia byť splnené nasledujúce podmienky: {@code index} musí
+	 * ukazovať na jestvujúce vymedzenie (po úprave prípadnej zápornej hodnoty)
+	 * a {@code meno} nesmie byť {@code valnull} ani prázdny reťazec,
+	 * inak nebude mať volanie tejto metódy žiadny efekt. Ak je
+	 * {@code hodnota} rovná {@code valnull}, tak je atribút odstránený,
+	 * v opačnom prípade je za novú hodnotu považovaný reťazec vytvorený
+	 * z objektu volaním metódy {@code hodnota.}{@link Object#toString()
+	 * toString()}.</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Pozri definíciu vymedzenia
+	 * v opise metódy {@link #početVymedzení() početVymedzení}.</p>
+	 * 
+	 * <p class="caution"><b>Pozor!</b> Atribúty, ktoré sú kľúčové pri
+	 * vyjadrení konkrétneho vymedzenia (napr. {@code cx}, {@code cy},
+	 * {@code r} atď. pri radiálnom gradiente, {@code x1}, {@code y1} atď.
+	 * pri lineárnom gradiente a podobne) sú použité ešte počas konštrukcie
+	 * objektu vymedzenia, ktorý je nemenný (angl. immutable), preto ich
+	 * dodatočná úprava, nastavenie alebo vymazanie touto metódou nemá
+	 * zmysel. (Pozri aj upozornenie v opise metódy {@link 
+	 * #dajAtribútVymedzenia(int, String) dajAtribútVymedzenia}.)</p>
+	 * 
+	 * @param index index vymedzenia vo vnútornom zásobníku
+	 * @param meno názov atribútu asociovaného s vymedzením
+	 * @param hodnota nová hodnota atribútu alebo {@code valnull}
+	 */
+	public void prepíšAtribútVymedzenia(int index, String meno, Object hodnota)
+	{
+		if (index < 0) index = vymedzenia.size() + index;
+		if (null != meno && !meno.isEmpty() &&
+			index >= 0 && index < vymedzenia.size())
+		{
+			Vymedzenie vymedzenie = vymedzenia.get(index);
+			if (null == hodnota)
+				vymedzenie.atribúty.remove(meno);
+			else
+				vymedzenie.atribúty.put(meno, hodnota.toString());
+		}
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #prepíšAtribútVymedzenia(int, String, Object) prepíšAtribútVymedzenia}.</p> */
+	public void prepisAtributVymedzenia(int index, String meno, Object hodnota)
+	{ prepíšAtribútVymedzenia(index, meno, hodnota); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #prepíšAtribútVymedzenia(int, String, Object) prepíšAtribútVymedzenia}.</p> */
+	public void nahraďAtribútVymedzenia(int index, String meno, Object hodnota)
+	{ prepíšAtribútVymedzenia(index, meno, hodnota); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #prepíšAtribútVymedzenia(int, String, Object) prepíšAtribútVymedzenia}.</p> */
+	public void nahradAtributVymedzenia(int index, String meno, Object hodnota)
+	{ prepíšAtribútVymedzenia(index, meno, hodnota); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #prepíšAtribútVymedzenia(int, String, Object) prepíšAtribútVymedzenia}.</p> */
+	public void nastavAtribútVymedzenia(int index, String meno, Object hodnota)
+	{ prepíšAtribútVymedzenia(index, meno, hodnota); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #prepíšAtribútVymedzenia(int, String, Object) prepíšAtribútVymedzenia}.</p> */
+	public void nastavAtributVymedzenia(int index, String meno, Object hodnota)
+	{ prepíšAtribútVymedzenia(index, meno, hodnota); }
+
+
+	/**
+	 * <p>Poskytne zoznam názvov atribútov asociovaných s vymedzením so zadaným
+	 * indexom. Ak je zadaný index záporný, tak metóda vytvorí zoznam atribútov
+	 * pre vymedzenie od konca vnútorného zásobníka vymedzení. To znamená, že
+	 * index {@code num-1} označuje posledné vymedzenie vložené do vnútorného
+	 * zásobníka vymedzení. Ak požadované vymedzenie nejestvuje, tak táto
+	 * metóda namiesto zoznamu vráti hodnotu {@code valnull}, inak vráti pole
+	 * reťazcov (hoci aj prázdne).</p>
+	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Pozri definíciu vymedzenia
+	 * v opise metódy {@link #početVymedzení() početVymedzení}.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> V rôznych fázach vývoja boli v tejto
+	 * triede implementované dve rôzne metódy na vytváranie zoznamov atribútov
+	 * tvarov: {@link #dajAtribúty(int) dajAtribúty} a {@link 
+	 * #zoznamAtribútov(int) zoznamAtribútov} (pozri aj ich opisy). Z dôvodu
+	 * zachovania konzistentnosti boli definované dve obdobné metódy aj na
+	 * tvorbu zoznamov atribútov vymedzení: {@link #dajAtribútyVymedzenia(int)
+	 * dajAtribútyVymedzenia} a {@link #zoznamAtribútovVymedzenia(int)
+	 * zoznamAtribútovVymedzenia}.</p>
+	 * 
+	 * @param index index vymedzenia, pre ktoré chceme získať zoznam názvov
+	 *     atribútov
+	 * @return pole reťazcov s názvami atribútov asociovaných s požadovaným
+	 *     vymedzením alebo {@code valnull}
+	 */
+	public String[] zoznamAtribútovVymedzenia(int index)
+	{
+		if (index < 0) index = vymedzenia.size() + index;
+		if (index >= 0 && index < vymedzenia.size())
+		{
+			Vymedzenie vymedzenie = vymedzenia.get(index);
+			Set<String> kľúče = vymedzenie.atribúty.keySet();
+			String zoznam[] = new String[kľúče.size()];
+			int i = 0; for (String atribút : kľúče) zoznam[i++] = atribút;
+			return zoznam;
+		}
+		return null;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #zoznamAtribútovVymedzenia(int) zoznamAtribútovVymedzenia}.</p> */
+	public String[] zoznamAtributovVymedzenia(int index)
+	{ return zoznamAtribútovVymedzenia(index); }
+
+
+	/**
+	 * <p>Vloží do vnútorného zásobníka tejto inštancie ďalšie vymedzenie
+	 * s prípadnou sériou atribútov. Atribúty sú zadávané vo forme zoznamu
+	 * parametrov {@code atribúty}, ktorý je vyhodnocovaný po dvojiciach
+	 * prvkov. Prvý prvok znamená názov atribútu, druhý hodnotu.</p>
+ 	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Pozri definíciu vymedzenia
+	 * v opise metódy {@link #početVymedzení() početVymedzení}.</p>
+	 * 
+	 * <p>(Atribúty bez mena alebo s hodnotou {@code valnull} sú
+	 * ignorované.)</p>
+	 * 
+	 * <p class="caution"><b>Pozor!</b> Atribúty, ktoré sú kľúčové pri
+	 * vyjadrení konkrétneho vymedzenia (napr. {@code cx}, {@code cy},
+	 * {@code r} atď. pri radiálnom gradiente, {@code x1}, {@code y1} atď.
+	 * pri lineárnom gradiente a podobne) sú prevzaté priamo z objektu
+	 * vymedzenia, preto ich nastavenie touto metódou nemá zmysel. (Pozri aj
+	 * upozornenie v opise metódy {@link #dajAtribútVymedzenia(int, String)
+	 * dajAtribútVymedzenia}.)</p>
+	 * 
+	 * @param vymedzenie inštancia objektu vymedzenia na uloženie
+	 * @param atribúty séria dvojíc reťazcov určujúca doplňujúce atribúty
+	 *     vymedzenia
+	 */
+	public void pridajVymedzenie(Object vymedzenie, String... atribúty)
+	{
+		Atribúty zoznam = new Atribúty();
+		int dĺžka = atribúty.length - 1;
+		for (int i = 0; i < dĺžka; i += 2)
+			if (null != atribúty[i] && !atribúty[i].isEmpty() &&
+				null != atribúty[i + 1])
+				zoznam.put(atribúty[i], atribúty[i + 1]);
+
+		Vymedzenie záznam = new Vymedzenie(vymedzenie, zoznam);
+		vymedzenia.add(záznam);
+	}
+
+	// ————
 
 
 	/**
@@ -6808,21 +7631,21 @@ public class SVGPodpora
 			else
 				$TVARY_SB = $TVARY[2];
 
-			// if (0 != početZapísaných) $TVARY_SB.append("\r\n");
-			if (0 != $TVARY_SB.length()) $TVARY_SB.append("\r\n");
-			$TVARY_SB.append("  ");
-			$TVARY_SB.append(dajSVG(tvar));
-
-			/* LADENIE (begin) */
-			$TVARY_SB.append("<!-- i: ");
-			for (int i = 0; i < 5; ++i)
-				if ($TVARY_SB == $TVARY[i])
+			/* LADENIE (begin) * /
+			$TVARY_SB.append("<!-- di: ");
+			for (int di = 0; di < 5; ++di)
+				if ($TVARY_SB == $TVARY[di])
 				{
-					$TVARY_SB.append(i);
+					$TVARY_SB.append(di);
 					$TVARY_SB.append(" ");
 				}
 			$TVARY_SB.append("-->");
 			/* LADENIE (end) */
+
+			// if (0 != početZapísaných) $TVARY_SB.append("\r\n");
+			if (0 != $TVARY_SB.length()) $TVARY_SB.append("\r\n");
+			$TVARY_SB.append("  ");
+			$TVARY_SB.append(dajSVG(tvar));
 
 			++početZapísaných;
 		}
@@ -6830,7 +7653,8 @@ public class SVGPodpora
 		// Spojenie pomocných zásobníkov
 		for (int i = 1; i < 5; ++i)
 		{
-			if (0 != $TVARY[0].length()) $TVARY[0].append("\r\n");
+			if (0 != $TVARY[0].length() && 0 != $TVARY[i].length())
+				$TVARY[0].append("\r\n");
 			$TVARY[0].append($TVARY[i]);
 		}
 
@@ -7070,12 +7894,12 @@ public class SVGPodpora
 			$TVARY_SB.append("  ");
 			$TVARY_SB.append(dajSVG(tvar));
 
-			/* LADENIE (begin) */
-			$TVARY_SB.append("<!-- i: ");
-			for (int i = 0; i < 5; ++i)
-				if ($TVARY_SB == $TVARY[i])
+			/* LADENIE (begin) * /
+			$TVARY_SB.append("<!-- di: ");
+			for (int di = 0; di < 5; ++di)
+				if ($TVARY_SB == $TVARY[di])
 				{
-					$TVARY_SB.append(i);
+					$TVARY_SB.append(di);
 					$TVARY_SB.append(" ");
 				}
 			$TVARY_SB.append("-->");
@@ -7085,7 +7909,8 @@ public class SVGPodpora
 		// Spojenie pomocných zásobníkov
 		for (int i = 1; i < 5; ++i)
 		{
-			if (0 != $TVARY[0].length()) $TVARY[0].append("\r\n");
+			if (0 != $TVARY[0].length() && 0 != $TVARY[i].length())
+				$TVARY[0].append("\r\n");
 			$TVARY[0].append($TVARY[i]);
 		}
 
@@ -7217,19 +8042,61 @@ public class SVGPodpora
 	public String dajSVG() { return dajSVG("svg", null); }
 
 
-	// Vnútorný prúd na čítanie XML údajov
+	// Vnútorný prúd na čítanie XML údajov:
 	private XMLStreamReader čítanie = null;
 
 	// Vnútorné počítadlo nájdených a pridaných tvarov (počas
 	// spracovania SVG údajov; napríklad zo vstupného reťazca
-	// alebo zo súboru)
+	// alebo zo súboru):
 	private int početPridanýchTvarov = 0;
 
-	// Zoznam atribútov aktuálneho elementu
+	// Vnútorné počítadlo nájdených a pridaných vymedzení:
+	private int početPridanýchVymedzení = 0;
+
+	// Zoznam atribútov aktuálneho elementu:
 	private final Atribúty atribúty = new Atribúty();
 
+	// Spracuje atribúty aktuálneho elementu do zoznamu.
+	private int spracujAtribúty(Stack<Atribúty> zásobníkAtribútov)
+	{
+		int počet = čítanie.getAttributeCount();
+
+		if (0 != počet)
+		{
+			atribúty.clear();
+
+			Atribúty nadradenéAtribúty = null;
+			if (null != zásobníkAtribútov && !zásobníkAtribútov.isEmpty())
+			{
+				nadradenéAtribúty = zásobníkAtribútov.peek();
+				atribúty.putAll(nadradenéAtribúty);
+			}
+
+			for (int i = 0; i < počet; ++i)
+			{
+				if (čítanie.isAttributeSpecified(i))
+				{
+					String atribút = čítanie.getAttributeLocalName(i);
+					String hodnota = čítanie.getAttributeValue(i);
+
+					if (null != nadradenéAtribúty &&
+						atribút.equals("transform") &&
+						nadradenéAtribúty.containsKey(atribút))
+					{
+						hodnota = nadradenéAtribúty.
+							get(atribút) + " " + hodnota;
+					}
+
+					atribúty.put(atribút, hodnota);
+				}
+			}
+		}
+
+		return počet;
+	}
+
 	// Spracuje aktuálny element ako obdĺžnik a vytvorí a pridá
-	// prislúchajúci tvar do vnútorného zoznamu tvarov
+	// prislúchajúci tvar do vnútorného zoznamu tvarov.
 	private void spracujObdĺžnik()
 	{
 		double x, y, rx, ry, width, height;
@@ -7282,7 +8149,7 @@ public class SVGPodpora
 	}
 
 	// Spracuje aktuálny element ako kružnicu a vytvorí a pridá
-	// prislúchajúci tvar do vnútorného zoznamu tvarov
+	// prislúchajúci tvar do vnútorného zoznamu tvarov.
 	private void spracujKružnicu()
 	{
 		double cx, cy, r;
@@ -7308,7 +8175,7 @@ public class SVGPodpora
 	}
 
 	// Spracuje aktuálny element ako elipsu a vytvorí a pridá
-	// prislúchajúci tvar do vnútorného zoznamu tvarov
+	// prislúchajúci tvar do vnútorného zoznamu tvarov.
 	private void spracujElipsu()
 	{
 		double cx, cy, rx, ry;
@@ -7339,7 +8206,7 @@ public class SVGPodpora
 	}
 
 	// Spracuje aktuálny element ako úsečku a vytvorí a pridá
-	// prislúchajúci tvar do vnútorného zoznamu tvarov
+	// prislúchajúci tvar do vnútorného zoznamu tvarov.
 	private void spracujÚsečku()
 	{
 		double x1, y1, x2, y2;
@@ -7372,7 +8239,7 @@ public class SVGPodpora
 	// „points“ pri polygónoch a „d“ pri ceste.
 
 	// Trieda na spracovanie hodnoty zvoleného atribútu – v podstate
-	// funguje podobne ako prúd znakov
+	// funguje podobne ako prúd znakov.
 	private class ÚdajeTvaru
 	{
 		private char údaje[];
@@ -7576,12 +8443,12 @@ public class SVGPodpora
 
 	// Inštancia triedy simulujúcej prúd znakov vytvorený z hodnoty
 	// atribútu s pridanou hodnotou rozpoznávania oddeľovačov, riadiacich
-	// znakov a číselných hodnôt
+	// znakov a číselných hodnôt.
 	private ÚdajeTvaru údajeTvaru = new ÚdajeTvaru();
 
 	// Spracuje aktuálny element ako lomenú čiaru alebo polygón (čo je
 	// vo vnímaní SVG uzavretá lomená čiara) a vytvorí a pridá
-	// prislúchajúci tvar do vnútorného zoznamu tvarov
+	// prislúchajúci tvar do vnútorného zoznamu tvarov.
 	private void spracujLomenúCestu(boolean polygón)
 	{
 		if (atribúty.containsKey("points"))
@@ -7616,7 +8483,7 @@ public class SVGPodpora
 	// Trieda slúžiaca na spracovanie údajov cesty SVG – rozpoznáva
 	// a pracuje s posunom, úsečkami (priamymi čiarami), krivkami
 	// a pootočením podľa špecifikácie SVG 2.0; používa inštanciu
-	// údajeTvaru definovanú vyššie
+	// údajeTvaru definovanú vyššie.
 	private class SpracovanieCesty
 	{
 		public char režim = 'm';
@@ -7699,7 +8566,6 @@ public class SVGPodpora
 		// segmentu
 		public void pridajPoslednýBodKrivky()
 		{
-
 			/*
 				https://www.w3.org/TR/SVG/paths.html#PathDataClosePathCommand
 
@@ -8302,7 +9168,7 @@ public class SVGPodpora
 	private SpracovanieCesty spracovanieCesty = new SpracovanieCesty();
 
 	// Spracuje aktuálny element ako cestu a vytvorí a pridá
-	// prislúchajúci tvar do vnútorného zoznamu tvarov
+	// prislúchajúci tvar do vnútorného zoznamu tvarov.
 	private void spracujCestu()
 	{
 		if (atribúty.containsKey("d"))
@@ -8315,7 +9181,7 @@ public class SVGPodpora
 	}
 
 	// Spracuje aktuálny element ako text; vytvorí a pridá obrys textu
-	// do vnútorného zoznamu tvarov
+	// do vnútorného zoznamu tvarov.
 	private void spracujText() throws XMLStreamException
 	{
 		StringBuffer text = new StringBuffer();
@@ -8334,18 +9200,40 @@ public class SVGPodpora
 		{
 			if (čítanie.isEndElement())
 			{
+				if (null != spracovanie.koncovýElement)
+					spracovanie.koncovýElement.accept(čítanie);
+
 				String prefix = čítanie.getPrefix();
 
 				if (null == prefix || prefix.isEmpty())
 				{
 					String meno = čítanie.getLocalName();
-					if ("text".equals(meno)) break;
+					if ("text".equals(meno)) break; // TODO: Over, či sa
+						// nespracuje dvakrát – či netreba ešte raz vykonať
+						// čítanie.next(); (ale asi nie – závery zistenia
+						// poznač sem).
 				}
+				else if (null != spracovanie.nepoužitýKoncovýElement)
+					spracovanie.nepoužitýKoncovýElement.accept(čítanie);
 			}
 			else if (čítanie.isCharacters())
 			{
+				if (null != spracovanie.inýPrvok)
+					spracovanie.inýPrvok.accept(čítanie);
+
 				text.append(čítanie.getText());
 			}
+			else if (čítanie.isStartElement())
+			{
+				if (null != spracovanie.počiatočnýElement)
+					spracovanie.počiatočnýElement.accept(čítanie);
+
+				// Na tomto mieste sú v podstate všetky elementy nepoužité:
+				if (null != spracovanie.nepoužitýPočiatočnýElement)
+					spracovanie.nepoužitýPočiatočnýElement.accept(čítanie);
+			}
+			else if (null != spracovanie.inýPrvok)
+				spracovanie.inýPrvok.accept(čítanie);
 
 			čítanie.next();
 		}
@@ -8396,6 +9284,339 @@ public class SVGPodpora
 		tvary.add(new Tvar(new SimpleTextShape(
 			x, y, písmo, text.toString(), Svet.grafikaSveta1), atribúty));
 	}
+
+
+	// Spracúva stopky gradientov.
+	private void spracujStopku(Vector<Float> vektorStopiek,
+		Vector<Color> vektorFarieb) throws XMLStreamException
+	{
+		float stopka;
+		if (atribúty.containsKey("offset"))
+			stopka = (float)reťazecNaČíslo(atribúty.get("offset"));
+		else
+			stopka = 0.0f;
+
+		Color farba; { String farbaString = atribúty.get("stop-color");
+		if (null == farbaString)
+			farba = reťazecNaFarbu("black", atribúty.get("stop-opacity"));
+		else
+		{
+			if ("none".equalsIgnoreCase(farbaString))
+				farba = Farebnosť.žiadna;
+				// TODO: nerozlišujeme currentcolor – bolo by treba
+				// implementovať mechanizmus dedenia farieb… (možno by sa to
+				// dalo nejako 🤷‍); netreba s týmto rátať aj niekde inde?
+				// (nedalo by sa toto využiť na interaktívne zafarbovanie
+				// objektov?)
+			else
+				farba = reťazecNaFarbu(farbaString,
+					atribúty.get("stop-opacity"));
+		}}
+
+		vektorStopiek.add(stopka);
+		vektorFarieb.add(farba);
+
+		while (čítanie.hasNext())
+		{
+			if (čítanie.isEndElement())
+			{
+				if (null != spracovanie.koncovýElement)
+					spracovanie.koncovýElement.accept(čítanie);
+
+				String prefix = čítanie.getPrefix();
+
+				if (null == prefix || prefix.isEmpty())
+				{
+					String meno = čítanie.getLocalName();
+					if (meno.equals("stop")) break;
+					if (null != spracovanie.nepoužitýKoncovýElement)
+						spracovanie.nepoužitýKoncovýElement.accept(čítanie);
+				}
+				else if (null != spracovanie.nepoužitýKoncovýElement)
+					spracovanie.nepoužitýKoncovýElement.accept(čítanie);
+			}
+			else if (čítanie.isStartElement())
+			{
+				if (null != spracovanie.počiatočnýElement)
+					spracovanie.počiatočnýElement.accept(čítanie);
+
+				// Na tomto mieste sú v podstate všetky elementy nepoužité:
+				if (null != spracovanie.nepoužitýPočiatočnýElement)
+					spracovanie.nepoužitýPočiatočnýElement.accept(čítanie);
+			}
+			else if (null != spracovanie.inýPrvok)
+				spracovanie.inýPrvok.accept(čítanie);
+
+			čítanie.next();
+		}
+	}
+
+
+	// private final static float[] prázdneStopky = new float[0];
+	private final static Color[] prázdneFarby = new Color[0];
+
+	// Spracuje lineárny gradient a pridá ho medzi vymedzenia.
+	private void spracujLineárnyGradient() throws XMLStreamException
+	{
+		// TODO: href="‹URL›" – This attribute defines a reference to another
+		// <linearGradient> element that will be used as a template.
+		// Default value: none.
+
+		Atribúty atribúty = new Atribúty(this.atribúty);
+		/*{
+			System.out.println("spracujLineárnyGradient()");
+			Set<String> kľúče = atribúty.keySet();
+			for (String atribút : kľúče)
+				System.out.println(atribút + ": " + atribúty.get(atribút));
+		}*/
+
+		double x1, y1, x2, y2;
+		Vector<Float> vektorStopiek = new Vector<>();
+		Vector<Color> vektorFarieb = new Vector<>();
+		++početPridanýchVymedzení;
+
+		if (atribúty.containsKey("x1"))
+			x1 = reťazecNaČíslo(atribúty.get("x1"));
+		else
+			x1 = 0.0;
+
+		if ((atribúty.containsKey("y1")))
+			y1 = reťazecNaČíslo(atribúty.get("y1"));
+		else
+			y1 = 0.0;
+
+		if ((atribúty.containsKey("x2")))
+			x2 = reťazecNaČíslo(atribúty.get("x2"));
+		else
+			x2 = 100.0;
+
+		if ((atribúty.containsKey("y2")))
+			y2 = reťazecNaČíslo(atribúty.get("y2"));
+		else
+			y2 = 0.0;
+
+		while (čítanie.hasNext())
+		{
+			if (čítanie.isEndElement())
+			{
+				if (null != spracovanie.koncovýElement)
+					spracovanie.koncovýElement.accept(čítanie);
+
+				String prefix = čítanie.getPrefix();
+				if (null == prefix || prefix.isEmpty())
+				{
+					String meno = čítanie.getLocalName();
+					if (meno.equals("linearGradient")) break;
+					if (null != spracovanie.nepoužitýKoncovýElement)
+						spracovanie.nepoužitýKoncovýElement.accept(čítanie);
+				}
+				else if (null != spracovanie.nepoužitýKoncovýElement)
+					spracovanie.nepoužitýKoncovýElement.accept(čítanie);
+			}
+			else if (čítanie.isStartElement())
+			{
+				if (null != spracovanie.počiatočnýElement)
+					spracovanie.počiatočnýElement.accept(čítanie);
+
+				String prefix = čítanie.getPrefix();
+				if (null == prefix || prefix.isEmpty())
+				{
+					String meno = čítanie.getLocalName();
+					if (meno.equals("stop"))
+					{
+						spracujAtribúty(null);
+						spracujStopku(vektorStopiek, vektorFarieb);
+					}
+					else if (null != spracovanie.nepoužitýPočiatočnýElement)
+						spracovanie.nepoužitýPočiatočnýElement.accept(čítanie);
+				}
+				else if (null != spracovanie.nepoužitýPočiatočnýElement)
+					spracovanie.nepoužitýPočiatočnýElement.accept(čítanie);
+			}
+			else if (null != spracovanie.inýPrvok)
+				spracovanie.inýPrvok.accept(čítanie);
+
+			čítanie.next();
+		}
+
+		float[] stopky = new float[vektorStopiek.size()];
+		for (int i = 0; i < stopky.length; ++i)
+			stopky[i] = vektorStopiek.get(i);
+		Color[] farby = vektorFarieb.toArray(prázdneFarby);
+
+		MultipleGradientPaint.CycleMethod cycleMethod = NO_CYCLE;
+		if (atribúty.containsKey("spreadMethod"))
+		{
+			String spreadMethod = atribúty.get("spreadMethod");
+			switch (spreadMethod)
+			{
+				// case "pad": cycleMethod = NO_CYCLE; break;
+				case "reflect": cycleMethod = REFLECT; break;
+				case "repeat": cycleMethod = REPEAT; break;
+			}
+		}
+
+		AffineTransform gradientTransform = null;
+		if (atribúty.containsKey("gradientTransform"))
+		{
+			Transformácia transformácia = reťazecNaTransformáciu(
+				atribúty.get("gradientTransform"));
+			if (null != transformácia)
+				gradientTransform = transformácia.daj();
+		}
+
+		if (null == gradientTransform)
+			vymedzenia.add(new Vymedzenie(new LinearGradientPaint(
+				new Point2D.Double(x1, y1), new Point2D.Double(x2, y2),
+				stopky, farby, cycleMethod), atribúty));
+		else
+			vymedzenia.add(new Vymedzenie(new LinearGradientPaint(
+				new Point2D.Double(x1, y1), new Point2D.Double(x2, y2),
+				stopky, farby, cycleMethod, MultipleGradientPaint.
+				ColorSpaceType.SRGB, gradientTransform), atribúty));
+
+		atribúty.clear();
+		atribúty = null;
+	}
+
+
+	// Spracuje radiálny gradient a pridá ho medzi vymedzenia.
+	private void spracujRadiálnyGradient() throws XMLStreamException
+	{
+		// TODO: href="‹URL›" – This attribute defines a reference to another
+		// <radialGradient> element that will be used as a template.
+		// Default value: none.
+
+		Atribúty atribúty = new Atribúty(this.atribúty);
+
+		double cx, cy, fx, fy;
+		float r/*, fr*/;
+		Vector<Float> vektorStopiek = new Vector<>();
+		Vector<Color> vektorFarieb = new Vector<>();
+		++početPridanýchVymedzení;
+
+		if (atribúty.containsKey("cx"))
+			fx = cx = reťazecNaČíslo(atribúty.get("cx"));
+		else
+			fx = cx = 0.0;
+
+		if ((atribúty.containsKey("cy")))
+			fy = cy = reťazecNaČíslo(atribúty.get("cy"));
+		else
+			fy = cy = 0.0;
+
+		if ((atribúty.containsKey("r")))
+			r = (float)reťazecNaČíslo(atribúty.get("r"));
+		else
+			r = 0.0f;
+
+		if ((atribúty.containsKey("fx")))
+			fx = reťazecNaČíslo(atribúty.get("fx"));
+
+		if ((atribúty.containsKey("fy")))
+			fy = reťazecNaČíslo(atribúty.get("fy"));
+
+		while (čítanie.hasNext())
+		{
+			if (čítanie.isEndElement())
+			{
+				if (null != spracovanie.koncovýElement)
+					spracovanie.koncovýElement.accept(čítanie);
+
+				String prefix = čítanie.getPrefix();
+				if (null == prefix || prefix.isEmpty())
+				{
+					String meno = čítanie.getLocalName();
+					if (meno.equals("radialGradient")) break;
+					if (null != spracovanie.nepoužitýKoncovýElement)
+						spracovanie.nepoužitýKoncovýElement.accept(čítanie);
+				}
+				else if (null != spracovanie.nepoužitýKoncovýElement)
+					spracovanie.nepoužitýKoncovýElement.accept(čítanie);
+			}
+			else if (čítanie.isStartElement())
+			{
+				if (null != spracovanie.počiatočnýElement)
+					spracovanie.počiatočnýElement.accept(čítanie);
+
+				String prefix = čítanie.getPrefix();
+				if (null == prefix || prefix.isEmpty())
+				{
+					String meno = čítanie.getLocalName();
+					if (meno.equals("stop"))
+					{
+						spracujAtribúty(null);
+						spracujStopku(vektorStopiek, vektorFarieb);
+					}
+					else if (null != spracovanie.nepoužitýPočiatočnýElement)
+						spracovanie.nepoužitýPočiatočnýElement.accept(čítanie);
+				}
+				else if (null != spracovanie.nepoužitýPočiatočnýElement)
+					spracovanie.nepoužitýPočiatočnýElement.accept(čítanie);
+			}
+			else if (null != spracovanie.inýPrvok)
+				spracovanie.inýPrvok.accept(čítanie);
+
+			čítanie.next();
+		}
+
+		float[] stopky = new float[vektorStopiek.size()];
+		for (int i = 0; i < stopky.length; ++i)
+			stopky[i] = vektorStopiek.get(i);
+		Color[] farby = vektorFarieb.toArray(prázdneFarby);
+
+		// 
+			// TODO: dá sa simulovať s pomocou stopiek?
+			// 
+			// This attribute defines the radius of the start circle of the
+			// radial gradient. The gradient will be drawn such that the 0%
+			// <stop> is mapped to the perimeter of the start circle. Value
+			// type: ‹length›; default value: 0%.
+			// 
+			/*if ((atribúty.containsKey("fr")))
+				fr = (float)reťazecNaČíslo(atribúty.get("fr"));
+			else
+				fr = 0.0f;*/
+		// 
+
+		MultipleGradientPaint.CycleMethod cycleMethod = NO_CYCLE;
+		if (atribúty.containsKey("spreadMethod"))
+		{
+			String spreadMethod = atribúty.get("spreadMethod");
+			switch (spreadMethod)
+			{
+				// case "pad": cycleMethod = NO_CYCLE; break;
+				case "reflect": cycleMethod = REFLECT; break;
+				case "repeat": cycleMethod = REPEAT; break;
+			}
+		}
+
+		AffineTransform gradientTransform = null;
+		if (atribúty.containsKey("gradientTransform"))
+		{
+			Transformácia transformácia = reťazecNaTransformáciu(
+				atribúty.get("gradientTransform"));
+			if (null != transformácia)
+				gradientTransform = transformácia.daj();
+		}
+
+		if (null == gradientTransform)
+			vymedzenia.add(new Vymedzenie(new RadialGradientPaint(
+				new Point2D.Double(cx, cy), r, new Point2D.Double(fx, fy),
+				stopky, farby, cycleMethod), atribúty));
+		else
+			vymedzenia.add(new Vymedzenie(new RadialGradientPaint(
+				new Point2D.Double(cx, cy), r, new Point2D.Double(fx, fy),
+				stopky, farby, cycleMethod, MultipleGradientPaint.
+				ColorSpaceType.SRGB, gradientTransform), atribúty));
+
+		atribúty.clear();
+		atribúty = null;
+	}
+
+	// TODO Všetky metódy, ktoré majú tvary vyrob aj pre vymedzenia: počet, zoznam…
+	// TODO nájdi spôsob ako uchovať pôvodné atribúty stopiek…
+
 
 	// Do tohto zoznamu si metóda spracujLokálnyŠtýl uloží zoznam
 	// CSS definícií, ktoré premení na XML/SVG atribúty.
@@ -8492,12 +9713,32 @@ public class SVGPodpora
 	// Súkromná metóda slúžiaca na rekurzívnu analýzu SVG údajov
 	private void čítajSVG() throws XMLStreamException
 	{
-		zásobníkAtribútov.clear();
+		// Zásobník série atribútov (bol mimo a tu bolo len clear() – asi som
+		// to zabudol zmeniť, keď som prida rekurzívne spracovanie SVG
+		// elementov):
+		final Stack<Atribúty> zásobníkAtribútov = new Stack<>();
+
+		final Tvary zálohaTvarov = tvary;
+		final Stack<Tvary> zálohaPresmerovaniaTvarov =
+			spracovanie.presmerovaniaTvarov, presmerovaniaTvarov =
+			new Stack<Tvary>();
+		spracovanie.presmerovaniaTvarov = presmerovaniaTvarov;
+
+		final Vymedzenia zálohaVymedzení = vymedzenia;
+		final Stack<Vymedzenia> zálohaPresmerovaniaVymedzení =
+			spracovanie.presmerovaniaVymedzení, presmerovaniaVymedzení =
+			new Stack<Vymedzenia>();
+		spracovanie.presmerovaniaVymedzení = presmerovaniaVymedzení;
+
+		try {
 
 		while (čítanie.hasNext())
 		{
 			if (čítanie.isEndElement())
 			{
+				if (null != spracovanie.koncovýElement)
+					spracovanie.koncovýElement.accept(čítanie);
+
 				String prefix = čítanie.getPrefix();
 
 				if (null == prefix || prefix.isEmpty())
@@ -8506,10 +9747,17 @@ public class SVGPodpora
 
 					if ("svg".equals(meno)) return;
 					if ("g".equals(meno)) zásobníkAtribútov.pop();
+					else if (null != spracovanie.nepoužitýKoncovýElement)
+						spracovanie.nepoužitýKoncovýElement.accept(čítanie);
 				}
+				else if (null != spracovanie.nepoužitýKoncovýElement)
+					spracovanie.nepoužitýKoncovýElement.accept(čítanie);
 			}
 			else if (čítanie.isStartElement())
 			{
+				if (null != spracovanie.počiatočnýElement)
+					spracovanie.počiatočnýElement.accept(čítanie);
+
 				String prefix = čítanie.getPrefix();
 
 				if (null == prefix || prefix.isEmpty())
@@ -8526,48 +9774,18 @@ public class SVGPodpora
 					{
 						// Čítanie ostatných elementov
 						// (v rámci svg elementu)
-						int počet = čítanie.getAttributeCount();
+
+						int počet = spracujAtribúty(zásobníkAtribútov);
 
 						if (0 != počet)
 						{
-							atribúty.clear();
-
-							{
-								Atribúty nadradenéAtribúty = null;
-								if (!zásobníkAtribútov.isEmpty())
-								{
-									nadradenéAtribúty =
-										zásobníkAtribútov.peek();
-									atribúty.putAll(nadradenéAtribúty);
-								}
-
-								for (int i = 0; i < počet; ++i)
-								{
-									if (čítanie.isAttributeSpecified(i))
-									{
-										String atribút = čítanie.
-											getAttributeLocalName(i);
-										String hodnota = čítanie.
-											getAttributeValue(i);
-
-										if (null != nadradenéAtribúty &&
-											atribút.equals("transform") &&
-											nadradenéAtribúty.containsKey(
-												atribút))
-										{
-											hodnota = nadradenéAtribúty.
-												get(atribút) + " " + hodnota;
-										}
-
-										atribúty.put(atribút, hodnota);
-									}
-								}
-							}
-
 							spracujLokálnyŠtýl();
 
 							if ("g".equals(meno))
 							{
+								if (null != spracovanie.začiatokSkupiny)
+									spracovanie.začiatokSkupiny.accept(čítanie);
+
 								Atribúty atr = new Atribúty();
 
 								if (!zásobníkAtribútov.isEmpty())
@@ -8609,12 +9827,35 @@ public class SVGPodpora
 								spracujCestu();
 							else if ("text".equals(meno))
 								spracujText();
+							else if ("linearGradient".equals(meno))
+								spracujLineárnyGradient();
+							else if ("radialGradient".equals(meno))
+								spracujRadiálnyGradient();
+							else if (null !=
+								spracovanie.nepoužitýPočiatočnýElement)
+								spracovanie.nepoužitýPočiatočnýElement.accept(
+									čítanie);
 						}
+						else if (null != spracovanie.nepoužitýPočiatočnýElement)
+							spracovanie.nepoužitýPočiatočnýElement.accept(
+								čítanie);
 					}
 				}
+				else if (null != spracovanie.nepoužitýPočiatočnýElement)
+					spracovanie.nepoužitýPočiatočnýElement.accept(čítanie);
 			}
+			else if (null != spracovanie.inýPrvok)
+				spracovanie.inýPrvok.accept(čítanie);
 
 			čítanie.next();
+		}
+
+		} finally {
+			spracovanie.presmerovaniaTvarov = zálohaPresmerovaniaTvarov;
+			presmerovaniaTvarov.clear(); tvary = zálohaTvarov;
+
+			spracovanie.presmerovaniaVymedzení = zálohaPresmerovaniaVymedzení;
+			presmerovaniaVymedzení.clear(); vymedzenia = zálohaVymedzení;
 		}
 	}
 
@@ -8637,7 +9878,7 @@ public class SVGPodpora
 	 */
 	public int pridajSVG(String xmlSVG)
 	{
-		početPridanýchTvarov = -1;
+		početPridanýchTvarov = -1; početPridanýchVymedzení = 0;
 
 		try { // (Pár k finally na núdzové zavretie a likvidáciu prúdu.)
 
@@ -8710,7 +9951,7 @@ public class SVGPodpora
 		čítanie = null;
 
 		// Metóda má vrátiť počet rozpoznaných (a pridaných) tvarov:
-		return početPridanýchTvarov;
+		return početPridanýchTvarov + početPridanýchVymedzení;
 
 		} finally { if (null != čítanie) { try { čítanie.close(); }
 			catch (Exception e) { /* Ignorované, toto je núdzové
@@ -8757,7 +9998,7 @@ public class SVGPodpora
 				"Názov súboru nesmie byť zamlčaný.",
 				"fileNameOmitted", null, new NullPointerException());
 
-		početPridanýchTvarov = -1;
+		početPridanýchTvarov = -1; početPridanýchVymedzení = 0;
 
 		FileNotFoundException notFound = null;
 		boolean ešteRaz = true;
@@ -8801,7 +10042,7 @@ public class SVGPodpora
 				// ‼ throw new GRobotException(
 				// ‼ 	"Chyba pri spracovaní SVG súboru „" +
 				// ‼ 	meno + ".“", "svgReadError", e);
-				return početPridanýchTvarov;
+				return početPridanýchTvarov + početPridanýchVymedzení;
 			}
 		}
 
@@ -8854,7 +10095,7 @@ public class SVGPodpora
 		čítanie = null;
 
 		// Metóda má vrátiť počet „prečítaných“ (pridaných) tvarov:
-		return početPridanýchTvarov;
+		return početPridanýchTvarov + početPridanýchVymedzení;
 
 		} finally { if (null != čítanie) { try { čítanie.close(); }
 			catch (Exception e) { /* Ignorované, toto je núdzové

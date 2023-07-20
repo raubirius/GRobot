@@ -4516,7 +4516,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * zachováva aj kanál priehľadnosti obrázka.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Metóda používa predvolenú
-		 * hodnotu faktoru zosvetlenia {@code num0.7}. Pozri aj {@link 
+		 * hodnotu faktora zosvetlenia {@code num0.7}. Pozri aj {@link 
 		 * #bledší(double) bledší(faktor)}.</p>
 		 * 
 		 * @see #tmavší()
@@ -4540,7 +4540,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * zachováva aj kanál priehľadnosti obrázka.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Metóda používa predvolenú
-		 * hodnotu faktoru stmavenia {@code num0.7}. Pozri aj {@link 
+		 * hodnotu faktora stmavenia {@code num0.7}. Pozri aj {@link 
 		 * #tmavší(double) tmavší(faktor)}.</p>
 		 * 
 		 * @see #bledší()

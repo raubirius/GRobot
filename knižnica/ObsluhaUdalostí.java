@@ -34,6 +34,8 @@
 package knižnica;
 
 import java.awt.Color;
+import java.awt.datatransfer.Transferable;
+import javax.swing.JComponent;
 import java.io.IOException;
 
 import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
@@ -81,6 +83,7 @@ import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zmenaPosunuLišty() zmenaPosunuLišty}() {}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#ťahanieSúborov() ťahanieSúborov}() {}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#pustenieSúboru(String) pustenieSúboru}({@link String String} súbor) {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#ťahanieUkončené(JComponent, Transferable, int) ťahanieUkončené}({@link JComponent javax.swing.JComponent} zdroj, {@link Transferable java.awt.datatransfer.Transferable} údaje, {@code typeint} akcia) {}
 
 		{@code comm// Prekresľovanie}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#prekreslenie() prekreslenie}() {}
@@ -1358,6 +1361,31 @@ public class ObsluhaUdalostí
 
 	/** <p><a class="alias"></a> Alias pre {@link #pustenieSúboru(String) pustenieSúboru}.</p> */
 	public void pustenieSuboru(String súbor) {}
+
+
+	/**
+	 * <p>Spustená po dokončení ťahania súboru alebo súborov do externej
+	 * aplikácie. Táto udalosť by mala vzniknúť po pustení ťahaných súborov
+	 * z tejto aplikácie (aplikácie vytvorenej s týmto programovacím rámcom)
+	 * do inej/externej aplikácie. Ťahanie by malo byť spustené metódou sveta:
+	 * {@link Svet#ťahajSúbory(int, String...) ťahajSúbory}. Do tejto reakcie
+	 * prídu údaje súvisiace s týmto procesom. Zdroj bude pravdepodobne
+	 * {@code valnull}, pretože metóda sveta ho neposiela. Je možné, že aj
+	 * údaje budú {@code valnull}, preto je vhodné túto udalosť spárovať
+	 * s akciou inak.</p>
+	 * 
+	 * @param zdroj komponent, ktorý bol zdrojom údajov
+	 * @param údaje údaje, ktoré boli prenesené, prípadne {@code valnull}, ak
+	 *     je akcia {@link Transferable#NONE NONE}.
+	 * @param akcia akcia, ktorá bola (s údajmi) vykonaná; pozri aj opis metódy
+	 *     {@link Svet#ťahajSúbory(int, String...) ťahajSúbory}
+	 * 
+	 * @see GRobot#ťahanieUkončené(JComponent, Transferable, int)
+	 */
+	public void ťahanieUkončené(JComponent zdroj, Transferable údaje, int akcia) {}
+
+	/** <p><a class="alias"></a> Alias pre {@link #ťahanieUkončené(JComponent, Transferable, int) ťahanieUkončené}.</p> */
+	public void tahanieUkoncene(JComponent zdroj, Transferable údaje, int akcia) {}
 
 
 	/**

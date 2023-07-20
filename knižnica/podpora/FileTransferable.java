@@ -57,10 +57,10 @@ public class FileTransferable implements Transferable
 	// Transferable implementation:
 
 	@Override public Object getTransferData(DataFlavor flavor)
-		throws UnsupportedFlavorException, IOException
+		// throws UnsupportedFlavorException
 	{
 		if (isDataFlavorSupported(flavor)) return this.files;
-		else return null;
+		return null;
 	}
 
 	@Override public DataFlavor[] getTransferDataFlavors()

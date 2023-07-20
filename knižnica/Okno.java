@@ -201,7 +201,7 @@ public class Okno
 	 * <p>Zmení stav automatického overovania počiatočnej polohy každého
 	 * nového okna počas jeho inicializácie. Ak je stav overovania nastavený
 	 * na {@code valtrue}, tak sa počas inicializácie každého nového okna
-	 * overí či je umiestnené v rámci aktuálnych obrazoviek (zariadení) a ak
+	 * overí, či je umiestnené v rámci aktuálnych obrazoviek (zariadení) a ak
 	 * nie, tak bude automaticky presunuté na primárnu obrazovku (resp.
 	 * predvolené zobrazovacie zariadenie).
 	 * 
@@ -302,10 +302,14 @@ public class Okno
 				ÚdajeUdalostí.poslednáSúradnicaMyšiY =
 					ÚdajeUdalostí.súradnicaMyšiY;
 
-				ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(
-					dtde.getLocation().getX());
-				ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(
-					dtde.getLocation().getY());
+				int eGetX = (int)dtde.getLocation().getX();
+				int eGetY = (int)dtde.getLocation().getY();
+
+				ÚdajeUdalostí.pôvodnáSúradnicaMyšiX = eGetX;
+				ÚdajeUdalostí.pôvodnáSúradnicaMyšiY = eGetY;
+
+				ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(eGetX);
+				ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(eGetY);
 
 				if (null != ObsluhaUdalostí.počúvadlo)
 				{
@@ -351,6 +355,7 @@ public class Okno
 					{
 						ÚdajeUdalostí.oknoUdalosti = Okno.this;
 
+						// ťahanieUkončené
 						for (File file : transferData)
 						{
 							String menoSúboru = file.getCanonicalPath();
@@ -391,7 +396,7 @@ public class Okno
 		všetkyOkná.add(this);
 
 		// Nastavenie systémového Look&Feel:
-		try { UIManager.setLookAndFeel(UIManager.
+		if (Svet.zmenaLAF) try { UIManager.setLookAndFeel(UIManager.
 			getSystemLookAndFeelClassName());
 			// Tento „hack“ je tu z dôvodu zabránenia zmeny nastavení
 			// vzhľadu prvkov rámca po dodatočnej inicializácii dialógov
@@ -805,11 +810,17 @@ public class Okno
 				ÚdajeUdalostí.poslednáSúradnicaMyšiY =
 					ÚdajeUdalostí.súradnicaMyšiY;
 
-				ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
-				ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
+				int eGetX = e.getX();
+				int eGetY = e.getY();
+
+				ÚdajeUdalostí.pôvodnáSúradnicaMyšiX = eGetX;
+				ÚdajeUdalostí.pôvodnáSúradnicaMyšiY = eGetY;
+
+				ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(eGetX);
+				ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(eGetY);
 				e.translatePoint(
-					(int)ÚdajeUdalostí.súradnicaMyšiX - e.getX(),
-					(int)ÚdajeUdalostí.súradnicaMyšiY - e.getY());
+					(int)ÚdajeUdalostí.súradnicaMyšiX - eGetX,
+					(int)ÚdajeUdalostí.súradnicaMyšiY - eGetY);
 
 				if (e.getButton() == MouseEvent.BUTTON1)
 				{
@@ -861,11 +872,17 @@ public class Okno
 				ÚdajeUdalostí.poslednáSúradnicaMyšiY =
 					ÚdajeUdalostí.súradnicaMyšiY;
 
-				ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
-				ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
+				int eGetX = e.getX();
+				int eGetY = e.getY();
+
+				ÚdajeUdalostí.pôvodnáSúradnicaMyšiX = eGetX;
+				ÚdajeUdalostí.pôvodnáSúradnicaMyšiY = eGetY;
+
+				ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(eGetX);
+				ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(eGetY);
 				e.translatePoint(
-					(int)ÚdajeUdalostí.súradnicaMyšiX - e.getX(),
-					(int)ÚdajeUdalostí.súradnicaMyšiY - e.getY());
+					(int)ÚdajeUdalostí.súradnicaMyšiX - eGetX,
+					(int)ÚdajeUdalostí.súradnicaMyšiY - eGetY);
 
 				if (e.getButton() == MouseEvent.BUTTON1)
 				{
@@ -917,12 +934,18 @@ public class Okno
 				ÚdajeUdalostí.poslednáSúradnicaMyšiY =
 					ÚdajeUdalostí.súradnicaMyšiY;
 
-				ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
-				ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
+				int eGetX = e.getX();
+				int eGetY = e.getY();
+
+				ÚdajeUdalostí.pôvodnáSúradnicaMyšiX = eGetX;
+				ÚdajeUdalostí.pôvodnáSúradnicaMyšiY = eGetY;
+
+				ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(eGetX);
+				ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(eGetY);
 
 				e.translatePoint(
-					(int)ÚdajeUdalostí.súradnicaMyšiX - e.getX(),
-					(int)ÚdajeUdalostí.súradnicaMyšiY - e.getY());
+					(int)ÚdajeUdalostí.súradnicaMyšiX - eGetX,
+					(int)ÚdajeUdalostí.súradnicaMyšiY - eGetY);
 
 				ÚdajeUdalostí.poslednáUdalosťMyši = e;
 
@@ -956,12 +979,18 @@ public class Okno
 				ÚdajeUdalostí.poslednáSúradnicaMyšiY =
 					ÚdajeUdalostí.súradnicaMyšiY;
 
-				ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
-				ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
+				int eGetX = e.getX();
+				int eGetY = e.getY();
+
+				ÚdajeUdalostí.pôvodnáSúradnicaMyšiX = eGetX;
+				ÚdajeUdalostí.pôvodnáSúradnicaMyšiY = eGetY;
+
+				ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(eGetX);
+				ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(eGetY);
 
 				e.translatePoint(
-					(int)ÚdajeUdalostí.súradnicaMyšiX - e.getX(),
-					(int)ÚdajeUdalostí.súradnicaMyšiY - e.getY());
+					(int)ÚdajeUdalostí.súradnicaMyšiX - eGetX,
+					(int)ÚdajeUdalostí.súradnicaMyšiY - eGetY);
 
 				ÚdajeUdalostí.poslednáUdalosťMyši = e;
 
@@ -995,11 +1024,17 @@ public class Okno
 				ÚdajeUdalostí.poslednáSúradnicaMyšiY =
 					ÚdajeUdalostí.súradnicaMyšiY;
 
-				ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(e.getX());
-				ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(e.getY());
+				int eGetX = e.getX();
+				int eGetY = e.getY();
+
+				ÚdajeUdalostí.pôvodnáSúradnicaMyšiX = eGetX;
+				ÚdajeUdalostí.pôvodnáSúradnicaMyšiY = eGetY;
+
+				ÚdajeUdalostí.súradnicaMyšiX = korekciaMyšiX(eGetX);
+				ÚdajeUdalostí.súradnicaMyšiY = korekciaMyšiY(eGetY);
 				e.translatePoint(
-					(int)ÚdajeUdalostí.súradnicaMyšiX - e.getX(),
-					(int)ÚdajeUdalostí.súradnicaMyšiY - e.getY());
+					(int)ÚdajeUdalostí.súradnicaMyšiX - eGetX,
+					(int)ÚdajeUdalostí.súradnicaMyšiY - eGetY);
 
 				ÚdajeUdalostí.poslednáUdalosťMyši =
 					ÚdajeUdalostí.poslednáUdalosťRolovania = e;
@@ -1602,8 +1637,8 @@ public class Okno
 	//  ✗ rozmermi? (zvážiť verzie: ak nie je meno, má zmysel dávať rozmery?)
 	//    nakoniec zamietnuté – nedávalo by zmysel; ani konštruktor robota
 	//    neprijíma polohu a rozmery okna (sveta); dá sa „vyskladať“ vhodným
-	//    použitím konštruktorov a čítania konfigurácie; TODO: dať niekde
-	//    príklad použitia
+	//    použitím konštruktorov a čítania konfigurácie; dať niekde príklad
+	//    použitia…
 
 
 	// Meno okna

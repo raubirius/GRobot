@@ -437,13 +437,13 @@ public class Farba extends Color implements Comparable<Color>
 	 * Color#brighter() brighter}{@code ()}, len berie do úvahy aj
 	 * priehľadnosť pôvodnej farby a zachováva ju.</p>
 	 * 
-	 * <p class="attention"><b>Upozornenie:</b> I keď sú operácie
-	 * {@code currsvetlejšia} a {@link #tmavšia() tmavšia} opačné (myslené
-	 * logicky), ich niekoľkonásobné striedavé použitie bude v dôsledku
+	 * <p class="attention"><b>Upozornenie:</b> Operácie
+	 * {@code currsvetlejšia} a {@link #tmavšia() tmavšia} sú iba pomyselne
+	 * „opačné.“ Ich niekoľkonásobné striedavé použitie bude v dôsledku
 	 * zaokrúhlení viesť k získaniu úplne inej farby.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Táto metóda používa predvolenú
-	 * hodnotu faktoru zosvetlenia {@code num0.7}. Pozri aj {@link 
+	 * hodnotu faktora zosvetlenia {@code num0.7}. Pozri aj {@link 
 	 * #svetlejšia(double) svetlejšia(faktor)}.</p>
 	 * 
 	 * @return nová inštancia triedy {@link Farba Farba} s bledšou
@@ -498,13 +498,13 @@ public class Farba extends Color implements Comparable<Color>
 	 * Color#darker() darker}{@code ()}, len berie do úvahy aj
 	 * priehľadnosť pôvodnej farby a zachováva ju.</p>
 	 * 
-	 * <p class="attention"><b>Upozornenie:</b> I keď sú operácie
-	 * {@link #svetlejšia() svetlejšia} a tmavšia opačné (myslené logicky),
-	 * ich niekoľkonásobné striedavé použitie bude v dôsledku zaokrúhlení
-	 * viesť k získaniu úplne inej farby.</p>
+	 * <p class="attention"><b>Upozornenie:</b> Operácie
+	 * {@link #svetlejšia() svetlejšia} a {@code currtmavšia} sú iba pomyselne
+	 * „opačné.“ Ich niekoľkonásobné striedavé použitie bude v dôsledku
+	 * zaokrúhlení viesť k získaniu úplne inej farby.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Táto metóda používa predvolenú
-	 * hodnotu faktoru stmavenia {@code num0.7}. Pozri aj {@link 
+	 * hodnotu faktora stmavenia {@code num0.7}. Pozri aj {@link 
 	 * #tmavšia(double) tmavšia(faktor)}.</p>
 	 * 
 	 * @return nová inštancia triedy {@link Farba Farba} s tmavšou
@@ -524,7 +524,7 @@ public class Farba extends Color implements Comparable<Color>
 	 * <p>Vytvorí priehľadnejšiu verziu tejto farby.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Táto metóda používa predvolenú
-	 * hodnotu faktoru spriehľadnenia {@code num0.7}. Pozri aj {@link 
+	 * hodnotu faktora spriehľadnenia {@code num0.7}. Pozri aj {@link 
 	 * #priehľadnejšia(double) priehľadnejšia(faktor)}.</p>
 	 * 
 	 * @return nová inštancia triedy {@link Farba Farba} s priehľadnejšou
@@ -543,7 +543,7 @@ public class Farba extends Color implements Comparable<Color>
 	 * <p>Vytvorí menej priehľadnú verziu tejto farby.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Táto metóda používa predvolenú
-	 * hodnotu faktoru znepriehľadnenia {@code num0.7}. Pozri aj {@link 
+	 * hodnotu faktora znepriehľadnenia {@code num0.7}. Pozri aj {@link 
 	 * #nepriehľadnejšia(double) nepriehľadnejšia(faktor)}.</p>
 	 * 
 	 * @return nová inštancia triedy {@link Farba Farba} s menej
@@ -574,9 +574,9 @@ public class Farba extends Color implements Comparable<Color>
 	 * <p>Vytvorí novú bledšiu verziu tejto farby. Metóda použije na každú
 	 * farebnú zložku (RGB) zadanú mierku (faktor) zosvetlenia.</p>
 	 * 
-	 * <p class="attention"><b>Upozornenie:</b> I keď sú operácie
-	 * {@code currsvetlejšia} a {@link #tmavšia(double) tmavšia} opačné
-	 * (myslené logicky), ich niekoľkonásobné striedavé použitie bude
+	 * <p class="attention"><b>Upozornenie:</b> Operácie
+	 * {@code currsvetlejšia} a {@link #tmavšia(double) tmavšia} sú iba
+	 * pomyselne „opačné.“ Ich niekoľkonásobné striedavé použitie bude
 	 * v dôsledku zaokrúhlení viesť k získaniu úplne inej farby.</p>
 	 * 
 	 * @param faktor faktor zosvetlenia – hodnota v rozsahu 0.0 – 1.0,
@@ -627,9 +627,9 @@ public class Farba extends Color implements Comparable<Color>
 	 * <p>Vytvorí novú tmavšiu verziu tejto farby. Metóda použije na každú
 	 * farebnú zložku (RGB) zadanú mierku (faktor) stmavenia.</p>
 	 * 
-	 * <p class="attention"><b>Upozornenie:</b> I keď sú operácie
-	 * {@link #svetlejšia(double) svetlejšia} a {@code currtmavšia} opačné
-	 * (myslené logicky), ich niekoľkonásobné striedavé použitie bude
+	 * <p class="attention"><b>Upozornenie:</b> Operácie
+	 * {@link #svetlejšia(double) svetlejšia} a {@code currtmavšia} sú iba
+	 * pomyselne „opačné.“ Ich niekoľkonásobné striedavé použitie bude
 	 * v dôsledku zaokrúhlení viesť k získaniu úplne inej farby.</p>
 	 * 
 	 * @param faktor faktor stmavenia – hodnota v rozsahu 0.0 – 1.0,
