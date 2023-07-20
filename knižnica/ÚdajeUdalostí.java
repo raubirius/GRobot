@@ -33,6 +33,8 @@
 
 package knižnica;
 
+import java.awt.dnd.DnDConstants;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.ComponentEvent;
@@ -108,6 +110,7 @@ public class ÚdajeUdalostí
 			poslednáUdalosťRolovania = null;
 
 		/*packagePrivate*/ static Okno oknoUdalosti = null;
+		/*packagePrivate*/ static int akciaPustenia = -1;
 
 		/*packagePrivate*/ static Plátno poslednéVymazanéPlátno = null;
 
@@ -190,6 +193,15 @@ public class ÚdajeUdalostí
 	 */
 	public static Okno oknoUdalosti() { return oknoUdalosti; }
 
+
+	/**
+	 * <p>Kód akcie pustenia súboru.</p><!-- TODO rozpísať podrobnosti -->
+	 * 
+	 * @return jeden z kódov triedy {@link DnDConstants DnDConstants},
+	 *     napríklad {@link DnDConstants#ACTION_COPY ACTION_COPY}, {@link 
+	 *     DnDConstants#ACTION_MOVE ACTION_MOVE}…
+	 */
+	public static int akciaPustenia() { return akciaPustenia; }
 
 	/**
 	 * <p>Vráti objekt s informáciami o poslednej udalosti okna súvisiacej

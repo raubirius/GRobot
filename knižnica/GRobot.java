@@ -3775,11 +3775,11 @@ Toto bolo presunuté na úvodnú stránku:
 						getDeclaringClass().equals(GRobot.class) ||
 						!getClass().getMethod("ťahanieUkončené",
 							JComponent.class, Transferable.class,
-							Integer.class).
+							int.class).
 						getDeclaringClass().equals(GRobot.class) ||
 						!getClass().getMethod("tahanieUkoncene",
 							JComponent.class, Transferable.class,
-							Integer.class).
+							int.class).
 						getDeclaringClass().equals(GRobot.class) ||
 						!getClass().getMethod("farbaAktívnehoSlova",
 							String.class).
@@ -4021,17 +4021,31 @@ Toto bolo presunuté na úvodnú stránku:
 						getClass().getMethod("tahanieSuborov").
 						getDeclaringClass());
 					System.out.println("pustenieSúboru: " +
-						getClass().getMethod("pustenieSúboru", String.class).
-						getDeclaringClass());
+						getClass().getMethod("pustenieSúboru",
+							String.class).getDeclaringClass());
 					System.out.println("pustenieSuboru: " +
-						getClass().getMethod("pustenieSuboru", String.class).
-						getDeclaringClass());
+						getClass().getMethod("pustenieSuboru",
+							String.class).getDeclaringClass());
+					System.out.println("ťahanieUkončené: " +
+						getClass().getMethod("ťahanieUkončené",
+							JComponent.class, Transferable.class,
+							int.class));
+					System.out.println("tahanieUkoncene: " +
+						getClass().getMethod("tahanieUkoncene",
+							JComponent.class, Transferable.class,
+							int.class));
 					System.out.println("farbaAktívnehoSlova: " +
 						getClass().getMethod("farbaAktívnehoSlova",
 							String.class).getDeclaringClass());
 					System.out.println("farbaAktivnehoSlova: " +
 						getClass().getMethod("farbaAktivnehoSlova",
 							String.class).getDeclaringClass());
+					System.out.println("aktiváciaOdkazu: " +
+						getClass().getMethod("aktiváciaOdkazu").
+						getDeclaringClass());
+					System.out.println("aktivaciaOdkazu: " +
+						getClass().getMethod("aktivaciaOdkazu").
+						getDeclaringClass());
 					System.out.println("zobrazenieOkna: " +
 						getClass().getMethod("zobrazenieOkna").
 						getDeclaringClass());
@@ -4116,6 +4130,18 @@ Toto bolo presunuté na úvodnú stránku:
 					System.out.println("zmenaPosunuListy: " +
 						getClass().getMethod("zmenaPosunuListy").
 						getDeclaringClass());
+					System.out.println("voľbaSystémovejIkony: " +
+						getClass().getMethod("voľbaSystémovejIkony").
+						getDeclaringClass());
+					System.out.println("volbaSystemovejIkony: " +
+						getClass().getMethod("volbaSystemovejIkony").
+						getDeclaringClass());
+					System.out.println("voľbaSystémovejPoložky: " +
+						getClass().getMethod("voľbaSystémovejPoložky").
+						getDeclaringClass());
+					System.out.println("volbaSystemovejPolozky: " +
+						getClass().getMethod("volbaSystemovejPolozky").
+						getDeclaringClass());
 				}
 				catch (Exception e)
 				{ GRobotException.vypíšChybovéHlásenia(e); }
@@ -4137,6 +4163,32 @@ Toto bolo presunuté na úvodnú stránku:
 					System.out.println("tik: " +
 						getClass().getMethod("tik").
 						getDeclaringClass());
+					System.out.println("zastavenieAnimácie: " +
+						getClass().getMethod("zastavenieAnimácie",
+							Obrázok.class).getDeclaringClass());
+					System.out.println("zastavenieAnimacie: " +
+						getClass().getMethod("zastavenieAnimacie",
+							Obrázok.class).getDeclaringClass());
+
+					System.out.println("ukončenieProcesu: " +
+						getClass().getMethod("ukončenieProcesu",
+							Svet.PríkazovýRiadok.class, int.class).
+								getDeclaringClass());
+					System.out.println("ukoncenieProcesu: " +
+						getClass().getMethod("ukoncenieProcesu",
+							Svet.PríkazovýRiadok.class, int.class).
+								getDeclaringClass());
+
+					System.out.println("spracujRiadokVstupu: " +
+						getClass().getMethod("spracujRiadokVstupu",
+							String.class).getDeclaringClass());
+					System.out.println("koniecVstupu: " +
+						getClass().getMethod("koniecVstupu").
+							getDeclaringClass());
+					System.out.println("vzniklaChyba: " +
+						getClass().getMethod("vzniklaChyba",
+							GRobotException.Chyba.class).
+								getDeclaringClass());
 				}
 				catch (Exception e)
 				{ GRobotException.vypíšChybovéHlásenia(e); }
@@ -26043,6 +26095,10 @@ Toto bolo presunuté na úvodnú stránku:
 				 * metódy {@link ObsluhaUdalostí ObsluhaUdalostí}{@code .}{@link 
 				 * ObsluhaUdalostí#pustenieSúboru(String)
 				 * pustenieSúboru}{@code (súbor)}.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.19 je možné
+				 * zisťovať akciu pustenia súboru metódou {@link 
+				 * ÚdajeUdalostí#akciaPustenia() akciaPustenia}.</p>
 				 * 
 				 * @param súbor úplná cesta a meno súboru
 				 */

@@ -325,7 +325,9 @@ public class Okno
 					počúvajúci.tahanieSuborov();
 				}
 
-				dtde.acceptDrag(DnDConstants.ACTION_COPY);
+				// TODO: Urobiť konfigurovateľné!
+				// dtde.acceptDrag(DnDConstants.ACTION_COPY);
+				dtde.acceptDrag(dtde.getSourceActions());
 			}
 			else dtde.rejectDrag();
 		}
@@ -344,7 +346,8 @@ public class Okno
 			Transferable transferable = dtde.getTransferable();
 			if (dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor))
 			{
-				dtde.acceptDrop(dtde.getDropAction());
+				ÚdajeUdalostí.akciaPustenia = dtde.getDropAction();
+				dtde.acceptDrop(ÚdajeUdalostí.akciaPustenia);
 				try
 				{
 					@SuppressWarnings("unchecked")

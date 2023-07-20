@@ -1026,7 +1026,9 @@ public final class Svet extends JFrame
 								počúvajúci.tahanieSuborov();
 							}
 
-							dtde.acceptDrag(DnDConstants.ACTION_COPY);
+							// TODO: Urobiť konfigurovateľné!
+							// dtde.acceptDrag(DnDConstants.ACTION_COPY);
+							dtde.acceptDrag(dtde.getSourceActions());
 						}
 						else dtde.rejectDrag();
 					}
@@ -1050,7 +1052,8 @@ public final class Svet extends JFrame
 						if (dtde.isDataFlavorSupported(
 							DataFlavor.javaFileListFlavor))
 						{
-							dtde.acceptDrop(dtde.getDropAction());
+							ÚdajeUdalostí.akciaPustenia = dtde.getDropAction();
+							dtde.acceptDrop(ÚdajeUdalostí.akciaPustenia);
 							try
 							{
 								@SuppressWarnings("unchecked")
@@ -10181,10 +10184,10 @@ public final class Svet extends JFrame
 		 * preddefinovaných kurzorov. Systémové kurzory majú nasledujúce
 		 * preddefinované názvy: {@code srg"predvolený"},
 		 * {@code srg"mieridlo"}, {@code srg"text"}, {@code srg"čakaj"},
-		 * {@code srg"swZmeniťVeľkosť"}, {@code srg"seZmeniťVeľkosť"},
-		 * {@code srg"nwZmeniťVeľkosť"}, {@code srg"neZmeniťVeľkosť"},
-		 * {@code srg"nZmeniťVeľkosť"}, {@code srg"sZmeniťVeľkosť"},
-		 * {@code srg"wZmeniťVeľkosť"}, {@code srg"eZmeniťVeľkosť"},
+		 * {@code srg"jzZmeniťVeľkosť"}, {@code srg"jvZmeniťVeľkosť"},
+		 * {@code srg"szZmeniťVeľkosť"}, {@code srg"svZmeniťVeľkosť"},
+		 * {@code srg"sZmeniťVeľkosť"}, {@code srg"jZmeniťVeľkosť"},
+		 * {@code srg"zZmeniťVeľkosť"}, {@code srg"vZmeniťVeľkosť"},
 		 * {@code srg"ruka"}, {@code srg"presunúť"}. Ak namiesto názvu
 		 * kurzora zadáte {@code valnull}, bude použitý prázdny (neviditeľný)
 		 * kurzor.</p>

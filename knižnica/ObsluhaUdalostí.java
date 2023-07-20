@@ -1193,6 +1193,10 @@ public class ObsluhaUdalostí
 	 * {@code valnull}, tak udalosť vznikla v okne sveta (inak ide o inštanciu
 	 * okna, ktoré udalosť vyvolalo).</p>
 	 * 
+	 * <p class="remark"><b>Poznámka:</b> Od verzie 2.19 je možné zisťovať
+	 * akciu pustenia súboru metódou {@link ÚdajeUdalostí#akciaPustenia()
+	 * akciaPustenia}.</p>
+	 * 
 	 * <p><b>Príklad:</b></p>
 	 * 
 	 * <p>Toto je najjednoduchší príklad spracovania súborov potiahnutých
