@@ -8245,21 +8245,21 @@ public class SVGPodpora
 		private char údaje[];
 		private int poloha;
 
-		// Predvolený konštruktor
+		// Predvolený konštruktor.
 		public ÚdajeTvaru()
 		{
 			údaje = null;
 			poloha = -1;
 		}
 
-		// Konštruktor, ktorý vykoná rovnakú akciu ako metóda reset
+		// Konštruktor, ktorý vykoná rovnakú akciu ako metóda reset.
 		public ÚdajeTvaru(String novéÚdaje)
 		{
 			údaje = novéÚdaje.toCharArray();
 			poloha = 0;
 		}
 
-		// Inicializuje inštanciu novou sériou znakov
+		// Inicializuje inštanciu novou sériou znakov.
 		public void reset(String novéÚdaje)
 		{
 			údaje = novéÚdaje.toCharArray();
@@ -8267,13 +8267,13 @@ public class SVGPodpora
 		}
 
 		// Vráti aktuálny znak (nekontroluje, či už bola vykonaná
-		// inicializácia – spolieha sa na to, že áno)
+		// inicializácia – spolieha sa na to, že áno).
 		public char znak()
 		{
 			return údaje[poloha];
 		}
 
-		// Testuje, či je znak číslo alebo časť číselného literálu
+		// Testuje, či je znak číslo alebo časť číselného literálu.
 		public boolean jeČíslo()
 		{
 			if (jeKoniec()) return false;
@@ -8282,7 +8282,7 @@ public class SVGPodpora
 				'e' == znak || 'E' == znak || Character.isDigit(znak);
 		}
 
-		// Testuje, či je znak písmeno
+		// Testuje, či je znak písmeno.
 		public boolean jePísmeno()
 		{
 			if (jeKoniec()) return false;
@@ -8290,7 +8290,7 @@ public class SVGPodpora
 			return Character.isLetter(znak);
 		}
 
-		// Testuje, či je znak riadiace písmeno
+		// Testuje, či je znak riadiace písmeno.
 		public boolean jeRiadiacePísmeno()
 		{
 			preskočOddeľovače();
@@ -8299,7 +8299,17 @@ public class SVGPodpora
 			return 'e' != znak && 'E' != znak && Character.isLetter(znak);
 		}
 
-		// Testuje, či je znak časť číselného iterálu alebo písmeno (jednotka)
+		// Testuje, či je znak začiatok číselného literálu.
+		public boolean jePrvýZnakÚdajov()
+		{
+			if (jeKoniec()) return false;
+			char znak = údaje[poloha];
+			return '-' == znak || '+' == znak || '.' == znak ||
+				Character.isDigit(znak);
+		}
+
+		// Testuje, či je znak pokračujúca časť číselného literálu alebo
+		// písmeno (jednotka).
 		public boolean jeZnakÚdajov()
 		{
 			if (jeKoniec()) return false;
@@ -8308,16 +8318,51 @@ public class SVGPodpora
 				Character.isLetterOrDigit(znak);
 		}
 
-		// Testuje, či je znak časť číselného iterálu
-		public boolean jeZnakČísla()
+		// Testuje, či je znak začiatok číselného literálu.
+		public boolean jePrvýZnakČísla()
 		{
 			if (jeKoniec()) return false;
 			char znak = údaje[poloha];
 			return '-' == znak || '+' == znak || '.' == znak ||
-				'e' == znak || 'E' == znak || Character.isDigit(znak);
+				Character.isDigit(znak);
 		}
 
-		// Testuje, či znak nie je časť číselného iterálu ani písmeno
+		// Testuje, či je znak pokračujúca časť číselného literálu.
+		public boolean jeĎalšíZnakČísla()
+		{
+			if (jeKoniec()) return false;
+			char znak = údaje[poloha];
+			return '.' == znak || Character.isDigit(znak);
+		}
+
+		// Testuje, či je znak prvým znakom exponenciálnej časti číselného
+		// literálu.
+		public boolean jePrvýZnakExponentu()
+		{
+			if (jeKoniec()) return false;
+			char znak = údaje[poloha];
+			return 'e' == znak || 'E' == znak;
+		}
+
+		// Testuje, či je znak druhým znakom exponenciálnej časti číselného
+		// literálu.
+		public boolean jeDruhýZnakExponentu()
+		{
+			if (jeKoniec()) return false;
+			char znak = údaje[poloha];
+			return '-' == znak || '+' == znak || Character.isDigit(znak);
+		}
+
+		// Testuje, či je znak druhým znakom exponenciálnej časti číselného
+		// literálu.
+		public boolean jeĎalšíZnakExponentu()
+		{
+			if (jeKoniec()) return false;
+			char znak = údaje[poloha];
+			return Character.isDigit(znak);
+		}
+
+		// Testuje, či znak nie je časť číselného literálu ani písmeno.
 		public boolean jeOddeľovač()
 		{
 			if (jeKoniec()) return false;
@@ -8326,13 +8371,13 @@ public class SVGPodpora
 				!Character.isLetterOrDigit(znak);
 		}
 
-		// Prejde na nasledujúci znak, ak jestvuje
+		// Prejde na nasledujúci znak, ak jestvuje.
 		public void ďalej()
 		{
 			if (poloha < údaje.length) ++poloha;
 		}
 
-		// Overí, či bol dosiahnutý koniec série znakov
+		// Overí, či bol dosiahnutý koniec série znakov.
 		public boolean jeKoniec()
 		{
 			if (null == údaje) return true;
@@ -8358,7 +8403,7 @@ public class SVGPodpora
 		}
 
 		// Overí, či ešte nebol dosiahnutý koniec série znakov (to jest,
-		// či sú ešte nejaké znaky v zásobníku)
+		// či sú ešte nejaké znaky v zásobníku).
 		public boolean nieJeKoniec()
 		{
 			// Postup je inverzný k metóde jeKoniec… Deje sa presne to isté,
@@ -8380,14 +8425,14 @@ public class SVGPodpora
 		}
 
 		// Preskočí všetky znaky, ktoré považuje za oddeľovače číselných
-		// hodnôt
+		// hodnôt.
 		public void preskočOddeľovače()
 		{
 			while (jeOddeľovač()) ďalej();
 		}
 
 		// Rozpozná a vráti ďalší číselný údaj s jednotkou v prúde znakov
-		// (ak jestvuje) alebo vráti NaN
+		// (ak jestvuje) alebo vráti NaN.
 		public double ďalšiíÚdaj()
 		{
 			while (!jeČíslo()) ďalej();
@@ -8395,7 +8440,13 @@ public class SVGPodpora
 			if (nieJeKoniec())
 			{
 				int začiatok = poloha;
-				while (jeZnakÚdajov()) ďalej();
+				// FIX 2023-07-31: // while (jeZnakÚdajov()) ďalej();
+				// Pozri FIX v ďalšieČíslo().
+				if (jePrvýZnakÚdajov())
+				{
+					ďalej();
+					while (jeZnakÚdajov()) ďalej();
+				}
 
 				int dĺžka = poloha - začiatok;
 				if (0 != dĺžka) try
@@ -8414,7 +8465,7 @@ public class SVGPodpora
 		}
 
 		// Rozpozná a vráti ďalšie číslo v prúde znakov (ak jestvuje)
-		// alebo vráti NaN
+		// alebo vráti NaN.
 		public double ďalšieČíslo()
 		{
 			while (!jeČíslo()) ďalej();
@@ -8422,7 +8473,34 @@ public class SVGPodpora
 			if (nieJeKoniec())
 			{
 				int začiatok = poloha;
-				while (jeZnakČísla()) ďalej();
+				// FIX 2023-07-31: // while (jeZnakČísla()) ďalej();
+				/*
+					To som trošku neodhadol. Pôvodné parsovanie čísla bolo
+					príliš primitívne. Spoliehal som sa na to, že v SVG súbore
+					predsa nemôžu byť nesprávne zadané číselné údaje, veď to
+					by nezobrazil ani prehliadač… a nerátal som s tým, že
+					niekto (niečo) môže v rámci šetrenia priestorom urobiť
+					toto:
+
+						69-19-41-60-69-108-69z
+
+					(spoiler alert! a aj spravil a bežne robí, ale zistil som
+					to až po rokoch odkedy som túto triedu implementoval…)
+				*/
+				if (jePrvýZnakČísla())
+				{
+					ďalej();
+					while (jeĎalšíZnakČísla()) ďalej();
+					if (jePrvýZnakExponentu())
+					{
+						ďalej();
+						if (jeDruhýZnakExponentu())
+						{
+							ďalej();
+							while (jeĎalšíZnakExponentu()) ďalej();
+						}
+					}
+				}
 
 				int dĺžka = poloha - začiatok;
 				if (0 != dĺžka) try
@@ -8501,7 +8579,7 @@ public class SVGPodpora
 		public Path2D.Double cesta;
 		private double xx, yy;
 
-		// Inicializuje inštanciu novou hodnotou atribútu „d“
+		// Inicializuje inštanciu novou hodnotou atribútu „d“.
 		public void reset(String novéÚdaje)
 		{
 			režim = 'm'; znak = 0;
@@ -8517,7 +8595,7 @@ public class SVGPodpora
 			údajeTvaru.reset(novéÚdaje);
 		}
 
-		// Zistí, či ďalším znakom na spracovanie je písmeno
+		// Zistí, či ďalším znakom na spracovanie je písmeno.
 		public boolean ďalšieJeRiadiacePísmeno()
 		{
 			if (údajeTvaru.jeRiadiacePísmeno())
@@ -8530,7 +8608,7 @@ public class SVGPodpora
 			return false;
 		}
 
-		// Zistí, či aktuálnym znakom je platný riadiaci znak
+		// Zistí, či aktuálnym znakom je platný riadiaci znak.
 		public boolean jeRiadiaciZnak()
 		{
 			return
@@ -8543,7 +8621,7 @@ public class SVGPodpora
 		}
 
 		// Pokúsi sa pridať nový segment cesty – ak sa podarilo nazbierať
-		// dostatok údajov
+		// dostatok údajov.
 		public void pridajSegment()
 		{
 			switch (režim)
@@ -8563,7 +8641,7 @@ public class SVGPodpora
 
 		// Ak chýba, tak pridá posledný bod krivky totožný so začiatočným
 		// bodom aktuálneho segmentu cesty – používa sa pri uzavretí
-		// segmentu
+		// segmentu.
 		public void pridajPoslednýBodKrivky()
 		{
 			/*
@@ -8682,7 +8760,7 @@ public class SVGPodpora
 			}
 		}
 
-		// Zmení režim vytvárania cesty podľa aktuálneho riadiaceho znaku
+		// Zmení režim vytvárania cesty podľa aktuálneho riadiaceho znaku.
 		public void zmeňRežim()
 		{
 			if (jeRiadiaciZnak())
@@ -8835,7 +8913,7 @@ public class SVGPodpora
 		}
 
 		// Vypočíta smer z rozdielu súradníc – používa sa na nastavenie
-		// aktuálneho pootočenia (tzv. „bearingu“)
+		// aktuálneho pootočenia (tzv. „bearingu“).
 		private double dajUhol(double Δx, double Δy)
 		{
 			if (Δx == 0 && Δy == 0) return 360;
@@ -8844,7 +8922,7 @@ public class SVGPodpora
 			return α;
 		}
 
-		// Pridá do cesty príkaz posunutia (moveTo)
+		// Pridá do cesty príkaz posunutia (moveTo).
 		public void pridajPresunutie()
 		{
 			if (n >= 2)
@@ -8861,7 +8939,7 @@ public class SVGPodpora
 
 		// Pridá do cesty segmet podľa príkazu kreslenia rovnej
 		// čiary/úsečky (lineTo) – berie do úvahy rôzne aktuálne
-		// nastavenia (relatívne súradnice, pootočenie)
+		// nastavenia (relatívne súradnice, pootočenie).
 		public void pridajČiaru()
 		{
 			if (n >= 2)
@@ -8873,7 +8951,7 @@ public class SVGPodpora
 		}
 
 		// Pridá do cesty segmet podľa príkazu kreslenia horizontálnej
-		// úsečky (pozri aj pridajČiaru)
+		// úsečky (pozri aj pridajČiaru).
 		public void pridajHorizontálnuČiaru()
 		{
 			if (n >= 1)
@@ -8885,7 +8963,7 @@ public class SVGPodpora
 		}
 
 		// Pridá do cesty segmet podľa príkazu kreslenia vertikálnej
-		// úsečky (pozri aj pridajČiaru)
+		// úsečky (pozri aj pridajČiaru).
 		public void pridajVertikálnuČiaru()
 		{
 			if (n >= 1)
@@ -8896,8 +8974,7 @@ public class SVGPodpora
 			}
 		}
 
-		// Pridá do cesty segmet podľa príkazu kreslenia bézierovej
-		// krivky
+		// Pridá do cesty segmet podľa príkazu kreslenia bézierovej krivky.
 		public void pridajBézierovuKrivku() // c a s
 		{
 			if (skrátene && n >= 4)
@@ -8911,8 +8988,22 @@ public class SVGPodpora
 				}
 				else if (ln >= 1)
 				{
-					x1 = 2 * lp[0];
-					y1 = 2 * lp[1];
+					// FIX 2023-07-31:
+					x1 = /*2 * */lp[0];
+					y1 = /*2 * */lp[1];
+					/*
+						(Toto nevyzerá, že som napísal ja. Nepamätám si, či
+						som kód vyrobil podľa nejakého slovného opisu, alebo
+						som ho odniekiaľ skopíroval…
+
+						Otázkou teda je, odkiaľ som to zobral? Asi som sa
+						zase spoliehal na nejaké nesprávne implementačné
+						odporúčanie, ktoré zrejme nebolo dobre overené
+						v praxi.
+
+						Škoda, že neviem, zdroj. Mohol by som ich tiež
+						upozorniť na chybu.)
+					*/
 				}
 				else x1 = y1 = 0.0;
 
@@ -8941,8 +9032,7 @@ public class SVGPodpora
 			}
 		}
 
-		// Pridá do cesty segmet podľa príkazu kreslenia kvadratickej
-		// krivky
+		// Pridá do cesty segmet podľa príkazu kreslenia kvadratickej krivky.
 		public void pridajKvadratickúKrivku() // q a t
 		{
 			if (skrátene && n >= 2)
@@ -8980,7 +9070,7 @@ public class SVGPodpora
 			}
 		}
 
-		// Pridá do cesty segmet podľa príkazu kreslenia elipsového oblúka
+		// Pridá do cesty segmet podľa príkazu kreslenia elipsového oblúka.
 		public void pridajOblúk()
 		{
 			if (n >= 7)
@@ -9118,7 +9208,7 @@ public class SVGPodpora
 			}
 		}
 
-		// Spracuje príkaz zmeny aktuálneho pootočenia (tzv. „bearingu“)
+		// Spracuje príkaz zmeny aktuálneho pootočenia (tzv. „bearingu“).
 		public void spracujOdchýlku()
 		{
 			if (n >= 1)
@@ -9164,7 +9254,7 @@ public class SVGPodpora
 		}
 	}
 
-	// Inštancia triedy slúžiacej na spracovanie cesty (definovanej vyššie)
+	// Inštancia triedy slúžiacej na spracovanie cesty (definovanej vyššie).
 	private SpracovanieCesty spracovanieCesty = new SpracovanieCesty();
 
 	// Spracuje aktuálny element ako cestu a vytvorí a pridá

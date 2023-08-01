@@ -1380,7 +1380,7 @@ public class ObsluhaUdalostí
 	 * 
 	 * @param zdroj komponent, ktorý bol zdrojom údajov
 	 * @param údaje údaje, ktoré boli prenesené, prípadne {@code valnull}, ak
-	 *     je akcia {@link Transferable#NONE NONE}.
+	 *     je akcia {@link javax.swing.TransferHandler#NONE NONE}.
 	 * @param akcia akcia, ktorá bola (s údajmi) vykonaná; pozri aj opis metódy
 	 *     {@link Svet#ťahajSúbory(int, String...) ťahajSúbory}
 	 * 

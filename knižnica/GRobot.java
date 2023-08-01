@@ -8185,7 +8185,8 @@ Toto bolo presunuté na úvodnú stránku:
 				 * {@code num1.0}).</p>
 				 * 
 				 * <p>Úroveň 0.0 znamená, že robot by nemal byť zobrazený,
-				 * avšak vždy dôjde minimálne k pokusu o jeho nakreslenie.
+				 * avšak rámec sa ho vždy aspoň pokúsi nakresliť (spustí sa
+				 * metóda kreslenia, aj keď jej výsledok bude neviditeľný).
 				 * Keď chceme robot skutočne skryť, použijeme metódu
 				 * {@link #skry() skry}. Úroveň 1.0 znamená, že robot bude
 				 * zobrazený bez úpravy priehľadnosti.</p>
@@ -9125,8 +9126,8 @@ Toto bolo presunuté na úvodnú stránku:
 				 * výsledný uhol na zobrazenie zodpovedal hodnote gyroskopu.
 				 * Ak je súčasne zapnuté automatické {@linkplain 
 				 * #otáčajTvar(double, boolean) otáčanie tvaru} aj
-				 * gyroskopické vyvažovanie, tak dôjde k automatickému
-				 * prepočítavaniu gyroskopického vyvažovania podľa hodnoty
+				 * gyroskopické vyvažovanie, tak bude vykonávané automatické
+				 * prepočítavanie gyroskopického vyvažovania podľa hodnoty
 				 * otáčania tvaru.</p>
 				 * 
 				 * @param hodnota nová hodnota gyroskopického vyvažovania,
@@ -21301,7 +21302,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 				/**
-				 * <p>Ak je smerovanie do cieľa aktívne, upraví cieľové
+				 * <p>Upraví tomuto robotu cieľ smerovania.
+				 * Ak je smerovanie do cieľa aktívne, upraví cieľové
 				 * súradnice a v prípade, že sa nové súradnice dostatočne
 				 * prekrývajú s aktuálnou polohou robota ukočí smerovanie
 				 * do cieľa. Ak smerovanie aktívne nie je, tak má volanie
@@ -21335,7 +21337,8 @@ Toto bolo presunuté na úvodnú stránku:
 				public void upravCiel(double x, double y) { upravCieľ(x, y); }
 
 				/**
-				 * <p>Ak je smerovanie do cieľa aktívne, upraví cieľové
+				 * <p>Upraví tomuto robotu cieľ smerovania.
+				 * Ak je smerovanie do cieľa aktívne, upraví cieľové
 				 * súradnice a v prípade, že sa nové súradnice dostatočne
 				 * prekrývajú s aktuálnou polohou robota ukočí smerovanie
 				 * do cieľa. Ak smerovanie aktívne nie je, tak má volanie
@@ -21375,7 +21378,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 				/**
-				 * <p>Ak je smerovanie do cieľa aktívne, upraví cieľové
+				 * <p>Upraví tomuto robotu cieľ smerovania.
+				 * Ak je smerovanie do cieľa aktívne, upraví cieľové
 				 * súradnice a v prípade, že sa nové súradnice dostatočne
 				 * prekrývajú s aktuálnou polohou robota ukočí smerovanie
 				 * do cieľa. Ak smerovanie aktívne nie je, tak má volanie
@@ -21409,7 +21413,8 @@ Toto bolo presunuté na úvodnú stránku:
 				public void upravCiel(Poloha objekt) { upravCieľ(objekt); }
 
 				/**
-				 * <p>Ak je smerovanie do cieľa aktívne, upraví cieľové
+				 * <p>Upraví tomuto robotu cieľ smerovania.
+				 * Ak je smerovanie do cieľa aktívne, upraví cieľové
 				 * súradnice a v prípade, že sa nové súradnice dostatočne
 				 * prekrývajú s aktuálnou polohou robota ukočí smerovanie
 				 * do cieľa. Ak smerovanie aktívne nie je, tak má volanie
@@ -21448,7 +21453,8 @@ Toto bolo presunuté na úvodnú stránku:
 				{ upravCieľ(objekt, spusti); }
 
 				/**
-				 * <p>Ak je smerovanie do cieľa aktívne, upraví cieľové súradnice
+				 * <p>Upraví tomuto robotu cieľ smerovania.
+				 * Ak je smerovanie do cieľa aktívne, upraví cieľové súradnice
 				 * smerom do stredu hraníc<sup>[1]</sup> zadaného tvaru, inak
 				 * má rovnaký efekt ako volanie metódy {@link #cieľ(Shape)
 				 * cieľ}.</p>
@@ -21488,7 +21494,8 @@ Toto bolo presunuté na úvodnú stránku:
 				public void upravCiel(Shape tvar) { upravCieľ(tvar); }
 
 				/**
-				 * <p>Ak je smerovanie do cieľa aktívne, upraví cieľové
+				 * <p>Upraví tomuto robotu cieľ smerovania.
+				 * Ak je smerovanie do cieľa aktívne, upraví cieľové
 				 * súradnice smerom do stredu hraníc<sup>[1]</sup> zadaného
 				 * tvaru a v prípade, že sa nové súradnice dostatočne
 				 * prekrývajú s aktuálnou polohou robota ukočí smerovanie
@@ -21536,7 +21543,8 @@ Toto bolo presunuté na úvodnú stránku:
 				{ upravCieľ(tvar, spusti); }
 
 				/**
-				 * <p>Ak je smerovanie do cieľa aktívne, upraví cieľové
+				 * <p>Upraví tomuto robotu cieľ smerovania.
+				 * Ak je smerovanie do cieľa aktívne, upraví cieľové
 				 * súradnice podľa aktuálnych súradníc myši a v prípade,
 				 * že sa nové súradnice dostatočne prekrývajú s aktuálnou
 				 * polohou robota ukočí smerovanie do cieľa. Ak smerovanie
@@ -21562,7 +21570,8 @@ Toto bolo presunuté na úvodnú stránku:
 				public void upravCielNaMys() { upravCieľNaMyš(); }
 
 				/**
-				 * <p>Ak je smerovanie do cieľa aktívne, upraví cieľové
+				 * <p>Upraví tomuto robotu cieľ smerovania.
+				 * Ak je smerovanie do cieľa aktívne, upraví cieľové
 				 * súradnice podľa aktuálnych súradníc myši a v prípade, že
 				 * sa nové súradnice dostatočne prekrývajú s aktuálnou
 				 * polohou robota ukočí smerovanie do cieľa. Ak smerovanie
@@ -24331,8 +24340,8 @@ Toto bolo presunuté na úvodnú stránku:
 				 * 
 				 * <p class="remark"><b>Poznámka:</b> Ak je poradie robotov
 				 * zmenené počas {@linkplain GRobot#prijatieVýzvy(GRobot, int)
-				 * spracovania výzviev}, dôjde z technických príčin
-				 * k opätovnému spusteniu posielania výziev (inak povedané –
+				 * spracovania výzviev}, tak bude posielanie výziev
+				 * z technických príčin opätovne spustené (inak povedané –
 				 * posielanie výziev sa „reštartuje“). To znamená, že niektoré
 				 * roboty budú vyzvané dva alebo viac ráz. Buďte preto opatrní
 				 * so zmenami poradia v rámci spracovania výziev, aby ste
@@ -24415,8 +24424,8 @@ Toto bolo presunuté na úvodnú stránku:
 				 * 
 				 * <p class="remark"><b>Poznámka:</b> Ak je poradie robotov
 				 * zmenené počas {@linkplain GRobot#prijatieVýzvy(GRobot, int)
-				 * spracovania výzviev}, dôjde z technických príčin
-				 * k opätovnému spusteniu posielania výziev (inak povedané –
+				 * spracovania výzviev}, tak bude posielanie výziev
+				 * z technických príčin opätovne spustené (inak povedané –
 				 * posielanie výziev sa „reštartuje“). To znamená, že niektoré
 				 * roboty budú vyzvané dva alebo viac ráz. Buďte preto opatrní
 				 * so zmenami poradia v rámci spracovania výziev, aby ste
@@ -24509,8 +24518,8 @@ Toto bolo presunuté na úvodnú stránku:
 				 * 
 				 * <p class="remark"><b>Poznámka:</b> Ak je poradie robotov
 				 * zmenené počas {@linkplain GRobot#prijatieVýzvy(GRobot, int)
-				 * spracovania výzviev}, dôjde z technických príčin
-				 * k opätovnému spusteniu posielania výziev (inak povedané –
+				 * spracovania výzviev}, tak bude posielanie výziev
+				 * z technických príčin opätovne spustené (inak povedané –
 				 * posielanie výziev sa „reštartuje“). To znamená, že niektoré
 				 * roboty budú vyzvané dva alebo viac ráz. Buďte preto opatrní
 				 * so zmenami poradia v rámci spracovania výziev, aby ste
@@ -26119,8 +26128,8 @@ Toto bolo presunuté na úvodnú stránku:
 				 * 
 				 * @param zdroj komponent, ktorý bol zdrojom údajov
 				 * @param údaje údaje, ktoré boli prenesené, prípadne
-				 *     {@code valnull}, ak je akcia {@link Transferable#NONE
-				 *     NONE}.
+				 *     {@code valnull}, ak je akcia {@link 
+				 *     javax.swing.TransferHandler#NONE NONE}.
 				 * @param akcia akcia, ktorá bola (s údajmi) vykonaná; pozri aj
 				 *     opis metódy {@link Svet#ťahajSúbory(int, String...)
 				 *     ťahajSúbory}
@@ -31379,8 +31388,7 @@ Toto bolo presunuté na úvodnú stránku:
 						{@link #písmo(Font) písmo}({@code kwdnew} {@link Písmo Písmo}({@code srg"Arial"}, {@link Písmo Písmo}.{@link Písmo#NORMÁLNE NORMÁLNE}, {@code num40}));
 						nákresKVajcu({@code num130});
 					}
-
-
+					<hr/>
 					{@code comm// Prekrytia metód využitých pri kreslení:}
 
 					{@code kwd@}Override {@code kwdpublic} {@link Shape Shape} kružnica({@code typedouble} r)
@@ -31415,8 +31423,7 @@ Toto bolo presunuté na úvodnú stránku:
 						{@link #svgPodpora svgPodpora}.{@link SVGPodpora#pridajText(String, GRobot, String...) pridajText}(s, {@code valthis});
 						{@code kwdreturn} {@code valsuper}.{@link #text(String) text}(s);
 					}
-
-
+					<hr/>
 					{@code kwdpublic} {@code typevoid} nákresKVajcu({@code typedouble} polomer)
 					{
 						{@code comm// Deklarácie a záloha (presne ako v príklade vyššie):}
@@ -31470,8 +31477,7 @@ Toto bolo presunuté na úvodnú stránku:
 							{@code kwdif} ({@link Svet Svet}.{@link Svet#vzdialenosť(Poloha, Poloha) vzdialenosť}(C, P[{@code num0}]) &lt;
 								{@link Svet Svet}.{@link Svet#vzdialenosť(Poloha, Poloha) vzdialenosť}(C, P[P.length &#45; {@code num1}]))
 								D = P[{@code num0}]; {@code kwdelse} D = P[P.length &#45; {@code num1}];
-
-
+							<hr/>
 							{@code comm// Úsečky nákresu (jedným ťahom):}
 
 							{@link #skočNa(Poloha) skočNa}(E);
@@ -31520,8 +31526,7 @@ Toto bolo presunuté na úvodnú stránku:
 							{@link #svgPodpora svgPodpora}.{@link SVGPodpora#zapíš(String, String, boolean) zapíš}({@code srg"schema-vajca.svg"}, {@code valnull}, {@code valtrue});
 						}
 					}
-
-
+					<hr/>
 					{@code kwdpublic} {@code kwdstatic} {@code typevoid} main(String[] args)
 					{
 						{@link Svet Svet}.{@link Svet#použiKonfiguráciu(String) použiKonfiguráciu}({@code srg"NákresKVajcu.cfg"});
@@ -42583,7 +42588,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * rozmery}{@code (šírka, výška)}.</p>
 			 * 
 			 * @param veľkosť nová veľkosť robota (mala by byť väčšia ako
-			 *     nula, inak môže dôjsť k rôznym vedľajším efektom pri
+			 *     nula, inak môžu vzniknúť rôzne vedľajšie efekty pri
 			 *     používaní robota)
 			 * 
 			 * @see #veľkosť()
@@ -45076,8 +45081,7 @@ Toto bolo presunuté na úvodnú stránku:
 				{@link #svgExport svgExport} = {@link #svgPodpora svgPodpora};
 				{@link Svet Svet}.{@link Svet#svgExport svgExport} = {@link #svgPodpora svgPodpora};
 			}
-
-
+			<hr/>
 			{@code comm// Spustí skript:}
 			{@code comm// }
 			{@code comm//  • ak je parameter súbor true, tak je reťazec obsah považovaný za názov}
@@ -45097,8 +45101,7 @@ Toto bolo presunuté na úvodnú stránku:
 					chyba({@link Svet Svet}.{@link Svet#S(Object...) S}({@code srg"Riadok: "}, riadok));
 				}
 			}
-
-
+			<hr/>
 			{@code comm// Príkaz na výpis chybových hlásení.}
 			{@code kwdpublic} {@code kwdstatic} {@code typevoid} chyba({@link String String} chyba)
 			{
@@ -45263,8 +45266,7 @@ Toto bolo presunuté na úvodnú stránku:
 				{@code kwdcatch} ({@link Throwable Throwable} t) { t.{@link Throwable#printStackTrace() printStackTrace}(); }
 				{@link Svet Svet}.{@link Svet#prekresli() prekresli}(); {@link Svet Svet}.{@link Svet#zobraz() zobraz}(); {@link Svet Svet}.{@link Svet#spustiČasovač(double) spustiČasovač}({@code num0.5});
 			}
-
-
+			<hr/>
 			{@code comm// Od tohto miesta nižšie nasledujú všetky potrebné súčasti na}
 			{@code comm// implementáciu vlastného príkazu „alfa beta,“ ktorý naplní statickú}
 			{@code comm// inštanciu SVG podpory tvarmi generovanými dvoma robotmi (alfou}

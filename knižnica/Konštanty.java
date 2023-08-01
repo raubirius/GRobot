@@ -983,7 +983,7 @@ public interface Konštanty
 
 		/**
 		 * <p>Znaková konštanta nového riadka.
-		 * (Použiteľné napríklad pri metóde
+		 * ({@code srg'\n'}; ASCII 10; Použiteľné napríklad pri metóde
 		 * {@link Plátno#vypíš(Object[]) vypíš}.
 		 * Tiež má svoj význam pri používaní metódy
 		 * {@link Svet#dialóg(String[], Object[], String) dialóg}
@@ -991,4 +991,14 @@ public interface Konštanty
 		 */
 		public final static char riadok = '\n';
 
+		/**
+		 * <p>Znaková konštanta návratu vozíka.
+		 * ({@code srg'\r'}; ASCII 13; Použiteľné napríklad pri metóde
+		 * {@link Svet#dialóg(String[], Object[], String) dialóg}
+		 * a jej klonov.)</p>
+		 */
+		public final static char návrat = '\r';
+
+		/** <p><a class="alias"></a> Alias pre {@link #návrat návrat}.</p> */
+		public final static char navrat = '\r';
 }

@@ -32,6 +32,7 @@ package knižnica;
 import knižnica.Zoznam;
 
 import java.util.Collection;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -167,8 +168,7 @@ import java.util.regex.Pattern;
 		}
 		{@code kwdreturn} -{@code num1};
 	}
-
-
+	<hr/>
 	{@code kwdfinal} {@code currFiltre}.{@link Filtre.Filter#Filtre.Filter(String, String) Filter} časTitulkov = {@code kwdnew} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}(
 		{@code srg"^\\s*([0-9:,]+)\\s*-->\\s*([0-9:,]+)\\s*$"}, {@code valnull});
 
@@ -319,14 +319,39 @@ public class Filtre extends Zoznam<Filtre.Filter>
 		 * (regulárnemu výrazu) tohto filtra šablónou zadanou do konštruktora.
 		 * Pozri {@link Filtre.Filter#Filtre.Filter(String, String)
 		 * Filter}{@code (vzor, nahradenie)}. Výsledok nahrádzania vráti
-		 * v návratovej hodnote.</p>
+		 * v návratovej hodnote. Ak nebolo vykonané žiadne nahradenie, tak
+		 * metóda vráti obsah záložného reťazca.</p>
 		 * 
 		 * @param reťazec reťazec, v ktorom sa budú hľadať zhody podľa vzoru
 		 *     (regulárneho výrazu), ktoré budú nahradené podľa šablóny
 		 *     nahrádzania zadanej do konštruktora tohto filtra
-		 * @return výsledok nahrádzania (ak bolo nejaké vykonané; ak nebolo
-		 *     vykonané žiadne nahradenie, tak metóda vráti pôvodný tvar
-		 *     reťazca)
+		 * @param záložnýReťazec záložný reťazec, ktorý bude vrátený
+		 *     v prípade, že nebolo vykonané žiadne nahradenie;
+		 *     (tip: ak je argument priamo parametrom, dá sa použiť operátor
+		 *     zhody ({@code ==}) na overenie toho, či bolo niečo nahradené)
+		 * @return výsledok spracovania (podľa pravidiel opísaných vyššie)
+		 */
+		public String nahradenie(String reťazec, String záložnýReťazec)
+		{
+			zhoda = vzor.matcher(reťazec);
+			if (zhoda.find()) return zhoda.replaceAll(nahradenie);
+			return záložnýReťazec;
+		}
+
+		/**
+		 * <p>Nahradí všetky časti zadaného reťazca, ktoré vyhovujú vzoru
+		 * (regulárnemu výrazu) tohto filtra šablónou zadanou do konštruktora.
+		 * Pozri {@link Filtre.Filter#Filtre.Filter(String, String)
+		 * Filter}{@code (vzor, nahradenie)}. Výsledok nahrádzania vráti
+		 * v návratovej hodnote. Ak nebolo vykonané žiadne nahradenie, tak
+		 * metóda vráti pôvodný tvar reťazca.</p>
+		 * 
+		 * @param reťazec reťazec, v ktorom sa budú hľadať zhody podľa vzoru
+		 *     (regulárneho výrazu), ktoré budú nahradené podľa šablóny
+		 *     nahrádzania zadanej do konštruktora tohto filtra;
+		 *     (tip: ak je argument priamo parametrom, dá sa použiť operátor
+		 *     zhody ({@code ==}) na overenie toho, či bolo niečo nahradené)
+		 * @return výsledok spracovania (podľa pravidiel opísaných vyššie)
 		 */
 		public String nahradenie(String reťazec)
 		{
@@ -335,39 +360,97 @@ public class Filtre extends Zoznam<Filtre.Filter>
 			return reťazec;
 		}
 
+
+		/**
+		 * <p>Nahradí všetky časti zadaného reťazca, ktoré vyhovujú vzoru
+		 * (regulárnemu výrazu) tohto filtra prostredníctvom funkcie zadanej
+		 * do druhého parametra. Funkcia bude spustená pri každom nahrádzaní.
+		 * Jej parametrom je aktuálna inštancia zhody ({@link Matcher Matcher})
+		 * a návratovou hodnotou reťazec, ktorým bude nahradená časť vyhovujúca
+		 * vzoru. Po dokončení spracovania je výsledok vrátený v návratovej
+		 * hodnote tejto metódy. Ak nebolo vykonané žiadne nahradenie, tak
+		 * metóda vráti pôvodný tvar reťazca.</p>
+		 * 
+		 * <p><b>Zdroje:</b></p>
+		 * 
+		 * <ul>
+		 * <li><a
+		 * href="https://docs.oracle.com/javase/8/docs/api/java/util/regex/Matcher.html#appendReplacement-java.lang.StringBuffer-java.lang.String-"
+		 * target="_blank"><em>Matcher (Java Platform SE 8) –
+		 * appendReplacement(StringBuffer sb, String replacement).</em> 1993,
+		 * 2023, Oracle and/or its affiliates.</a> Citované: 30. júla
+		 * 2023.</li>
+		 * 
+		 * <li><a
+		 * href="https://www.whitebyte.info/programming/string-replace-with-callback-in-java-like-in-javascript"
+		 * target="_blank">Russler, Nick: <em>String replace with callback in
+		 * Java (like in JavaScript).</em> WhiteByte.</a> 8. december 2014
+		 * Citované: 30. júla 2023. (Nájdené vďaka: <a
+		 * href="https://stackoverflow.com/a/27359491" target="_blank">What
+		 * is the equivalent of Regex-replace-with-function-evaluation in Java
+		 * 7? – Stack Overflow.</a>)</li>
+		 * </ul>
+		 * 
+		 * @param reťazec predloha – reťazec určený na spracovanie;
+		 *     (tip: ak je argument priamo parametrom, dá sa použiť operátor
+		 *     zhody ({@code ==}) na overenie toho, či bolo niečo nahradené)
+		 * @param funkcia funkcia, ktorá bude spustená pri každom nahrádzaní
+		 * @return výsledok spracovania (podľa pravidiel opísaných vyššie)
+		 */
+		public String nahradenie(
+			String reťazec, Function<Matcher, String> funkcia)
+		{
+			zhoda = vzor.matcher(reťazec);
+
+			if (zhoda.find())
+			{
+				StringBuffer sb = new StringBuffer();
+				do {
+					zhoda.appendReplacement(sb, funkcia.apply(zhoda));
+				} while (zhoda.find());
+				zhoda.appendTail(sb);
+				return sb.toString();
+			}
+
+			return reťazec;
+		}
+
+
 		/**
 		 * <p>Nahradí celý zadaný reťazec šablónou toho filtra (zadanou do
 		 * konštruktora) ak ako celok vyhovuje vzoru (regulárnemu výrazu)
-		 * tohto filtra.
-		 * (Pozri aj vzor a nahradenie v konštruktore: {@link 
+		 * tohto filtra. (Pozri aj vzor a nahradenie v konštruktore: {@link 
 		 * Filtre.Filter#Filtre.Filter(String, String) Filter}{@code (vzor,
-		 * nahradenie)}.)
-		 * Ak reťazec vyhovie filtru, tak metóda vráti v návratovej hodnote
-		 * výsledok nahrádzania. V opačnom prídade vráti zadaný náhradný
-		 * reťazec.</p>
+		 * nahradenie)}.) Ak reťazec vyhovie filtru, tak metóda vráti
+		 * v návratovej hodnote výsledok nahrádzania. V opačnom prídade vráti
+		 * zadaný záložný reťazec.</p>
 		 * 
 		 * @param reťazec reťazec, ktorý bude porovnaný s regulárnym výrazom
 		 *     vzoru filtra ako celok a v prípade zhody nahradený podľa šablóny
 		 *     nahrádzania (zadanej do konštruktora tohto filtra)
-		 * @param náhradnýReťazec náhradný reťazec, ktorý bude vrátený
-		 *     v prípade, že tento reťazec ako celok nevyhovie vzoru filtra
+		 * @param záložnýReťazec záložný reťazec, ktorý bude vrátený
+		 *     v prípade, že tento reťazec ako celok nevyhovie vzoru filtra;
+		 *     (tip: ak je argument priamo parametrom, dá sa použiť operátor
+		 *     zhody ({@code ==}) na overenie toho, či bolo niečo nahradené)
 		 * @return výsledok spracovania (podľa pravidiel opísaných vyššie)
 		 */
-		public String nahradenieCelku(String reťazec, String náhradnýReťazec)
+		public String nahradenieCelku(String reťazec, String záložnýReťazec)
 		{
 			zhoda = vzor.matcher(reťazec);
 			if (zhoda.matches()) return zhoda.replaceFirst(nahradenie);
-			return náhradnýReťazec;
+			return záložnýReťazec;
 		}
 
 		/**
 		 * <p>Funguje rovnako ako metóda {@link #nahradenieCelku(String,
-		 * String) nahradenieCelku}{@code (reťazec, náhradnýReťazec)}, ale
-		 * namiesto náhradného reťazca dosadí pôvodný reťazec.</p>
+		 * String) nahradenieCelku}{@code (reťazec, záložnýReťazec)}, ale
+		 * namiesto záložného reťazca dosadí pôvodný reťazec.</p>
 		 * 
 		 * @param reťazec reťazec, ktorý bude porovnaný s regulárnym výrazom
 		 *     vzoru filtra ako celok a v prípade zhody nahradený podľa šablóny
-		 *     nahrádzania (zadanej do konštruktora tohto filtra)
+		 *     nahrádzania (zadanej do konštruktora tohto filtra);
+		 *     (tip: ak je argument priamo parametrom, dá sa použiť operátor
+		 *     zhody ({@code ==}) na overenie toho, či bolo niečo nahradené)
 		 * @return výsledok spracovania
 		 */
 		public String nahradenieCelku(String reťazec)

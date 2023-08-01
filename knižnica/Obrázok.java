@@ -2293,8 +2293,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 			archív.{@link Archív#otvorNaZápis(String) otvorNaZápis}({@code srg"archív-png.zip"});
 			archív.{@link Archív#pridajPoložku(String, Obrázok) pridajPoložku}({@code srg"názov-*.png"}, obrázok);
 			archív.{@link Archív#zavri() zavri}();
-
-
+			<hr/>
 			{@code comm// A takto potom prečítať}
 			archív.{@link Archív#otvorNaČítanie(String) otvorNaČítanie}({@code srg"archív-png.zip"});
 			obrázok = {@link Obrázok Obrázok}.{@link Obrázok#čítaj(Archív, String) čítaj}(archív, {@code srg"názov-*.png"});
@@ -3385,7 +3384,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * elipsa}, {@link GRobot#štvorec(double) štvorec} a podobne). Nie je
 		 * dobré túto vlastnosť kombinovať s úplným {@linkplain 
 		 * GRobot#kresliNaObrázok(Obrázok) presmerovaním kreslenia robota do
-		 * obrázka}. Mohlo by dôjsť k neočakávaným výsledkom.</p>
+		 * obrázka}. Mohli by sme získať neočakávané výsledky.</p>
 		 * 
 		 * <p>Keď chceme kresliča zrušiť, pošleme do argumentu tejto metódy
 		 * hodnotu {@code valnull} alebo použijeme metódu {@link 

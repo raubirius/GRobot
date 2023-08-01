@@ -1575,12 +1575,13 @@ public class Bod extends Point2D implements Poloha
 
 				Object[] komponenty = new Object[] {panelPolohy};
 
-				if (JOptionPane.showOptionDialog(null == Svet.
-					oknoCelejObrazovky ? GRobot.svet : Svet.
+				if ((Svet.odpoveďDialógu = JOptionPane.showOptionDialog(null ==
+					Svet.oknoCelejObrazovky ? GRobot.svet : Svet.
 					oknoCelejObrazovky, komponenty, null == titulok ?
 					"Voľba polohy" : titulok, JOptionPane.YES_NO_OPTION,
-					JOptionPane.PLAIN_MESSAGE, null, Svet.odpovedeZadania,
-					null) == JOptionPane.YES_OPTION)
+					JOptionPane.PLAIN_MESSAGE, null, null != Svet.mojeOdpovede ?
+					Svet.mojeOdpovede : Svet.odpovedeZadania, null)) ==
+					JOptionPane.YES_OPTION)
 					return panelPolohy.dajPolohu();
 
 				return null;

@@ -169,6 +169,7 @@ import static knižnica.Konštanty.majorVersion;
 import static knižnica.Konštanty.minorVersion;
 import static knižnica.Konštanty.versionString;
 import static knižnica.Konštanty.riadok;
+import static knižnica.Konštanty.návrat;
 
 import static knižnica.Konštanty.CHYBA_VOLANIA_SKRIPTU;
 import static knižnica.Konštanty.CHYBA_ČÍTANIA_SKRIPTU;
@@ -1180,6 +1181,7 @@ public final class Svet extends JFrame
 					new RobotPasswordField();
 				/*packagePrivate*/ final static Object[] odpovedeZadania =
 					{"OK", "Zrušiť"};
+				/*packagePrivate*/ static Object[] mojeOdpovede = null;
 				/*packagePrivate*/ final static String[] tlačidláDialógu =
 					{"Reset", "Miešať…", // Dialóg farieb
 					"Reset",  // Dialóg polohy
@@ -1187,6 +1189,7 @@ public final class Svet extends JFrame
 					"Reset"}; // Dialóg rozmeru
 				/*packagePrivate*/ final static String[] menovkyDialógu =
 					{"x:", "y:", "↔:", "↕:"}; // Dialóg rozmeru
+				/*packagePrivate*/ static int odpoveďDialógu = -1;
 
 			// Príznak zobrazenia dialógu metódou „dialóg“ – keďže táto metóda
 			// používa zoznamy, kladieme väčší dôraz na to, aby sa nedostala do
@@ -1895,8 +1898,8 @@ public final class Svet extends JFrame
 					"Koniec", KeyEvent.VK_K, KeyEvent.VK_W));
 
 				// ponukaVPôvodnomStave = true; – netreba, lebo ponuka ešte
-				//     nie je priradená, t. j. nemôže dôjsť k automatickému
-				//     vykonaniu metódy pridajDoHlavnejPonuky();
+				//     nie je priradená, t. j. metóda pridajDoHlavnejPonuky()
+				//     nemôže byť vykonaná automaticky.
 
 				return hlavnáPonuka;
 			}
@@ -1998,7 +2001,10 @@ public final class Svet extends JFrame
 							if (component instanceof JOptionPane)
 							{
 								JOptionPane pane = (JOptionPane)component;
-								pane.setValue(odpovedeZadania[0]);
+								if (null != mojeOdpovede)
+									pane.setValue(mojeOdpovede[0]);
+								else
+									pane.setValue(odpovedeZadania[0]);
 
 								// Java chápe skrytie okna ako zavretie
 								pane.setVisible(false);
@@ -2027,7 +2033,11 @@ public final class Svet extends JFrame
 							if (component instanceof JOptionPane)
 							{
 								JOptionPane pane = (JOptionPane)component;
-								pane.setValue(odpovedeZadania[0]);
+								if (null != mojeOdpovede)
+									pane.setValue(mojeOdpovede[0]);
+								else
+									pane.setValue(odpovedeZadania[0]);
+
 								pane.setVisible(false);
 								break;
 							}
@@ -3321,13 +3331,13 @@ public final class Svet extends JFrame
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Ak je poradie robotov zmenené
 		 * počas {@linkplain GRobot#prijatieVýzvy(GRobot, int) spracovania
-		 * výzviev}, dôjde z technických príčin k opätovnému spusteniu
-		 * posielania výziev (inak povedané – posielanie výziev sa
-		 * „reštartuje“). To znamená, že niektoré roboty budú vyzvané dva
-		 * alebo viac ráz. Buďte preto opatrní so zmenami poradia v rámci
-		 * spracovania výziev, aby ste nespôsobili vznik nekonečného
-		 * cyklu… (Rovnaký efekt má prípadné vytvorenie nového robota,
-		 * resp. ľubovoľnej inštancie triedy odvodenej od robota.)</p>
+		 * výzviev}, tak bude posielanie výziev z technických príčin opätovne
+		 * spustené (inak povedané – posielanie výziev sa „reštartuje“). To
+		 * znamená, že niektoré roboty budú vyzvané dva alebo viac ráz. Buďte
+		 * preto opatrní so zmenami poradia v rámci spracovania výziev, aby
+		 * ste nespôsobili vznik nekonečného cyklu… (Rovnaký efekt má prípadné
+		 * vytvorenie nového robota, resp. ľubovoľnej inštancie triedy
+		 * odvodenej od robota.)</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Mechanizmus výziev nie je taký
 		 * efektívny ako definícia vlastného {@linkplain Zoznam zoznamu robotov}
@@ -3403,13 +3413,13 @@ public final class Svet extends JFrame
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Ak je poradie robotov zmenené
 		 * počas {@linkplain GRobot#prijatieVýzvy(GRobot, int) spracovania
-		 * výzviev}, dôjde z technických príčin k opätovnému spusteniu
-		 * posielania výziev (inak povedané – posielanie výziev sa
-		 * „reštartuje“). To znamená, že niektoré roboty budú vyzvané dva
-		 * alebo viac ráz. Buďte preto opatrní so zmenami poradia v rámci
-		 * spracovania výziev, aby ste nespôsobili vznik nekonečného
-		 * cyklu… (Rovnaký efekt má prípadné vytvorenie nového robota,
-		 * resp. ľubovoľnej inštancie triedy odvodenej od robota.)</p>
+		 * výzviev}, tak bude posielanie výziev z technických príčin opätovne
+		 * spustené (inak povedané – posielanie výziev sa „reštartuje“). To
+		 * znamená, že niektoré roboty budú vyzvané dva alebo viac ráz. Buďte
+		 * preto opatrní so zmenami poradia v rámci spracovania výziev, aby
+		 * ste nespôsobili vznik nekonečného cyklu… (Rovnaký efekt má prípadné
+		 * vytvorenie nového robota, resp. ľubovoľnej inštancie triedy
+		 * odvodenej od robota.)</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Mechanizmus výziev nie je taký
 		 * efektívny ako definícia vlastného {@linkplain Zoznam zoznamu robotov}
@@ -3493,13 +3503,13 @@ public final class Svet extends JFrame
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Ak je poradie robotov zmenené
 		 * počas {@linkplain GRobot#prijatieVýzvy(GRobot, int) spracovania
-		 * výzviev}, dôjde z technických príčin k opätovnému spusteniu
-		 * posielania výziev (inak povedané – posielanie výziev sa
-		 * „reštartuje“). To znamená, že niektoré roboty budú vyzvané dva
-		 * alebo viac ráz. Buďte preto opatrní so zmenami poradia v rámci
-		 * spracovania výziev, aby ste nespôsobili vznik nekonečného
-		 * cyklu… (Rovnaký efekt má prípadné vytvorenie nového robota,
-		 * resp. ľubovoľnej inštancie triedy odvodenej od robota.)</p>
+		 * výzviev}, tak bude posielanie výziev z technických príčin opätovne
+		 * spustené (inak povedané – posielanie výziev sa „reštartuje“). To
+		 * znamená, že niektoré roboty budú vyzvané dva alebo viac ráz. Buďte
+		 * preto opatrní so zmenami poradia v rámci spracovania výziev, aby
+		 * ste nespôsobili vznik nekonečného cyklu… (Rovnaký efekt má prípadné
+		 * vytvorenie nového robota, resp. ľubovoľnej inštancie triedy
+		 * odvodenej od robota.)</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Mechanizmus výziev nepovažujeme
 		 * za taký efektívny ako je definícia vlastného {@linkplain Zoznam
@@ -9143,6 +9153,25 @@ public final class Svet extends JFrame
 		// Text na riadky
 
 		/**
+		 * <p>Rozdelí zadaný reťazec na samostatné riadky bez ďalších úprav.
+		 * Metóda berie do úvahy v prvom rade znak nového riadka (new line,
+		 * {@code srg'\n'}, ASCII 10), ktorý smie (ale nemusí) susediť so
+		 * znakom návratu vozíka (carriage return, {@code srg'\r'}, ASCII 13)
+		 * z oboch strán a potom (v druhom rade) samostatný znak návratu
+		 * vozíka.</p>
+		 * 
+		 * @param text text, ktorý má byť rozdelený na riadky
+		 * @param dĺžkaRiadka maximálna dĺžka jednotlivých riadkov udaná
+		 *     v znakoch
+		 * @return pole reťazcov – jednotlivé riadky pôvodného textu
+		 * 
+		 * @see #textNaRiadky(String, int)
+		 * @see #textNaRiadky(String, int, boolean)
+		 */
+		public static String[] naRiadkyBezZmien(String text)
+		{ return Skript.vykonajSkriptRiadkovač.split(text); }
+
+		/**
 		 * <p>Rozdelí dlhý text na riadky s maximálnou zadanou dĺžkou
 		 * v znakoch.</p>
 		 * 
@@ -9153,6 +9182,9 @@ public final class Svet extends JFrame
 		 * @param dĺžkaRiadka maximálna dĺžka jednotlivých riadkov udaná
 		 *     v znakoch
 		 * @return pole reťazcov – jednotlivé riadky pôvodného textu
+		 * 
+		 * @see #textNaRiadky(String, int, boolean)
+		 * @see #naRiadkyBezZmien(String)
 		 */
 		public static String[] textNaRiadky(String text, int dĺžkaRiadka)
 		{
@@ -9211,6 +9243,9 @@ public final class Svet extends JFrame
 		 *     budú odstránené a viacnásobné medzery medzi slovami budú
 		 *     redukované na jedinú medzeru
 		 * @return pole reťazcov – jednotlivé riadky pôvodného textu
+		 * 
+		 * @see #textNaRiadky(String, int)
+		 * @see #naRiadkyBezZmien(String)
 		 */
 		public static String[] textNaRiadky(String text,
 			int dĺžkaRiadka, boolean zachovajMedzery)
@@ -10075,17 +10110,29 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Definuje nový kurzor myši použiteľný v hlavnom okne aplikácie.
-		 * Tvar kurzora určí aktuálna grafika zadaného obrázka (môže byť
-		 * použitý aj objekt typu {@link Obrázok Obrázok}). Súradnice {@code 
-		 * x} a {@code x} určujú aktívny bod kurzora (<em>hot spot</em>),
-		 * t. j. bod, ktorý bude považovaný za „špičku,“ či „stred“ kurzora
-		 * (záleží na tvare kurzora). Súradnice [0, 0] sú považované za
-		 * stred kurzora. Rozsah súradníc je určený rozmermi obrázka.
-		 * Odporúčame zvoliť také rozmery obrázka, ktoré sú štandardné pre
-		 * kurzory, napríklad 32 × 32 bodov, inak by mohlo dôjsť
-		 * k nežiadanému posunu aktívneho bodu kurzora. Názov kurzora musí
-		 * byť jedinečný. Ten treba použiť pri volaní metódy {@link 
-		 * #zmeňKurzorMyši(String) zmeňKurzorMyši}.</p>
+		 * Tvar kurzora určí aktuálna grafika zadaného obrázka (neskoršie
+		 * zmeny grafiky obrázka sa v kurzore neprejavia; môže byť použitý aj
+		 * objekt typu {@link Obrázok Obrázok}). Súradnice {@code x}
+		 * a {@code y} určujú aktívny bod kurzora (<em>hot spot</em>), t. j.
+		 * bod, ktorý bude považovaný za „špičku,“ či „stred“ nového kurzora
+		 * (terminológia záleží na tvare kurzora – pri niečom ako šípka by sme
+		 * to skôr pomenovali špičkou a pri niečom ako terčík stredom) v rámci
+		 * súradnicového priestoru obrázka, pričom súradnice [0, 0] určujú
+		 * počiatok súradnicovej sústavy umiestnený v strede obrázka
+		 * (<small>rovnako ako všade v tomto programovacom rámci; tiež y-ová
+		 * súradnica stúpa smerom nahor – v súlade s princípmi tohto
+		 * programovacieho rámca</small>). Rozsah súradníc je určený rozmermi
+		 * obrázka. Odporúčame zvoliť také rozmery obrázka, ktoré sú
+		 * štandardné pre kurzory, napríklad 32 × 32 bodov, inak by mohol
+		 * vzniknúť neželaný posun aktívneho bodu kurzora (spôsobený
+		 * mechanizmami individuálneho operačného systému, ktoré nie sú v moci
+		 * tohto rámca). Názov kurzora musí byť jedinečný v rámci pomenovaní
+		 * vlastných kurzorov. (Môže byť rovnaký ako názov systémového
+		 * kurzora – pozri {@link #zmeňKurzorMyši(String) zmeňKurzorMyši} –
+		 * čím sa systémový kurzor prekryje, ale nesmie byť rovnaký ako názov
+		 * jestvujúceho vlastného kurzora – vytvoreného touto alebo príbuznou
+		 * metódou rámca.) Tento názov treba použiť pri volaní metódy
+		 * {@link #zmeňKurzorMyši(String) zmeňKurzorMyši}.</p>
 		 * 
 		 * <p><b>Príklad:</b></p>
 		 * 
@@ -14765,10 +14812,12 @@ public final class Svet extends JFrame
 			Object[] výzvaATextovýRiadok = {výzva, textovýRiadok};
 			textovýRiadok.setText("");
 
-			if (JOptionPane.showOptionDialog(null == oknoCelejObrazovky ?
-				svet : oknoCelejObrazovky, výzvaATextovýRiadok,
-				titulok, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
-				null, odpovedeZadania, null) == JOptionPane.YES_OPTION)
+			if ((odpoveďDialógu = JOptionPane.showOptionDialog(null ==
+				oknoCelejObrazovky ? svet : oknoCelejObrazovky,
+				výzvaATextovýRiadok, titulok, JOptionPane.YES_NO_OPTION,
+				JOptionPane.PLAIN_MESSAGE, null, null != mojeOdpovede ?
+				mojeOdpovede : odpovedeZadania, null)) ==
+				JOptionPane.YES_OPTION)
 				reťazec = textovýRiadok.getText();
 
 			return reťazec;
@@ -14838,10 +14887,11 @@ public final class Svet extends JFrame
 			Object[] výzvaAHeslo = {výzva, riadokSHeslom};
 			riadokSHeslom.setText("");
 
-			if (JOptionPane.showOptionDialog(null == oknoCelejObrazovky ?
-				svet : oknoCelejObrazovky, výzvaAHeslo, titulok,
-				JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null,
-				odpovedeZadania, null) == JOptionPane.YES_OPTION)
+			if ((odpoveďDialógu = JOptionPane.showOptionDialog(null ==
+				oknoCelejObrazovky ? svet : oknoCelejObrazovky, výzvaAHeslo,
+				titulok, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+				null, null != mojeOdpovede ? mojeOdpovede : odpovedeZadania,
+				null)) == JOptionPane.YES_OPTION)
 				heslo = new String(riadokSHeslom.getPassword());
 
 			return heslo;
@@ -15137,10 +15187,12 @@ public final class Svet extends JFrame
 			Object[] výzvaATextovýRiadok = {výzva, textovýRiadok};
 			textovýRiadok.setText(reťazec);
 
-			if (JOptionPane.showOptionDialog(null == oknoCelejObrazovky ?
-				svet : oknoCelejObrazovky, výzvaATextovýRiadok,
-				titulok, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
-				null, odpovedeZadania, null) == JOptionPane.YES_OPTION)
+			if ((odpoveďDialógu = JOptionPane.showOptionDialog(null ==
+				oknoCelejObrazovky ? svet : oknoCelejObrazovky,
+				výzvaATextovýRiadok, titulok, JOptionPane.YES_NO_OPTION,
+				JOptionPane.PLAIN_MESSAGE, null, null != mojeOdpovede ?
+				mojeOdpovede : odpovedeZadania, null)) ==
+				JOptionPane.YES_OPTION)
 				return textovýRiadok.getText();
 
 			return null;
@@ -15457,16 +15509,23 @@ public final class Svet extends JFrame
 		 * 
 		 * <li>hodnota údajového typu {@link Character Character},
 		 * ktorá má špeciálny význam – je rezervovaná na vkladanie riadiacich
-		 * znakov – v súčasnosti je platná len hodnota znaku nového riadka
-		 * ({@code srg'\n'} – odporúčame použiť znakovú konštantu {@link 
-		 * Konštanty#riadok riadok}), ktorá prepne dialóg zo stĺpcového do
-		 * riadkového režimu a všetky komponenty dialógu (<small>zodpovedajúce
-		 * jednotlivým prvkom vstupného poľa – zdrojovým prvkom</small>),
-		 * ktorých zdrojové prvky sú umiestnené medzi prvkami nového riadka
-		 * (<small>to znamená, že každý nový riadok musí byť samostatným
-		 * prvkom vstupného poľa {@code údaje}</small>), budú umiestnené na
-		 * samostatnom neviditeľnom paneli dialógu – akoby v jednom
-		 * riadku</li>
+		 * znakov – v súčasnosti sú platné dve hodnoty:<br />
+		 * <i>znak nového riadka</i> ({@code srg'\n'} – dá sa použiť znaková
+		 * konštanta {@link Konštanty#riadok riadok}) – táto hodnota prepne
+		 * dialóg zo stĺpcového do riadkového režimu a všetky komponenty
+		 * dialógu (<small>zodpovedajúce jednotlivým prvkom vstupného poľa –
+		 * zdrojovým prvkom</small>), ktorých zdrojové prvky sú umiestnené
+		 * medzi prvkami nového riadka (<small>to znamená, že každý nový
+		 * riadok musí byť samostatným prvkom vstupného poľa
+		 * {@code údaje}</small>), budú umiestnené na samostatnom neviditeľnom
+		 * paneli dialógu – akoby v jednom riadku (k tomuto znaku musí v poli
+		 * {@code popisy} párovať hodnota {@code valnull});<br />
+		 * <i>znak návratu vozíka</i> ({@code srg'\r'} – dá sa použiť znaková
+		 * konštanta {@link Konštanty#návrat návrat}) – táto hodnota použije
+		 * párujúci reťazec poľa {@code popisy} ako text bez párujúceho
+		 * komponentu, čo sa dá využiť na vkladanie rôznych textov pomedzi
+		 * komponenty (pozri aj príklad v opise metódy {@link #odpoveďDialógu()
+		 * odpoveďDialógu})</li>
 		 * 
 		 * <li>a hodnotu {@code valnull}, ktorá spôsobí, že na určenej
 		 * pozícii bude umiestnený vstupný prvok na zadanie hesla.</li>
@@ -15484,6 +15543,14 @@ public final class Svet extends JFrame
 		 * reťazec by sa automaticky priradil k ďalšiemu komponentu v dialógu,
 		 * čím by sa významovo posunul na nesprávne miesto a to by sa reťazovo
 		 * premietlo do celého dialógu.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Pozor na rozdiel významov
+		 * hodnoty {@code valnull} v poliach {@code popisy} a {@code údaje}.
+		 * V poli {@code popisy} hodnota {@code valnull} páruje so „zalomením
+		 * riadka“ ({@code srg'\n'}) – akoby „vynecháva“ popis, aby počty
+		 * prvkov v oboch poliach sedeli. V poli {@code údaje} prikazuje
+		 * hodnota {@code valnull} vytvoriť komponent hesla (vrátane
+		 * párujúceho popisu prečítaného z poľa {@code popisy}).</p>
 		 * 
 		 * <p>Posledný argument metódy – reťazec {@code titulok} určí titulok
 		 * dialógu.</p>
@@ -15757,20 +15824,36 @@ public final class Svet extends JFrame
 					}
 					else if (údaj instanceof Character)
 					{
-						++poslednýPanel;
-						if (panelyDialógu.size() < poslednýPanel)
-							panelyDialógu.add(new JPanel());
-						++početPanelov;
-						++početKomponentov;
+						if (riadok == (Character)údaj)
+						{
+							++poslednýPanel;
+							if (panelyDialógu.size() < poslednýPanel)
+								panelyDialógu.add(new JPanel());
+							++početPanelov;
+							++početKomponentov;
+						}
+						else if (návrat == (Character)údaj)
+						{
+							// TODO: TEST
+							++početKomponentov;
+						}
 					}
 				}
 
 				// Predvolene sú komponenty údajov a dialógu totožné, ak
 				// je počet panelov nenulový, tak je vytvorené extra pole
-				// pre komponenty dialógu…
+				// pre komponenty dialógu, do ktorého sú ukladané panely…
+				// (Komponenty údajov zostávajú v princípe rovnaké, čo
+				// odbúrava komplikácie pri čítaní zadaných údajov.)
 				Object[] komponentyÚdajov = new Object[početKomponentov];
 				Object[] komponentyDialógu = komponentyÚdajov;
-				int[] indexyZdrojov = new int[údaje.length]; int i = 0, j = 0;
+
+				// Hodnoty poľa indexyZdrojovÚdajov ukazujú na ten index
+				// v poli komponentyÚdajov, kde bude nájdený komponent
+				// korešpondujúceho údaja (aby z neho mohol byť prečítaný).
+				int[] indexyZdrojovÚdajov = new int[údaje.length];
+				int i = 0, j = 0;
+
 				poslednáFarba = 0; poslednáPoloha = 0; poslednýSmer = 0;
 				poslednéRozmery = 0; poslednýText = 0; poslednáVoľba = 0;
 				poslednéHeslo = 0; poslednýPanel = 0;
@@ -15820,7 +15903,7 @@ public final class Svet extends JFrame
 							}
 							komponentyÚdajov[i] = heslo;
 							aktívnyPanel.add(heslo);
-							indexyZdrojov[i] = i;
+							indexyZdrojovÚdajov[i] = i;
 						}
 						else if (údaj instanceof Boolean)
 						{
@@ -15834,7 +15917,7 @@ public final class Svet extends JFrame
 
 							komponentyÚdajov[i] = voľba;
 							aktívnyPanel.add(voľba);
-							indexyZdrojov[i] = i;
+							indexyZdrojovÚdajov[i] = i;
 						}
 						else if (údaj instanceof Double)
 						{
@@ -15855,7 +15938,7 @@ public final class Svet extends JFrame
 							}
 							komponentyÚdajov[i] = text;
 							aktívnyPanel.add(text);
-							indexyZdrojov[i] = i;
+							indexyZdrojovÚdajov[i] = i;
 						}
 						else if (údaj instanceof String)
 						{
@@ -15873,7 +15956,7 @@ public final class Svet extends JFrame
 							}
 							komponentyÚdajov[i] = text;
 							aktívnyPanel.add(text);
-							indexyZdrojov[i] = i;
+							indexyZdrojovÚdajov[i] = i;
 						}
 						else if (údaj instanceof Farba)
 						{
@@ -15894,7 +15977,7 @@ public final class Svet extends JFrame
 							}
 							komponentyÚdajov[i] = panel;
 							aktívnyPanel.add(panel);
-							indexyZdrojov[i] = i;
+							indexyZdrojovÚdajov[i] = i;
 						}
 						else if (údaj instanceof Bod)
 						{
@@ -15915,7 +15998,7 @@ public final class Svet extends JFrame
 							}
 							komponentyÚdajov[i] = panel;
 							aktívnyPanel.add(panel);
-							indexyZdrojov[i] = i;
+							indexyZdrojovÚdajov[i] = i;
 						}
 						else if (údaj instanceof Uhol)
 						{
@@ -15934,7 +16017,7 @@ public final class Svet extends JFrame
 							}
 							komponentyÚdajov[i] = panel;
 							aktívnyPanel.add(panel);
-							indexyZdrojov[i] = i;
+							indexyZdrojovÚdajov[i] = i;
 						}
 						else if (údaj instanceof Rozmery)
 						{
@@ -15955,7 +16038,7 @@ public final class Svet extends JFrame
 							}
 							komponentyÚdajov[i] = panel;
 							aktívnyPanel.add(panel);
-							indexyZdrojov[i] = i;
+							indexyZdrojovÚdajov[i] = i;
 						}
 						else if (údaj instanceof Enum)
 						{
@@ -15973,7 +16056,7 @@ public final class Svet extends JFrame
 
 							komponentyÚdajov[i] = panel;
 							aktívnyPanel.add(panel);
-							indexyZdrojov[i] = i;
+							indexyZdrojovÚdajov[i] = i;
 						}
 						else if (údaj instanceof Vector)
 						{
@@ -15992,7 +16075,7 @@ public final class Svet extends JFrame
 
 							komponentyÚdajov[i] = panel;
 							aktívnyPanel.add(panel);
-							indexyZdrojov[i] = i;
+							indexyZdrojovÚdajov[i] = i;
 						}
 						else if (údaj instanceof JScrollPane)
 						{
@@ -16006,7 +16089,7 @@ public final class Svet extends JFrame
 							}
 							komponentyÚdajov[i] = údaj;
 							aktívnyPanel.add((JScrollPane)údaj);
-							indexyZdrojov[i] = i;
+							indexyZdrojovÚdajov[i] = i;
 						}
 						else if (údaj instanceof Character)
 						{
@@ -16015,7 +16098,7 @@ public final class Svet extends JFrame
 								if (j < popisy.length && null != popisy[j]) --j;
 								aktívnyPanel = null;
 							}
-							else
+							else if (návrat != (Character)údaj)
 							{
 								// Ignorujem, vypíšem hlásenie, ale premennú
 								// j nemením – t. j. korešpondujúci popis sa
@@ -16025,11 +16108,11 @@ public final class Svet extends JFrame
 									údaj);
 							}
 
-							indexyZdrojov[i] = -1;
+							indexyZdrojovÚdajov[i] = -1;
 						}
 						else
 						{
-							indexyZdrojov[i] = -1;
+							indexyZdrojovÚdajov[i] = -1;
 						}
 						++i; ++j;
 					}
@@ -16050,7 +16133,7 @@ public final class Svet extends JFrame
 							komponentyÚdajov[j] = "";
 						komponentyÚdajov[j + 1] = heslo;
 
-						indexyZdrojov[i] = j + 1;
+						indexyZdrojovÚdajov[i] = j + 1;
 						j += 2;
 					}
 					else if (údaj instanceof Boolean)
@@ -16065,7 +16148,7 @@ public final class Svet extends JFrame
 
 						komponentyÚdajov[j] = voľba;
 
-						indexyZdrojov[i] = j;
+						indexyZdrojovÚdajov[i] = j;
 						++j;
 					}
 					else if (údaj instanceof Double)
@@ -16083,7 +16166,7 @@ public final class Svet extends JFrame
 							komponentyÚdajov[j] = "";
 						komponentyÚdajov[j + 1] = text;
 
-						indexyZdrojov[i] = j + 1;
+						indexyZdrojovÚdajov[i] = j + 1;
 						j += 2;
 					}
 					else if (údaj instanceof String)
@@ -16098,7 +16181,7 @@ public final class Svet extends JFrame
 							komponentyÚdajov[j] = "";
 						komponentyÚdajov[j + 1] = text;
 
-						indexyZdrojov[i] = j + 1;
+						indexyZdrojovÚdajov[i] = j + 1;
 						j += 2;
 					}
 					else if (údaj instanceof Farba)
@@ -16113,7 +16196,7 @@ public final class Svet extends JFrame
 							komponentyÚdajov[j] = "";
 						komponentyÚdajov[j + 1] = panel;
 
-						indexyZdrojov[i] = j + 1;
+						indexyZdrojovÚdajov[i] = j + 1;
 						j += 2;
 					}
 					else if (údaj instanceof Bod)
@@ -16128,7 +16211,7 @@ public final class Svet extends JFrame
 							komponentyÚdajov[j] = "";
 						komponentyÚdajov[j + 1] = panel;
 
-						indexyZdrojov[i] = j + 1;
+						indexyZdrojovÚdajov[i] = j + 1;
 						j += 2;
 					}
 					else if (údaj instanceof Uhol)
@@ -16143,7 +16226,7 @@ public final class Svet extends JFrame
 							komponentyÚdajov[j] = "";
 						komponentyÚdajov[j + 1] = panel;
 
-						indexyZdrojov[i] = j + 1;
+						indexyZdrojovÚdajov[i] = j + 1;
 						j += 2;
 					}
 					else if (údaj instanceof Rozmery)
@@ -16158,7 +16241,7 @@ public final class Svet extends JFrame
 							komponentyÚdajov[j] = "";
 						komponentyÚdajov[j + 1] = panel;
 
-						indexyZdrojov[i] = j + 1;
+						indexyZdrojovÚdajov[i] = j + 1;
 						j += 2;
 					}
 					else if (údaj instanceof Enum)
@@ -16172,7 +16255,7 @@ public final class Svet extends JFrame
 							komponentyÚdajov[j] = "";
 						komponentyÚdajov[j + 1] = panel;
 
-						indexyZdrojov[i] = j + 1;
+						indexyZdrojovÚdajov[i] = j + 1;
 						j += 2;
 					}
 					else if (údaj instanceof Vector)
@@ -16186,7 +16269,7 @@ public final class Svet extends JFrame
 							komponentyÚdajov[j] = "";
 						komponentyÚdajov[j + 1] = panel;
 
-						indexyZdrojov[i] = j + 1;
+						indexyZdrojovÚdajov[i] = j + 1;
 						j += 2;
 					}
 					else if (údaj instanceof JScrollPane)
@@ -16197,84 +16280,115 @@ public final class Svet extends JFrame
 							komponentyÚdajov[j] = "";
 						komponentyÚdajov[j + 1] = údaj;
 
-						indexyZdrojov[i] = j + 1;
+						indexyZdrojovÚdajov[i] = j + 1;
 						j += 2;
 					}
-					else indexyZdrojov[i] = -1;
+					else if (údaj instanceof Character)
+					{
+						if (návrat == (Character)údaj)
+						{
+							// TODO: TEST
+							if (i < popisy.length && null != popisy[i])
+								komponentyÚdajov[j] = popisy[i];
+							else
+								komponentyÚdajov[j] = "";
+							++j;
+						}
+						indexyZdrojovÚdajov[i] = -1;
+					}
+					else indexyZdrojovÚdajov[i] = -1;
 					++i;
 				}
 
-				boolean výsledok = JOptionPane.showOptionDialog(
-					null == oknoCelejObrazovky ? svet : oknoCelejObrazovky,
-					komponentyDialógu, titulok, JOptionPane.YES_NO_OPTION,
-					JOptionPane.PLAIN_MESSAGE, null, odpovedeZadania, null)
-					== JOptionPane.YES_OPTION;
+				/*if (komponentyDialógu != komponentyÚdajov)
+				{
+					System.out.println("\nKomponenty dialógu:");
+
+					for (Object o : komponentyDialógu)
+					{
+						System.out.println("  > " + o);
+					}
+				}
+
+				System.out.println("\nKomponenty údajov:");
+
+				for (Object o : komponentyÚdajov)
+				{
+					System.out.println("  > " + o);
+				}*/
+
+				boolean výsledok = (odpoveďDialógu = JOptionPane.
+					showOptionDialog(null == oknoCelejObrazovky ? svet :
+						oknoCelejObrazovky, komponentyDialógu, titulok,
+						JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+						null, null != mojeOdpovede ? mojeOdpovede :
+						odpovedeZadania, null)) == JOptionPane.YES_OPTION;
 
 				i = 0;
 				for (Object údaj : údaje)
 				{
-					if (0 > indexyZdrojov[i]);
+					if (0 > indexyZdrojovÚdajov[i]);
 					else if (null == údaj)
 					{
 						údaje[i] = ((RobotPasswordField)komponentyÚdajov
-							[indexyZdrojov[i]]).getPassword();
+							[indexyZdrojovÚdajov[i]]).getPassword();
 						((RobotPasswordField)komponentyÚdajov
-							[indexyZdrojov[i]]).setText("");
+							[indexyZdrojovÚdajov[i]]).setText("");
 					}
 					else if (údaj instanceof Boolean)
 					{
 						údaje[i] = ((/*Robot/Nie!*/JCheckBox)komponentyÚdajov
-							[indexyZdrojov[i]]).isSelected();
+							[indexyZdrojovÚdajov[i]]).isSelected();
 					}
 					else if (údaj instanceof Double)
 					{
 						Double číslo = reťazecNaReálneČíslo(
 							((RobotTextField)komponentyÚdajov
-							[indexyZdrojov[i]]).getText());
+							[indexyZdrojovÚdajov[i]]).getText());
 						if (null != číslo) údaje[i] = číslo;
 						else údaje[i] = Double.NaN;
 					}
 					else if (údaj instanceof String)
 					{
 						údaje[i] = ((RobotTextField)komponentyÚdajov
-							[indexyZdrojov[i]]).getText();
+							[indexyZdrojovÚdajov[i]]).getText();
 					}
 					else if (údaj instanceof Farba)
 					{
 						údaje[i] = ((Farba.PanelFarieb)komponentyÚdajov
-							[indexyZdrojov[i]]).dajFarbu();
+							[indexyZdrojovÚdajov[i]]).dajFarbu();
 					}
 					else if (údaj instanceof Bod)
 					{
 						údaje[i] = ((Bod.PanelPolohy)komponentyÚdajov
-							[indexyZdrojov[i]]).dajPolohu();
+							[indexyZdrojovÚdajov[i]]).dajPolohu();
 					}
 					else if (údaj instanceof Uhol)
 					{
 						údaje[i] = ((Uhol.PanelSmeru)komponentyÚdajov
-							[indexyZdrojov[i]]).dajSmer();
+							[indexyZdrojovÚdajov[i]]).dajSmer();
 					}
 					else if (údaj instanceof Rozmery)
 					{
 						údaje[i] = ((Rozmery.PanelRozmeru)komponentyÚdajov
-							[indexyZdrojov[i]]).dajRozmer();
+							[indexyZdrojovÚdajov[i]]).dajRozmer();
 					}
 					else if (údaj instanceof Enum)
 					{
 						údaje[i] = ((EnumRadioPanel)komponentyÚdajov
-							[indexyZdrojov[i]]).getSelection();
-						komponentyÚdajov[indexyZdrojov[i]] = null;
+							[indexyZdrojovÚdajov[i]]).getSelection();
+						komponentyÚdajov[indexyZdrojovÚdajov[i]] = null;
 					}
 					else if (údaj instanceof Vector)
 					{
 						((Vector)údaj).set(0, ((VectorListPanel)
-							komponentyÚdajov[indexyZdrojov[i]]).list.
+							komponentyÚdajov[indexyZdrojovÚdajov[i]]).list.
 							getSelectedValue());
-						komponentyÚdajov[indexyZdrojov[i]] = null;
+						komponentyÚdajov[indexyZdrojovÚdajov[i]] = null;
 					}
 					else if (údaj instanceof JScrollPane)
 					{
-						komponentyÚdajov[indexyZdrojov[i]] = null;
+						komponentyÚdajov[indexyZdrojovÚdajov[i]] = null;
 					}
 					++i;
 				}
@@ -16291,6 +16405,98 @@ public final class Svet extends JFrame
 		public static boolean dialog(String[] popisy, Object[] údaje,
 			String titulok)
 		{ return dialóg(popisy, údaje, titulok); }
+
+
+		/**
+		 * <p>Zmení predvolené odpovede komunikačných dialógov programovacieho
+		 * rámca na vlastné. Predvolené odpovede sú len dve: OK a Zrušiť. Ich
+		 * znenie sa dá zmeniť metódou {@link #textTlačidla(String, String)
+		 * textTlačidla}, ale nie ich počet. Touto metódou sa dá zmeniť nielen
+		 * ich znenie, ale aj ich počet. Tým sa dá navýšiť počet volieb, ktoré
+		 * môže vykonať používateľ.</p>
+		 * 
+		 * <p>Z dôvodu sprístupnenia ďalších volieb programátorovi a zároveň
+		 * zachovania spätnej kompatibility dialógov, bola definovaná nová
+		 * metóda: {@link #odpoveďDialógu() odpoveďDialógu}. Jej návratová
+		 * hodnota určuje voľbu používateľa pri zavretí posledného zobrazeného
+		 * komunikačného dialógu.</p>
+		 * 
+		 * <p>Vlastné odpovede budú platné do okamihu, kým nie je táto metóda
+		 * volaná s parametrom {@code valnull}.</p>
+		 * 
+		 * <p>Trochu to mení spôsob práce s dialógmi. Prakticky to ukazuje
+		 * nasledujúci príklad.</p>
+		 * 
+		 * <p><b>Príklad:</b></p>
+		 * 
+		 * <pre CLASS="example">
+			{@link Svet Svet}.{@code currmojeOdpovede}({@code kwdnew} {@link String String}[]{{@code srg"Áno"}, {@code srg"Nie"}, {@code srg"Vždy"}, {@code srg"Nikdy"}});
+
+			{@link Svet Svet}.{@link Svet#dialóg(String[], Object[], String) dialóg}({@code kwdnew} {@link String String}[]{{@code srg"Chcete naozaj vykonať túto operáciu?"}},
+				{@code kwdnew} {@link Object Object}[]{{@code srg'\r'}}, {@code srg"Otázka…"});
+
+			{@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@link Svet Svet}.{@link Svet#odpoveďDialógu() odpoveďDialógu}(), {@code srg' '});
+			<hr/>
+			{@link Svet Svet}.{@code currmojeOdpovede}({@code kwdnew} {@link String String}[]{{@code srg"Áno"}, {@code srg"Nie"}, {@code srg"Zrušiť"}});
+
+			{@link Svet Svet}.{@link Svet#dialóg(String[], Object[], String) dialóg}({@code kwdnew} {@link String String}[]{{@code srg"Chcete naozaj vykonať túto operáciu?"},
+				{@code srg"Zapamätať si moju voľbu"}}, {@code kwdnew} {@link Object Object}[]{{@code srg'\r'}, {@code valfalse}}, {@code srg"Otázka…"});
+
+			{@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@link Svet Svet}.{@link Svet#odpoveďDialógu() odpoveďDialógu}(), {@code srg' '});
+			<hr/>
+			{@link Svet Svet}.{@code currmojeOdpovede}({@code valnull});
+			</pre>
+		 * 
+		 * @param odpovede zoznam vlastných odpovedí dialógov
+		 * 
+		 * @see #odpoveďDialógu()
+		 */
+		public static void mojeOdpovede(Object[] odpovede)
+		{ mojeOdpovede = odpovede; }
+
+		/**
+		 * <p>Vráti pole vlastných odpovedí komunikačných dialógov
+		 * programovacieho rámca alebo hodnotu {@code valnull}, ak sú aktívne
+		 * predvolené odpovede. Podrobnosti nájdete v opise príbuznej metódy
+		 * {@link #mojeOdpovede(Object[]) mojeOdpovede}.</p>
+		 * 
+		 * @return aktuálne pole vlastných odpovedí alebo {@code valnull}
+		 */
+		public static Object[] mojeOdpovede()
+		{ return mojeOdpovede; }
+
+		/**
+		 * <p>Vráti číslo (index) voľby v poslednom dialógu, ktorý bol
+		 * zobrazený používateľovi. Klasicky (historicky) boli v dialógoch
+		 * k dispozícii len dve možné odpovede (voľby/tlačidlá; ak nerátame
+		 * zavretie dialógu „krížikom“ – tlačidlom zavretia okna OS): OK
+		 * a Zrušiť.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Voľba systémového tlačidla
+		 * zavretia dialógu („krížika“ na ráme dialógového okna) vráti kód
+		 * −1 a jednotlivé tlačidlá umiestnené v spodnej časti dialógu vracajú
+		 * kódy od indexu 0 po hodnotu počtu tlačidiel mínus jedna.</p>
+		 * 
+		 * <p>Obmedzenie dvoch tlačidiel sa zmenilo implementovaním metódy
+		 * {@link #mojeOdpovede(Object[]) mojeOdpovede}, ktorá dovoľuje pridať
+		 * prakticky ľubovoľné množstvo tlačidiel odpovedí. Bolo by zbytočné
+		 * mať k dispozícii množstvo volieb a nemať možnosť zistiť, ktorá
+		 * z nich bola zvolená. Preto vznikla táto metóda, ktorá dovoľuje
+		 * po zavretí dialógu zistiť, ktorá z možností bola používateľom
+		 * vybraná.</p>
+		 * 
+		 * <p><i>Príklad použitia je v opise metódy
+		 * {@link #mojeOdpovede(Object[]) mojeOdpovede}.</i></p>
+		 * 
+		 * @return voľba používateľa v naposledy potvrdenom (zavretom)
+		 *     komunikačnom dialógu
+		 * 
+		 * @see #mojeOdpovede(Object[])
+		 */
+		public static int odpoveďDialógu() { return odpoveďDialógu; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #odpoveďDialógu() odpoveďDialógu}.</p> */
+		public static int odpovedDialogu() { return odpoveďDialógu; }
 
 
 		// Dialógy – správy/otázky
@@ -16781,6 +16987,8 @@ public final class Svet extends JFrame
 		 *     prípade je potrebné ju/ich vynechať v celom slove/texte)
 		 * @return aktuálny text určeného tlačidla alebo {@code valnull} ak je
 		 *     hodnota argumentu neplatná
+		 * 
+		 * @see #mojeOdpovede(Object[])
 		 */
 		public static String textTlačidla(String tlačidlo)
 		{
@@ -17333,6 +17541,7 @@ public final class Svet extends JFrame
 		 * @see #zrušVstup()
 		 * @see #vstupnýRiadokZobrazený()
 		 * @see #vstupnýRiadok()
+		 * @see #panelVstupnéhoRiadka()
 		 * @see #prevezmiReťazec()
 		 * @see #históriaVstupnéhoRiadka()
 		 */
@@ -17366,6 +17575,7 @@ public final class Svet extends JFrame
 		 * @see #zrušVstup()
 		 * @see #vstupnýRiadokZobrazený()
 		 * @see #vstupnýRiadok()
+		 * @see #panelVstupnéhoRiadka()
 		 * @see #prevezmiReťazec()
 		 * @see #históriaVstupnéhoRiadka()
 		 */
@@ -17393,6 +17603,7 @@ public final class Svet extends JFrame
 		 * @see #zrušVstup()
 		 * @see #vstupnýRiadokZobrazený()
 		 * @see #vstupnýRiadok()
+		 * @see #panelVstupnéhoRiadka()
 		 * @see #prevezmiReťazec()
 		 * @see #históriaVstupnéhoRiadka()
 		 */
@@ -17534,6 +17745,7 @@ public final class Svet extends JFrame
 		 * @see #potvrďVstup()
 		 * @see #vstupnýRiadokZobrazený()
 		 * @see #vstupnýRiadok()
+		 * @see #panelVstupnéhoRiadka()
 		 * @see #prevezmiReťazec()
 		 */
 		public static void zrušVstup()
@@ -17587,6 +17799,7 @@ public final class Svet extends JFrame
 		 * @see #aktivujVstupnýRiadok()
 		 * @see #začniVstup()
 		 * @see #vstupnýRiadok()
+		 * @see #panelVstupnéhoRiadka()
 		 * @see #prevezmiReťazec()
 		 */
 		public static boolean vstupnýRiadokZobrazený() { return panelVstupnéhoRiadka.isVisible(); }
@@ -17612,6 +17825,7 @@ public final class Svet extends JFrame
 		 * @see #aktivujVstupnýRiadok()
 		 * @see #začniVstup()
 		 * @see #vstupnýRiadok()
+		 * @see #panelVstupnéhoRiadka()
 		 * @see #prevezmiReťazec()
 		 * @see #históriaVstupnéhoRiadka()
 		 */
@@ -17644,6 +17858,7 @@ public final class Svet extends JFrame
 		 * @see #aktivujVstupnýRiadok()
 		 * @see #začniVstup()
 		 * @see #vstupnýRiadok()
+		 * @see #panelVstupnéhoRiadka()
 		 * @see #prevezmiReťazec()
 		 * @see #históriaVstupnéhoRiadka()
 		 */
@@ -17670,6 +17885,7 @@ public final class Svet extends JFrame
 		 * @see #aktivujVstupnýRiadok()
 		 * @see #začniVstup()
 		 * @see #vstupnýRiadok()
+		 * @see #panelVstupnéhoRiadka()
 		 * @see #prevezmiReťazec()
 		 * @see #históriaVstupnéhoRiadka()
 		 */
@@ -17700,6 +17916,7 @@ public final class Svet extends JFrame
 		 * @see #aktivujVstupnýRiadok()
 		 * @see #začniVstup()
 		 * @see #vstupnýRiadok()
+		 * @see #panelVstupnéhoRiadka()
 		 * @see #prevezmiReťazec()
 		 * @see #históriaVstupnéhoRiadka()
 		 */
@@ -17725,6 +17942,7 @@ public final class Svet extends JFrame
 		 * @see #skrývajVstupnýRiadok(boolean)
 		 * @see #začniVstup()
 		 * @see #vstupnýRiadok()
+		 * @see #panelVstupnéhoRiadka()
 		 * @see #prevezmiReťazec()
 		 * @see #históriaVstupnéhoRiadka()
 		 */
@@ -17738,12 +17956,23 @@ public final class Svet extends JFrame
 
 
 		/**
-		 * <p>Vráti komponent vstupného riadka, aby s ním mohlo byť manipulované
-		 * na nižšej úrovni (úrovni bližšej k systému).</p>
+		 * <p>Vráti komponent vstupného riadka, aby s ním mohlo byť
+		 * manipulované na nižšej úrovni (úrovni bližšej k systému).</p>
 		 * 
-		 * @return objekt typu {@link JTextField JTextField}
-		 *     reprezentujúci vstupný riadok
+		 * <p>Tento komponent je hlavným, ale nie jediným komponentom
+		 * {@linkplain #panelVstupnéhoRiadka() panela vstupného riadka.}
+		 * Okrem neho sa v ňom nachádza aj prvok popisu, ku ktorému nie je
+		 * sprostredkovaný priamy prístup – dá sa len nastavovať a čítať text
+		 * popisu. Ak chcete vstupný riadok zobrazovať alebo skrývať bez
+		 * ovplyvnenia jeho ďalších vlastností, tak treba meniť viditeľnosť
+		 * panela, nie viditeľnosť tohto komponentu. Tento komponent je vhodný
+		 * najmä na jemnejšie ovplyvňovanie textového obsahu vstupného
+		 * riadka.</p>
 		 * 
+		 * @return objekt typu {@link JTextField JTextField} reprezentujúci
+		 *     vstupný riadok
+		 * 
+		 * @see #panelVstupnéhoRiadka()
 		 * @see #popisVstupnéhoRiadka()
 		 * @see #popisVstupnéhoRiadka(String)
 		 * @see #textVstupnéhoRiadka()
@@ -17760,6 +17989,41 @@ public final class Svet extends JFrame
 		public static JTextField vstupnyRiadok() { return vstupnýRiadok; }
 
 		/**
+		 * <p>Vráti komponent panela vstupného riadka, aby s ním mohlo byť
+		 * manipulované na nižšej úrovni (úrovni bližšej k systému).</p>
+		 * 
+		 * <p>Panel obsahuje popis a {@linkplain #vstupnýRiadok() textové
+		 * pole – samotný vstupný riadok.} K popisu nie je sprostredkovaný
+		 * priamy prístup – dá sa len nastavovať a čítať jeho text. K textovému
+		 * poľu je prístup sprostredkovaný metódou {@link #vstupnýRiadok()
+		 * vstupnýRiadok}. Tá je vhodná najmä na jemnejšie ovplyvňovanie
+		 * textového obsahu vstupného riadka. Ale ak chcete napríklad
+		 * ovplyvňovať viditeľnosť vstupného riadka, tak treba meniť
+		 * viditeľnosť práve tohto panela, nie viditeľnosť samotného textového
+		 * poľa riadka.</p>
+		 * 
+		 * @return objekt typu {@link JMenuBar JMenuBar} reprezentujúci panel
+		 *     vstupného riadka
+		 * 
+		 * @see #vstupnýRiadok()
+		 * @see #popisVstupnéhoRiadka()
+		 * @see #popisVstupnéhoRiadka(String)
+		 * @see #textVstupnéhoRiadka()
+		 * @see #textVstupnéhoRiadka(String)
+		 * @see #pripojTextVstupnéhoRiadka(String)
+		 * @see #začniVstup()
+		 * @see #vstupnýRiadokZobrazený()
+		 * @see #prevezmiReťazec()
+		 * @see #históriaVstupnéhoRiadka()
+		 */
+		public static JMenuBar panelVstupnéhoRiadka()
+		{ return panelVstupnéhoRiadka; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #panelVstupnéhoRiadka() panelVstupnéhoRiadka}.</p> */
+		public static JMenuBar panelVstupnehoRiadka()
+		{ return panelVstupnéhoRiadka; }
+
+		/**
 		 * <p><a class="getter"></a> Získa text popisu vstupného riadka.
 		 * Ak je popis vstupného riadka skrytý, metóda vráti hodnotu
 		 * {@code valnull}.</p>
@@ -17767,6 +18031,7 @@ public final class Svet extends JFrame
 		 * @return aktuálny text popisu vstupného riadka alebo {@code valnull}
 		 * 
 		 * @see #vstupnýRiadok()
+		 * @see #panelVstupnéhoRiadka()
 		 * @see #popisVstupnéhoRiadka(String)
 		 * @see #textVstupnéhoRiadka()
 		 * @see #textVstupnéhoRiadka(String)
@@ -17795,6 +18060,7 @@ public final class Svet extends JFrame
 		 * @param výzva nový text popisu vstupného riadka
 		 * 
 		 * @see #vstupnýRiadok()
+		 * @see #panelVstupnéhoRiadka()
 		 * @see #popisVstupnéhoRiadka()
 		 * @see #textVstupnéhoRiadka()
 		 * @see #textVstupnéhoRiadka(String)
@@ -17828,6 +18094,7 @@ public final class Svet extends JFrame
 		 * @return aktuálny text vstupného riadka
 		 * 
 		 * @see #vstupnýRiadok()
+		 * @see #panelVstupnéhoRiadka()
 		 * @see #popisVstupnéhoRiadka()
 		 * @see #popisVstupnéhoRiadka(String)
 		 * @see #textVstupnéhoRiadka(String)
@@ -17851,6 +18118,7 @@ public final class Svet extends JFrame
 		 * @param text nový text vstupného riadka
 		 * 
 		 * @see #vstupnýRiadok()
+		 * @see #panelVstupnéhoRiadka()
 		 * @see #popisVstupnéhoRiadka()
 		 * @see #popisVstupnéhoRiadka(String)
 		 * @see #textVstupnéhoRiadka()
@@ -17873,6 +18141,7 @@ public final class Svet extends JFrame
 		 * @param naPripojenie text na pripojenie
 		 * 
 		 * @see #vstupnýRiadok()
+		 * @see #panelVstupnéhoRiadka()
 		 * @see #popisVstupnéhoRiadka()
 		 * @see #popisVstupnéhoRiadka(String)
 		 * @see #textVstupnéhoRiadka()

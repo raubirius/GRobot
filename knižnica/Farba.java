@@ -461,9 +461,9 @@ public class Farba extends Color implements Comparable<Color>
 		/*-
 		 * Poznámky:
 		 *  1. čierna.svetlejšia() má vytvoriť šedú,
-		 *  2. použitie svetlejšia() na modrú, musí vrátiť modrú,
-		 *  3. mnohonásobné použitie svetlejšia() nakoniec vyústi do
-		 *     bielej.
+		 *  2. použitie svetlejšia() napríklad na modrú, musí vrátiť modrú
+		 *     (svetlejšiu, ale modrú),
+		 *  3. mnohonásobné použitie svetlejšia() nakoniec vyústi do bielej.
 		 */
 		int i = (int)(1.0 / (1.0 - faktor));
 
@@ -580,8 +580,9 @@ public class Farba extends Color implements Comparable<Color>
 	 * v dôsledku zaokrúhlení viesť k získaniu úplne inej farby.</p>
 	 * 
 	 * @param faktor faktor zosvetlenia – hodnota v rozsahu 0.0 – 1.0,
-	 *     pričom krajné hodnoty (0.0 a 1.0) nie sú povolené; čím je
-	 *     hodnota faktora nižšia, tým je zmena svetlosti výraznejšia
+	 *     pričom krajné hodnoty (0.0 a 1.0) nie sú povolené (môžete ich
+	 *     zadať, ale získate neočakávaný výsledok a môže vzniknúť výnimka);
+	 *     čím je hodnota faktora nižšia, tým je zmena svetlosti výraznejšia
 	 * @return nová inštancia triedy {@link Farba Farba} s bledšou
 	 *     verziou tejto farby
 	 * 
@@ -596,9 +597,9 @@ public class Farba extends Color implements Comparable<Color>
 		/*-
 		 * Poznámky:
 		 *  1. čierna.svetlejšia() má vytvoriť šedú,
-		 *  2. použitie svetlejšia() na modrú, musí vrátiť modrú,
-		 *  3. mnohonásobné použitie svetlejšia() nakoniec vyústi do
-		 *     bielej.
+		 *  2. použitie svetlejšia() napríklad na modrú, musí vrátiť modrú
+		 *     (svetlejšiu, ale modrú),
+		 *  3. mnohonásobné použitie svetlejšia() nakoniec vyústi do bielej.
 		 */
 		int i = (int)(1.0 / (1.0 - faktor));
 
@@ -675,9 +676,10 @@ public class Farba extends Color implements Comparable<Color>
 	 * <p>Vytvorí menej priehľadnú verziu tejto farby na základe zadaného
 	 * faktora.</p>
 	 * 
-	 * @param faktor faktor znepriehľadnenia – hodnota v rozsahu 0.0 –
-	 *     1.0, pričom krajné hodnoty (0.0 a 1.0) nie sú povolené; čím
-	 *     je hodnota faktora nižšia, tým je zmena nepriehľadnosti
+	 * @param faktor faktor znepriehľadnenia – hodnota v rozsahu 0.0 – 1.0,
+	 *     pričom krajné hodnoty (0.0 a 1.0) nie sú povolené (môžete ich
+	 *     zadať, ale získate neočakávaný výsledok a môže vzniknúť výnimka);
+	 *     čím je hodnota faktora nižšia, tým je zmena nepriehľadnosti
 	 *     výraznejšia
 	 * @return nová inštancia triedy {@link Farba Farba} s menej
 	 *     priehľadnou verziou tejto farby
@@ -1655,12 +1657,13 @@ public class Farba extends Color implements Comparable<Color>
 
 				Object[] komponenty = new Object[] {panelFarieb};
 
-				if (JOptionPane.showOptionDialog(
-					null == Svet.oknoCelejObrazovky ? GRobot.svet :
-					Svet.oknoCelejObrazovky, komponenty, null == titulok ?
+				if ((Svet.odpoveďDialógu = JOptionPane.showOptionDialog(null ==
+					Svet.oknoCelejObrazovky ? GRobot.svet : Svet.
+					oknoCelejObrazovky, komponenty, null == titulok ?
 					"Voľba farby" : titulok, JOptionPane.YES_NO_OPTION,
-					JOptionPane.PLAIN_MESSAGE, null, Svet.odpovedeZadania,
-					null) == JOptionPane.YES_OPTION)
+					JOptionPane.PLAIN_MESSAGE, null, null != Svet.mojeOdpovede ?
+					Svet.mojeOdpovede : Svet.odpovedeZadania, null)) ==
+					JOptionPane.YES_OPTION)
 					return panelFarieb.zvolenáFarba;
 
 				return null;

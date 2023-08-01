@@ -95,7 +95,7 @@ import knižnica.podpora.RandomGenerator;
  * nahrádzanie} a {@linkplain #hľadaj(Object) vyhľadávanie}…).
  * Vnútorná správa zoznamu je v réžii Javy. Je dôležité upozorniť na to,
  * že nie je správne meniť zoznam (pridávať alebo odoberať prvky) počas
- * jeho prechádzania. Mohlo by dôjsť k nepredvídateľným vedľajším efektom
+ * jeho prechádzania. Mohli by vzniknúť nepredvídateľné vedľajšie efekty
  * alebo by to mohlo viesť ku vzniku výnimky.</p>
  * 
  * <p> </p>
@@ -356,8 +356,8 @@ public class Zoznam<Typ> extends Vector<Typ>
 
 	/**
 	 * <p>Pridá zadaný zoznam na koniec tohto zoznamu podľa poradia určeného
-	 * zadaným zoznamom (jeho iterátorom). Výsledok akcie je
-	 * nepredvídateľný ak počas operácie dôjde ku zmene zadaného zoznamu.</p>
+	 * zadaným zoznamom (jeho iterátorom). Výsledok akcie je nepredvídateľný,
+	 * ak je počas tejto operácie zadaný zoznam zmenený.</p>
 	 * 
 	 * @param inýZoznam zoznam, ktorého prvky majú byť pridané na koniec
 	 *     tohto zoznamu
@@ -475,15 +475,23 @@ public class Zoznam<Typ> extends Vector<Typ>
 
 
 	/**
+	 * <p>Odstráni všetky prvky na pozíciách zadaných rozsahom parametrov
+	 * {@code začiatok} (vrátane) a {@code koniec} (okrem neho) s možnosťou
+	 * určenia tohto rozsahu od konca zoznamu.</p>
+	 * 
 	 * <p>Ak sú parametre kladné, tak táto metóda funguje rovnako ako metóda
 	 * {@link #odober(int, int) odober(začiatok, koniec)} – odstráni všetky
 	 * prvky na pozíciách zadaných rozsahom parametrov {@code začiatok}
-	 * (vrátane) a {@code koniec} (okrem neho). V prípade záporných
-	 * parametrov sú hodnoty touto metódou upravené tak, aby boli väčšie
-	 * alebo rovné nule a to tak, aby výsledný rozsah ukazoval na poradové
-	 * čísla od konca zoznamu – pre parameter {@code začiatok} znamená mínus
-	 * jednotka posledný prvok zoznamu a pre parameter {@code koniec} znamená
-	 * mínus jednotka „koniec zoznamu“ (index rovný dĺžke zoznamu). Ak je
+	 * (vrátane) a {@code koniec} (okrem neho). V prípade zápornej hodnoty
+	 * jedného alebo obidvoch parametrov sú hodnoty touto metódou upravené
+	 * tak, aby boli väčšie alebo rovné nule a to tak, aby výsledný rozsah
+	 * ukazoval na poradové čísla od konca zoznamu, pričom pre parameter
+	 * {@code začiatok} znamená mínus jednotka posledný prvok zoznamu a pre
+	 * parameter {@code koniec} znamená mínus jednotka „koniec zoznamu“
+	 * (index rovný dĺžke zoznamu). Tým vieme vytvoriť rôzne situácie,
+	 * napríklad: 1, −1 – vymazať všetko, okrem prvého prvku… Stále však musí
+	 * platiť to, že aby bol vymazaný aspoň jeden prvok, tak prepočítaná
+	 * hodnota začiatku musí byť menšia ako prepočítaná hodnota konca. Ak je
 	 * začiatočná hodnota rovná koncovej (pozor na prepočet, vtedy sa hodnoty
 	 * rozchádzajú o jedna), tak nie je vymazaný žiadny prvok. Veľkosť zoznamu
 	 * je znížená o počet prvkov nachádzajúcich sa medzi polohami určenými

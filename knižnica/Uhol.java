@@ -1042,12 +1042,13 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 
 				Object[] komponenty = new Object[] {panelSmeru};
 
-				if (JOptionPane.showOptionDialog(null == Svet.
-					oknoCelejObrazovky ? GRobot.svet : Svet.
+				if ((Svet.odpoveďDialógu = JOptionPane.showOptionDialog(null ==
+					Svet.oknoCelejObrazovky ? GRobot.svet : Svet.
 					oknoCelejObrazovky, komponenty, null == titulok ?
 					"Voľba smeru" : titulok, JOptionPane.YES_NO_OPTION,
-					JOptionPane.PLAIN_MESSAGE, null, Svet.odpovedeZadania,
-					null) == JOptionPane.YES_OPTION)
+					JOptionPane.PLAIN_MESSAGE, null, null != Svet.mojeOdpovede ?
+					Svet.mojeOdpovede : Svet.odpovedeZadania, null)) ==
+					JOptionPane.YES_OPTION)
 					return panelSmeru.dajSmer();
 
 				return null;

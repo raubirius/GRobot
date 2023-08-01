@@ -1675,6 +1675,19 @@ public class Plátno implements Priehľadnosť
 				else prevezmiTexty(texty);
 			}
 
+			public boolean jestvujeOznačenie()
+			{
+				for (RiadokKonzoly riadok : riadky)
+					for (PrototypKonzoly prototyp : riadok)
+					{
+						ObsahKonzoly obsah = dajObsah(prototyp);
+						if (null == obsah) continue;
+						if (obsah.označený) return true;
+					}
+
+				return false;
+			}
+
 			public Farba farba()
 			{
 				if (null != zmenaFarby) return zmenaFarby;
@@ -6148,6 +6161,25 @@ public class Plátno implements Priehľadnosť
 			// (Aj tak som o tom uvažoval len z toho dôvodu, aby sa
 			// rozšírili možnosti skriptovania a medzi aliasy príkazov
 			// skriptov som to pridal.)
+
+		/**
+		 * <p>Zistí či jestvuje označenie v rámci textov vnútornej konzoly.</p>
+		 * 
+		 * @return ak jestvuje aspoň jeden označený prvok v rámci textov
+		 *     vnútornej konzoly, tak metóda vráti {@code valtrue}, inak
+		 *     {@code valfalse}
+		 */
+		public boolean jestvujeOznačenie()
+		{ return vnútornáKonzola.jestvujeOznačenie(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #jestvujeOznačenie() jestvujeOznačenie}.</p> */
+		public boolean jestvujeOznacenie() { return jestvujeOznačenie(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #jestvujeOznačenie() jestvujeOznačenie}.</p> */
+		public boolean existujeOznačenie() { return jestvujeOznačenie(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #jestvujeOznačenie() jestvujeOznačenie}.</p> */
+		public boolean existujeOznacenie() { return jestvujeOznačenie(); }
 
 
 	// Odsadenie sprava/zľava…

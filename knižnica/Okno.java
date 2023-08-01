@@ -1055,7 +1055,7 @@ public class Okno
 						-e.getWheelRotation();
 				}
 
-				if (0 == (e.getModifiersEx() & (
+				/*if (0 == (e.getModifiersEx() & (
 					InputEvent.ALT_DOWN_MASK |
 					InputEvent.CTRL_DOWN_MASK |
 					InputEvent.META_DOWN_MASK)))
@@ -1064,7 +1064,7 @@ public class Okno
 						GRobot.podlaha.rolujTexty();
 					if (GRobot.strop.rolujTexty)
 						GRobot.strop.rolujTexty();
-				}
+				}*/
 
 				if (null != ObsluhaUdalostí.počúvadlo)
 					synchronized (ÚdajeUdalostí.zámokUdalostí)

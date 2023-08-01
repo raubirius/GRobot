@@ -1094,12 +1094,13 @@ public class Rozmery extends Dimension2D implements Rozmer
 
 				Object[] komponenty = new Object[] {panelRozmeru};
 
-				if (JOptionPane.showOptionDialog(null == Svet.
-					oknoCelejObrazovky ? GRobot.svet : Svet.
+				if ((Svet.odpoveďDialógu = JOptionPane.showOptionDialog(null ==
+					Svet.oknoCelejObrazovky ? GRobot.svet : Svet.
 					oknoCelejObrazovky, komponenty, null == titulok ?
 					"Voľba rozmeru" : titulok, JOptionPane.YES_NO_OPTION,
-					JOptionPane.PLAIN_MESSAGE, null, Svet.odpovedeZadania,
-					null) == JOptionPane.YES_OPTION)
+					JOptionPane.PLAIN_MESSAGE, null, null != Svet.mojeOdpovede ?
+					Svet.mojeOdpovede : Svet.odpovedeZadania, null)) ==
+					JOptionPane.YES_OPTION)
 					return panelRozmeru.dajRozmer();
 
 				return null;
