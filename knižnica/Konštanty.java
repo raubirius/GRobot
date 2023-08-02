@@ -68,7 +68,7 @@ public interface Konštanty
 		/** <p>Konštanta majoritnej verzie tohto rámca.</p> */
 		public final static int majorVersion = 2;
 		/** <p>Konštanta minoritnej verzie tohto rámca.</p> */
-		public final static int minorVersion = 19;
+		public final static int minorVersion = 20;
 		/** <p>Konštanta poznámky verzie tohto rámca.</p> */
 		public final static String versionNote = " (2023-06-24)";
 		/** <p>Konštanta rozpätia rokov vývoja tejto verzie rámca

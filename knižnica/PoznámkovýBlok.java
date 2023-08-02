@@ -395,6 +395,12 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 				{
 					// TODO: Bolo by treba otestovať na macOS, lebo v tomto
 					// sú isté nekonzistencie v implementáciách…
+					if (!zakážTabulátor || Svet.spracujFokus(e, false))
+					{
+					/*
+					// Bolo nahradené globálnou obslužnou metódou na zmenu
+					// fokusu.
+					// 
 					if (zakážTabulátor && e.getKeyCode() == KeyEvent.VK_TAB &&
 						!e.isAltDown() && !e.isMetaDown())
 					{
@@ -425,7 +431,9 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 							});
 						}
 					}
-					else if (zakážEnter && e.getKeyCode() ==
+					else
+					*/
+					if (zakážEnter && e.getKeyCode() ==
 						KeyEvent.VK_ENTER && !e.isAltDown() &&
 						!e.isControlDown() && !e.isMetaDown() &&
 						!e.isShiftDown())
@@ -444,7 +452,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 						e.consume();
 						if (null != klávesováSkratka)
 							klávesováSkratka.actionPerformed(null);
-					}
+					}}
 				}
 
 				public void keyReleased(KeyEvent e) {}

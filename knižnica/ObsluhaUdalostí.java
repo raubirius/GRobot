@@ -60,6 +60,7 @@ import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#tik() tik}() {}
 
 		{@code comm// Klávesnica}
+		{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@link ObsluhaUdalostí#zmenaFokusu(boolean) zmenaFokusu}({@code typeboolean} vpred) { {@code kwdreturn} {@code valtrue}; }
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#stlačenieKlávesu() stlačenieKlávesu}() {}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#uvoľnenieKlávesu() uvoľnenieKlávesu}() {}
 		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zadanieZnaku() zadanieZnaku}() {}
@@ -116,8 +117,8 @@ import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
 
 		{@code comm// Konfigurácia}
 		{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@link ObsluhaUdalostí#konfiguráciaZmenená() konfiguráciaZmenená}() { {@code kwdreturn} {@code valfalse}; }
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#čítajKonfiguráciu(Súbor) čítajKonfiguráciu}(Súbor súbor) {}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zapíšKonfiguráciu(Súbor) zapíšKonfiguráciu}(Súbor súbor) {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#čítajKonfiguráciu(Súbor) čítajKonfiguráciu}({@link Súbor Súbor} súbor) {}
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link ObsluhaUdalostí#zapíšKonfiguráciu(Súbor) zapíšKonfiguráciu}({@link Súbor Súbor} súbor) {}
 
 		{@code comm// Konzola (vizuálna vlastnosť textu konzoly)}
 		{@code comm// vyžaduje import java.awt.Color;}
@@ -1058,6 +1059,43 @@ public class ObsluhaUdalostí
 
 	/** <p><a class="alias"></a> Alias pre {@link #rolovanieKolieskomMyši() rolovanieKolieskomMyši}.</p> */
 	public void rolovanieKolieskomMysi() {}
+
+	/**
+	 * <p>Spustená pri stlačení klávesovej kombinácie zmeny fokusu
+	 * hlavného komponentu okna sveta alebo vlastného okna. Použite metódu
+	 * {@link  ÚdajeUdalostí#klávesnica() ÚdajeUdalostí.klávesnica()} na
+	 * získanie podrobnejších údajov o tejto udalosti. Užitočné sú aj ďalšie
+	 * metódy triedy {@link ÚdajeUdalostí ÚdajeUdalostí} uvedené v zozname
+	 * nižšie.</p>
+	 * 
+	 * <p>Táto reakcia je volaná vždy pred reakciou {@link #stlačenieKlávesu()
+	 * stlačenieKlávesu}. Programátor v nej môže overiť, kde sa práve nachádza
+	 * reťaz komponentov fokusu a či ju chce dočasne prerušiť, alebo nie.
+	 * Podľa toho je povinný určiť návratovú hodnotu tejto reakcie:</p>
+	 * 
+	 * <ul>
+	 * 	<li>{@code valtrue} – reťaz fokusu má pokračovať bez prerušenia
+	 * 	(programátor nepotreboval vykonať žiadnu akciu a aplikácia nemá v tejto
+	 * 	situácii nijako upravovať svoje predvolené správanie);</li>
+	 * 	<li>{@code valfalse} – programátor prerušil reťaz fokusu – programátor
+	 * 	určil, či a kam sa má fokus presunúť, predvolený mechanizmus zmeny
+	 * 	fokusu bude potlačený.</li>
+	 * </ul>
+	 * 
+	 * @param vpred ak je hodnotota tohto parametra rovná {@code valtrue}, tak
+	 *     ide o udalosť zmeny fokusu vpred, v opačnom prípade je hodnota
+	 *     parametra rovná {@code valfalse}
+	 * @return návratová hodnota určuje, či má aplikácia ďalej spracovať túto
+	 *     udalosť predvoleným mechanizmom zmeny fokusu, alebo nie
+	 * 
+	 * @see ÚdajeUdalostí#klávesnica()
+	 * @see ÚdajeUdalostí#kláves()
+	 * @see ÚdajeUdalostí#kláves(int)
+	 * @see ÚdajeUdalostí#znak()
+	 * @see ÚdajeUdalostí#znak(char)
+	 * @see GRobot#zmenaFokusu(boolean)
+	 */
+	public boolean zmenaFokusu(boolean vpred) { return true; }
 
 	/**
 	 * <p>Spustená pri stlačení klávesu. Použite metódu

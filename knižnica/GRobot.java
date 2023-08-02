@@ -3696,7 +3696,9 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				try
 				{
-					if (!getClass().getMethod("stlačenieKlávesu").
+					if (!getClass().getMethod("zmenaFokusu", boolean.class).
+						getDeclaringClass().equals(GRobot.class) ||
+						!getClass().getMethod("stlačenieKlávesu").
 						getDeclaringClass().equals(GRobot.class) ||
 						!getClass().getMethod("stlacenieKlavesu").
 						getDeclaringClass().equals(GRobot.class) ||
@@ -3927,6 +3929,9 @@ Toto bolo presunuté na úvodnú stránku:
 
 				try
 				{
+					System.out.println("zmenaFokusu: " +
+						getClass().getMethod("zmenaFokusu",
+						boolean.class).getDeclaringClass());
 					System.out.println("stlačenieKlávesu: " +
 						getClass().getMethod("stlačenieKlávesu").
 						getDeclaringClass());
@@ -26005,6 +26010,26 @@ Toto bolo presunuté na úvodnú stránku:
 
 				/** <p><a class="alias"></a> Alias pre {@link #rolovanieKolieskomMyši() rolovanieKolieskomMyši}.</p> */
 				public void rolovanieKolieskomMysi() {}
+
+				/**
+				 * <p>Táto metóda je predvolene prázdna a je určená na
+				 * prekrytie v niektorej z tried odvodených od robota.</p>
+				 * 
+				 * <p>Opis fungovania tejto metódy je totožný s opisom
+				 * fungovania metódy {@link ObsluhaUdalostí
+				 * ObsluhaUdalostí}{@code .}{@link 
+				 * ObsluhaUdalostí#zmenaFokusu(boolean)
+				 * zmenaFokusu}{@code (vpred)}.</p>
+				 * 
+				 * @param vpred ak je hodnotota tohto parametra rovná
+				 *     {@code valtrue}, tak ide o udalosť zmeny fokusu vpred,
+				 *     v opačnom prípade je hodnota parametra rovná
+				 *     {@code valfalse}
+				 * @return návratová hodnota určuje, či má aplikácia ďalej
+				 *     spracovať túto udalosť predvoleným mechanizmom zmeny
+				 *     fokusu, alebo nie
+				 */
+				public boolean zmenaFokusu(boolean vpred) { return true; }
 
 				/**
 				 * <p>Táto metóda je predvolene prázdna a je určená na

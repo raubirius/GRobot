@@ -12,12 +12,15 @@ package knižnica.podpora;
 // licensing. — This source code is released under the same terms as the whole
 // package knižnica.)
 
+import java.awt.AWTKeyStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
+import java.util.Set;
 
 // import javax.swing.Action;
 // import javax.swing.JPanel;
@@ -46,6 +49,8 @@ import javax.swing.text.DocumentFilter.FilterBypass;
 // import javax.swing.text.MutableAttributeSet;
 // import javax.swing.text.SimpleAttributeSet;
 // import javax.swing.text.StyleConstants;
+
+import knižnica.Svet;
 
 /**
  * <p>Trieda slúžiaca na vytvorenie textového bloku na úpravu väčšieho objemu
@@ -134,6 +139,10 @@ public class ScrollTextPane extends JScrollPane
 			{
 				public void keyPressed(KeyEvent e)
 				{
+					if (forbidTabulator)
+						spracujFokus(e);
+
+					/*
 					// TODO: Bolo by treba otestovať na macOS, lebo v tomto
 					// sú isté nekonzistencie v implementáciách…
 					if (forbidTabulator && e.getKeyCode() == KeyEvent.VK_TAB &&
@@ -166,6 +175,7 @@ public class ScrollTextPane extends JScrollPane
 							});
 						}
 					}
+					*/
 					/* else if (forbidEnter && e.getKeyCode() ==
 						KeyEvent.VK_ENTER && !e.isAltDown() &&
 						!e.isControlDown() && !e.isMetaDown() &&
@@ -175,6 +185,65 @@ public class ScrollTextPane extends JScrollPane
 				public void keyReleased(KeyEvent e) {}
 				public void keyTyped(KeyEvent e) {}
 			});
+	}
+
+
+	// Toto je obdoba originálnej metódy sveta, pretože metóda sveta je
+	// súkromná pre balíček (čiže nie je viditeľná mimo balíčka) a táto metóda
+	// nepotrebuje volať zákaznícke obsluhy udalostí. Avšak všetky relevantné
+	// zmeny v oboch metódach by mali byť reflektované v rámci obidvoch metód.
+	// 
+	// Overí, či bola stlačená kombinácia zodpovedajúca zmene fokusu
+	// (focus traversal keys), ak áno, spracuje to ako udalosť a ak
+	// nebola táto udalosť „zjedená,“ tak vráti false, aby ju mohli
+	// spracovať ďalšie súčasti.
+	private static boolean spracujFokus(KeyEvent e)
+	{
+		Component komponent = e.getComponent();
+		if (null == komponent) return true;
+
+		// Vytvorenie AWTKeyStroke z KeyEventu:
+		AWTKeyStroke aks = AWTKeyStroke.getAWTKeyStrokeForEvent(e);
+
+		// Prevzatie klávesových skratiek zmeny fokusu pre aktuálny
+		// komponent:
+		Set<AWTKeyStroke> skratkyVpred = komponent.getFocusTraversalKeys(
+			KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS);
+		Set<AWTKeyStroke> skratkyVzad = komponent.getFocusTraversalKeys(
+			KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS);
+
+		final KeyboardFocusManager kfManager = KeyboardFocusManager.
+			getCurrentKeyboardFocusManager();
+
+		// Overenie voľby klávesových skratiek zmeny fokusu:
+		if (skratkyVpred.contains(aks))
+		{
+			e.consume();
+
+			kfManager.focusNextComponent();
+			SwingUtilities.invokeLater(() ->
+			{
+				if (kfManager.getFocusOwner() instanceof JScrollBar)
+					kfManager.focusNextComponent();
+			});
+
+			return false;
+		}
+		else if (skratkyVzad.contains(aks))
+		{
+			e.consume();
+
+			kfManager.focusPreviousComponent();
+			SwingUtilities.invokeLater(() ->
+			{
+				if (kfManager.getFocusOwner() instanceof JScrollBar)
+					kfManager.focusPreviousComponent();
+			});
+
+			return false;
+		}
+
+		return true;
 	}
 
 

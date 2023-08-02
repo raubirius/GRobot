@@ -130,7 +130,7 @@ public class Log
 		formatTraceElement = (ste) ->
 		{
 			StringBuffer sb = new StringBuffer();
-	
+
 			sb.append(ste.getClassName());
 			sb.append('.');
 			sb.append(ste.getMethodName());
@@ -140,7 +140,7 @@ public class Log
 			sb.append(':');
 			sb.append(ste.getLineNumber());
 			sb.append(") ");
-	
+
 			return sb.toString();
 		};
 

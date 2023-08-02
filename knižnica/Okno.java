@@ -467,15 +467,16 @@ public class Okno
 		hlavnýPanel.setLayout(overlay);
 		hlavnýPanel.add(komponentIkony);
 
-		// Do hlavného rámca pridáme hlavný panel:
+		// Do hlavného rámca pridáme hlavný panel (tohto okna):
 		okno.add(hlavnýPanel, BorderLayout.CENTER);
+
+		hlavnýPanel.setFocusTraversalKeysEnabled(false);
 
 		// Nastavenie poslucháčov myši a klávesnice:
 		hlavnýPanel.addMouseListener(udalostiOkna);
 		hlavnýPanel.addMouseMotionListener(udalostiOkna);
 		hlavnýPanel.addMouseWheelListener(udalostiOkna);
 
-		// Už to však nie je pravda:
 		hlavnýPanel.addKeyListener(udalostiOkna);
 		hlavnýPanel.setFocusable(true);
 		hlavnýPanel.doLayout();
@@ -1093,23 +1094,27 @@ public class Okno
 				ÚdajeUdalostí.oknoUdalosti = Okno.this;
 				ÚdajeUdalostí.poslednáUdalosťKlávesnice = e;
 
-				if (null != ObsluhaUdalostí.počúvadlo)
+				// Focus traversal: (S+)VK_TAB…
+				if (Svet.spracujFokus(e, true))
+				{
+					if (null != ObsluhaUdalostí.počúvadlo)
+						synchronized (ÚdajeUdalostí.zámokUdalostí)
+						{
+							ObsluhaUdalostí.počúvadlo.stlačenieKlávesu();
+							ObsluhaUdalostí.počúvadlo.stlacenieKlavesu();
+						}
+
 					synchronized (ÚdajeUdalostí.zámokUdalostí)
 					{
-						ObsluhaUdalostí.počúvadlo.stlačenieKlávesu();
-						ObsluhaUdalostí.počúvadlo.stlacenieKlavesu();
-					}
-
-				synchronized (ÚdajeUdalostí.zámokUdalostí)
-				{
-					int početPočúvajúcich =
-						GRobot.počúvajúciKlávesnicu.size();
-					for (int i = 0; i < početPočúvajúcich; ++i)
-					{
-						GRobot počúvajúci =
-							GRobot.počúvajúciKlávesnicu.get(i);
-						počúvajúci.stlačenieKlávesu();
-						počúvajúci.stlacenieKlavesu();
+						int početPočúvajúcich =
+							GRobot.počúvajúciKlávesnicu.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
+						{
+							GRobot počúvajúci =
+								GRobot.počúvajúciKlávesnicu.get(i);
+							počúvajúci.stlačenieKlávesu();
+							počúvajúci.stlacenieKlavesu();
+						}
 					}
 				}
 			}

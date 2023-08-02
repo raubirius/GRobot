@@ -34,6 +34,7 @@
 package knižnica;
 
 import java.awt.AWTException;
+import java.awt.AWTKeyStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -120,6 +121,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
+import java.util.Set;
 import java.util.TooManyListenersException;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -140,6 +142,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
@@ -1577,21 +1580,27 @@ public final class Svet extends JFrame
 				panelVstupnéhoRiadka.add(vstupnýRiadok);
 				panelVstupnéhoRiadka.setVisible(false);
 
+				// vstupnýRiadok.setFocusTraversalKeysEnabled(false);
+
 				// Poslucháč klávesnice vstupného riadka počúvajúci stlačenie
-				// klávesov ENTER a ESCAPE…
+				// klávesov ENTER a ESCAPE a po novom aj riadenie zmeny fokusu…
 				vstupnýRiadok.addKeyListener(new KeyListener()
 					{
 						public void keyPressed(KeyEvent e)
 						{
-							// Umiestnenie týchto príkazov do reakcie
-							// keyTyped nefungovalo v macOS (predtým OS X
-							// a Mac OS)
-							if (e.getKeyChar() == KeyEvent.VK_ENTER)
-								potvrďVstup();
-							else if (e.getKeyChar() == KeyEvent.VK_ESCAPE)
-								zrušVstup();
-							else if (aktívnaHistóriaVstupnéhoRiadka)
-								pohybPoHistórii(e);
+							// Focus traversal: (S+)VK_TAB…
+							// if (spracujFokus(e, false))
+							// {
+								// Umiestnenie týchto príkazov do reakcie
+								// keyTyped nefungovalo v macOS (predtým OS X
+								// a Mac OS)
+								if (e.getKeyChar() == KeyEvent.VK_ENTER)
+									potvrďVstup();
+								else if (e.getKeyChar() == KeyEvent.VK_ESCAPE)
+									zrušVstup();
+								else if (aktívnaHistóriaVstupnéhoRiadka)
+									pohybPoHistórii(e);
+							// }
 						}
 
 						public void keyReleased(KeyEvent e) {}
@@ -1611,6 +1620,8 @@ public final class Svet extends JFrame
 				// Hlavný panel bol kedysi JLabel, ktorý nedokáže prijímať
 				// udalosti klávesnice:
 				// svet.addKeyListener(udalostiOkna);
+
+				hlavnýPanel.setFocusTraversalKeysEnabled(false);
 
 				// Už to však nie je pravda:
 				hlavnýPanel.addKeyListener(udalostiOkna);
@@ -2709,23 +2720,27 @@ public final class Svet extends JFrame
 					ÚdajeUdalostí.poslednáUdalosťKlávesnice = e;
 					aktuálnyIntervalKofeínu = intervalKofeínu;
 
-					if (null != ObsluhaUdalostí.počúvadlo)
+					// Focus traversal: (S+)VK_TAB…
+					if (spracujFokus(e, true))
+					{
+						if (null != ObsluhaUdalostí.počúvadlo)
+							synchronized (ÚdajeUdalostí.zámokUdalostí)
+							{
+								ObsluhaUdalostí.počúvadlo.stlačenieKlávesu();
+								ObsluhaUdalostí.počúvadlo.stlacenieKlavesu();
+							}
+
 						synchronized (ÚdajeUdalostí.zámokUdalostí)
 						{
-							ObsluhaUdalostí.počúvadlo.stlačenieKlávesu();
-							ObsluhaUdalostí.počúvadlo.stlacenieKlavesu();
-						}
-
-					synchronized (ÚdajeUdalostí.zámokUdalostí)
-					{
-						int početPočúvajúcich =
-							GRobot.počúvajúciKlávesnicu.size();
-						for (int i = 0; i < početPočúvajúcich; ++i)
-						{
-							GRobot počúvajúci =
-								GRobot.počúvajúciKlávesnicu.get(i);
-							počúvajúci.stlačenieKlávesu();
-							počúvajúci.stlacenieKlavesu();
+							int početPočúvajúcich =
+								GRobot.počúvajúciKlávesnicu.size();
+							for (int i = 0; i < početPočúvajúcich; ++i)
+							{
+								GRobot počúvajúci =
+									GRobot.počúvajúciKlávesnicu.get(i);
+								počúvajúci.stlačenieKlávesu();
+								počúvajúci.stlacenieKlavesu();
+							}
 						}
 					}
 				}
@@ -3136,6 +3151,134 @@ public final class Svet extends JFrame
 					}
 				}
 			}
+		}
+
+
+		// Obdoba tejto metódy je aj v triede podpora.ScrollTextPane, pretože
+		// jednak táto metóda nie je viditeľná mimo jej balíčka a jednak
+		// ScrollTextPane nepotrebuje volať zákaznícke obsluhy udalostí.
+		// Všetky relevantné zmeny vykonané v tejto metóde by mali byť
+		// reflektované aj v triede ScrollTextPane.
+		// 
+		// Overí, či bola stlačená kombinácia zodpovedajúca zmene fokusu
+		// (focus traversal keys), ak áno, spracuje to ako udalosť a ak
+		// nebola táto udalosť „zjedená,“ tak vráti false, aby ju mohli
+		// spracovať ďalšie súčasti.
+		// 
+		// Parameter volajObsluhy indikuje, či má metóda volať zákaznícke
+		// obsluhy zmeny fokusu.
+		/*packagePrivate*/ static boolean spracujFokus(KeyEvent e,
+			boolean volajObsluhy)
+		{
+			Component komponent = e.getComponent();
+			if (null == komponent) return true;
+
+			// Vytvorenie AWTKeyStroke z KeyEventu:
+			AWTKeyStroke aks = AWTKeyStroke.getAWTKeyStrokeForEvent(e);
+
+			// Prevzatie klávesových skratiek zmeny fokusu pre aktuálny
+			// komponent:
+			Set<AWTKeyStroke> skratkyVpred = komponent.getFocusTraversalKeys(
+				KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS);
+			Set<AWTKeyStroke> skratkyVzad = komponent.getFocusTraversalKeys(
+				KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS);
+
+			final KeyboardFocusManager kfManager = KeyboardFocusManager.
+				getCurrentKeyboardFocusManager();
+
+			// Overenie voľby klávesových skratiek zmeny fokusu:
+			if (skratkyVpred.contains(aks))
+			{
+				// Udalosť patrí medzi skratky zmeny fokusu smerom vpred.
+
+				boolean vykonaťPredvolené = true;
+
+				if (volajObsluhy)
+				{
+					if (null != ObsluhaUdalostí.počúvadlo)
+					{
+						synchronized (ÚdajeUdalostí.zámokUdalostí)
+						{
+							if (!ObsluhaUdalostí.počúvadlo.zmenaFokusu(true))
+								vykonaťPredvolené = false;
+						}
+					}
+
+					synchronized (ÚdajeUdalostí.zámokUdalostí)
+					{
+						int početPočúvajúcich = GRobot.
+							počúvajúciKlávesnicu.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
+						{
+							GRobot počúvajúci = GRobot.
+								počúvajúciKlávesnicu.get(i);
+							if (!počúvajúci.zmenaFokusu(true))
+								vykonaťPredvolené = false;
+						}
+					}
+				}
+
+				e.consume();
+
+				if (vykonaťPredvolené)
+				{
+					kfManager.focusNextComponent();
+					SwingUtilities.invokeLater(() ->
+						{
+							if (kfManager.getFocusOwner() instanceof JScrollBar)
+								kfManager.focusNextComponent();
+						});
+				}
+
+				return false;
+			}
+			else if (skratkyVzad.contains(aks))
+			{
+				// Udalosť patrí medzi skratky zmeny fokusu smerom vzad.
+
+				boolean vykonaťPredvolené = true;
+
+				if (volajObsluhy)
+				{
+					if (null != ObsluhaUdalostí.počúvadlo)
+					{
+						synchronized (ÚdajeUdalostí.zámokUdalostí)
+						{
+							if (!ObsluhaUdalostí.počúvadlo.zmenaFokusu(false))
+								vykonaťPredvolené = false;
+						}
+					}
+
+					synchronized (ÚdajeUdalostí.zámokUdalostí)
+					{
+						int početPočúvajúcich = GRobot.
+							počúvajúciKlávesnicu.size();
+						for (int i = 0; i < početPočúvajúcich; ++i)
+						{
+							GRobot počúvajúci = GRobot.
+								počúvajúciKlávesnicu.get(i);
+							if (!počúvajúci.zmenaFokusu(false))
+								vykonaťPredvolené = false;
+						}
+					}
+				}
+
+				e.consume();
+
+				if (vykonaťPredvolené)
+				{
+					kfManager.focusPreviousComponent();
+					SwingUtilities.invokeLater(() ->
+						{
+							if (kfManager.getFocusOwner() instanceof JScrollBar)
+								kfManager.focusPreviousComponent();
+						});
+				}
+
+				return false;
+			}
+
+			return true;
 		}
 
 		// Inštancia spracúvajúca udalosti okna
