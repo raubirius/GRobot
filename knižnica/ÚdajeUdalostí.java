@@ -33,6 +33,9 @@
 
 package knižnica;
 
+import java.awt.Component;
+import java.awt.KeyboardFocusManager;
+
 import java.awt.dnd.DnDConstants;
 
 import java.awt.event.ActionEvent;
@@ -172,6 +175,17 @@ public class ÚdajeUdalostí
 	 * @see #oknoUdalosti()
 	 */
 	public static ComponentEvent okno() { return poslednáUdalosťOkna; }
+
+	/**
+	 * <p>Vráti aktuálneho vlastníka fokusu. Táto informácia je využiteľná
+	 * pri spracovaní reakcie {@link ObsluhaUdalostí#zmenaFokusu(boolean)
+	 * ObsluhaUdalostí.zmenaFokusu(vpred)}.</p>
+	 * 
+	 * @return komponent, ktorý je aktuálnym vlastníkom fokusu v kontexte
+	 *     zmeny fokusu klávesnicou
+	 */
+	public static Component komponentFokusu() { return KeyboardFocusManager.
+		getCurrentKeyboardFocusManager().getFocusOwner(); }
 
 	/**
 	 * <p>Vráti okno poslednej takej udalosti, ktorá sa viaže na okná. Môže

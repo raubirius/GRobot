@@ -470,7 +470,7 @@ public class Rad
 	 * <p>Ak je aktuálna hodnota radu najväčšia povolená, tak sa smer pri
 	 * najbližšom aktívnom čítaní hodnoty i tak zmení na zostupný</p>
 	 * 
-	 * <p>Táto metóda je opakom metódy {@link #zostupne(boolean)}.</p>
+	 * <p>Táto metóda je opakom metódy {@link #zostupne(boolean zostupne)}.</p>
 	 * 
 	 * @param vzostupne ak má byť aktuálny smer zmeny hodnôt radu
 	 *     vzostupný (stúpajúci), tak treba zadať hodnotu {@code valtrue},
@@ -502,7 +502,8 @@ public class Rad
 	 * jednotkového rozdielu medzi hranicami a zabezpečení hodnoty spodnej
 	 * hranice nižšej od vrchnej hranice.</p>
 	 * 
-	 * <p>Táto metóda je aliasom metódy {@link #spodnáHranica(int)},
+	 * <p>Táto metóda je aliasom metódy {@link #spodnáHranica(int
+	 * dolnáHranica)},
 	 * to znamená, že táto metóda vnútorne volá uvedenú metódu (preto
 	 * funguje rovnako ako ona).</p>
 	 * 
@@ -535,9 +536,9 @@ public class Rad
 	 * jednotkového rozdielu medzi hranicami a zabezpečení hodnoty spodnej
 	 * hranice nižšej od vrchnej hranice.</p>
 	 * 
-	 * <p>Táto metóda je aliasom k metóde {@link #vrchnáHranica(int)},
-	 * to znamená, že táto metóda vnútorne volá uvedenú metódu (preto
-	 * funguje rovnako ako ona).</p>
+	 * <p>Táto metóda je aliasom k metóde {@link #vrchnáHranica(int
+	 * vrchnáHranica)}, to znamená, že táto metóda vnútorne volá uvedenú
+	 * metódu (preto funguje rovnako ako ona).</p>
 	 * 
 	 * @param hornáHranica požadovaná vrchná hranica radu
 	 */
@@ -568,7 +569,8 @@ public class Rad
 	 * <p>Ak je aktuálna hodnota radu najnižšia povolená, tak sa smer pri
 	 * najbližšom aktívnom čítaní hodnoty i tak zmení na vzostupný.</p>
 	 * 
-	 * <p>Táto metóda je opakom metódy {@link #vzostupne(boolean)}.</p>
+	 * <p>Táto metóda je opakom metódy {@link #vzostupne(boolean
+	 * vzostupne)}.</p>
 	 * 
 	 * @param zostupne ak má byť aktuálny smer zmeny hodnôt radu
 	 *     zostupný (klesajúci), tak treba zadať hodnotu {@code valtrue},

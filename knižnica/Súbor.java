@@ -6958,7 +6958,7 @@ public class Súbor implements Closeable
 		 * <p>Zapíše vlastnosť podporovaného údajového typu. Ak zavoláme túto
 		 * metódu opakovane s rovnakým názvom vlastnosti, tak nastane
 		 * prepísanie hodnoty tej istej vlastnosti. (V prípade kolízií
-		 * odporúčame použiť {@link #mennýPriestorVlastností(String)
+		 * odporúčame použiť {@linkplain #mennýPriestorVlastností(String)
 		 * menný priestor}.)</p>
 		 * 
 		 * <p class="caution"><b>Dôležité upozornenie na prípadnú

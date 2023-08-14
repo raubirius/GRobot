@@ -39,7 +39,7 @@ import static java.lang.Math.*;
  * of rewriting, and the list of supported functions was extended.  There were
  * also  some minor improvements.  On 1-Jul-2015 creation  of a new version of
  * this  class has started.  Lots of code was optimized by changing  it to  be
- * more  Java-like  than c/C++-like.  For example, VariableScope’s Vector  was
+ * more  Java-like  than C/C++-like.  For example, VariableScope’s Vector  was
  * substituted  by TreeMap.  Enumerations were  extended by abstract  methods.
  * Some  useless  stuff  has  been  removed.  Etc.  On  the  other  hand,  the
  * possibility to delay the processing  of variable names after the expression
@@ -128,26 +128,26 @@ import static java.lang.Math.*;
  * <p>Output:</p>
  * 
 <pre>
-	****************
+	<code>****************</code>
 	Parse: (1 + 2) (12 / 3)
 	Error: parse error – invalid parentheses at 16
 
-	****************
+	<code>****************</code>
 	Parse: (1 + 2) * (12 / 3)
 	OK!
-	*([+](1.0, 2.0), [/](12.0, 3.0)) : 12.0
+	<code>*</code>([+](1.0, 2.0), [/](12.0, 3.0)) : 12.0
 
-	****************
+	<code>****************</code>
 	Parse: 1 + 2 * (12 / 3)
 	OK!
 	+(1.0, *(2.0, [/](12.0, 3.0))) : 9.0
 
-	****************
+	<code>****************</code>
 	Parse: (1 + 2) * 12 / 3
 	OK!
 	/(*([+](1.0, 2.0), 12.0), 3.0) : 12.0
 
-	****************
+	<code>****************</code>
 	Parse: 1 + 2 * 12 / 3
 	OK!
 	+(1.0, /(*(2.0, 12.0), 3.0)) : 9.0

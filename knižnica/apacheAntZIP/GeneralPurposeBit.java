@@ -151,8 +151,9 @@ public final class GeneralPurposeBit implements Cloneable {
 	 * 
 	 * @param buf the output buffer
 	 * @param offset
-	 *         The offset within the output buffer of the first byte to be written.
-	 *         must be non-negative and no larger than <code>buf.length-2</code>
+	 *        the offset within the output buffer of the first byte to be
+	 *        written; must be non-negative and no larger than
+	 *        <code>buf.length-2</code>
 	 */
 	public void encode(byte[] buf, int offset) {
 		ZipShort.putShort((dataDescriptorFlag ? DATA_DESCRIPTOR_FLAG : 0)

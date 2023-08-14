@@ -127,7 +127,7 @@ import javax.swing.JButton;
 public class Tlačidlo extends JButton implements Poloha, Rozmer
 {
 	// Parametre polohy a veľkosti tlačidla
-	/*packagePrivate*/ int x, y, šírka, výška;
+	/*packagePrivate*/ int x, y, šírka, výška, šírkaRodiča, výškaRodiča;
 
 	// Parametre prilepenia k jednotlivým okrajom (kombinácia bitov)
 	private byte prilepenie = 0;
@@ -191,8 +191,10 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	private void vytvor()
 	{
 		šírka = 108; výška = 32;
-		x = (Plátno.šírkaPlátna - šírka) / 2;
-		y = (Plátno.výškaPlátna - výška) / 2;
+		šírkaRodiča = Plátno.šírkaPlátna;
+		výškaRodiča = Plátno.výškaPlátna;
+		x = (šírkaRodiča - šírka) / 2;
+		y = (výškaRodiča - výška) / 2;
 		Svet.hlavnýPanel.add(this, 0);
 		Svet.hlavnýPanel.doLayout();
 		addActionListener(voľbaTlačidla);
@@ -206,8 +208,10 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	private void vytvor(int vlastnáŠírka, int vlastnáVýška)
 	{
 		šírka = vlastnáŠírka; výška = vlastnáVýška;
-		x = (Plátno.šírkaPlátna - šírka) / 2;
-		y = (Plátno.výškaPlátna - výška) / 2;
+		šírkaRodiča = Plátno.šírkaPlátna;
+		výškaRodiča = Plátno.výškaPlátna;
+		x = (šírkaRodiča - šírka) / 2;
+		y = (výškaRodiča - výška) / 2;
 		Svet.hlavnýPanel.add(this, 0);
 		Svet.hlavnýPanel.doLayout();
 		addActionListener(voľbaTlačidla);
@@ -392,7 +396,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	 * 
 	 * @see #polohaX(double)
 	 */
-	public double polohaX() { return x - ((Plátno.šírkaPlátna - šírka) / 2); }
+	public double polohaX() { return x - ((šírkaRodiča - šírka) / 2); }
 
 	/**
 	 * <p><a class="getter"></a> Zistí aktuálnu y-ovú súradnicu polohy
@@ -402,7 +406,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	 * 
 	 * @see #polohaY(double)
 	 */
-	public double polohaY() { return -y + ((Plátno.výškaPlátna - výška) / 2); }
+	public double polohaY() { return -y + ((výškaRodiča - výška) / 2); }
 
 	/**
 	 * <p><a class="setter"></a> Presunie tlačidlo na zadanú súradnicu
@@ -418,7 +422,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	 */
 	public void polohaX(double novéX)
 	{
-		x = ((Plátno.šírkaPlátna - šírka) / 2) + (int)novéX;
+		x = ((šírkaRodiča - šírka) / 2) + (int)novéX;
 		Svet.hlavnýPanel.doLayout();
 	}
 
@@ -437,7 +441,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	 */
 	public void polohaY(double novéY)
 	{
-		y = ((Plátno.výškaPlátna - výška) / 2) - (int)novéY;
+		y = ((výškaRodiča - výška) / 2) - (int)novéY;
 		Svet.hlavnýPanel.doLayout();
 	}
 
@@ -481,8 +485,8 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	 */
 	public void poloha(double x, double y)
 	{
-		this.x = ((Plátno.šírkaPlátna - šírka) / 2) + (int)x;
-		this.y = ((Plátno.výškaPlátna - výška) / 2) - (int)y;
+		this.x = ((šírkaRodiča - šírka) / 2) + (int)x;
+		this.y = ((výškaRodiča - výška) / 2) - (int)y;
 		Svet.hlavnýPanel.doLayout();
 	}
 
@@ -513,8 +517,8 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	 */
 	public Bod poloha()
 	{
-		double x = this.x - ((Plátno.šírkaPlátna - šírka) / 2.0);
-		double y = -this.y + ((Plátno.výškaPlátna - výška) / 2.0);
+		double x = this.x - ((šírkaRodiča - šírka) / 2.0);
+		double y = -this.y + ((výškaRodiča - výška) / 2.0);
 		return new Bod(x, y);
 	}
 
@@ -575,8 +579,8 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	 */
 	public boolean jeNa(double x, double y)
 	{
-		double ox = this.x - ((Plátno.šírkaPlátna - šírka) / 2.0);
-		double oy = -this.y + ((Plátno.výškaPlátna - výška) / 2.0);
+		double ox = this.x - ((šírkaRodiča - šírka) / 2.0);
+		double oy = -this.y + ((výškaRodiča - výška) / 2.0);
 		return ox == x && oy == y;
 	}
 
@@ -592,8 +596,8 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	 */
 	public boolean jeNa(Poloha poloha)
 	{
-		double ox = this.x - ((Plátno.šírkaPlátna - šírka) / 2.0);
-		double oy = -this.y + ((Plátno.výškaPlátna - výška) / 2.0);
+		double ox = this.x - ((šírkaRodiča - šírka) / 2.0);
+		double oy = -this.y + ((výškaRodiča - výška) / 2.0);
 		return poloha.polohaX() == ox && poloha.polohaY() == oy;
 	}
 
@@ -2208,6 +2212,19 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 		setOpaque(zálohaStavuOpaque);
 		setContentAreaFilled(zálohaStavuContentAreaFilled);
 		setBorderPainted(zálohaStavuBorderPainted);
+	}
+
+
+	// TODO
+	public Tlačidlo prenes(Okno okno, boolean tam)
+	{
+		return okno.prenes(this, tam);
+	}
+
+	// TODO
+	public boolean jeV(Okno okno)
+	{
+		return okno.jeTu(this);
 	}
 
 

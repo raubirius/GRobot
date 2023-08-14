@@ -75,8 +75,8 @@ public final class ZipShort implements Cloneable {
 	 * @param value the Java int to convert to bytes
 	 * @param buf the output buffer
 	 * @param offset
-	 *        The offset within the output buffer of the first byte to be
-	 *        written. must be non-negative and no larger than
+	 *        the offset within the output buffer of the first byte to be
+	 *        written; must be non-negative and no larger than
 	 *        <code>buf.length-2</code>
 	 */
 	public static void putShort(int value, byte[] buf, int offset) {

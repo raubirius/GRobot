@@ -28,7 +28,7 @@ package knižnica.apacheAntZIP;
  */
 public final class ZipLong implements Cloneable {
 
-	//private static final int BYTE_BIT_SIZE = 8;
+	// private static final int BYTE_BIT_SIZE = 8;
 
 	private static final int BYTE_1 = 1;
 	private static final int BYTE_1_MASK = 0xFF00;
@@ -123,8 +123,8 @@ public final class ZipLong implements Cloneable {
 	 * @param value the Java long to convert to bytes
 	 * @param buf the output buffer
 	 * @param offset
-	 *        The offset within the output buffer of the first byte to be
-	 *        written. must be non-negative and no larger than
+	 *        the offset within the output buffer of the first byte to be
+	 *        written; must be non-negative and no larger than
 	 *        <code>buf.length-4</code>
 	 */
 	public static void putLong(long value, byte[] buf, int offset) {
@@ -139,7 +139,8 @@ public final class ZipLong implements Cloneable {
 	}
 
 	/**
-	 * Helper method to get the value as a Java long from four bytes starting at given array offset
+	 * Helper method to get the value as a Java long from four bytes starting
+	 * at given array offset
 	 * @param bytes the array of bytes
 	 * @param offset the offset to start
 	 * @return the corresponding Java long value

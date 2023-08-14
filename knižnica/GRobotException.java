@@ -331,7 +331,7 @@ import static java.util.Calendar.*;
  * nesmie byť záporný!</td><td>Vzniká pri pokuse o zadanie záporného
  * polomeru kružnice, kruh, vpísanej kružnice alebo opísanej kružnice
  * (doplnené namiesto <em>«objektu»</em>), čo spresňuje aj
- * {@link #getParameter() voliteľný parameter} výnimky, ktorý môže
+ * {@linkplain #getParameter() voliteľný parameter} výnimky, ktorý môže
  * nadobúdať hodnoty <code>circle</code>, <code>filledCircle</code>,
  * <code>incircle</code> alebo <code>circumcircle</code>. Spresňujúcim
  * objektom je výnimka {@link IllegalArgumentException}
@@ -341,7 +341,7 @@ import static java.util.Calendar.*;
  * <em>«objektu»</em> nesmie byť záporná!</td><td>Vzniká pri pokuse
  * o zadanie záporného rozmeru poloosy elipsy, vyplnenej elipsy alebo
  * vpísanej elipsy (doplnené namiesto <em>«objektu»</em>), čo spresňuje
- * aj {@link #getParameter() voliteľný parameter} výnimky, ktorý môže
+ * aj {@linkplain #getParameter() voliteľný parameter} výnimky, ktorý môže
  * nadobúdať hodnoty <code>ellipse</code>, <code>filledEllipse</code>
  * alebo <code>inellipse</code>. Spresňujúcim objektom je výnimka
  * {@link IllegalArgumentException} (bez textu).</td></tr>

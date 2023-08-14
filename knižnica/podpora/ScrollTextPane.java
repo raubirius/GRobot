@@ -21,6 +21,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import java.util.Set;
+import java.util.function.Function;
 
 // import javax.swing.Action;
 // import javax.swing.JPanel;
@@ -117,6 +118,8 @@ public class ScrollTextPane extends JScrollPane
 
 	private final DocFilter docFilter = new DocFilter();
 
+	public static Function<KeyEvent, Boolean> spracovanieFokusu = null;
+
 	// Určuje predvolené hodnoty vlastností komponentu.
 	private void create()
 	{
@@ -139,8 +142,9 @@ public class ScrollTextPane extends JScrollPane
 			{
 				public void keyPressed(KeyEvent e)
 				{
-					if (forbidTabulator)
-						spracujFokus(e);
+					if (forbidTabulator && null != spracovanieFokusu)
+						// spracujFokus(e); // TODO: del
+						spracovanieFokusu.apply(e);
 
 					/*
 					// TODO: Bolo by treba otestovať na macOS, lebo v tomto
@@ -151,27 +155,27 @@ public class ScrollTextPane extends JScrollPane
 						e.consume();
 
 						final KeyboardFocusManager
-							kfManager = KeyboardFocusManager.
+							manažér = KeyboardFocusManager.
 							getCurrentKeyboardFocusManager();
 
 						if (e.isShiftDown())
 						{
-							kfManager.focusPreviousComponent();
+							manažér.focusPreviousComponent();
 							SwingUtilities.invokeLater(() ->
 							{
-								if (kfManager.getFocusOwner()
+								if (manažér.getFocusOwner()
 									instanceof JScrollBar)
-									kfManager.focusPreviousComponent();
+									manažér.focusPreviousComponent();
 							});
 						}
 						else
 						{
-							kfManager.focusNextComponent();
+							manažér.focusNextComponent();
 							SwingUtilities.invokeLater(() ->
 							{
-								if (kfManager.getFocusOwner()
+								if (manažér.getFocusOwner()
 									instanceof JScrollBar)
-									kfManager.focusNextComponent();
+									manažér.focusNextComponent();
 							});
 						}
 					}
@@ -197,7 +201,8 @@ public class ScrollTextPane extends JScrollPane
 	// (focus traversal keys), ak áno, spracuje to ako udalosť a ak
 	// nebola táto udalosť „zjedená,“ tak vráti false, aby ju mohli
 	// spracovať ďalšie súčasti.
-	private static boolean spracujFokus(KeyEvent e)
+	/*
+	private static boolean spracujFokus(KeyEvent e) // TODO: del
 	{
 		Component komponent = e.getComponent();
 		if (null == komponent) return true;
@@ -212,7 +217,7 @@ public class ScrollTextPane extends JScrollPane
 		Set<AWTKeyStroke> skratkyVzad = komponent.getFocusTraversalKeys(
 			KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS);
 
-		final KeyboardFocusManager kfManager = KeyboardFocusManager.
+		final KeyboardFocusManager manažér = KeyboardFocusManager.
 			getCurrentKeyboardFocusManager();
 
 		// Overenie voľby klávesových skratiek zmeny fokusu:
@@ -220,11 +225,11 @@ public class ScrollTextPane extends JScrollPane
 		{
 			e.consume();
 
-			kfManager.focusNextComponent();
+			manažér.focusNextComponent();
 			SwingUtilities.invokeLater(() ->
 			{
-				if (kfManager.getFocusOwner() instanceof JScrollBar)
-					kfManager.focusNextComponent();
+				if (manažér.getFocusOwner() instanceof JScrollBar)
+					manažér.focusNextComponent();
 			});
 
 			return false;
@@ -233,11 +238,11 @@ public class ScrollTextPane extends JScrollPane
 		{
 			e.consume();
 
-			kfManager.focusPreviousComponent();
+			manažér.focusPreviousComponent();
 			SwingUtilities.invokeLater(() ->
 			{
-				if (kfManager.getFocusOwner() instanceof JScrollBar)
-					kfManager.focusPreviousComponent();
+				if (manažér.getFocusOwner() instanceof JScrollBar)
+					manažér.focusPreviousComponent();
 			});
 
 			return false;
@@ -245,6 +250,7 @@ public class ScrollTextPane extends JScrollPane
 
 		return true;
 	}
+	*/
 
 
 	/**
@@ -279,7 +285,7 @@ public class ScrollTextPane extends JScrollPane
 	 * @see #ScrollTextPane()
 	 * @see #ScrollTextPane(String, boolean)
 	 * @see #setText(String)
-	 * @see #setHTML()
+	 * @see #getHTML()
 	 * @see #setHTML(String)
 	 */
 	public ScrollTextPane(String text)
@@ -359,7 +365,7 @@ public class ScrollTextPane extends JScrollPane
 	 * @see #getText(boolean)
 	 * @see #setText(String)
 	 * @see #setText(String, boolean)
-	 * @see #setHTML()
+	 * @see #getHTML()
 	 * @see #setHTML(String)
 	 * @see #getSelectedText()
 	 */
@@ -406,7 +412,7 @@ public class ScrollTextPane extends JScrollPane
 	 * @see #getText()
 	 * @see #setText(String)
 	 * @see #setText(String, boolean)
-	 * @see #setHTML()
+	 * @see #getHTML()
 	 * @see #setHTML(String)
 	 * @see #getSelectedText()
 	 */
@@ -434,7 +440,7 @@ public class ScrollTextPane extends JScrollPane
 	 * @see #getText()
 	 * @see #getText(boolean)
 	 * @see #setText(String, boolean)
-	 * @see #setHTML()
+	 * @see #getHTML()
 	 * @see #setHTML(String)
 	 * @see #replaceSelection(String)
 	 * @see #replaceSelection(String, boolean)
@@ -466,7 +472,7 @@ public class ScrollTextPane extends JScrollPane
 	 * @see #getText()
 	 * @see #getText(boolean)
 	 * @see #setText(String)
-	 * @see #setHTML()
+	 * @see #getHTML()
 	 * @see #setHTML(String)
 	 * @see #replaceSelection(String)
 	 * @see #replaceSelection(String, boolean)
@@ -491,7 +497,7 @@ public class ScrollTextPane extends JScrollPane
 	 * @return HTML text komponentu alebo {@code null}
 	 * 
 	 * @see #setHTML(String)
-	 * @see #setText()
+	 * @see #getText()
 	 * @see #setText(String)
 	 * @see #setText(String, boolean)
 	 * @see #getSelectedText()
@@ -521,7 +527,7 @@ public class ScrollTextPane extends JScrollPane
 	 * @see #ScrollTextPane(String)
 	 * @see #ScrollTextPane(String, boolean)
 	 * @see #getHTML()
-	 * @see #setText()
+	 * @see #getText()
 	 * @see #setText(String)
 	 * @see #setText(String, boolean)
 	 * @see #replaceSelection(String)
@@ -549,7 +555,7 @@ public class ScrollTextPane extends JScrollPane
 	 * @see #getText(boolean)
 	 * @see #setText(String)
 	 * @see #setText(String, boolean)
-	 * @see #setHTML()
+	 * @see #getHTML()
 	 * @see #setHTML(String)
 	 * @see #replaceSelection(String)
 	 * @see #replaceSelection(String, boolean)
@@ -585,7 +591,7 @@ public class ScrollTextPane extends JScrollPane
 	 * @see #getText(boolean)
 	 * @see #setText(String)
 	 * @see #setText(String, boolean)
-	 * @see #setHTML()
+	 * @see #getHTML()
 	 * @see #setHTML(String)
 	 */
 	public void replaceSelection(String content)
@@ -623,7 +629,7 @@ public class ScrollTextPane extends JScrollPane
 	 * @see #getText(boolean)
 	 * @see #setText(String)
 	 * @see #setText(String, boolean)
-	 * @see #setHTML()
+	 * @see #getHTML()
 	 * @see #setHTML(String)
 	 */
 	public void replaceSelection(String content, boolean keepSelection)

@@ -325,6 +325,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 		y = (Plátno.výškaPlátna - výška) / 2;
 		setPreferredSize(new Dimension(vlastnáŠírka, vlastnáVýška));
 
+		// setFocusTraversalKeysEnabled(false);
+
 		Svet.hlavnýPanel.add(rolovanie, 0);
 		Svet.hlavnýPanel.doLayout();
 
@@ -393,47 +395,51 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 			{
 				public void keyPressed(KeyEvent e)
 				{
+					// knižnica.log.Log.logOn = true;
+					// knižnica.log.Log.logIn(
+					// 	e.getComponent().getClass().getName());
+					// knižnica.log.Log.logOut(getFocusTraversalKeysEnabled());
+
 					// TODO: Bolo by treba otestovať na macOS, lebo v tomto
 					// sú isté nekonzistencie v implementáciách…
-					if (!zakážTabulátor || Svet.spracujFokus(e, false))
-					{
-					/*
-					// Bolo nahradené globálnou obslužnou metódou na zmenu
-					// fokusu.
-					// 
+
+					// V tomto komponente globálna obslužná metóda na zmenu
+					// fokusu nefunguje.
+					// Svet.spracujFokus(e/*, false // TODO: del */)
 					if (zakážTabulátor && e.getKeyCode() == KeyEvent.VK_TAB &&
 						!e.isAltDown() && !e.isMetaDown())
 					{
-						e.consume();
-
-						final KeyboardFocusManager
-							manažér = KeyboardFocusManager.
-							getCurrentKeyboardFocusManager();
-
-						if (e.isShiftDown())
+						if (!Svet.volajObsluhyFokusu(!e.isShiftDown()))
 						{
-							manažér.focusPreviousComponent();
-							SwingUtilities.invokeLater(() ->
+							e.consume();
+
+							final KeyboardFocusManager
+								manažér = KeyboardFocusManager.
+								getCurrentKeyboardFocusManager();
+
+							if (e.isShiftDown())
 							{
-								if (manažér.getFocusOwner()
-									instanceof JScrollBar)
-									manažér.focusPreviousComponent();
-							});
-						}
-						else
-						{
-							manažér.focusNextComponent();
-							SwingUtilities.invokeLater(() ->
+								manažér.focusPreviousComponent();
+								SwingUtilities.invokeLater(() ->
+								{
+									if (manažér.getFocusOwner()
+										instanceof JScrollBar)
+										manažér.focusPreviousComponent();
+								});
+							}
+							else
 							{
-								if (manažér.getFocusOwner()
-									instanceof JScrollBar)
-									manažér.focusNextComponent();
-							});
+								manažér.focusNextComponent();
+								SwingUtilities.invokeLater(() ->
+								{
+									if (manažér.getFocusOwner()
+										instanceof JScrollBar)
+										manažér.focusNextComponent();
+								});
+							}
 						}
 					}
-					else
-					*/
-					if (zakážEnter && e.getKeyCode() ==
+					else if (zakážEnter && e.getKeyCode() ==
 						KeyEvent.VK_ENTER && !e.isAltDown() &&
 						!e.isControlDown() && !e.isMetaDown() &&
 						!e.isShiftDown())
@@ -452,7 +458,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 						e.consume();
 						if (null != klávesováSkratka)
 							klávesováSkratka.actionPerformed(null);
-					}}
+					}
 				}
 
 				public void keyReleased(KeyEvent e) {}

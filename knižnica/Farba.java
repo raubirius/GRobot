@@ -157,7 +157,7 @@ import static knižnica.Farebnosť.*;
  * aktuálny grafický robot a {@linkplain Svet#nekresli() vypne sa
  * automatické prekresľovanie} (aby bolo vykonanie príkladu rýchlejšie).
  * Potom sa tisíc ráz opakuje sekvencia príkazov na kreslenie kruhu
- * ({@code kwdfor}{@code  }{@code (i = }… {@code num1000}…). {@link 
+ * ({@code kwdfor}{@code  }{@code (i = }… {@code num1000}…). {@linkplain 
  * GRobot#kruh(double) Kruh} sa má nakresliť na náhodnej pozícii, má byť
  * vyplnený náhodnou farbou (v rámci spomenutého zoznamu farieb) a má
  * mať náhodnú veľkosť (s polomerom medzi 25 až 50 bodov) – generovanie

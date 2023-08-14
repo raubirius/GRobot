@@ -6564,7 +6564,7 @@ public class SVGPodpora
 		}
 	}
 
-	/** <p><a class="alias"></a> Alias pre {@link #pridajÚsečku(GRobot, String...)}.</p> */
+	/** <p><a class="alias"></a> Alias pre {@link #pridajÚsečku(GRobot, String...) pridajÚsečku}.</p> */
 	public void pridajUsecku(GRobot tvorca, String... atribúty)
 	{ pridajÚsečku(tvorca, atribúty); }
 
@@ -6602,7 +6602,7 @@ public class SVGPodpora
 	 */
 	public Vector<String> definície() { return definície; }
 
-	/** <p><a class="alias"></a> Alias pre {@link #definície()}.</p> */
+	/** <p><a class="alias"></a> Alias pre {@link #definície() definície}.</p> */
 	public Vector<String> definicie() { return definície; }
 
 
@@ -6639,7 +6639,7 @@ public class SVGPodpora
 	 */
 	public Vector<String> štýl() { return štýl; }
 
-	/** <p><a class="alias"></a> Alias pre {@link #štýl()}.</p> */
+	/** <p><a class="alias"></a> Alias pre {@link #štýl() štýl}.</p> */
 	public Vector<String> styl() { return štýl; }
 
 

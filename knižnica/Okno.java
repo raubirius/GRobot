@@ -108,7 +108,7 @@ import static javax.swing.JFrame.NORMAL;
  * V súvislosti s režimom celej obrazovky treba podotknúť, že inštancia
  * komponentu okna sa mení. Prístup k aktuálnej inštancii sprostredkúva metóda
  * {@link #okno() okno}. Metódy ako {@link #farbaPlochy(Color) farbaPlochy}
- * umožňujú nastaviť farbu plochy okna rôznymi spôsobmi – inštanciou triedy
+ * umožňujú nastaviť farbu plochy okna rôznymi spôsobmi – inštanciou triedy
  * {@link Color Color} (alebo odvodených), implementáciou rozhrania {@link 
  * Farebnosť Farebnosť} alebo definovaním RGB hodnôt. Okno môže mať tiež
  * zmenený tvar kurzora myši pri pohybe nad ním. Dá sa to zmeniť metódou
@@ -152,6 +152,8 @@ public class Okno
 
 	// Aktuálna farba pozadia.
 	//*packagePrivate*/ Farba farbaPozadia;  // ??? TODO ???
+		// Okno nemá plátno a preto ani pozadie. Má plochu. Treba však overiť,
+		// ako sa bude správať obrázok, ktorý je priehľadný.
 
 	// Štandardné okno.
 	/*packagePrivate*/ JFrame okno = new JFrame();
@@ -160,7 +162,9 @@ public class Okno
 	/*packagePrivate*/ JFrame oknoCelejObrazovky = null;
 
 	// Príznak uloženia okna do konfigurácie.
-	// private boolean uložKonfiguráciu = false; // TODO – zvážiť, či treba, lebo teraz to je riešené tak, že pomenované okno sa ukladá automaticky, ak sa zmenili jeho parametre…
+	// private boolean uložKonfiguráciu = false; // TODO – zvážiť, či treba,
+		// lebo teraz to je riešené tak, že pomenované okno sa ukladá
+		// automaticky, ak sa zmenili jeho parametre…
 
 	// Obrázkový komponent okna zadávaný do konštruktora:
 	private Obrázok obrázok;
@@ -183,7 +187,8 @@ public class Okno
 
 	// Na umožnenie zavretria aj v režime celej obrazovky
 	// (inicializuje sa až keď treba…)
-	// private KeyEventDispatcher zavriOkno = null; // TODO – nefunguje, blokuje sa s hlavným oknom; zisti prečo
+	// private KeyEventDispatcher zavriOkno = null; // TODO – nefunguje,
+		// blokuje sa s hlavným oknom; zisti prečo
 
 
 	/**
@@ -425,32 +430,41 @@ public class Okno
 				x = (šírka - ikonaOkna.getIconWidth()) / 2;
 				y = (výška - ikonaOkna.getIconHeight()) / 2;
 
+				/*System.out.println("ikonaOkna.getIconWidth(): " + ikonaOkna.getIconWidth());
+				System.out.println("ikonaOkna.getIconHeight(): " + ikonaOkna.getIconHeight());*/
+
 				komponentIkony.setBounds(x, y,
 					komponentIkony.getPreferredSize().width,
 					komponentIkony.getPreferredSize().height);
 
-				Component komponenty[] = cieľ.getComponents();
-
+				/* * /
 				if (šírka > obrázok.šírka()) šírka = (int)obrázok.šírka();
 				if (výška > obrázok.výška()) výška = (int)obrázok.výška();
+				/* */
+				// x = šírka / 2; y = výška / 3;
 
-				for (Component komponent : komponenty)
+				synchronized (cieľ.getTreeLock())
 				{
-					if (komponent instanceof Tlačidlo)
-						((Tlačidlo)komponent).umiestni(
-							x, y, šírka, výška);
-					else if (komponent instanceof GRobot.UpravText)
-						((GRobot.UpravText)komponent).umiestni(
-							x, y, šírka, výška);
-					else if (komponent instanceof RolovaciaLišta)
-						((RolovaciaLišta)komponent).umiestni(
-							x, y, šírka, výška);
-					else if (komponent instanceof
-						PoznámkovýBlok.RolovaniePoznámkovéhoBloku)
+					Component komponenty[] = cieľ.getComponents();
+
+					for (Component komponent : komponenty)
 					{
-						((PoznámkovýBlok.RolovaniePoznámkovéhoBloku)
-							komponent).poznámkovýBlok.umiestni(
+						if (komponent instanceof Tlačidlo)
+							((Tlačidlo)komponent).umiestni(
 								x, y, šírka, výška);
+						else if (komponent instanceof GRobot.UpravText)
+							((GRobot.UpravText)komponent).umiestni(
+								x, y, šírka, výška);
+						else if (komponent instanceof RolovaciaLišta)
+							((RolovaciaLišta)komponent).umiestni(
+								x, y, šírka, výška);
+						else if (komponent instanceof
+							PoznámkovýBlok.RolovaniePoznámkovéhoBloku)
+						{
+							((PoznámkovýBlok.RolovaniePoznámkovéhoBloku)
+								komponent).poznámkovýBlok.umiestni(
+									x, y, šírka, výška);
+						}
 					}
 				}
 
@@ -561,7 +575,7 @@ public class Okno
 					mennýPriestorVlastností = menoOkna;
 
 				int stav = okno.getExtendedState();
-				/* TODO – zvážiť uloženie režimu celej obrazovky
+				/* TODO – zvážiť uloženie režimu celej obrazovky
 				int stav = (null == oknoCelejObrazovky) ?
 					okno.getExtendedState() : oknoCelejObrazovky.
 					getExtendedState();
@@ -1095,7 +1109,7 @@ public class Okno
 				ÚdajeUdalostí.poslednáUdalosťKlávesnice = e;
 
 				// Focus traversal: (S+)VK_TAB…
-				if (Svet.spracujFokus(e, true))
+				if (Svet.spracujFokus(e/*, true // TODO: del */))
 				{
 					if (null != ObsluhaUdalostí.počúvadlo)
 						synchronized (ÚdajeUdalostí.zámokUdalostí)
@@ -1191,7 +1205,7 @@ public class Okno
 			// to, aby sa aspoň jedno mohlo zobraziť (napr. cez system tray).
 			// 
 			// Druhý moment (o deň neskôr) – to nemá byť zavieranie aplikácie,
-			// ale reálne iba okna… Ale aj tak: je to fix „nečakané skrytie
+			// ale reálne iba okna… Ale aj tak: Je tu fix „nečakané skrytie
 			// celej obrazovky,“ ktorý už neviem na čo presne bol…
 			// 
 			// if (null != oknoCelejObrazovky // &&
@@ -1959,7 +1973,7 @@ public class Okno
 
 			Rectangle2D hraniceOkna = (null == oknoCelejObrazovky) ?
 				okno.getBounds() : oknoCelejObrazovky.getBounds();
-			// TODO – otestovať okno celej obrazovky.
+			// TODO – otestovať okno celej obrazovky.
 
 			double polohaX =
 				(hraniceOkna.getX() + hraniceOkna.getWidth()) >
@@ -1983,7 +1997,7 @@ public class Okno
 				okno.setLocation((int)polohaX, (int)polohaY);
 			else
 				oknoCelejObrazovky.setLocation((int)polohaX, (int)polohaY);
-			// TODO – otestovať okno celej obrazovky.
+			// TODO – otestovať okno celej obrazovky.
 		}
 	}
 
@@ -2063,7 +2077,7 @@ public class Okno
 
 		Rectangle2D hraniceOkna = (null == oknoCelejObrazovky) ?
 			okno.getBounds() : oknoCelejObrazovky.getBounds();
-		// TODO – otestovať okno celej obrazovky.
+		// TODO – otestovať okno celej obrazovky.
 
 		double stredX = hraniceOkna.getX() + (hraniceOkna.getWidth()  / 2);
 		double stredY = hraniceOkna.getY() + (hraniceOkna.getHeight() / 2);
@@ -2232,6 +2246,64 @@ public class Okno
 			okno.setExtendedState(NORMAL);
 		else
 			oknoCelejObrazovky.setExtendedState(NORMAL);
+	}
+
+
+	// Presúvanie komponentov
+
+	// TODO
+	public Tlačidlo prenes(Tlačidlo tlačidlo, boolean sem)
+	{
+		if (sem && Svet.hlavnýPanel.isAncestorOf(tlačidlo))
+		{
+			tlačidlo.removeKeyListener(Svet.udalostiOkna);
+			Svet.hlavnýPanel.remove(tlačidlo);
+			Svet.hlavnýPanel.doLayout();
+
+			double x = tlačidlo.polohaX();
+			double y = tlačidlo.polohaY();
+			tlačidlo.šírkaRodiča = ikonaOkna.getIconWidth();
+			tlačidlo.výškaRodiča = ikonaOkna.getIconHeight();
+			tlačidlo.poloha(x, y);
+
+			hlavnýPanel.add(tlačidlo, 0);
+			hlavnýPanel.doLayout();
+			tlačidlo.addKeyListener(udalostiOkna);
+
+			Svet.prekresli();
+			prekresli();
+
+			return tlačidlo;
+		}
+		else if (!sem && hlavnýPanel.isAncestorOf(tlačidlo))
+		{
+			tlačidlo.removeKeyListener(udalostiOkna);
+			hlavnýPanel.remove(tlačidlo);
+			hlavnýPanel.doLayout();
+
+			double x = tlačidlo.polohaX();
+			double y = tlačidlo.polohaY();
+			tlačidlo.šírkaRodiča = Plátno.šírkaPlátna;
+			tlačidlo.výškaRodiča = Plátno.výškaPlátna;
+			tlačidlo.poloha(x, y);
+
+			Svet.hlavnýPanel.add(tlačidlo, 0);
+			Svet.hlavnýPanel.doLayout();
+			tlačidlo.addKeyListener(Svet.udalostiOkna);
+
+			Svet.prekresli();
+			prekresli();
+
+			return tlačidlo;
+		}
+
+		return null;
+	}
+
+	// TODO
+	public boolean jeTu(Tlačidlo tlačidlo)
+	{
+		return hlavnýPanel.isAncestorOf(tlačidlo);
 	}
 
 
@@ -2731,7 +2803,7 @@ public class Okno
 	{ return celáObrazovka(zariadenie, celáObrazovka); }
 
 	/**
-	 * <p>Ak je okno v {@link #celáObrazovka() režime celej obrazovky},
+	 * <p>Ak je okno v {@linkplain #celáObrazovka() režime celej obrazovky},
 	 * tak táto metóda vráti inštanciu {@link JFrame okna} celej
 	 * obrazovky, inak metóda vráti hodnotu {@code valnull}.</p>
 	 * 

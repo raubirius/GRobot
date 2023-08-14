@@ -534,6 +534,9 @@ public class Plátno implements Priehľadnosť
 			// // (predvolene vypnuté, aby boli nižšie pamäťové nároky na konzolu)
 			// private boolean sledujPolohuTextu = false; // «zamietnuté»
 
+			// Príznak zobrazenia textov:
+			private boolean textyZobrazené = true;
+
 			// Atribút zalamovania textov
 			private boolean zalamujTexty = false;
 
@@ -1211,7 +1214,7 @@ public class Plátno implements Priehľadnosť
 
 			private void prekresli(Graphics2D grafika)
 			{
-				synchronized (zámokKonzoly) {
+				if (textyZobrazené) synchronized (zámokKonzoly) {
 
 				grafikaKonzoly = grafika;
 				inicializuj();
@@ -2127,6 +2130,21 @@ public class Plátno implements Priehľadnosť
 				zamrazOdsadenie = false;
 				zálohaOdsadenia = 0;
 				resetOdsadenia = false;
+			}
+
+			public void skryTexty()
+			{
+				textyZobrazené = false;
+			}
+
+			public void zobrazTexty()
+			{
+				textyZobrazené = true;
+			}
+
+			public boolean textyZobrazené()
+			{
+				return textyZobrazené;
 			}
 
 
@@ -4095,8 +4113,8 @@ public class Plátno implements Priehľadnosť
 		{ farbaTextu(objekt.farba()); }
 
 		/* *
-		 * <p>Toto je „klon“ metódy {@link #farbaTextu(Color)}. Farba je
-		 * nastavená len v prípade, že v premennej typu {@link Object}
+		 * <p>Toto je „klon“ metódy {@link #farbaTextu(Color nováFarba)}.
+		 * Farba je nastavená len v prípade, že v premennej typu {@link Object}
 		 * (zadanej ako parameter) je uložená inštancia triedy {@link Farba
 		 * Farba} alebo {@link Color Color}.</p>
 		 * /
@@ -7804,8 +7822,8 @@ public class Plátno implements Priehľadnosť
 		 * 
 		 * <p class="remark"><b>Poznámka:</b>
 		 * Po použití tejto metódy nie je (až do najbližšieho
-		 * {@link #vymažTexty() vymazania}) možné vykonávať
-		 * {@link #rolujTexty(int, int) rolovanie textov konzoly}.</p>
+		 * {@linkplain #vymažTexty() vymazania}) možné vykonávať
+		 * {@linkplain #rolujTexty(int, int) rolovanie textov konzoly}.</p>
 		 * 
 		 * @param x x-ová súradnica polohy výpisu
 		 * @param y y-ová súradnica polohy výpisu
@@ -7830,8 +7848,8 @@ public class Plátno implements Priehľadnosť
 		 * 
 		 * <p class="remark"><b>Poznámka:</b>
 		 * Po použití tejto metódy nie je (až do najbližšieho
-		 * {@link #vymažTexty() vymazania}) možné vykonávať
-		 * {@link #rolujTexty(int, int) rolovanie textov konzoly}.</p>
+		 * {@linkplain #vymažTexty() vymazania}) možné vykonávať
+		 * {@linkplain #rolujTexty(int, int) rolovanie textov konzoly}.</p>
 		 * 
 		 * @param x x-ová súradnica polohy výpisu
 		 * @param y y-ová súradnica polohy výpisu
@@ -7856,8 +7874,8 @@ public class Plátno implements Priehľadnosť
 		 * 
 		 * <p class="remark"><b>Poznámka:</b>
 		 * Po použití tejto metódy nie je (až do najbližšieho
-		 * {@link #vymažTexty() vymazania}) možné vykonávať
-		 * {@link #rolujTexty(int, int) rolovanie textov konzoly}.</p>
+		 * {@linkplain #vymažTexty() vymazania}) možné vykonávať
+		 * {@linkplain #rolujTexty(int, int) rolovanie textov konzoly}.</p>
 		 * 
 		 * @param x x-ová súradnica polohy výpisu
 		 * @param y y-ová súradnica polohy výpisu
@@ -7882,8 +7900,8 @@ public class Plátno implements Priehľadnosť
 		 * 
 		 * <p class="remark"><b>Poznámka:</b>
 		 * Po použití tejto metódy nie je (až do najbližšieho
-		 * {@link #vymažTexty() vymazania}) možné vykonávať
-		 * {@link #rolujTexty(int, int) rolovanie textov konzoly}.</p>
+		 * {@linkplain #vymažTexty() vymazania}) možné vykonávať
+		 * {@linkplain #rolujTexty(int, int) rolovanie textov konzoly}.</p>
 		 * 
 		 * @param x x-ová súradnica polohy výpisu
 		 * @param y y-ová súradnica polohy výpisu
@@ -8667,8 +8685,8 @@ public class Plátno implements Priehľadnosť
 		 * alebo {@code .jpg} (resp. {@code .jpeg}). Ak súbor jestvuje, tak
 		 * vznikne výnimka oznamujúca, že súbor so zadaným menom už jestvuje.
 		 * Ak chcete súbor prepísať, použite metódu {@link 
-		 * #uložObrázok(String, boolean)} s druhým parametrom rovným {@code 
-		 * valtrue}.</p>
+		 * #uložObrázok(String súbor, boolean prepísať)} s druhým parametrom
+		 * rovným {@code valtrue}.</p>
 		 * 
 		 * @param súbor názov súboru s požadovanou príponou
 		 * 
@@ -8691,7 +8709,7 @@ public class Plátno implements Priehľadnosť
 		 * @param súbor názov súboru s požadovanou príponou
 		 * @param prepísať ak je {@code valtrue}, prípadný jestvujúci
 		 *     súbor bude prepísaný, inak sa správa rovnako ako metóda
-		 *     {@link #uložObrázok(String)}
+		 *     {@link #uložObrázok(String súbor)}
 		 * 
 		 * @throws GRobotException ak súbor jestvuje a parameter prepísať
 		 *     je {@code valfalse} alebo ak bol zadaný názov súboru
@@ -8833,13 +8851,16 @@ public class Plátno implements Priehľadnosť
 		 * <p>Metóda vymaže všetky texty vnútornej konzoly podlahy alebo
 		 * stropu.</p>
 		 * 
-		 * <p class="remark"><b>Poznámka:</b> Pripomíname, že texty konzoly môžu
-		 * byť vypisované napríklad prostredníctvom metód {@link #vypíš(Object[])
-		 * vypíš}, {@link #vypíšRiadok(Object[]) vypíšRiadok}. Pre úplnosť
-		 * dodávame, že texty konzoly majú iné vlastnosti v porovnaní
-		 * s pečiatkovými textami, ktoré môžu grafické roboty „nakresliť“
-		 * napríklad metódou {@link GRobot#text(String) text}. Pečiatkové texty sú
-		 * grafické a v tomto prípade zostanú zachované.</p>
+		 * <p class="remark"><b>Poznámka:</b> Pripomíname, že texty konzoly
+		 * môžu byť vypisované napríklad prostredníctvom metód {@link 
+		 * #vypíš(Object[]) vypíš}, {@link #vypíšRiadok(Object[]) vypíšRiadok}.
+		 * 
+		 * Pre úplnosť dodávame, že texty konzoly majú iné vlastnosti
+		 * v porovnaní s pečiatkovými textami, ktoré môžu grafické roboty
+		 * „nakresliť“ napríklad metódou {@link GRobot#text(String) text}.
+		 * 
+		 * Pečiatkové texty sú grafické a nie sú touto metódou nijako
+		 * ovplyvnené.</p>
 		 * 
 		 * <p>Táto metóda <b>nevyvolá</b> vznik udalosti vymazania plátna,
 		 * takže reakcia {@link ObsluhaUdalostí#vymazanie() vymazanie} nie
@@ -8860,6 +8881,12 @@ public class Plátno implements Priehľadnosť
 		 * @see #farbaPozadiaTextu(Color)
 		 * @see #písmo(Font)
 		 * @see #predvolenéPísmo()
+		 * 
+		 * @see #skryTexty()
+		 * @see #zobrazTexty()
+		 * @see #textyViditeľné()
+		 * @see #textyZobrazené()
+		 * @see #textySkryté()
 		 */
 		public void vymažTexty()
 		{
@@ -8984,6 +9011,178 @@ public class Plátno implements Priehľadnosť
 		public void vymazGrafiku() { vymažGrafiku(); }
 
 
+	// Zobrazenie/skrytie textov konzoly
+
+		/**
+		 * <p>Metóda skryje texty vnútornej konzoly podlahy alebo stropu.
+		 * 
+		 * Táto metóda nemá vplyv na zobrazenie {@linkplain 
+		 * #zobrazLištyKonzoly(boolean, boolean) líšt} (čiže ani {@linkplain 
+		 * #dajRohLíštKonzoly() rohu}).</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Pripomíname, že texty konzoly
+		 * môžu byť vypisované napríklad prostredníctvom metód {@link 
+		 * #vypíš(Object[]) vypíš}, {@link #vypíšRiadok(Object[]) vypíšRiadok}.
+		 * 
+		 * Pre úplnosť dodávame, že texty konzoly majú iné vlastnosti
+		 * v porovnaní s pečiatkovými textami, ktoré môžu grafické roboty
+		 * „nakresliť“ napríklad metódou {@link GRobot#text(String) text}.
+		 * 
+		 * Pečiatkové texty sú grafické a nie sú touto metódou nijako
+		 * ovplyvnené.</p>
+		 * 
+		 * <p>Táto metóda <b>nevyvolá</b> vznik žiadnej udalosti.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Metóda berie do úvahy použitie
+		 * metód {@link Svet#nekresli() nekresli} a {@link Svet#kresli()
+		 * kresli}. Čiže ak je automatické prekresľovanie vypnuté, treba po
+		 * tejto metóde zavolať metódu {@link Svet#prekresli() prekresli},
+		 * aby sa efekt vizuálne prejavil.</p>
+		 * 
+		 * @see #skryTexty()
+		 * @see #zobrazTexty()
+		 * @see #textyViditeľné()
+		 * @see #textyZobrazené()
+		 * @see #textySkryté()
+		 * @see #vymažTexty()
+		 */
+		public void skryTexty()
+		{
+			vnútornáKonzola.skryTexty();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie(); // noInvokeLater
+		}
+
+		/**
+		 * <p>Metóda zobrazí texty vnútornej konzoly podlahy alebo stropu.
+		 * (Ak nejaké jestvujú a ak boli predtým {@linkplain #skryTexty()
+		 * skryté.})
+		 * 
+		 * Táto metóda nemá vplyv na zobrazenie {@linkplain 
+		 * #zobrazLištyKonzoly(boolean, boolean) líšt} (čiže ani {@linkplain 
+		 * #dajRohLíštKonzoly() rohu}).</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Pripomíname, že texty konzoly
+		 * môžu byť vypisované napríklad prostredníctvom metód {@link 
+		 * #vypíš(Object[]) vypíš}, {@link #vypíšRiadok(Object[]) vypíšRiadok}.
+		 * 
+		 * Pre úplnosť dodávame, že texty konzoly majú iné vlastnosti
+		 * v porovnaní s pečiatkovými textami, ktoré môžu grafické roboty
+		 * „nakresliť“ napríklad metódou {@link GRobot#text(String) text}.
+		 * 
+		 * Pečiatkové texty sú grafické a nie sú touto metódou nijako
+		 * ovplyvnené.</p>
+		 * 
+		 * <p>Táto metóda <b>nevyvolá</b> vznik žiadnej udalosti.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Metóda berie do úvahy použitie
+		 * metód {@link Svet#nekresli() nekresli} a {@link Svet#kresli()
+		 * kresli}. Čiže ak je automatické prekresľovanie vypnuté, treba po
+		 * tejto metóde zavolať metódu {@link Svet#prekresli() prekresli},
+		 * aby sa efekt vizuálne prejavil.</p>
+		 * 
+		 * @see #skryTexty()
+		 * @see #zobrazTexty()
+		 * @see #textyViditeľné()
+		 * @see #textyZobrazené()
+		 * @see #textySkryté()
+		 * @see #vymažTexty()
+		 */
+		public void zobrazTexty()
+		{
+			vnútornáKonzola.zobrazTexty();
+			if (!Svet.právePrekresľujem)
+				Svet.automatickéPrekreslenie(); // noInvokeLater
+		}
+
+		/**
+		 * <p>Metóda overí, či sú viditeľné texty vnútornej konzoly podlahy
+		 * alebo stropu. (Ak nejaké jestvujú.)</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Pripomíname, že texty konzoly
+		 * môžu byť vypisované napríklad prostredníctvom metód {@link 
+		 * #vypíš(Object[]) vypíš}, {@link #vypíšRiadok(Object[]) vypíšRiadok}.
+		 * 
+		 * Pre úplnosť dodávame, že texty konzoly majú iné vlastnosti
+		 * v porovnaní s pečiatkovými textami, ktoré môžu grafické roboty
+		 * „nakresliť“ napríklad metódou {@link GRobot#text(String) text}.</p>
+		 * 
+		 * @return {@code valtrue} ak sú texty vnútornej konzoly viditeľné
+		 *     {@code valfalse} v opačnom prípade
+		 * 
+		 * @see #skryTexty()
+		 * @see #zobrazTexty()
+		 * @see #textyViditeľné()
+		 * @see #textyZobrazené()
+		 * @see #textySkryté()
+		 * @see #vymažTexty()
+		 */
+		public boolean textyViditeľné()
+		{ return vnútornáKonzola.textyZobrazené(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #textyViditeľné() textyViditeľné}.</p> */
+		public boolean textyViditelne()
+		{ return vnútornáKonzola.textyZobrazené(); }
+
+		/**
+		 * <p>Metóda overí, či sú zobrazené texty vnútornej konzoly podlahy
+		 * alebo stropu. (Ak nejaké jestvujú.)</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Pripomíname, že texty konzoly
+		 * môžu byť vypisované napríklad prostredníctvom metód {@link 
+		 * #vypíš(Object[]) vypíš}, {@link #vypíšRiadok(Object[]) vypíšRiadok}.
+		 * 
+		 * Pre úplnosť dodávame, že texty konzoly majú iné vlastnosti
+		 * v porovnaní s pečiatkovými textami, ktoré môžu grafické roboty
+		 * „nakresliť“ napríklad metódou {@link GRobot#text(String) text}.</p>
+		 * 
+		 * @return {@code valtrue} ak sú texty vnútornej konzoly zobrazené
+		 *     {@code valfalse} v opačnom prípade
+		 * 
+		 * @see #skryTexty()
+		 * @see #zobrazTexty()
+		 * @see #textyViditeľné()
+		 * @see #textyZobrazené()
+		 * @see #textySkryté()
+		 * @see #vymažTexty()
+		 */
+		public boolean textyZobrazené()
+		{ return vnútornáKonzola.textyZobrazené(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #textyZobrazené() textyZobrazené}.</p> */
+		public boolean textyZobrazene()
+		{ return vnútornáKonzola.textyZobrazené(); }
+
+		/**
+		 * <p>Metóda overí, či sú skryté texty vnútornej konzoly podlahy
+		 * alebo stropu. (Ak nejaké jestvujú.)</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Pripomíname, že texty konzoly
+		 * môžu byť vypisované napríklad prostredníctvom metód {@link 
+		 * #vypíš(Object[]) vypíš}, {@link #vypíšRiadok(Object[]) vypíšRiadok}.
+		 * 
+		 * Pre úplnosť dodávame, že texty konzoly majú iné vlastnosti
+		 * v porovnaní s pečiatkovými textami, ktoré môžu grafické roboty
+		 * „nakresliť“ napríklad metódou {@link GRobot#text(String) text}.</p>
+		 * 
+		 * @return {@code valtrue} ak sú texty vnútornej konzoly skryté
+		 *     {@code valfalse} v opačnom prípade
+		 * 
+		 * @see #skryTexty()
+		 * @see #zobrazTexty()
+		 * @see #textyViditeľné()
+		 * @see #textyZobrazené()
+		 * @see #textySkryté()
+		 * @see #vymažTexty()
+		 */
+		public boolean textySkryté()
+		{ return !vnútornáKonzola.textyZobrazené(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #textySkryté() textySkryté}.</p> */
+		public boolean textySkryte()
+		{ return !vnútornáKonzola.textyZobrazené(); }
+
+
 	// Výplň
 
 		/**
@@ -9044,7 +9243,7 @@ public class Plátno implements Priehľadnosť
 		public void vypln(Farebnosť objekt) { vyplň(objekt); }
 
 		/* *
-		 * <p>Toto je „klon“ metódy {@link #vyplň(Color)}. Podlaha alebo
+		 * <p>Toto je „klon“ metódy {@link #vyplň(Color farba)}. Podlaha alebo
 		 * strop sú vyplnené len v prípade, že je v premennej typu {@link 
 		 * Object} (zadanej ako parameter) uložená inštancia triedy {@link 
 		 * Farba Farba} alebo {@link Color Color}.</p>
@@ -9062,7 +9261,7 @@ public class Plátno implements Priehľadnosť
 		/**
 		 * <p>Vyplní podlahu alebo strop farbou zadanou prostredníctvom
 		 * farebných zložiek. Na ďalšie informácie pozri metódu {@link 
-		 * #vyplň(Color)}. Správanie tejto metódy je odvodené od
+		 * #vyplň(Color farba)}. Správanie tejto metódy je odvodené od
 		 * nej.</p>
 		 * 
 		 * @param r červená zložka farby; celé číslo v rozsahu 0 – 255
@@ -9086,7 +9285,7 @@ public class Plátno implements Priehľadnosť
 		/**
 		 * <p>Vyplní podlahu alebo strop farbou zadanou prostredníctvom
 		 * farebných zložiek a úrovne (ne)priehľadnosti. Na ďalšie informácie
-		 * pozri metódu {@link #vyplň(Color)}. Správanie tejto metódy
+		 * pozri metódu {@link #vyplň(Color farba)}. Správanie tejto metódy
 		 * je odvodené od nej.</p>
 		 * 
 		 * @param r červená zložka farby; celé číslo v rozsahu 0 – 255
@@ -9314,8 +9513,8 @@ public class Plátno implements Priehľadnosť
 		{ vylejFarbu(x, y, objekt.farba()); }
 
 		/* *
-		 * <p>Toto je „klon“ metódy {@link #vylejFarbu(double, double,
-		 * Color)}. Proces vyplnenia sa uskutoční len v prípade, že je
+		 * <p>Toto je „klon“ metódy {@link #vylejFarbu(double x, double y,
+		 * Color farba)}. Proces vyplnenia sa uskutoční len v prípade, že je
 		 * v premennej typu {@link Object} (zadanej ako parameter) uložená
 		 * inštancia triedy {@link Farba Farba} alebo {@link Color Color}.</p>
 		 * /
@@ -9330,7 +9529,7 @@ public class Plátno implements Priehľadnosť
 		 * <p>Vyleje do zadaného bodu na plátno farbu zadanú prostredníctvom
 		 * farebných zložiek, ktorá sa určeného bodu rozšíri po okraje
 		 * okolitej kresby. Na ďalšie informácie pozri metódu {@link 
-		 * #vylejFarbu(double, double, Color)}. Správanie tejto
+		 * #vylejFarbu(double x, double y, Color farba)}. Správanie tejto
 		 * metódy je odvodené od nej.</p>
 		 * 
 		 * @param x x-ová súradnica počiatočného bodu
@@ -9354,8 +9553,8 @@ public class Plátno implements Priehľadnosť
 		 * <p>Vyleje do zadaného bodu na plátno farbu zadanú prostredníctvom
 		 * farebných zložiek a úrovne (ne)priehľadnosti, pričom farba sa
 		 * zo stanoveného bodu rozšíri k okrajom okolitej kresby. Na ďalšie
-		 * informácie pozri metódu {@link #vylejFarbu(double, double,
-		 * Color)}. Správanie tejto metódy je odvodené od nej.</p>
+		 * informácie pozri metódu {@link #vylejFarbu(double x, double y,
+		 * Color farba)}. Správanie tejto metódy je odvodené od nej.</p>
 		 * 
 		 * @param x x-ová súradnica počiatočného bodu
 		 * @param y y-ová súradnica počiatočného bodu
@@ -9379,8 +9578,9 @@ public class Plátno implements Priehľadnosť
 		/**
 		 * <p>Vyleje do zadaného bodu na plátno farbu, ktorá sa odtiaľ rozšíri
 		 * po okraje tej časti kresby, v ktorej sa zadaný bod nachádza. Na
-		 * ďalšie informácie pozri metódu {@link #vylejFarbu(double, double,
-		 * Color)}. Správanie tejto metódy je odvodené od nej.</p>
+		 * ďalšie informácie pozri metódu {@link #vylejFarbu(double x,
+		 * double y, Color farba)}. Správanie tejto metódy je odvodené od
+		 * nej.</p>
 		 * 
 		 * @param bod súradnice počiatočného bodu
 		 * @param farba objekt určujúci farbu výplne
@@ -9396,8 +9596,9 @@ public class Plátno implements Priehľadnosť
 		/**
 		 * <p>Vyleje do zadaného bodu na plátno farbu, ktorá sa odtiaľ rozšíri
 		 * po okraje tej časti kresby, v ktorej sa zadaný bod nachádza. Na
-		 * ďalšie informácie pozri metódu {@link #vylejFarbu(double, double,
-		 * Color)}. Správanie tejto metódy je odvodené od nej.</p>
+		 * ďalšie informácie pozri metódu {@link #vylejFarbu(double x,
+		 * double y, Color farba)}. Správanie tejto metódy je odvodené od
+		 * nej.</p>
 		 * 
 		 * @param bod súradnice počiatočného bodu
 		 * @param objekt objekt určujúci farbu výplne
@@ -9406,8 +9607,8 @@ public class Plátno implements Priehľadnosť
 		{ vylejFarbu(bod, objekt.farba()); }
 
 		/* *
-		 * <p>Toto je „klon“ metódy {@link #vylejFarbu(double, double,
-		 * Color)}. Proces vyplnenia sa uskutoční len v prípade, že je
+		 * <p>Toto je „klon“ metódy {@link #vylejFarbu(double x, double y,
+		 * Color farba)}. Proces vyplnenia sa uskutoční len v prípade, že je
 		 * v premennej typu {@link Object} (zadanej ako parameter) uložená
 		 * inštancia triedy {@link Farba Farba} alebo {@link Color Color}.</p>
 		 * /
@@ -9422,7 +9623,7 @@ public class Plátno implements Priehľadnosť
 		 * <p>Vyleje do zadaného bodu na plátno farbu zadanú prostredníctvom
 		 * farebných zložiek, ktorá sa určeného bodu rozšíri po okraje
 		 * okolitej kresby. Na ďalšie informácie pozri metódu {@link 
-		 * #vylejFarbu(double, double, Color)}. Správanie tejto
+		 * #vylejFarbu(double x, double y, Color farba)}. Správanie tejto
 		 * metódy je odvodené od nej.</p>
 		 * 
 		 * @param bod súradnice počiatočného bodu
@@ -9445,8 +9646,8 @@ public class Plátno implements Priehľadnosť
 		 * <p>Vyleje do zadaného bodu na plátno farbu zadanú prostredníctvom
 		 * farebných zložiek a úrovne (ne)priehľadnosti, pričom farba sa
 		 * zo stanoveného bodu rozšíri k okrajom okolitej kresby. Na ďalšie
-		 * informácie pozri metódu {@link #vylejFarbu(double, double,
-		 * Color)}. Správanie tejto metódy je odvodené od nej.</p>
+		 * informácie pozri metódu {@link #vylejFarbu(double x, double y,
+		 * Color farba)}. Správanie tejto metódy je odvodené od nej.</p>
 		 * 
 		 * @param bod súradnice počiatočného bodu
 		 * @param r červená zložka farby; celé číslo v rozsahu 0 – 255
@@ -9470,7 +9671,7 @@ public class Plátno implements Priehľadnosť
 		 * <p>Zadaný robot vyleje na svojej pozícii na plátno svoju aktuálnu
 		 * {@linkplain GRobot#farba() farbu}, ktorá sa odtiaľ rozšíri po
 		 * okraje okolitej kresby. Na ďalšie informácie pozri metódu {@link 
-		 * #vylejFarbu(double, double, Color)}. Správanie tejto
+		 * #vylejFarbu(double x, double y, Color farba)}. Správanie tejto
 		 * metódy je odvodené od nej.</p>
 		 * 
 		 * @param ktorý robot, ktorého poloha a farba sú použité na výplň

@@ -168,6 +168,7 @@ import java.util.regex.Pattern;
 		}
 		{@code kwdreturn} -{@code num1};
 	}
+
 	<hr/>
 	{@code kwdfinal} {@code currFiltre}.{@link Filtre.Filter#Filtre.Filter(String, String) Filter} časTitulkov = {@code kwdnew} Filtre.{@link Filtre.Filter#Filtre.Filter(String, String) Filter}(
 		{@code srg"^\\s*([0-9:,]+)\\s*-->\\s*([0-9:,]+)\\s*$"}, {@code valnull});

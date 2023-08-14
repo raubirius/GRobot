@@ -82,7 +82,7 @@ public abstract class AbstractLightPaint implements Paint
 	 * <p>Full constructor receiving all information about the new light
 	 * pattern. The process was implemented as robust as possible. If the
 	 * {@code points} array is {@code null}, then empty pattern is created.
-	 * You can add lights by the {@link #putLight(int, int[], Color, int)
+	 * You can add lights by the {@link #putLight(int, int[], Color, int, int)
 	 * putLight} method.</p>
 	 * 
 	 * <p>If the {@code points} array is not {@code null}, the gradient will
@@ -221,7 +221,7 @@ public abstract class AbstractLightPaint implements Paint
 
 	/**
 	 * <p>Basic constructor – creates empty pattern. You can add lights by
-	 * the {@link #putLight(int, int[], Color, int) putLight} method.</p>
+	 * the {@link #putLight(int, int[], Color, int, int) putLight} method.</p>
 	 * 
 	 * <p>See the {@linkplain #AbstractLightPaint(int[][], Color[], int[],
 	 * int[]) full constructor} for more details.</p>

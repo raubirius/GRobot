@@ -463,6 +463,17 @@ public class ObsluhaUdalostí
 	 * získanie podrobnejších údajov o tejto udalosti. Stav myši
 	 * je aktualizovaný aj vo vnútorných premenných sveta.</p>
 	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
+	 * 
 	 * @see ÚdajeUdalostí#tlačidloMyši1()
 	 * @see ÚdajeUdalostí#tlačidloMyši2()
 	 * @see ÚdajeUdalostí#tlačidloMyši3()
@@ -647,18 +658,40 @@ public class ObsluhaUdalostí
 	public void dokreslenie() {}
 
 	/**
-	 * <p>Spustená pri zobrazení okna sveta. Na získanie objektu
+	 * <p>Spustená pri zobrazení okna. Na získanie objektu
 	 * s podrobnejšími údajmi o tejto udalosti použite metódu {@link 
 	 * ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()}.</p>
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 * 
 	 * @see GRobot#zobrazenieOkna()
 	 */
 	public void zobrazenieOkna() {}
 
 	/**
-	 * <p>Spustená pri skrytí okna sveta. Na získanie objektu
+	 * <p>Spustená pri skrytí okna. Na získanie objektu
 	 * s podrobnejšími údajmi o tejto udalosti použite metódu {@link 
 	 * ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()}.</p>
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 * 
 	 * <p class="attention"><b>Upozornenie:</b> Ak {@linkplain Svet#skry()
 	 * skryjete} okno sveta a neponecháte systému žiadnu možnosť
@@ -672,24 +705,47 @@ public class ObsluhaUdalostí
 	public void skrytieOkna() {}
 
 	/**
-	 * <p>Spustená pri presunutí okna sveta. Na získanie objektu
+	 * <p>Spustená pri presunutí okna. Na získanie objektu
 	 * s podrobnejšími údajmi o tejto udalosti použite metódu {@link 
 	 * ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()}.</p>
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 * 
 	 * @see GRobot#presunutieOkna()
 	 */
 	public void presunutieOkna() {}
 
 	/**
-	 * <p>Spustená pri zmene veľkosti okna sveta. Na získanie objektu
+	 * <p>Spustená pri zmene veľkosti okna. Na získanie objektu
 	 * s podrobnejšími údajmi o tejto udalosti použite metódu {@link 
-	 * ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()}. (Po vykonaní tejto
-	 * metódy je v prípade, že sa pracovalo s {@linkplain 
-	 * Plátno#vypíš(Object[]) výpismi textov} na podlahu alebo strop,
-	 * spustené automatické prekreslenie. Ak je automatické prekreslenie
-	 * {@linkplain Svet#nekresli() vypnuté}, musí sa o prekreslenie
-	 * sveta pri zmene veľkosti okna {@linkplain Svet#prekresli()
-	 * postarať programátor}.)</p>
+	 * ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()}.</p>
+	 * 
+	 * <p>Po vykonaní tejto metódy pre svet je v prípade, že sa pracovalo
+	 * s {@linkplain Plátno#vypíš(Object[]) výpismi textov} na podlahu
+	 * alebo strop, spustené automatické prekreslenie. Ak je automatické
+	 * prekreslenie {@linkplain Svet#nekresli() vypnuté}, musí sa
+	 * o prekreslenie sveta pri zmene veľkosti okna {@linkplain 
+	 * Svet#prekresli() postarať programátor}.</p>
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 * 
 	 * @see GRobot#zmenaVeľkostiOkna()
 	 */
@@ -699,9 +755,20 @@ public class ObsluhaUdalostí
 	public void zmenaVelkostiOkna() {}
 
 	/**
-	 * <p>Spustená pri aktivácii okna sveta. Na získanie objektu
+	 * <p>Spustená pri aktivácii okna. Na získanie objektu
 	 * s podrobnejšími údajmi o tejto udalosti použite metódu
 	 * {@link ÚdajeUdalostí#aktivitaOkna() ÚdajeUdalostí.aktivitaOkna()}.</p>
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 * 
 	 * @see GRobot#aktiváciaOkna()
 	 */
@@ -711,9 +778,20 @@ public class ObsluhaUdalostí
 	public void aktivaciaOkna() {}
 
 	/**
-	 * <p>Spustená pri deaktivácii okna sveta. Na získanie objektu
+	 * <p>Spustená pri deaktivácii okna. Na získanie objektu
 	 * s podrobnejšími údajmi o tejto udalosti použite metódu
 	 * {@link ÚdajeUdalostí#aktivitaOkna() ÚdajeUdalostí.aktivitaOkna()}.</p>
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 * 
 	 * @see GRobot#deaktiváciaOkna()
 	 */
@@ -723,46 +801,101 @@ public class ObsluhaUdalostí
 	public void deaktivaciaOkna() {}
 
 	/**
-	 * <p>Spustená pri maximalizovaní okna sveta. Na získanie objektu
+	 * <p>Spustená pri maximalizovaní okna. Na získanie objektu
 	 * s podrobnejšími údajmi o tejto udalosti použite metódu
 	 * {@link ÚdajeUdalostí#aktivitaOkna() ÚdajeUdalostí.aktivitaOkna()}.</p>
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 * 
 	 * @see GRobot#maximalizovanie()
 	 */
 	public void maximalizovanie() {}
 
 	/**
-	 * <p>Spustená pri minimalizovaní okna sveta. Na získanie objektu
+	 * <p>Spustená pri minimalizovaní okna. Na získanie objektu
 	 * s podrobnejšími údajmi o tejto udalosti použite metódu
 	 * {@link ÚdajeUdalostí#aktivitaOkna() ÚdajeUdalostí.aktivitaOkna()}.</p>
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 * 
 	 * @see GRobot#minimalizovanie()
 	 */
 	public void minimalizovanie() {}
 
 	/**
-	 * <p>Spustená pri obnovení okna sveta. Na získanie objektu
+	 * <p>Spustená pri obnovení okna. Na získanie objektu
 	 * s podrobnejšími údajmi o tejto udalosti použite metódu
 	 * {@link ÚdajeUdalostí#aktivitaOkna() ÚdajeUdalostí.aktivitaOkna()}.</p>
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 * 
 	 * @see GRobot#obnovenie()
 	 */
 	public void obnovenie() {}
 
 	/**
-	 * <p>Spustená pri prvom zobrazení okna sveta. Na získanie objektu
+	 * <p>Spustená pri prvom zobrazení okna. Na získanie objektu
 	 * s podrobnejšími údajmi o tejto udalosti použite metódu
 	 * {@link ÚdajeUdalostí#aktivitaOkna() ÚdajeUdalostí.aktivitaOkna()}.</p>
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 * 
 	 * @see GRobot#otvorenie()
 	 */
 	public void otvorenie() {}
 
 	/**
-	 * <p>Spustená pri zatváraní okna sveta, pričom vrátením návratovej
+	 * <p>Spustená pri zatváraní okna, pričom vrátením návratovej
 	 * hodnoty {@code valfalse} sa dá tejto aktivite zabrániť. Na získanie
 	 * objektu s podrobnejšími údajmi o tejto udalosti použite metódu
 	 * {@link ÚdajeUdalostí#aktivitaOkna() ÚdajeUdalostí.aktivitaOkna()}.</p>
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 * 
 	 * @see GRobot#zavretie()
 	 * @see Svet#zavrieť()
@@ -962,6 +1095,17 @@ public class ObsluhaUdalostí
 	 * získanie podrobnejších údajov o tejto udalosti. Stav myši
 	 * je aktualizovaný aj vo vnútorných premenných sveta.</p>
 	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
+	 * 
 	 * @see ÚdajeUdalostí#tlačidloMyši1()
 	 * @see ÚdajeUdalostí#tlačidloMyši2()
 	 * @see ÚdajeUdalostí#tlačidloMyši3()
@@ -981,6 +1125,17 @@ public class ObsluhaUdalostí
 	 * {@link ÚdajeUdalostí#myš() ÚdajeUdalostí.myš()} na
 	 * získanie podrobnejších údajov o tejto udalosti. Stav myši
 	 * je aktualizovaný aj vo vnútorných premenných sveta.</p>
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 * 
 	 * @see ÚdajeUdalostí#tlačidloMyši1()
 	 * @see ÚdajeUdalostí#tlačidloMyši2()
@@ -1017,11 +1172,22 @@ public class ObsluhaUdalostí
 	public void pohybMysi() {}
 
 	/**
-	 * <p>Spustená pri pohybe myši nad plátnom podlahy počas držania
-	 * tlačidla myši. Použite metódu {@link ÚdajeUdalostí#myš()
-	 * ÚdajeUdalostí.myš()} na získanie podrobnejších údajov o tejto
-	 * udalosti. Stav myši je aktualizovaný aj vo vnútorných premenných
-	 * sveta.</p>
+	 * <p>Spustená pri pohybe myši nad hlavným komponentom okna (pri svete
+	 * hovoríme často o plátnach) počas držania tlačidla myši.
+	 * Použite metódu {@link ÚdajeUdalostí#myš() ÚdajeUdalostí.myš()} na
+	 * získanie podrobnejších údajov o tejto udalosti. Stav myši je
+	 * aktualizovaný aj vo vnútorných premenných sveta.</p>
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 * 
 	 * @see ÚdajeUdalostí#tlačidloMyši1()
 	 * @see ÚdajeUdalostí#tlačidloMyši2()
@@ -1044,6 +1210,17 @@ public class ObsluhaUdalostí
 	 * získanie podrobnejších údajov o tejto udalosti. Stav myši je
 	 * aktualizovaný aj vo vnútorných premenných sveta.</p>
 	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
+	 * 
 	 * @see ÚdajeUdalostí#tlačidloMyši1()
 	 * @see ÚdajeUdalostí#tlačidloMyši2()
 	 * @see ÚdajeUdalostí#tlačidloMyši3()
@@ -1062,10 +1239,13 @@ public class ObsluhaUdalostí
 
 	/**
 	 * <p>Spustená pri stlačení klávesovej kombinácie zmeny fokusu
-	 * hlavného komponentu okna sveta alebo vlastného okna. Použite metódu
-	 * {@link  ÚdajeUdalostí#klávesnica() ÚdajeUdalostí.klávesnica()} na
-	 * získanie podrobnejších údajov o tejto udalosti. Užitočné sú aj ďalšie
-	 * metódy triedy {@link ÚdajeUdalostí ÚdajeUdalostí} uvedené v zozname
+	 * niektorého z komponentov. Použite metódu {@link 
+	 * ÚdajeUdalostí#klávesnica() ÚdajeUdalostí.klávesnica()} na získanie
+	 * podrobnejších údajov o tejto udalosti alebo metódu {@link 
+	 * ÚdajeUdalostí#komponentFokusu() ÚdajeUdalostí.komponentFokusu()} na
+	 * získanie komponentu, ktorý je aktuálnym vlastníkom fokusu v kontexte
+	 * pokusu o jeho zmenu touto udalosťou. Užitočné sú aj ďalšie metódy
+	 * triedy {@link ÚdajeUdalostí ÚdajeUdalostí} uvedené v zozname
 	 * nižšie.</p>
 	 * 
 	 * <p>Táto reakcia je volaná vždy pred reakciou {@link #stlačenieKlávesu()
@@ -1106,6 +1286,17 @@ public class ObsluhaUdalostí
 	 * Pre túto udalosť najmä {@link ÚdajeUdalostí#kláves() kláves()}
 	 * a {@link ÚdajeUdalostí#kláves(int) kláves(int)}</p>
 	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
+	 * 
 	 * @see ÚdajeUdalostí#klávesnica()
 	 * @see ÚdajeUdalostí#kláves()
 	 * @see ÚdajeUdalostí#kláves(int)
@@ -1126,6 +1317,17 @@ public class ObsluhaUdalostí
 	 * ÚdajeUdalostí} uvedené v zozname nižšie.
 	 * Pre túto udalosť najmä {@link ÚdajeUdalostí#kláves() kláves()}
 	 * a {@link ÚdajeUdalostí#kláves(int) kláves(int)}</p>
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 * 
 	 * @see ÚdajeUdalostí#klávesnica()
 	 * @see ÚdajeUdalostí#kláves()
@@ -1151,6 +1353,17 @@ public class ObsluhaUdalostí
 	 * ÚdajeUdalostí} uvedené v zozname nižšie.
 	 * Pre túto udalosť najmä {@link ÚdajeUdalostí#znak() znak()}
 	 * a {@link ÚdajeUdalostí#znak(char) znak(char)}</p>
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 * 
 	 * @see ÚdajeUdalostí#klávesnica()
 	 * @see ÚdajeUdalostí#kláves()
@@ -1192,7 +1405,7 @@ public class ObsluhaUdalostí
 	 * súboru zakázané.</p>
 	 * 
 	 * <p>Príklad najjednoduchšieho spracovania pustených súborov je
-	 * v opise metódy {@link #pustenieSúboru(String)}.</p>
+	 * v opise metódy {@link #pustenieSúboru(String súbor)}.</p>
 	 * 
 	 * @return {@code valtrue} ak má byť pustenie súboru povolené,
 	 *     inak {@code valfalse}
@@ -1214,8 +1427,19 @@ public class ObsluhaUdalostí
 
 	/**
 	 * <p>Táto reakcia je spúšťaná počas ťahania súboru a lebo súborov nad
-	 * plátnom. To umožňuje aplikácii v prípade potreby graficky
-	 * zareagovať.</p>
+	 * hlavným komponentom okna. To umožňuje aplikácii v prípade potreby
+	 * graficky zareagovať.</p>
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 */
 	public void ťahanieSúborov() {}
 
@@ -1227,9 +1451,20 @@ public class ObsluhaUdalostí
 	 * z externej aplikácie potiahnutých viac súborov, tak bude táto
 	 * reakcia spustená pre každý z nich osobitne.</p>
 	 * 
-	 * <p>Ak je {@linkplain ÚdajeUdalostí#oknoUdalosti() okno udalosti} rovné
+	 * <!-- p>Ak je {@linkplain ÚdajeUdalostí#oknoUdalosti() okno udalosti} rovné
 	 * {@code valnull}, tak udalosť vznikla v okne sveta (inak ide o inštanciu
-	 * okna, ktoré udalosť vyvolalo).</p>
+	 * okna, ktoré udalosť vyvolalo).</p -->
+	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Od verzie 2.19 je možné zisťovať
 	 * akciu pustenia súboru metódou {@link ÚdajeUdalostí#akciaPustenia()

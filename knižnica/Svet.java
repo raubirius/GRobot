@@ -469,31 +469,31 @@ public final class Svet extends JFrame
 	// Pozri aj: https://docs.oracle.com/javase/8/docs/api/javax/swing/JFrame.html
 
 
-	// Predvolená farba pozadia
+	// Predvolená farba pozadia:
 	private final static Farba predvolenéPozadie = biela;
 
-	// Aktuálna farba pozadia
+	// Aktuálna farba pozadia:
 	/*packagePrivate*/ static Farba farbaPozadia;
 
-	// Počítadlo objektov v interaktívnom režime
+	// Počítadlo objektov v interaktívnom režime:
 	/*packagePrivate*/ static int početVInteraktívnomRežime = 0;
 
 
-	// Okno režimu celej obrazovky.
+	// Okno režimu celej obrazovky:
 	/*packagePrivate*/ static JFrame oknoCelejObrazovky = null;
 
-	// Ikona systémovej oblasti
+	// Ikona systémovej oblasti:
 	private static TrayIcon systémováIkona = null;
 
-	// Príznak uloženia konfigurácie sveta (a plátien)
+	// Príznak uloženia konfigurácie sveta (a plátien):
 	private static boolean uložKonfiguráciuSveta = false;
 
-	// Aktívna inštancia v interaktívnom režime
+	// Aktívna inštancia v interaktívnom režime:
 	private static String interaktívnaInštancia = null;
 
 	// Synchronizačný zámok prekresľovania (okolo automatického
 	// a programovaného prekresľovania je v tomto programovacom
-	// rámci celá „jadrová fyzika“…)
+	// rámci celá „jadrová fyzika“…):
 	private final static Object zámokPrekresľovania = new Object();
 
 	// Atribúty udalostí čakania na kláves a klik:
@@ -509,15 +509,15 @@ public final class Svet extends JFrame
 
 		// Hlavný robot (prvý robot, ktorý kedysi inicializoval a spravoval
 			// grafiku, teraz poskytuje metódy na prekrytie, ktoré sú
-			// alternatívou obsluhy udalostí)
+			// alternatívou obsluhy udalostí).
 
 			/*packagePrivate*/ static GRobot hlavnýRobot;
 			/*packagePrivate*/ static boolean inicializované = false;
 			/*packagePrivate*/ static Calendar časŠtartu = null;
 
-		// Prvky a údaje rozloženia hlavného okna
+		// Prvky a údaje rozloženia hlavného okna.
 
-			// Atribúty používané na uloženie parametrov okna
+			// Atribúty používané na uloženie parametrov okna.
 
 				private final static String
 					predvolenýNázovKonfiguračnéhoSúboru = "grobot.cfg";
@@ -595,14 +595,14 @@ public final class Svet extends JFrame
 						mennýPriestor = konfiguračnýSúbor.
 							aktívnaSekcia.mennýPriestorVlastností;
 
-						// Konfigurácia okna
+						// Konfigurácia okna.
 						try
 						{
 							konfiguračnýSúbor.aktívnaSekcia.
 								mennýPriestorVlastností = "okno";
 
 							int stav = svet.getExtendedState();
-							/* TODO – zvážiť uloženie režimu celej obrazovky
+							/* TODO – zvážiť uloženie režimu celej obrazovky
 							int stav = (null == oknoCelejObrazovky) ?
 								svet.getExtendedState() : oknoCelejObrazovky.
 								getExtendedState();
@@ -870,7 +870,7 @@ public final class Svet extends JFrame
 				}
 
 			// Počiatočné/posledné rozmery a poloha okna (s definovanými
-				// predvolenými hodnotami) a počiatočný stav okna
+				// predvolenými hodnotami) a počiatočný stav okna.
 
 				private static int počiatočnáŠírka = 600;
 				private static int počiatočnáVýška = 500;
@@ -887,13 +887,13 @@ public final class Svet extends JFrame
 
 			// Viditeľnosť pri štarte (aplikácie môžu oceniť, keď je hlavné
 				// okno pri štarte skryté a aplikácia sa môže inicializovať
-				// na pozadí…)
+				// na pozadí…).
 
 				private static boolean zobrazPriŠtarte = true;
 
 
 			// Séria atribútov na transformáciu výplní (tých obrázkových –
-			// kvázi textúr)
+			// kvázi textúr).
 
 				/*packagePrivate*/ static double posunutieVýplneX = 0.0;
 				/*packagePrivate*/ static double posunutieVýplneY = 0.0;
@@ -926,7 +926,7 @@ public final class Svet extends JFrame
 						stredOtáčaniaVýplneY;
 				}
 
-			// Komponent klientskej oblasti okna s príslušenstvom
+			// Komponent klientskej oblasti okna s príslušenstvom.
 
 				private static ImageIcon ikonaPlátna;
 				private static JLabel komponentIkony;
@@ -938,7 +938,7 @@ public final class Svet extends JFrame
 					{ return false; }
 
 
-					// Ťahanie a pustenie súborov — začiatok
+					// Ťahanie a pustenie súborov — začiatok.
 
 					private DropTarget cieľPusteniaSúboru;
 					private ObsluhaPusteniaSúboru obsluhaPusteniaSúboru;
@@ -983,14 +983,22 @@ public final class Svet extends JFrame
 								obsluhaPusteniaSúboru());
 					}
 
-					// Ťahanie a pustenie súborov — koniec
+					// Ťahanie a pustenie súborov — koniec.
 				};
 
-				// Takto to nefungovalo
+				// Takto to nefungovalo:
 				// private static javax.swing.JScrollPane rolovaciaTabla =
 				// 	new javax.swing.JScrollPane(hlavnýPanel);
 
-				// Trieda pracujúca so systémom Ťahaj a Pusti (súbor)
+				// Inštancia slúžiaca na spracovanie zmeny fokusu.
+				private static KeyEventDispatcher spracovanieFokusu =
+					new KeyEventDispatcher()
+				{
+					@Override public boolean dispatchKeyEvent(KeyEvent e)
+					{ return !spracujFokus(e/*, true // TODO: del */); }
+				};
+
+				// Trieda pracujúca so systémom Ťahaj a Pusti (súbor).
 				private static class ObsluhaPusteniaSúboru
 					implements DropTargetListener
 				{
@@ -1110,7 +1118,7 @@ public final class Svet extends JFrame
 				}
 
 
-			// Položky hlavnej ponuky
+			// Položky hlavnej ponuky.
 
 				/*packagePrivate*/ static PoložkaPonuky
 					položkaVymazať = null;
@@ -1125,27 +1133,27 @@ public final class Svet extends JFrame
 				/*packagePrivate*/ static int
 					aktuálnaPoložka = 0; // 3;
 
-			// Dvojité „bufferovanie“ grafiky
+			// Dvojité „bufferovanie“ grafiky.
 
-				// Komponent okna „obrázok“
+				// Komponent okna „obrázok“:
 				/*packagePrivate*/ static BufferedImage obrázokSveta1 =
 					new BufferedImage(Plátno.šírkaPlátna, Plátno.výškaPlátna,
 						BufferedImage.TYPE_INT_ARGB);
 
-				// Grafický objekt na kreslenie do „obrázka“ (ako komponentu)
+				// Grafický objekt na kreslenie do „obrázka“ (ako komponentu):
 				/*packagePrivate*/ static Graphics2D grafikaSveta1 =
 					obrázokSveta1.createGraphics();
 
-				// Vyrovnávacia pamäť (sekundárny buffer) komponentu okna
+				// Vyrovnávacia pamäť (sekundárny buffer) komponentu okna:
 				/*packagePrivate*/ static BufferedImage obrázokSveta2 =
 					new BufferedImage(Plátno.šírkaPlátna, Plátno.výškaPlátna,
 						BufferedImage.TYPE_INT_ARGB);
 
-				// Vyrovnávacia pamäť (sekundárny buffer) grafiky komponentu
+				// Vyrovnávacia pamäť (sekundárny buffer) grafiky komponentu:
 				/*packagePrivate*/ static Graphics2D grafikaSveta2 =
 					obrázokSveta2.createGraphics();
 
-			// Vstupný riadok
+			// Vstupný riadok.
 
 				/*packagePrivate*/ final static JMenuBar panelVstupnéhoRiadka =
 					new JMenuBar();
@@ -1159,24 +1167,24 @@ public final class Svet extends JFrame
 					new StringBuffer();
 
 
-		// Dialógy (správy a otázky)
+		// Dialógy (správy a otázky).
 
-			// Predvolený titulok okien s otázkami
+			// Predvolený titulok okien s otázkami:
 			private final static String predvolenýTitulokOtázky = "Otázka";
 
-			// Popisy tlačidiel v oknách s otázkami
+			// Popisy tlačidiel v oknách s otázkami:
 			private final static Object[] odpovedeOtázky = {"Áno", "Nie"};
 
-			// Predvolený titulok okien na vstup údajov
+			// Predvolený titulok okien na vstup údajov:
 			private final static String predvolenýTitulokVstupu = "Vstup";
 
-			// Predvolený titulok okien na zadanie hesla
+			// Predvolený titulok okien na zadanie hesla:
 			private final static String predvolenýTitulokHesla = "Heslo";
 
-			// Predvolený titulok vstupných dialógových okien
+			// Predvolený titulok vstupných dialógových okien:
 			private final static String predvolenýTitulokDialógu = "Dialóg";
 
-			// Prvky používané v zadávacích komunikačných dialógoch
+			// Prvky používané v zadávacích komunikačných dialógoch.
 
 				private final static RobotTextField textovýRiadok =
 					new RobotTextField();
@@ -1200,63 +1208,63 @@ public final class Svet extends JFrame
 			private static boolean dialógZobrazený = false;
 
 			// Zoznam komponentov panelov farieb v poli dialógu spúšťaného
-			// metódou „dialóg“
+			// metódou „dialóg“:
 			private final static Vector<Farba.PanelFarieb> voľbyFariebDialógu =
 				new Vector<>();
 
 			// Zoznam komponentov panelov polôh v poli dialógu spúšťaného
-			// metódou „dialóg“
+			// metódou „dialóg“:
 			private final static Vector<Bod.PanelPolohy> voľbyPolohyDialógu =
 				new Vector<>();
 
 			// Zoznam komponentov panelov uhlov (smerov) v poli dialógu
-			// spúšťaného metódou „dialóg“
+			// spúšťaného metódou „dialóg“:
 			private final static Vector<Uhol.PanelSmeru> voľbySmeruDialógu =
 				new Vector<>();
 
 			// Zoznam komponentov panelov rozmerov v poli dialógu spúšťaného
-			// metódou „dialóg“
+			// metódou „dialóg“:
 			private final static Vector<Rozmery.PanelRozmeru>
 				voľbyRozmerovDialógu = new Vector<>();
 
 			// Zoznam komponentov textových riadkov (polí) dialógu spúšťaného
-			// metódou „dialóg“
+			// metódou „dialóg“:
 			private final static Vector<RobotTextField> textovéRiadkyDialógu =
 				new Vector<>();
 
 			// Zoznam komponentov volieb („checkboxov“) dialógu spúšťaného
-			// metódou „dialóg“
+			// metódou „dialóg“:
 			private final static Vector</*Robot/Nie!*/JCheckBox> voľbyDialógu =
 				new Vector<>();
 
 			// Zoznam vstupných komponentov na zadávanie hesiel dialógu
-			// spúšťaného metódou „dialóg“
+			// spúšťaného metódou „dialóg“:
 			private final static Vector<RobotPasswordField>
 				riadkyHesielDialógu = new Vector<>();
 
 			// Zoznam panelov vnútorne používaných pri procese tvorby dialógov
-			// spúšťaných metódou „dialóg“
+			// spúšťaných metódou „dialóg“:
 			private final static Vector<JPanel> panelyDialógu =
 				new Vector<>();
 
 			// Zoznam komponentov popisov prvkov, ktorý je v niektorých
 			// prípadoch vnútorne používaných pri procese tvorby dialógov
-			// spúšťaných metódou „dialóg“
+			// spúšťaných metódou „dialóg“:
 			private final static Vector<JLabel> popisyDialógu =
 				new Vector<>();
 
-			// Úvodná obrazovka
+			// Úvodná obrazovka:
 			private static JWindow úvodnáObrazovka = null;
 
 
 
 		// Generátor pseudonáhodných čísel
-			// (určené na použitie funkciami generovania náhodných čísel)
+			// (určené na použitie funkciami generovania náhodných čísel):
 			private final static RandomGenerator generátor =
 				new CERNMersenneTwister();
 
 
-			// Zoznam kurzorov (a ďalšie pomocné premenné s nimi súvisiace)
+			// Zoznam kurzorov (a ďalšie pomocné premenné s nimi súvisiace).
 
 				/*packagePrivate*/ final static Cursor prázdnyKurzor = Toolkit.
 					getDefaultToolkit().createCustomCursor(
@@ -1303,20 +1311,20 @@ public final class Svet extends JFrame
 
 
 
-		// Príznaky a semafory
+		// Príznaky a semafory.
 
-			// Príznak vypnutia automatického prekresľovania
+			// Príznak vypnutia automatického prekresľovania:
 			/*packagePrivate*/ static boolean nekresli = false;
 
-			// Semafor vykonávania série metód pracuj()
+			// Semafor vykonávania série metód pracuj():
 			private static boolean pracujem = false;
 
 			// Semafor prekreslenia po vykonaní metód pracuj(),
 			// (pretože počas činnosti metód aktivácie je prekresľovanie
-			// vypnuté)
+			// vypnuté):
 			private static boolean žiadamPrekresleniePoPráci = false;
 
-			// Semafor priebehu prekresľovania (proti sebazablokovaniu)
+			// Semafor priebehu prekresľovania (proti sebazablokovaniu):
 			/*packagePrivate*/ static boolean právePrekresľujem = false;
 
 			// Príznak zavrhnutej požiadavky na automatické prekreslenie; Ak
@@ -1325,29 +1333,29 @@ public final class Svet extends JFrame
 			// a plátien:
 			/*packagePrivate*/ static boolean neboloPrekreslené = true;
 
-			// Príznak na perzistentný vstupný riadok
+			// Príznak na perzistentný vstupný riadok:
 			private static boolean vstupnýRiadokStáleViditeľný = false;
 
-			// Príznak aktivovania histórie vstupného riadka.
+			// Príznak aktivovania histórie vstupného riadka:
 			private static boolean aktívnaHistóriaVstupnéhoRiadka = false;
 
-			// Príznak uchovávania histórie vstupného riadka do konfigurácie
+			// Príznak uchovávania histórie vstupného riadka do konfigurácie:
 			private static boolean uchovajHistóriuVstupnéhoRiadka = false;
 
 			// Príznak zmeny histórie vstupného riadka (použité pri zápise
-			// do konfigurácie)
+			// do konfigurácie):
 			private static boolean históriaVstupnéhoRiadkaNezmenená = true;
 
-			// Zoznam na uchovanie odoslaných vstupných (príkazových) riadkov
+			// Zoznam na uchovanie odoslaných vstupných (príkazových) riadkov:
 			private static Zoznam<String> históriaVstupnéhoRiadka =
 				new Zoznam<>();
 
 			// Záloha aktuálneho obsahu vstupného riadka pri začatí pohybu
 			// v histórii príkazov; zálohovaná hodnota sa vráti do vstupného
-			// riadka po opustení histórie príkazov (na jej konci)
+			// riadka po opustení histórie príkazov (na jej konci):
 			private static String aktuálnyVstupnýRiadok = "";
 
-		// Štandardný vstup
+		// Štandardný vstup.
 
 			// Implementácia čítania štandardného vstupu. Pozri aj stručné
 			// informácie v abstraktnej triede ReadStandardInput.
@@ -1500,6 +1508,12 @@ public final class Svet extends JFrame
 				// (tzv. LayoutManager). Všetko okrem obrázka je umiestňované
 				// prostredníctvom absolútnych súradníc…
 
+				KeyboardFocusManager.getCurrentKeyboardFocusManager().
+					addKeyEventDispatcher(spracovanieFokusu);
+
+				knižnica.podpora.ScrollTextPane.
+					spracovanieFokusu = Svet::spracujFokus;
+
 				ikonaPlátna = new ImageIcon(obrázokSveta1);
 				komponentIkony = new JLabel(ikonaPlátna);
 
@@ -1524,8 +1538,6 @@ public final class Svet extends JFrame
 							komponentIkony.getPreferredSize().width,
 							komponentIkony.getPreferredSize().height);
 
-						Component komponenty[] = cieľ.getComponents();
-
 						// Až po vypočítaní polohy plátna môžeme upraviť
 						// maximálne hranice šírky a výšky určenej na
 						// umiestnenie ostatných komponentov:
@@ -1534,23 +1546,28 @@ public final class Svet extends JFrame
 						if (výška > Plátno.výškaPlátna)
 							výška = Plátno.výškaPlátna;
 
-						for (Component komponent : komponenty)
+						synchronized (cieľ.getTreeLock())
 						{
-							if (komponent instanceof Tlačidlo)
-								((Tlačidlo)komponent).umiestni(
-									x, y, šírka, výška);
-							else if (komponent instanceof GRobot.UpravText)
-								((GRobot.UpravText)komponent).umiestni(
-									x, y, šírka, výška);
-							else if (komponent instanceof RolovaciaLišta)
-								((RolovaciaLišta)komponent).umiestni(
-									x, y, šírka, výška);
-							else if (komponent instanceof
-								PoznámkovýBlok.RolovaniePoznámkovéhoBloku)
+							Component komponenty[] = cieľ.getComponents();
+
+							for (Component komponent : komponenty)
 							{
-								((PoznámkovýBlok.RolovaniePoznámkovéhoBloku)
-									komponent).poznámkovýBlok.umiestni(
+								if (komponent instanceof Tlačidlo)
+									((Tlačidlo)komponent).umiestni(
 										x, y, šírka, výška);
+								else if (komponent instanceof GRobot.UpravText)
+									((GRobot.UpravText)komponent).umiestni(
+										x, y, šírka, výška);
+								else if (komponent instanceof RolovaciaLišta)
+									((RolovaciaLišta)komponent).umiestni(
+										x, y, šírka, výška);
+								else if (komponent instanceof
+									PoznámkovýBlok.RolovaniePoznámkovéhoBloku)
+								{
+									((PoznámkovýBlok.RolovaniePoznámkovéhoBloku)
+										komponent).poznámkovýBlok.umiestni(
+											x, y, šírka, výška);
+								}
 							}
 						}
 
@@ -1589,7 +1606,7 @@ public final class Svet extends JFrame
 						public void keyPressed(KeyEvent e)
 						{
 							// Focus traversal: (S+)VK_TAB…
-							// if (spracujFokus(e, false))
+							// if (spracujFokus(e/*, false // TODO: del */))
 							// {
 								// Umiestnenie týchto príkazov do reakcie
 								// keyTyped nefungovalo v macOS (predtým OS X
@@ -1833,13 +1850,22 @@ public final class Svet extends JFrame
 
 		// Transformácie súradníc, hľadanie priesečníkov a iná geometria
 
-			// Prepočítanie súradníc myši do súradnicového priestoru frameworku
+			// Prepočítanie súradníc myši do súradnicového priestoru frameworku:
 
-				private static double korekciaMyšiX(double x)
+				/*packagePrivate*/ static double korekciaMyšiX(double x)
 				{ return x - (hlavnýPanel.getWidth() / 2.0); }
 
-				private static double korekciaMyšiY(double y)
-				{ return -y + (hlavnýPanel.getHeight() / 2.0); }
+				/*packagePrivate*/ static double korekciaMyšiY(double y)
+				{ return (hlavnýPanel.getHeight() / 2.0) - y; }
+
+			// Prepočítanie súradníc myši do súradnicového priestoru Javy:
+
+				/*packagePrivate*/ static double prepočítajMyšX(double x)
+				{ return (hlavnýPanel.getWidth() / 2.0) + x; }
+
+				/*packagePrivate*/ static double prepočítajMyšY(double y)
+				{ return (hlavnýPanel.getHeight() / 2.0) - y; }
+
 
 
 			// Hľadanie priesečníkov
@@ -2721,7 +2747,7 @@ public final class Svet extends JFrame
 					aktuálnyIntervalKofeínu = intervalKofeínu;
 
 					// Focus traversal: (S+)VK_TAB…
-					if (spracujFokus(e, true))
+					if (spracujFokus(e/*, true // TODO: del */))
 					{
 						if (null != ObsluhaUdalostí.počúvadlo)
 							synchronized (ÚdajeUdalostí.zámokUdalostí)
@@ -3154,6 +3180,38 @@ public final class Svet extends JFrame
 		}
 
 
+		// Volanie obsluhy fokusu muselo byť umiestnené do samostatnej
+		// metódy, pretože v niektorých komponentoch nefunguje globálna
+		// obslužná metóda.
+		/*packagePrivate*/ static boolean volajObsluhyFokusu(boolean vpred)
+		{
+			boolean zmena = false;
+
+			if (null != ObsluhaUdalostí.počúvadlo)
+			{
+				synchronized (ÚdajeUdalostí.zámokUdalostí)
+				{
+					if (!ObsluhaUdalostí.počúvadlo.zmenaFokusu(vpred))
+						zmena = true;
+				}
+			}
+
+			synchronized (ÚdajeUdalostí.zámokUdalostí)
+			{
+				int početPočúvajúcich = GRobot.
+					počúvajúciKlávesnicu.size();
+				for (int i = 0; i < početPočúvajúcich; ++i)
+				{
+					GRobot počúvajúci = GRobot.
+						počúvajúciKlávesnicu.get(i);
+					if (!počúvajúci.zmenaFokusu(vpred))
+						zmena = true;
+				}
+			}
+
+			return zmena;
+		}
+
 		// Obdoba tejto metódy je aj v triede podpora.ScrollTextPane, pretože
 		// jednak táto metóda nie je viditeľná mimo jej balíčka a jednak
 		// ScrollTextPane nepotrebuje volať zákaznícke obsluhy udalostí.
@@ -3167,9 +3225,16 @@ public final class Svet extends JFrame
 		// 
 		// Parameter volajObsluhy indikuje, či má metóda volať zákaznícke
 		// obsluhy zmeny fokusu.
-		/*packagePrivate*/ static boolean spracujFokus(KeyEvent e,
-			boolean volajObsluhy)
+		/*packagePrivate*/ static boolean spracujFokus(KeyEvent e
+			// , boolean volajObsluhy // TODO: del
+			)
 		{
+			if (e.getID() != KeyEvent.KEY_PRESSED) return true;
+
+			// knižnica.log.Log.logOn = true;
+			// knižnica.log.Log.logIn(e.getComponent().getClass().getName());
+			// knižnica.log.Log.logOut();
+
 			Component komponent = e.getComponent();
 			if (null == komponent) return true;
 
@@ -3183,7 +3248,7 @@ public final class Svet extends JFrame
 			Set<AWTKeyStroke> skratkyVzad = komponent.getFocusTraversalKeys(
 				KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS);
 
-			final KeyboardFocusManager kfManager = KeyboardFocusManager.
+			final KeyboardFocusManager manažér = KeyboardFocusManager.
 				getCurrentKeyboardFocusManager();
 
 			// Overenie voľby klávesových skratiek zmeny fokusu:
@@ -3191,92 +3256,61 @@ public final class Svet extends JFrame
 			{
 				// Udalosť patrí medzi skratky zmeny fokusu smerom vpred.
 
-				boolean vykonaťPredvolené = true;
+				boolean vykonaťPredvolené =
+					!komponent.getFocusTraversalKeysEnabled();
+				boolean skonzumuj = vykonaťPredvolené;
 
-				if (volajObsluhy)
-				{
-					if (null != ObsluhaUdalostí.počúvadlo)
-					{
-						synchronized (ÚdajeUdalostí.zámokUdalostí)
-						{
-							if (!ObsluhaUdalostí.počúvadlo.zmenaFokusu(true))
-								vykonaťPredvolené = false;
-						}
-					}
+				// System.out.println("vykonaťPredvolené A: " + vykonaťPredvolené);
+				// System.out.println("skonzumuj: " + skonzumuj);
 
-					synchronized (ÚdajeUdalostí.zámokUdalostí)
-					{
-						int početPočúvajúcich = GRobot.
-							počúvajúciKlávesnicu.size();
-						for (int i = 0; i < početPočúvajúcich; ++i)
-						{
-							GRobot počúvajúci = GRobot.
-								počúvajúciKlávesnicu.get(i);
-							if (!počúvajúci.zmenaFokusu(true))
-								vykonaťPredvolené = false;
-						}
-					}
-				}
+				if (volajObsluhyFokusu(true))
+					vykonaťPredvolené = false;
 
-				e.consume();
+				// System.out.println("vykonaťPredvolené B: " + vykonaťPredvolené);
 
 				if (vykonaťPredvolené)
 				{
-					kfManager.focusNextComponent();
+					e.consume();
+
+					manažér.focusNextComponent();
 					SwingUtilities.invokeLater(() ->
 						{
-							if (kfManager.getFocusOwner() instanceof JScrollBar)
-								kfManager.focusNextComponent();
+							if (manažér.getFocusOwner() instanceof JScrollBar)
+								manažér.focusNextComponent();
 						});
 				}
+				else if (skonzumuj) e.consume();
 
-				return false;
+				return !vykonaťPredvolené && !skonzumuj;
 			}
 			else if (skratkyVzad.contains(aks))
 			{
 				// Udalosť patrí medzi skratky zmeny fokusu smerom vzad.
 
-				boolean vykonaťPredvolené = true;
+				boolean vykonaťPredvolené =
+					!komponent.getFocusTraversalKeysEnabled();
+				boolean skonzumuj = vykonaťPredvolené;
 
-				if (volajObsluhy)
-				{
-					if (null != ObsluhaUdalostí.počúvadlo)
-					{
-						synchronized (ÚdajeUdalostí.zámokUdalostí)
-						{
-							if (!ObsluhaUdalostí.počúvadlo.zmenaFokusu(false))
-								vykonaťPredvolené = false;
-						}
-					}
-
-					synchronized (ÚdajeUdalostí.zámokUdalostí)
-					{
-						int početPočúvajúcich = GRobot.
-							počúvajúciKlávesnicu.size();
-						for (int i = 0; i < početPočúvajúcich; ++i)
-						{
-							GRobot počúvajúci = GRobot.
-								počúvajúciKlávesnicu.get(i);
-							if (!počúvajúci.zmenaFokusu(false))
-								vykonaťPredvolené = false;
-						}
-					}
-				}
-
-				e.consume();
+				if (volajObsluhyFokusu(false))
+					vykonaťPredvolené = false;
 
 				if (vykonaťPredvolené)
 				{
-					kfManager.focusPreviousComponent();
+					e.consume();
+
+					manažér.focusPreviousComponent();
 					SwingUtilities.invokeLater(() ->
 						{
-							if (kfManager.getFocusOwner() instanceof JScrollBar)
-								kfManager.focusPreviousComponent();
+							if (manažér.getFocusOwner() instanceof JScrollBar)
+								manažér.focusPreviousComponent();
 						});
 				}
+				else if (skonzumuj) e.consume();
 
-				return false;
+				return !vykonaťPredvolené && !skonzumuj;
 			}
+
+			// System.out.println("X");
 
 			return true;
 		}
@@ -3642,7 +3676,7 @@ public final class Svet extends JFrame
 		 * {@link GRobot#vyššie() vyššie}, {@link GRobot#nižšie() nižšie},
 		 * {@link GRobot#pred(GRobot) pred} a {@link GRobot#za(GRobot) za}.
 		 * Ak je hodnota argumentu {@code obrátene} rovná {@code valfalse},
-		 * metóda sa správa rovnako ako {@link #vyzviRoboty(int)}.</p>
+		 * metóda sa správa rovnako ako {@link #vyzviRoboty(int kľúč)}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Ak je poradie robotov zmenené
 		 * počas {@linkplain GRobot#prijatieVýzvy(GRobot, int) spracovania
@@ -3677,7 +3711,7 @@ public final class Svet extends JFrame
 		 *     spracovania;
 		 *     {@code valtrue} znamená spracovanie vnútorného zoznamu
 		 *     robotov od konca; {@code valfalse} znamená rovnaký spôsob
-		 *     spracovania ako pri metóde {@link #vyzviRoboty(int)}
+		 *     spracovania ako pri metóde {@link #vyzviRoboty(int kľúč)}
 		 * 
 		 * @see GRobot#prijatieVýzvy(GRobot, int)
 		 * @see #vyzviRoboty()
@@ -4097,33 +4131,36 @@ public final class Svet extends JFrame
 		 */
 		public static void zmeňRozmeryPlátien(int šírka, int výška)
 		{
-			Component komponenty[] = hlavnýPanel.getComponents();
-
-			for (Component komponent : komponenty)
+			synchronized (hlavnýPanel.getTreeLock())
 			{
-				if (komponent instanceof Tlačidlo)
+				Component komponenty[] = hlavnýPanel.getComponents();
+
+				for (Component komponent : komponenty)
 				{
-					Tlačidlo tlačidlo = (Tlačidlo)komponent;
-					tlačidlo.x += (šírka - Plátno.šírkaPlátna) / 2;
-					tlačidlo.y += (výška - Plátno.výškaPlátna) / 2;
-				}
-				else if (komponent instanceof GRobot.UpravText)
-					((GRobot.UpravText)komponent).ukončiÚpravu(
-						SPÔSOB_DEAKTIVÁCIA);
-				else if (komponent instanceof RolovaciaLišta)
-				{
-					RolovaciaLišta rolovaciaLišta = (RolovaciaLišta)komponent;
-					rolovaciaLišta.x += (šírka - Plátno.šírkaPlátna) / 2;
-					rolovaciaLišta.y += (výška - Plátno.výškaPlátna) / 2;
-				}
-				else if (komponent instanceof
-					PoznámkovýBlok.RolovaniePoznámkovéhoBloku)
-				{
-					PoznámkovýBlok poznámkovýBlok =
-						((PoznámkovýBlok.RolovaniePoznámkovéhoBloku)komponent).
-						poznámkovýBlok;
-					poznámkovýBlok.x += (šírka - Plátno.šírkaPlátna) / 2;
-					poznámkovýBlok.y += (výška - Plátno.výškaPlátna) / 2;
+					if (komponent instanceof Tlačidlo)
+					{
+						Tlačidlo tlačidlo = (Tlačidlo)komponent;
+						tlačidlo.x += (šírka - Plátno.šírkaPlátna) / 2;
+						tlačidlo.y += (výška - Plátno.výškaPlátna) / 2;
+					}
+					else if (komponent instanceof GRobot.UpravText)
+						((GRobot.UpravText)komponent).ukončiÚpravu(
+							SPÔSOB_DEAKTIVÁCIA);
+					else if (komponent instanceof RolovaciaLišta)
+					{
+						RolovaciaLišta rolovaciaLišta = (RolovaciaLišta)komponent;
+						rolovaciaLišta.x += (šírka - Plátno.šírkaPlátna) / 2;
+						rolovaciaLišta.y += (výška - Plátno.výškaPlátna) / 2;
+					}
+					else if (komponent instanceof
+						PoznámkovýBlok.RolovaniePoznámkovéhoBloku)
+					{
+						PoznámkovýBlok poznámkovýBlok =
+							((PoznámkovýBlok.RolovaniePoznámkovéhoBloku)komponent).
+							poznámkovýBlok;
+						poznámkovýBlok.x += (šírka - Plátno.šírkaPlátna) / 2;
+						poznámkovýBlok.y += (výška - Plátno.výškaPlátna) / 2;
+					}
 				}
 			}
 
@@ -4373,7 +4410,7 @@ public final class Svet extends JFrame
 
 				Rectangle2D hraniceOkna = (null == oknoCelejObrazovky) ?
 					svet.getBounds() : oknoCelejObrazovky.getBounds();
-				// TODO – otestovať okno celej obrazovky
+				// TODO – otestovať okno celej obrazovky
 
 				double polohaX =
 					(hraniceOkna.getX() + hraniceOkna.getWidth()) >
@@ -4397,7 +4434,7 @@ public final class Svet extends JFrame
 					svet.setLocation((int)polohaX, (int)polohaY);
 				else
 					oknoCelejObrazovky.setLocation((int)polohaX, (int)polohaY);
-				// TODO – otestovať okno celej obrazovky
+				// TODO – otestovať okno celej obrazovky
 			}
 		}
 
@@ -4478,7 +4515,7 @@ public final class Svet extends JFrame
 
 			Rectangle2D hraniceOkna = (null == oknoCelejObrazovky) ?
 				svet.getBounds() : oknoCelejObrazovky.getBounds();
-			// TODO – otestovať okno celej obrazovky
+			// TODO – otestovať okno celej obrazovky
 
 			double stredX = hraniceOkna.getX() + (hraniceOkna.getWidth()  / 2);
 			double stredY = hraniceOkna.getY() + (hraniceOkna.getHeight() / 2);
@@ -8960,9 +8997,9 @@ public final class Svet extends JFrame
 		}
 
 		/**
-		 * <p>Funguje rovnako ako {@link #pridajPoložkuPonuky(String)} s tým,
-		 * že definuje novej položke mnemonickú skratku (skratky, ktoré sú
-		 * v položkách ponuky znázorňované podčiarknutým písmenom). Skratku
+		 * <p>Funguje rovnako ako {@link #pridajPoložkuPonuky(String text)}
+		 * s tým, že definuje novej položke mnemonickú skratku (skratky, ktoré
+		 * sú v položkách ponuky znázorňované podčiarknutým písmenom). Skratku
 		 * je možné najjednoduchšie určiť konštantou triedy {@link 
 		 * KeyEvent KeyEvent}<code>.</code>{@code VK_XXX} (tá je
 		 * v programovacom rámci na zjednodušenie prístupu prekrytá triedou
@@ -9002,11 +9039,11 @@ public final class Svet extends JFrame
 		}
 
 		/**
-		 * <p>Funguje rovnako ako {@link #pridajPoložkuPonuky(String, int)}
-		 * s tým, že definuje novej položke okrem mnemonickej aj klávesovú
-		 * skratku (skratky, ktoré pri v položkách ponuky znázorňované
-		 * v pravej časti textom Ctrl + písmeno). Skratky je možné
-		 * najjednoduchšie určiť konštantou triedy {@link KeyEvent
+		 * <p>Funguje rovnako ako {@link #pridajPoložkuPonuky(String text,
+		 * int mnemonickáSkratka)} s tým, že definuje novej položke okrem
+		 * mnemonickej aj klávesovú skratku (skratky, ktoré pri v položkách
+		 * ponuky znázorňované v pravej časti textom Ctrl + písmeno). Skratky
+		 * je možné najjednoduchšie určiť konštantou triedy {@link KeyEvent
 		 * KeyEvent}<code>.</code>{@code VK_XXX} (tá je v programovacom rámci
 		 * na zjednodušenie prístupu prekrytá triedou {@link Kláves Kláves},
 		 * takže môžeme použiť napríklad konštanty {@code Kláves.VK_A},
@@ -16206,7 +16243,7 @@ public final class Svet extends JFrame
 							VectorListPanel panel =
 								new VectorListPanel((Vector)údaj);
 
-							// TODO – využiť title?
+							// TODO – využiť title?
 							if (j < popisy.length && null != popisy[j])
 							{
 								if (popisyDialógu.size() < (l + 1))
@@ -16579,6 +16616,7 @@ public final class Svet extends JFrame
 				{@code kwdnew} {@link Object Object}[]{{@code srg'\r'}}, {@code srg"Otázka…"});
 
 			{@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@link Svet Svet}.{@link Svet#odpoveďDialógu() odpoveďDialógu}(), {@code srg' '});
+
 			<hr/>
 			{@link Svet Svet}.{@code currmojeOdpovede}({@code kwdnew} {@link String String}[]{{@code srg"Áno"}, {@code srg"Nie"}, {@code srg"Zrušiť"}});
 
@@ -16586,6 +16624,7 @@ public final class Svet extends JFrame
 				{@code srg"Zapamätať si moju voľbu"}}, {@code kwdnew} {@link Object Object}[]{{@code srg'\r'}, {@code valfalse}}, {@code srg"Otázka…"});
 
 			{@link Svet Svet}.{@link Svet#vypíš(Object[]) vypíš}({@link Svet Svet}.{@link Svet#odpoveďDialógu() odpoveďDialógu}(), {@code srg' '});
+
 			<hr/>
 			{@link Svet Svet}.{@code currmojeOdpovede}({@code valnull});
 			</pre>
@@ -17955,7 +17994,7 @@ public final class Svet extends JFrame
 		 * {@code Enter}. Ak je v čase spustenia tejto metódy skrytý, je ho
 		 * potrebné zobraziť metódou {@link #začniVstup() začniVstup} alebo
 		 * použiť alternatívnu metódu {@link 
-		 * #neskrývajVstupnýRiadok(boolean)}.</p>
+		 * #neskrývajVstupnýRiadok(boolean začniVstup)}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Táto metóda je použitá
 		 * v príklade „Hra na ozvenu,“ ktorý sa nachádza v {@linkplain 
@@ -18720,11 +18759,13 @@ public final class Svet extends JFrame
 		 * značne priamočiary s použitím vnútornej zotriedenej tabuľky
 		 * obsahujúcej predpísané hodnoty použité pri prevode ako napríklad:
 		 * M (1000), CM (900), D (500), CD (400) atď. Použité sú len veľké
-		 * písmená. Písmeno O reprezentuje nulu. Záporné hodnoty sú vyjadrené
-		 * uvedením Unicode znaku mínus (−) na začiatku prevedeného reťazca.
-		 * Hodnoty vyššie od tisíc (písmeno M) sú reprezentované s použitím
-		 * Unicode kombinačných znakov, ktoré však 2D stroj Javy nevie
-		 * korektne zobraziť – podrobnosti sú uvedené v opise metódy {@link 
+		 * písmená. Písmeno N reprezentuje nulu – viac o rímskej nule je
+		 * napísané v opise metódy {@link #rímskeNaCelé(String) rímskeNaCelé}.
+		 * Záporné hodnoty sú vyjadrené uvedením Unicode znaku mínus (−)
+		 * na začiatku prevedeného reťazca. Hodnoty vyššie od tisíc
+		 * (písmeno M) sú reprezentované s použitím Unicode kombinačných
+		 * znakov, ktoré však 2D stroj Javy nevie korektne zobraziť –
+		 * viac o tomto probléme je napísané v opise metódy {@link 
 		 * #rímskeNaCelé(String) rímskeNaCelé}.</p>
 		 * 
 		 * @param celé celé číslo určené na prevod
@@ -18734,8 +18775,8 @@ public final class Svet extends JFrame
 		 */
 		public static String celéNaRímske(long celé)
 		{
-			// Nulu budeme reprezentovať písmenom O.
-			if (0 == celé) return "O";
+			// Nulu budeme reprezentovať písmenom N.
+			if (0 == celé) return "N";
 
 			// Zásobník, do ktorého sa bude zostavovať reťazec rímskej
 			// reprezetnácie zadaného celého čísla.
@@ -18780,7 +18821,11 @@ public final class Svet extends JFrame
 		{
 			switch (znak)
 			{
-			case 'O': case 'o': return 0;
+			case 'O': case 'o': // „historicky“ – rámec kedysi považoval O za
+				// nulu, lebo to tak niekde autor rámca videl, ale podľa
+				// novších zistení Rimania používali namiesto nuly písmeno N,
+				// čo mohlo znamenať nulla alebo nihil (nič)
+			case 'N': case 'n': return 0;
 			case 'I': case 'i': return 1;
 			case 'V': case 'v': return 5;
 			case 'X': case 'x': return 10;
@@ -18816,20 +18861,27 @@ public final class Svet extends JFrame
 		 * v rímskej číselnej sústave na celé číslo.</p>
 		 * 
 		 * <p>Metóda je značne liberálna. Znak mínus na začiatku reťazca
-		 * spôsobí, že analyzované číslo bude prevedené na záporné, písmeno
-		 * O je považované za nulu (malé aj veľké) a metóda rozpoznáva aj
-		 * dva Unicode modifikátory, ktoré násobia hodnotu rímskeho znaku
-		 * tisícom alebo miliónom. Ide o kombinačné znaky jednoduchej
-		 * a dvojitej čiary nad predchádzajúcim znakom:  ̅,  ̿. Jednoduchá
-		 * čiara násobí hodnotu predchádzajúceho písmena tisícom a dvojitá
-		 * miliónom. Nevýhodou týchto špeciálnych znakov je to, že vnútorná
-		 * konzola plátien a pečiatkové texty programovacieho rámca ich
-		 * nevedia korektne zobraziť z dôvodu predvoleného spôsobu
+		 * spôsobí, že analyzované číslo bude prevedené na záporné, písmená
+		 * O a N sú považované za nulu (malé aj veľké)<sup>[1]</sup> a metóda
+		 * rozpoznáva aj dva Unicode modifikátory, ktoré násobia hodnotu
+		 * rímskeho znaku tisícom alebo miliónom. Ide o kombinačné znaky
+		 * jednoduchej a dvojitej čiary nad predchádzajúcim znakom:  ̅,  ̿.
+		 * Jednoduchá čiara násobí hodnotu predchádzajúceho písmena tisícom
+		 * a dvojitá miliónom. Nevýhodou týchto špeciálnych znakov je to, že
+		 * vnútorná konzola plátien a pečiatkové texty programovacieho rámca
+		 * ich nevedia korektne zobraziť z dôvodu predvoleného spôsobu
 		 * vykresľovania textov 2D strojom jazyka Java a tiež to, že
-		 * v niektorých softvéroch sú tieto znaky zobrazované nad
-		 * nasledujúcim znakom namiesto predchádzajúceho. Ak sú však
-		 * v zadanom reťazci prítomné, tak ich táto metóda berie do úvahy
-		 * a priraďuje ich vždy k predchádzajúcemu symbolu.</p>
+		 * v niektorých softvéroch sú tieto znaky zobrazované nad nasledujúcim
+		 * znakom namiesto predchádzajúceho. Ak sú však v zadanom reťazci
+		 * prítomné, tak ich táto metóda berie do úvahy a priraďuje ich vždy
+		 * k predchádzajúcemu symbolu.</p>
+		 * 
+		 * <p><small>[1] – Do 14. 8. 2023 to bolo len písmeno O, ale autor
+		 * rámca zistil, že Rimania v skutočnosti používali písmeno N, čo mohlo
+		 * znamenať <em>nulla</em> (nula) alebo <em>nihil</em> (nič). Z dôvodu
+		 * spätnej kompatibility (a tiež z dôvodu jeho výskytu v niektorých
+		 * menej informovaných zdrojoch) bolo ponechané aj písmeno
+		 * O.</small></p>
 		 * 
 		 * <p>Platné rímske číslice sú malé alebo veľké písmená: I (1),
 		 * V (5), X (10), L (50), C (100), D (500) a M (1000). Ak je séria
@@ -18843,7 +18895,7 @@ public final class Svet extends JFrame
 		 * reťazec VVX má hodnotu 0.</p>
 		 * 
 		 * @param rímske rímska reprezentácia celého čísla
-		 * @return prevedená hodnota
+		 * @return prevedená hodnota alebo {@code valnull}, ak prevod zlyhal
 		 * 
 		 * @see #celéNaRímske(long)
 		 */
@@ -20943,7 +20995,9 @@ public final class Svet extends JFrame
 				// TODO: Tento bezpečnostný mechanizmus nie je zďaleka
 				// dokončený‼ Na jeho dokončenie by bolo treba zabezpečiť,
 				// aby sa v tomto okamihu zastavilo vykonávanie všetkých
-				// skriptov.
+				// skriptov. (Pretože skripty sa môžu všelijako krížiť,
+				// vynárať a vnárať a cyklenie môže nastávať postupne,
+				// nie naraz.)
 
 				// —hĺbkaVolania = 0;—
 				GRobotException.vypíšChybovéHlásenie(
@@ -23628,8 +23682,8 @@ public final class Svet extends JFrame
 		 * súboru musí byť {@code .gif}, {@code .png} alebo {@code .jpg}
 		 * (resp. {@code .jpeg}). Ak súbor jestvuje, tak vznikne výnimka
 		 * oznamujúca, že súbor so zadaným menom už jestvuje. Ak chcete súbor
-		 * prepísať, použite metódu {@link #uložObrázok(String, boolean)}
-		 * s druhým parametrom rovným {@code valtrue}.</p>
+		 * prepísať, použite metódu {@link #uložObrázok(String súbor, boolean
+		 * prepísať)} s druhým parametrom rovným {@code valtrue}.</p>
 		 * 
 		 * @param súbor názov súboru s požadovanou príponou
 		 * 
@@ -23649,7 +23703,7 @@ public final class Svet extends JFrame
 		 * @param súbor názov súboru s požadovanou príponou
 		 * @param prepísať ak je {@code valtrue}, prípadný jestvujúci
 		 *     súbor bude prepísaný, inak sa správa rovnako ako metóda
-		 *     {@link #uložObrázok(String)}
+		 *     {@link #uložObrázok(String súbor)}
 		 * 
 		 * @throws GRobotException ak súbor jestvuje a parameter prepísať
 		 *     je {@code valfalse} alebo ak bol zadaný názov súboru
@@ -23925,10 +23979,10 @@ public final class Svet extends JFrame
 		{ farbaPozadia(objekt.farba()); }
 
 		/* *
-		 * <p>Toto je „klon“ metódy {@link #farbaPozadia(Farba)}. Farba
-		 * pozadia je nastavená len v prípade, že v premennej typu {@link 
-		 * Object} (zadanej ako parameter) je uložená inštancia triedy {@link 
-		 * Farba Farba} alebo {@link Color Color}.</p>
+		 * <p>Toto je „klon“ metódy {@link #farbaPozadia(Farba nováFarba)}.
+		 * Farba pozadia je nastavená len v prípade, že v premennej typu
+		 * {@link Object} (zadanej ako parameter) je uložená inštancia triedy
+		 * {@link Farba Farba} alebo {@link Color Color}.</p>
 		 * /
 		public static void farbaPozadia(Object nováFarba)
 		{
@@ -29568,8 +29622,8 @@ public final class Svet extends JFrame
 		 * ktoré bolo zvolené tak, aby bolo čo najmenej výpočtovo náročné.
 		 * V skutočnosti je veľmi priamočiare. Je to skrátka rozdiel dvoch
 		 * hodnôt, konkrétne:<br />
-		 * – vzdialenosti stredu kružnice od priamky<br />
-		 * – a polomeru kružnice.<br />
+		 *  • vzdialenosti stredu kružnice od priamky<br />
+		 *  • a polomeru kružnice.<br />
 		 * (Pričom algoritmus výpočtu vzdialenosti bodu od priamky nie je
 		 * príliš výpočtovo náročný a aj v triedach Javy sa nachádza
 		 * {@linkplain Line2D#ptLineDist(double, double, double, double,
@@ -29960,7 +30014,7 @@ public final class Svet extends JFrame
 		 * číslom (indexom; čiže nula označuje prvé zariadenie).</p>
 		 * 
 		 * <p>(Príklad použitia tejto metódy je pri opise metódy
-		 * {@link #celáObrazovka(int, boolean)}.)</p>
+		 * {@link #celáObrazovka(int zariadenie, boolean celáObrazovka)}.)</p>
 		 * 
 		 * @param zariadenie číslo zariadenia, ktoré má byť použité
 		 *     v režime celej obrazovky
@@ -30282,7 +30336,7 @@ public final class Svet extends JFrame
 		{ return celáObrazovka(zariadenie, celáObrazovka); }
 
 		/**
-		 * <p>Ak je svet v {@link #celáObrazovka() režime celej obrazovky},
+		 * <p>Ak je svet v {@linkplain #celáObrazovka() režime celej obrazovky},
 		 * tak táto metóda vráti inštanciu {@link JFrame okna} celej
 		 * obrazovky, inak metóda vráti hodnotu {@code valnull}.</p>
 		 * 
@@ -30301,6 +30355,13 @@ public final class Svet extends JFrame
 		 * zákaznícky definovaného okna. Táto funkcia nájde využitie, ak
 		 * chceme grafiku sveta preniesť do okna bez dekoru, pretože zmeniť
 		 * tento stav pri jestvujúcom okne (svete) nie je v Jave možné.</p>
+		 * 
+		 * <p class="attention"><b>Upozornenie:</b> V súčasnosti <b>nie je</b>
+		 * možné prenášať komponenty do (a z) inštancií triedy {@link Okno
+		 * Okno}. (Tieto okná majú vlastný {@linkplain Okno#hlavnýPanel()
+		 * hlavný panel} s vlastnými obsluhami udalostí a pokus o prenos by
+		 * (aj keď by bol zdanlivo úspešný) vyvolal množstvo kolíznych
+		 * situácií.)</p>
 		 * 
 		 * <p><b>Na prevzatie:</b></p>
 		 * 
@@ -30328,6 +30389,10 @@ public final class Svet extends JFrame
 		 */
 		public static void prenes(JFrame inéOkno, boolean tam)
 		{
+			// TODO:  Vytvoriť variant tejto metódy prenášajúci komponenty
+			// do inštancie triedy Okno – ak to bude možné, lebo okná majú
+			// vlastný panel s vlastnou obsluhou a nie je isté, že sa toto
+			// bude dať zrealizovať jednoduchým spôsobom.
 			ComponentEvent componentEvent; ComponentListener[]
 
 			cls = inéOkno.getComponentListeners();
@@ -30387,6 +30452,19 @@ public final class Svet extends JFrame
 				udalostiOkna.componentResized(componentEvent);
 			}
 		}
+
+		/**
+		 * <p>Prenesie grafiku sveta do iného okna. Táto metóda vykoná to
+		 * isté ako keby sme volali metódu: {@link #prenes(JFrame, boolean)
+		 * prenes}<code>(inéOkno, </code>{@code valtrue}<code>)</code>.
+		 * Podrobnosti sú uvedené v jej opise.</p>
+		 * 
+		 * @param inéOkno okno, do ktorého majú byť prenesené grafické
+		 *     komponenty
+		 * 
+		 * @see #prenes(JFrame, boolean)
+		 */
+		public static void prenes(JFrame inéOkno) { prenes(inéOkno, true); }
 
 
 		/**
@@ -30814,12 +30892,12 @@ public final class Svet extends JFrame
 		 * ÚdajeUdalostí.príkazSkratky()} na identifikáciu príkazu.</p>
 		 * 
 		 * <p>Niektoré klávesové skratky by mohli spôsobiť obmedzenie
-		 * funkčnosti {@link #vstupnýRiadok() vstupného riadka}, preto táto
-		 * verzia metódy umožňuje nepriradiť túto skratku vstupnému riadku.
-		 * Naopak, v niektorých prípadoch je žiadúce definovať klávesovú
-		 * skratku len pre vstupný riadok. Na tieto prípady je rezervovaný
-		 * samostatná metóda
-		 * {@link #pridajKlávesovúSkratkuVstupnéhoRiadka(String, int, int)
+		 * funkčnosti {@linkplain #vstupnýRiadok() vstupného riadka}, preto
+		 * táto verzia metódy umožňuje nepriradiť túto skratku vstupnému
+		 * riadku. Naopak, v niektorých prípadoch je žiadúce definovať
+		 * klávesovú skratku len pre vstupný riadok. Na tieto prípady je
+		 * rezervovaný samostatná metóda {@link 
+		 * #pridajKlávesovúSkratkuVstupnéhoRiadka(String, int, int)
 		 * pridajKlávesovúSkratkuVstupnéhoRiadka}.</p>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Príklad použitia nájdete

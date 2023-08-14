@@ -615,9 +615,9 @@ import static knižnica.Konštanty.ŽIADNA_CHYBA;
 	{
 		{@code comm// Nasledujúce premenné sú „semafory“ používané počas procesu ladenia:}
 		{@code comm// }
-		{@code comm//   – krok:     hodnota tejto premennej riadi krokovanie; hodnota true}
+		{@code comm//   – krok:     hodnota tejto premennej riadi krokovanie; hodnota true}
 		{@code comm//               znamená posunutie programu o krok ďalej (na ďalší príkaz)}
-		{@code comm//   – prerušiť: nastavením hodnoty tejto premennej na true je možné}
+		{@code comm//   – prerušiť: nastavením hodnoty tejto premennej na true je možné}
 		{@code comm//               ladenie programu predčasne ukončiť}
 		{@code kwdprivate} {@code typeboolean} krok = {@code valfalse}, prerušiť = {@code valfalse};
 
@@ -1636,7 +1636,7 @@ public abstract class Skript
 	// Ak je zadaný príznak typu 0, tak sú vypísané jestvujúce premenné so
 	// zadaným menom všetkých typov.
 	/*packagePrivate*/ static void vypíšPremennú(int riadok,
-		String názov, int typ) // 0 == všetky typy.
+		String názov, int typ) // 0 == všetky typy
 	{
 		if (ladenie && (null == ObsluhaUdalostí.počúvadlo ||
 			ObsluhaUdalostí.počúvadlo.ladenie(riadok, názov, typ)))

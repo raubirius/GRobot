@@ -780,7 +780,7 @@ public class Plazma
 			f2 = farby[j + 1].getRGB();
 
 			// System.out.println(j + ": Rozsah: " + začiatok +
-			// 	" – " + koniec + "; počet: " + počet);
+			// 	" – " + koniec + "; počet: " + počet);
 
 			int r1 = ((f1 >> 16) & 0xff);
 			int g1 = ((f1 >>  8) & 0xff);

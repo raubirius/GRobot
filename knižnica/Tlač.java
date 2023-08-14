@@ -446,7 +446,7 @@ public abstract class Tlač implements Printable, Pageable
 	 *     tlače Javy)
 	 * @param pf formát strany (tiež je priraďovaný automaticky podľa iných
 	 *     nastavení – pozri napríklad metódu {@link #nastavenieStrany(int)
-	 *     #nastavenieStrany(strana)}); tento parameter je odovzdaný do
+	 *     nastavenieStrany(strana)}); tento parameter je odovzdaný do
 	 *     metódy {@link #kresli(int, PageFormat) kresli}
 	 * @param page číslo strany – cyklicky sa mení podľa toho, aký rozsah
 	 *     tlače bol zvolený; tento parameter je odovzdaný do metódy {@link 
@@ -1622,9 +1622,9 @@ public abstract class Tlač implements Printable, Pageable
 	 * pričom návratová hodnota {@code num-1} znamená, že táto situácia
 	 * nenastala.</p>
 	 * 
-	 * <!-- TODO – dokonči opis – chs vs blokSlov nulls -->
+	 * <!-- TODO – dokonči opis – chs vs blokSlov nulls -->
 	 * 
-	 * <!-- TODO – príklad použitia? -->
+	 * <!-- TODO – príklad použitia? -->
 	 * 
 	 * @param g grafický kontext kreslenia textu; jeho {@linkplain 
 	 *     Graphics#getFont() font} ovplyvňuje {@linkplain 

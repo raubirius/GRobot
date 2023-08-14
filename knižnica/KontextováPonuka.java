@@ -164,9 +164,9 @@ public class KontextováPonuka extends JPopupMenu
 	}
 
 	/**
-	 * <p>Vytvorí kontextovú ponuku s titulným popisom. {@code text} nesmie
-	 * byť {@code valnull} a môže byť dodatočne upravovaný metódou
-	 * {@link #popis(String)}.</p>
+	 * <p>Vytvorí kontextovú ponuku s titulným popisom. Parameter {@code text}
+	 * nesmie byť {@code valnull} a môže byť dodatočne upravovaný metódou
+	 * {@link #popis(String text)}.</p>
 	 * 
 	 * @param popis text popisu ponuky; nesmie byť {@code valnull}
 	 */
@@ -283,7 +283,8 @@ public class KontextováPonuka extends JPopupMenu
 	 * <p><a class="setter"></a> Nastaví text popisu ponuky.
 	 * Má zmysel len v prípade, že ponuka bola vytvorená konštruktorom:
 	 * {@link KontextováPonuka#KontextováPonuka(String)
-	 * KontextováPonuka(popis)}. {@code text} nesmie byť {@code valnull}.</p>
+	 * KontextováPonuka(popis)}. Parameter {@code text} nesmie byť
+	 * {@code valnull}.</p>
 	 * 
 	 * <p><small>(<b>Pozri aj:</b>
 	 * {@link JPopupMenu#setLabel(String)}.)</small></p>
@@ -309,11 +310,12 @@ public class KontextováPonuka extends JPopupMenu
 	 */
 	public void zobraz()
 	{
-		int x = ÚdajeUdalostí.poslednáUdalosťMyši.getX();
-		int y = ÚdajeUdalostí.poslednáUdalosťMyši.getY();
+		int x = ÚdajeUdalostí.pôvodnáSúradnicaMyšiX;
+		int y = ÚdajeUdalostí.pôvodnáSúradnicaMyšiY;
 
 		if (ÚdajeUdalostí.poslednáUdalosťMyši.getSource() instanceof Component)
-			show((Component)ÚdajeUdalostí.poslednáUdalosťMyši.getSource(), x, y);
+			show((Component)ÚdajeUdalostí.poslednáUdalosťMyši.getSource(),
+				x, y);
 		else
 			show(Svet.hlavnýPanel, x, y);
 	}
@@ -325,7 +327,11 @@ public class KontextováPonuka extends JPopupMenu
 	 * @param y y-ová súradnica polohy na zobrazenie ponuky
 	 */
 	public void zobraz(double x, double y)
-	{ show(Svet.hlavnýPanel, (int)Svet.prepočítajX(x), (int)Svet.prepočítajY(y)); }
+	{
+		show(Svet.hlavnýPanel,
+			(int)Svet.prepočítajMyšX(x),
+			(int)Svet.prepočítajMyšY(y));
+	}
 
 
 	/**
@@ -353,7 +359,7 @@ public class KontextováPonuka extends JPopupMenu
 	 * <p><a class="setter"></a> Nastaví text popisu ponuky. Má zmysel len
 	 * v prípade, že ponuka bola vytvorená konštruktorom: {@link 
 	 * KontextováPonuka#KontextováPonuka(String) KontextováPonuka(popis)}.
-	 * {@code text} nesmie byť {@code valnull}.</p>
+	 * Parameter {@code text} nesmie byť {@code valnull}.</p>
 	 * 
 	 * <p class="remark"><b>Poznámka:</b> Táto metóda prekrýva originálnu
 	 * metódu {@link JPopupMenu#setLabel(String)}. </p>

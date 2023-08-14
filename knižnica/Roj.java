@@ -2604,7 +2604,7 @@ public class Roj
 			x = x1; y = y1; z = z1;
 		}
 
-		/** <p><a class="alias"></a> Alias pre {@link #otočOkolo(double, double, double, double, double, double, double, boolean) otoč}.</p> */
+		/** <p><a class="alias"></a> Alias pre {@link #otočOkolo(double, double, double, double, double, double, double, boolean) otočOkolo}.</p> */
 		public void otocOkolo(double a, double b, double c, double u, double v,
 			double w, double Θ, boolean î) { otočOkolo(a, b, c, u, v, w, Θ, î); }
 
@@ -2633,7 +2633,7 @@ public class Roj
 				otočOkolo(a[0], a[1], a[2], a[3], a[4], a[5], uhol, true);
 		}
 
-		/** <p><a class="alias"></a> Alias pre {@link #otočOkolo(double) otoč}.</p> */
+		/** <p><a class="alias"></a> Alias pre {@link #otočOkolo(double) otočOkolo}.</p> */
 		public void otocOkolo(double uhol) { otočOkolo(uhol); }
 
 
@@ -4869,7 +4869,7 @@ public class Roj
 
 
 	/**
-	* <p>Prečíta údaje o roji z konfiguračného súboru otvoreného na čítanie.
+	 * <p>Prečíta údaje o roji z konfiguračného súboru otvoreného na čítanie.
 	 * Metóda prijíma identifikátor menného priestoru. Identifikátor smie mať
 	 * hodnotu {@code valnull}. V takom prípade sú údaje čítané z aktuálneho
 	 * menného priestoru zadaného konfiguračného súboru.</p>

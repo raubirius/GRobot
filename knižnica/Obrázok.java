@@ -2293,6 +2293,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 			archív.{@link Archív#otvorNaZápis(String) otvorNaZápis}({@code srg"archív-png.zip"});
 			archív.{@link Archív#pridajPoložku(String, Obrázok) pridajPoložku}({@code srg"názov-*.png"}, obrázok);
 			archív.{@link Archív#zavri() zavri}();
+
 			<hr/>
 			{@code comm// A takto potom prečítať}
 			archív.{@link Archív#otvorNaČítanie(String) otvorNaČítanie}({@code srg"archív-png.zip"});
@@ -2704,7 +2705,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		public void výška(double výška) { throw new GRobotException(
 			"Rozmery obrázka nie je možné zmeniť.", "imageSizeImmutable"); }
 
-		/** <p><a class="alias"></a> Alias pre {@link #výška(double) šírka}.</p> */
+		/** <p><a class="alias"></a> Alias pre {@link #výška(double) výška}.</p> */
 		public void vyska(double výška) { výška(výška); }
 
 
@@ -3697,7 +3698,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		public void vypln(Farebnosť objekt) { vyplň(objekt); }
 
 		/* *
-		 * <p>Toto je „klon“ metódy {@link #vyplň(Color)}. Obrázok je
+		 * <p>Toto je „klon“ metódy {@link #vyplň(Color farba)}. Obrázok je
 		 * vyplnený len v prípade, že je v premennej typu {@link Object}
 		 * (zadanej ako parameter) uložená inštancia triedy {@link Farba
 		 * Farba} alebo {@link Color Color}.</p>
@@ -4222,8 +4223,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		}
 
 		/* *
-		 * <p>Toto je „klon“ metódy {@link #vylejFarbu(double, double,
-		 * Color)}. Proces vyplnenia sa uskutoční len v prípade, že je
+		 * <p>Toto je „klon“ metódy {@link #vylejFarbu(double x, double y,
+		 * Color farba)}. Proces vyplnenia sa uskutoční len v prípade, že je
 		 * v premennej typu {@link Object} (zadanej ako parameter) uložená
 		 * inštancia triedy {@link Farba Farba} alebo {@link Color Color}.</p>
 		 * /
@@ -4238,7 +4239,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * <p>Vyleje do zadaného bodu do obrázka farbu zadanú prostredníctvom
 		 * farebných zložiek, ktorá sa určeného bodu rozšíri po okraje
 		 * okolitej kresby. Na ďalšie informácie pozri metódu {@link 
-		 * #vylejFarbu(double, double, Color)}. Správanie tejto
+		 * #vylejFarbu(double x, double y, Color farba)}. Správanie tejto
 		 * metódy je odvodené od nej.</p>
 		 * 
 		 * @param x x-ová súradnica počiatočného bodu
@@ -4262,8 +4263,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * <p>Vyleje do zadaného bodu do obrázka farbu zadanú prostredníctvom
 		 * farebných zložiek a úrovne (ne)priehľadnosti, pričom farba sa
 		 * z určeného bodu rozšíri k okrajom okolitej kresby. Na ďalšie
-		 * informácie pozri metódu {@link #vylejFarbu(double, double,
-		 * Color)}. Správanie tejto metódy je odvodené od nej.</p>
+		 * informácie pozri metódu {@link #vylejFarbu(double x, double y,
+		 * Color farba)}. Správanie tejto metódy je odvodené od nej.</p>
 		 * 
 		 * @param x x-ová súradnica počiatočného bodu
 		 * @param y y-ová súradnica počiatočného bodu
@@ -4321,8 +4322,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		}
 
 		/* *
-		 * <p>Toto je „klon“ metódy {@link #vylejFarbu(double, double,
-		 * Color)}. Proces vyplnenia sa uskutoční len v prípade, že je
+		 * <p>Toto je „klon“ metódy {@link #vylejFarbu(double x, double y,
+		 * Color farba)}. Proces vyplnenia sa uskutoční len v prípade, že je
 		 * v premennej typu {@link Object} (zadanej ako parameter) uložená
 		 * inštancia triedy {@link Farba Farba} alebo {@link Color Color}.</p>
 		 * /
@@ -4337,7 +4338,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * <p>Vyleje do zadaného bodu do obrázka farbu zadanú prostredníctvom
 		 * farebných zložiek, ktorá sa určeného bodu rozšíri po okraje
 		 * okolitej kresby. Na ďalšie informácie pozri metódu {@link 
-		 * #vylejFarbu(double, double, Color)}. Správanie tejto
+		 * #vylejFarbu(double x, double y, Color farba)}. Správanie tejto
 		 * metódy je odvodené od nej.</p>
 		 * 
 		 * @param bod súradnice počiatočného bodu
@@ -4360,8 +4361,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * <p>Vyleje do zadaného bodu do obrázka farbu zadanú prostredníctvom
 		 * farebných zložiek a úrovne (ne)priehľadnosti, pričom farba sa
 		 * z určeného bodu rozšíri k okrajom okolitej kresby. Na ďalšie
-		 * informácie pozri metódu {@link #vylejFarbu(double, double,
-		 * Color)}. Správanie tejto metódy je odvodené od nej.</p>
+		 * informácie pozri metódu {@link #vylejFarbu(double x, double y,
+		 * Color farba)}. Správanie tejto metódy je odvodené od nej.</p>
 		 * 
 		 * @param bod súradnice počiatočného bodu
 		 * @param r červená zložka farby; celé číslo v rozsahu 0 – 255
@@ -4385,7 +4386,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * <p>Zadaný robot vyleje na svojej pozícii do obrázka svoju aktuálnu
 		 * {@linkplain GRobot#farba() farbu}, ktorá sa odtiaľ rozšíri po
 		 * okraje okolitej kresby. Na ďalšie informácie pozri metódu {@link 
-		 * #vylejFarbu(double, double, Color)}. Správanie tejto
+		 * #vylejFarbu(double x, double y, Color farba)}. Správanie tejto
 		 * metódy je odvodené od nej.</p>
 		 * 
 		 * @param ktorý robot, ktorého poloha a farba sú použité na výplň
@@ -6441,8 +6442,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		/**
 		 * <p>Táto metóda použije na tento obrázok zadanú svetelnú masku.
 		 * Táto operácia nahradí pôvodný obsah obrázka. Správanie tejto
-		 * metódy je podobné ako správanie metódy {@link #svetlo(Obrázok,
-		 * Obrázok)} (pozrite si aj jej opis).</p>
+		 * metódy je podobné ako správanie metódy {@link #svetlo(Obrázok
+		 * grafika, Obrázok osvetlenie)} (pozrite si aj jej opis).</p>
 		 * 
 		 * @param osvetlenie iný obrázok, ktorého obsah bude použitý
 		 *     na svetelnú úpravu bodov tohto obrázka
@@ -7366,8 +7367,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * {@code .png} alebo {@code .jpg} (resp. {@code .jpeg}). Ak súbor
 		 * jestvuje, tak vznikne výnimka oznamujúca, že súbor so zadaným
 		 * menom už jestvuje. Ak chcete súbor prepísať, použite metódu
-		 * {@link #ulož(String, boolean)} s druhým parametrom rovným
-		 * {@code valtrue}. Odporúčame pozrieť si opis uvedenej metódy,
+		 * {@link #ulož(String súbor, boolean prepísať)} s druhým parametrom
+		 * rovným {@code valtrue}. Odporúčame pozrieť si opis uvedenej metódy,
 		 * pretože obsahuje užitočné príklady použitia a informácie v jej
 		 * opise sú platné aj pre túto metódu.</p>
 		 * 
@@ -8003,7 +8004,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 		 * @param súbor názov súboru s požadovanou príponou
 		 * @param prepísať ak je {@code valtrue}, prípadný jestvujúci
 		 *     súbor bude prepísaný, inak sa správa rovnako ako metóda
-		 *     {@link #ulož(String)}
+		 *     {@link #ulož(String súbor)}
 		 * 
 		 * @throws GRobotException ak súbor jestvuje a parameter prepísať
 		 *     je {@code valfalse} alebo ak bol zadaný názov súboru

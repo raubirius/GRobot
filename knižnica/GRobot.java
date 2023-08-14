@@ -1111,29 +1111,29 @@ Toto bolo presunuté na úvodnú stránku:
 
 					setForeground(farbaRobota);
 					setFont(aktuálnePísmo);
-					FontMetrics rozmery = getFontMetrics(aktuálnePísmo);
+					FontMetrics metrika = getFontMetrics(aktuálnePísmo);
 
 					if (šírkaPrvku < 0)
-						šírka = rozmery.stringWidth(text);
+						šírka = metrika.stringWidth(text);
 					else
 						šírka = (int)šírkaPrvku;
 
-					výška = rozmery.getHeight();
-					double poklesTextu = ((rozmery.getDescent() * 3) / 2);
+					výška = metrika.getHeight();
+					int poklesTextu = (metrika.getDescent() * 3) / 2;
 
 					if (0 == (spôsobKreslenia & KRESLI_NA_STRED))
 					{
 						x = (int)prepočítanéX;
 						y = (int)(prepočítanéY -
-							poklesTextu - ((rozmery.getAscent() * 4) / 6));
+							poklesTextu - ((metrika.getAscent() * 4) / 6));
 						setHorizontalAlignment(JTextField.LEFT);
 					}
 					else
 					{
 						x = (int)(prepočítanéX - (šírka / 2.0));
 						y = (int)(prepočítanéY /*+ poklesTextu*/
-							// - (rozmery.getAscent() / 2)
-							- ((rozmery.getAscent() * 4) / 6)
+							// - (metrika.getAscent() / 2)
+							- ((metrika.getAscent() * 4) / 6)
 							);
 						setHorizontalAlignment(JTextField.CENTER);
 					}
@@ -4426,7 +4426,19 @@ Toto bolo presunuté na úvodnú stránku:
 						new Line2D.Double(x0P, y0P, x1P, y1P));
 				}
 
-				if (null != svgExport) svgExport.pridaj(úsečka, this);
+				if (null != svgExport)
+				{
+					TypTvaru zálohaTypu = poslednýTypTvaru;
+					try
+					{
+						poslednýTypTvaru = TypTvaru.OBRYS;
+						svgExport.pridaj(úsečka, this);
+					}
+					finally
+					{
+						poslednýTypTvaru = zálohaTypu;
+					}
+				}
 
 				if (vráťKompozit)
 					grafikaAktívnehoPlátna.setComposite(zálohaKompozitu);
@@ -7124,10 +7136,10 @@ Toto bolo presunuté na úvodnú stránku:
 				{ farba(podľaObjektu.farba()); }
 
 				/* *
-				 * <p>Toto je „klon“ metódy {@link #farba(Color)}. Farba je
-				 * nastavená len v prípade, že v premennej typu {@link Object}
-				 * (zadanej ako parameter) je uložená inštancia triedy {@link 
-				 * Farba Farba} alebo {@link Color Color}.</p>
+				 * <p>Toto je „klon“ metódy {@link #farba(Color nováFarba)}.
+				 * Farba je nastavená len v prípade, že v premennej typu
+				 * {@link Object} (zadanej ako parameter) je uložená inštancia
+				 * triedy {@link Farba Farba} alebo {@link Color Color}.</p>
 				 * /
 				public void farba(Object nováFarba)
 				{
@@ -8871,11 +8883,12 @@ Toto bolo presunuté na úvodnú stránku:
 					</pre>
 				 * 
 				 * <p>Táto metóda nemá verziu obmedzujúcu maximálny uhol
-				 * pootočenia (ako napríklad: {@link #otoč(Smer, double)}),
-				 * pretože by pri definícii nastal konflikt s metódou {@link 
-				 * #otoč(double, double) otoč(Δx, Δy)}. Ak chcete obmedziť
-				 * maximálny uhol pootočenia, použite metódu {@link #otoč(Smer,
-				 * double)}, ktorú odporúčame použiť v každom prípade.</p>
+				 * pootočenia (ako napríklad: {@link #otoč(Smer objekt, double
+				 * najviacO)}), pretože by pri definícii nastal konflikt
+				 * s metódou {@link #otoč(double, double) otoč(Δx, Δy)}. Ak
+				 * chcete obmedziť maximálny uhol pootočenia, použite metódu
+				 * {@link #otoč(Smer objekt, double najviacO)}, ktorú
+				 * odporúčame použiť v každom prípade.</p>
 				 * 
 				 * @param uhol uhol smeru robota (nula znamená vpravo,
 				 *     deväťdesiat hore a tak ďalej)
@@ -14864,7 +14877,7 @@ Toto bolo presunuté na úvodnú stránku:
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
-				/** <p><a class="alias"></a> Alias pre {@link #otočO(double) otoč}.</p> */
+				/** <p><a class="alias"></a> Alias pre {@link #otočO(double) otočO}.</p> */
 				public void otocO(double uhol) { otočO(uhol); }
 
 
@@ -14911,7 +14924,7 @@ Toto bolo presunuté na úvodnú stránku:
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
-				/** <p><a class="alias"></a> Alias pre {@link #otočO(double, double) otoč}.</p> */
+				/** <p><a class="alias"></a> Alias pre {@link #otočO(double, double) otočO}.</p> */
 				public void otocO(double uhol, double najviacO) { otočO(uhol, najviacO); }
 
 
@@ -16110,7 +16123,7 @@ Toto bolo presunuté na úvodnú stránku:
 				// public void otocNa(Point2D bod) { otočNa(bod); }
 				// 
 				// /**
-				//  * <p>Funguje podobne ako metóda {@link #otočNa(Point2D)
+				//  * <p>Funguje podobne ako metóda {@link #otočNa(Point2D bod)
 				//  * otočNa}, ibaže obmedzuje uhol pootočenia stanoveným smerom –
 				//  * neotočí robot okamžite smerom na zadané súradnice, iba ním
 				//  * pootočí stanoveným smerom o maximálnu zadanú hodnotu
@@ -23209,9 +23222,9 @@ Toto bolo presunuté na úvodnú stránku:
 
 
 				/**
-				 * <p>Označí zadanú fázu dráhy za kľúčovú. V kľúčových fázach je
-				 * spúšťaná metóda {@link #vstupDoKľúčovejFázyDráhy(int)}
-				 * namiesto metódy {@link #kráčaniePoDráhe()}.</p>
+				 * <p>Označí zadanú fázu dráhy za kľúčovú. V kľúčových fázach
+				 * je spúšťaná metóda {@link #vstupDoKľúčovejFázyDráhy(int
+				 * fáza)} namiesto metódy {@link #kráčaniePoDráhe()}.</p>
 				 * 
 				 * @param fáza index fázy, ktorá má byť označená za kľúčovú
 				 * 
@@ -23312,9 +23325,9 @@ Toto bolo presunuté na úvodnú stránku:
 				 * označená a leží najbližšie k zadanej polohe. To znamená,
 				 * že pri dostatočnom počte opakovaní pokusov o označenie by
 				 * nakoniec boli označené všetky fázy dráhy.
-				 * V kľúčových fázach je
-				 * spúšťaná metóda {@link #vstupDoKľúčovejFázyDráhy(int)}
-				 * namiesto metódy {@link #kráčaniePoDráhe()}.</p>
+				 * V kľúčových fázach je spúšťaná metóda {@link 
+				 * #vstupDoKľúčovejFázyDráhy(int fáza)} namiesto metódy
+				 * {@link #kráčaniePoDráhe()}.</p>
 				 * 
 				 * @param fáza približná poloha fázy, ktorá má byť označená
 				 *     za kľúčovú
@@ -23474,7 +23487,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * ktorá ešte nebola označená a leží najbližšie k zadanej
 				 * polohe. Ak taká fáza nejestvuje, tak nie je označená žiadna
 				 * fáza. V kľúčových fázach je
-				 * spúšťaná metóda {@link #vstupDoKľúčovejFázyDráhy(int)}
+				 * spúšťaná metóda {@link #vstupDoKľúčovejFázyDráhy(int fáza)}
 				 * namiesto metódy {@link #kráčaniePoDráhe()}.</p>
 				 * 
 				 * @param fáza približná poloha fázy, ktorá má byť označená
@@ -24519,7 +24532,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * GRobot#nižšie() nižšie}, {@link GRobot#pred(GRobot) pred}
 				 * a {@link GRobot#za(GRobot) za}. Ak je hodnota argumentu
 				 * {@code obrátene} rovná {@code valfalse}, metóda sa správa
-				 * rovnako ako {@link #vyzviRoboty(int)}.</p>
+				 * rovnako ako {@link #vyzviRoboty(int kľúč)}.</p>
 				 * 
 				 * <p class="remark"><b>Poznámka:</b> Ak je poradie robotov
 				 * zmenené počas {@linkplain GRobot#prijatieVýzvy(GRobot, int)
@@ -24555,7 +24568,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 *     spracovania; {@code valtrue} znamená spracovanie
 				 *     vnútorného zoznamu robotov od konca; {@code valfalse}
 				 *     znamená rovnaký spôsob spracovania ako pri metóde
-				 *     {@link #vyzviRoboty(int)}
+				 *     {@link #vyzviRoboty(int kľúč)}
 				 * 
 				 * @see #prijatieVýzvy(GRobot, int)
 				 * @see #vyzviRoboty()
@@ -24632,7 +24645,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * prekrytím môžete upraviť správanie aktívneho robota.
 				 * V režime pohybu robota po dráhe je táto metóda nahradená
 				 * reakciami {@link #kráčaniePoDráhe()}
-				 * a {@link #vstupDoKľúčovejFázyDráhy(int)}.</p>
+				 * a {@link #vstupDoKľúčovejFázyDráhy(int fáza)}.</p>
 				 * 
 				 * <p><b>Príklad:</b></p>
 				 * 
@@ -25489,7 +25502,7 @@ Toto bolo presunuté na úvodnú stránku:
 					{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@code currzmenaPolohy}()
 					{
 						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Zmena polohy: "},
-							{@link #poslednáPoloha() poslednáPoloha}(), {@code srg" – "} + {@link poloha poloha}());
+							{@link #poslednáPoloha() poslednáPoloha}(), {@code srg" – "} + {@link poloha poloha}());
 						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Zistené volanie: "},
 							{@link GRobotException GRobotException}.{@link GRobotException#stackTraceToString(Throwable) stackTraceToString}(
 								{@code kwdnew} {@link Throwable#Throwable() Throwable}()));
@@ -25519,7 +25532,7 @@ Toto bolo presunuté na úvodnú stránku:
 					{@code kwd@}Override {@code kwdpublic} {@code typeboolean} {@code currzmenaUhla}()
 					{
 						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Zmena uhla: "},
-							{@link #poslednýUhol() poslednýUhol}(), {@code srg" – "} + {@link #uhol() uhol}());
+							{@link #poslednýUhol() poslednýUhol}(), {@code srg" – "} + {@link #uhol() uhol}());
 						{@link Svet Svet}.{@link Svet#vypíšRiadok(Object[]) vypíšRiadok}({@code srg"Zistené volanie: "},
 							{@link GRobotException GRobotException}.{@link GRobotException#stackTraceToString(Throwable) stackTraceToString}(
 								{@code kwdnew} {@link Throwable#Throwable() Throwable}()));
@@ -26548,8 +26561,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 * {@linkplain #vymažPôsobisko() vymazania pôsobiska} alebo od
 			 * posledného použitia niektorej z metód {@link #domov() domov}.
 			 * Na zíkanie ďalších informácií pozri metódy
-			 * {@link #kresliPôsobisko() nekresliPôsobisko},
-			 * {@link #nekresliPôsobisko() kresliPôsobisko} atď.</p>
+			 * {@link #nekresliPôsobisko() nekresliPôsobisko},
+			 * {@link #kresliPôsobisko() kresliPôsobisko} atď.</p>
 			 * 
 			 * @param ánoNie ak je zadaná hodnota {@code valtrue}, kreslenie
 			 *     (zvýrazňovanie) pôsobiska bude zapnuté, inak bude vypnuté
@@ -28151,13 +28164,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public boolean vypĺňaTvary() { return vypĺňajTvary; }
 
-			/** <p><a class="alias"></a> Alias pre {@link #vypĺňaTvary() vypĺňajTvary}.</p> */
+			/** <p><a class="alias"></a> Alias pre {@link #vypĺňaTvary() vypĺňaTvary}.</p> */
 			public boolean vyplnaTvary() { return vypĺňaTvary(); }
 
-			/** <p><a class="alias"></a> Alias pre {@link #vypĺňaTvary() vypĺňajTvary}.</p> */
+			/** <p><a class="alias"></a> Alias pre {@link #vypĺňaTvary() vypĺňaTvary}.</p> */
 			public boolean vypĺňaÚtvary() { return vypĺňaTvary(); }
 
-			/** <p><a class="alias"></a> Alias pre {@link #vypĺňaTvary() vypĺňajTvary}.</p> */
+			/** <p><a class="alias"></a> Alias pre {@link #vypĺňaTvary() vypĺňaTvary}.</p> */
 			public boolean vyplnaUtvary() { return vypĺňaTvary(); }
 
 
@@ -30999,16 +31012,16 @@ Toto bolo presunuté na úvodnú stránku:
 					if (0 != zaoblenieX || 0 != zaoblenieY)
 						obdĺžnik = AffineTransform.getRotateInstance(-α,
 							prepočítanéX, prepočítanéY).createTransformedShape(
-							new RoundRectangle2D.Double(prepočítanéX - veľkosť
-								* pomerVeľkosti, prepočítanéY - veľkosť,
+							new RoundRectangle2D.Double(prepočítanéX - veľkosť *
+								pomerVeľkosti, prepočítanéY - veľkosť,
 								2 * veľkosť * pomerVeľkosti, 2 * veľkosť,
 								zaoblenieX, zaoblenieY));
 					else
 						obdĺžnik = AffineTransform.getRotateInstance(-α,
 							prepočítanéX, prepočítanéY).createTransformedShape(
 							new Rectangle2D.Double(prepočítanéX - veľkosť *
-								pomerVeľkosti, prepočítanéY - veľkosť, 2 * veľkosť
-								* pomerVeľkosti, 2 * veľkosť));
+								pomerVeľkosti, prepočítanéY - veľkosť,
+								2 * veľkosť * pomerVeľkosti, 2 * veľkosť));
 				}
 
 				if (kresliTvary)
@@ -31372,7 +31385,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
 			 * #kresliZáznamCesty(boolean)
 			 * kresliZáznamCesty}{@code (}{@code valfalse}{@code )} a metódu
-			 * {@link #vyplňTvar(Shape) kresliTvar}{@code (cesta)} s aktuálne
+			 * {@link #vyplňTvar(Shape) vyplňTvar}{@code (cesta)} s aktuálne
 			 * vytvorenou cestou z vajca.</li>
 			 * <li>{@code srg"kresli"}, {@code srg"kresliCestu"} – vykoná
 			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
@@ -31929,7 +31942,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
 			 * #kresliZáznamCesty(boolean)
 			 * kresliZáznamCesty}{@code (}{@code valfalse}{@code )} a metódu
-			 * {@link #vyplňTvar(Shape) kresliTvar}{@code (cesta)} s aktuálne
+			 * {@link #vyplňTvar(Shape) vyplňTvar}{@code (cesta)} s aktuálne
 			 * vytvorenou cestou z n-uholníka.</li>
 			 * <li>{@code srg"kresli"}, {@code srg"kresliCestu"} – vykoná
 			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
@@ -32212,7 +32225,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
 			 * #kresliZáznamCesty(boolean)
 			 * kresliZáznamCesty}{@code (}{@code valfalse}{@code )} a metódu
-			 * {@link #vyplňTvar(Shape) kresliTvar}{@code (cesta)} s aktuálne
+			 * {@link #vyplňTvar(Shape) vyplňTvar}{@code (cesta)} s aktuálne
 			 * vytvorenou cestou z lupeňov.</li>
 			 * <li>{@code srg"kresli"}, {@code srg"kresliCestu"} – vykoná
 			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
@@ -37677,9 +37690,10 @@ Toto bolo presunuté na úvodnú stránku:
 			 * (pretože robot býva pri vytvorení umiestnený v strede podlahy
 			 * (v bode [0, 0]) a nasmerovaný hore (v uhle 90°)).</p>
 			 * 
-			 * <p><small>[1] – alebo skôr „nakreslí“ zadaný text – písanie textu
-			 * robotom totiž prebieha podobne, ako keby robot vytvoril z textu
-			 * pečiatku a tú vytlačil podľa aktuálneho spôsobu kreslenia
+			 * <p><small>[1] – alebo skôr „nakreslí“ zadaný text – písanie
+			 * textu robotom totiž prebieha podobne, ako keby robot vytvoril
+			 * z textu pečiatku a tú vytlačil podľa aktuálneho spôsobu
+			 * kreslenia
 			 * (predvolene vycentrovanú na svojej pozícii a rotovanú podľa
 			 * svojho smeru); jednoducho <b>s textom napísaným robotom je
 			 * zaobchádzané ako s grafikou</b>…</small></p>
@@ -37729,12 +37743,24 @@ Toto bolo presunuté na úvodnú stránku:
 			 * (pretože robot býva pri vytvorení umiestnený v strede podlahy
 			 * (v bode [0, 0]) a nasmerovaný hore (v uhle 90°)).</p>
 			 * 
-			 * <p><small>[1] – alebo skôr „nakreslí“ zadaný text – písanie textu
-			 * robotom totiž prebieha podobne, ako keby robot vytvoril z textu
-			 * pečiatku a tú vytlačil podľa aktuálneho spôsobu kreslenia
+			 * <p><small>[1] – alebo skôr „nakreslí“ zadaný text – písanie
+			 * textu robotom totiž prebieha podobne, ako keby robot vytvoril
+			 * z textu pečiatku a tú vytlačil podľa aktuálneho spôsobu
+			 * kreslenia
 			 * (predvolene vycentrovanú na svojej pozícii a rotovanú podľa
 			 * svojho smeru); jednoducho <b>s textom napísaným robotom je
 			 * zaobchádzané ako s grafikou</b>…</small></p>
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Táto metóda nemôže prijímať
+			 * variabilný počet argumentov (podobne ako metódy sveta {@link 
+			 * Svet#vypíš(Object[]) vypíš} a {@link Svet#vypíšRiadok(Object[])
+			 * vypíšRiadok}), pretože má definované rôzne verzie, ktoré
+			 * umožňujú programátorovi operatívne meniť spôsob (a/alebo
+			 * polohu) kreslenia textov. Z toho dôvodu bola definovaná
+			 * statická metóda {@link #S(Object[]) S}, ktorá prijíma
+			 * variabilný počet argumentov, ktoré konvertuje na jeden zlúčený
+			 * reťazec. (Na získanie ďalších podrobností pozri opis metódy
+			 * {@link #S(Object[]) S}.)</p>
 			 * 
 			 * @param text text, ktorý má byť vypísaný
 			 * @param Δx vysunutie stredu otáčania v smere osi x
@@ -37765,10 +37791,21 @@ Toto bolo presunuté na úvodnú stránku:
 			 * #nekresliTvary() zakázané kreslenie tvarov} (pozri
 			 * vysvetlenie pri návratovej hodnote).</p>
 			 * 
-			 * <p><small>[1] – alebo skôr „nakreslí“ zadaný text – písanie textu
-			 * robotom totiž prebieha podobne, ako keby robot vytvoril
-			 * z textu pečiatku a tú vytlačil podľa zadaného spôsobu
+			 * <p><small>[1] – alebo skôr „nakreslí“ zadaný text – písanie
+			 * textu robotom totiž prebieha podobne, ako keby robot vytvoril
+			 * z textu pečiatku a tú vytlačil podľa aktuálneho spôsobu
 			 * kreslenia…</small></p>
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Táto metóda nemôže prijímať
+			 * variabilný počet argumentov (podobne ako metódy sveta {@link 
+			 * Svet#vypíš(Object[]) vypíš} a {@link Svet#vypíšRiadok(Object[])
+			 * vypíšRiadok}), pretože má definované rôzne verzie, ktoré
+			 * umožňujú programátorovi operatívne meniť spôsob (a/alebo
+			 * polohu) kreslenia textov. Z toho dôvodu bola definovaná
+			 * statická metóda {@link #S(Object[]) S}, ktorá prijíma
+			 * variabilný počet argumentov, ktoré konvertuje na jeden zlúčený
+			 * reťazec. (Na získanie ďalších podrobností pozri opis metódy
+			 * {@link #S(Object[]) S}.)</p>
 			 * 
 			 * @param text text, ktorý má byť vypísaný
 			 * @param spôsobKreslenia môže byť buď hodnota {@link 
@@ -37813,10 +37850,34 @@ Toto bolo presunuté na úvodnú stránku:
 
 				grafikaAktívnehoPlátna.setFont(aktuálnePísmo);
 
-				FontMetrics rozmery = grafikaAktívnehoPlátna.getFontMetrics();
-				int šírkaTextu = rozmery.stringWidth(text);
-				int poklesTextu = (rozmery.getDescent() * 3) / 2;
+				FontMetrics metrika = grafikaAktívnehoPlátna.getFontMetrics();
+				int šírkaTextu = metrika.stringWidth(text);
+				int poklesTextu = (metrika.getDescent() * 3) / 2;
 				// System.out.println("Pokles " + text + ": " + poklesTextu);
+
+				/*knižnica.log.Log.logOn = true;
+
+				Rectangle2D rozmery = metrika.getStringBounds(text,
+					grafikaAktívnehoPlátna);
+
+				grafikaAktívnehoPlátna.draw(rozmery);
+
+				knižnica.log.Log.logTrace(
+					// "prepočítanéX: ", prepočítanéX, " ",
+					// "prepočítanéY: ", prepočítanéY, " ",
+					"rozmery.getX(): ", rozmery.getX(), " ",
+					"rozmery.getY(): ", rozmery.getY(), " ",
+					"rozmery.getWidth(): ", rozmery.getWidth(), " ",
+					"rozmery.getHeight(): ", rozmery.getHeight(), " ",
+					"");
+
+				/*prepočítanéX += rozmery.getX();
+				prepočítanéY += rozmery.getY();
+
+				knižnica.log.Log.logTrace(
+					"prepočítanéX: ", prepočítanéX, " ",
+					"prepočítanéY: ", prepočítanéY, " ",
+					"");*/
 
 				poslednýTypTvaru = TypTvaru.VÝPLŇ;
 
@@ -37876,7 +37937,7 @@ Toto bolo presunuté na úvodnú stránku:
 					{
 						aktualizujPôsobisko(
 							aktuálneX, aktuálneY, aktuálneX + šírkaTextu,
-							aktuálneY + poklesTextu + rozmery.getAscent());
+							aktuálneY + poklesTextu + metrika.getAscent());
 
 						grafikaAktívnehoPlátna.drawString(text,
 							(float)prepočítanéX, (float)prepočítanéY);
@@ -37887,7 +37948,7 @@ Toto bolo presunuté na úvodnú stránku:
 							aktuálneX - (šírkaTextu / 2.0),
 							aktuálneY - poklesTextu,
 							aktuálneX + (šírkaTextu / 2.0),
-							aktuálneY + rozmery.getAscent());
+							aktuálneY + metrika.getAscent());
 
 						grafikaAktívnehoPlátna.drawString(text,
 							(float)(prepočítanéX - (šírkaTextu / 2.0)),
@@ -37924,7 +37985,7 @@ Toto bolo presunuté na úvodnú stránku:
 					{
 						double x0 = 0; double y0 = 0;
 						double x1 = šírkaTextu;
-						double y1 = poklesTextu + rozmery.getAscent();
+						double y1 = poklesTextu + metrika.getAscent();
 
 						aktualizujPôsobisko(
 							aktuálneX + rotovanéXRad(x0, y0, α),
@@ -37950,7 +38011,7 @@ Toto bolo presunuté na úvodnú stránku:
 						double x0 = -(šírkaTextu / 2.0);
 						double y0 = -poklesTextu;
 						double x1 = (šírkaTextu / 2.0);
-						double y1 = rozmery.getAscent();
+						double y1 = metrika.getAscent();
 
 						aktualizujPôsobisko(
 							aktuálneX + rotovanéXRad(x0, y0, α),
@@ -37994,10 +38055,21 @@ Toto bolo presunuté na úvodnú stránku:
 			 * #nekresliTvary() zakázané kreslenie tvarov} (pozri
 			 * vysvetlenie pri návratovej hodnote).</p>
 			 * 
-			 * <p><small>[1] – alebo skôr „nakreslí“ zadaný text – písanie textu
-			 * robotom totiž prebieha podobne, ako keby robot vytvoril
-			 * z textu pečiatku a tú vytlačil podľa zadaného spôsobu
+			 * <p><small>[1] – alebo skôr „nakreslí“ zadaný text – písanie
+			 * textu robotom totiž prebieha podobne, ako keby robot vytvoril
+			 * z textu pečiatku a tú vytlačil podľa aktuálneho spôsobu
 			 * kreslenia…</small></p>
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Táto metóda nemôže prijímať
+			 * variabilný počet argumentov (podobne ako metódy sveta {@link 
+			 * Svet#vypíš(Object[]) vypíš} a {@link Svet#vypíšRiadok(Object[])
+			 * vypíšRiadok}), pretože má definované rôzne verzie, ktoré
+			 * umožňujú programátorovi operatívne meniť spôsob (a/alebo
+			 * polohu) kreslenia textov. Z toho dôvodu bola definovaná
+			 * statická metóda {@link #S(Object[]) S}, ktorá prijíma
+			 * variabilný počet argumentov, ktoré konvertuje na jeden zlúčený
+			 * reťazec. (Na získanie ďalších podrobností pozri opis metódy
+			 * {@link #S(Object[]) S}.)</p>
 			 * 
 			 * @param text text, ktorý má byť vypísaný
 			 * @param spôsobKreslenia môže byť buď hodnota {@link 
@@ -38045,9 +38117,9 @@ Toto bolo presunuté na úvodnú stránku:
 
 				grafikaAktívnehoPlátna.setFont(aktuálnePísmo);
 
-				FontMetrics rozmery = grafikaAktívnehoPlátna.getFontMetrics();
-				int šírkaTextu = rozmery.stringWidth(text);
-				int poklesTextu = (rozmery.getDescent() * 3) / 2;
+				FontMetrics metrika = grafikaAktívnehoPlátna.getFontMetrics();
+				int šírkaTextu = metrika.stringWidth(text);
+				int poklesTextu = (metrika.getDescent() * 3) / 2;
 				// System.out.println("Pokles " + text + ": " + poklesTextu);
 
 				poslednýTypTvaru = TypTvaru.VÝPLŇ;
@@ -38108,7 +38180,7 @@ Toto bolo presunuté na úvodnú stránku:
 					{
 						aktualizujPôsobisko(
 							aktuálneX, aktuálneY, aktuálneX + šírkaTextu,
-							aktuálneY + poklesTextu + rozmery.getAscent());
+							aktuálneY + poklesTextu + metrika.getAscent());
 
 						grafikaAktívnehoPlátna.drawString(text,
 							(float)prepočítanéX, (float)prepočítanéY);
@@ -38119,7 +38191,7 @@ Toto bolo presunuté na úvodnú stránku:
 							aktuálneX - (šírkaTextu / 2.0),
 							aktuálneY - poklesTextu,
 							aktuálneX + (šírkaTextu / 2.0),
-							aktuálneY + rozmery.getAscent());
+							aktuálneY + metrika.getAscent());
 
 						grafikaAktívnehoPlátna.drawString(text,
 							(float)(prepočítanéX - (šírkaTextu / 2.0)),
@@ -38159,7 +38231,7 @@ Toto bolo presunuté na úvodnú stránku:
 					{
 						double x0 = 0; double y0 = 0;
 						double x1 = šírkaTextu;
-						double y1 = poklesTextu + rozmery.getAscent();
+						double y1 = poklesTextu + metrika.getAscent();
 
 						aktualizujPôsobisko(
 							aktuálneX + rotovanéXRad(x0, y0, α),
@@ -38185,7 +38257,7 @@ Toto bolo presunuté na úvodnú stránku:
 						double x0 = -(šírkaTextu / 2.0);
 						double y0 = -poklesTextu;
 						double x1 = (šírkaTextu / 2.0);
-						double y1 = rozmery.getAscent();
+						double y1 = metrika.getAscent();
 
 						aktualizujPôsobisko(
 							aktuálneX + rotovanéXRad(x0, y0, α),
@@ -38233,6 +38305,392 @@ Toto bolo presunuté na úvodnú stránku:
 				Svet.automatickéPrekreslenie();
 				return null;
 			}
+
+
+			// Vysvetlenie:
+			// ————————————
+			// 
+			// 		4. 8. 2023: Podarilo sa mi (po rokoch) nájsť celkom dobré
+			// 		riešenie vystreďovania textov, tak som sa ho pokúsil
+			// 		aplikovať v tomto rámci (dole), ale zistil som, že v tomto
+			// 		programovacom rámci tento princíp nefunguje. Výsledok bol
+			// 		ešte horší ako ten, ktorý sa mi podarilo kedysi dávno
+			// 		odladiť v pôvodných metódach (hore).
+			// 
+			// 		Text by mal byť presne v strede obdĺžnika, ktorý by robot
+			// 		nakreslil, keby sa riadil rozmermi textu, ale ani nový, ani
+			// 		pôvodný princíp toto nerobí úplne dokonale. (Ten dole
+			// 		dokonca ešte horšie.)
+			// 
+			// 		Tak som dodatočne skúšal vylepšiť pôvodný princíp (hore)
+			// 		aj s pomocou umelej inteligencie, ale bez toho, aby som
+			// 		dvakrát umiestľoval text pred jeho zobrazením by to nešlo,
+			// 		tak som nechal aktívny pôvodný princíp, o ktorom som predsa
+			// 		len zvážil, že je „dostatočne dobrý.“
+			// 
+			/* *
+			 * <p>Buď vykreslí zadaný text na pozícii robota podľa aktuálneho
+			 * spôsobu kreslenia, alebo vytvorí tvar obrysu zadaného textu.</p>
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Táto metóda funguje rovnako
+			 * ako metóda {@link #text(String text)} s dvomi rozdielmi:
+			 * <ol>
+			 * <li>neaktualizuje {@linkplain #pôsobisko() pôsobisko} (ak je
+			 * to potrebné, dočasne {@linkplain #nekresliTvary() vypnite
+			 * kreslenie tvarov} a použite tvar vrátený touto metódou na
+			 * {@linkplain #vyplňTvar() nakreslenie textu} a {@linkplain 
+			 * #pôsobisko(Shape) aktualizáciu pôsobiska}),</li>
+			 * <li>používa odlišný spôsob vertikálneho vystredenia textu,
+			 * ktorý je o niečo presnejší.</li>
+			 * </ol></p>
+			 * 
+			 * @param text text, ktorý má byť vykreslený
+			 * @return ak nie je robot {@linkplain Oblasť#zamestnaj(GRobot)
+			 *     zamestnaný} a je {@linkplain #kresliTvary() povolené
+			 *     kreslenie tvarov}, metóda vykreslí text a má návratovú
+			 *     hodnotu {@code valnull};
+			 *     v opačnom prípade metóda nevykreslí nič a vracia objekt typu
+			 *     {@link Shape Shape} (tvar) reprezentujúci obrys zadaného
+			 *     textu (tvar textu)
+			 * 
+			 * @see #text(String)
+			 * /
+			public Shape text2(String text)
+			{ return text2(text, spôsobKreslenia); }
+
+			/* *
+			 * <p>Buď vykreslí zadaný text na pozícii robota podľa aktuálneho
+			 * spôsobu kreslenia a s vysunutím stredu otáčania o zadané
+			 * odchýlky Δx a Δy, alebo vytvorí tvar obrysu zadaného textu.</p>
+			 * 
+			 * @param text text, ktorý má byť vykreslený
+			 * @param Δx vysunutie stredu otáčania v smere osi x
+			 * @param Δy vysunutie stredu otáčania v smere osi y
+			 * @return ak nie je robot {@linkplain Oblasť#zamestnaj(GRobot)
+			 *     zamestnaný} a je {@linkplain #kresliTvary() povolené
+			 *     kreslenie tvarov}, metóda vykreslí text a má návratovú
+			 *     hodnotu {@code valnull};
+			 *     v opačnom prípade metóda nevykreslí nič a vracia objekt typu
+			 *     {@link Shape Shape} (tvar) reprezentujúci obrys zadaného
+			 *     textu (tvar textu)
+			 * 
+			 * @see #text(String, double, double)
+			 * /
+			public Shape text2(String text, double Δx, double Δy)
+			{ return text2(text, spôsobKreslenia, Δx, Δy); }
+
+			/* *
+			 * <p>Buď vykreslí zadaný text na pozícii robota podľa zadaného
+			 * spôsobu kreslenia, alebo vytvorí tvar obrysu zadaného textu.</p>
+			 * 
+			 * @param text text, ktorý má byť vykreslený
+			 * @param spôsobKreslenia môže byť buď hodnota {@link 
+			 *     #KRESLI_PRIAMO}, alebo kombinácia hodnôt {@link 
+			 *     #KRESLI_NA_STRED} a {@link #KRESLI_ROTOVANÉ}.
+			 * @return ak nie je robot {@linkplain Oblasť#zamestnaj(GRobot)
+			 *     zamestnaný} a je {@linkplain #kresliTvary() povolené
+			 *     kreslenie tvarov}, metóda vykreslí text a má návratovú
+			 *     hodnotu {@code valnull};
+			 *     v opačnom prípade metóda nevykreslí nič a vracia objekt typu
+			 *     {@link Shape Shape} (tvar) reprezentujúci obrys zadaného
+			 *     textu (tvar textu)
+			 * 
+			 * @see #text(String, int)
+			 * /
+			public Shape text2(String text, int spôsobKreslenia)
+			{
+				double prepočítanéX = Svet.prepočítajX(aktuálneX);
+				double prepočítanéY = Svet.prepočítajY(aktuálneY);
+
+				grafikaAktívnehoPlátna.setFont(aktuálnePísmo);
+
+				FontMetrics metrika = grafikaAktívnehoPlátna.getFontMetrics();
+				Rectangle2D rozmery = metrika.getStringBounds(text,
+					grafikaAktívnehoPlátna);
+
+				double šírkaTextu = rozmery.getWidth();
+				double posunTextu = šírkaTextu / 2.0;
+				double výškaTextu = rozmery.getHeight();
+				double poklesTextu = (výškaTextu / 2.0) - metrika.getDescent();
+
+				knižnica.log.Log.logOn = true;
+
+				knižnica.log.Log.logTrace(
+					"prepočítanéX: ", prepočítanéX, " ",
+					"prepočítanéY: ", prepočítanéY, " ",
+					"rozmery.getX(): ", rozmery.getX(), " ",
+					"rozmery.getY(): ", rozmery.getY(), " ",
+					"");
+
+				prepočítanéX += rozmery.getX();
+				prepočítanéY += rozmery.getY();
+
+				knižnica.log.Log.logTrace(
+					"prepočítanéX: ", prepočítanéX, " ",
+					"prepočítanéY: ", prepočítanéY, " ",
+					"");
+
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
+
+				if (!kresliTvary)
+				{
+					TextLayout rozloženieTextu = new TextLayout(text,
+						aktuálnePísmo, grafikaAktívnehoPlátna.
+							getFontRenderContext());
+
+					AffineTransform transformácie = new AffineTransform();
+
+					if ((90.0 == aktuálnyUhol) ||
+						(0 == (spôsobKreslenia & KRESLI_ROTOVANÉ)))
+					{
+						if (0 == (spôsobKreslenia & KRESLI_NA_STRED))
+						{
+							transformácie.setToTranslation(
+								(float)prepočítanéX,
+								(float)prepočítanéY);
+						}
+						else
+						{
+							transformácie.setToTranslation(
+								(float)(prepočítanéX - posunTextu),
+								(float)(prepočítanéY + poklesTextu));
+						}
+					}
+					else
+					{
+						double α = toRadians(aktuálnyUhol - 90);
+						transformácie.rotate(-α, prepočítanéX, prepočítanéY);
+
+						if (0 == (spôsobKreslenia & KRESLI_NA_STRED))
+						{
+							transformácie.translate(
+								(float)prepočítanéX,
+								(float)prepočítanéY);
+						}
+						else
+						{
+							transformácie.translate(
+								(float)(prepočítanéX - posunTextu),
+								(float)(prepočítanéY + poklesTextu));
+						}
+					}
+
+					return rozloženieTextu.getOutline(transformácie);
+				}
+
+				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
+				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
+
+				if ((90.0 == aktuálnyUhol) ||
+					(0 == (spôsobKreslenia & KRESLI_ROTOVANÉ)))
+				{
+					if (0 == (spôsobKreslenia & KRESLI_NA_STRED))
+					{
+						grafikaAktívnehoPlátna.drawString(text,
+							(float)prepočítanéX, (float)prepočítanéY);
+					}
+					else
+					{
+						grafikaAktívnehoPlátna.drawString(text,
+							(float)(prepočítanéX - posunTextu),
+							(float)(prepočítanéY + poklesTextu));
+					}
+				}
+				else
+				{
+					double α = toRadians(aktuálnyUhol - 90);
+
+					grafikaAktívnehoPlátna.rotate(-α,
+						prepočítanéX, prepočítanéY);
+
+					if (0 == (spôsobKreslenia & KRESLI_NA_STRED))
+					{
+						grafikaAktívnehoPlátna.drawString(text,
+							(float)prepočítanéX, (float)prepočítanéY);
+					}
+					else
+					{
+						grafikaAktívnehoPlátna.drawString(text,
+							(float)(prepočítanéX - posunTextu),
+							(float)(prepočítanéY + poklesTextu));
+					}
+
+					grafikaAktívnehoPlátna.rotate(α,
+						prepočítanéX, prepočítanéY);
+				}
+
+				if (null != svgExport)
+					svgExport.pridajText(text, this);
+
+				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+				Svet.automatickéPrekreslenie();
+				return null;
+			}
+
+			/* *
+			 * <p>Buď vykreslí zadaný text na pozícii robota podľa zadaného
+			 * spôsobu kreslenia a s vysunutím stredu otáčania o zadané
+			 * odchýlky Δx a Δy, alebo vytvorí tvar obrysu zadaného textu.</p>
+			 * 
+			 * @param text text, ktorý má byť vykreslený
+			 * @param spôsobKreslenia môže byť buď hodnota {@link 
+			 *     #KRESLI_PRIAMO}, alebo kombinácia hodnôt {@link 
+			 *     #KRESLI_NA_STRED} a {@link #KRESLI_ROTOVANÉ}.
+			 * @param Δx vysunutie stredu otáčania v smere osi x
+			 * @param Δy vysunutie stredu otáčania v smere osi y
+			 * @return ak nie je robot {@linkplain Oblasť#zamestnaj(GRobot)
+			 *     zamestnaný} a je {@linkplain #kresliTvary() povolené
+			 *     kreslenie tvarov}, metóda vykreslí text a má návratovú
+			 *     hodnotu {@code valnull};
+			 *     v opačnom prípade metóda nevykreslí nič a vracia objekt typu
+			 *     {@link Shape Shape} (tvar) reprezentujúci obrys zadaného
+			 *     textu (tvar textu)
+			 * 
+			 * @see #text(String, int, double, double)
+			 * /
+			public Shape text2(String text, int spôsobKreslenia,
+				double Δx, double Δy)
+			{
+				double prepočítanéX = Svet.prepočítajX(aktuálneX);
+				double prepočítanéY = Svet.prepočítajY(aktuálneY);
+
+				grafikaAktívnehoPlátna.setFont(aktuálnePísmo);
+
+				FontMetrics metrika = grafikaAktívnehoPlátna.getFontMetrics();
+				Rectangle2D rozmery = metrika.getStringBounds(text,
+					grafikaAktívnehoPlátna);
+
+				double šírkaTextu = rozmery.getWidth();
+				double posunTextu = šírkaTextu / 2.0;
+				double výškaTextu = rozmery.getHeight();
+				double poklesTextu = (výškaTextu / 2.0) - metrika.getDescent();
+
+				knižnica.log.Log.logTrace(
+					"prepočítanéX: ", prepočítanéX, " ",
+					"prepočítanéY: ", prepočítanéY, " ",
+					"");
+
+				prepočítanéX += rozmery.getX() - prepočítanéX;
+				prepočítanéY += rozmery.getY() - prepočítanéY;
+
+				knižnica.log.Log.logTrace(
+					"prepočítanéX: ", prepočítanéX, " ",
+					"prepočítanéY: ", prepočítanéY, " ",
+					"");
+
+				poslednýTypTvaru = TypTvaru.VÝPLŇ;
+
+				if (!kresliTvary)
+				{
+					TextLayout rozloženieTextu = new TextLayout(text,
+						aktuálnePísmo, grafikaAktívnehoPlátna.
+							getFontRenderContext());
+
+					AffineTransform transformácie = new AffineTransform();
+
+					if ((90.0 == aktuálnyUhol) ||
+						(0 == (spôsobKreslenia & KRESLI_ROTOVANÉ)))
+					{
+						if (0 == (spôsobKreslenia & KRESLI_NA_STRED))
+						{
+							transformácie.setToTranslation(
+								(float)prepočítanéX,
+								(float)prepočítanéY);
+						}
+						else
+						{
+							transformácie.setToTranslation(
+								(float)(prepočítanéX - posunTextu),
+								(float)(prepočítanéY + poklesTextu));
+						}
+					}
+					else
+					{
+						double α = toRadians(aktuálnyUhol - 90);
+						transformácie.rotate(-α, prepočítanéX, prepočítanéY);
+
+						if (0 == (spôsobKreslenia & KRESLI_NA_STRED))
+						{
+							transformácie.translate(
+								(float)prepočítanéX,
+								(float)prepočítanéY);
+						}
+						else
+						{
+							transformácie.translate(
+								(float)(prepočítanéX - posunTextu),
+								(float)(prepočítanéY + poklesTextu));
+						}
+					}
+
+					return rozloženieTextu.getOutline(transformácie);
+				}
+
+				nastavVlastnostiGrafiky(grafikaAktívnehoPlátna);
+				nastavFarbuAleboVýplňPodľaRobota(grafikaAktívnehoPlátna);
+
+				if ((90.0 == aktuálnyUhol) ||
+					(0 == (spôsobKreslenia & KRESLI_ROTOVANÉ)))
+				{
+					if (0 == (spôsobKreslenia & KRESLI_NA_STRED))
+					{
+						grafikaAktívnehoPlátna.drawString(text,
+							(float)prepočítanéX, (float)prepočítanéY);
+					}
+					else
+					{
+						grafikaAktívnehoPlátna.drawString(text,
+							(float)(prepočítanéX - posunTextu),
+							(float)(prepočítanéY + poklesTextu));
+					}
+
+					if (null != svgExport)
+						svgExport.pridajText(text, this);
+				}
+				else
+				{
+					double α = toRadians(aktuálnyUhol - 90);
+
+					grafikaAktívnehoPlátna.rotate(-α,
+						prepočítanéX + Δx, prepočítanéY - Δy);
+
+					if (0 == (spôsobKreslenia & KRESLI_NA_STRED))
+					{
+						grafikaAktívnehoPlátna.drawString(text,
+							(float)prepočítanéX, (float)prepočítanéY);
+					}
+					else
+					{
+						grafikaAktívnehoPlátna.drawString(text,
+							(float)(prepočítanéX - posunTextu),
+							(float)(prepočítanéY + poklesTextu));
+					}
+
+					grafikaAktívnehoPlátna.rotate(α,
+						prepočítanéX + Δx, prepočítanéY - Δy);
+
+					if (null != svgExport)
+					{
+						double zálohaUhla = aktuálnyUhol;
+						aktuálnyUhol = 90.0;
+						try
+						{
+							// TODO: Overiť, či to bude robiť to isté (ako na plátne).
+							svgExport.pridajText(text, this, "transform",
+								"rotate(" + (-α) + "," + (prepočítanéX + Δx) +
+								"," + (prepočítanéY - Δy));
+						}
+						finally
+						{
+							aktuálnyUhol = zálohaUhla;
+						}
+					}
+				}
+
+				obnovVlastnostiGrafiky(grafikaAktívnehoPlátna);
+				Svet.automatickéPrekreslenie();
+				return null;
+			} / * */
 
 
 			/**
@@ -38720,8 +39178,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 * ako keby bolo pero položené. Takto je možné vytvoriť cestu
 			 * v „tichom režime“ a dodatočne ju kompletne vykresliť. Ak
 			 * chceme zmeniť spôsob záznamu, musíme použiť metódu:
-			 * {@link #začniCestu(boolean)} alebo {@link 
-			 * #kresliZáznamCesty(boolean)}.</p>
+			 * {@link #začniCestu(boolean rešpektujPolohuPera)} alebo {@link 
+			 * #kresliZáznamCesty(boolean kresli)}.</p>
 			 * 
 			 * @see #začniCestu(boolean)
 			 * @see #skončiCestu()
@@ -38765,7 +39223,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * 
 			 * <p>V <a href="zoznam-zmien.html">novších verziách</a>
 			 * programovacieho rámca je tiež možné využiť novú vlastnosť:
-			 * {@link #kresliZáznamCesty(boolean)}.</p>
+			 * {@link #kresliZáznamCesty(boolean kresli)}.</p>
 			 * 
 			 * @param rešpektujPolohuPera ak je rovné {@code valtrue},
 			 *     záznam cesty bude brať do úvahy polohu pera
@@ -42980,7 +43438,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 */
 			public boolean máRozmer(Rozmer rozmer)
 			{
-				// TODO – otestuj – tiež máVýšku, máŠírku
+				// TODO – otestuj – tiež máVýšku, máŠírku
 				if (rozmer instanceof GRobot)
 					return ((GRobot)rozmer).pomerVeľkosti == pomerVeľkosti &&
 						((GRobot)rozmer).veľkosť == veľkosť;

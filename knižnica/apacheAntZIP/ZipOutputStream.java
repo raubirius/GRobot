@@ -270,7 +270,7 @@ public class ZipOutputStream extends FilterOutputStream {
 	private ZipEncoding zipEncoding =
 		ZipEncodingHelper.getZipEncoding(DEFAULT_ENCODING);
 
-	// CheckStyle:VisibilityModifier OFF - bc
+	// CheckStyle:VisibilityModifier OFF – bc
 
 	/**
 	 * This Deflater object is used for output.
@@ -462,8 +462,8 @@ public class ZipOutputStream extends FilterOutputStream {
 	 * those entries that require them. This mode can only be used if
 	 * the uncompressed size of the {@link ZipEntry} is known
 	 * when calling {@link #putNextEntry} or the archive is written
-	 * to a seekable output (i.e. you have used the {@link
-	 * #ZipOutputStream(java.io.File) File-arg constructor}) -
+	 * to a seekable output (i.e. you have used the {@linkplain 
+	 * #ZipOutputStream(java.io.File) File-arg constructor}) –
 	 * this mode is not valid when the output stream is not seekable
 	 * and the uncompressed size is unknown when {@link
 	 * #putNextEntry} is called.</p>
@@ -480,7 +480,7 @@ public class ZipOutputStream extends FilterOutputStream {
 	 * 
 	 * <p>Defaults to {@link Zip64Mode#AsNeeded AsNeeded} unless
 	 * {@link #putNextEntry} is called with an entry of unknown
-	 * size and data is written to a non-seekable stream - in this
+	 * size and data is written to a non-seekable stream – in this
 	 * case the default is {@link Zip64Mode#Never Never}.</p>
 	 * 
 	 * @param mode Zip64Mode
@@ -1542,7 +1542,7 @@ public class ZipOutputStream extends FilterOutputStream {
 		writeOut(ZipShort.getBytes(ZipConstants.ZIP64_MIN_VERSION));
 		writeOut(ZipShort.getBytes(ZipConstants.ZIP64_MIN_VERSION));
 
-		// disk numbers - four bytes this time
+		// disk numbers – four bytes this time
 		writeOut(LZERO);
 		writeOut(LZERO);
 
