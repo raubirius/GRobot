@@ -139,7 +139,7 @@ public class Okno
 	private int počiatočnáŠírka = 600;
 	private int počiatočnáVýška = 500;
 	private int počiatočnéX = 25;
-	private int počiatočnéY = 25;
+	private int počiatočnéY = 75;
 	private int počiatočnýStav = NORMAL;
 
 	// Tieto atribúty sú upravované pri zmene veľkosti a polohy okna a sú
@@ -147,7 +147,7 @@ public class Okno
 	private int poslednáŠírka = 600;
 	private int poslednáVýška = 500;
 	private int poslednéX = 25;
-	private int poslednéY = 25;
+	private int poslednéY = 75;
 
 
 	// Aktuálna farba pozadia.
@@ -406,10 +406,8 @@ public class Okno
 		// Nastavenie systémového Look&Feel:
 		if (Svet.zmenaLAF) try { UIManager.setLookAndFeel(UIManager.
 			getSystemLookAndFeelClassName());
-			// Tento „hack“ je tu z dôvodu zabránenia zmeny nastavení
-			// vzhľadu prvkov rámca po dodatočnej inicializácii dialógov
-			// na otvorenie/uloženie údajov… (V jednom projekte mi to
-			// rozhodilo celé používateľské rozhranie. Strašné…)
+			// Tento „hack“ je prenesený zo Sveta. (Viac tam.) Tu je možno
+			// zbytočný, ale… „better safe than sorry…“ – „istota je guľomet…“
 			javax.swing.plaf.FileChooserUI ui =
 				new javax.swing.JFileChooser().getUI();
 		} catch (Exception e)
@@ -1671,7 +1669,7 @@ public class Okno
 	 * {@linkplain Svet#použiKonfiguráciu(String) konfiguračného súboru}.</p>
 	 * 
 	 * <p>Zadané meno musí byť unikátne, nesmie byť prázdne ani rezervované
-	 * (v súčasnosti je rezervované iba meno  {@code srg"okno"}), nesmie sa
+	 * (v súčasnosti je rezervované iba meno {@code srg"okno"}), nesmie sa
 	 * začínať bodkočiarkou, začínať ani končiť bodkou a nesmie
 	 * obsahovať znak rovná sa. Na zrušenie mena okna treba zavolať túto
 	 * metódu s argumentom {@code valnull}.</p>
@@ -2251,7 +2249,29 @@ public class Okno
 
 	// Presúvanie komponentov
 
-	// TODO
+	/**
+	 * <p>Prenesie tlačidlo zo sveta do tohto okna alebo späť.</p>
+	 * 
+	 * <p>Ak je parameter {@code sem} rovný {@code valtrue} a zároveň sa
+	 * tlačidlo nachádza vo svete (pozor, nie v inom okne, musí byť umestnené
+	 * vo svete), tak bude prenesené do tohto okna. Ak je paramete
+	 * r {@code sem} rovný {@code valfalse} a zároveň sa tlačidlo nachádza
+	 * v tomto okne (musí to byť presne toto okno), tak bude prenesené z tohto
+	 * okna do sveta.</p>
+	 * 
+	 * <p>V uvedených dvoch situáciách je návratová hodnota tejto metódy
+	 * inštancia zadaného tlačidla, čo umožňuje zreťazené volanie ďalšej
+	 * metódy tlačidla – pri inicializácii rozhrania a prenose tlačidla zo
+	 * sveta do tohto okna sa na to dá spoľahnúť. Ak je však prenos neúspešný,
+	 * tak je vrátená hodnota {@code valnull}.</p>
+	 * 
+	 * <p>Volanie tejto metódy je ekvivalentné volaniu metódy
+	 * {@link Tlačidlo#prenes(Okno okno, boolean tam)}.</p>
+	 * 
+	 * @param tlačidlo tlačidlo, ktoré má byť prenesené
+	 * @param sem smer prenosu (pozri opis vyššie)
+	 * @return inštancia zadaného tlačidla alebo {@code valnull}
+	 */
 	public Tlačidlo prenes(Tlačidlo tlačidlo, boolean sem)
 	{
 		if (sem && Svet.hlavnýPanel.isAncestorOf(tlačidlo))
@@ -2269,6 +2289,7 @@ public class Okno
 			hlavnýPanel.add(tlačidlo, 0);
 			hlavnýPanel.doLayout();
 			tlačidlo.addKeyListener(udalostiOkna);
+			tlačidlo.hlavnýPanel = hlavnýPanel;
 
 			Svet.prekresli();
 			prekresli();
@@ -2290,6 +2311,7 @@ public class Okno
 			Svet.hlavnýPanel.add(tlačidlo, 0);
 			Svet.hlavnýPanel.doLayout();
 			tlačidlo.addKeyListener(Svet.udalostiOkna);
+			tlačidlo.hlavnýPanel = Svet.hlavnýPanel;
 
 			Svet.prekresli();
 			prekresli();
@@ -2300,10 +2322,176 @@ public class Okno
 		return null;
 	}
 
-	// TODO
+	/**
+	 * <p>Zistí, či je zadané tlačidlo umiestnené v tomto okne.</p>
+	 * 
+	 * @return {@code valtrue} ak je tlačidlo v tomto okne, {@code valfalse}
+	 *     v opačnom prípade
+	 */
 	public boolean jeTu(Tlačidlo tlačidlo)
 	{
 		return hlavnýPanel.isAncestorOf(tlačidlo);
+	}
+
+
+	/**
+	 * <p>Prenesie rolovaciu lištu zo sveta do tohto okna alebo späť.</p>
+	 * 
+	 * <p>Ak je parameter {@code sem} rovný {@code valtrue} a zároveň sa
+	 * lišta nachádza vo svete (pozor, nie v inom okne, musí byť umestnená
+	 * vo svete), tak bude prenesená do tohto okna. Ak je parameter
+	 * {@code sem} rovný {@code valfalse} a zároveň sa lišta nachádza v tomto
+	 * okne (musí to byť presne toto okno), tak bude prenesená z tohto okna
+	 * do sveta.</p>
+	 * 
+	 * <p>V uvedených dvoch situáciách je návratová hodnota tejto metódy
+	 * inštancia zadanej lišty, čo umožňuje zreťazené volanie ďalšej metódy
+	 * lišty – pri inicializácii rozhrania a prenose lišty zo sveta do tohto
+	 * okna sa na to dá spoľahnúť. Ak je však prenos neúspešný, tak je vrátená
+	 * hodnota {@code valnull}.</p>
+	 * 
+	 * <p>Volanie tejto metódy je ekvivalentné volaniu metódy
+	 * {@link RolovaciaLišta#prenes(Okno okno, boolean tam)}.</p>
+	 * 
+	 * @param rolovaciaLišta rolovacia lišta, ktorá má byť prenesená
+	 * @param sem smer prenosu (pozri opis vyššie)
+	 * @return inštancia zadanej lišty alebo {@code valnull}
+	 */
+	public RolovaciaLišta prenes(RolovaciaLišta rolovaciaLišta, boolean sem)
+	{
+		if (sem && Svet.hlavnýPanel.isAncestorOf(rolovaciaLišta))
+		{
+			Svet.hlavnýPanel.remove(rolovaciaLišta);
+			Svet.hlavnýPanel.doLayout();
+
+			double x = rolovaciaLišta.polohaX();
+			double y = rolovaciaLišta.polohaY();
+			rolovaciaLišta.šírkaRodiča = ikonaOkna.getIconWidth();
+			rolovaciaLišta.výškaRodiča = ikonaOkna.getIconHeight();
+			rolovaciaLišta.poloha(x, y);
+
+			hlavnýPanel.add(rolovaciaLišta, 0);
+			hlavnýPanel.doLayout();
+			rolovaciaLišta.hlavnýPanel = hlavnýPanel;
+
+			Svet.prekresli();
+			prekresli();
+
+			return rolovaciaLišta;
+		}
+		else if (!sem && hlavnýPanel.isAncestorOf(rolovaciaLišta))
+		{
+			hlavnýPanel.remove(rolovaciaLišta);
+			hlavnýPanel.doLayout();
+
+			double x = rolovaciaLišta.polohaX();
+			double y = rolovaciaLišta.polohaY();
+			rolovaciaLišta.šírkaRodiča = Plátno.šírkaPlátna;
+			rolovaciaLišta.výškaRodiča = Plátno.výškaPlátna;
+			rolovaciaLišta.poloha(x, y);
+
+			Svet.hlavnýPanel.add(rolovaciaLišta, 0);
+			Svet.hlavnýPanel.doLayout();
+			rolovaciaLišta.hlavnýPanel = Svet.hlavnýPanel;
+
+			Svet.prekresli();
+			prekresli();
+
+			return rolovaciaLišta;
+		}
+
+		return null;
+	}
+
+	/**
+	 * <p>Zistí, či je zadaná rolovacia lišta umiestnená v tomto okne.</p>
+	 * 
+	 * @return {@code valtrue} ak je lišta v tomto okne, {@code valfalse}
+	 *     v opačnom prípade
+	 */
+	public boolean jeTu(RolovaciaLišta rolovaciaLišta)
+	{
+		return hlavnýPanel.isAncestorOf(rolovaciaLišta);
+	}
+
+
+	/**
+	 * <p>Prenesie poznámkový blok zo sveta do tohto okna alebo späť.</p>
+	 * 
+	 * <p>Ak je parameter {@code sem} rovný {@code valtrue} a zároveň sa blok
+	 * nachádza vo svete (pozor, nie v inom okne, musí byť umestnený vo
+	 * svete), tak bude prenesený do tohto okna. Ak je parameter {@code sem}
+	 * rovný {@code valfalse} a zároveň sa blok nachádza v tomto okne (musí
+	 * to byť presne toto okno), tak bude prenesený z tohto okna do sveta.</p>
+	 * 
+	 * <p>V uvedených dvoch situáciách je návratová hodnota tejto metódy
+	 * inštancia zadaného poznámkového bloku, čo umožňuje zreťazené volanie
+	 * ďalšej metódy bloku – pri inicializácii rozhrania a prenose bloku zo
+	 * sveta do tohto okna sa na to dá spoľahnúť. Ak je však prenos neúspešný,
+	 * tak je vrátená hodnota {@code valnull}.</p>
+	 * 
+	 * <p>Volanie tejto metódy je ekvivalentné volaniu metódy
+	 * {@link PoznámkovýBlok#prenes(Okno okno, boolean tam)}.</p>
+	 * 
+	 * @param poznámkovýBlok poznámkový blok, ktorý má byť prenesený
+	 * @param sem smer prenosu (pozri opis vyššie)
+	 * @return inštancia zadaného poznámkového bloku alebo {@code valnull}
+	 */
+	public PoznámkovýBlok prenes(PoznámkovýBlok poznámkovýBlok, boolean sem)
+	{
+		if (sem && Svet.hlavnýPanel.isAncestorOf(poznámkovýBlok))
+		{
+			Svet.hlavnýPanel.remove(poznámkovýBlok);
+			Svet.hlavnýPanel.doLayout();
+
+			double x = poznámkovýBlok.polohaX();
+			double y = poznámkovýBlok.polohaY();
+			poznámkovýBlok.šírkaRodiča = ikonaOkna.getIconWidth();
+			poznámkovýBlok.výškaRodiča = ikonaOkna.getIconHeight();
+			poznámkovýBlok.poloha(x, y);
+
+			hlavnýPanel.add(poznámkovýBlok, 0);
+			hlavnýPanel.doLayout();
+			poznámkovýBlok.hlavnýPanel = hlavnýPanel;
+
+			Svet.prekresli();
+			prekresli();
+
+			return poznámkovýBlok;
+		}
+		else if (!sem && hlavnýPanel.isAncestorOf(poznámkovýBlok))
+		{
+			hlavnýPanel.remove(poznámkovýBlok);
+			hlavnýPanel.doLayout();
+
+			double x = poznámkovýBlok.polohaX();
+			double y = poznámkovýBlok.polohaY();
+			poznámkovýBlok.šírkaRodiča = Plátno.šírkaPlátna;
+			poznámkovýBlok.výškaRodiča = Plátno.výškaPlátna;
+			poznámkovýBlok.poloha(x, y);
+
+			Svet.hlavnýPanel.add(poznámkovýBlok, 0);
+			Svet.hlavnýPanel.doLayout();
+			poznámkovýBlok.hlavnýPanel = Svet.hlavnýPanel;
+
+			Svet.prekresli();
+			prekresli();
+
+			return poznámkovýBlok;
+		}
+
+		return null;
+	}
+
+	/**
+	 * <p>Zistí, či je zadaný poznámkový blok umiestnený v tomto okne.</p>
+	 * 
+	 * @return {@code valtrue} ak je blok v tomto okne, {@code valfalse}
+	 *     v opačnom prípade
+	 */
+	public boolean jeTu(PoznámkovýBlok poznámkovýBlok)
+	{
+		return hlavnýPanel.isAncestorOf(poznámkovýBlok);
 	}
 
 

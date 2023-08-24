@@ -212,7 +212,7 @@ import static java.awt.MultipleGradientPaint.CycleMethod.*;
 		}
 
 		{@code comm// Vlastný tvar robota bude kružnica so „zárezom.“}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliTvar() kresliTvar}()
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliSeba() kresliSeba}()
 		{
 			{@link GRobot#kružnica() kružnica}();
 			{@link GRobot#dopredu() dopredu}();
@@ -655,7 +655,7 @@ import static java.awt.MultipleGradientPaint.CycleMethod.*;
 		<hr/>
 		{@code comm// Táto reakcia zabezpečuje kreslenie vlastného (a v tomto prípade aj}
 		{@code comm// predvoleného) tvaru robota.}
-		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliTvar() kresliTvar}()
+		{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliSeba() kresliSeba}()
 		{
 			{@code comm// Ak je definovaná oblasť s vlastným tvarom, tak sa vykoná vetva}
 			{@code comm// zabezpečujúca nakreslenie vlastného tvaru (s nejakými kontrolami).}

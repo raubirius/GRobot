@@ -5838,8 +5838,8 @@ public class ExpressionProcessor implements ValueProvider
 				{
 				case TYPE_OR_ERROR:
 					addDump("TODO: Check if the list shouldn’t be " +
-						"handled here");
-					// TODO – check if the list shouldn’t be handled here
+						"handled here.");
+					// TODO – check if the list shouldn’t be handled here.
 					throw new ReparseBreak();
 
 				case OPERATOR:

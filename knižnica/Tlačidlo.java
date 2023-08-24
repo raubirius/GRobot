@@ -44,6 +44,7 @@ import java.awt.event.ActionListener;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JPanel;
 
 // ------------------------- //
 //  *** Trieda Tlačidlo ***  //
@@ -126,10 +127,13 @@ import javax.swing.JButton;
 @SuppressWarnings("serial")
 public class Tlačidlo extends JButton implements Poloha, Rozmer
 {
-	// Parametre polohy a veľkosti tlačidla
+	// Parametre polohy a veľkosti tlačidla:
 	/*packagePrivate*/ int x, y, šírka, výška, šírkaRodiča, výškaRodiča;
 
-	// Parametre prilepenia k jednotlivým okrajom (kombinácia bitov)
+	// Kde je tlačidlo umiestnené:
+	/*packagePrivate*/ JPanel hlavnýPanel;
+
+	// Parametre prilepenia k jednotlivým okrajom (kombinácia bitov):
 	private byte prilepenie = 0;
 
 	// Zálohy predvolených stavov “Opaque”, “ContentAreaFilled”
@@ -138,7 +142,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	private boolean zálohaStavuContentAreaFilled;
 	private boolean zálohaStavuBorderPainted;
 
-	// Previaže tlačidlo s obsluhou udalostí
+	// Previaže tlačidlo s obsluhou udalostí:
 	private final static ActionListener voľbaTlačidla =
 		new ActionListener()
 	{
@@ -185,9 +189,9 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 
 	// TODO: umožniť definovať vlastný „(bez)menný“ priestor premenných
 	//	s možnosťami prístupu k vlastnostiam tlačidla – podobne pre ostatné
-	//	ovládacie prvky podporujúce skriptovanie
+	//	ovládacie prvky podporujúce skriptovanie.
 
-	// Určuje predvolené hodnoty vlastností tlačidla
+	// Určuje predvolené hodnoty vlastností tlačidla:
 	private void vytvor()
 	{
 		šírka = 108; výška = 32;
@@ -197,6 +201,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 		y = (výškaRodiča - výška) / 2;
 		Svet.hlavnýPanel.add(this, 0);
 		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel = Svet.hlavnýPanel;
 		addActionListener(voľbaTlačidla);
 		addKeyListener(Svet.udalostiOkna);
 		zálohaStavuOpaque = isOpaque();
@@ -214,6 +219,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 		y = (výškaRodiča - výška) / 2;
 		Svet.hlavnýPanel.add(this, 0);
 		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel = Svet.hlavnýPanel;
 		addActionListener(voľbaTlačidla);
 		addKeyListener(Svet.udalostiOkna);
 		zálohaStavuOpaque = isOpaque();
@@ -224,7 +230,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 
 
 	// Umiestnenie tlačidla na základe súkromných parametrov – použité
-	// v metóde rozmiestňovania komponentov: Svet.hlavnýPanel.doLayout()
+	// v metóde rozmiestňovania komponentov: hlavnýPanel.doLayout().
 	/*packagePrivate*/ void umiestni(int x1, int y1, int šírka1, int výška1)
 	{
 		int x0 = x1 + x;
@@ -423,7 +429,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	public void polohaX(double novéX)
 	{
 		x = ((šírkaRodiča - šírka) / 2) + (int)novéX;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/**
@@ -442,7 +448,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	public void polohaY(double novéY)
 	{
 		y = ((výškaRodiča - výška) / 2) - (int)novéY;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #polohaX(double) polohaX}.</p> */
@@ -487,7 +493,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	{
 		this.x = ((šírkaRodiča - šírka) / 2) + (int)x;
 		this.y = ((výškaRodiča - výška) / 2) - (int)y;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/**
@@ -558,7 +564,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	{
 		this.x += Δx;
 		this.y -= Δy;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #skoč(double, double) skoč}.</p> */
@@ -619,7 +625,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	{
 		prilepenie &= 12;
 		prilepenie |= 1;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #prilepVľavo() prilepVľavo}.</p> */
@@ -643,7 +649,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	{
 		prilepenie &= 12;
 		prilepenie |= 2;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/**
@@ -664,7 +670,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	{
 		prilepenie &= 3;
 		prilepenie |= 4;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/**
@@ -685,7 +691,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	{
 		prilepenie &= 3;
 		prilepenie |= 8;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/**
@@ -699,7 +705,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	public void odlep()
 	{
 		prilepenie = 0;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 
@@ -1259,7 +1265,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	@Override public void setVisible(boolean visible)
 	{
 		if (!visible)
-			Svet.hlavnýPanel.requestFocusInWindow();
+			hlavnýPanel.requestFocusInWindow();
 		super.setVisible(visible);
 	}
 
@@ -2215,13 +2221,40 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 	}
 
 
-	// TODO
+	/**
+	 * <p>Prenesie tlačidlo zo sveta do určeného okna alebo späť.</p>
+	 * 
+	 * <p>Ak je parameter {@code tam} rovný {@code valtrue} a zároveň sa
+	 * tlačidlo nachádza vo svete (pozor, nie v inom okne, musí byť umestnené
+	 * vo svete), tak bude prenesené do zadaného okna. Ak je parameter
+	 * {@code tam} rovný {@code valfalse} a zároveň sa tlačidlo nachádza
+	 * v zadanom okne (musí to byť presne to okno), tak bude prenesené zo
+	 * zadaného okna do sveta.</p>
+	 * 
+	 * <p>V uvedených dvoch situáciách je návratová hodnota tejto metódy
+	 * inštancia tohto tlačidla, čo umožňuje zreťazené volanie ďalšej metódy
+	 * tlačidla – pri inicializácii rozhrania a prenose tlačidla zo sveta do
+	 * želaného okna sa na to dá spoľahnúť. Ak je však prenos neúspešný, tak
+	 * je vrátená hodnota {@code valnull}.</p>
+	 * 
+	 * <p>Volanie tejto metódy je ekvivalentné volaniu metódy
+	 * {@link Okno#prenes(Tlačidlo tlačidlo, boolean sem)}.</p>
+	 * 
+	 * @param okno okno, do ktorého alebo z ktorého má byť tlačidlo prenesené
+	 * @param tam smer prenosu (pozri opis vyššie)
+	 * @return inštancia tohto tlačidla alebo {@code valnull}
+	 */
 	public Tlačidlo prenes(Okno okno, boolean tam)
 	{
 		return okno.prenes(this, tam);
 	}
 
-	// TODO
+	/**
+	 * <p>Zistí, či je toto tlačidlo umiestnené v zadanom okne.</p>
+	 * 
+	 * @return {@code valtrue} ak je tlačidlo v zadanom okne, {@code valfalse}
+	 *     v opačnom prípade
+	 */
 	public boolean jeV(Okno okno)
 	{
 		return okno.jeTu(this);

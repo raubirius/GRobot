@@ -37,6 +37,7 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 
 import javax.swing.JScrollBar;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -209,17 +210,23 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 */
 	protected int x, y, šírka, výška;
 
+	// Parametre používané pri umiestňovaní lišty v okne:
+	/*packagePrivate*/ int šírkaRodiča, výškaRodiča;
+
+	// Kde je lišta umiestnená:
+	/*packagePrivate*/ JPanel hlavnýPanel;
+
 	// Parametre prilepenia k jednotlivým okrajom a roztiahnutia
-	// v dvoch smeroch (kombinácia bitov)
+	// v dvoch smeroch (kombinácia bitov):
 	private byte prilepenieRoztiahnutie = 0;
 
 
 	// Príznaky slúžiace na identifikáciu toho, či má byť lišta zobrazená
-	// pri štarte a či tento proces už bol vykonaný
+	// pri štarte a či tento proces už bol vykonaný:
 	private boolean zobrazPriŠtarte = true, predŠtartom = true;
 
 
-	// Previaže tlačidlo s obsluhou udalostí
+	// Previaže tlačidlo s obsluhou udalostí:
 	private final static AdjustmentListener zmenaPosunuLišty =
 		new AdjustmentListener()
 	{
@@ -252,7 +259,7 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	};
 
 
-	// Určuje predvolené hodnoty vlastností rolovacej lišty
+	// Určuje predvolené hodnoty vlastností rolovacej lišty:
 	private void vytvor()
 	{
 		int velkosť = UIManager.getInt("ScrollBar.width");
@@ -263,11 +270,15 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 		{ šírka = velkosť; výška = 100 + 2 * velkosť; } else
 		{ šírka = 100 + 2 * velkosť; výška = velkosť; }
 
-		x = (Plátno.šírkaPlátna - šírka) / 2;
-		y = (Plátno.výškaPlátna - výška) / 2;
+		šírkaRodiča = Plátno.šírkaPlátna;
+		výškaRodiča = Plátno.výškaPlátna;
+
+		x = (šírkaRodiča - šírka) / 2;
+		y = (výškaRodiča - výška) / 2;
 
 		Svet.hlavnýPanel.add(this, 0);
 		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel = Svet.hlavnýPanel;
 
 		addAdjustmentListener(zmenaPosunuLišty);
 		super.setVisible(false);
@@ -431,6 +442,46 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 		super(orientácia, posun, veľkosťOblasti,
 			spodnáHranica, hornáHranica);
 		vytvor();
+	}
+
+
+	/**
+	 * <p>Prenesie rolovaciu lištu zo sveta do určeného okna alebo späť.</p>
+	 * 
+	 * <p>Ak je parameter {@code tam} rovný {@code valtrue} a zároveň sa
+	 * lišta nachádza vo svete (pozor, nie v inom okne, musí byť umestnená
+	 * vo svete), tak bude prenesená do zadaného okna. Ak je parameter
+	 * {@code tam} rovný {@code valfalse} a zároveň sa lišta nachádza
+	 * v zadanom okne (musí to byť presne to okno), tak bude prenesená
+	 * zo zadaného okna do sveta.</p>
+	 * 
+	 * <p>V uvedených dvoch situáciách je návratová hodnota tejto metódy
+	 * inštancia tejto lišty, čo umožňuje zreťazené volanie ďalšej metódy
+	 * lišty – pri inicializácii rozhrania a prenose lišty zo sveta do
+	 * želaného okna sa na to dá spoľahnúť. Ak je však prenos neúspešný,
+	 * tak je vrátená hodnota {@code valnull}.</p>
+	 * 
+	 * <p>Volanie tejto metódy je ekvivalentné volaniu metódy
+	 * {@link Okno#prenes(RolovaciaLišta rolovaciaLišta, boolean sem)}.</p>
+	 * 
+	 * @param okno okno, do ktorého alebo z ktorého má byť lišta prenesená
+	 * @param tam smer prenosu (pozri opis vyššie)
+	 * @return inštancia tejto lišty alebo {@code valnull}
+	 */
+	public RolovaciaLišta prenes(Okno okno, boolean tam)
+	{
+		return okno.prenes(this, tam);
+	}
+
+	/**
+	 * <p>Zistí, či je táto rolovacia lišta umiestnená v zadanom okne.</p>
+	 * 
+	 * @return {@code valtrue} ak je lišta v zadanom okne, {@code valfalse}
+	 *     v opačnom prípade
+	 */
+	public boolean jeV(Okno okno)
+	{
+		return okno.jeTu(this);
 	}
 
 
@@ -651,7 +702,7 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 * 
 	 * @see #polohaX(double)
 	 */
-	public double polohaX() { return x - ((Plátno.šírkaPlátna - šírka) / 2); }
+	public double polohaX() { return x - ((šírkaRodiča - šírka) / 2); }
 
 	/**
 	 * <p><a class="getter"></a> Zistí aktuálnu y-ovú súradnicu polohy
@@ -661,7 +712,7 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 * 
 	 * @see #polohaY(double)
 	 */
-	public double polohaY() { return -y + ((Plátno.výškaPlátna - výška) / 2); }
+	public double polohaY() { return -y + ((výškaRodiča - výška) / 2); }
 
 	/**
 	 * <p><a class="setter"></a> Presunie rolovaciu lištu na zadanú
@@ -677,8 +728,8 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 */
 	public void polohaX(double novéX)
 	{
-		x = ((Plátno.šírkaPlátna - šírka) / 2) + (int)novéX;
-		Svet.hlavnýPanel.doLayout();
+		x = ((šírkaRodiča - šírka) / 2) + (int)novéX;
+		hlavnýPanel.doLayout();
 	}
 
 	/**
@@ -696,8 +747,8 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 */
 	public void polohaY(double novéY)
 	{
-		y = ((Plátno.výškaPlátna - výška) / 2) - (int)novéY;
-		Svet.hlavnýPanel.doLayout();
+		y = ((výškaRodiča - výška) / 2) - (int)novéY;
+		hlavnýPanel.doLayout();
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #polohaX(double) polohaX}.</p> */
@@ -740,9 +791,9 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 */
 	public void poloha(double x, double y)
 	{
-		this.x = ((Plátno.šírkaPlátna - šírka) / 2) + (int)x;
-		this.y = ((Plátno.výškaPlátna - výška) / 2) - (int)y;
-		Svet.hlavnýPanel.doLayout();
+		this.x = ((šírkaRodiča - šírka) / 2) + (int)x;
+		this.y = ((výškaRodiča - výška) / 2) - (int)y;
+		hlavnýPanel.doLayout();
 	}
 
 	/**
@@ -773,8 +824,8 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 */
 	public Bod poloha()
 	{
-		double x = this.x - ((Plátno.šírkaPlátna - šírka) / 2.0);
-		double y = -this.y + ((Plátno.výškaPlátna - výška) / 2.0);
+		double x = this.x - ((šírkaRodiča - šírka) / 2.0);
+		double y = -this.y + ((výškaRodiča - výška) / 2.0);
 		return new Bod(x, y);
 	}
 
@@ -808,7 +859,7 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	{
 		this.x += Δx;
 		this.y -= Δy;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #skoč(double, double) skoč}.</p> */
@@ -829,8 +880,8 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 */
 	public boolean jeNa(double x, double y)
 	{
-		double ox = this.x - ((Plátno.šírkaPlátna - šírka) / 2.0);
-		double oy = -this.y + ((Plátno.výškaPlátna - výška) / 2.0);
+		double ox = this.x - ((šírkaRodiča - šírka) / 2.0);
+		double oy = -this.y + ((výškaRodiča - výška) / 2.0);
 		return ox == x && oy == y;
 	}
 
@@ -846,8 +897,8 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	 */
 	public boolean jeNa(Poloha poloha)
 	{
-		double ox = this.x - ((Plátno.šírkaPlátna - šírka) / 2.0);
-		double oy = -this.y + ((Plátno.výškaPlátna - výška) / 2.0);
+		double ox = this.x - ((šírkaRodiča - šírka) / 2.0);
+		double oy = -this.y + ((výškaRodiča - výška) / 2.0);
 		return poloha.polohaX() == ox && poloha.polohaY() == oy;
 	}
 
@@ -870,7 +921,7 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	{
 		prilepenieRoztiahnutie &= 60;
 		prilepenieRoztiahnutie |= 1;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #prilepVľavo() prilepVľavo}.</p> */
@@ -894,7 +945,7 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	{
 		prilepenieRoztiahnutie &= 60;
 		prilepenieRoztiahnutie |= 2;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/**
@@ -915,7 +966,7 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	{
 		prilepenieRoztiahnutie &= 51;
 		prilepenieRoztiahnutie |= 4;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/**
@@ -936,7 +987,7 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	{
 		prilepenieRoztiahnutie &= 51;
 		prilepenieRoztiahnutie |= 8;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/**
@@ -950,7 +1001,7 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	public void odlep()
 	{
 		prilepenieRoztiahnutie &= 48;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 
@@ -965,7 +1016,7 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	public void roztiahniNaVýšku()
 	{
 		prilepenieRoztiahnutie |= 16;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #roztiahniNaVýšku() roztiahniNaVýšku}.</p> */
@@ -991,7 +1042,7 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	public void roztiahniNaŠírku()
 	{
 		prilepenieRoztiahnutie |= 32;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #roztiahniNaŠírku() roztiahniNaŠírku}.</p> */
@@ -1015,7 +1066,7 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 	public void nerozťahuj()
 	{
 		prilepenieRoztiahnutie &= 15;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #nerozťahuj() nerozťahuj}.</p> */

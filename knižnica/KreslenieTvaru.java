@@ -135,12 +135,13 @@ package knižnica;
  * 
  * <p>Použitie rozhrania môže vyzerať komplikovane, preto bolo
  * robotu umožnené zmeniť tvar aj (z hľadiska začínajúceho
- * programátora) jednoduchším spôsobom. Metódou {@link GRobot
+ * programátora) jednoduchším spôsobom. Metódami {@link GRobot
  * GRobot}{@code .}{@link GRobot#kresliTvar() kresliTvar}{@code ()}
- * (myslíme tým jej prekrytím). Z vnútorného (technického)
- * hľadiska je však činnosť spomínanej metódy zabezpečovaná
- * komplikovanejším mechanizmom s mierne vyššími režijnými
- * nákladmi na vykonávanie, preto skúsenejším programátorom
+ * alebo {@link GRobot GRobot}{@code .}{@link GRobot#kresliSeba()
+ * kresliSeba}{@code ()} (myslíme tým prekrytie jednej z nich).
+ * Z vnútorného (technického) hľadiska je však činnosť uvedených
+ * metód zabezpečované komplikovanejším mechanizmom s mierne vyššími
+ * režijnými nákladmi na vykonávanie, preto skúsenejším programátorom
  * odporúčame využitie tohto rozhrania.</p>
  * 
  * <p>Táto verzia programovacieho rámca je závislá od použitia

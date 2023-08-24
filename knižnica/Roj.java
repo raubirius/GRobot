@@ -784,7 +784,7 @@ import static java.lang.Math.*;
 			{@code comm// tých bodov roja, ktoré by nemali definovaný žiadny vlastný tvar).}
 			{@code comm// V tomto príklade je to zariadené tak, že volanie tejto metódy by}
 			{@code comm// nemalo nikdy nastať. Je definovaná v podstate len „pre istotu.“}
-			{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliTvar() kresliTvar}()
+			{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliSeba() kresliSeba}()
 			{
 				{@link GRobot#krúžok() krúžok}();
 			}

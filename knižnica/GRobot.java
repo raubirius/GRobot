@@ -996,36 +996,36 @@ Toto bolo presunuté na úvodnú stránku:
 
 		// Vlastný tvar
 
-			// Vyplnenosť základného tvaru
+			// Vyplnenosť základného tvaru.
 			private boolean vyplnený = false;
 
-			// Obrázok
+			// Obrázok.
 			private Image vlastnýTvarObrázok = null;
 
-			// Kreslenie cez rozhranie
+			// Kreslenie cez rozhranie.
 			private KreslenieTvaru vlastnýTvarKreslenie = null;
 
 			// Príznak, že robot je v procese kreslenia vlastného tvaru
-			// (metódy domov() menia svoju funkciu)
+			// (metódy domov() menia svoju funkciu).
 			private boolean kreslímVlastnýTvar = false;
 
 			// Toto je statická inštancia vlastného tvaru používaná pri
-			// prekrytí metódy robota kresliTvar()
+			// prekrytí metód robota kresliTvar() alebo kresliSeba().
 			private final static KreslenieTvaru použiPrekrytúMetóduKresli =
-				(r -> r.kresliTvar());
+				(r -> { r.kresliTvar(); r.kresliSeba(); });
 
 		// Úprava textu
 
 			@SuppressWarnings("serial")
 			/*packagePrivate*/ class UpravText extends JTextField
 			{
-				// Parametre polohy a veľkosti textového poľa
+				// Parametre polohy a veľkosti textového poľa.
 				private int x, y, šírka, výška;
 
-				// Pomocný príznak
+				// Pomocný príznak.
 				private int polohaKurzora = 0;
 
-				// Previaže textové pole s obsluhou udalostí
+				// Previaže textové pole s obsluhou udalostí.
 				private final KeyListener klávesStlačený = new KeyListener()
 				{
 					public void keyPressed(KeyEvent e)
@@ -9515,7 +9515,8 @@ Toto bolo presunuté na úvodnú stránku:
 				 * metód, ktoré slúžia na návrat na domovskú pozíciu robota
 				 * ignorujú v metódach kreslenia vlastného tvaru robota
 				 * ({@link KreslenieTvaru#kresli(GRobot) kresli}
-				 * a {@link #kresliTvar() kresliTvar}) skutočnú domovskú
+				 * a {@link #kresliTvar() kresliTvar} alebo {@link 
+				 * #kresliSeba() kresliSeba}) skutočnú domovskú
 				 * polohu a smer robota a pracujú výhradne s údajmi jeho
 				 * polohy a smeru, ktoré boli platné pred začatím kreslenia
 				 * vlastného tvaru. To zároveň znamená, že žiadne ďalšie
@@ -25059,7 +25060,7 @@ Toto bolo presunuté na úvodnú stránku:
 							{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
 						}
 
-						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliTvar() kresliTvar}()
+						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliSeba() kresliSeba}()
 						{
 							{@link GRobot#obdĺžnik() obdĺžnik}();
 						}
@@ -25490,7 +25491,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * automaticky vždy pri zmene {@linkplain #poloha() polohy}
 				 * robota (skákanie, rôzne pohyby, všetko, čo vedie ku zmene
 				 * aktuálnej polohy…), okrem zmien vykonávaných v rámci procesu
-				 * kreslenia {@linkplain #kresliTvar() vlastného tvaru}.
+				 * kreslenia {@linkplain #kresliSeba() vlastného tvaru}.
 				 * Návratová hodnota tejto metódy určuje, či smie byť zmena
 				 * schválená. Ak nebude schválená, robot sa nepohne, resp.
 				 * technicky sa vráti na svoju {@linkplain #poslednáPoloha()
@@ -25520,7 +25521,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * automaticky vždy pri zmene {@linkplain #uhol() uhla} robota
 				 * (nastavovanie, otáčanie, všetko, čo vedie ku zmene
 				 * orientácie…), okrem zmien vykonávaných v rámci procesu
-				 * kreslenia {@linkplain #kresliTvar() vlastného tvaru}.
+				 * kreslenia {@linkplain #kresliSeba() vlastného tvaru}.
 				 * Návratová hodnota tejto metódy určuje, či smie byť zmena
 				 * schválená. Ak nebude schválená, robot sa nepohne (neotočí),
 				 * resp. technicky sa vráti naspäť na svoj {@linkplain 
@@ -40784,7 +40785,7 @@ Toto bolo presunuté na úvodnú stránku:
 							{@link GRobot#hrúbkaČiary(double) hrúbkaČiary}({@code num2});
 						}
 
-						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliTvar() kresliTvar}()
+						{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliSeba() kresliSeba}()
 						{
 							{@code comm// Kreslenie tvaru:}
 
@@ -44479,18 +44480,23 @@ Toto bolo presunuté na úvodnú stránku:
 			 * <p>Táto metóda je predvolene prázdna. Jej prekrytím dokážeme
 			 * upraviť predvolený tvar robota. Kreslenie v tele prekrytej
 			 * metódy {@code currkresliTvar} podlieha rovnakým pravidlám ako
-			 * kreslenie v tele metódy
-			 * {@link KreslenieTvaru KreslenieTvaru}{@code .}{@link 
-			 * KreslenieTvaru#kresli(GRobot) kresli}{@code (}{@link GRobot
-			 * GRobot}{@code  r)}. Prekrytie tejto metódy ({@code 
-			 * currkresliTvar}) je síce najjednoduchší spôsob zmeny tvaru
-			 * robota, ale <em>je menej efektívny.</em></p>
+			 * kreslenie v tele metódy {@link KreslenieTvaru
+			 * KreslenieTvaru}{@code .}{@link KreslenieTvaru#kresli(GRobot)
+			 * kresli}{@code (}{@link GRobot GRobot}{@code  r)}. Prekrytie
+			 * tejto metódy ({@code currkresliTvar}) je síce najjednoduchší
+			 * spôsob zmeny tvaru robota, ale <em>je menej efektívny.</em></p>
 			 * 
 			 * <p class="remark"><b>Poznámka:</b> Účinnosť tejto metódy môže
 			 * zrušiť volanie metódy {@link #vlastnýTvar(KreslenieTvaru)
 			 * vlastnýTvar} (pozri jej opis) a opätovne obnoviť volanie
 			 * niektorej z verzií metód {@link #predvolenýTvar()
 			 * predvolenýTvar}.</p>
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Robot má definovanú ešte
+			 * jednu metódu s rovnakým účelom: {@link #kresliSeba()
+			 * kresliSeba}. Stačí prekryť jednu z nich. Ak sú prekryté obe,
+			 * tak je najprv volaná metóda {@code currkresliTvar} a potom
+			 * metóda {@link #kresliSeba() kresliSeba}.</p>
 			 * 
 			 * <div class="remark"><p><b>Poznámka:</b> Táto metóda v skrytosti
 			 * využíva rovnaký mechanizmus ako definovanie {@linkplain 
@@ -44557,6 +44563,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * tvarov a písania textov robotom po ich vypnutí metódou
 			 * {@link #nekresliTvary() nekresliTvary()}.</p>
 			 * 
+			 * @see #kresliSeba()
 			 * @see #predvolenýVyplnenýTvar()
 			 * @see #predvolenýDutýTvar()
 			 * @see #predvolenýTvar()
@@ -44572,13 +44579,107 @@ Toto bolo presunuté na úvodnú stránku:
 			public void kresliTvar() {}
 
 			/**
+			 * <p>Táto metóda je predvolene prázdna. Jej prekrytím dokážeme
+			 * upraviť predvolený tvar robota. Kreslenie v tele prekrytej
+			 * metódy {@code currkresliSeba} podlieha rovnakým pravidlám ako
+			 * kreslenie v tele metódy {@link KreslenieTvaru
+			 * KreslenieTvaru}{@code .}{@link KreslenieTvaru#kresli(GRobot)
+			 * kresli}{@code (}{@link GRobot GRobot}{@code  r)}. Prekrytie
+			 * tejto metódy ({@code currkresliSeba}) je síce najjednoduchší
+			 * spôsob zmeny tvaru robota, ale <em>je menej efektívny.</em></p>
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Účinnosť tejto metódy môže
+			 * zrušiť volanie metódy {@link #vlastnýTvar(KreslenieTvaru)
+			 * vlastnýTvar} (pozri jej opis) a opätovne obnoviť volanie
+			 * niektorej z verzií metód {@link #predvolenýTvar()
+			 * predvolenýTvar}.</p>
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Robot má definovanú ešte
+			 * jednu metódu s rovnakým účelom: {@link #kresliTvar()
+			 * kresliTvar}. Stačí prekryť jednu z nich. Ak sú prekryté obe,
+			 * tak je najprv volaná metóda {@link #kresliTvar() kresliTvar}
+			 * a potom metóda {@code currkresliSeba}.</p>
+			 * 
+			 * <div class="remark"><p><b>Poznámka:</b> Táto metóda v skrytosti
+			 * využíva rovnaký mechanizmus ako definovanie {@linkplain 
+			 * KreslenieTvaru vlastného tvaru}. Pre väčšie množstvá inštancií
+			 * jednej triedy odporúčame:</p>
+			 * <ol>
+			 * <li>implementovať rozhranie {@link KreslenieTvaru
+			 * KreslenieTvaru}, ktoré obsahuje metódu
+			 * {@link KreslenieTvaru#kresli(GRobot) kresli},</li>
+			 * <li>staticky vytvoriť jednu inštanciu z tejto
+			 * implementácie</li>
+			 * <li>a tú vzápätí využiť (napríklad v konštruktore triedy)
+			 * vo volaní metódy {@link #vlastnýTvar(KreslenieTvaru)
+			 * vlastnýTvar(tvar)}. Príklad je v opise rozhrania
+			 * {@link KreslenieTvaru KreslenieTvaru}.)</li>
+			 * </ol></div>
+			 * 
+			 * <p class="attention"><b>Upozornenie:</b> Vlastné kreslenie
+			 * tvaru vždy zálohuje vlastnosti robota pred začatím kreslenia
+			 * tvaru a obnovuje ich po skončení kreslenia. Pozor však na
+			 * spúšťanie automatického prekresľovania počas inicializácie
+			 * projektu. Tento proces totiž funguje inak. Preto ak
+			 * programujete komplexnejší projekt, tak vždy {@linkplain 
+			 * Svet#nekresli() vypnite automatické prekresľovanie} pred
+			 * začatím inicializácie a {@linkplain Svet#kresli() obnovte
+			 * ho} po dokončení inicializácie projektu, prípadne vytvorte
+			 * iný spôsob prekresľovania – {@linkplain Svet#nebolPrekreslený()
+			 * pozri napríklad príklad s prekresľovaním v časovači v rámci
+			 * opisu metódy nebolPrekreslený}.<br /> <br />Inicializácia
+			 * totiž spúšťa prekresľovanie iným spôsobom ako pri „klasickom“
+			 * prekresľovaní, ktorý nedokáže zálohovať hodnoty vlastností.
+			 * Vlastné kreslenie je určené najmä pre komplexnejšie projekty,
+			 * pri ktorých sa predpokladá vypnutie automatického
+			 * prekresľovania. Zapnuté automatické prekresľovanie je zase
+			 * predpokladané pri jednoduchších projektoch, pri ktorých by
+			 * zložitejšie mechanizmy boli zbytočnou komplikáciou a bránili
+			 * by študentovi priamo vidieť priebeh procesu kreslenia. Tieto
+			 * dve roviny fungovania programovacieho rámca nie sú vzájomne
+			 * kompatibilné.</p>
+			 * 
+			 * <p><b>Príklad:</b></p>
+			 * 
+			 * <p>Robot s metódou {@code currkresliSeba} prekrytou
+			 * nasledujúcim spôsobom bude mať tvar hviezdy:</p>
+			 * 
+			 * <pre CLASS="example">
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@code currkresliSeba}()
+				{
+					{@link #hviezda() hviezda}();
+				}
+				</pre>
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Ak potrebujete vytlačiť
+			 * na aktuálne plátno pečiatku aktuálneho tvaru, volajte metódu
+			 * {@link #pečiatka() pečiatka}.</p>
+			 * 
+			 * @see #kresliTvar()
+			 * @see #predvolenýVyplnenýTvar()
+			 * @see #predvolenýDutýTvar()
+			 * @see #predvolenýTvar()
+			 * @see #predvolenýTvar(boolean)
+			 * @see #jePredvolenýTvarVyplnený()
+			 * @see #pečiatka()
+			 * @see #vlastnýTvar(String)
+			 * @see #vlastnýTvar(Image)
+			 * @see #vlastnýTvar(String, boolean)
+			 * @see #vlastnýTvar(Image, boolean)
+			 * @see #vlastnýTvar(KreslenieTvaru)
+			 */
+			public void kresliSeba() {}
+
+			/**
 			 * <p>Nastaví predvolený tvar robota. Predvoleným tvarom robota
 			 * je buď trojzubec (vyplnený alebo dutý, podľa toho, či je
 			 * zapnuté alebo vypnuté {@linkplain #vypĺňajTvary(boolean)
 			 * vypĺňanie tvarov robotom}), alebo tvar kreslený prekrytou
-			 * metódou {@link #kresliTvar() kresliTvar}.</p>
+			 * metódou {@link #kresliTvar() kresliTvar} alebo {@link 
+			 * #kresliSeba() kresliSeba}.</p>
 			 * 
 			 * @see #kresliTvar()
+			 * @see #kresliSeba()
 			 * @see #predvolenýVyplnenýTvar()
 			 * @see #predvolenýDutýTvar()
 			 * @see #predvolenýTvar(boolean)
@@ -44593,10 +44694,13 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				vlastnýTvarObrázok = null;
 
-				try // Nie vždy je metóda kresliTvar() zaručene pôvodná
+				try // Nie vždy je metóda kresliTvar() alebo kresliSeba()
+					// zaručene pôvodná
 				{
 					if (getClass().getMethod("kresliTvar").getDeclaringClass().
-						equals(GRobot.class)) vlastnýTvarKreslenie = null;
+						equals(GRobot.class) && getClass().getMethod(
+							"kresliSeba").getDeclaringClass().equals(
+							GRobot.class)) vlastnýTvarKreslenie = null;
 					else
 						vlastnýTvarKreslenie = použiPrekrytúMetóduKresli;
 				}
@@ -44613,9 +44717,11 @@ Toto bolo presunuté na úvodnú stránku:
 			/**
 			 * <p>Nastaví predvolený vyplnený tvar robota. Predvoleným tvarom
 			 * robota je buď trojzubec (v tomto prípade vyplnený), alebo tvar
-			 * kreslený prekrytou metódou {@link #kresliTvar() kresliTvar}.</p>
+			 * kreslený prekrytou metódou {@link #kresliTvar() kresliTvar}
+			 * alebo {@link #kresliSeba() kresliSeba}.</p>
 			 * 
 			 * @see #kresliTvar()
+			 * @see #kresliSeba()
 			 * @see #predvolenýTvar()
 			 * @see #predvolenýDutýTvar()
 			 * @see #predvolenýTvar(boolean)
@@ -44630,10 +44736,13 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				vlastnýTvarObrázok = null;
 
-				try // Nie vždy je metóda kresliTvar() zaručene pôvodná
+				try // Nie vždy je metóda kresliTvar() alebo kresliSeba()
+					// zaručene pôvodná
 				{
 					if (getClass().getMethod("kresliTvar").getDeclaringClass().
-						equals(GRobot.class)) vlastnýTvarKreslenie = null;
+						equals(GRobot.class) && getClass().getMethod(
+							"kresliSeba").getDeclaringClass().equals(
+							GRobot.class)) vlastnýTvarKreslenie = null;
 					else
 						vlastnýTvarKreslenie = použiPrekrytúMetóduKresli;
 				}
@@ -44650,9 +44759,11 @@ Toto bolo presunuté na úvodnú stránku:
 			/**
 			 * <p>Nastaví predvolený dutý tvar robota. Predvoleným tvarom
 			 * robota je buď trojzubec (v tomto prípade dutý), alebo tvar
-			 * kreslený prekrytou metódou {@link #kresliTvar() kresliTvar}.</p>
+			 * kreslený prekrytou metódou {@link #kresliTvar() kresliTvar}
+			 * alebo {@link #kresliSeba() kresliSeba}.</p>
 			 * 
 			 * @see #kresliTvar()
+			 * @see #kresliSeba()
 			 * @see #predvolenýTvar()
 			 * @see #predvolenýVyplnenýTvar()
 			 * @see #predvolenýTvar(boolean)
@@ -44667,10 +44778,13 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				vlastnýTvarObrázok = null;
 
-				try // Nie vždy je metóda kresliTvar() zaručene pôvodná
+				try // Nie vždy je metóda kresliTvar() alebo kresliSeba()
+					// zaručene pôvodná
 				{
 					if (getClass().getMethod("kresliTvar").getDeclaringClass().
-						equals(GRobot.class)) vlastnýTvarKreslenie = null;
+						equals(GRobot.class) && getClass().getMethod(
+							"kresliSeba").getDeclaringClass().equals(
+							GRobot.class)) vlastnýTvarKreslenie = null;
 					else
 						vlastnýTvarKreslenie = použiPrekrytúMetóduKresli;
 				}
@@ -44688,17 +44802,20 @@ Toto bolo presunuté na úvodnú stránku:
 			 * <p>Nastaví predvolený tvar robota. Predvoleným tvarom robota je
 			 * buď trojzubec (vyplnený alebo dutý – v tomto prípade to závisí
 			 * od hodnoty zadanej do parametra), alebo tvar kreslený prekrytou
-			 * metódou {@link #kresliTvar() kresliTvar}. Argument
-			 * {@code vyplnený} má význam len ak nebola prekrytá metóda
-			 * {@link #kresliTvar() kresliTvar}. Vtedy zostáva predvoleným
+			 * metódou {@link #kresliTvar() kresliTvar} alebo {@link 
+			 * #kresliSeba() kresliSeba}. Argument {@code vyplnený} má význam
+			 * len ak nebola prekrytá metóda {@link #kresliTvar() kresliTvar}
+			 * ani {@link #kresliSeba() kresliSeba}. Vtedy zostáva predvoleným
 			 * tvarom trojzubec a hodnota tohto argumentu umožňuje určiť, či
 			 * má byť vyplnený alebo kreslený obrysom (dutý).</p>
 			 * 
-			 * @param vyplnený ak je {@code valtrue} a aktuálna inštancia
-			 *     nemá prekrytú metódu {@link #kresliTvar() kresliTvar},
-			 *     kreslí vyplnený trujzubec, inak jeho obrys
+			 * @param vyplnený ak je {@code valtrue} a aktuálna inštancia nemá
+			 *     prekrytú metódu {@link #kresliTvar() kresliTvar} ani {@link 
+			 *     #kresliSeba() kresliSeba}, tak kreslí vyplnený trujzubec,
+			 *     inak jeho obrys
 			 * 
 			 * @see #kresliTvar()
+			 * @see #kresliSeba()
 			 * @see #predvolenýTvar()
 			 * @see #predvolenýVyplnenýTvar()
 			 * @see #predvolenýDutýTvar()
@@ -44713,10 +44830,13 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				vlastnýTvarObrázok = null;
 
-				try // Nie vždy je metóda kresliTvar() zaručene pôvodná
+				try // Nie vždy je metóda kresliTvar() alebo kresliSeba()
+					// zaručene pôvodná
 				{
 					if (getClass().getMethod("kresliTvar").getDeclaringClass().
-						equals(GRobot.class)) vlastnýTvarKreslenie = null;
+						equals(GRobot.class) && getClass().getMethod(
+							"kresliSeba").getDeclaringClass().equals(
+							GRobot.class)) vlastnýTvarKreslenie = null;
 					else
 						vlastnýTvarKreslenie = použiPrekrytúMetóduKresli;
 				}
@@ -44742,6 +44862,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 *     vyplnený, {@code valfalse} ak má byť dutý
 			 * 
 			 * @see #kresliTvar()
+			 * @see #kresliSeba()
 			 * @see #predvolenýTvar()
 			 * @see #predvolenýVyplnenýTvar()
 			 * @see #predvolenýDutýTvar()
@@ -44798,6 +44919,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @throws GRobotException ak súbor s obrázkom nebol nájdený
 			 * 
 			 * @see #kresliTvar()
+			 * @see #kresliSeba()
 			 * @see #predvolenýTvar()
 			 * @see #predvolenýVyplnenýTvar()
 			 * @see #predvolenýDutýTvar()
@@ -44855,6 +44977,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 *     predvoleného tvaru robota
 			 * 
 			 * @see #kresliTvar()
+			 * @see #kresliSeba()
 			 * @see #predvolenýTvar()
 			 * @see #predvolenýVyplnenýTvar()
 			 * @see #predvolenýDutýTvar()
@@ -44917,6 +45040,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @throws GRobotException ak súbor s obrázkom nebol nájdený
 			 * 
 			 * @see #kresliTvar()
+			 * @see #kresliSeba()
 			 * @see #predvolenýTvar()
 			 * @see #predvolenýVyplnenýTvar()
 			 * @see #predvolenýDutýTvar()
@@ -44987,6 +45111,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 *     a výšky obrázka
 			 * 
 			 * @see #kresliTvar()
+			 * @see #kresliSeba()
 			 * @see #predvolenýTvar()
 			 * @see #predvolenýVyplnenýTvar()
 			 * @see #predvolenýDutýTvar()
@@ -45034,12 +45159,14 @@ Toto bolo presunuté na úvodnú stránku:
 			 * nimi definovaný obrázkový tvar bude zrušený.</p>
 			 * 
 			 * <p>Volanie tejto metódy zruší vlastné kreslenie definované
-			 * v prekrytej metóde {@link #kresliTvar() kresliTvar} a to dokonca
-			 * aj ak je zadaná hodnota {@code valnull}. Hodnota {@code valnull}
-			 * tak umožňuje návrat kreslenia k originálnemu, skutočne
-			 * predvolenému kresleniu tvaru robota (k trojzubcu). Ak chcete
-			 * obnoviť mechanizmus kreslenia cez prekrytú metódu {@link 
-			 * #kresliTvar() kresliTvar}, použite niektorú z verzií metód
+			 * v prekrytej metóde {@link #kresliTvar() kresliTvar} alebo
+			 * {@link #kresliSeba() kresliSeba} a to dokonca aj ak je zadaná
+			 * hodnota {@code valnull}. Hodnota {@code valnull} tak umožňuje
+			 * návrat kreslenia k originálnemu, skutočne predvolenému
+			 * kresleniu tvaru robota (k trojzubcu). Ak chcete obnoviť
+			 * mechanizmus kreslenia cez prekrytú metódu {@link 
+			 * #kresliTvar() kresliTvar} alebo {@link #kresliSeba()
+			 * kresliSeba}, použite niektorú z verzií metód
 			 * {@link #predvolenýTvar() predvolenýTvar}.</p>
 			 * 
 			 * <p class="tip"><b>Tip:</b> Ak chcete kombinovať vlastné
@@ -45057,6 +45184,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * 
 			 * @see KreslenieTvaru
 			 * @see #kresliTvar()
+			 * @see #kresliSeba()
 			 * @see #predvolenýVyplnenýTvar()
 			 * @see #predvolenýDutýTvar()
 			 * @see #predvolenýTvar()
@@ -45076,10 +45204,13 @@ Toto bolo presunuté na úvodnú stránku:
 
 				/*if (null == tvar) // Toto nie je „bag,“ toto je „fíčr“ 😁…
 				{
-					try // Nie vždy je metóda kresliTvar() zaručene pôvodná
+					try // Nie vždy je metóda kresliTvar() alebo kresliSeba()
+						// zaručene pôvodná
 					{
 						if (getClass().getMethod("kresliTvar").getDeclaringClass().
-							equals(GRobot.class)) vlastnýTvarKreslenie = null;
+							equals(GRobot.class) && getClass().getMethod(
+								"kresliSeba").getDeclaringClass().equals(
+								GRobot.class)) vlastnýTvarKreslenie = null;
 						else
 							vlastnýTvarKreslenie = použiPrekrytúMetóduKresli;
 					}

@@ -6232,7 +6232,7 @@ public final class Svet extends JFrame
 					{@link GRobot#rozmer(Rozmer) rozmer}(rozmery);
 				}
 
-				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliTvar() kresliTvar}()
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliSeba() kresliSeba}()
 				{
 					{@link GRobot#obdĺžnik() obdĺžnik}();
 					{@link GRobot#dopredu() dopredu}();
@@ -11257,7 +11257,7 @@ public final class Svet extends JFrame
 		 * do neho vložená ľubovoľná inštancia triedy {@link SVGPodpora
 		 * SVGPodpora}, tak sa pred každým prekreslením sveta skontrolujú
 		 * všetky v nej obsiahnuté tvary a vymažú sa tie, ktoré boli vložené
-		 * dôsledkom kreslenia {@linkplain GRobot#kresliTvar() vlastných}
+		 * dôsledkom kreslenia {@linkplain GRobot#kresliSeba() vlastných}
 		 * alebo {@linkplain GRobot#predvolenýTvar() predvolených} tvarov
 		 * robotov. Tým sa zamedzí ich lineárnemu hromadeniu v zadanej
 		 * inštancii {@linkplain SVGPodpora SVG podpory}.</p>
@@ -18759,9 +18759,15 @@ public final class Svet extends JFrame
 		 * značne priamočiary s použitím vnútornej zotriedenej tabuľky
 		 * obsahujúcej predpísané hodnoty použité pri prevode ako napríklad:
 		 * M (1000), CM (900), D (500), CD (400) atď. Použité sú len veľké
-		 * písmená. Písmeno N reprezentuje nulu – viac o rímskej nule je
-		 * napísané v opise metódy {@link #rímskeNaCelé(String) rímskeNaCelé}.
-		 * Záporné hodnoty sú vyjadrené uvedením Unicode znaku mínus (−)
+		 * písmená.</p>
+		 * 
+		 * <p>Nulu reprezentuje predvolene písmeno N, skoršie to bolo písmeno
+		 * O. Tento reťazec sa dá konfigurovať metódou {@link 
+		 * #rímskaNula(String) rímskaNula}. Viac o rímskej nule je napísané
+		 * v opisoch metód {@link #rímskeNaCelé(String) rímskeNaCelé}
+		 * a {@link #rímskaNula() rímskaNula}.</p>
+		 * 
+		 * <p>Záporné hodnoty sú vyjadrené uvedením Unicode znaku mínus (−)
 		 * na začiatku prevedeného reťazca. Hodnoty vyššie od tisíc
 		 * (písmeno M) sú reprezentované s použitím Unicode kombinačných
 		 * znakov, ktoré však 2D stroj Javy nevie korektne zobraziť –
@@ -18775,8 +18781,9 @@ public final class Svet extends JFrame
 		 */
 		public static String celéNaRímske(long celé)
 		{
-			// Nulu budeme reprezentovať písmenom N.
-			if (0 == celé) return "N";
+			// Nulu budeme reprezentovať konfigurovateľným reťazcom –
+			// predvolene je to písmeno N.
+			if (0 == celé) return rímskaNula;
 
 			// Zásobník, do ktorého sa bude zostavovať reťazec rímskej
 			// reprezetnácie zadaného celého čísla.
@@ -18813,6 +18820,102 @@ public final class Svet extends JFrame
 		public static String celeNaRimske(long celé)
 		{ return celéNaRímske(celé); }
 
+
+		// Rímska nula pre metódu celéNaRímske:
+		private static String rímskaNula = "N";
+
+		/**
+		 * <p><a class="getter"></a> Vráti aktuálny reťazec nuly používaný pri
+		 * {@linkplain #celéNaRímske(long) prevode z celých čísiel na
+		 * rímske}.</p>
+		 * 
+		 * <p>Rimania nulu nepoužívali, ale neskôr sa začali vyskytovať zápisy
+		 * nuly, napríklad slovom <em>nulla</em>, prípadne <em>nihil</em>,
+		 * alebo písmenom N. Pri prevode {@linkplain #rímskeNaCelé(String)
+		 * z rímskych čísel} sú rozpoznávané štyri znaky ako nula: N, n,
+		 * O a o. Je to z dôvodu spätnej kompatibility. Táto vlastnosť
+		 * (a metóda) sa vzťahuje na reťazec, ktorý je použitý pri prevode
+		 * nuly metódou {@link #celéNaRímske(long) celéNaRímske}.</p>
+		 * 
+		 * <p><b>Ďalšie zdroje:</b></p>
+		 * 
+		 * <p>Viljanen, Susanna. (2021). <i>Answer to What’s zero in the
+		 * Roman numerical system?</i> From: Quora. Dostupné z: ⟨<a
+		 * href="https://qr.ae/pymPgP" target="_blank"
+		 * >https://qr.ae/pymPgP</a>⟩. Naposledy pristúpené: 15. 8. 2023.</p>
+		 * 
+		 * <p><i>Why Roman numerals don’t have the number zero?</i> From:
+		 * Expert Maths Tutoring in the UK – Boost Your Scores with Cuemath.
+		 * Dostupné z: ⟨<a
+		 * href="https://www.cuemath.com/questions/why-roman-numerals-dont-have-number-zero/"
+		 * target="_blank">https://www.cuemath.com/questions/why-roman-numerals-dont-have-number-zero/</a>⟩.
+		 * Naposledy pristúpené: 15. 8. 2023.</p>
+		 * 
+		 * <p><i>Zero in Roman numerals.</i> (2023). In Wikipedia. Dostupné z:
+		 * ⟨<a href="https://en.wikipedia.org/wiki/Roman_numerals#Zero"
+		 * target="_blank">https://en.wikipedia.org/wiki/Roman_numerals#Zero</a>⟩.
+		 * Naposledy pristúpené: 15. 8. 2023.</p>
+		 * 
+		 * @return aktuálny reťazec reprezentujúci nulu pri {@linkplain 
+		 *     #celéNaRímske(long) prevode z celých čísiel na rímske}.
+		 * 
+		 * @see #rímskaNula(String)
+		 * @see #celéNaRímske(long)
+		 * @see #rímskeNaCelé(String)
+		 */
+		public static String rímskaNula() { return rímskaNula; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #rímskaNula() rímskaNula}.</p> */
+		public static String rimskaNula() { return rímskaNula; }
+
+		/**
+		 * <p><a class="setter"></a> Nastaví hodnotu reťazca nuly používaného
+		 * pri {@linkplain #celéNaRímske(long) prevode z celých čísiel na
+		 * rímske}.</p>
+		 * 
+		 * <p>Rimania nulu nepoužívali, ale neskôr sa začali vyskytovať zápisy
+		 * nuly, napríklad slovom <em>nulla</em>, prípadne <em>nihil</em>,
+		 * alebo písmenom N. Pri prevode {@linkplain #rímskeNaCelé(String)
+		 * z rímskych čísel} sú rozpoznávané štyri znaky ako nula: N, n,
+		 * O a o. Je to z dôvodu spätnej kompatibility. Táto vlastnosť
+		 * (a metóda) sa vzťahuje na reťazec, ktorý je použitý pri prevode
+		 * nuly metódou {@link #celéNaRímske(long) celéNaRímske}.</p>
+		 * 
+		 * <p><b>Ďalšie zdroje:</b></p>
+		 * 
+		 * <p>Viljanen, Susanna. (2021). <i>Answer to What’s zero in the
+		 * Roman numerical system?</i> From: Quora. Dostupné z: ⟨<a
+		 * href="https://qr.ae/pymPgP" target="_blank"
+		 * >https://qr.ae/pymPgP</a>⟩. Naposledy pristúpené: 15. 8. 2023.</p>
+		 * 
+		 * <p><i>Why Roman numerals don’t have the number zero?</i> From:
+		 * Expert Maths Tutoring in the UK – Boost Your Scores with Cuemath.
+		 * Dostupné z: ⟨<a
+		 * href="https://www.cuemath.com/questions/why-roman-numerals-dont-have-number-zero/"
+		 * target="_blank">https://www.cuemath.com/questions/why-roman-numerals-dont-have-number-zero/</a>⟩.
+		 * Naposledy pristúpené: 15. 8. 2023.</p>
+		 * 
+		 * <p><i>Zero in Roman numerals.</i> (2023). In Wikipedia. Dostupné z:
+		 * ⟨<a href="https://en.wikipedia.org/wiki/Roman_numerals#Zero"
+		 * target="_blank">https://en.wikipedia.org/wiki/Roman_numerals#Zero</a>⟩.
+		 * Naposledy pristúpené: 15. 8. 2023.</p>
+		 * 
+		 * @param rímskaNula nový reťazec, ktorý bude reprezentovať nulu pri
+		 *     {@linkplain #celéNaRímske(long) prevode z celých čísiel na
+		 *     rímske}.
+		 * 
+		 * @see #rímskaNula()
+		 * @see #celéNaRímske(long)
+		 * @see #rímskeNaCelé(String)
+		 */
+		public static void rímskaNula(String rímskaNula)
+		{ Svet.rímskaNula = rímskaNula; }
+
+		/** <p><a class="alias"></a> Alias pre {@link #rímskaNula(String) rímskaNula}.</p> */
+		public static void rimskaNula(String rímskaNula)
+		{ Svet.rímskaNula = rímskaNula; }
+
+
 		// Toto je pomocná metóda na prevod rímskych čísiel na celé
 		// čísla. Vracia hodnotu prijatého rímskeho znaku, ktorý je
 		// známy z pohľadu tu implementovaný spôsob prevodu alebo
@@ -18821,10 +18924,11 @@ public final class Svet extends JFrame
 		{
 			switch (znak)
 			{
-			case 'O': case 'o': // „historicky“ – rámec kedysi považoval O za
+			case 'O': case 'o': // „historicky“ – rámec kedysi považoval O za
 				// nulu, lebo to tak niekde autor rámca videl, ale podľa
-				// novších zistení Rimania používali namiesto nuly písmeno N,
-				// čo mohlo znamenať nulla alebo nihil (nič)
+				// novších zistení Rimania nulu nepoužívali vôbec a neskôr sa
+				// namiesto nuly používalo písmeno N, čo mohlo znamenať nulla
+				// alebo nihil (nič)
 			case 'N': case 'n': return 0;
 			case 'I': case 'i': return 1;
 			case 'V': case 'v': return 5;
@@ -18877,11 +18981,11 @@ public final class Svet extends JFrame
 		 * k predchádzajúcemu symbolu.</p>
 		 * 
 		 * <p><small>[1] – Do 14. 8. 2023 to bolo len písmeno O, ale autor
-		 * rámca zistil, že Rimania v skutočnosti používali písmeno N, čo mohlo
-		 * znamenať <em>nulla</em> (nula) alebo <em>nihil</em> (nič). Z dôvodu
-		 * spätnej kompatibility (a tiež z dôvodu jeho výskytu v niektorých
-		 * menej informovaných zdrojoch) bolo ponechané aj písmeno
-		 * O.</small></p>
+		 * rámca zistil, že Rimania v skutočnosti nulu nepoužívali vôbec
+		 * a neskôr sa používalo písmeno N, čo mohlo znamenať <em>nulla</em>
+		 * (nula) alebo <em>nihil</em> (nič). Z dôvodu spätnej kompatibility
+		 * (a tiež z dôvodu jeho výskytu v niektorých menej informovaných
+		 * zdrojoch) bolo ponechané aj písmeno O.</small></p>
 		 * 
 		 * <p>Platné rímske číslice sú malé alebo veľké písmená: I (1),
 		 * V (5), X (10), L (50), C (100), D (500) a M (1000). Ak je séria
@@ -28636,7 +28740,7 @@ public final class Svet extends JFrame
 					{@link Svet Svet}.{@link Svet#prekresli() prekresli}();
 				}
 
-				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliTvar() kresliTvar}()
+				{@code kwd@}Override {@code kwdpublic} {@code typevoid} {@link GRobot#kresliSeba() kresliSeba}()
 				{
 					{@link GRobot#krúžok() krúžok}();
 

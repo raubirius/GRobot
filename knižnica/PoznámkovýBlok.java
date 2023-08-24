@@ -248,17 +248,20 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	// https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#TextComponentDemo
 	// https://docs.oracle.com/javase/tutorial/displayCode.html?code=https://docs.oracle.com/javase/tutorial/uiswing/examples/components/TextComponentDemoProject/src/components/TextComponentDemo.java
 
-	// Parametre polohy a veľkosti poznámkového bloku
-	/*packagePrivate*/ int x, y, šírka, výška;
+	// Parametre polohy a veľkosti poznámkového bloku:
+	/*packagePrivate*/ int x, y, šírka, výška, šírkaRodiča, výškaRodiča;
+
+	// Kde je blok umiestnený:
+	/*packagePrivate*/ JPanel hlavnýPanel;
 
 	// Parametre prilepenia k jednotlivým okrajom a roztiahnutia
-	// v dvoch smeroch (kombinácia bitov)
+	// v dvoch smeroch (kombinácia bitov):
 	private byte prilepenieRoztiahnutie = 0;
 
-	// Tabla (pane) rolovania
+	// Tabla (pane) rolovania:
 	private RolovaniePoznámkovéhoBloku rolovanie;
 
-	// Určuje predvolené hodnoty vlastností poznámkového bloku
+	// Určuje predvolené hodnoty vlastností poznámkového bloku:
 	private void vytvor()
 	{
 		vytvor(400, 300);
@@ -321,14 +324,18 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 		rolovanie = new RolovaniePoznámkovéhoBloku(this);
 		šírka = vlastnáŠírka; výška = vlastnáVýška;
 
-		x = (Plátno.šírkaPlátna - šírka) / 2;
-		y = (Plátno.výškaPlátna - výška) / 2;
+		šírkaRodiča = Plátno.šírkaPlátna;
+		výškaRodiča = Plátno.výškaPlátna;
+
+		x = (šírkaRodiča - šírka) / 2;
+		y = (výškaRodiča - výška) / 2;
 		setPreferredSize(new Dimension(vlastnáŠírka, vlastnáVýška));
 
 		// setFocusTraversalKeysEnabled(false);
 
 		Svet.hlavnýPanel.add(rolovanie, 0);
 		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel = Svet.hlavnýPanel;
 
 		// setBorder(null);
 		// setBackground(žiadna);
@@ -445,13 +452,13 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 						!e.isShiftDown())
 					{
 						Svet.KlávesováSkratka klávesováSkratka = null;
-						Object o = Svet.hlavnýPanel.getInputMap(JPanel.
+						Object o = hlavnýPanel.getInputMap(JPanel.
 							// WHEN_IN_FOCUSED_WINDOW
 							WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).get(
 							KeyStroke.getKeyStrokeForEvent(e));
 						if (null != o)
 						{
-							Action a = Svet.hlavnýPanel.getActionMap().get(o);
+							Action a = hlavnýPanel.getActionMap().get(o);
 							if (a instanceof Svet.KlávesováSkratka)
 								klávesováSkratka = (Svet.KlávesováSkratka)a;
 						}
@@ -469,7 +476,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 
 	// Umiestnenie poznámkového bloku na základe súkromných parametrov –
 	// použité v metóde rozmiestňovania komponentov:
-	//    Svet.hlavnýPanel.doLayout()
+	//    hlavnýPanel.doLayout()
 	/*packagePrivate*/ void umiestni(int x1, int y1, int šírka1, int výška1)
 	{
 		int x2 = x1 + x, y2 = y1 + y, šírka2 = šírka, výška2 = výška;
@@ -659,7 +666,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	 * 
 	 * @see #polohaX(double)
 	 */
-	public double polohaX() { return x - ((Plátno.šírkaPlátna - šírka) / 2); }
+	public double polohaX() { return x - ((šírkaRodiča - šírka) / 2); }
 
 	/**
 	 * <p><a class="getter"></a> Zistí aktuálnu y-ovú súradnicu polohy
@@ -669,7 +676,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	 * 
 	 * @see #polohaY(double)
 	 */
-	public double polohaY() { return -y + ((Plátno.výškaPlátna - výška) / 2); }
+	public double polohaY() { return -y + ((výškaRodiča - výška) / 2); }
 
 	/**
 	 * <p><a class="setter"></a> Presunie poznámkový blok na zadanú súradnicu
@@ -685,8 +692,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	 */
 	public void polohaX(double novéX)
 	{
-		x = ((Plátno.šírkaPlátna - šírka) / 2) + (int)novéX;
-		Svet.hlavnýPanel.doLayout();
+		x = ((šírkaRodiča - šírka) / 2) + (int)novéX;
+		hlavnýPanel.doLayout();
 	}
 
 	/**
@@ -704,8 +711,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	 */
 	public void polohaY(double novéY)
 	{
-		y = ((Plátno.výškaPlátna - výška) / 2) - (int)novéY;
-		Svet.hlavnýPanel.doLayout();
+		y = ((výškaRodiča - výška) / 2) - (int)novéY;
+		hlavnýPanel.doLayout();
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #polohaX(double) polohaX}.</p> */
@@ -749,9 +756,9 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	 */
 	public void poloha(double x, double y)
 	{
-		this.x = ((Plátno.šírkaPlátna - šírka) / 2) + (int)x;
-		this.y = ((Plátno.výškaPlátna - výška) / 2) - (int)y;
-		Svet.hlavnýPanel.doLayout();
+		this.x = ((šírkaRodiča - šírka) / 2) + (int)x;
+		this.y = ((výškaRodiča - výška) / 2) - (int)y;
+		hlavnýPanel.doLayout();
 	}
 
 
@@ -783,8 +790,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	 */
 	public Bod poloha()
 	{
-		double x = this.x - ((Plátno.šírkaPlátna - šírka) / 2.0);
-		double y = -this.y + ((Plátno.výškaPlátna - výška) / 2.0);
+		double x = this.x - ((šírkaRodiča - šírka) / 2.0);
+		double y = -this.y + ((výškaRodiča - výška) / 2.0);
 		return new Bod(x, y);
 	}
 
@@ -821,7 +828,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	{
 		this.x += Δx;
 		this.y -= Δy;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #skoč(double, double) skoč}.</p> */
@@ -842,8 +849,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	 */
 	public boolean jeNa(double x, double y)
 	{
-		double ox = this.x - ((Plátno.šírkaPlátna - šírka) / 2.0);
-		double oy = -this.y + ((Plátno.výškaPlátna - výška) / 2.0);
+		double ox = this.x - ((šírkaRodiča - šírka) / 2.0);
+		double oy = -this.y + ((výškaRodiča - výška) / 2.0);
 		return ox == x && oy == y;
 	}
 
@@ -860,8 +867,8 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	 */
 	public boolean jeNa(Poloha poloha)
 	{
-		double ox = this.x - ((Plátno.šírkaPlátna - šírka) / 2.0);
-		double oy = -this.y + ((Plátno.výškaPlátna - výška) / 2.0);
+		double ox = this.x - ((šírkaRodiča - šírka) / 2.0);
+		double oy = -this.y + ((výškaRodiča - výška) / 2.0);
 		return poloha.polohaX() == ox && poloha.polohaY() == oy;
 	}
 
@@ -884,7 +891,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	{
 		prilepenieRoztiahnutie &= 60;
 		prilepenieRoztiahnutie |= 1;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #prilepVľavo() prilepVľavo}.</p> */
@@ -908,7 +915,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	{
 		prilepenieRoztiahnutie &= 60;
 		prilepenieRoztiahnutie |= 2;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/**
@@ -929,7 +936,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	{
 		prilepenieRoztiahnutie &= 51;
 		prilepenieRoztiahnutie |= 4;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/**
@@ -950,7 +957,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	{
 		prilepenieRoztiahnutie &= 51;
 		prilepenieRoztiahnutie |= 8;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/**
@@ -964,7 +971,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	public void odlep()
 	{
 		prilepenieRoztiahnutie &= 48;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 
@@ -979,7 +986,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	public void roztiahniNaVýšku()
 	{
 		prilepenieRoztiahnutie |= 16;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #roztiahniNaVýšku() roztiahniNaVýšku}.</p> */
@@ -1005,7 +1012,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	public void roztiahniNaŠírku()
 	{
 		prilepenieRoztiahnutie |= 32;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #roztiahniNaŠírku() roztiahniNaŠírku}.</p> */
@@ -1029,7 +1036,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	public void nerozťahuj()
 	{
 		prilepenieRoztiahnutie &= 15;
-		Svet.hlavnýPanel.doLayout();
+		hlavnýPanel.doLayout();
 	}
 
 	/** <p><a class="alias"></a> Alias pre {@link #nerozťahuj() nerozťahuj}.</p> */
@@ -1549,7 +1556,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	@Override public void setVisible(boolean visible)
 	{
 		if (!visible)
-			Svet.hlavnýPanel.requestFocusInWindow();
+			hlavnýPanel.requestFocusInWindow();
 		super.setVisible(visible);
 		rolovanie.setVisible(visible);
 	}
@@ -3072,6 +3079,46 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	/** <p><a class="alias"></a> Alias pre {@link #nahraďOznačenie(String, boolean) nahraďOznačenie}.</p> */
 	public void nahradOznacenie(String obsah, boolean ponechajOznačenie)
 	{ nahraďOznačenie(obsah, ponechajOznačenie); }
+
+
+	/**
+	 * <p>Prenesie poznámkový blok zo sveta do určeného okna alebo späť.</p>
+	 * 
+	 * <p>Ak je parameter {@code tam} rovný {@code valtrue} a zároveň sa blok
+	 * nachádza vo svete (pozor, nie v inom okne, musí byť umestnený vo
+	 * svete), tak bude prenesený do zadaného okna. Ak je parameter
+	 * {@code tam} rovný {@code valfalse} a zároveň sa blok nachádza v zadanom
+	 * okne (musí to byť presne to okno), tak bude prenesený zo zadaného okna
+	 * do sveta.</p>
+	 * 
+	 * <p>V uvedených dvoch situáciách je návratová hodnota tejto metódy
+	 * inštancia tohto poznámkového bloku, čo umožňuje zreťazené volanie
+	 * ďalšej metódy bloku – pri inicializácii rozhrania a prenose bloku zo
+	 * sveta do želaného okna sa na to dá spoľahnúť. Ak je však prenos
+	 * neúspešný, tak je vrátená hodnota {@code valnull}.</p>
+	 * 
+	 * <p>Volanie tejto metódy je ekvivalentné volaniu metódy
+	 * {@link Okno#prenes(PoznámkovýBlok poznámkovýBlok, boolean sem)}.</p>
+	 * 
+	 * @param okno okno, do ktorého alebo z ktorého má byť blok prenesený
+	 * @param tam smer prenosu (pozri opis vyššie)
+	 * @return inštancia tohto poznámkového bloku alebo {@code valnull}
+	 */
+	public PoznámkovýBlok prenes(Okno okno, boolean tam)
+	{
+		return okno.prenes(this, tam);
+	}
+
+	/**
+	 * <p>Zistí, či je tento poznámkový blok umiestnený v zadanom okne.</p>
+	 * 
+	 * @return {@code valtrue} ak je blok v zadanom okne, {@code valfalse}
+	 *     v opačnom prípade
+	 */
+	public boolean jeV(Okno okno)
+	{
+		return okno.jeTu(this);
+	}
 
 
 	// Nie je vhodné prekrývať tieto metódy:

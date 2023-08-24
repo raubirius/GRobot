@@ -36,9 +36,10 @@ package knižnica;
 public interface Poloha
 	// Ukázalo sa, že trieda Point2D.Double je na tieto účely nepoužiteľná.
 	// Pri jej použití vznikali obrovské problémy dotýkajúce sa funkčnosti
-	// prekrývania metódy kresliTvar() triedy GRobot. Možno išlo o nahlásiteľný
-	// opraviteľný bug Javy, ale jednoduchšie pre nás bolo triedu nepoužiť,
-	// navyše sme zhodnotili, že použitie rozhrania bude výhodnejšie.
+	// prekrývania metód kresliTvar() a kresliSeba() triedy GRobot. Možno
+	// išlo o nahlásiteľný opraviteľný bug Javy, ale jednoduchšie pre nás
+	// bolo triedu nepoužiť, navyše sme zhodnotili, že použitie rozhrania
+	// bude výhodnejšie.
 {
 	// public class Stred extends Bod
 
