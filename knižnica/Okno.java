@@ -40,7 +40,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.KeyboardFocusManager;
 // import java.awt.KeyEventDispatcher;
-// import java.awt.Toolkit;
+import java.awt.Toolkit;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -54,6 +54,7 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.InputEvent;
@@ -76,14 +77,16 @@ import java.util.TreeMap;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.OverlayLayout;
 import javax.swing.UIManager;
 
-import static knižnica.Konštanty.versionString;
+// import static knižnica.Konštanty.versionString;
 
 import static javax.swing.JFrame.DO_NOTHING_ON_CLOSE;
 import static javax.swing.JFrame.ICONIFIED;
@@ -502,11 +505,14 @@ public class Okno
 		// …
 
 		okno.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		okno.setTitle(versionString);
+		okno.setTitle(/*versionString*/Svet.svet.getTitle());
 		if (null != Svet.svet) okno.setIconImage(Svet.svet.getIconImage());
 
 		if (null != oknoCelejObrazovky)
-			oknoCelejObrazovky.setTitle(versionString);
+			oknoCelejObrazovky.setTitle(/*versionString*/Svet.svet.getTitle());
+
+		// FIX: 2023-08-24:
+		pridajKlávesovúSkratku(close, Kláves.VK_W, Kláves.SKRATKA_PONUKY);
 
 		okno.pack();
 		// okno.requestFocusInWindow();
@@ -1790,14 +1796,16 @@ public class Okno
 		if (null != oknoCelejObrazovky)
 		{
 			String titulok = oknoCelejObrazovky.getTitle();
-			if (versionString.equals(titulok)) titulok = null;
+			if (/*versionString*/Svet.svet.getTitle().equals(titulok))
+				titulok = null;
 			return titulok;
 		}
 
 		if (null != okno)
 		{
 			String titulok = okno.getTitle();
-			if (versionString.equals(titulok)) titulok = null;
+			if (/*versionString*/Svet.svet.getTitle().equals(titulok))
+				titulok = null;
 			return titulok;
 		}
 
@@ -1813,7 +1821,7 @@ public class Okno
 	 */
 	public void titulok(String titulok)
 	{
-		if (null == titulok) titulok = versionString;
+		if (null == titulok) titulok = /*versionString*/Svet.svet.getTitle();
 		if (null != okno) okno.setTitle(titulok);
 		if (null != oknoCelejObrazovky)
 			oknoCelejObrazovky.setTitle(titulok);
@@ -2789,10 +2797,12 @@ public class Okno
 	 * @see #zistiZariadenieOkna()
 	 * @see Svet#početZariadení()
 	 */
-	public boolean celáObrazovka() { return celáObrazovka(0, true); }
+	public boolean celáObrazovka()
+	{ return celáObrazovka(zistiZariadenieOkna(), true); }
 
 	/** <p><a class="alias"></a> Alias pre {@link #celáObrazovka() celáObrazovka}.</p> */
-	public boolean celaObrazovka() { return celáObrazovka(0, true); }
+	public boolean celaObrazovka()
+	{ return celáObrazovka(zistiZariadenieOkna(), true); }
 
 
 	/**
@@ -2837,11 +2847,11 @@ public class Okno
 	 * @see Svet#početZariadení()
 	 */
 	public boolean celáObrazovka(boolean celáObrazovka)
-	{ return celáObrazovka(0, celáObrazovka); }
+	{ return celáObrazovka(zistiZariadenieOkna(), celáObrazovka); }
 
 	/** <p><a class="alias"></a> Alias pre {@link #celáObrazovka(boolean) celáObrazovka}.</p> */
 	public boolean celaObrazovka(boolean celáObrazovka)
-	{ return celáObrazovka(0, celáObrazovka); }
+	{ return celáObrazovka(zistiZariadenieOkna(), celáObrazovka); }
 
 	/**
 	 * <p>Hodnota tohto atribútu môže obsahovať vlastnú implementáciu
@@ -3001,4 +3011,264 @@ public class Okno
 	 */
 	public JFrame oknoCelejObrazovky()
 	{ return oknoCelejObrazovky; }
+
+
+	// FIX: 2023-08-24:
+	private final static String close = "close";
+
+	@SuppressWarnings("serial")
+	private class KlávesováSkratka extends AbstractAction
+	{
+		public final String príkaz;
+		// public final KeyStroke keyStroke;
+
+		public KlávesováSkratka(String príkaz, KeyStroke keyStroke)
+		{
+			super(príkaz);
+			this.príkaz = príkaz;
+			// this.keyStroke = keyStroke;
+			putValue(ACCELERATOR_KEY, keyStroke);
+		}
+
+		@Override public void actionPerformed(ActionEvent e)
+		{
+			// FIX: 2023-08-24:
+			if (príkaz == close)
+			{
+				// skry();
+				zavrieť();
+				return;
+			}
+
+			// Podobné ako: poslednáUdalosťKlávesnice
+			ÚdajeUdalostí.oknoUdalosti = Okno.this;
+			ÚdajeUdalostí.poslednáUdalosťSkratky = e;
+			Svet.aktuálnyIntervalKofeínu = Svet.intervalKofeínu;
+			ÚdajeUdalostí.poslednýPríkazSkratky = príkaz;
+
+			if (null != ObsluhaUdalostí.počúvadlo)
+				synchronized (ÚdajeUdalostí.zámokUdalostí)
+				{
+					// Podobné ako: zadanieZnaku()
+					ObsluhaUdalostí.počúvadlo.klávesováSkratka();
+					ObsluhaUdalostí.počúvadlo.klavesovaSkratka();
+				}
+
+				synchronized (ÚdajeUdalostí.zámokUdalostí)
+				{
+					int početPočúvajúcich =
+						GRobot.počúvajúciRozhranie.size();
+					for (int i = 0; i < početPočúvajúcich; ++i)
+					{
+						GRobot počúvajúci = GRobot.
+							počúvajúciRozhranie.get(i);
+						// Podobné ako: zadanieZnaku()
+						počúvajúci.klávesováSkratka();
+						počúvajúci.klavesovaSkratka();
+					}
+				}
+		}
+	}
+
+	// Zoznam klávesových skratiek podľa akcií:
+	private final TreeMap<String, KlávesováSkratka>
+		klávesovéSkratky = new TreeMap<>();
+
+	/**
+	 * <p>Definuje novú klávesovú skratku s modifikátorom pre ponuky, ktorá
+	 * bude previazaná so zadaným príkazom. Klávesové skratky sú spracúvané
+	 * udalosťou {@link ObsluhaUdalostí#klávesováSkratka()
+	 * ObsluhaUdalostí.klávesováSkratka()}, ktorá používa metódu
+	 * {@link ÚdajeUdalostí#príkazSkratky() ÚdajeUdalostí.príkazSkratky()}
+	 * na identifikáciu príkazu.</p>
+	 * 
+	 * <p>Táto klávesová skratka je definovaná s predvoleným modifikátorom
+	 * používaným pre klávesové skratky {@linkplain PoložkaPonuky položiek
+	 * ponuky}. Ten je závislý od operačného systému, napríklad vo Windows
+	 * je to kláves {@code Ctrl}, v macOS (predtým OS X a Mac OS) je to
+	 * kláves {@code ⌘} (<small>Command</small>). Ak chcete definovať
+	 * klávesovú skratku bez modifikátora, použite metódu
+	 * {@link #pridajKlávesovúSkratku(String, int, int)
+	 * pridajKlávesovúSkratku(príkaz, kódKlávesu, modifikátor)}
+	 * s hodnotou modifikátora {@code num0}.</p>
+	 * 
+	 * @param príkaz príkaz, ktorý bude previazaný s touto klávesovou
+	 *     skratkou
+	 * @param kódKlávesu kód klávesu, ktorý má byť použitý ako klávesová
+	 *     skratka (v kombinácii s modifikátorom pre ponuky); môže to byť
+	 *     ľubovoľný kód klávesu z triedy {@link Kláves Kláves}
+	 *     ({@link Kláves#HORE Kláves.HORE}, {@link KeyEvent#VK_X
+	 *     Kláves.VK_X}…)
+	 * 
+	 * @see #pridajKlávesovúSkratku(String, int, int)
+	 * @see #odoberKlávesovúSkratku(String)
+	 * @see #skratkaPríkazu(String)
+	 * @see #reťazecSkratkyPríkazu(String)
+	 */
+	public void pridajKlávesovúSkratku(String príkaz, int kódKlávesu)
+	{
+		pridajKlávesovúSkratku(príkaz, kódKlávesu,
+			Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #pridajKlávesovúSkratku(String, int) pridajKlávesovúSkratku}.</p> */
+	public void pridajKlavesovuSkratku(String príkaz, int kódKlávesu)
+	{ pridajKlávesovúSkratku(príkaz, kódKlávesu); }
+
+	/**
+	 * <p>Definuje novú klávesovú skratku, ktorá bude previazaná so zadaným
+	 * príkazom. Klávesové skratky sú spracúvané udalosťou {@link 
+	 * ObsluhaUdalostí#klávesováSkratka() ObsluhaUdalostí.klávesováSkratka()},
+	 * ktorá používa metódu {@link ÚdajeUdalostí#príkazSkratky()
+	 * ÚdajeUdalostí.príkazSkratky()} na identifikáciu príkazu.</p>
+	 * 
+	 * @param príkaz príkaz, ktorý bude previazaný s touto klávesovou
+	 *     skratkou
+	 * @param kódKlávesu kód klávesu, ktorý má byť použitý ako klávesová
+	 *     skratka; môže to byť ľubovoľný kód klávesu z triedy
+	 *     {@link Kláves Kláves} ({@link Kláves#HORE Kláves.HORE},
+	 *     {@link KeyEvent#VK_X Kláves.VK_X}…)
+	 * @param modifikátor klávesový modifikátor tejto skratky (napríklad
+	 *     kláves Ctrl – {@link java.awt.event.InputEvent#CTRL_MASK
+	 *     Kláves.CTRL_MASK},
+	 *     Shift – {@link java.awt.event.InputEvent#SHIFT_MASK
+	 *     Kláves.SHIFT_MASK},
+	 *     Alt – {@link java.awt.event.InputEvent#ALT_MASK
+	 *     Kláves.ALT_MASK}…); klávesový modifikátor ponúk, ktorý je
+	 *     závislý od operačného systému definuje rezervovaný
+	 *     identifikátor {@link Kláves#SKRATKA_PONUKY
+	 *     Kláves.SKRATKA_PONUKY}; klávesovú skratku bez modifikátora je
+	 *     možné definovať zadaním hodnoty {@code num0}
+	 * 
+	 * @see #pridajKlávesovúSkratku(String, int)
+	 * @see #odoberKlávesovúSkratku(String)
+	 * @see #skratkaPríkazu(String)
+	 * @see #reťazecSkratkyPríkazu(String)
+	 */
+	public void pridajKlávesovúSkratku(String príkaz,
+		int kódKlávesu, int modifikátor)
+	{
+		if (klávesovéSkratky.containsKey(príkaz))
+			odoberKlávesovúSkratku(príkaz);
+
+		KeyStroke keyStroke = KeyStroke.getKeyStroke(kódKlávesu,
+			modifikátor);
+		KlávesováSkratka klávesováSkratka = new KlávesováSkratka(
+			príkaz, keyStroke);
+
+		klávesovéSkratky.put(príkaz, klávesováSkratka);
+
+		hlavnýPanel.getInputMap(JPanel.
+			// WHEN_IN_FOCUSED_WINDOW
+			WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
+			).
+			put(keyStroke, príkaz);
+		hlavnýPanel.getActionMap().put(príkaz, klávesováSkratka);
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #pridajKlávesovúSkratku(String, int, int) pridajKlávesovúSkratku}.</p> */
+	public void pridajKlavesovuSkratku(String príkaz,
+		int kódKlávesu, int modifikátor)
+	{ pridajKlávesovúSkratku(príkaz, kódKlávesu, modifikátor); }
+
+	/**
+	 * <p>Odoberie definovanú klávesovú skratku, ktorá je previazaná so
+	 * zadaným príkazom. Príkaz odoberie skratky zo zoznamu skratiek
+	 * hlavného okna aj vstupného riadka.</p>
+	 * 
+	 * @param príkaz príkaz, ktorý je previazaný s niektorou
+	 *     klávesovou skratkou
+	 * 
+	 * @see #pridajKlávesovúSkratku(String, int)
+	 * @see #pridajKlávesovúSkratku(String, int, int)
+	 * @see #skratkaPríkazu(String)
+	 * @see #reťazecSkratkyPríkazu(String)
+	 */
+	public void odoberKlávesovúSkratku(String príkaz)
+	{
+		if (klávesovéSkratky.containsKey(príkaz))
+		{
+			KeyStroke keyStroke = (KeyStroke)
+				klávesovéSkratky.get(príkaz).//keyStroke;
+				getValue(AbstractAction.ACCELERATOR_KEY);
+
+			hlavnýPanel.getInputMap(JPanel.
+				// WHEN_IN_FOCUSED_WINDOW
+				WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
+				).
+				remove(keyStroke);
+			hlavnýPanel.getActionMap().remove(príkaz);
+
+			klávesovéSkratky.remove(príkaz);
+		}
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #odoberKlávesovúSkratku(String) odoberKlávesovúSkratku}.</p> */
+	public void odoberKlavesovuSkratku(String príkaz)
+	{ odoberKlávesovúSkratku(príkaz); }
+
+
+	/**
+	 * <p>Táto metóda zistí, aká klávesová skratka je priradená zadanému
+	 * príkazu. Ak taká skratka nejestvuje, metóda vráti hodnotu
+	 * {@code valnull}.</p>
+	 * 
+	 * <p>Metóda nedokáže rozlíšiť, či je skratka platná pre hlavné
+	 * okno a/alebo vstupný riadok, preto ak rozlišujete medzi skratkami
+	 * definovanými pre vstupný riadok a hlavné okno, tak odporúčame pre
+	 * nich zvoliť unikátne názvy.</p>
+	 * 
+	 * @param príkaz príkaz, ktorý by mal byť previazaný s niektorou
+	 *     klávesovou skratkou
+	 * @return objekt typu {@link KeyStroke KeyStroke} alebo {@code valnull}
+	 * 
+	 * @see #pridajKlávesovúSkratku(String, int)
+	 * @see #pridajKlávesovúSkratku(String, int, int)
+	 * @see #odoberKlávesovúSkratku(String)
+	 * @see #reťazecSkratkyPríkazu(String)
+	 */
+	public KeyStroke skratkaPríkazu(String príkaz)
+	{
+		if (klávesovéSkratky.containsKey(príkaz))
+			return (KeyStroke)klávesovéSkratky.get(príkaz).
+				getValue(AbstractAction.ACCELERATOR_KEY);
+		return null;
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #skratkaPríkazu(String) skratkaPríkazu}.</p> */
+	public KeyStroke skratkaPrikazu(String príkaz)
+	{ return skratkaPríkazu(príkaz); }
+
+	/**
+	 * <p>Táto metóda prevedie definíciu klávesovej skratku, ktorá je
+	 * priradená zadanému príkazu do textovej podoby. Ak taká skratka
+	 * nejestvuje, tak metóda vráti hodnotu {@code valnull}.</p>
+	 * 
+	 * <p>Metóda nedokáže rozlíšiť, či je skratka platná pre hlavné
+	 * okno a/alebo vstupný riadok, preto ak rozlišujete medzi skratkami
+	 * definovanými pre vstupný riadok a hlavné okno, tak odporúčame pre
+	 * nich zvoliť unikátne názvy.</p>
+	 * 
+	 * @param príkaz príkaz, ktorý by mal byť previazaný s niektorou
+	 *     klávesovou skratkou
+	 * @return text klávesovej skratky alebo {@code valnull}
+	 * 
+	 * @see #pridajKlávesovúSkratku(String, int)
+	 * @see #pridajKlávesovúSkratku(String, int, int)
+	 * @see #odoberKlávesovúSkratku(String)
+	 * @see #skratkaPríkazu(String)
+	 */
+	public String reťazecSkratkyPríkazu(String príkaz)
+	{
+		KeyStroke keyStroke = skratkaPríkazu(príkaz);
+		if (null == keyStroke) return null;
+		if (0 == keyStroke.getModifiers())
+			return KeyEvent.getKeyText(keyStroke.getKeyCode());
+		return KeyEvent.getKeyModifiersText(keyStroke.getModifiers()) +
+			"+" + KeyEvent.getKeyText(keyStroke.getKeyCode());
+	}
+
+	/** <p><a class="alias"></a> Alias pre {@link #reťazecSkratkyPríkazu(String) reťazecSkratkyPríkazu}.</p> */
+	public String retazecSkratkyPrikazu(String príkaz)
+	{ return reťazecSkratkyPríkazu(príkaz); }
 }

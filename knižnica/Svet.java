@@ -1926,13 +1926,22 @@ public final class Svet extends JFrame
 			{
 				if (!inicializované) return null;
 
+				// FIX: 2023-08-24:
+				pridajKlávesovúSkratku(close, Kláves.VK_W,
+					Kláves.SKRATKA_PONUKY, false);
+
 				JMenuBar hlavnáPonuka = new JMenuBar();
 				JMenu položkaHlavnejPonuky = new JMenu("Ponuka");
 				položkaHlavnejPonuky.setMnemonic(KeyEvent.VK_P);
 				hlavnáPonuka.add(položkaHlavnejPonuky);
 
-				položkaHlavnejPonuky.add(položkaSkončiť = new PoložkaPonuky(
-					"Koniec", KeyEvent.VK_K, KeyEvent.VK_W));
+				položkaHlavnejPonuky.add(položkaSkončiť = 
+					// FIX: 2023-08-24:
+					// new PoložkaPonuky("Koniec", KeyEvent.VK_K, KeyEvent.VK_W));
+					new PoložkaPonuky("Koniec", KeyEvent.VK_K));
+
+				// FIX: 2023-08-24:
+				položkaSkončiť.príkaz(close);
 
 				// ponukaVPôvodnomStave = true; – netreba, lebo ponuka ešte
 				//     nie je priradená, t. j. metóda pridajDoHlavnejPonuky()
@@ -3420,8 +3429,8 @@ public final class Svet extends JFrame
 		// (a čírou náhodou je kofeín zábavne sémanticky asociovaný aj
 		// s Javou). Všetky prvky majúce v názve kofeín súvisia presne
 		// s takouto funkciou, ktorú poskytuje trieda Svet.
-		private static int aktuálnyIntervalKofeínu = 0;
-		private static int intervalKofeínu = 1000;
+		/*packagePrivate*/ static int aktuálnyIntervalKofeínu = 0;
+		/*packagePrivate*/ static int intervalKofeínu = 1000;
 			// (int)(40000.0 / „interval časovača“);
 		private static Robot kofeín = null;
 
@@ -12178,6 +12187,423 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #použiKonfiguráciu() použiKonfiguráciu}.</p> */
 		public static void pouziKonfiguraciu()
 		{ použiKonfiguráciu(predvolenýNázovKonfiguračnéhoSúboru); }
+
+
+		/**
+		 * <p>Komplexný konfiguračný príkaz umožňujúci vykonanie mnohých
+		 * nastavení sveta naraz.</p>
+		 * 
+		 * <p>Zoznam reťazcov {@code nastavenia} môže obsahovať ľubovoľný počet
+		 * z nasledujúcich nastavení:</p>
+		 * 
+		 * <table class="shadedTable innerHorizontalLines">
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"nerežimLadenia"}</td><td>vypne</td>
+		 * 		<td rowspan=2>vykonanie príkazu
+		 * 		{@link Svet Svet}{@code .}{@link #režimLadenia(boolean, boolean) režimLadenia}{@code (}{@code valtrue}{@code , }{@code valtrue}{@code )}
+		 * 		po vyhodnotení všetkých konfiguračných direktív.</td>
+		 * 	</tr>
+		 * 	<tr>
+		 * 		<td>{@code srg"režimLadenia"}</td><td>zapne</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"}<em>«názov súboru»</em>{@code srg.cfg"}</td><td>zapne</td>
+		 * 		<td>vykonanie príkazu
+		 * 		{@link Svet Svet}{@code .}{@link #použiKonfiguráciu(String, int, int, int, int) použiKonfiguráciu}{@code (…)}
+		 * 		po vyhodnotení všetkých konfiguračných direktív so zadaným názvom súboru.</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"x=}<em>«celé číslo»</em>{@code srg"}</td><td>upraví</td>
+		 * 		<td>hodnotu x-ovej pozície okna pre príkaz
+		 * 		{@link Svet Svet}{@code .}{@link #použiKonfiguráciu(String, int, int, int, int) použiKonfiguráciu}{@code (…)},
+		 * 		ktorý sa vykoná po vyhodnotení všetkých konfiguračných direktív, ak nebol zakázaný inou direktívou v zozname nastavení.</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"y=}<em>«celé číslo»</em>{@code srg"}</td><td>upraví</td>
+		 * 		<td>hodnotu y-ovej pozície okna pre príkaz
+		 * 		{@link Svet Svet}{@code .}{@link #použiKonfiguráciu(String, int, int, int, int) použiKonfiguráciu}{@code (…)},
+		 * 		ktorý sa vykoná po vyhodnotení všetkých konfiguračných direktív, ak nebol zakázaný inou direktívou v zozname nastavení.</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"šírka=}<em>«celé číslo»</em>{@code srg"}</td><td>upraví</td>
+		 * 		<td>hodnotu šírky okna pre príkaz
+		 * 		{@link Svet Svet}{@code .}{@link #použiKonfiguráciu(String, int, int, int, int) použiKonfiguráciu}{@code (…)},
+		 * 		ktorý sa vykoná po vyhodnotení všetkých konfiguračných direktív, ak nebol zakázaný inou direktívou v zozname nastavení.</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"výška=}<em>«celé číslo»</em>{@code srg"}</td><td>upraví</td>
+		 * 		<td>hodnotu výšky okna pre príkaz
+		 * 		{@link Svet Svet}{@code .}{@link #použiKonfiguráciu(String, int, int, int, int) použiKonfiguráciu}{@code (…)},
+		 * 		ktorý sa vykoná po vyhodnotení všetkých konfiguračných direktív, ak nebol zakázaný inou direktívou v zozname nastavení.</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"nepoužiKonfiguráciu"}</td><td>vypne</td>
+		 * 		<td rowspan=2>vykonanie príkazu
+		 * 		{@link Svet Svet}{@code .}{@link #použiKonfiguráciu(String, int, int, int, int) použiKonfiguráciu}{@code (…)}
+		 * 		po vyhodnotení všetkých konfiguračných direktív s predvoleným názvom súboru.</td>
+		 * 	</tr>
+		 * 	<tr>
+		 * 		<td>{@code srg"použiKonfiguráciu"}</td><td>zapne</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"skryHlavnýRobot"}</td><td>vypne</td>
+		 * 		<td rowspan=2>vykonanie príkazu
+		 * 		{@link Svet Svet}{@code .}{@link #vypíš(Object[]) vypíš}{@code (}{@code valthis}{@code )}
+		 * 		počas inicializácie hlavného robota (príkaz vypína automatické
+		 * 		skrývanie hlavného robota po prvom výpise textu konzoly).</td>
+		 * 	</tr>
+		 * 	<tr>
+		 * 		<td>{@code srg"neskryHlavnýRobot"}</td><td>zapne</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"nezačniVstup"}</td><td>vypne</td>
+		 * 		<td rowspan=2>vykonanie príkazu
+		 * 		{@link Svet Svet}{@code .}{@link #začniVstup() začniVstup}{@code ()}
+		 * 		počas inicializácie hlavného robota.</td>
+		 * 	</tr>
+		 * 	<tr>
+		 * 		<td>{@code srg"začniVstup"}</td><td>zapne</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"skrývajVstupnýRiadok"}</td><td>vypne</td>
+		 * 		<td rowspan=2>vykonanie príkazu
+		 * 		{@link Svet Svet}{@code .}{@link #neskrývajVstupnýRiadok() neskrývajVstupnýRiadok}{@code ()}
+		 * 		počas inicializácie hlavného robota.</td>
+		 * 	</tr>
+		 * 	<tr>
+		 * 		<td>{@code srg"neskrývajVstupnýRiadok"}</td><td>zapne</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"neinteraktívnyRežim"}</td><td>vypne</td>
+		 * 		<td rowspan=2>vykonanie príkazov
+		 * 		{@link Svet Svet}{@code .}{@link #interaktívnyRežim(boolean) interaktívnyRežim}{@code (}{@code valtrue}{@code )}
+		 * 		a {@link GRobot#interaktívnyRežim(boolean) interaktívnyRežim}{@code (}{@code valtrue}{@code )}
+		 * 		počas inicializácie hlavného robota.</td>
+		 * 	</tr>
+		 * 	<tr>
+		 * 		<td>{@code srg"interaktívnyRežim"}</td><td>zapne</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"neaktivujHistóriuVstupnéhoRiadka"}</td><td>vypne</td>
+		 * 		<td rowspan=2>vykonanie príkazu
+		 * 		{@link Svet Svet}{@code .}{@link #aktivujHistóriuVstupnéhoRiadka() aktivujHistóriuVstupnéhoRiadka}{@code ()}
+		 * 		počas inicializácie hlavného robota.</td>
+		 * 	</tr>
+		 * 	<tr>
+		 * 		<td>{@code srg"aktivujHistóriuVstupnéhoRiadka"}</td><td>zapne</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"neuchovajHistóriuVstupnéhoRiadka"}</td><td>vypne</td>
+		 * 		<td rowspan=2>vykonanie príkazu
+		 * 		{@link Svet Svet}{@code .}{@link #uchovajHistóriuVstupnéhoRiadka() uchovajHistóriuVstupnéhoRiadka}{@code ()}
+		 * 		počas inicializácie hlavného robota.</td>
+		 * 	</tr>
+		 * 	<tr>
+		 * 		<td>{@code srg"uchovajHistóriuVstupnéhoRiadka"}</td><td>zapne</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"neskratkyStropu"}</td><td>vypne</td>
+		 * 		<td rowspan=2>vykonanie príkazu
+		 * 		{@link Svet Svet}{@code .}{@link #skratkyStropu(boolean) skratkyStropu}{@code (}{@code valtrue}{@code )}
+		 * 		počas inicializácie hlavného robota.</td>
+		 * 	</tr>
+		 * 	<tr>
+		 * 		<td>{@code srg"skratkyStropu"}</td><td>zapne</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"neautomatickéZobrazovanieLíšt"}</td><td>vypne</td>
+		 * 		<td rowspan=2>vykonanie príkazu
+		 * 		{@link Plátno strop}{@code .}{@link Plátno#automatickéZobrazovanieLíšt(boolean) automatickéZobrazovanieLíšt}{@code (}{@code valtrue}{@code )}
+		 * 		počas inicializácie hlavného robota.</td>
+		 * 	</tr>
+		 * 	<tr>
+		 * 		<td>{@code srg"automatickéZobrazovanieLíšt"}</td><td>zapne</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"nezmeňOdsadenieSprava"}</td><td>vypne</td>
+		 * 		<td rowspan=2>vykonanie príkazu
+		 * 		{@link Plátno strop}{@code .}{@link Plátno#zmeňOdsadenieSprava(Integer) zmeňOdsadenieSprava}{@code (}{@code num30}{@code )}
+		 * 		počas inicializácie hlavného robota.</td>
+		 * 	</tr>
+		 * 	<tr>
+		 * 		<td>{@code srg"zmeňOdsadenieSprava"}</td><td>zapne</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"vypisujFarby"}</td><td>vypne</td>
+		 * 		<td rowspan=2>vykonanie príkazu
+		 * 		{@link Plátno strop}{@code .}{@link Plátno#nevypisujFarby(boolean) nevypisujFarby}{@code (}{@code valtrue}{@code )}
+		 * 		počas inicializácie hlavného robota.</td>
+		 * 	</tr>
+		 * 	<tr>
+		 * 		<td>{@code srg"nevypisujFarby"}</td><td>zapne</td>
+		 * 	</tr>
+		 * 
+		 * 	<tr>
+		 * 		<td>{@code srg"vypniVšetko"}</td><td>vypne</td>
+		 * 		<td rowspan=2>všetky (vyššie vymenované) direktívy.</td>
+		 * 	</tr>
+		 * 	<tr>
+		 * 		<td>{@code srg"zapniVšetko"}</td><td>zapne</td>
+		 * 	</tr>
+		 * 
+		 * </table>
+		 * 
+		 * <p>Nastavenia sú vyhodnocované sekvenčne. Neskoršie uvedené menia
+		 * platnosť skôr uvedených.</p>
+		 * 
+		 * @param nastavenia reťazcový zoznam konfiguračných direktív
+		 */
+		public static void použiInteraktívnyRežim(String... nastavenia)
+		{
+			String názovSúboru = predvolenýNázovKonfiguračnéhoSúboru;
+
+			int x = počiatočnéX;
+			int y = počiatočnéY;
+			int šírka = počiatočnáŠírka;
+			int výška = počiatočnáVýška;
+
+			boolean režimLadenia = true;
+
+			GRobot.PoužiInteraktívnyRežim pir =
+				new GRobot.PoužiInteraktívnyRežim();
+
+			for (String nastavenieOriginál : nastavenia)
+			{
+				if (null == nastavenieOriginál) continue;
+				String nastavenie = nastavenieOriginál.trim().
+					replaceAll("[-_  \t]+", "").toLowerCase();
+				if (nastavenie.isEmpty()) continue;
+
+
+				try { if (nastavenie.endsWith(".cfg"))
+					názovSúboru = nastavenieOriginál;
+				else if (nastavenie.startsWith("x="))
+					x = reťazecNaCeléČíslo(nastavenie.substring(2)).intValue();
+				else if (nastavenie.startsWith("y="))
+					y = reťazecNaCeléČíslo(nastavenie.substring(2)).intValue();
+				else if (nastavenie.startsWith("šírka=") ||
+					nastavenie.startsWith("sirka="))
+					šírka = reťazecNaCeléČíslo(nastavenie.substring(6)).intValue();
+				else if (nastavenie.startsWith("výška=") ||
+					nastavenie.startsWith("vyska="))
+					výška = reťazecNaCeléČíslo(nastavenie.substring(6)).intValue();
+				else switch (nastavenie)
+				{
+				case "zrušvšetko":
+				case "zrusvsetko":
+				case "vypnivšetko":
+				case "vypnivsetko":
+					názovSúboru = null;
+					režimLadenia = false;
+
+					pir.neskryHlavnýRobot = false;
+					pir.začniVstup = false;
+					pir.neskrývajVstupnýRiadok = false;
+					pir.interaktívnyRežim = false;
+					pir.aktivujHistóriuVstupnéhoRiadka = false;
+					pir.uchovajHistóriuVstupnéhoRiadka = false;
+					pir.skratkyStropu = false;
+					pir.automatickéZobrazovanieLíšt = false;
+					pir.zmeňOdsadenieSprava = false;
+					pir.nevypisujFarby = false;
+					break;
+
+				case "zapnivšetko":
+				case "zapnivsetko":
+				case "povoľvšetko":
+				case "povolvsetko":
+					if (null == názovSúboru)
+						názovSúboru = predvolenýNázovKonfiguračnéhoSúboru;
+					režimLadenia = true;
+
+					pir.neskryHlavnýRobot = true;
+					pir.začniVstup = true;
+					pir.neskrývajVstupnýRiadok = true;
+					pir.interaktívnyRežim = true;
+					pir.aktivujHistóriuVstupnéhoRiadka = true;
+					pir.uchovajHistóriuVstupnéhoRiadka = true;
+					pir.skratkyStropu = true;
+					pir.automatickéZobrazovanieLíšt = true;
+					pir.zmeňOdsadenieSprava = true;
+					pir.nevypisujFarby = true;
+					break;
+
+
+				case "nepoužikonfiguráciu":
+				case "nepouzikonfiguraciu":
+					názovSúboru = null;
+					break;
+
+				case "použikonfiguráciu":
+				case "pouzikonfiguraciu":
+					if (null == názovSúboru)
+						názovSúboru = predvolenýNázovKonfiguračnéhoSúboru;
+					break;
+
+
+				case "skryhlavnýrobot":
+				case "skryhlavnyrobot":
+					pir.neskryHlavnýRobot = false;
+					break;
+
+				case "neskryhlavnýrobot":
+				case "neskryhlavnyrobot":
+					pir.neskryHlavnýRobot = true;
+					break;
+
+
+				case "nezačnivstup":
+				case "nezacnivstup":
+					pir.začniVstup = false;
+					break;
+
+				case "začnivstup":
+				case "zacnivstup":
+					pir.začniVstup = true;
+					break;
+
+
+				case "skrývajvstupnýriadok":
+				case "skryvajvstupnyriadok":
+					pir.neskrývajVstupnýRiadok = false;
+					break;
+
+				case "neskrývajvstupnýriadok":
+				case "neskryvajvstupnyriadok":
+					pir.neskrývajVstupnýRiadok = true;
+					break;
+
+
+				case "neinteraktívnyrežim":
+				case "neinteraktivnyrezim":
+				case "nieinteraktívnyrežim":
+				case "nieinteraktivnyrezim":
+				case "interaktívnyrežimnie":
+				case "interaktivnyrezimnie":
+					pir.interaktívnyRežim = false;
+					break;
+
+				case "interaktívnyrežim":
+				case "interaktivnyrezim":
+					pir.interaktívnyRežim = true;
+					break;
+
+
+				case "neaktivujhistóriuvstupnéhoriadka":
+				case "neaktivujhistoriuvstupnehoriadka":
+					pir.aktivujHistóriuVstupnéhoRiadka = false;
+					break;
+
+				case "aktivujhistóriuvstupnéhoriadka":
+				case "aktivujhistoriuvstupnehoriadka":
+					pir.aktivujHistóriuVstupnéhoRiadka = true;
+					break;
+
+
+				case "neuchovajhistóriuvstupnéhoriadka":
+				case "neuchovajhistoriuvstupnehoriadka":
+					pir.uchovajHistóriuVstupnéhoRiadka = false;
+					break;
+
+				case "uchovajhistóriuvstupnéhoriadka":
+				case "uchovajhistoriuvstupnehoriadka":
+					pir.uchovajHistóriuVstupnéhoRiadka = true;
+					break;
+
+
+				case "neskratkystropu":
+				case "nieskratkystropu":
+				case "skratkystropunie":
+					pir.skratkyStropu = false;
+					break;
+
+				case "skratkystropu":
+					pir.skratkyStropu = true;
+					break;
+
+
+				case "neautomatickézobrazovanielíšt":
+				case "neautomatickezobrazovanielist":
+				case "nieautomatickézobrazovanielíšt":
+				case "nieautomatickezobrazovanielist":
+				case "automatickézobrazovanielíštnie":
+				case "automatickezobrazovanielistnie":
+					pir.automatickéZobrazovanieLíšt = false;
+					break;
+
+				case "automatickézobrazovanielíšt":
+				case "automatickezobrazovanielist":
+					pir.automatickéZobrazovanieLíšt = true;
+					break;
+
+
+				case "nezmeňodsadeniesprava":
+				case "nemeňodsadeniesprava":
+				case "nezmenodsadeniesprava":
+				case "nemenodsadeniesprava":
+					pir.zmeňOdsadenieSprava = false;
+					break;
+
+				case "zmeňodsadeniesprava":
+				case "zmenodsadeniesprava":
+					pir.zmeňOdsadenieSprava = true;
+					break;
+
+
+				case "vypisujfarby":
+					pir.nevypisujFarby = false;
+					break;
+
+				case "nevypisujfarby":
+					pir.nevypisujFarby = true;
+					break;
+
+
+				case "nerežimladenia":
+				case "nerezimladenia":
+				case "nierežimladenia":
+				case "nierezimladenia":
+				case "režimladenianie":
+				case "rezimladenianie":
+					režimLadenia = false;
+					break;
+
+				case "režimladenia":
+				case "rezimladenia":
+					režimLadenia = true;
+					break;
+				}} catch (NullPointerException npe)
+				{ GRobotException.vypíšChybovéHlásenia(npe); }
+			}
+
+			if (režimLadenia) režimLadenia(true, true);
+
+			if (null != názovSúboru)
+				použiKonfiguráciu(názovSúboru, x, y, šírka, výška);
+
+			GRobot.použiInteraktívnyRežim = pir;
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #použiInteraktívnyRežim(String...) použiInteraktívnyRežim}.</p> */
+		public static void pouziInteraktivnyRezim(String... nastavenia)
+		{ použiInteraktívnyRežim(nastavenia); }
 
 		/**
 		 * <p>Zistí aktuálny stav automatického overovania počiatočnej polohy
@@ -30106,10 +30532,12 @@ public final class Svet extends JFrame
 		 * @see #oknoCelejObrazovky()
 		 * @see #zistiZariadenieOkna()
 		 */
-		public static boolean celáObrazovka() { return celáObrazovka(0, true); }
+		public static boolean celáObrazovka()
+		{ return celáObrazovka(zistiZariadenieOkna(), true); }
 
 		/** <p><a class="alias"></a> Alias pre {@link #celáObrazovka() celáObrazovka}.</p> */
-		public static boolean celaObrazovka() { return celáObrazovka(0, true); }
+		public static boolean celaObrazovka()
+		{ return celáObrazovka(zistiZariadenieOkna(), true); }
 
 
 		/**
@@ -30165,11 +30593,11 @@ public final class Svet extends JFrame
 		 * @see #zistiZariadenieOkna()
 		 */
 		public static boolean celáObrazovka(boolean celáObrazovka)
-		{ return celáObrazovka(0, celáObrazovka); }
+		{ return celáObrazovka(zistiZariadenieOkna(), celáObrazovka); }
 
 		/** <p><a class="alias"></a> Alias pre {@link #celáObrazovka(boolean) celáObrazovka}.</p> */
 		public static boolean celaObrazovka(boolean celáObrazovka)
-		{ return celáObrazovka(0, celáObrazovka); }
+		{ return celáObrazovka(zistiZariadenieOkna(), celáObrazovka); }
 
 
 		/**
@@ -30347,8 +30775,11 @@ public final class Svet extends JFrame
 						);
 					/*---*/
 
+					/*
+					// FIX: 2023-08-24:
 					KeyboardFocusManager.getCurrentKeyboardFocusManager().
 						addKeyEventDispatcher(koniecSveta);
+					*/
 
 
 					// zariadenia[zariadenie].setFullScreenWindow(oknoCelejObrazovky);
@@ -30403,8 +30834,11 @@ public final class Svet extends JFrame
 						);
 					/*---*/
 
+					/*
+					// FIX: 2023-08-24:
 					KeyboardFocusManager.getCurrentKeyboardFocusManager().
 						removeKeyEventDispatcher(koniecSveta);
+					*/
 
 
 					oknoCelejObrazovky.remove(hlavnýPanel);
@@ -30521,8 +30955,11 @@ public final class Svet extends JFrame
 				inéOkno.addComponentListener(udalostiOkna);
 				inéOkno.addWindowFocusListener(udalostiOkna);
 
+				/*
+				// FIX: 2023-08-24:
 				KeyboardFocusManager.getCurrentKeyboardFocusManager().
 					addKeyEventDispatcher(koniecSveta);
+				*/
 
 				componentEvent = new ComponentEvent(inéOkno,
 					ComponentEvent.COMPONENT_MOVED);
@@ -30534,8 +30971,11 @@ public final class Svet extends JFrame
 			}
 			else if (!tam && jeTam)
 			{
+				/*
+				// FIX: 2023-08-24:
 				KeyboardFocusManager.getCurrentKeyboardFocusManager().
 					removeKeyEventDispatcher(koniecSveta);
+				*/
 
 				inéOkno.remove(hlavnýPanel);
 				inéOkno.remove(panelVstupnéhoRiadka);
@@ -30709,6 +31149,9 @@ public final class Svet extends JFrame
 		// private static AbstractAction koniecSveta = new AbstractAction()
 		// { public void actionPerformed(ActionEvent e) { System.exit(0); }};
 		private static boolean nečakanéSkrytieCelejObrazovky = true;
+
+		/*
+		// FIX: 2023-08-24:
 		private static KeyEventDispatcher koniecSveta = new KeyEventDispatcher()
 		{
 			public boolean dispatchKeyEvent(KeyEvent e)
@@ -30718,13 +31161,14 @@ public final class Svet extends JFrame
 						getMenuShortcutKeyMask())
 				{
 					// System.exit(0);
-					Svet.zavrieť(/*0*/);
+					Svet.zavrieť(/*0* /);
 					return true;
 				}
 
 				return false;
 			}
 		};
+		*/
 
 
 		// Súčasť implementácie skratiek podlahy.
@@ -30759,6 +31203,13 @@ public final class Svet extends JFrame
 		private final static String sAll = "sAll";
 		private final static String copy = "copy";
 
+		// FIX: 2023-08-24: Príkaz ukončenia aplikácie C+W.
+		// Takto to malo byť riešené od začiatku, ale v čase pôvodnej
+		// implementácie som nemal dostatočné skúsenosti a neskôr mi ani
+		// nenapadlo, že to tu takto „pretrváva.“ Ale nevadí. Radšej
+		// neskôr ako nikdy.
+		private final static String close = "close";
+
 		/*packagePrivate*/ static class KlávesováSkratka extends AbstractAction
 		{
 			public final String príkaz;
@@ -30774,6 +31225,14 @@ public final class Svet extends JFrame
 
 			@Override public void actionPerformed(ActionEvent e)
 			{
+				// FIX: 2023-08-24:
+				if (príkaz == close)
+				{
+					// System.exit(0);
+					Svet.zavrieť(/*0*/);
+					return;
+				}
+
 				if (skratkyPodlahy)
 				{
 					boolean nepokračuj = true;
@@ -30856,6 +31315,7 @@ public final class Svet extends JFrame
 
 
 				// Podobné ako: poslednáUdalosťKlávesnice
+				ÚdajeUdalostí.oknoUdalosti = null;
 				ÚdajeUdalostí.poslednáUdalosťSkratky = e;
 				aktuálnyIntervalKofeínu = intervalKofeínu;
 				ÚdajeUdalostí.poslednýPríkazSkratky = príkaz;
@@ -30891,8 +31351,8 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Definuje novú klávesovú skratku s modifikátorom pre ponuky, ktorá
 		 * bude previazaná so zadaným príkazom. Klávesové skratky sú spracúvané
-		 * udalosťou {@link ObsluhaUdalostí#klávesováSkratka
-		 * ObsluhaUdalostí.klávesováSkratka}, ktorá používa metódu
+		 * udalosťou {@link ObsluhaUdalostí#klávesováSkratka()
+		 * ObsluhaUdalostí.klávesováSkratka()}, ktorá používa metódu
 		 * {@link ÚdajeUdalostí#príkazSkratky() ÚdajeUdalostí.príkazSkratky()}
 		 * na identifikáciu príkazu.</p>
 		 * 
@@ -30942,7 +31402,7 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Definuje novú klávesovú skratku, ktorá bude previazaná so zadaným
 		 * príkazom. Klávesové skratky sú spracúvané udalosťou {@link 
-		 * ObsluhaUdalostí#klávesováSkratka ObsluhaUdalostí.klávesováSkratka},
+		 * ObsluhaUdalostí#klávesováSkratka() ObsluhaUdalostí.klávesováSkratka()},
 		 * ktorá používa metódu {@link ÚdajeUdalostí#príkazSkratky()
 		 * ÚdajeUdalostí.príkazSkratky()} na identifikáciu príkazu.</p>
 		 * 
@@ -30991,7 +31451,7 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Definuje novú klávesovú skratku, ktorá bude previazaná so zadaným
 		 * príkazom. Klávesové skratky sú spracúvané udalosťou {@link 
-		 * ObsluhaUdalostí#klávesováSkratka ObsluhaUdalostí.klávesováSkratka},
+		 * ObsluhaUdalostí#klávesováSkratka() ObsluhaUdalostí.klávesováSkratka()},
 		 * ktorá používa metódu {@link ÚdajeUdalostí#príkazSkratky()
 		 * ÚdajeUdalostí.príkazSkratky()} na identifikáciu príkazu.</p>
 		 * 
@@ -31000,7 +31460,7 @@ public final class Svet extends JFrame
 		 * táto verzia metódy umožňuje nepriradiť túto skratku vstupnému
 		 * riadku. Naopak, v niektorých prípadoch je žiadúce definovať
 		 * klávesovú skratku len pre vstupný riadok. Na tieto prípady je
-		 * rezervovaný samostatná metóda {@link 
+		 * rezervovaná samostatná metóda {@link 
 		 * #pridajKlávesovúSkratkuVstupnéhoRiadka(String, int, int)
 		 * pridajKlávesovúSkratkuVstupnéhoRiadka}.</p>
 		 * 
@@ -31074,8 +31534,8 @@ public final class Svet extends JFrame
 		/**
 		 * <p>Definuje novú klávesovú skratku pre vstupný riadok, ktorá bude
 		 * previazaná so zadaným príkazom. Klávesové skratky sú spracúvané
-		 * udalosťou {@link ObsluhaUdalostí#klávesováSkratka
-		 * ObsluhaUdalostí.klávesováSkratka}, ktorá používa metódu
+		 * udalosťou {@link ObsluhaUdalostí#klávesováSkratka()
+		 * ObsluhaUdalostí.klávesováSkratka()}, ktorá používa metódu
 		 * {@link ÚdajeUdalostí#príkazSkratky() ÚdajeUdalostí.príkazSkratky()}
 		 * na identifikáciu príkazu.</p>
 		 * 

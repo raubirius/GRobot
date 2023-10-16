@@ -1384,6 +1384,17 @@ public class ObsluhaUdalostí
 	 * ÚdajeUdalostí.udalosťSkratky()} na získanie doplňujúcich údajov
 	 * o tejto udalosti.</p>
 	 * 
+	 * <p>Na zistenie toho, v ktorom okne sa táto udalosť vyskytla
+	 * použite metódu {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()}. (Pozor, nezamieňať s metódou
+	 * {@link ÚdajeUdalostí#okno() ÚdajeUdalostí.okno()},
+	 * ktorá nesie informáciu o komponente okna a je relevantná len
+	 * pri niektorých udalostiach.)</p>
+	 * 
+	 * <p>Ak sa udalosť vyskytla v hlavnom okne – vo svete, tak
+	 * metóda {@link ÚdajeUdalostí#oknoUdalosti()
+	 * ÚdajeUdalostí.oknoUdalosti()} vráti {@code valnull}.</p>
+	 * 
 	 * <p class="remark"><b>Poznámka:</b> Príklad použitia nájdete
 	 * napríklad v opise vnorenej triedy {@link Svet.PríkazovýRiadok
 	 * Svet.PríkazovýRiadok}.</p>

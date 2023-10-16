@@ -470,7 +470,7 @@ public class Plátno implements Priehľadnosť
 			return výsledok;
 		}
 
-		// Pridávanie medzier na účely výpisov vnútornej konzoly
+		// Pridávanie medzier na účely výpisov vnútornej konzoly.
 		// 
 		private final static char[] nepridajMedzeruZa =
 			{' ', ' ', '\t', '\n', '(', '[', '{', '„', '“', '«', '‹', '\'',
@@ -514,33 +514,33 @@ public class Plátno implements Priehľadnosť
 
 		/*packagePrivate*/ /*static*/ class VnútornáKonzola
 		{
-			// Písmo
+			// Písmo:
 			/*packagePrivate*/ Písmo aktuálnePísmo = predvolenéPísmoKonzoly;
 
-			// Synchronizačný zámok obsahu konzoly
+			// Synchronizačný zámok obsahu konzoly:
 			private final Object zámokKonzoly = new Object();
 
-			// Obsah vnútornej konzoly
+			// Obsah vnútornej konzoly:
 			private final Vector<RiadokKonzoly> riadky = new Vector<>();
 
-			// Objekt slúžiaci na vytvorenie zálohy konzoly
+			// Objekt slúžiaci na vytvorenie zálohy konzoly:
 			private ZálohaKonzoly záloha;
 
 			// Príznak slúžiaci na riadenie mazania znakov pri výskyte
-			// kontrolného znaku BACKSPACE (ASCII 8 – \b)
+			// kontrolného znaku BACKSPACE (ASCII 8 – \b):
 			private boolean príznakBackspace = false;
 
 			// // Príznak sledovania polohy textov vnútornej konzoly
-			// // (predvolene vypnuté, aby boli nižšie pamäťové nároky na konzolu)
+			// // (predvolene vypnuté, aby boli nižšie pamäťové nároky na konzolu):
 			// private boolean sledujPolohuTextu = false; // «zamietnuté»
 
 			// Príznak zobrazenia textov:
 			private boolean textyZobrazené = true;
 
-			// Atribút zalamovania textov
+			// Atribút zalamovania textov:
 			private boolean zalamujTexty = false;
 
-			// Úroveň posunutia textov vnútornej konzoly (pri rolovaní)
+			// Úroveň posunutia textov vnútornej konzoly (pri rolovaní):
 			private int posunutieTextovX = 0, posunutieTextovY = 0;
 			private int poslednáVýškaTextu = 0, poslednáŠírkaTextu = 0;
 
@@ -550,17 +550,17 @@ public class Plátno implements Priehľadnosť
 			private Tlačidlo roh = null;
 
 			// Uchovanie údajov o oblasti orezania, ktorú používajú aj
-			// rolovacie lišty
+			// rolovacie lišty:
 			private int xOrezania = 0, šírkaOrezania = 0,
 				yOrezania = 0, výškaOrezania = 0;
 
-			// Aktuálny objekt grafiky
+			// Aktuálny objekt grafiky:
 			private Graphics2D grafikaKonzoly = null;
 
-			// Rozmery aktuálneho písma
+			// Rozmery aktuálneho písma:
 			private FontMetrics rozmeryPísma = null;
 
-			// Pomocné premenné vykresľovania
+			// Pomocné premenné vykresľovania:
 			private int x = 0, y = 0, x0 = 0;
 			private int šírkaZalomenia = 0;
 			private int šírkaMedzery = 0;
@@ -573,15 +573,20 @@ public class Plátno implements Priehľadnosť
 			private Color farbaAktívnehoSlova = null;
 			private boolean aplikujOdsadeniaZľava = false;
 
-			// Okraje kreslenia textov konzoly
+			// Okraje kreslenia textov konzoly:
 			private int ľavýOkraj = 0, hornýOkraj = 0,
 				pravýOkraj = 0, dolnýOkraj = 0;
 
-			// Zoznam aktívnych slov
+			// Zoznam aktívnych slov:
 			private final Vector<AktívneSlovo> aktívneSlová = new Vector<>();
 
+			// Príznak meniaci správanie príkazov výpisu tak, aby zadanie
+			// farieb menilo farebnosť textov a pozadí textov namiesto
+			// vypísania informácie o inštancii farby:
+			private boolean nevypisujFarby = false;
+
 			// Premenná upravujúca farbu textu konzoly
-			// (aktivuje sa počas procesu písania textov)
+			// (aktivuje sa počas procesu písania textov):
 			private Farba zmenaFarby = null;
 			private Farba počiatočnáFarba = null;
 
@@ -593,35 +598,35 @@ public class Plátno implements Priehľadnosť
 				// pozadie, farbu textov je potrebné neustále zálohovať
 				// podobne ako pri kreslení aktívnych slov.
 
-			// Aktuálna faba pozadia textu (null znamená žiadna)
+			// Aktuálna faba pozadia textu (null znamená žiadna):
 			private Farba farbaPozadia = null;
 
-			// Slúži na zmenu farby pozadia počas písania textov
+			// Slúži na zmenu farby pozadia počas písania textov:
 			private Farba zmenaFarbyPozadia = null;
 			private Farba počiatočnáFarbaPozadia = null;
 			private boolean zrušeniePozadia = false;
 
-			// Aplikácia príkazu píšNa
+			// Aplikácia príkazu píšNa:
 			private boolean súradniceAplikované = false;
 			private Point2D zmenaSúradníc = null;
 
-			// Konfigurovateľné predvolené farby
+			// Konfigurovateľné predvolené farby:
 			private Farba predvolenáFarbaOznačenia = svetložltá;
 			private Farba predvolenáFarbaTextuOznačenia = null;
 
 			// Premenná upravujúca aktuálne aktívne slovo
-			// (aktivuje sa počas procesu písania textov)
+			// (aktivuje sa počas procesu písania textov):
 			private String identifikátorAktívnehoSlova = null;
 
 			// Premenné upravujúce odsadenie (zľava a sprava…)
-			// (aktivujú sa počas procesu písania textov)
+			// (aktivujú sa počas procesu písania textov):
 			private Integer odsadeniePrvéhoRiadka = null;
 			private Integer zmenaOdsadeniaZľava = null;
 			private Integer zmenaOdsadeniaSprava = null;
 			private Integer virtuálnyTabulátor = null;
 
 			// Premenná požadujúca zamrazenie ľavého odsadenia
-			// na aktuálnej pozícii
+			// na aktuálnej pozícii:
 			private boolean zamrazOdsadenie = false;
 			private boolean resetOdsadenia = false;
 			private int zálohaOdsadenia = 0;
@@ -918,7 +923,7 @@ public class Plátno implements Priehľadnosť
 										}
 									}
 
-									// Výpočet hraníc textu
+									// Výpočet hraníc textu:
 									slovo.hranice = rozmeryPísma.
 										getStringBounds(slovo.slovo,
 											grafikaKonzoly);
@@ -965,7 +970,7 @@ public class Plátno implements Priehľadnosť
 											dajFarbuAktívnehoSlova(
 												aktívne.identifikátor);
 
-										// Použi farbu popredia označenia
+										// Použi farbu popredia označenia:
 										if (obsah.označený && (null !=
 											obsah.označenéPopredie || null !=
 											predvolenáFarbaTextuOznačenia))
@@ -999,7 +1004,7 @@ public class Plátno implements Priehľadnosť
 									}
 									else
 									{
-										// Použi farbu popredia označenia
+										// Použi farbu popredia označenia:
 										if (obsah.označený && (null !=
 											obsah.označenéPopredie || null !=
 											predvolenáFarbaTextuOznačenia))
@@ -1019,7 +1024,7 @@ public class Plátno implements Priehľadnosť
 								}
 								else
 								{
-									// Výpočet hraníc textu
+									// Výpočet hraníc textu:
 									slovo.hranice = rozmeryPísma.
 										getStringBounds("", grafikaKonzoly);
 
@@ -1113,7 +1118,7 @@ public class Plátno implements Priehľadnosť
 							farbaAktívnehoSlova = dajFarbuAktívnehoSlova(
 								obsah.aktívneSlovo.identifikátor);
 
-							// Použi farbu popredia označenia
+							// Použi farbu popredia označenia:
 							if (obsah.označený && (null !=
 								obsah.označenéPopredie || null !=
 								predvolenáFarbaTextuOznačenia))
@@ -1142,7 +1147,7 @@ public class Plátno implements Priehľadnosť
 						}
 						else
 						{
-							// Použi farbu popredia označenia
+							// Použi farbu popredia označenia:
 							if (obsah.označený && (null !=
 								obsah.označenéPopredie || null !=
 								predvolenáFarbaTextuOznačenia))
@@ -1282,7 +1287,7 @@ public class Plátno implements Priehľadnosť
 
 					výškaTextu = 0; šírkaTextu = 0;
 
-					// Príprava na kreslenie
+					// Príprava na kreslenie:
 					for (RiadokKonzoly riadok : riadky)
 					{
 						for (PrototypKonzoly prototyp : riadok)
@@ -1513,7 +1518,7 @@ public class Plátno implements Priehľadnosť
 
 								String text = obsah.obsah.toString();
 
-								// Výpočet hraníc textu
+								// Výpočet hraníc textu:
 								obsah.hranice = rozmeryPísma.
 									getStringBounds(text, grafikaKonzoly);
 								posuňObdĺžnik(obsah.hranice, x, y);
@@ -1542,7 +1547,7 @@ public class Plátno implements Priehľadnosť
 										dajFarbuAktívnehoSlova(
 											obsah.aktívneSlovo.identifikátor);
 
-									// Použi farbu popredia označenia
+									// Použi farbu popredia označenia:
 									if (obsah.označený && (null !=
 										obsah.označenéPopredie || null !=
 										predvolenáFarbaTextuOznačenia))
@@ -1572,7 +1577,7 @@ public class Plátno implements Priehľadnosť
 								}
 								else
 								{
-									// Použi farbu popredia označenia
+									// Použi farbu popredia označenia:
 									if (obsah.označený && (null !=
 										obsah.označenéPopredie || null !=
 										predvolenáFarbaTextuOznačenia))
@@ -1751,6 +1756,17 @@ public class Plátno implements Priehľadnosť
 				RiadokKonzoly riadok = riadky.lastElement();
 				PríkazKonzoly príkaz = null;
 
+				Farba zálohaFarby, zálohaPozadia;
+				boolean farbyUpravené = false;
+
+				if (nevypisujFarby)
+				{
+					zálohaFarby = farba();
+					zálohaPozadia = farbaPozadia();
+				}
+				else
+					zálohaFarby = zálohaPozadia = null;
+
 				if (null != zmenaFarby)
 				{
 					if (null == príkaz) príkaz = new PríkazKonzoly();
@@ -1817,7 +1833,12 @@ public class Plátno implements Priehľadnosť
 					resetOdsadenia = true;
 				}
 
-				if (null != príkaz) riadok.add(príkaz);
+				if (null != príkaz)
+				{
+					riadok.add(príkaz);
+					príkaz = null;
+				}
+
 				ObsahKonzoly obsah = null;
 
 				if (null != identifikátorAktívnehoSlova)
@@ -1828,12 +1849,74 @@ public class Plátno implements Priehľadnosť
 						identifikátorAktívnehoSlova;
 				}
 
+				int indexFarby = 0;
+
 				for (Object argument : argumenty)
 				{
 					if (argument instanceof GRobot)
 					{
 						((GRobot)argument).ukáž();
 						continue;
+					}
+
+					if (nevypisujFarby)
+					{
+						if (argument instanceof Farba)
+						{
+							Farba nováFarba = (Farba)argument;
+
+							switch (indexFarby++)
+							{
+							case 0:
+								if (žiadna != nováFarba)
+								{
+									if (null == príkaz)
+										príkaz = new PríkazKonzoly();
+									príkaz.farba = nováFarba;
+								}
+								break;
+
+							case 1:
+								if (null == príkaz)
+									príkaz = new PríkazKonzoly();
+								if (žiadna != nováFarba)
+									príkaz.pozadie = nováFarba;
+								else
+									príkaz.zrušPozadie = true;
+								break;
+							}
+
+							continue;
+						}
+						else if (argument instanceof Color)
+						{
+							Color nováFarba = (Farba)argument;
+
+							switch (indexFarby++)
+							{
+							case 0:
+								if (null == príkaz)
+									príkaz = new PríkazKonzoly();
+								príkaz.farba = new Farba(nováFarba);
+								break;
+
+							case 1:
+								if (null == príkaz)
+									príkaz = new PríkazKonzoly();
+								príkaz.pozadie = new Farba(nováFarba);
+								break;
+							}
+
+							continue;
+						}
+
+						if (null != príkaz)
+						{
+							indexFarby = 0;
+							riadok.add(príkaz);
+							príkaz = null;
+							farbyUpravené = true;
+						}
 					}
 
 					if (null == obsah) obsah = new ObsahKonzoly();
@@ -1957,13 +2040,13 @@ public class Plátno implements Priehľadnosť
 						pridajMedzeru(obsah.obsah, naPridanie);
 
 						// Prvá fáza nahrádzania tabulátorov –
-						// doterajší riadok
+						// doterajší riadok:
 						int tabPos = naPridanie.indexOf("\t");
 						int newLine = naPridanie.indexOf("\n");
 
 						if (-1 == newLine)
 						{
-							// Zisti doterajší počet znakov na riadku
+							// Zisti doterajší počet znakov na riadku:
 							int početZnakov = 0;
 							for (PrototypKonzoly prototyp : riadok)
 							{
@@ -2002,7 +2085,7 @@ public class Plátno implements Priehľadnosť
 						{
 							if (tabPos != -1 && tabPos < newLine)
 							{
-								// Zisti doterajší počet znakov na riadku
+								// Zisti doterajší počet znakov na riadku:
 								int početZnakov = 0;
 								for (PrototypKonzoly prototyp : riadok)
 								{
@@ -2040,7 +2123,7 @@ public class Plátno implements Priehľadnosť
 								}
 							}
 
-							// Nahrádzanie nových riadkov
+							// Nahrádzanie nových riadkov:
 							while (newLine != -1)
 							{
 								obsah.obsah.append(
@@ -2059,7 +2142,7 @@ public class Plátno implements Priehľadnosť
 								naPridanie.delete(0, newLine + 1);
 
 								// Druhá fáza nahrádzania tabulátorov –
-								// ďalšie riadky
+								// ďalšie riadky:
 								tabPos = naPridanie.indexOf("\t");
 								newLine = naPridanie.indexOf("\n");
 								while (tabPos != -1 &&
@@ -2092,7 +2175,13 @@ public class Plátno implements Priehľadnosť
 					}
 				}
 
-				if (null != obsah) riadok.add(obsah); }
+				if (null != obsah) riadok.add(obsah);
+
+				if (farbyUpravené)
+				{
+					farbaTextu(zálohaFarby);
+					farbaPozadiaTextu(zálohaPozadia);
+				}}
 			}
 
 			public void novýRiadok()
@@ -2467,7 +2556,7 @@ public class Plátno implements Priehľadnosť
 		}
 
 
-	// Nie je možné vytvárať vlastné inštancie plátna
+	// Nie je možné vytvárať vlastné inštancie plátna.
 	/*packagePrivate*/ Plátno()
 	{
 		vnútornáKonzola = new VnútornáKonzola();
@@ -2481,7 +2570,7 @@ public class Plátno implements Priehľadnosť
 			null;
 	}
 
-	// Vytvorenie nového plátna (pre konštruktory hlavného robota)
+	// Vytvorenie nového plátna (pre konštruktory hlavného robota).
 	/*packagePrivate*/ void vytvorNovéPlátno(int šírkaPlátna, int výškaPlátna)
 	{
 		if (null != vlnenie) odstráňVlnenie();
@@ -2493,7 +2582,7 @@ public class Plátno implements Priehľadnosť
 			null;
 	}
 
-	// Prekreslenie plátna
+	// Prekreslenie plátna.
 	/*packagePrivate*/ boolean prekresli(Graphics2D grafika)
 	{
 		if (priehľadnosť > 0)
@@ -4174,6 +4263,50 @@ public class Plátno implements Priehľadnosť
 		/** <p><a class="alias"></a> Alias pre {@link #predvolenáFarbaTextu() predvolenáFarbaTextu}.</p> */
 		public void predvolenaFarbaTextu() { predvolenáFarbaTextu(); }
 
+
+	// Zmena správania metód výpisov textov konzoly pri prijatí inštancie farby
+
+		/**
+		 * <p>Zistí, ako sa bude správať vnútorná konzola toho plátna pri
+		 * pokuse o vypísanie inštancie farby. Ak je toto nastavenie aktívne
+		 * ({@code valtrue}), tak pri prijatí inštancií farieb upraví farebnosť
+		 * textov a pozadia vypisovaných textov namiesto výpisu informácií
+		 * o zadaných inštanciách farieb. Podrobnosti o tomto správaní sú
+		 * v opise metódy {@link #nevypisujFarby(boolean)
+		 * nevypisujFarby(nevypisuj)}.</p>
+		 * 
+		 * @return {@code valtrue} ak je nastavenie aktívne, {@code valfalse}
+		 *     v opačnom prípade
+		 */
+		public boolean nevypisujFarby()
+		{ return vnútornáKonzola.nevypisujFarby; }
+
+		/**
+		 * <p>Zmení správanie vnútornej konzoly tohto plátna pri pokuse
+		 * o vypísanie inštancie farby. Po aktivovaní tejto vlastnosti sa
+		 * správanie konzoly zmení tak, že:</p>
+		 * 
+		 * <ul>
+		 * <li>pred každým jednotlivým výpisom (volaním metód {@link 
+		 * #vypíš(Object[]) vypíš} alebo {@link #vypíšRiadok(Object[])
+		 * vypíšRiadok}) bude zálohovaná aktuálna farba textov a pozadia
+		 * textov konzoly,</li>
+		 * <li>pri každom pokuse o výpis farby sa namiesto výpisu informácie
+		 * o inštancii farby zmení farba textov konzoly, okrem zadania
+		 * inštancie {@link Farebnosť#žiadna žiadna},</li>
+		 * <li>ak za sebou nasledujú dve inštancie farieb, tak druhá v poradí
+		 * zmení farbu pozadia textov konzoly, pričom v tomto prípade
+		 * zadanie inštancie {@link Farebnosť#žiadna žiadna} bude znamenať
+		 * zrušenie farebnosti pozadia,</li>
+		 * <li>tretia a ďalšie po sebe idúce inštancie farieb sú
+		 * ignorované.</li>
+		 * </ul>
+		 * 
+		 * @param nevypisuj {@code valtrue} ak má byť nastavenie aktivované,
+		 *     {@code valfalse} v opačnom prípade
+		 */
+		public void nevypisujFarby(boolean nevypisuj)
+		{ vnútornáKonzola.nevypisujFarby = nevypisuj; }
 
 	// Farba pozadia textu
 
@@ -7752,6 +7885,11 @@ public class Plátno implements Priehľadnosť
 		 * srg"\b"}). Funkciou tohto riadiaceho znaku je vymazanie
 		 * predchádzajúceho znaku. Vo vnútornej konzole je tento riadiaci
 		 * kód spracúvaný najviac v rámci šírky jedného riadka konzoly.</p>
+		 * 
+		 * <p>Od verzie 2.21 je možné zmeniť správanie tejto a príbuzných
+		 * metód v súvislosti so spôsobom spracovania inštancií farieb, ktoré
+		 * sa vyskytnú v zozname argumentov. Podrobnosti sú v opise metódy
+		 * {@link #nevypisujFarby(boolean) nevypisujFarby(nevypisuj)}.</p>
 		 * 
 		 * @param argumenty zoznam argumentov rôzneho údajového typu
 		 *     oddelený čiarkami

@@ -165,6 +165,10 @@ public class PoložkaPonuky extends JMenuItem
 				else if (ÚdajeUdalostí.poslednáPoložkaPonuky ==
 					Svet.položkaSkončiť)
 				{
+					// FIX: 2023-08-24:
+					// Ak programátor nevymazal príkaz klávesovej skratky,
+					// tak toto by sa nemalo nikdy vykonať. Pre istotu to
+					// tu však je ponechané, lebo môžu nastať rôzne situácie.
 					// System.exit(0);
 					Svet.zavrieť(/*0*/);
 				}

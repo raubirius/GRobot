@@ -4229,6 +4229,24 @@ Toto bolo presunuté na úvodnú stránku:
 			}
 
 
+			/*packagePrivate*/ static class PoužiInteraktívnyRežim
+			{
+				boolean neskryHlavnýRobot = true;
+				boolean začniVstup = true;
+				boolean neskrývajVstupnýRiadok = true;
+				boolean interaktívnyRežim = true;
+				boolean aktivujHistóriuVstupnéhoRiadka = true;
+				boolean uchovajHistóriuVstupnéhoRiadka = true;
+				boolean skratkyStropu = true;
+				boolean automatickéZobrazovanieLíšt = true;
+				boolean zmeňOdsadenieSprava = true;
+				boolean nevypisujFarby = true;
+			}
+
+			/*packagePrivate*/ static PoužiInteraktívnyRežim
+				použiInteraktívnyRežim = null;
+
+
 			// Pomocný príznak prekreslenia ikony:
 			private static boolean trebaIkonu = true;
 
@@ -4264,6 +4282,35 @@ Toto bolo presunuté na úvodnú stránku:
 
 						Svet.ikona(ikona);
 						trebaIkonu = false;
+					}
+
+					if (null != použiInteraktívnyRežim)
+					{
+						if (použiInteraktívnyRežim.neskryHlavnýRobot)
+							Svet.vypíš(this);
+						if (použiInteraktívnyRežim.začniVstup)
+							Svet.začniVstup();
+						if (použiInteraktívnyRežim.neskrývajVstupnýRiadok)
+							Svet.neskrývajVstupnýRiadok();
+						if (použiInteraktívnyRežim.interaktívnyRežim)
+						{
+							Svet.interaktívnyRežim(true);
+							interaktívnyRežim(true);
+						}
+						if (použiInteraktívnyRežim.aktivujHistóriuVstupnéhoRiadka)
+							Svet.aktivujHistóriuVstupnéhoRiadka();
+						if (použiInteraktívnyRežim.uchovajHistóriuVstupnéhoRiadka)
+							Svet.uchovajHistóriuVstupnéhoRiadka();
+						if (použiInteraktívnyRežim.skratkyStropu)
+							Svet.skratkyStropu(true);
+						if (použiInteraktívnyRežim.automatickéZobrazovanieLíšt)
+							strop.automatickéZobrazovanieLíšt(true);
+						if (použiInteraktívnyRežim.zmeňOdsadenieSprava)
+							strop.zmeňOdsadenieSprava(30);
+						if (použiInteraktívnyRežim.nevypisujFarby)
+							strop.nevypisujFarby(true);
+
+						použiInteraktívnyRežim = null;
 					}
 				}
 
@@ -31836,7 +31883,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * polomerom – vzdialenosťou od jeho stredu k ľubovoľnému
 			 * vrcholu a dĺžkou stray mnohouholníka. Význam parametra {@code 
 			 * rozmer} sa dá ovplyvniť nastaveniami {@code srg"rozmerJePolomer"}
-			 * a {@code srg"rozmerJeDĺžka"} (pozri nižšie).</p>
+			 * (predvolené) a {@code srg"rozmerJeDĺžka"} (pozri nižšie).</p>
 			 * 
 			 * <table class="centered">
 			 * <tr><td><image>mnohouholniky-1.svg<alt/>Ukážka nakreslenia
@@ -31921,10 +31968,10 @@ Toto bolo presunuté na úvodnú stránku:
 			 * zruší automatické dočasné zdvíhanie pera, ale ak chceme
 			 * mnohouholník nakresliť, treba mať pero položené už pred volaním
 			 * tejto metódy.</li>
-			 * <li>{@code srg"rozmerJePolomer"} – prepne metódu do režimu, kedy
-			 * parameter {@code rozmer} bude mať význam polomeru
-			 * mnohouholníka – vzdialenosti ľubovoľného vrchola od stredu. Toto
-			 * je predvolený režim.</li>
+			 * <li>{@code srg"rozmerJePolomer"} – prepne metódu do režimu (ak
+			 * už v ňom nie je), kedy parameter {@code rozmer} bude mať význam
+			 * polomeru mnohouholníka – vzdialenosti ľubovoľného vrchola od
+			 * stredu. * <b>Toto je predvolený režim.</b></li>
 			 * <li>{@code srg"rozmerJeDĺžka"} – prepne metódu do režimu, kedy
 			 * parameter {@code rozmer} bude mať význam dĺžky strany
 			 * mnohouholníka.</li></ul>
@@ -31958,8 +32005,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 * z parametrov pred ich vyhodnotením vymazané. Na veľkosti písmen
 			 * nezáleží.</p>
 			 * 
-			 * @param rozmer buď polomer, alebo dĺžka strany n-uholníka (pozri
-			 *     nastavenia vyššie)
+			 * @param rozmer buď polomer (predvolené), alebo dĺžka strany
+			 *     n-uholníka (pozri nastavenia vyššie)
 			 * @param n počet uhlov n-uholníka; ak je n menšie ako 2, tak
 			 *     volanie metódy v podstate nemá zmysel (nenakreslí nič)
 			 * @param nastavenia nepovinný zoznam nastavení (podrobnosti sú

@@ -542,6 +542,13 @@ public class Spojenie
 		spojenie.{@link Spojenie#ladenie ladenie} = (l) -> { {@link System System}.{@link System#out out}.{@link java.io.PrintStream#println(String) println}(l); };
 		</pre>
 	 * 
+	 * <p>Pričom tento konkrétny príklad by sa dal ešte viac zjednodušiť
+	 * takto:</p>
+	 * 
+	 * <pre CLASS="example">
+		spojenie.{@link Spojenie#ladenie ladenie} = {@link System System}.{@link System#out out}::{@link java.io.PrintStream#println(String) println};
+		</pre>
+	 * 
 	 * <p>Tak sa dá veľmi jednoduchým spôsobom rozhodnúť, čo sa má udiať
 	 * s údajmi ladenia generovanými touto triedou počas jej používania.</p>
 	 */
@@ -784,11 +791,11 @@ public class Spojenie
 									GRobotException.vypíšChybovéHlásenie(
 										"Bola zaznamenaná nezrovnalosť " +
 										"v počte bajtov prijatých zo " +
-										"servera. V tomto prípade by " +
+										"servera.\nV tomto prípade by " +
 										"nemalo ísť o závažný problém, " +
 										"server pravdepodobne používa " +
 										"iné symboly na signalizáciu " +
-										"koncov riadkov. Očakávaný počet " +
+										"koncov riadkov.\nOčakávaný počet " +
 										"bajtov: " + veľkosťOdpovede +
 										"; počet bajtov v zostavenej " +
 										"odpovedi: " + odpoveď.length() + ".");
@@ -825,14 +832,17 @@ public class Spojenie
 								GRobotException.vypíšChybovéHlásenie(
 									"Bola zaznamenaná nezrovnalosť " +
 									"v počte bajtov prijatých zo " +
-									"servera. Pravdepodobne vznikla " +
-									"chyba pri prenose údajov. " +
+									"servera.\nPravdepodobne vznikla " +
+									"chyba pri prenose údajov.\n" +
 									"Očakávaný počet bajtov: " +
 									veľkosťOdpovede + "; počet " +
 									"bajtov v prijatej odpovedi: " +
 									bajtyOdpovede.length + ".", true);
 							veľkosťOdpovede = bajtyOdpovede.length;
 						}
+
+						/*#*/ ladenie("  Bajty odpovede: " +
+						/*#*/ 	bajtyOdpovede.length);
 					}
 					else
 					{
@@ -844,9 +854,6 @@ public class Spojenie
 							sekvenciaTransferuÚdajov(PREVZATIE_ÚDAJOV);
 						}
 					}
-
-					/*#*/ ladenie("  Bajty odpovede: " +
-					/*#*/ 	bajtyOdpovede.length);
 				}
 				else try { čítač.close(); } catch (Exception e)
 				{ GRobotException.vypíšChybovéHlásenia(e/*, false*/); }
@@ -958,11 +965,11 @@ public class Spojenie
 								GRobotException.vypíšChybovéHlásenie(
 									"Bola zaznamenaná nezrovnalosť " +
 									"v počte bajtov prijatých zo " +
-									"servera. V tomto prípade by " +
+									"servera.\nV tomto prípade by " +
 									"nemalo ísť o závažný problém, " +
 									"server pravdepodobne používa " +
 									"iné symboly na signalizáciu " +
-									"koncov riadkov. Očakávaný počet " +
+									"koncov riadkov.\nOčakávaný počet " +
 									"bajtov: " + veľkosťOdpovede +
 									"; počet bajtov v zostavenej " +
 									"odpovedi: " + odpoveď.length() + ".");
@@ -998,14 +1005,17 @@ public class Spojenie
 							GRobotException.vypíšChybovéHlásenie(
 								"Bola zaznamenaná nezrovnalosť " +
 								"v počte bajtov prijatých zo " +
-								"servera. Pravdepodobne vznikla " +
-								"chyba pri prenose údajov. " +
+								"servera.\nPravdepodobne vznikla " +
+								"chyba pri prenose údajov.\n" +
 								"Očakávaný počet bajtov: " +
 								veľkosťOdpovede + "; počet " +
 								"bajtov v prijatej odpovedi: " +
 								bajtyOdpovede.length + ".", true);
 						veľkosťOdpovede = bajtyOdpovede.length;
 					}
+
+					/*#*/ ladenie("  Bajty odpovede: " +
+					/*#*/ 	bajtyOdpovede.length);
 				}
 				else
 				{
@@ -1017,9 +1027,6 @@ public class Spojenie
 						sekvenciaTransferuÚdajov(PREVZATIE_ÚDAJOV);
 					}
 				}
-
-				/*#*/ ladenie("  Bajty odpovede: " +
-				/*#*/ 	bajtyOdpovede.length);
 			}
 			else try { čítač.close(); } catch (Exception e)
 			{ GRobotException.vypíšChybovéHlásenia(e/*, false*/); }
