@@ -8,6 +8,8 @@ knižnica/apacheAntZIP/*.class
 
 knižnica/podpora/*.class
 
+knižnica/log/*.class
+
 knižnica/license.txt
 *
 

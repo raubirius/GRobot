@@ -4293,13 +4293,18 @@ public class Plátno implements Priehľadnosť
 		 * textov konzoly,</li>
 		 * <li>pri každom pokuse o výpis farby sa namiesto výpisu informácie
 		 * o inštancii farby zmení farba textov konzoly, okrem zadania
-		 * inštancie {@link Farebnosť#žiadna žiadna},</li>
+		 * inštancie {@link Farebnosť#žiadna žiadna} (tá zachová farbu textov,
+		 * ale dá sa to využiť na zmenu pozadia textov – pozri ďalší bod),</li>
 		 * <li>ak za sebou nasledujú dve inštancie farieb, tak druhá v poradí
 		 * zmení farbu pozadia textov konzoly, pričom v tomto prípade
 		 * zadanie inštancie {@link Farebnosť#žiadna žiadna} bude znamenať
 		 * zrušenie farebnosti pozadia,</li>
 		 * <li>tretia a ďalšie po sebe idúce inštancie farieb sú
-		 * ignorované.</li>
+		 * ignorované,</li>
+		 * <li>po poslednom výpise (v rámci každého volania metódy metód
+		 * {@link #vypíš(Object[]) vypíš} alebo {@link #vypíšRiadok(Object[])
+		 * vypíšRiadok}) budú obnovené farby textov a pozadia textov konzoly
+		 * podľa zálohovaného stavu – pozri prvý bod.</li>
 		 * </ul>
 		 * 
 		 * @param nevypisuj {@code valtrue} ak má byť nastavenie aktivované,
@@ -7875,7 +7880,7 @@ public class Plátno implements Priehľadnosť
 		 * jeho „poslatím“ do úplne prvého výpisu vnútornej konzoly –
 		 * napríklad {@link Plátno podlaha}{@code .}{@code 
 		 * currvypíš}{@code (}{@link Svet Svet}{@code .}{@link 
-		 * Svet#hlavnýRobot() Svet.hlavnýRobot}{@code ());} (samozrejme, že
+		 * Svet#hlavnýRobot() hlavnýRobot}{@code ());} (samozrejme, že
 		 * v konštruktore {@linkplain Svet#hlavnýRobot() hlavného robota}
 		 * môžeme namiesto príkazu {@link Svet#hlavnýRobot() Svet.hlavnýRobot}
 		 * s výhodou použiť hodnotu {@code valthis}).</p>

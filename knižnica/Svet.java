@@ -30624,7 +30624,7 @@ public final class Svet extends JFrame
 		 *  <br />
 		 * Počas prechodu do režimu celej obrazovky sa však automaticky
 		 * aktivuje klávesová skratka <code>Ctrl + W</code>, resp.
-		 * <code>⌘ + W</code> (<small>Command + W</small></p>), ktorá bola
+		 * <code>⌘ + W</code> (<small>Command + W</small>), ktorá bola
 		 * pôvodne naviazaná na položku ponuky a ktorá nesie význam príkazu
 		 * ukončenia aplikácie.<br />
 		 *  <br />
