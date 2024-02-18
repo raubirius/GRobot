@@ -15840,6 +15840,7 @@ public final class Svet extends JFrame
 		{
 			Long číslo = null;
 			String reťazec = upravReťazec(formát.format(celéČíslo), výzva);
+			if (null == reťazec) return null;
 			try { číslo = Long.valueOf(filtrujReťazec(reťazec)); }
 			catch (Exception e)
 			{ GRobotException.vypíšChybovéHlásenia(e); return null; }
@@ -15884,6 +15885,7 @@ public final class Svet extends JFrame
 			Long číslo = null;
 			String reťazec = upravReťazec(formát.
 				format(celéČíslo), výzva, titulok);
+			if (null == reťazec) return null;
 			try { číslo = Long.valueOf(filtrujReťazec(reťazec)); }
 			catch (Exception e)
 			{ GRobotException.vypíšChybovéHlásenia(e); return null; }
@@ -15926,6 +15928,7 @@ public final class Svet extends JFrame
 		{
 			Double číslo = null;
 			String reťazec = upravReťazec(formát.format(reálneČíslo), výzva);
+			if (null == reťazec) return null;
 			try { číslo = Double.valueOf(filtrujReťazec(reťazec)); }
 			catch (Exception e)
 			{ GRobotException.vypíšChybovéHlásenia(e); return null; }
@@ -15972,6 +15975,7 @@ public final class Svet extends JFrame
 			Double číslo = null;
 			String reťazec = upravReťazec(formát.
 				format(reálneČíslo), výzva, titulok);
+			if (null == reťazec) return null;
 			try { číslo = Double.valueOf(filtrujReťazec(reťazec)); }
 			catch (Exception e)
 			{ GRobotException.vypíšChybovéHlásenia(e); return null; }
@@ -16704,7 +16708,19 @@ public final class Svet extends JFrame
 								if (j < popisy.length && null != popisy[j]) --j;
 								aktívnyPanel = null;
 							}
-							else if (návrat != (Character)údaj)
+							else if (návrat == (Character)údaj)
+							{
+								if (j < popisy.length && null != popisy[j])
+								{
+									if (popisyDialógu.size() < (l + 1))
+										popisyDialógu.add(new JLabel());
+									JLabel popis = popisyDialógu.get(l++);
+									popis.setText(popisy[j]);
+									aktívnyPanel.add(popis);
+								}
+								// TODO: TEST
+							}
+							else
 							{
 								// Ignorujem, vypíšem hlásenie, ale premennú
 								// j nemením – t. j. korešpondujúci popis sa
