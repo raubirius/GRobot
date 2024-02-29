@@ -19833,6 +19833,115 @@ public final class Svet extends JFrame
 		{ return číselnýKoreň(číslo, základ); }
 
 
+		/**
+		 * <p>Vypočíta pomer polomerov kružníc, ktoré prechádzajú vnútornými
+		 * a vonkajšími bodmi pravidelnej polygónovej hviezdy. Hviezda má mať
+		 * p cípov a polygón má prechádzať každým druhým bodom cípu ležiaceho
+		 * na vonkajšej kružnici.</p>
+		 * 
+		 * <p>(Pozri aj: {@link #pomerHviezdy(int p, int q)})</p>
+		 * 
+		 * @param p počet cípov hviezdy
+		 * @return pomer polomerov kružníc, ktoré prechádzajú vonkajšími
+		 *     a vnútornými bodmi hviezdy
+		 */
+		public static double pomerHviezdy(int p) { return pomerHviezdy(p, 2); }
+
+		// Úložisko na pomery hviezd s hustotou 2.
+		private final static TreeMap<Integer, Double> pomeryHviezd =
+			new TreeMap<>();
+
+		/**
+		 * <p>Vypočíta pomer polomerov kružníc, ktoré prechádzajú vnútornými
+		 * a vonkajšími bodmi pravidelnej polygónovej hviezdy. Hviezda má mať
+		 * p cípov a polygón má prechádzať každým q-tym bodom cípu ležiaceho
+		 * na vonkajšej kružnici. q sa nazýva aj hustota.</p>
+		 * 
+		 * <p>(Pomery s hustotou 2 sú ukladané do vyrovnávacej pamäte na
+		 * opakované použitie. Pomery iných hustôt treba uchovávať
+		 * externe.)</p>
+		 * 
+		 * <p><b>Zdroje:</b></p>
+		 * <p>Weisstein, Eric W. <i>Star Polygon.</i> From MathWorld –
+		 * A Wolfram Web Resource. <a
+		 * href="https://mathworld.wolfram.com/StarPolygon.html"
+		 * target="_blank">https://mathworld.wolfram.com/StarPolygon.html</a>.</p>
+		 * <p>Wikipedia contributors. (2024, January 3). Star polygon. In
+		 * <i>Wikipedia,</i> The Free Encyclopedia. Retrieved 11:45, February
+		 * 29, 2024, from <a
+		 * href="https://en.wikipedia.org/w/index.php?title=Star_polygon&amp;oldid=1193397803"
+		 * target="_blank">https://en.wikipedia.org/w/index.php?title=Star_polygon&oldid=1193397803</a>.</p>
+		 * 
+		 * @param p počet cípov hviezdy
+		 * @param q hustota (o koľko bodov neskôr leží ďalší bod úsečky
+		 *     tvoriacej časti hrán hviezdy)
+		 * @return pomer polomerov kružníc, ktoré prechádzajú vonkajšími
+		 *     a vnútornými bodmi hviezdy
+		 */
+		public static double pomerHviezdy(int p, int q)
+		{
+			if (p < 3) p = 3;
+			if (q >= p) q = p - 1; else if (q < 1) q = 1;
+
+			if (2 == q)
+			{
+				Double pomer = pomeryHviezd.get(p);
+				if (null == pomer)
+				{
+					pomer = dajPomerHviezdy(p, q);
+					pomeryHviezd.put(p, pomer);
+				}
+				return pomer;
+			}
+
+			return dajPomerHviezdy(p, q);
+		}
+
+		// Vypočíta pomer na základe zadaného p a q.
+		private static double dajPomerHviezdy(int p, int q)
+		{
+			double xs[] = new double[p];
+			double ys[] = new double[p];
+			double ϕ = (2.0 * Math.PI) / p;
+
+			for (int i = 0; i < p; ++i)
+			{
+				double α = ϕ * i;
+				xs[i] = Math.cos(α);
+				ys[i] = Math.sin(α);
+			}
+
+			double px[] = new double[p];
+			double py[] = new double[p];
+
+			for (int i = 0; i < p; ++i)
+			{
+				int i0 = (i + 0) % p;
+				int i1 = (i + 1) % p;
+				int i2 = (i + 0 + q) % p;
+				int i3 = (i + 1 + q) % p;
+
+				Bod priesečník = priesečníkPriamok(
+					xs[i0], ys[i0], xs[i2], ys[i2],
+					xs[i1], ys[i1], xs[i3], ys[i3]);
+
+				if (null != priesečník)
+				{
+					px[i] = priesečník.polohaX();
+					py[i] = priesečník.polohaY();
+				}
+				else
+					px[i] = py[i] = 0;
+			}
+
+			double súčet = 0;
+			for (int i = 0; i < p; ++i)
+				súčet += Math.hypot(px[i], py[i]);
+
+			return súčet / p;
+		}
+
+
 		// Štandardný vstup
 
 		/**

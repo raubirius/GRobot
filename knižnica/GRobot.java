@@ -31297,10 +31297,11 @@ Toto bolo presunuté na úvodnú stránku:
 			 * <p>Nakreslí vajce. Táto metóda sa významne odlišuje od ostatných
 			 * metód, ktoré slúžia na kreslenie tvarov. Nemá žiadne verzie.
 			 * Nie sú k nej definované metódy slúžiace na overovanie
-			 * prítomnosti bodov (alebo myši) v rámci tvaru. Negeneruje tvar
-			 * na ďalšie použitie. Neberie do úvahy vypĺňanie tvarov. Všetko
-			 * to súvisí s jedným faktom: Metóda len uzatvára nasledujúci
-			 * algoritmus kreslenia vajíčka. Algoritmus pochádza z <a
+			 * prítomnosti bodov (alebo myši) v rámci tvaru. Predvolene
+			 * negeneruje tvar na ďalšie použitie. Neberie do úvahy vypĺňanie
+			 * tvarov. Všetko to súvisí s jedným faktom: Metóda len uzatvára
+			 * nižšie uvedený algoritmus kreslenia vajíčka. Algoritmus
+			 * pochádza z <a
 			 * href="https://www.geogebra.org/m/ssr3mvgu?fbclid=IwAR207QQ84dvafxi1OgyDoaNqcGPMuW7GRrKl_t-SiDDMeo6H0pL0Ti3TovY"
 			 * target="_blank">tohto zdroja.</a></p>
 			 * 
@@ -32302,7 +32303,8 @@ Toto bolo presunuté na úvodnú stránku:
 			 *     {@code srg"kresli"}
 			 */
 			@SuppressWarnings("fallthrough")
-			public Shape lupene(double polomer, int n, double odklon, String... nastavenia)
+			public Shape lupene(double polomer, int n, double odklon,
+				String... nastavenia)
 			{
 				boolean zaznamenajCestu = false;
 				boolean zdvihniPero = false;
@@ -32417,6 +32419,339 @@ Toto bolo presunuté na úvodnú stránku:
 						vpravo(180 + odklon);
 						choďNaPoOblúku(body[i]);
 					}
+
+					if (zaznamenajCestu)
+					{
+						uzavriCestu();
+						if (vráťCestu)
+						{
+							Shape tátoCesta = new Path2D.Double(cesta);
+							if (vyplňCestu) vyplňTvar(tátoCesta);
+							if (kresliCestu) kresliTvar(tátoCesta);
+							return tátoCesta;
+						}
+					}
+
+					return null;
+				}
+				finally
+				{
+					// Vrátenie záloh:
+					aktuálneX = S.x;
+					aktuálneY = S.y;
+
+					poslednéX = px;
+					poslednéY = py;
+
+					aktuálnyUhol = au;
+					poslednýUhol = pu;
+					peroPoložené = pp;
+
+					if (zálohujCestu)
+					{
+						cesta = c;
+						záznamCesty = zc;
+						záznamCestyBezPolohyPera = zcbpp;
+						kresliZáznamCesty = kzc;
+					}
+
+					aktualizujStavPera();
+
+					Svet.nekresli = nekresli;
+					Svet.automatickéPrekreslenie();
+				}
+			}
+
+
+			/**
+			 * <p>Nakreslí <em>n</em>-cípu hviezdu, ktorej cípy ležia na
+			 * kružnici so zadaným polomerom. Metóda funguje podobne ako
+			 * metódy {@link #vajce(double, String...) vajce}, {@link 
+			 * #nUholník(double, int, String...) nUholník} alebo {@link 
+			 * #lupene(double, int, double, String...) lupene}. Využíva
+			 * podobné nastavenia, ktoré vedú k podobnému správaniu, preto
+			 * môže byť užitočné prezrieť si aj ich dokumentáciu.</p>
+			 * 
+			 * <p>Podobne ako uvedené metódy, aj táto metóda najskôr vykoná
+			 * niekoľko prípravných príkazov a potom príkazy, ktoré skutočne
+			 * kreslia hviezdu. V tomto prípade slúžia prípravné príkazy na
+			 * zistenie kľúčových bodov kreslenia hviezdy.</p>
+			 * 
+			 * <p>Metóda môže prijať nepovinný zoznam reťazcových parametrov
+			 * ({@code nastavenia}), ktoré umožňujú vykonať nasledujúce zmeny
+			 * správania metódy:</p>
+			 * 
+			 * <ul><li>{@code srg"zaznamenajCestu"}, {@code srg"cesta"},
+			 * {@code srg"cestu"} – zapne zaznamenávanie cesty pre záverečnú
+			 * sériu príkazov kresliacich hviezdu. Tento príkaz zároveň prikáže
+			 * dočasne zdvihnúť pero (počas vykonávania tejto metódy), aby sa
+			 * hviezda nenakreslila. Tvar bude uložený v {@linkplain #cesta()
+			 * ceste}. Po skončení vykonávania metódy je obnovená pôvodná
+			 * poloha pera.
+			 * (Ak bolo pero zdvihnuté, zostane zdvihnuté a po skončení
+			 * vykonávania metódy sa nepoloží.)
+			 * Toto nastavenie sa stane nedostupným v prípade, že bolo použité
+			 * niektoré z nastavení {@code srg"vráť"}, {@code srg"vyplň"} alebo
+			 * {@code srg"kresli"} (pozri nižšie).</li>
+			 * <li>{@code srg"nezaznamenajCestu"}, {@code srg"necesta"},
+			 * {@code srg"necestu"} – vypne zaznamenávanie cesty zapnuté podľa
+			 * predchádzajúceho nastavenia, ale nezruší zdvihnutie pera.
+			 * Toto nastavenie sa stane nedostupným v prípade, že bolo použité
+			 * niektoré z nastavení {@code srg"vráť"}, {@code srg"vyplň"} alebo
+			 * {@code srg"kresli"} (pozri nižšie).</li>
+			 * <li>{@code srg"zdvihniPero"}, {@code srg"nepero"} – dočasne
+			 * zdvihne pero – počas vykonávania tejto metódy. Po skončení
+			 * vykonávania metódy je obnovená pôvodná poloha pera.</li>
+			 * <li>{@code srg"nezdvíhajPero"}, {@code srg"nezdvihniPero"},
+			 * {@code srg"pero"} – eliminuje akciu dočasného zdvíhania pera.
+			 * Toto má význam vykonať najmä po nastavení {@code srg"cesta"}
+			 * (alebo jeho alternatívy), ktorý zároveň prikazuje dočasne
+			 * zdvihnúť pero. Takže kombináciou nastavení: {@code srg"cesta"}
+			 * a {@code srg"pero"} (v uvedenom poradí) sa dá docieliť súčasné
+			 * zaznamenanie cesty aj nakreslenie hviezdy. Pozor, ak bolo pero
+			 * zdvihnuté, toto nastavenie ho nepoloží. Toto nastavenie len
+			 * zruší automatické dočasné zdvíhanie pera, ale ak chceme hviezdu
+			 * nakresliť, treba mať pero položené už pred volaním tejto
+			 * metódy.</li></ul>
+			 * 
+			 * <p>Nasledujúce tri nastavenia menia význam parametra
+			 * ovplyvňujúceho tvar hviezdy. Predvolený je
+			 * {@code srg"typ0"}. Všetky tri nastavenia prepočítavajú
+			 * parameter na polomer ďalšej kružnice, na ktorej majú ležať
+			 * alternujúce vrcholy polygónu tvoriaceho hviezdu. Líši sa len
+			 * spôsob prepočtu.</p>
+			 * 
+			 * <ul><li>{@code srg"typ0"}, {@code srg"predvolenýTyp"},
+			 * {@code srg"predvolenyTyp"} – najskôr je vypočítaný hraničný
+			 * pomer s využitím metódy {@link Svet#pomerHviezdy(int p, int q)
+			 * pomerHviezdy(p, q)}; kde <em>p</em> je počet cípov hviezdy
+			 * (<em>n</em>) a <em>q</em> je v tomto prípade 2. Táto metóda
+			 * vypočíta takú hodnotu pomeru polomerov (polomerov kružníc, na
+			 * ktorých budú striedavo ležať body lomenej čiary tvoriacej
+			 * hviezdu), ktorá vo výsledku zorietuje hrany hviezdy tak, aby
+			 * boli zarovnané do priamok prechádzajúcich vrcholmi
+			 * a alternujúcimi vrcholmi polygónu hviezdy. Vypočítaný pomer
+			 * bude v prípade zadania nulovej hodnoty parametra použitý
+			 * priamo na výpočet polomeru alternujúcej kružnice, inak bude
+			 * pomer najskôr prepočítavaný na jeden z dvoch nasledujúcich
+			 * rozsahov: Pri kladnom parametri sa bude použitá lineárna
+			 * interpolácia prepočítavajúca rozsah hodnôt parametra <em>t</em>
+			 * interpolácie (0; 1⟩ na interval ležiaci medzi hraničným pomerom
+			 * a hodnotou 1 (prípadne väčšou). Pri zápornom parametri sa bude
+			 * interpolovať opačným smerom – od hraničného pomeru smerom nule.
+			 * Výsledná hodnota potom poslúži na výpočet polomeru kružnice,
+			 * na ktorej majú ležať alternujúce vrcholy hviezdy (pri pomere
+			 * &lt; 1 sú to vnútorné vrcholy).</li>
+			 * <!-- TODO: grafické príkady. -->
+			 * <li>{@code srg"typ1"}, {@code srg"pomer"} – {@code parameter}
+			 * bude chápaný ako pomer polomeru ďalšej kružnice, na ktorej budú
+			 * ležať alternujúce vrcholy polygónu tvoriaceho hviezdu. Čiže
+			 * napríklad hodnota {@code num0.5} znamená, že polomer ďalšej
+			 * kružnice bude oproti originálnemu polomeru polovičný.</li>
+			 * <li>{@code srg"typ2"}, {@code srg"polomer"} – {@code parameter}
+			 * bude chápaný ako polomer ďalšej kružnice, na ktorej budú ležať
+			 * alternujúce vrcholy polygónu tvoriaceho hviezdu.</li>
+			 * <li>{@code srg"typ3"} – principiálne rovnaké ako 
+			 * {@code srg"typ0"}, ale hranica je vypočítaná podľa
+			 * nasledujúceho vzorca:
+			 * √(<em>n</em> - 2√<em>n</em>) × sin(90° / <em>n</em>) / sin(180°
+			 * / <em>n</em>); kde <em>n</em> je počet cípov hviezdy.</li></ul>
+			 * 
+			 * <p>Nasledujúce tri nastavenia zrušia efekt nastavení
+			 * {@code srg"cesta"} alebo {@code srg"necesta"} a spôsobia, že
+			 * tieto dve nastavenia sa stanú nedostupnými pre toto volanie
+			 * metódy.</p>
+			 * 
+			 * <ul><li>{@code srg"vráť"}, {@code srg"vráťCestu"} – vykoná
+			 * nastavenie {@code srg"zdvihniPero"}, zálohuje aktuálny stav
+			 * záznamu a/alebo uloženia cesty tohto robota, vytvorí z tvaru
+			 * hviezdy novú cestu, obnoví predchádzajúci stav záznamu cesty
+			 * a vráti cestu vytvorenú z hviezdy v návratovej hodnote tejto
+			 * metódy.</li>
+			 * <li>{@code srg"vyplň"}, {@code srg"vyplňCestu"} – vykoná
+			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
+			 * #kresliZáznamCesty(boolean)
+			 * kresliZáznamCesty}{@code (}{@code valfalse}{@code )} a metódu
+			 * {@link #vyplňTvar(Shape) vyplňTvar}{@code (cesta)} s aktuálne
+			 * vytvorenou cestou z hviezdy.</li>
+			 * <li>{@code srg"kresli"}, {@code srg"kresliCestu"} – vykoná
+			 * nastavenie {@code srg"vráť"}, zavolá metódu {@link 
+			 * #kresliZáznamCesty(boolean)
+			 * kresliZáznamCesty}{@code (}{@code valfalse}{@code )} a metódu
+			 * {@link #kresliTvar(Shape) kresliTvar}{@code (cesta)} s aktuálne
+			 * vytvorenou cestou z hviezdy.</li></ul>
+			 * 
+			 * <p>Parametre nastavení sú vyhodnocované postupne, to znamená, že
+			 * tie neskoršie uvedené môžu zrušiť alebo čiastočne zrušiť akcie
+			 * tých skôr uvedených. Medzery, spojovníky a podčiarkovníky sú
+			 * z parametrov pred ich vyhodnotením vymazané. Na veľkosti písmen
+			 * nezáleží.</p>
+			 * 
+			 * @param polomer polomer kružnice, na ktorej majú ležať cípy
+			 *     hviezdy
+			 * @param n počet cípov hviezdy
+			 * @param parameter parameter ovplyvňujúci tvar cípov hviezdy;
+			 *     jeho význam sa mení podľa nastavení (pozri opis)
+			 * @param nastavenia nepovinný zoznam nastavení (podrobnosti sú
+			 *     uvedené v rámci opisu; vyššie)
+			 * @return {@code valnull} alebo tvar vytvorený po použití
+			 *     nastavení {@code srg"vráť"}, {@code srg"vyplň"} alebo
+			 *     {@code srg"kresli"}
+			 */
+			@SuppressWarnings("fallthrough")
+			public Shape nHviezda(double polomer, int n, double parameter,
+				String... nastavenia)
+			{
+				boolean zaznamenajCestu = false;
+				boolean zdvihniPero = false;
+				boolean zálohujCestu = false;
+				boolean vráťCestu = false;
+				boolean kresliCestu = false;
+				boolean vyplňCestu = false;
+				int typ = 0;
+
+				for (String nastavenie : nastavenia)
+				{
+					if (null == nastavenie) continue;
+					nastavenie = nastavenie.trim().replaceAll("[-_  \t]+",
+						"").toLowerCase();
+					if (nastavenie.isEmpty()) continue;
+
+					switch (nastavenie)
+					{
+					case "cesta": case "cestu":
+					case "zaznamenajcestu":
+						if (!vráťCestu)
+						{
+							zaznamenajCestu = true;
+							zdvihniPero = true;
+						}
+						break;
+
+					case "necesta": case "necestu":
+					case "nezaznamenajcestu":
+						if (!vráťCestu)
+							zaznamenajCestu = false;
+						break;
+
+					case "zdvihnipero": case "nepero":
+						zdvihniPero = true;
+						break;
+
+					case "nezdvíhajpero": case "nezdvihajpero":
+					case "nezdvihnipero": case "pero":
+						zdvihniPero = false;
+						break;
+
+					case "typ0": case "predvolenýtyp": case "predvolenytyp":
+						typ = 0; break;
+					case "typ1": case "pomer": typ = 1; break;
+					case "typ2": case "polomer": typ = 2; break;
+					case "typ3": typ = 3; break;
+
+					case "kresli": case "kreslicestu":
+					case "vyplň": case "vyplňcestu":
+					case "vypln": case "vyplncestu":
+						if (nastavenie.equals("kresli") ||
+							nastavenie.equals("kreslicestu"))
+							kresliCestu = true;
+						else
+							vyplňCestu = true;
+
+						// no-break; //
+
+					case "vráť": case "vráťcestu":
+					case "vrat": case "vratcestu":
+						zaznamenajCestu = true;
+						zdvihniPero = true;
+						zálohujCestu = true;
+						vráťCestu = true;
+						break;
+					}
+				}
+
+				// Vytvorenie záloh:
+				boolean nekresli = Svet.nekresli;
+				Bod S = new Bod(aktuálneX, aktuálneY);
+				double au = aktuálnyUhol;
+				double pu = poslednýUhol;
+				boolean pp = peroPoložené;
+				double px = poslednéX;
+				double py = poslednéY;
+
+				Path2D.Double c = null;
+				boolean zc = false, zcbpp = true, kzc = true;
+
+				double uhol = 180.0 / n;
+				double začiatok = au;
+				Bod[] body = new Bod[2 * n];
+
+				if (0 == typ)
+				{
+					double hranica = Svet.pomerHviezdy(n, 2);
+
+					if (0 == parameter) parameter = hranica;
+					else if (0 < parameter) parameter =
+						Svet.lineárnaInterpolácia(hranica, 1.0, parameter);
+					else Svet.lineárnaInterpolácia(hranica, 0.0,
+						abs(parameter));
+
+					parameter *= polomer;
+				}
+				else if (1 == typ) parameter *= polomer;
+				else if (3 == typ)
+				{
+					double hranica = sqrt((double)n - 2.0 * sqrt((double)n)) *
+						sin(toRadians(uhol / 2.0)) / sin(toRadians(uhol));
+
+					if (0 == parameter) parameter = hranica;
+					else if (0 < parameter) parameter =
+						Svet.lineárnaInterpolácia(hranica, 1.0, parameter);
+					else Svet.lineárnaInterpolácia(hranica, 0.0,
+						abs(parameter));
+
+					parameter *= polomer;
+				}
+
+				if (zálohujCestu)
+				{
+					c = cesta; cesta = new Path2D.Double();
+					zc = záznamCesty; záznamCesty = false;
+					zcbpp = záznamCestyBezPolohyPera;
+					kzc = kresliZáznamCesty;
+					if (kresliCestu || vyplňCestu)
+						kresliZáznamCesty(false);
+				}
+
+				if (zdvihniPero)
+				{
+					peroPoložené = false;
+					aktualizujStavPera();
+				}
+				Svet.nekresli = true;
+
+				try
+				{
+					n *= 2;
+
+					for (int i = 0; i < n; i += 2)
+					{
+						poloha(S);
+						skoč(polomer);
+						body[i] = poloha();
+						vpravo(uhol);
+
+						poloha(S);
+						skoč(parameter);
+						body[i + 1] = poloha();
+						vpravo(uhol);
+					}
+
+					if (zaznamenajCestu) začniCestu();
+
+					poloha(body[n - 1]);
+					for (int i = 0; i < n; ++i)
+						choďNa(body[i]);
 
 					if (zaznamenajCestu)
 					{
