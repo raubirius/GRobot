@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2023 by Roman Horváth
+ // Copyright © 2010 – 2024 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -68,15 +68,15 @@ public interface Konštanty
 		/** <p>Konštanta majoritnej verzie tohto rámca.</p> */
 		public final static int majorVersion = 2;
 		/** <p>Konštanta minoritnej verzie tohto rámca.</p> */
-		public final static int minorVersion = 21;
+		public final static int minorVersion = 22;
 		/** <p>Konštanta poznámky verzie tohto rámca.</p> */
-		public final static String versionNote = " (2023-10-13)";
+		public final static String versionNote = " (2024-02-01)";
 		/** <p>Konštanta rozpätia rokov vývoja tejto verzie rámca
 			(v podstate na účel výpisu copyrightu…)</p> */
-		public final static String years = "2010 – 2023";
+		public final static String years = "2010 – 2024";
 		/** <p>Konštanta rozpätia rokov a mesiacov vývoja tejto verzie rámca
 			(na účely automatického spracovania dokumentácie…)</p> */
-		public final static String yearsMonths = "august 2010 – október 2023";
+		public final static String yearsMonths = "august 2010 – marec 2024";
 		/** <p>Konštanta s menom hlavného (zatiaľ jediného) vývojára tejto
 			verzie rámca (v podstate na účel výpisu copyrightu… kto vie, či
 			časom pribudnú aj nejakí ďalší…)</p> */
@@ -990,6 +990,14 @@ public interface Konštanty
 		 * a jej klonov.)</p>
 		 */
 		public final static char riadok = '\n';
+
+		/**
+		 * <p>Znaková konštanta posunu formulára, resp novej strany.
+		 * ({@code srg'\f'}; ASCII 12; Použiteľné napríklad pri metóde
+		 * {@link Svet#dialóg(String[], Object[], String) dialóg}
+		 * a jej klonov.)</p>
+		 */
+		public final static char strana = '\f';
 
 		/**
 		 * <p>Znaková konštanta návratu vozíka.

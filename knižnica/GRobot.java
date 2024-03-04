@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2023 by Roman Horváth
+ // Copyright © 2010 – 2024 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -787,7 +787,7 @@ Toto bolo presunuté na úvodnú stránku:
 					else
 						čiara = new BasicStroke((float)polomerPera,
 							BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-							0f, vzorPera, posunVzoruPera);
+							10f, vzorPera, posunVzoruPera);
 				}
 
 				/*packagePrivate*/ double dajPolomerPera()
@@ -7061,7 +7061,7 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 
 				/** <p><a class="alias"></a> Alias pre {@link #čiara(Stroke) čiara}.</p> */
-				public void ciara(Stroke nováČiara) { čiara = nováČiara; }
+				public void ciara(Stroke nováČiara) { čiara(nováČiara); }
 
 
 				/**

@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2023 by Roman Horváth
+ // Copyright © 2010 – 2024 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -172,6 +172,7 @@ import static knižnica.Konštanty.majorVersion;
 import static knižnica.Konštanty.minorVersion;
 import static knižnica.Konštanty.versionString;
 import static knižnica.Konštanty.riadok;
+import static knižnica.Konštanty.strana;
 import static knižnica.Konštanty.návrat;
 
 import static knižnica.Konštanty.CHYBA_VOLANIA_SKRIPTU;
@@ -16135,7 +16136,14 @@ public final class Svet extends JFrame
 		 * párujúci reťazec poľa {@code popisy} ako text bez párujúceho
 		 * komponentu, čo sa dá využiť na vkladanie rôznych textov pomedzi
 		 * komponenty (pozri aj príklad v opise metódy {@link #odpoveďDialógu()
-		 * odpoveďDialógu})</li>
+		 * odpoveďDialógu})<br />
+		 * <small style="display: none">
+		 * <i>znak posunu formulára</i> ({@code srg'\f'} – dá sa použiť znaková
+		 * konštanta {@link Konštanty#strana strana}) – táto hodnota prepne
+		 * dialóg do režimu viacerých stĺpcov; výskyt tohto znaku bude znamenať
+		 * začiatok nového stĺpca vkladania komponentov dialógu
+		 * </small>
+		 * </li>
 		 * 
 		 * <li>a hodnotu {@code valnull}, ktorá spôsobí, že na určenej
 		 * pozícii bude umiestnený vstupný prvok na zadanie hesla.</li>
