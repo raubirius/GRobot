@@ -131,6 +131,7 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -1208,51 +1209,99 @@ public final class Svet extends JFrame
 			// vzájomného konfliktu…
 			private static boolean dialógZobrazený = false;
 
-			// Zoznam komponentov panelov farieb v poli dialógu spúšťaného
-			// metódou „dialóg“:
-			private final static Vector<Farba.PanelFarieb> voľbyFariebDialógu =
-				new Vector<>();
 
-			// Zoznam komponentov panelov polôh v poli dialógu spúšťaného
-			// metódou „dialóg“:
-			private final static Vector<Bod.PanelPolohy> voľbyPolohyDialógu =
-				new Vector<>();
+			// Počítadlo aktuálne použitých popisov dialógu:
+			private static int poslednýPopisDialógu = 0;
 
-			// Zoznam komponentov panelov uhlov (smerov) v poli dialógu
-			// spúšťaného metódou „dialóg“:
-			private final static Vector<Uhol.PanelSmeru> voľbySmeruDialógu =
-				new Vector<>();
+			// Zoznam komponentov popisov dialógu (spúšťaného metódou „dialóg“):
+			private final static Vector<JLabel> popisyDialógu = new Vector<>();
 
-			// Zoznam komponentov panelov rozmerov v poli dialógu spúšťaného
-			// metódou „dialóg“:
-			private final static Vector<Rozmery.PanelRozmeru>
-				voľbyRozmerovDialógu = new Vector<>();
 
-			// Zoznam komponentov textových riadkov (polí) dialógu spúšťaného
-			// metódou „dialóg“:
-			private final static Vector<RobotTextField> textovéRiadkyDialógu =
-				new Vector<>();
-
-			// Zoznam komponentov volieb („checkboxov“) dialógu spúšťaného
-			// metódou „dialóg“:
-			private final static Vector</*Robot/Nie!*/JCheckBox> voľbyDialógu =
-				new Vector<>();
+			// Počítadlo aktuálne použitých hesiel dialógu:
+			private static int poslednéHesloDialógu = 0;
 
 			// Zoznam vstupných komponentov na zadávanie hesiel dialógu
 			// spúšťaného metódou „dialóg“:
 			private final static Vector<RobotPasswordField>
 				riadkyHesielDialógu = new Vector<>();
 
-			// Zoznam panelov vnútorne používaných pri procese tvorby dialógov
-			// spúšťaných metódou „dialóg“:
-			private final static Vector<JPanel> panelyDialógu =
+
+			// Počítadlo aktuálne použitých volieb („checkboxov“) dialógu:
+			private static int poslednáVoľbaDialógu = 0;
+
+			// Zoznam komponentov volieb („checkboxov“) dialógu spúšťaného
+			// metódou „dialóg“:
+			private final static Vector</*Robot/Nie!*/JCheckBox> voľbyDialógu =
 				new Vector<>();
 
-			// Zoznam komponentov popisov prvkov, ktorý je v niektorých
-			// prípadoch vnútorne používaných pri procese tvorby dialógov
-			// spúšťaných metódou „dialóg“:
-			private final static Vector<JLabel> popisyDialógu =
+
+			// Počítadlo aktuálne použitých textových riadkov (polí) dialógu:
+			private static int poslednýTextDialógu = 0;
+
+			// Zoznam komponentov textových riadkov (polí) dialógu spúšťaného
+			// metódou „dialóg“:
+			private final static Vector<RobotTextField> textovéRiadkyDialógu =
 				new Vector<>();
+
+
+			// Počítadlo aktuálne použitých panelov farieb dialógu:
+			private static int poslednáFarbaDialógu = 0;
+
+			// Zoznam komponentov panelov farieb v poli dialógu spúšťaného
+			// metódou „dialóg“:
+			private final static Vector<Farba.PanelFarieb> panelyFariebDialógu =
+				new Vector<>();
+
+
+			// Počítadlo aktuálne použitých panelov polôh dialógu:
+			private static int poslednáPolohaDialógu = 0;
+
+			// Zoznam komponentov panelov polôh v poli dialógu spúšťaného
+			// metódou „dialóg“:
+			private final static Vector<Bod.PanelPolohy> panelyPolohyDialógu =
+				new Vector<>();
+
+
+			// Počítadlo aktuálne použitých panelov smerov dialógu:
+			private static int poslednýSmerDialógu = 0;
+
+			// Zoznam komponentov panelov uhlov (smerov) v poli dialógu
+			// spúšťaného metódou „dialóg“:
+			private final static Vector<Uhol.PanelSmeru> panelySmeruDialógu =
+				new Vector<>();
+
+
+			// Počítadlo aktuálne použitých panelov rozmerov dialógu:
+			private static int poslednéRozmeryDialógu = 0;
+
+			// Zoznam komponentov panelov rozmerov v poli dialógu spúšťaného
+			// metódou „dialóg“:
+			private final static Vector<Rozmery.PanelRozmeru>
+				panelyRozmerovDialógu = new Vector<>();
+
+
+			// Hlavné panely komponentov dialógu:
+			private static JPanel panelDialógu = null,
+				vertikálnyPanelDialógu = null, horizontálnyPanelDialógu = null;
+
+
+			// Počítadlo aktuálne použitých horizontálnych a vertikálnych
+			// panelov dialógu:
+			private static int poslednýHorizontálnyPanelDialógu = 0,
+				poslednýVertikálnyPanelDialógu = 0;
+
+			// Zoznam horizontálnych a vertikálnych panelov vnútorne
+			// používaných pri procese tvorby dialógov spúšťaných metódou
+			// „dialóg“:
+			private final static Vector<JPanel>
+				horizontálnePanelyDialógu = new Vector<>(),
+				vertikálnePanelyDialógu = new Vector<>();
+
+			// Zoznam zbierajúci komponenty, ktoré budú priebežne ukladané do
+			// horizontálnych alebo vertikálnych panelov dialógu:
+			private final static Vector<JComponent>
+				komponentyDialógu = new Vector<>();
+
 
 			// Úvodná obrazovka:
 			private static JWindow úvodnáObrazovka = null;
@@ -15987,6 +16036,177 @@ public final class Svet extends JFrame
 		public static Double upravRealneCislo(double reálneČíslo, String výzva, String titulok)
 		{ return upravReálneČíslo(reálneČíslo, výzva, titulok); }
 
+
+		// Vráti voľný popis dialógu alebo vytvorí nový:
+		private static JLabel dajPopisDialógu(
+			String[] popisy, int i, Component labelFor)
+		{
+			while (popisyDialógu.size() <= poslednýPopisDialógu)
+				popisyDialógu.add(new JLabel("")
+				{{
+					// setPreferredSize(new Dimension(120, 20));
+					// setBackground(svetlozelená.svetlejšia());
+					// setOpaque(true);
+					// setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+					setBorder(BorderFactory.createEmptyBorder(4, 0, 2, 0));
+					setAlignmentX(0.5f);
+					setFont(getFont().deriveFont(getFont().getSize2D() + 2f));
+				}});
+
+			JLabel popis = popisyDialógu.get(poslednýPopisDialógu++);
+			if (i < popisy.length && null != popisy[i])
+				popis.setText("<html>" + popisy[i].replaceAll("\n", "<br/>") +
+					"</html>");
+			else
+				popis.setText("");
+			popis.setLabelFor(labelFor);
+			return popis;
+		}
+
+		// Vráti voľné heslo dialógu alebo vytvorí nové:
+		private static RobotPasswordField dajHesloDialógu()
+		{
+			while (riadkyHesielDialógu.size() <= poslednéHesloDialógu)
+				riadkyHesielDialógu.add(new RobotPasswordField()
+				{{
+					setPreferredSize(new Dimension(120, 20));
+					setMaximumSize(new Dimension(1200, 20));
+				}});
+
+			RobotPasswordField heslo = riadkyHesielDialógu.get(
+				poslednéHesloDialógu++);
+			heslo.setText("");
+			return heslo;
+		}
+
+		// Vráti voľnú voľbu dialógu alebo vytvorí novú:
+		private static JCheckBox dajVoľbuDialógu(
+			boolean označená, String[] popisy, int i)
+		{
+			while (voľbyDialógu.size() <= poslednáVoľbaDialógu)
+				voľbyDialógu.add(new JCheckBox()
+					{{
+						setAlignmentX(0.5f);
+					}});
+
+			JCheckBox voľba = voľbyDialógu.get(poslednáVoľbaDialógu++);
+			voľba.setSelected(označená);
+			if (i < popisy.length && null != popisy[i])
+				voľba.setText("<html>" + popisy[i].replaceAll("\n", "<br/>") +
+					"</html>");
+			else
+				voľba.setText("");
+			return voľba;
+		}
+
+		// Vráti voľný textový riadok dialógu alebo vytvorí nový:
+		private static RobotTextField dajTextovýRiadokDialógu()
+		{
+			while (textovéRiadkyDialógu.size() <= poslednýTextDialógu)
+				textovéRiadkyDialógu.add(new RobotTextField()
+				{{
+					setPreferredSize(new Dimension(120, 20));
+					setMaximumSize(new Dimension(1200, 20));
+				}});
+			return textovéRiadkyDialógu.get(poslednýTextDialógu++);
+		}
+
+		// Vráti voľný panel farieb dialógu alebo vytvorí nový:
+		private static Farba.PanelFarieb dajPanelFariebDialógu()
+		{
+			while (panelyFariebDialógu.size() <= poslednáFarbaDialógu)
+				panelyFariebDialógu.add(new Farba.PanelFarieb(null,
+					Svet.tlačidláDialógu[0], Svet.tlačidláDialógu[1], null, 0));
+
+			Farba.PanelFarieb panel = panelyFariebDialógu.get(
+				poslednáFarbaDialógu++);
+			panel.upravTextyTlačidiel(Svet.tlačidláDialógu[0],
+				Svet.tlačidláDialógu[1]);
+			return panel;
+		}
+
+		// Vráti voľný panel polohy dialógu alebo vytvorí nový:
+		private static Bod.PanelPolohy dajPanelPolohyDialógu()
+		{
+			while (panelyPolohyDialógu.size() <= poslednáPolohaDialógu)
+				panelyPolohyDialógu.add(new Bod.PanelPolohy(
+					Svet.tlačidláDialógu[2], Svet.menovkyDialógu[0],
+					Svet.menovkyDialógu[1], null, 0));
+
+			Bod.PanelPolohy panel = panelyPolohyDialógu.get(
+				poslednáPolohaDialógu++);
+			panel.upravTextTlačidla(Svet.tlačidláDialógu[2]);
+			panel.upravTextyMenoviek(Svet.menovkyDialógu[0],
+				Svet.menovkyDialógu[1]);
+			return panel;
+		}
+
+		// Vráti voľný panel smeru dialógu alebo vytvorí nový:
+		private static Uhol.PanelSmeru dajPanelSmeruDialógu()
+		{
+			while (panelySmeruDialógu.size() <= poslednýSmerDialógu)
+				panelySmeruDialógu.add(new Uhol.PanelSmeru(
+					Svet.tlačidláDialógu[3], null, 0));
+
+			Uhol.PanelSmeru panel = panelySmeruDialógu.get(
+				poslednýSmerDialógu++);
+			panel.upravTextTlačidla(Svet.tlačidláDialógu[3]);
+			return panel;
+		}
+
+		// Vráti voľný panel rozmeru dialógu alebo vytvorí nový:
+		private static Rozmery.PanelRozmeru dajPanelRozmeruDialógu()
+		{
+			while (panelyRozmerovDialógu.size() <= poslednéRozmeryDialógu)
+				panelyRozmerovDialógu.add(new Rozmery.PanelRozmeru(
+					Svet.tlačidláDialógu[4], Svet.menovkyDialógu[2],
+					Svet.menovkyDialógu[3], null, 0));
+
+			Rozmery.PanelRozmeru panel = panelyRozmerovDialógu.get(
+				poslednéRozmeryDialógu++);
+			panel.upravTextTlačidla(Svet.tlačidláDialógu[4]);
+			panel.upravTextyMenoviek(Svet.menovkyDialógu[2],
+				Svet.menovkyDialógu[3]);
+			return panel;
+		}
+
+		// Vráti voľný horizontálny panel dialógu alebo vytvorí nový:
+		private static JPanel dajHorizontálnyPanelDialógu()
+		{
+			while (horizontálnePanelyDialógu.size() <=
+				poslednýHorizontálnyPanelDialógu)
+			{
+				JPanel panel = new JPanel();
+				panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+				horizontálnePanelyDialógu.add(panel);
+				panel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+			}
+
+			JPanel panel = horizontálnePanelyDialógu.get(
+				poslednýHorizontálnyPanelDialógu++);
+			panel.removeAll();
+			return panel;
+		}
+
+		// Vráti voľný vertikálny panel dialógu alebo vytvorí nový:
+		private static JPanel dajVertikálnyPanelDialógu()
+		{
+			while (vertikálnePanelyDialógu.size() <=
+				poslednýVertikálnyPanelDialógu)
+			{
+				JPanel panel = new JPanel();
+				panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+				vertikálnePanelyDialógu.add(panel);
+				panel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+			}
+
+			JPanel panel = vertikálnePanelyDialógu.get(
+				poslednýVertikálnyPanelDialógu++);
+			panel.removeAll();
+			return panel;
+		}
+
+
 		/**
 		 * <p>Otvorí prispôsobiteľný dialóg s prvkami vytvorenými podľa poľa
 		 * {@code údaje}. Táto metóda funguje rovnako ako metóda
@@ -16120,7 +16340,8 @@ public final class Svet extends JFrame
 		 * 
 		 * <li>hodnota údajového typu {@link Character Character},
 		 * ktorá má špeciálny význam – je rezervovaná na vkladanie riadiacich
-		 * znakov – v súčasnosti sú platné dve hodnoty:<br />
+		 * znakov – v súčasnosti sú platné tri hodnoty:<br />
+		 * 
 		 * <i>znak nového riadka</i> ({@code srg'\n'} – dá sa použiť znaková
 		 * konštanta {@link Konštanty#riadok riadok}) – táto hodnota prepne
 		 * dialóg zo stĺpcového do riadkového režimu a všetky komponenty
@@ -16131,18 +16352,24 @@ public final class Svet extends JFrame
 		 * {@code údaje}</small>), budú umiestnené na samostatnom neviditeľnom
 		 * paneli dialógu – akoby v jednom riadku (k tomuto znaku musí v poli
 		 * {@code popisy} párovať hodnota {@code valnull});<br />
+		 * 
 		 * <i>znak návratu vozíka</i> ({@code srg'\r'} – dá sa použiť znaková
 		 * konštanta {@link Konštanty#návrat návrat}) – táto hodnota použije
 		 * párujúci reťazec poľa {@code popisy} ako text bez párujúceho
 		 * komponentu, čo sa dá využiť na vkladanie rôznych textov pomedzi
 		 * komponenty (pozri aj príklad v opise metódy {@link #odpoveďDialógu()
 		 * odpoveďDialógu})<br />
-		 * <small style="display: none">
+		 * 
 		 * <i>znak posunu formulára</i> ({@code srg'\f'} – dá sa použiť znaková
 		 * konštanta {@link Konštanty#strana strana}) – táto hodnota prepne
 		 * dialóg do režimu viacerých stĺpcov; výskyt tohto znaku bude znamenať
-		 * začiatok nového stĺpca vkladania komponentov dialógu
-		 * </small>
+		 * začiatok nového stĺpca vkladania komponentov dialógu (aj k tomuto
+		 * znaku musí v poli {@code popisy} párovať hodnota {@code valnull});<br />
+		 * 
+		 * <small>(pozn.: od verzie 2.22 sa spolu s pridaním konštanty
+		 * {@link Konštanty#strana strana} zmenila v dialógoch ešte jedna vec:
+		 * predtým boli popisy komponentov v riadkovom rozložení pred nimi, od
+		 * verzie 2.22 zostávajú nad nimi, ako je očakávané)</small>
 		 * </li>
 		 * 
 		 * <li>a hodnotu {@code valnull}, ktorá spôsobí, že na určenej
@@ -16318,709 +16545,323 @@ public final class Svet extends JFrame
 
 			try
 			{
+				if (null == vertikálnyPanelDialógu)
+				{
+					vertikálnyPanelDialógu = new JPanel();
+					vertikálnyPanelDialógu.setLayout(new BoxLayout(
+						vertikálnyPanelDialógu, BoxLayout.PAGE_AXIS));
+				}
+				else vertikálnyPanelDialógu.removeAll();
+
+				if (null == horizontálnyPanelDialógu)
+				{
+					horizontálnyPanelDialógu = new JPanel();
+					horizontálnyPanelDialógu.setLayout(new BoxLayout(
+						horizontálnyPanelDialógu, BoxLayout.LINE_AXIS));
+				}
+				else horizontálnyPanelDialógu.removeAll();
+
 				dialógZobrazený = true;
-				int početKomponentov = 0, početPanelov = 0;
-				int poslednáFarba = 0, poslednáPoloha = 0, poslednýSmer = 0,
-					poslednéRozmery = 0, poslednýText = 0, poslednáVoľba = 0,
-					poslednéHeslo = 0, poslednýPanel = 0;
 
-				for (Object údaj : údaje)
+				poslednýPopisDialógu = poslednéHesloDialógu =
+					poslednáVoľbaDialógu = poslednýTextDialógu =
+					poslednáFarbaDialógu = poslednáPolohaDialógu =
+					poslednýSmerDialógu = poslednéRozmeryDialógu =
+					poslednýHorizontálnyPanelDialógu =
+					poslednýVertikálnyPanelDialógu = 0;
+
+				int n = údaje.length;
+
+				panelDialógu = vertikálnyPanelDialógu;
+				komponentyDialógu.clear();
+				JPanel aktuálnyPanel = panelDialógu;
+				JPanel aktuálnyStĺpec = panelDialógu;
+
+				// Vo verzii 2.22 bola táto metóda kompletne prepracovaná.
+					// S pridaním konštanty strana pribudlo viacstĺpcové
+					// rozloženie komponentov, ktoré môže v jednotlivých
+					// stĺpcoch alternovať s riadkovým rozložením. V riadkovom
+					// rozložení sa zmenila jedna vec: Popisy komponentov sa už
+					// nezobrazujú pred nimi, ale nad nimi.
+
+				for (int j = 0; j < n; ++j)
+					if (údaje[j] instanceof Character)
+						switch ((Character)údaje[j])
+						{
+						// case riadok: break;
+						// case návrat: break;
+						case strana:
+							panelDialógu = horizontálnyPanelDialógu;
+							aktuálnyPanel = aktuálnyStĺpec =
+								dajVertikálnyPanelDialógu();
+							panelDialógu.add(aktuálnyStĺpec);
+							j = n;
+							break;
+						}
+
+				for (int j = 0; j < n; ++j)
+					if (údaje[j] instanceof Character)
+						switch ((Character)údaje[j])
+						{
+						case riadok:
+							aktuálnyPanel = dajHorizontálnyPanelDialógu();
+							aktuálnyStĺpec.add(aktuálnyPanel);
+							break;
+
+						// case návrat: break;
+						case strana: j = n; break;
+						}
+
+				Object[] komponentyÚdajov = new Object[n];
+
+				for (int i = 0; i < n; ++i)
 				{
+					Object údaj = údaje[i];
+
 					if (null == údaj)
 					{
-						++poslednéHeslo;
-						if (riadkyHesielDialógu.size() < poslednéHeslo)
-							riadkyHesielDialógu.add(new RobotPasswordField()
-							{{
-								setPreferredSize(new Dimension(120, 20));
-								// setBackground(svetlozelená.svetlejšia());
-								// System.out.println(getPreferredSize());
-							}});
-						početKomponentov += 2;
-					}
-					else if (údaj instanceof Boolean)
-					{
-						++poslednáVoľba;
-						if (voľbyDialógu.size() < poslednáVoľba)
-							voľbyDialógu.add(new /*Robot/Nie!*/JCheckBox());
-						++početKomponentov;
-					}
-					else if (údaj instanceof Double)
-					{
-						++poslednýText;
-						if (textovéRiadkyDialógu.size() < poslednýText)
-							textovéRiadkyDialógu.add(new RobotTextField()
-							{{
-								setPreferredSize(new Dimension(120, 20));
-								// setBackground(svetlozelená.svetlejšia());
-								// System.out.println(getPreferredSize());
-							}});
-						početKomponentov += 2;
-					}
-					else if (údaj instanceof String)
-					{
-						++poslednýText;
-						if (textovéRiadkyDialógu.size() < poslednýText)
-							textovéRiadkyDialógu.add(new RobotTextField()
-							{{
-								setPreferredSize(new Dimension(120, 20));
-								// setBackground(svetlozelená.svetlejšia());
-								// System.out.println(getPreferredSize());
-							}});
-						početKomponentov += 2;
-					}
-					else if (údaj instanceof Farba)
-					{
-						++poslednáFarba;
-						if (voľbyFariebDialógu.size() < poslednáFarba)
-							voľbyFariebDialógu.add(new Farba.PanelFarieb(null,
-								Svet.tlačidláDialógu[0],
-								Svet.tlačidláDialógu[1], null, 0)
-							// {{
-								// setPreferredSize(new Dimension(120, 20));
-								// setBackground(svetlozelená.svetlejšia());
-								// System.out.println(getPreferredSize());
-							// }}
-							);
-						početKomponentov += 2;
-					}
-					else if (údaj instanceof Bod)
-					{
-						++poslednáPoloha;
-						if (voľbyPolohyDialógu.size() < poslednáPoloha)
-							voľbyPolohyDialógu.add(new Bod.PanelPolohy(
-								Svet.tlačidláDialógu[2], Svet.menovkyDialógu[0],
-								Svet.menovkyDialógu[1], null, 0)
-							// {{
-								// setPreferredSize(new Dimension(120, 20));
-								// setBackground(svetlozelená.svetlejšia());
-								// System.out.println(getPreferredSize());
-							// }}
-							);
-						početKomponentov += 2;
-					}
-					else if (údaj instanceof Uhol)
-					{
-						++poslednýSmer;
-						if (voľbySmeruDialógu.size() < poslednýSmer)
-							voľbySmeruDialógu.add(new Uhol.PanelSmeru(
-								Svet.tlačidláDialógu[3], null, 0)
-							// {{
-								// setPreferredSize(new Dimension(120, 20));
-								// setBackground(svetlozelená.svetlejšia());
-								// System.out.println(getPreferredSize());
-							// }}
-							);
-						početKomponentov += 2;
-					}
-					else if (údaj instanceof Rozmery)
-					{
-						++poslednéRozmery;
-						if (voľbyRozmerovDialógu.size() < poslednéRozmery)
-							voľbyRozmerovDialógu.add(new Rozmery.PanelRozmeru(
-								Svet.tlačidláDialógu[4], Svet.menovkyDialógu[2],
-								Svet.menovkyDialógu[3], null, 0)
-							// {{
-								// setPreferredSize(new Dimension(120, 20));
-								// setBackground(svetlozelená.svetlejšia());
-								// System.out.println(getPreferredSize());
-							// }}
-							);
-						početKomponentov += 2;
-					}
-					else if (údaj instanceof Enum)
-					{
-						početKomponentov += 2;
-					}
-					else if (údaj instanceof Vector)
-					{
-						početKomponentov += 2;
-					}
-					else if (údaj instanceof JScrollPane)
-					{
-						početKomponentov += 2;
-					}
-					else if (údaj instanceof Character)
-					{
-						if (riadok == (Character)údaj)
-						{
-							++poslednýPanel;
-							if (panelyDialógu.size() < poslednýPanel)
-								panelyDialógu.add(new JPanel());
-							++početPanelov;
-							++početKomponentov;
-						}
-						else if (návrat == (Character)údaj)
-						{
-							// TODO: TEST
-							++početKomponentov;
-						}
-					}
-				}
-
-				// Predvolene sú komponenty údajov a dialógu totožné, ak
-				// je počet panelov nenulový, tak je vytvorené extra pole
-				// pre komponenty dialógu, do ktorého sú ukladané panely…
-				// (Komponenty údajov zostávajú v princípe rovnaké, čo
-				// odbúrava komplikácie pri čítaní zadaných údajov.)
-				Object[] komponentyÚdajov = new Object[početKomponentov];
-				Object[] komponentyDialógu = komponentyÚdajov;
-
-				// Hodnoty poľa indexyZdrojovÚdajov ukazujú na ten index
-				// v poli komponentyÚdajov, kde bude nájdený komponent
-				// korešpondujúceho údaja (aby z neho mohol byť prečítaný).
-				int[] indexyZdrojovÚdajov = new int[údaje.length];
-				int i = 0, j = 0;
-
-				poslednáFarba = 0; poslednáPoloha = 0; poslednýSmer = 0;
-				poslednéRozmery = 0; poslednýText = 0; poslednáVoľba = 0;
-				poslednéHeslo = 0; poslednýPanel = 0;
-
-				// V obidvoch vetvách – i rastie kontinuálne s cyklom foreach.
-				if (početPanelov > 0)
-				{
-					// V tejto vetve – j slúži na indexovanie poľa popisy,
-					// k slúži na indexovanie komponentov dialógu (panelov)
-					// l slúži na indexovanie textových popisov (JLabel).
-					komponentyDialógu = new Object[početPanelov + 1];
-					JPanel aktívnyPanel = null; int k = 0; int l = 0;
-
-					for (Object údaj : údaje)
-					{
-						if (null == aktívnyPanel)
-						{
-							if (panelyDialógu.size() < (poslednýPanel + 1))
-								panelyDialógu.add(new JPanel());
-
-							aktívnyPanel = panelyDialógu.get(poslednýPanel++);
-							aktívnyPanel.removeAll();
-							komponentyDialógu[k] = aktívnyPanel;
-							++k;
-
-							if (aktívnyPanel.getLayout() instanceof FlowLayout)
-							{
-								((FlowLayout)aktívnyPanel.getLayout()).
-									setAlignment(FlowLayout.LEADING);
-							}
-							// aktívnyPanel.setBackground(ružová);
-						}
-
-						if (null == údaj)
-						{
-							RobotPasswordField heslo =
-								riadkyHesielDialógu.get(poslednéHeslo++);
-							heslo.setText("");
-
-							if (j < popisy.length && null != popisy[j])
-							{
-								if (popisyDialógu.size() < (l + 1))
-									popisyDialógu.add(new JLabel());
-								JLabel popis = popisyDialógu.get(l++);
-								popis.setText(popisy[j]);
-								aktívnyPanel.add(popis);
-							}
-							komponentyÚdajov[i] = heslo;
-							aktívnyPanel.add(heslo);
-							indexyZdrojovÚdajov[i] = i;
-						}
-						else if (údaj instanceof Boolean)
-						{
-							/*Robot/Nie!*/JCheckBox voľba =
-								voľbyDialógu.get(poslednáVoľba++);
-							voľba.setSelected((Boolean)údaj);
-							if (j < popisy.length && null != popisy[j])
-								voľba.setText(popisy[j]);
-							else
-								voľba.setText("");
-
-							komponentyÚdajov[i] = voľba;
-							aktívnyPanel.add(voľba);
-							indexyZdrojovÚdajov[i] = i;
-						}
-						else if (údaj instanceof Double)
-						{
-							RobotTextField text =
-								textovéRiadkyDialógu.get(poslednýText++);
-							if (Double.isNaN((Double)údaj))
-								text.setText("");
-							else
-								text.setText(formát.format((Double)údaj));
-
-							if (j < popisy.length && null != popisy[j])
-							{
-								if (popisyDialógu.size() < (l + 1))
-									popisyDialógu.add(new JLabel());
-								JLabel popis = popisyDialógu.get(l++);
-								popis.setText(popisy[j]);
-								aktívnyPanel.add(popis);
-							}
-							komponentyÚdajov[i] = text;
-							aktívnyPanel.add(text);
-							indexyZdrojovÚdajov[i] = i;
-						}
-						else if (údaj instanceof String)
-						{
-							RobotTextField text =
-								textovéRiadkyDialógu.get(poslednýText++);
-							text.setText((String)údaj);
-
-							if (j < popisy.length && null != popisy[j])
-							{
-								if (popisyDialógu.size() < (l + 1))
-									popisyDialógu.add(new JLabel());
-								JLabel popis = popisyDialógu.get(l++);
-								popis.setText(popisy[j]);
-								aktívnyPanel.add(popis);
-							}
-							komponentyÚdajov[i] = text;
-							aktívnyPanel.add(text);
-							indexyZdrojovÚdajov[i] = i;
-						}
-						else if (údaj instanceof Farba)
-						{
-							Farba.PanelFarieb panel =
-								voľbyFariebDialógu.get(poslednáFarba++);
-							panel.upravTextyTlačidiel(Svet.tlačidláDialógu[0],
-								Svet.tlačidláDialógu[1]);
-							panel.nastavFarbu((Farba)údaj);
-
-							if (j < popisy.length && null != popisy[j])
-							{
-								if (popisyDialógu.size() < (l + 1))
-									popisyDialógu.add(new JLabel());
-								JLabel popis = popisyDialógu.get(l++);
-								popis.setText(popisy[j]);
-								panel.upravTitulok(popisy[j]);
-								aktívnyPanel.add(popis);
-							}
-							komponentyÚdajov[i] = panel;
-							aktívnyPanel.add(panel);
-							indexyZdrojovÚdajov[i] = i;
-						}
-						else if (údaj instanceof Bod)
-						{
-							Bod.PanelPolohy panel =
-								voľbyPolohyDialógu.get(poslednáPoloha++);
-							panel.upravTextTlačidla(Svet.tlačidláDialógu[2]);
-							panel.upravTextyMenoviek(Svet.menovkyDialógu[0],
-								Svet.menovkyDialógu[1]);
-							panel.nastavPolohu((Bod)údaj);
-
-							if (j < popisy.length && null != popisy[j])
-							{
-								if (popisyDialógu.size() < (l + 1))
-									popisyDialógu.add(new JLabel());
-								JLabel popis = popisyDialógu.get(l++);
-								popis.setText(popisy[j]);
-								aktívnyPanel.add(popis);
-							}
-							komponentyÚdajov[i] = panel;
-							aktívnyPanel.add(panel);
-							indexyZdrojovÚdajov[i] = i;
-						}
-						else if (údaj instanceof Uhol)
-						{
-							Uhol.PanelSmeru panel =
-								voľbySmeruDialógu.get(poslednýSmer++);
-							panel.upravTextTlačidla(Svet.tlačidláDialógu[3]);
-							panel.nastavSmer((Uhol)údaj);
-
-							if (j < popisy.length && null != popisy[j])
-							{
-								if (popisyDialógu.size() < (l + 1))
-									popisyDialógu.add(new JLabel());
-								JLabel popis = popisyDialógu.get(l++);
-								popis.setText(popisy[j]);
-								aktívnyPanel.add(popis);
-							}
-							komponentyÚdajov[i] = panel;
-							aktívnyPanel.add(panel);
-							indexyZdrojovÚdajov[i] = i;
-						}
-						else if (údaj instanceof Rozmery)
-						{
-							Rozmery.PanelRozmeru panel =
-								voľbyRozmerovDialógu.get(poslednéRozmery++);
-							panel.upravTextTlačidla(Svet.tlačidláDialógu[4]);
-							panel.upravTextyMenoviek(Svet.menovkyDialógu[2],
-								Svet.menovkyDialógu[3]);
-							panel.nastavRozmer((Rozmery)údaj);
-
-							if (j < popisy.length && null != popisy[j])
-							{
-								if (popisyDialógu.size() < (l + 1))
-									popisyDialógu.add(new JLabel());
-								JLabel popis = popisyDialógu.get(l++);
-								popis.setText(popisy[j]);
-								aktívnyPanel.add(popis);
-							}
-							komponentyÚdajov[i] = panel;
-							aktívnyPanel.add(panel);
-							indexyZdrojovÚdajov[i] = i;
-						}
-						else if (údaj instanceof Enum)
-						{
-							EnumRadioPanel panel =
-								new EnumRadioPanel((Enum)údaj);
-
-							if (j < popisy.length && null != popisy[j])
-							{
-								if (popisyDialógu.size() < (l + 1))
-									popisyDialógu.add(new JLabel());
-								JLabel popis = popisyDialógu.get(l++);
-								popis.setText(popisy[j]);
-								aktívnyPanel.add(popis);
-							}
-
-							komponentyÚdajov[i] = panel;
-							aktívnyPanel.add(panel);
-							indexyZdrojovÚdajov[i] = i;
-						}
-						else if (údaj instanceof Vector)
-						{
-							VectorListPanel panel =
-								new VectorListPanel((Vector)údaj);
-
-							// TODO – využiť title?
-							if (j < popisy.length && null != popisy[j])
-							{
-								if (popisyDialógu.size() < (l + 1))
-									popisyDialógu.add(new JLabel());
-								JLabel popis = popisyDialógu.get(l++);
-								popis.setText(popisy[j]);
-								aktívnyPanel.add(popis);
-							}
-
-							komponentyÚdajov[i] = panel;
-							aktívnyPanel.add(panel);
-							indexyZdrojovÚdajov[i] = i;
-						}
-						else if (údaj instanceof JScrollPane)
-						{
-							if (j < popisy.length && null != popisy[j])
-							{
-								if (popisyDialógu.size() < (l + 1))
-									popisyDialógu.add(new JLabel());
-								JLabel popis = popisyDialógu.get(l++);
-								popis.setText(popisy[j]);
-								aktívnyPanel.add(popis);
-							}
-							komponentyÚdajov[i] = údaj;
-							aktívnyPanel.add((JScrollPane)údaj);
-							indexyZdrojovÚdajov[i] = i;
-						}
-						else if (údaj instanceof Character)
-						{
-							if (riadok == (Character)údaj)
-							{
-								if (j < popisy.length && null != popisy[j]) --j;
-								aktívnyPanel = null;
-							}
-							else if (návrat == (Character)údaj)
-							{
-								if (j < popisy.length && null != popisy[j])
-								{
-									if (popisyDialógu.size() < (l + 1))
-										popisyDialógu.add(new JLabel());
-									JLabel popis = popisyDialógu.get(l++);
-									popis.setText(popisy[j]);
-									aktívnyPanel.add(popis);
-								}
-								// TODO: TEST
-							}
-							else
-							{
-								// Ignorujem, vypíšem hlásenie, ale premennú
-								// j nemením – t. j. korešpondujúci popis sa
-								// preskočí:
-								GRobotException.vypíšChybovéHlásenie(
-									"Neznámy znak pri tvorbe dialógu: " +
-									údaj);
-							}
-
-							indexyZdrojovÚdajov[i] = -1;
-						}
-						else
-						{
-							indexyZdrojovÚdajov[i] = -1;
-						}
-						++i; ++j;
-					}
-				}
-				else for (Object údaj : údaje)
-				{
-					// V tejto vetve – j slúži na indexovanie komponentov
-					// dialógu (rôznych typov).
-					if (null == údaj)
-					{
-						RobotPasswordField heslo =
-							riadkyHesielDialógu.get(poslednéHeslo++);
-						heslo.setText("");
-
-						if (i < popisy.length && null != popisy[i])
-							komponentyÚdajov[j] = popisy[i];
-						else
-							komponentyÚdajov[j] = "";
-						komponentyÚdajov[j + 1] = heslo;
-
-						indexyZdrojovÚdajov[i] = j + 1;
-						j += 2;
+						RobotPasswordField heslo = dajHesloDialógu();
+						JLabel popis = dajPopisDialógu(popisy, i, heslo);
+						JPanel panel = dajVertikálnyPanelDialógu();
+						aktuálnyPanel.add(panel);
+						komponentyÚdajov[i] = heslo;
+						panel.add(popis);
+						panel.add(heslo);
 					}
 					else if (údaj instanceof Boolean)
 					{
 						/*Robot/Nie!*/JCheckBox voľba =
-							voľbyDialógu.get(poslednáVoľba++);
-						voľba.setSelected((Boolean)údaj);
-						if (i < popisy.length && null != popisy[i])
-							voľba.setText(popisy[i]);
-						else
-							voľba.setText("");
-
-						komponentyÚdajov[j] = voľba;
-
-						indexyZdrojovÚdajov[i] = j;
-						++j;
+							dajVoľbuDialógu((Boolean)údaj, popisy, i);
+						komponentyÚdajov[i] = voľba;
+						aktuálnyPanel.add(voľba);
 					}
 					else if (údaj instanceof Double)
 					{
-						RobotTextField text =
-							textovéRiadkyDialógu.get(poslednýText++);
+						RobotTextField text = dajTextovýRiadokDialógu();
 						if (Double.isNaN((Double)údaj))
 							text.setText("");
 						else
 							text.setText(formát.format((Double)údaj));
 
-						if (i < popisy.length && null != popisy[i])
-							komponentyÚdajov[j] = popisy[i];
-						else
-							komponentyÚdajov[j] = "";
-						komponentyÚdajov[j + 1] = text;
-
-						indexyZdrojovÚdajov[i] = j + 1;
-						j += 2;
+						JLabel popis = dajPopisDialógu(popisy, i, text);
+						JPanel panel = dajVertikálnyPanelDialógu();
+						aktuálnyPanel.add(panel);
+						komponentyÚdajov[i] = text;
+						panel.add(popis);
+						panel.add(text);
 					}
 					else if (údaj instanceof String)
 					{
-						RobotTextField text =
-							textovéRiadkyDialógu.get(poslednýText++);
+						RobotTextField text = dajTextovýRiadokDialógu();
 						text.setText((String)údaj);
 
-						if (i < popisy.length && null != popisy[i])
-							komponentyÚdajov[j] = popisy[i];
-						else
-							komponentyÚdajov[j] = "";
-						komponentyÚdajov[j + 1] = text;
-
-						indexyZdrojovÚdajov[i] = j + 1;
-						j += 2;
+						JLabel popis = dajPopisDialógu(popisy, i, text);
+						JPanel panel = dajVertikálnyPanelDialógu();
+						aktuálnyPanel.add(panel);
+						komponentyÚdajov[i] = text;
+						panel.add(popis);
+						panel.add(text);
 					}
 					else if (údaj instanceof Farba)
 					{
-						Farba.PanelFarieb panel =
-							voľbyFariebDialógu.get(poslednáFarba++);
-						panel.nastavFarbu((Farba)údaj);
+						Farba.PanelFarieb panelFarieb = dajPanelFariebDialógu();
+						panelFarieb.nastavFarbu((Farba)údaj);
 
-						if (i < popisy.length && null != popisy[i])
-							komponentyÚdajov[j] = popisy[i];
-						else
-							komponentyÚdajov[j] = "";
-						komponentyÚdajov[j + 1] = panel;
-
-						indexyZdrojovÚdajov[i] = j + 1;
-						j += 2;
+						JLabel popis = dajPopisDialógu(popisy, i, panelFarieb);
+						JPanel panel = dajVertikálnyPanelDialógu();
+						aktuálnyPanel.add(panel);
+						komponentyÚdajov[i] = panelFarieb;
+						panel.add(popis);
+						panel.add(panelFarieb);
 					}
 					else if (údaj instanceof Bod)
 					{
-						Bod.PanelPolohy panel =
-							voľbyPolohyDialógu.get(poslednáPoloha++);
-						panel.nastavPolohu((Bod)údaj);
+						Bod.PanelPolohy panelPolohy = dajPanelPolohyDialógu();
+						panelPolohy.nastavPolohu((Bod)údaj);
 
-						if (i < popisy.length && null != popisy[i])
-							komponentyÚdajov[j] = popisy[i];
-						else
-							komponentyÚdajov[j] = "";
-						komponentyÚdajov[j + 1] = panel;
-
-						indexyZdrojovÚdajov[i] = j + 1;
-						j += 2;
+						JLabel popis = dajPopisDialógu(popisy, i, panelPolohy);
+						JPanel panel = dajVertikálnyPanelDialógu();
+						aktuálnyPanel.add(panel);
+						komponentyÚdajov[i] = panelPolohy;
+						panel.add(popis);
+						panel.add(panelPolohy);
 					}
 					else if (údaj instanceof Uhol)
 					{
-						Uhol.PanelSmeru panel =
-							voľbySmeruDialógu.get(poslednýSmer++);
-						panel.nastavSmer((Uhol)údaj);
+						Uhol.PanelSmeru panelSmeru = dajPanelSmeruDialógu();
+						panelSmeru.nastavSmer((Uhol)údaj);
 
-						if (i < popisy.length && null != popisy[i])
-							komponentyÚdajov[j] = popisy[i];
-						else
-							komponentyÚdajov[j] = "";
-						komponentyÚdajov[j + 1] = panel;
-
-						indexyZdrojovÚdajov[i] = j + 1;
-						j += 2;
+						JLabel popis = dajPopisDialógu(popisy, i, panelSmeru);
+						JPanel panel = dajVertikálnyPanelDialógu();
+						aktuálnyPanel.add(panel);
+						komponentyÚdajov[i] = panelSmeru;
+						panel.add(popis);
+						panel.add(panelSmeru);
 					}
 					else if (údaj instanceof Rozmery)
 					{
-						Rozmery.PanelRozmeru panel =
-							voľbyRozmerovDialógu.get(poslednéRozmery++);
-						panel.nastavRozmer((Rozmery)údaj);
+						Rozmery.PanelRozmeru panelRozmeru =
+							dajPanelRozmeruDialógu();
+						panelRozmeru.nastavRozmer((Rozmery)údaj);
 
-						if (i < popisy.length && null != popisy[i])
-							komponentyÚdajov[j] = popisy[i];
-						else
-							komponentyÚdajov[j] = "";
-						komponentyÚdajov[j + 1] = panel;
-
-						indexyZdrojovÚdajov[i] = j + 1;
-						j += 2;
+						JLabel popis = dajPopisDialógu(popisy, i, panelRozmeru);
+						JPanel panel = dajVertikálnyPanelDialógu();
+						aktuálnyPanel.add(panel);
+						komponentyÚdajov[i] = panelRozmeru;
+						panel.add(popis);
+						panel.add(panelRozmeru);
 					}
 					else if (údaj instanceof Enum)
 					{
-						EnumRadioPanel panel =
+						EnumRadioPanel panelVýberu =
 							new EnumRadioPanel((Enum)údaj);
 
-						if (i < popisy.length && null != popisy[i])
-							komponentyÚdajov[j] = popisy[i];
-						else
-							komponentyÚdajov[j] = "";
-						komponentyÚdajov[j + 1] = panel;
-
-						indexyZdrojovÚdajov[i] = j + 1;
-						j += 2;
+						JLabel popis = dajPopisDialógu(popisy, i, panelVýberu);
+						JPanel panel = dajVertikálnyPanelDialógu();
+						aktuálnyPanel.add(panel);
+						komponentyÚdajov[i] = panelVýberu;
+						panel.add(popis);
+						panel.add(panelVýberu);
 					}
 					else if (údaj instanceof Vector)
 					{
-						VectorListPanel panel =
+						VectorListPanel panelZoznamu =
 							new VectorListPanel((Vector)údaj);
 
-						if (i < popisy.length && null != popisy[i])
-							komponentyÚdajov[j] = popisy[i];
-						else
-							komponentyÚdajov[j] = "";
-						komponentyÚdajov[j + 1] = panel;
-
-						indexyZdrojovÚdajov[i] = j + 1;
-						j += 2;
+						JLabel popis = dajPopisDialógu(popisy, i, panelZoznamu);
+						JPanel panel = dajVertikálnyPanelDialógu();
+						aktuálnyPanel.add(panel);
+						komponentyÚdajov[i] = panelZoznamu;
+						panel.add(popis);
+						panel.add(panelZoznamu);
 					}
 					else if (údaj instanceof JScrollPane)
 					{
-						if (i < popisy.length && null != popisy[i])
-							komponentyÚdajov[j] = popisy[i];
-						else
-							komponentyÚdajov[j] = "";
-						komponentyÚdajov[j + 1] = údaj;
-
-						indexyZdrojovÚdajov[i] = j + 1;
-						j += 2;
+						JScrollPane panelRolovania = (JScrollPane)údaj;
+						JLabel popis = dajPopisDialógu(popisy, i, panelRolovania);
+						JPanel panel = dajVertikálnyPanelDialógu();
+						aktuálnyPanel.add(panel);
+						komponentyÚdajov[i] = údaj;
+						panel.add(popis);
+						panel.add(panelRolovania);
 					}
 					else if (údaj instanceof Character)
 					{
-						if (návrat == (Character)údaj)
+						switch ((Character)údaj)
 						{
-							// TODO: TEST
-							if (i < popisy.length && null != popisy[i])
-								komponentyÚdajov[j] = popisy[i];
-							else
-								komponentyÚdajov[j] = "";
-							++j;
+						case riadok:
+							aktuálnyPanel = dajHorizontálnyPanelDialógu();
+							aktuálnyStĺpec.add(aktuálnyPanel);
+							break;
+
+						case návrat:
+							JLabel popis = dajPopisDialógu(popisy, i, null);
+							aktuálnyPanel.add(popis);
+							break;
+
+						case strana:
+							aktuálnyPanel = aktuálnyStĺpec =
+								dajVertikálnyPanelDialógu();
+							panelDialógu.add(aktuálnyStĺpec);
+
+							for (int j = i + 1; j < n; ++j)
+								if (údaje[j] instanceof Character)
+									switch ((Character)údaje[j])
+									{
+									case riadok:
+										aktuálnyPanel =
+											dajHorizontálnyPanelDialógu();
+										aktuálnyStĺpec.add(aktuálnyPanel);
+										break;
+			
+									// case návrat: break;
+									case strana: j = n; break;
+									}
+
+							break;
 						}
-						indexyZdrojovÚdajov[i] = -1;
-					}
-					else indexyZdrojovÚdajov[i] = -1;
-					++i;
-				}
-
-				/*if (komponentyDialógu != komponentyÚdajov)
-				{
-					System.out.println("\nKomponenty dialógu:");
-
-					for (Object o : komponentyDialógu)
-					{
-						System.out.println("  > " + o);
 					}
 				}
 
-				System.out.println("\nKomponenty údajov:");
-
-				for (Object o : komponentyÚdajov)
-				{
-					System.out.println("  > " + o);
-				}*/
+				/*System.out.println("\nKomponenty údajov:");
+				for (int i = 0; i < n; ++i)
+					System.out.println("i: " + i + " – " + údaje[i].getClass() +
+						" – " + komponentyÚdajov[i].getClass());
+				System.out.println();*/
 
 				boolean výsledok = (odpoveďDialógu = JOptionPane.
 					showOptionDialog(null == oknoCelejObrazovky ? svet :
-						oknoCelejObrazovky, komponentyDialógu, titulok,
+						oknoCelejObrazovky, panelDialógu, titulok,
 						JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
 						null, null != mojeOdpovede ? mojeOdpovede :
 						odpovedeZadania, null)) == JOptionPane.YES_OPTION;
 
-				i = 0;
-				for (Object údaj : údaje)
+				for (int i = 0; i < n; ++i)
 				{
-					if (0 > indexyZdrojovÚdajov[i]);
-					else if (null == údaj)
+					Object údaj = údaje[i];
+
+					if (null == údaj)
 					{
 						údaje[i] = ((RobotPasswordField)komponentyÚdajov
-							[indexyZdrojovÚdajov[i]]).getPassword();
+							[/*indexyZdrojovÚdajov[i]*/i]).getPassword();
 						((RobotPasswordField)komponentyÚdajov
-							[indexyZdrojovÚdajov[i]]).setText("");
+							[/*indexyZdrojovÚdajov[i]*/i]).setText("");
 					}
 					else if (údaj instanceof Boolean)
 					{
 						údaje[i] = ((/*Robot/Nie!*/JCheckBox)komponentyÚdajov
-							[indexyZdrojovÚdajov[i]]).isSelected();
+							[/*indexyZdrojovÚdajov[i]*/i]).isSelected();
 					}
 					else if (údaj instanceof Double)
 					{
 						Double číslo = reťazecNaReálneČíslo(
 							((RobotTextField)komponentyÚdajov
-							[indexyZdrojovÚdajov[i]]).getText());
+							[/*indexyZdrojovÚdajov[i]*/i]).getText());
 						if (null != číslo) údaje[i] = číslo;
 						else údaje[i] = Double.NaN;
 					}
 					else if (údaj instanceof String)
 					{
 						údaje[i] = ((RobotTextField)komponentyÚdajov
-							[indexyZdrojovÚdajov[i]]).getText();
+							[/*indexyZdrojovÚdajov[i]*/i]).getText();
 					}
 					else if (údaj instanceof Farba)
 					{
 						údaje[i] = ((Farba.PanelFarieb)komponentyÚdajov
-							[indexyZdrojovÚdajov[i]]).dajFarbu();
+							[/*indexyZdrojovÚdajov[i]*/i]).dajFarbu();
 					}
 					else if (údaj instanceof Bod)
 					{
 						údaje[i] = ((Bod.PanelPolohy)komponentyÚdajov
-							[indexyZdrojovÚdajov[i]]).dajPolohu();
+							[/*indexyZdrojovÚdajov[i]*/i]).dajPolohu();
 					}
 					else if (údaj instanceof Uhol)
 					{
 						údaje[i] = ((Uhol.PanelSmeru)komponentyÚdajov
-							[indexyZdrojovÚdajov[i]]).dajSmer();
+							[/*indexyZdrojovÚdajov[i]*/i]).dajSmer();
 					}
 					else if (údaj instanceof Rozmery)
 					{
 						údaje[i] = ((Rozmery.PanelRozmeru)komponentyÚdajov
-							[indexyZdrojovÚdajov[i]]).dajRozmer();
+							[/*indexyZdrojovÚdajov[i]*/i]).dajRozmer();
 					}
 					else if (údaj instanceof Enum)
 					{
 						údaje[i] = ((EnumRadioPanel)komponentyÚdajov
-							[indexyZdrojovÚdajov[i]]).getSelection();
-						komponentyÚdajov[indexyZdrojovÚdajov[i]] = null;
+							[/*indexyZdrojovÚdajov[i]*/i]).getSelection();
+						komponentyÚdajov[/*indexyZdrojovÚdajov[i]*/i] = null;
 					}
 					else if (údaj instanceof Vector)
 					{
 						((Vector)údaj).set(0, ((VectorListPanel)
-							komponentyÚdajov[indexyZdrojovÚdajov[i]]).list.
+							komponentyÚdajov[/*indexyZdrojovÚdajov[i]*/i]).list.
 							getSelectedValue());
-						komponentyÚdajov[indexyZdrojovÚdajov[i]] = null;
+						komponentyÚdajov[/*indexyZdrojovÚdajov[i]*/i] = null;
 					}
 					else if (údaj instanceof JScrollPane)
 					{
-						komponentyÚdajov[indexyZdrojovÚdajov[i]] = null;
+						komponentyÚdajov[/*indexyZdrojovÚdajov[i]*/i] = null;
 					}
-					++i;
 				}
 
 				return výsledok;
