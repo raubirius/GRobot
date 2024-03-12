@@ -32530,19 +32530,33 @@ Toto bolo presunuté na úvodnú stránku:
 			 * ktorých budú striedavo ležať body lomenej čiary tvoriacej
 			 * hviezdu), ktorá vo výsledku zorietuje hrany hviezdy tak, aby
 			 * boli zarovnané do priamok prechádzajúcich vrcholmi
-			 * a alternujúcimi vrcholmi polygónu hviezdy. Vypočítaný pomer
-			 * bude v prípade zadania nulovej hodnoty parametra použitý
-			 * priamo na výpočet polomeru alternujúcej kružnice, inak bude
-			 * pomer najskôr prepočítavaný na jeden z dvoch nasledujúcich
-			 * rozsahov: Pri kladnom parametri sa bude použitá lineárna
-			 * interpolácia prepočítavajúca rozsah hodnôt parametra <em>t</em>
-			 * interpolácie (0; 1⟩ na interval ležiaci medzi hraničným pomerom
-			 * a hodnotou 1 (prípadne väčšou). Pri zápornom parametri sa bude
-			 * interpolovať opačným smerom – od hraničného pomeru smerom nule.
-			 * Výsledná hodnota potom poslúži na výpočet polomeru kružnice,
-			 * na ktorej majú ležať alternujúce vrcholy hviezdy (pri pomere
-			 * &lt; 1 sú to vnútorné vrcholy).</li>
+			 * a alternujúcimi vrcholmi polygónu hviezdy.
+			 * 
+			 * <small>(Pozri poznámku nižšie.)</small>
+			 * 
+			 * Vypočítaný pomer bude v prípade zadania nulovej hodnoty
+			 * parametra použitý priamo na výpočet polomeru alternujúcej
+			 * kružnice, inak bude pomer najskôr prepočítavaný na jeden z dvoc
+			 * h nasledujúcich rozsahov: Pri kladnom parametri sa bude použitá
+			 * lineárna interpolácia prepočítavajúca rozsah hodnôt parametra
+			 * <em>t</em> interpolácie (0; 1⟩ na interval ležiaci medzi
+			 * hraničným pomerom a hodnotou 1 (prípadne väčšou). Pri zápornom
+			 * parametri sa bude interpolovať opačným smerom – od hraničného
+			 * pomeru smerom nule. Výsledná hodnota potom poslúži na výpočet
+			 * polomeru kružnice, na ktorej majú ležať alternujúce vrcholy
+			 * hviezdy („alternujúce“ sú pri pomere &lt; 1 „vnútorné“).
+			 * 
+			 * <p class="remark"><b>Poznámka:</b> Na výpočet pomeru polomerov
+			 * je použitá metóda {@link Svet#pomerHviezdy(int p, int q)
+			 * Svet.pomerHviezdy(p, q)}, kde <em>p</em> = <em>n</em> (počet
+			 * cípov hviezdy) a <em>q</em> = 2. Keďže však táto metóda vracia
+			 * pomer rovný 1 pre <em>p</em> &lt; 4 a efektívne rovný 0 pre
+			 * <em>p</em> = 4 je pre <em>n</em> &lt; 5 použité <em>p</em> =
+			 * 5.</p>
+			 * </li>
+			 * 
 			 * <!-- TODO: grafické príkady. -->
+			 * 
 			 * <li>{@code srg"typ1"}, {@code srg"pomer"} – {@code parameter}
 			 * bude chápaný ako pomer polomeru ďalšej kružnice, na ktorej budú
 			 * ležať alternujúce vrcholy polygónu tvoriaceho hviezdu. Čiže
@@ -32688,7 +32702,8 @@ Toto bolo presunuté na úvodnú stránku:
 
 				if (0 == typ)
 				{
-					double hranica = Svet.pomerHviezdy(n, 2);
+					double hranica = n < 5 ? Svet.pomerHviezdy(5, 2) :
+						Svet.pomerHviezdy(n, 2);
 
 					if (0 == parameter) parameter = hranica;
 					else if (0 < parameter) parameter =
