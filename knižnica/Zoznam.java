@@ -751,7 +751,7 @@ public class Zoznam<Typ> extends Vector<Typ>
 	/**
 	 * <p>Vráti posledný prvok zoznamu. (Prvok s indexom
 	 * <em>«zoznam»</em>{@code .}{@link #veľkosť()
-	 * veľkosť}{@code  - }{@code num1}.) Zároveň nastaví vnútorné
+	 * veľkosť}{@code () - }{@code num1}.) Zároveň nastaví vnútorné
 	 * {@linkplain #počítadlo() počítadlo} prvkov na index posledného
 	 * prvku.</p>
 	 * 

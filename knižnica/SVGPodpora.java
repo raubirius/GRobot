@@ -3620,10 +3620,13 @@ public class SVGPodpora
 
 	/**
 	 * <p>Vyčistí vnútorné zásobníky tvarov a {@linkplain #definície()
-	 * definícií} tejto inštancie. To znamená, že všetky vnútorne uskladnené
-	 * tvary a (špeciálne) definície budú z tejto inštancie odstránené.</p>
+	 * definícií}, {@linkplain #početVymedzení() vymedzení} a {@linkplain 
+	 * #štýl() štýlu} tejto inštancie. To znamená, že všetky vnútorne
+	 * uskladnené tvary, (špeciálne) definície a ďalšie údaje budú z tejto
+	 * inštancie odstránené.</p>
 	 */
-	public void vymaž() { tvary.clear(); vymedzenia.clear(); definície.clear(); idOrezania = 0; }
+	public void vymaž() { tvary.clear(); vymedzenia.clear();
+		definície.clear(); štýl.clear(); idOrezania = 0; }
 
 	/** <p><a class="alias"></a> Alias pre {@link #vymaž() vymaž}.</p> */
 	public void vymaz() { vymaž(); }
