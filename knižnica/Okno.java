@@ -3035,8 +3035,11 @@ public class Okno
 			// FIX: 2023-08-24:
 			if (príkaz == close)
 			{
-				// skry();
-				zavrieť();
+				// FIX: 2024-03-26: Musí to byť konzistentné.
+				// Alt+F4 tiež „iba“ skrýva okno. Zavretie okna
+				// v podstate ani nemôže nastať…
+				skry();
+				// zavrieť(); // TODO: Test on macOS.
 				return;
 			}
 
