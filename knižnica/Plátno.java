@@ -1912,6 +1912,12 @@ public class Plátno implements Priehľadnosť
 
 						if (null != príkaz)
 						{
+							if (null != obsah)
+							{
+								riadok.add(obsah);
+								obsah = null;
+							}
+
 							indexFarby = 0;
 							riadok.add(príkaz);
 							príkaz = null;

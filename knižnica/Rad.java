@@ -595,10 +595,11 @@ public class Rad
 	/**
 	 * <p>Aktívne čítanie hodnôt radu. Pri aktívnom čítaní sa vnútorná
 	 * (aktuálna) hodnota radu po prečítaní vždy posunie na nasledujúcu podľa
-	 * konfigurácie radu. Ak je pri vzostupnom smere zmien hodnôt prekročená
-	 * horná hranica, tak je hodnota upravená späť do rozmedzia hraníc a smer
-	 * zmien hodnôt je prevrátený. Podobne to je pri klesajúcom smere
-	 * a prekročení spodnej hranice.</p>
+	 * konfigurácie radu. Pozri metódu {@link #hodnota() hodnota}, ktorá
+	 * vykonáva pasívne čítanie hodnôt radu. Ak je pri vzostupnom smere zmien
+	 * hodnôt prekročená horná hranica, tak je hodnota upravená späť do
+	 * rozmedzia hraníc a smer zmien hodnôt je prevrátený. Podobne to je pri
+	 * klesajúcom smere a prekročení spodnej hranice.</p>
 	 * 
 	 * @return aktuálna hodnota radu s posunom na nasledujúcu (čiže každé
 	 *     ďalšie volanie tejto metódy vráti ďalšiu hodnotu radu)
@@ -631,7 +632,7 @@ public class Rad
 
 	/**
 	 * <p>Pasívne prečítanie aktuálnej hodnoty radu. Pri pasívnom čítaní
-	 * sa okrem vrátenia hodnoty nedejú žiadne iné akcie. Pozri meódu
+	 * sa okrem vrátenia hodnoty nedejú žiadne iné akcie. Pozri metódu
 	 * {@link #daj() daj}, ktorá vykonáva aktívne čítanie hodnôt radu.</p>
 	 * 
 	 * @return aktuálna hodnota radu

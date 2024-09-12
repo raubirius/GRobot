@@ -5780,7 +5780,7 @@ public class SVGPodpora
 	 * je to pri tvaroch. Počas čítania SVG súboru sú medzi vymedzenia
 	 * automaticky zaraďované napríklad lineárne alebo radiálne gradienty.
 	 * (Tie sa potom dajú identifikovať prostredníctvom atribútu {@code id},
-	 * ale metódy {@link #náterVýplne(int) náterVýplne}.a {@link 
+	 * ale metódy {@link #náterVýplne(int) náterVýplne} a {@link 
 	 * #náterČiary(int) náterČiary} ich vyhľadávajú automaticky.)</p>
 	 * 
 	 * <p>Keďže vymedzenie môže byť objekt ľubovoľného typu, musí byť po

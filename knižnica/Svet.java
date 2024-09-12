@@ -12244,7 +12244,7 @@ public final class Svet extends JFrame
 		 * nastavení sveta naraz.</p>
 		 * 
 		 * <p>Zoznam reťazcov {@code nastavenia} môže obsahovať ľubovoľný počet
-		 * z nasledujúcich nastavení:</p>
+		 * z nasledujúcich nastavení (predvolene sú všetky zapnuté):</p>
 		 * 
 		 * <table class="shadedTable innerHorizontalLines">
 		 * 
@@ -12297,7 +12297,10 @@ public final class Svet extends JFrame
 		 * 		<td>{@code srg"nepoužiKonfiguráciu"}</td><td>vypne</td>
 		 * 		<td rowspan=2>vykonanie príkazu
 		 * 		{@link Svet Svet}{@code .}{@link #použiKonfiguráciu(String, int, int, int, int) použiKonfiguráciu}{@code (…)}
-		 * 		po vyhodnotení všetkých konfiguračných direktív s predvoleným názvom súboru.</td>
+		 * 		po vyhodnotení všetkých konfiguračných direktív.
+		 * 		(Vypnutie vymaže prípadne skôr zadaný názov konfiguračného
+		 * 		súboru a opätovné zapnutie potom názov súboru zresetuje na
+		 * 		predvolený.)</td>
 		 * 	</tr>
 		 * 	<tr>
 		 * 		<td>{@code srg"použiKonfiguráciu"}</td><td>zapne</td>
@@ -12407,7 +12410,10 @@ public final class Svet extends JFrame
 		 * 
 		 * 	<tr>
 		 * 		<td>{@code srg"vypniVšetko"}</td><td>vypne</td>
-		 * 		<td rowspan=2>všetky (vyššie vymenované) direktívy.</td>
+		 * 		<td rowspan=2>všetky (vyššie vymenované) direktívy.
+		 * 		(V kontexte ukladania konfigurácie vypnutie vymaže prípadne
+		 * 		skôr zadaný názov konfiguračného súboru a opätovné zapnutie
+		 * 		názov súboru zresetuje na predvolený.)</td>
 		 * 	</tr>
 		 * 	<tr>
 		 * 		<td>{@code srg"zapniVšetko"}</td><td>zapne</td>
@@ -12416,7 +12422,10 @@ public final class Svet extends JFrame
 		 * </table>
 		 * 
 		 * <p>Nastavenia sú vyhodnocované sekvenčne. Neskoršie uvedené menia
-		 * platnosť skôr uvedených.</p>
+		 * platnosť skôr uvedených. Všetky prepínače sú implementované ako
+		 * booleovské hodnoty, okrem ukladania konfigurácie, ktorá je
+		 * realizovaná nastavovaním alebo mazaním názvu konfiguračného súboru
+		 * (bez ktorého by ukladanie konfigurácie ani nemalo zmysel).</p>
 		 * 
 		 * @param nastavenia reťazcový zoznam konfiguračných direktív
 		 */
