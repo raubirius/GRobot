@@ -26812,6 +26812,13 @@ public final class Svet extends JFrame
 		 * pasitivy} robotov, {@linkplain #nespi() kofeín,} samotné reakcie
 		 * na {@linkplain ObsluhaUdalostí#tik() tik,} prípadne ďalšie.</p>
 		 * 
+		 * <p><b>Príklad:</b> Hodnota násobiča {@code num2} spôsobí, že všetky
+		 * aktivity vykonávané v rámci jedného tiku časovača budú vykonané pri
+		 * každom tiku dvakrát za sebou. Takže ak je časovač využívaný
+		 * napríklad na riadenie (regulovanie) simulácie, tak sa simulácia
+		 * zdanlivo (to totiž závisí od výpočtových nárokov a výpočtového
+		 * výkonu) urýchli (na dvojnásobok).</p>
+		 * 
 		 * <p class="attention"><b>Upozornenie:</b> Príliš veľké hodnoty
 		 * násobiča preťažia systém.</p>
 		 * 
@@ -26890,7 +26897,8 @@ public final class Svet extends JFrame
 		 * <p>Uvedie časovač do „režimu spánku.“ Keď časovač spí, preskakuje
 		 * tiky, čiže sa zdá, ako keby nefungoval. Tento režim je veľmi
 		 * užitočné zapnúť počas inicializácie aplikácie. Zabráni sa tým
-		 * neželanému predčasnému spúšťaniu časovača v období, keď ešte nie
+		 * neželanému predčasnému spúšťaniu časovača (respektíve vykonávaniu
+		 * jeho tikov aj keby bol spustený) v období, keď ešte nie
 		 * sú všetky objekty korektne inicializované, čo by s vysokou
 		 * pravdepodobnosťou viedlo ku vzniku chýb.</p>
 		 * 
