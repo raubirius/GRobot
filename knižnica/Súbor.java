@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2024 by Roman Horváth
+ // Copyright © 2010 – 2025 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -6731,6 +6731,9 @@ public class Súbor implements Closeable
 			vlastnostiPrečítané = false;
 			čítamVlastnosti = false;
 		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #vymažVlastnosti() vymažVlastnosti}.</p> */
+		public void vymazVlastnosti() { vymažVlastnosti(); }
 
 		/**
 		 * <p>Odstráni zo súboru záznam o vlastnosti so zadaným menom. Použitie

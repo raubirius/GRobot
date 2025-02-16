@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2024 by Roman Horváth
+ // Copyright © 2010 – 2025 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -578,6 +578,15 @@ public class Zoznam<Typ> extends Vector<Typ>
 	 * Vnútorné počítadlo používa a nastavuje aj mnoho iných metód triedy
 	 * {@link Zoznam Zoznam}.</p>
 	 * 
+	 * <p class="attention"><b>Upozornenie:</b> Návratovú hodnotu tejto
+	 * metódy nie je bezpečné používať s metódami, ktoré nie sú primárne
+	 * určené na prácu s počítadlom. Napríklad s metódou s parametrom:
+	 * {@link #daj(int) daj}{@code (kde)} (alebo niektorým z jej mnohých
+	 * aliasov), ktorá nekontroluje a nekoriguje hodnotu svojho parametra.
+	 * Namiesto toho je bezpečné použiť metódu bez parametra: {@link #daj()
+	 * daj}{@code ()} (alebo niektorý z jej mnohých aliasov), ktorá vnútorne
+	 * overuje (a koriguje) aktuálnu hodnotu počítadla (pozri jej opis).</p>
+	 * 
 	 * @return hodnota vnútorného počítadla
 	 */
 	public int počítadlo() { return index; }
@@ -668,12 +677,15 @@ public class Zoznam<Typ> extends Vector<Typ>
 
 
 	/**
-	 * <p>Vráti prvok na zadanej pozícii v zozname. Poloha musí byť číslo
-	 * väčšie alebo rovné nule a menšie než veľkosť zoznamu.</p>
+	 * <p>Vráti prvok na zadanej pozícii v zozname. Poloha ({@code kde}) musí
+	 * byť číslo väčšie alebo rovné nule a menšie než veľkosť zoznamu, inak
+	 * vznikne výnimka.</p>
 	 * 
 	 * @param kde poloha prvku v zozname – poradové číslo väčšie alebo
 	 *     rovné nule a menšie než veľkosť zoznamu
 	 * @return prvok zoznamu
+	 * @throws ArrayIndexOutOfBoundsException ak je poloha ({@code kde})
+	 *     menšia ako nula alebo väčšia alebo rovná veľkosti zoznamu
 	 */
 	public Typ daj(int kde) { return elementAt(kde); }
 
@@ -697,6 +709,19 @@ public class Zoznam<Typ> extends Vector<Typ>
 	 * alebo rovná dĺžke zoznamu, vráti prvý prvok zoznamu (opäť
 	 * v prípade, že zoznam nie je prázdny, pretože v takom prípade
 	 * metóda vrhá výnimku).</p>
+	 * 
+	 * <p>Celý algoritmus tejto metódy vieme zhrnúť do nasledujúcich
+	 * bodov:</p>
+	 * 
+	 * <ul>
+	 * 	<li>Ak je zoznam prázdny, tak vrhni výnimku
+	 * 	{@link NoSuchElementException}.</li>
+	 * 	<li>Ak je hodnota počítadla väčšia alebo rovná ako veľkosť zoznamu,
+	 * 	tak vráť prvý prvok zoznamu.</li>
+	 * 	<li>Ak je hodnota počítadla menšia ako nula, tak vráť posledný prvok
+	 * 	zoznamu.</li>
+	 * 	<li>Inak vráť prvok na hodnote počítadla.</li>
+	 * </ul>
 	 * 
 	 * @return prvok zoznamu
 	 * @throws NoSuchElementException

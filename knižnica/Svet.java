@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2024 by Roman Horváth
+ // Copyright © 2010 – 2025 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -547,6 +547,8 @@ public final class Svet extends JFrame
 						počiatočnéX == svet.getLocation().x &&
 						počiatočnéY == svet.getLocation().y &&
 						počiatočnýStav == svet.getExtendedState() &&
+						(!ukladajStavOknaNaVrchu ||
+							počiatočnýStavNaVrchu == svet.isAlwaysOnTop()) &&
 						(null == ObsluhaUdalostí.počúvadlo ||
 							(!ObsluhaUdalostí.počúvadlo.konfiguráciaZmenená() &&
 							!ObsluhaUdalostí.počúvadlo.konfiguraciaZmenena())))
@@ -642,6 +644,10 @@ public final class Svet extends JFrame
 							// ‼ Zmrzne:
 							// ‼ if (0 != (stav & MAXIMIZED_BOTH))
 							// ‼ 	svet.setExtendedState(stav & ~MAXIMIZED_BOTH);
+
+							if (ukladajStavOknaNaVrchu)
+								konfiguračnýSúbor.zapíšVlastnosť(
+									"vždyNaVrchu", svet.isAlwaysOnTop());
 						}
 						catch (Exception e)
 						{ GRobotException.vypíšChybovéHlásenia(e); }
@@ -879,6 +885,7 @@ public final class Svet extends JFrame
 				private static int počiatočnéX = 25;
 				private static int počiatočnéY = 25;
 				private static int počiatočnýStav = NORMAL;
+				private static boolean počiatočnýStavNaVrchu = false;
 
 				private static int poslednáŠírka = 600;
 				private static int poslednáVýška = 500;
@@ -1188,10 +1195,8 @@ public final class Svet extends JFrame
 
 			// Prvky používané v zadávacích komunikačných dialógoch.
 
-				private final static RobotTextField textovýRiadok =
-					new RobotTextField();
-				private final static RobotPasswordField riadokSHeslom =
-					new RobotPasswordField();
+				private static RobotTextField textovýRiadok = null;
+				private static RobotPasswordField riadokSHeslom = null;
 				/*packagePrivate*/ final static Object[] odpovedeZadania =
 					{"OK", "Zrušiť"};
 				/*packagePrivate*/ static Object[] mojeOdpovede = null;
@@ -1513,6 +1518,18 @@ public final class Svet extends JFrame
 			 */
 			public static boolean zmenaLAF = true;
 
+			/**
+			 * <p>Tento rezervovaný atribút je predvolene nastavený na
+			 * {@code valfalse}. Vtedy rámec pri ukladaní {@linkplain 
+			 * Svet#použiKonfiguráciu(String) konfigurácie} (po ukončení
+			 * aplikácie) neberie do úvahy aktuálny stav príznaku okna
+			 * {@linkplain #setAlwaysOnTop(boolean) „vždy na vrchu“ (always
+			 * on top).} Keď je však atribút pred ukončením aplikácie
+			 * nastavený na {@code valtrue} rámec uloží aktuálny stav
+			 * príznaku okna do konfigurácie.</p>
+			 */
+			public static boolean ukladajStavOknaNaVrchu = false;
+
 			/*packagePrivate*/ static void inicializujGrafiku()
 			{
 				if (inicializované) return;
@@ -1756,6 +1773,9 @@ public final class Svet extends JFrame
 
 				if (NORMAL != počiatočnýStav)
 					svet.setExtendedState(počiatočnýStav);
+
+				if (počiatočnýStavNaVrchu)
+					svet.setAlwaysOnTop(true);
 
 				Svet.predvolenáFarbaPozadia();
 				Svet.zalamujTexty();
@@ -12035,6 +12055,9 @@ public final class Svet extends JFrame
 					if (konfiguračnýSúbor.čítajVlastnosť(
 						"maximalizované", false))
 						počiatočnýStav |= MAXIMIZED_BOTH;
+
+					if (konfiguračnýSúbor.čítajVlastnosť("vždyNaVrchu",
+						false)) počiatočnýStavNaVrchu = true;
 				}
 				catch (Exception e)
 				{ GRobotException.vypíšChybovéHlásenia(e); }
@@ -15473,6 +15496,8 @@ public final class Svet extends JFrame
 		 */
 		public static String zadajReťazec(String výzva, String titulok)
 		{
+			if (null == textovýRiadok) textovýRiadok = new RobotTextField();
+
 			String reťazec = null;
 			Object[] výzvaATextovýRiadok = {výzva, textovýRiadok};
 			textovýRiadok.setText("");
@@ -15548,6 +15573,8 @@ public final class Svet extends JFrame
 		 */
 		public static String zadajHeslo(String výzva, String titulok)
 		{
+			if (null == riadokSHeslom) riadokSHeslom = new RobotPasswordField();
+
 			String heslo = null;
 			Object[] výzvaAHeslo = {výzva, riadokSHeslom};
 			riadokSHeslom.setText("");
@@ -15849,6 +15876,8 @@ public final class Svet extends JFrame
 		public static String upravReťazec(String reťazec,
 			String výzva, String titulok)
 		{
+			if (null == textovýRiadok) textovýRiadok = new RobotTextField();
+
 			Object[] výzvaATextovýRiadok = {výzva, textovýRiadok};
 			textovýRiadok.setText(reťazec);
 
@@ -16311,7 +16340,18 @@ public final class Svet extends JFrame
 		 * tlačidiel vytvorený podľa všetkých položiek dotknutého údajového
 		 * typu, pričom zadaná hodnota bude použitá na určenie aktuálne
 		 * zvoleného rádiového tlačidla (aktuálne zvolenej hodnoty v rámci
-		 * skupiny týchto tlačidiel),</li>
+		 * skupiny týchto tlačidiel),
+		 * <ul style="padding:8px 0px 8px 16px"><li><small><b>pozn.:</b>
+		 * texty položiek sú vytvárané automaticky pravidlami definovanými
+		 * statickými inštanciami pomocnej triedy
+		 * {@code knižnica.podpora.EnumRadioPanel.ConvertString},
+		 * ktoré sú použiteľné v statickom atribúte
+		 * {@code knižnica.podpora.EnumRadioPanel.convertString},
+		 * prípadne z výstupov metód inštancií prvkov enumerácie
+		 * {@link Enum Enum}.{@link Enum#toString() toString}{@code ()},
+		 * z ktorých aspoň jeden musí byť rôzny od mena elementu enumerácie
+		 * (inak bude použitý vyššie spomenutý mechanizmus automatickej
+		 * konverzie),</small></li></ul></li>
 		 * 
 		 * <!--
 		 * ✓ Doplniť možnosť vloženia Vectora/Zoznamu fungujúceho podobne ako

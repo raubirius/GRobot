@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2024 by Roman Horváth
+ // Copyright © 2010 – 2025 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -4960,6 +4960,8 @@ Toto bolo presunuté na úvodnú stránku:
 				double pootočenieTvaru_Záloha = robot.pootočenieTvaru;
 
 
+				try {
+
 				robot.aktívnePlátno = null;
 				robot.obrázokAktívnehoPlátna = obrázok;
 				robot.grafikaAktívnehoPlátna = grafika;
@@ -4982,6 +4984,7 @@ Toto bolo presunuté na úvodnú stránku:
 				tvar.kresli(robot);
 				robot.kreslímVlastnýTvar = false;
 
+				} finally {
 
 				robot.aktívnePlátno = aktívnePlátno_Záloha;
 				robot.obrázokAktívnehoPlátna = obrázokAktívnehoPlátna_Záloha;
@@ -5033,6 +5036,7 @@ Toto bolo presunuté na úvodnú stránku:
 				robot.pootočenieTvaru = pootočenieTvaru_Záloha;
 
 				robot.spôsobKreslenia = spôsobKreslenia_Záloha;
+				}
 			}
 
 			/*packagePrivate*/ void kresliSpojnice(

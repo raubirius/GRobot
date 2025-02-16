@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2024 by Roman Horváth
+ // Copyright © 2010 – 2025 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -144,6 +144,18 @@ public class Okno
 	private int počiatočnéX = 25;
 	private int počiatočnéY = 75;
 	private int počiatočnýStav = NORMAL;
+	private boolean počiatočnýStavNaVrchu = false;
+
+	/**
+	 * <p>Tento rezervovaný atribút je predvolene nastavený na
+	 * {@code valfalse}. Vtedy rámec pri ukladaní {@linkplain 
+	 * Svet#použiKonfiguráciu(String) konfigurácie} (po ukončení aplikácie)
+	 * neberie do úvahy aktuálny stav príznaku okna {@linkplain 
+	 * #setAlwaysOnTop(boolean) „vždy na vrchu“ (always on top).} Keď je
+	 * však atribút pred ukončením aplikácie nastavený na {@code valtrue},
+	 * tak rámec uloží aktuálny stav príznaku okna do konfigurácie.</p>
+	 */
+	public boolean ukladajStavOknaNaVrchu = false;
 
 	// Tieto atribúty sú upravované pri zmene veľkosti a polohy okna a sú
 	// použité pri zápise konfigurácie:
@@ -527,6 +539,9 @@ public class Okno
 		if (NORMAL != počiatočnýStav)
 			okno.setExtendedState(počiatočnýStav);
 
+		if (počiatočnýStavNaVrchu)
+			okno.setAlwaysOnTop(true);
+
 		// TODO: del?
 		// 
 		// // Aby sa dala klávesnica použiť hneď:
@@ -549,7 +564,9 @@ public class Okno
 			počiatočnáVýška != okno.getHeight() ||
 			počiatočnéX != okno.getLocation().x ||
 			počiatočnéY != okno.getLocation().y ||
-			počiatočnýStav != okno.getExtendedState();
+			počiatočnýStav != okno.getExtendedState() ||
+			(ukladajStavOknaNaVrchu &&
+				počiatočnýStavNaVrchu != okno.isAlwaysOnTop());
 	}
 
 	// Toto je použité pri zapisovaní konfigurácie sveta. (Ak bol zmenený
@@ -714,6 +731,9 @@ public class Okno
 				if (Svet.konfiguračnýSúbor.čítajVlastnosť(
 					"maximalizované", false))
 					počiatočnýStav |= MAXIMIZED_BOTH;
+
+				if (Svet.konfiguračnýSúbor.čítajVlastnosť("vždyNaVrchu",
+					false)) počiatočnýStavNaVrchu = true;
 
 				return true;
 			}
