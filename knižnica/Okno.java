@@ -151,7 +151,7 @@ public class Okno
 	 * {@code valfalse}. Vtedy rámec pri ukladaní {@linkplain 
 	 * Svet#použiKonfiguráciu(String) konfigurácie} (po ukončení aplikácie)
 	 * neberie do úvahy aktuálny stav príznaku okna {@linkplain 
-	 * #setAlwaysOnTop(boolean) „vždy na vrchu“ (always on top).} Keď je
+	 * JFrame#setAlwaysOnTop(boolean) „vždy na vrchu“ (always on top).} Keď je
 	 * však atribút pred ukončením aplikácie nastavený na {@code valtrue},
 	 * tak rámec uloží aktuálny stav príznaku okna do konfigurácie.</p>
 	 */

@@ -20868,7 +20868,14 @@ Toto bolo presunuté na úvodnú stránku:
 							else return true;
 						}
 
-						choďNa(cieľX, cieľY);
+						// (‼) Tušil som, že toto tu nemám robiť, ale nemal som
+						// dostatočne pádne zdôvodnenie. Až pri jednej hre, kedy
+						// ťahanie myšou malo nastavovať cieľ a ono to zrazu
+						// začalo ťahať postavičku krížom krážom po mape, cez
+						// steny a nedalo sa tomu nijako zabrániť.
+						// 
+						// choďNa(cieľX, cieľY);
+
 						cieľAktívny = false;
 						if (zastavVCieli)
 						{
@@ -20909,6 +20916,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * omnoho neskôr) je pri smerovaní do cieľa <b>úplne
 				 * ignorovaná.</b></p>
 				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
+				 * 
 				 * @param x x-ová súradnica cieľa
 				 * @param y y-ová súradnica cieľa
 				 */
@@ -20933,6 +20950,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * double) cieľ(x, y)} (pozri jej opis), ibaže umožňuje
 				 * programátorovi určiť, či smie byť robot automaticky
 				 * {@linkplain #spusti() spustený} (aktivovaný).</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
 				 * 
 				 * @param x x-ová súradnica cieľa
 				 * @param y y-ová súradnica cieľa
@@ -20966,6 +20993,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * programátorovi určiť, či smie byť robot automaticky
 				 * {@linkplain #spusti() spustený} (aktivovaný) a či má
 				 * zastaviť po dosiahnutí cieľa.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
 				 * 
 				 * @param x x-ová súradnica cieľa
 				 * @param y y-ová súradnica cieľa
@@ -21020,6 +21057,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * omnoho neskôr) je pri smerovaní do cieľa <b>úplne
 				 * ignorovaná.</b></p>
 				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
+				 * 
 				 * @param objekt objekt, ktorého poloha v čase volania tejto
 				 *     metódy je zvolená za nový cieľ; ak je {@code valnull},
 				 *     smerovanie do cieľa je {@linkplain #zrušCieľ()
@@ -21053,6 +21100,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * cieľ(Poloha)} (pozri jej opis), ibaže umožňuje
 				 * programátorovi určiť, či smie byť tento robot automaticky
 				 * {@linkplain #spusti() spustený} (aktivovaný).</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
 				 * 
 				 * @param objekt objekt, ktorého poloha v čase volania tejto
 				 *     metódy je zvolená za nový cieľ; ak je {@code valnull},
@@ -21095,6 +21152,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * programátorovi určiť, či smie byť tento robot automaticky
 				 * {@linkplain #spusti() spustený} (aktivovaný) a či má
 				 * zastaviť po dosiahnutí cieľa.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
 				 * 
 				 * @param objekt objekt, ktorého poloha v čase volania tejto
 				 *     metódy je zvolená za nový cieľ; ak je {@code valnull},
@@ -21156,6 +21223,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * stredu: vezme sa obdĺžnik tesne ohraničujúci útvar a určí
 				 * sa jeho stred – čiže „stred hraníc.“</small></p>
 				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
+				 * 
 				 * @param tvar tvar, ktorého stred hraníc je zvolený za nový
 				 *     cieľ; ak je {@code valnull}, smerovanie do cieľa je
 				 *     {@linkplain #zrušCieľ() zrušené}
@@ -21191,6 +21268,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * cieľ(tvar)} (pozri jej opis), ibaže umožňuje programátorovi
 				 * určiť, či smie byť robot automaticky {@linkplain #spusti()
 				 * spustený} (aktivovaný).</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
 				 * 
 				 * @param tvar tvar, ktorého stred hraníc je zvolený za nový
 				 *     cieľ; ak je {@code valnull}, smerovanie do cieľa je
@@ -21235,6 +21322,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * určiť, či smie byť robot automaticky {@linkplain #spusti()
 				 * spustený} (aktivovaný) a či má zastaviť po dosiahnutí
 				 * cieľa.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
 				 * 
 				 * @param tvar tvar, ktorého stred hraníc je zvolený za nový
 				 *     cieľ; ak je {@code valnull}, smerovanie do cieľa je
@@ -21386,6 +21483,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * pridaná do programovacieho rámca omnoho neskôr) je pri
 				 * smerovaní do cieľa <b>úplne ignorovaná.</b></p>
 				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
+				 * 
 				 * @param x nová x-ová súradnica cieľa
 				 * @param y nová y-ová súradnica cieľa
 				 */
@@ -21420,6 +21527,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * (ktorá bola v porovnaní s vlastnosťou smerovania do cieľa
 				 * pridaná do programovacieho rámca omnoho neskôr) je pri
 				 * smerovaní do cieľa <b>úplne ignorovaná.</b></p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
 				 * 
 				 * @param x nová x-ová súradnica cieľa
 				 * @param y nová y-ová súradnica cieľa
@@ -21462,6 +21579,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * pridaná do programovacieho rámca omnoho neskôr) je pri
 				 * smerovaní do cieľa <b>úplne ignorovaná.</b></p>
 				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
+				 * 
 				 * @param objekt objekt, ktorého poloha bude použitá ako
 				 *     nový cieľ
 				 */
@@ -21496,6 +21623,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * (ktorá bola v porovnaní s vlastnosťou smerovania do cieľa
 				 * pridaná do programovacieho rámca omnoho neskôr) je pri
 				 * smerovaní do cieľa <b>úplne ignorovaná.</b></p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
 				 * 
 				 * @param objekt objekt, ktorého poloha bude použitá ako nový
 				 *     cieľ
@@ -21540,6 +21677,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * pridaná do programovacieho rámca omnoho neskôr) je pri
 				 * smerovaní do cieľa <b>úplne ignorovaná.</b></p>
 				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
+				 * 
 				 * @param tvar tvar, ktorého súradnice stredu hraníc budú
 				 *     použité ako nový cieľ
 				 */
@@ -21583,6 +21730,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * (ktorá bola v porovnaní s vlastnosťou smerovania do cieľa
 				 * pridaná do programovacieho rámca omnoho neskôr) je pri
 				 * smerovaní do cieľa <b>úplne ignorovaná.</b></p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
 				 * 
 				 * @param tvar tvar, ktorého súradnice stredu hraníc budú
 				 *     použité ako nový cieľ
@@ -21722,6 +21879,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * prípadoch môže byť užitočné ignorovať to, či je cieľ
 				 * aktívny, alebo nie.</p>
 				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
+				 * 
 				 * @see #skočNaCieľ()
 				 */
 				public void choďNaCieľ()
@@ -21788,6 +21955,16 @@ Toto bolo presunuté na úvodnú stránku:
 				 * činnosť nie je vykonaná automaticky, pretože v niektorých
 				 * prípadoch môže byť užitočné ignorovať to, či je cieľ
 				 * aktívny, alebo nie.</p>
+				 * 
+				 * <p class="remark"><b>Poznámka:</b> Od verzie 2.23 je
+				 * upravené správanie príchodu do cieľa tak, aby robot
+				 * zastavil vtedy, keď je cieľ na dosah jeho rýchlosti. Ak je
+				 * potrebné, aby cieľ dosiahol presne, treba to zariadiť
+				 * ručne v reakcii {@link #dosiahnutieCieľa()
+				 * dosiahnutieCieľa}. (Napríklad volaním metódy {@link 
+				 * #choďNaCieľ() choďNaCieľ} alebo {@link #skočNaCieľ()
+				 * skočNaCieľ}, prípadne konštrukciou: <code>choďNa(cieľX(),
+				 * cieľY());</code>)</p>
 				 * 
 				 * @see #choďNaCieľ()
 				 */
