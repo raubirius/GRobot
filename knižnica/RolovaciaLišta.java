@@ -184,6 +184,9 @@ import static knižnica.Konštanty.VODOROVNÁ;
 @SuppressWarnings("serial")
 public class RolovaciaLišta extends JScrollBar implements Poloha
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Pozri aj:
 	// (https://docs.oracle.com/javase/8/docs/api/javax/swing/plaf/ScrollBarUI.html)
 	// https://docs.oracle.com/javase/8/docs/api/javax/swing/JScrollBar.html
@@ -1235,4 +1238,7 @@ public class RolovaciaLišta extends JScrollBar implements Poloha
 		if (predŠtartom) return zobrazPriŠtarte;
 		else return super.isVisible();
 	}
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

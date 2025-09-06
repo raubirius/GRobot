@@ -634,6 +634,9 @@ import knižnica.podpora.RandomGenerator;
  */
 public class Vlnenie
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Zoznam vlnení – na účely udržania ich aktivity
 	/*packagePrivate*/ final static Vector<Vlnenie> vlnenia = new Vector<>();
 
@@ -4979,4 +4982,7 @@ public class Vlnenie
 
 	/** <p><a class="alias"></a> Alias pre {@link #zvlnenýRaster() zvlnenýRaster}.</p> */
 	public BufferedImage zvlnenyRaster() { return zvlnenýRaster(); }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

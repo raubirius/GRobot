@@ -617,6 +617,9 @@ import java.awt.geom.Rectangle2D;
  */
 public class Oblasť extends Area implements Poloha
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Pozri aj: https://docs.oracle.com/javase/8/docs/api/java/awt/geom/Area.html
 
 	// Obojstranná previazanosť – robot si zase pamätá „zamestnanýPre“
@@ -1368,4 +1371,7 @@ public class Oblasť extends Area implements Poloha
 
 	/** <p><a class="alias"></a> Alias pre {@link #výška() výška}.</p> */
 	public double vyska() { return getBounds2D().getHeight(); }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

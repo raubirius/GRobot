@@ -111,6 +111,9 @@ import static javax.swing.text.StyleConstants.ALIGN_RIGHT;
 @SuppressWarnings("serial")
 public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	/**
 	 * <p>Hodnota konštanty zarovnania odseku na stred. Pozri metódu
 	 * {@link #zarovnať(int) zarovnať}.</p>
@@ -3325,4 +3328,7 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	 * @return komponent rolovania {@link JScrollPane JScrollPane}
 	 */
 	public JScrollPane rolovanie() { return rolovanie; }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

@@ -293,6 +293,9 @@ import java.util.Vector;
  */
 public abstract class Tlač implements Printable, Pageable
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	/**
 	 * <p>Konštanta, násobenie ktorou prepočíta palce na tlačové body.</p>
 	 * 
@@ -1853,4 +1856,7 @@ public abstract class Tlač implements Printable, Pageable
 	/** <p><a class="alias"></a> Alias pre {@link #tlačDialógom(String) tlačDialógom}.</p> */
 	public boolean tlacDialogom(String názovDokumentu)
 	{ return tlačDialógom(názovDokumentu); }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

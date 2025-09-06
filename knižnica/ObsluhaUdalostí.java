@@ -355,6 +355,9 @@ import static knižnica.Konštanty.VYKONAŤ_PRÍKAZ;
  */
 public class ObsluhaUdalostí
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// TODO? (predbežne zavrhnuté)
 	/*
 		Definovať alternatívne obsluhy udalostí ku všetkým jestvujúcim
@@ -2095,4 +2098,7 @@ public class ObsluhaUdalostí
 		if (VYKONAŤ_PRÍKAZ == správa) return true;
 		return false;
 	}
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

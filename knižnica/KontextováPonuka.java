@@ -135,6 +135,9 @@ import javax.swing.SwingConstants;
 @SuppressWarnings("serial")
 public class KontextováPonuka extends JPopupMenu
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Popis…
 	private String pôvodnýPopis = null;
 	private final JLabel popis;
@@ -396,4 +399,7 @@ public class KontextováPonuka extends JPopupMenu
 	 * @see #popis()
 	 */
 	@Override public String getLabel() { return pôvodnýPopis; }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

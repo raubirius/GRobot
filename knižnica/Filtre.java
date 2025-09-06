@@ -232,6 +232,9 @@ import java.util.regex.Pattern;
 @SuppressWarnings("serial")
 public class Filtre extends Zoznam<Filtre.Filter>
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	/**
 	 * <p>Táto vnorená trieda je trieda prvkov zoznamu triedy {@link Filtre
 	 * Filtre} a zároveň môže slúžiť na sprostredkovanie jednoduchších úkonov
@@ -927,4 +930,7 @@ public class Filtre extends Zoznam<Filtre.Filter>
 
 	/** <p><a class="alias"></a> Alias pre {@link #použi(String) použi}.</p> */
 	public String pouzi(String reťazec) { return použi(reťazec); }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

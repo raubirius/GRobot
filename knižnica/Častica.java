@@ -232,6 +232,9 @@ package knižnica;
  */
 public class Častica implements Poloha, Smer, Rozmer
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	/**
 	 * <p>Atribút súradnice x polohy častice.</p>
 	 */
@@ -609,4 +612,7 @@ public class Častica implements Poloha, Smer, Rozmer
 	 * všetkých odvodených tried.</p>
 	 */
 	public void pasivita() {}
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

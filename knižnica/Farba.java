@@ -212,6 +212,9 @@ public class Farba extends Color implements Comparable<Color>
 // Farba nesmie byt implementáciou farebnosti, inak by vznikali konflikty
 // medzi metódami xyz(Color) a xyz(Farebnosť)!
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Pozri aj: https://docs.oracle.com/javase/8/docs/api/java/awt/Color.html
 	// Pozri aj: https://docs.oracle.com/javase/8/docs/api/java/awt/color/ColorSpace.html
 
@@ -2734,4 +2737,7 @@ public class Farba extends Color implements Comparable<Color>
 	 */
 	public int compareTo(Color ináFarba)
 	{ return getRGB() - ináFarba.getRGB(); }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

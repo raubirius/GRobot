@@ -314,6 +314,9 @@ import static knižnica.Konštanty.ZÁPIS_GIF_ANIMÁCIE;
  */
 public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Atribúty súvisiace s čítaním obrázkov zo súborov:
 
 		/*packagePrivate*/ static String priečinokObrázkov = "";
@@ -1946,6 +1949,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 				{
 					if (1 == i)
 					{
+						// Tu sa zisťuje počet súborov vyhovujúcich šablóne.
 						boolean našiel;
 
 						do
@@ -1963,9 +1967,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 									continue;
 								}
 							}
-							catch (Exception e)
-							{
-								// Ignorované…
+							catch (Exception e) { // Ignorované…
 							}
 
 							try
@@ -1976,9 +1978,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 									continue;
 								}
 							}
-							catch (Exception e)
-							{
-								// Ignorované…
+							catch (Exception e) { // Ignorované…
 							}
 
 							if (null != Súbor.nájdiZdroj(priečinokObrázkov +
@@ -2424,8 +2424,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 
 				if (i > 0)
 				{
-					// Ak mala prvá položka poradové číslo 1, tak je to zároveň
-					// prvá snímka animácie…
+					// Ak mala prvá položka poradové číslo 1, tak je to
+					// zároveň prvá snímka animácie…
 					novýObrázok.trvanie = 40;
 					novýObrázok.pridajĎalšiu(obrázokZPrúdu,
 						novýObrázok.trvanie);
@@ -2435,8 +2435,8 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 						menoPoložky = prefix + String.format(
 							Locale.ENGLISH, formát, ++i) + postfix;
 
-						// Potom sa číta sekvencia položiek archívu, dokedy sú
-						// nachádzané ďalšie a ďalšie položky:
+						// Potom sa číta sekvencia položiek archívu, dokedy
+						// sú nachádzané ďalšie a ďalšie položky:
 						try
 						{
 							čítanie = dajPrúdZArchívu(archív, menoPoložky);
@@ -10785,4 +10785,7 @@ public class Obrázok extends BufferedImage implements Priehľadnosť, Rozmer
 				}
 			}
 		}
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

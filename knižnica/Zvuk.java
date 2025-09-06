@@ -106,6 +106,9 @@ import knižnica.podpora.BeepChannel;
  */
 public class Zvuk
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Užitočné zdroje informácií:
 	// 
 	//  http://www.jsresources.org/faq_audio.html
@@ -968,4 +971,7 @@ public class Zvuk
 
 	/** <p><a class="alias"></a> Alias pre {@link #váha(double) váha}.</p> */
 	public void vaha(double miera) { váha(miera); }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

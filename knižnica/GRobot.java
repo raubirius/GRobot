@@ -30,6 +30,7 @@
 package knižnica;
 
 import java.awt.AlphaComposite;
+import java.awt.AWTKeyStroke;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
@@ -38,6 +39,7 @@ import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.KeyboardFocusManager;
 import java.awt.Paint;
 import java.awt.Polygon;
 import java.awt.RadialGradientPaint;
@@ -74,6 +76,7 @@ import java.io.IOException;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -660,6 +663,9 @@ import static java.lang.Math.toRadians;
 public class GRobot implements Poloha, Smer, Rozmer, Farebnosť, Priehľadnosť,
 	Konštanty
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 /*
 Toto bolo presunuté na úvodnú stránku:
 
@@ -1016,6 +1022,11 @@ Toto bolo presunuté na úvodnú stránku:
 
 		// Úprava textu
 
+			// Prázdna množina klávesových skratiek na elimináciu predvolených
+			// „tab traversal keys“:
+			private final static Set<AWTKeyStroke> prázdnaMnožina =
+				Collections.emptySet();
+
 			@SuppressWarnings("serial")
 			/*packagePrivate*/ class UpravText extends JTextField
 			{
@@ -1089,6 +1100,10 @@ Toto bolo presunuté na úvodnú stránku:
 					setBorder(null);
 					setBackground(null);
 
+					setFocusTraversalKeys(KeyboardFocusManager.
+						FORWARD_TRAVERSAL_KEYS, prázdnaMnožina);
+					setFocusTraversalKeys(KeyboardFocusManager.
+						BACKWARD_TRAVERSAL_KEYS, prázdnaMnožina);
 					setFocusTraversalKeysEnabled(false);
 
 					addKeyListener(klávesStlačený);
@@ -3685,7 +3700,6 @@ Toto bolo presunuté na úvodnú stránku:
 					zoznamVrstiev = new TreeMap<>();
 
 
-
 	// ------------------------------- //
 	//  *** Rôzne súkromné metódy ***  //
 	// ------------------------------- //
@@ -4393,6 +4407,19 @@ Toto bolo presunuté na úvodnú stránku:
 			{
 				aktuálnyUhol = poslednýUhol;
 				poslednýUhol = zálohaPoslednéhoUhla;
+				aplikujGyroskop();
+			}
+
+			private void aplikujGyroskop()
+			{
+				if (null != gyroskop)
+				{
+					pootočenieTvaru = gyroskop - aktuálnyUhol;
+
+					pootočenieTvaru %= 360;
+					if (pootočenieTvaru < 0)
+						pootočenieTvaru += 360;
+				}
 			}
 
 
@@ -5989,6 +6016,7 @@ Toto bolo presunuté na úvodnú stránku:
 						skočNa(stavMimoHraníc[0].x += Δx,
 							stavMimoHraníc[0].y += Δy);
 						aktuálnyUhol = zálohaUhla; // môže ísť aj po oblúku
+						aplikujGyroskop();
 						mimoHraníc(); mimoHranic();
 					}
 				}
@@ -7884,7 +7912,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * @see #zdvihniPero()
 				 * @see #položPero()
 				 * @see #polohaPeraDoma() polohaPeraDoma
-				 * @see #kreslenieTvarovPovolené() kreslenieTvarovPovolené
+				 * @see #kreslímTvary() kreslímTvary
 				 */
 				public boolean polohaPera() { return peroPoložené; }
 
@@ -8881,15 +8909,25 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void uhol(double uhol)
 				{
-					zálohaPoslednéhoUhla = poslednýUhol;
-					poslednýUhol = aktuálnyUhol;
-					aktuálnyUhol = uhol;
-					aktuálnyUhol %= 360;
-					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-					if (!povoľZmenuUhla())
+					if (!kreslímVlastnýTvar)
 					{
-						vráťUhol();
-						return;
+						zálohaPoslednéhoUhla = poslednýUhol;
+						poslednýUhol = aktuálnyUhol;
+						aktuálnyUhol = uhol;
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						aplikujGyroskop();
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálnyUhol = uhol;
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
@@ -8907,15 +8945,25 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void smer(double uhol)
 				{
-					zálohaPoslednéhoUhla = poslednýUhol;
-					poslednýUhol = aktuálnyUhol;
-					aktuálnyUhol = uhol;
-					aktuálnyUhol %= 360;
-					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-					if (!povoľZmenuUhla())
+					if (!kreslímVlastnýTvar)
 					{
-						vráťUhol();
-						return;
+						zálohaPoslednéhoUhla = poslednýUhol;
+						poslednýUhol = aktuálnyUhol;
+						aktuálnyUhol = uhol;
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						aplikujGyroskop();
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálnyUhol = uhol;
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
@@ -8955,15 +9003,25 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void otoč(double uhol)
 				{
-					zálohaPoslednéhoUhla = poslednýUhol;
-					poslednýUhol = aktuálnyUhol;
-					aktuálnyUhol = uhol;
-					aktuálnyUhol %= 360;
-					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-					if (!povoľZmenuUhla())
+					if (!kreslímVlastnýTvar)
 					{
-						vráťUhol();
-						return;
+						zálohaPoslednéhoUhla = poslednýUhol;
+						poslednýUhol = aktuálnyUhol;
+						aktuálnyUhol = uhol;
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						aplikujGyroskop();
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálnyUhol = uhol;
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
@@ -8981,15 +9039,25 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void uhol(Smer objekt)
 				{
-					zálohaPoslednéhoUhla = poslednýUhol;
-					poslednýUhol = aktuálnyUhol;
-					aktuálnyUhol = objekt.uhol();
-					aktuálnyUhol %= 360;
-					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-					if (!povoľZmenuUhla())
+					if (!kreslímVlastnýTvar)
 					{
-						vráťUhol();
-						return;
+						zálohaPoslednéhoUhla = poslednýUhol;
+						poslednýUhol = aktuálnyUhol;
+						aktuálnyUhol = objekt.uhol();
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						aplikujGyroskop();
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálnyUhol = objekt.uhol();
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
@@ -9003,15 +9071,25 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void smer(Smer objekt)
 				{
-					zálohaPoslednéhoUhla = poslednýUhol;
-					poslednýUhol = aktuálnyUhol;
-					aktuálnyUhol = objekt.uhol();
-					aktuálnyUhol %= 360;
-					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-					if (!povoľZmenuUhla())
+					if (!kreslímVlastnýTvar)
 					{
-						vráťUhol();
-						return;
+						zálohaPoslednéhoUhla = poslednýUhol;
+						poslednýUhol = aktuálnyUhol;
+						aktuálnyUhol = objekt.uhol();
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						aplikujGyroskop();
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálnyUhol = objekt.uhol();
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
@@ -9613,6 +9691,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneX = domaX;
 						aktuálneY = domaY;
 						aktuálnyUhol = uholDoma;
+						aplikujGyroskop();
 						if (!povoľZmenuPolohy())
 						{
 							vráťPolohu();
@@ -9720,6 +9799,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneX = domaX;
 						aktuálneY = domaY;
 						aktuálnyUhol = novýUholDoma;
+						aplikujGyroskop();
 						if (!povoľZmenuPolohy())
 						{
 							vráťPolohu();
@@ -9830,6 +9910,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneX = domaX;
 						aktuálneY = domaY;
 						aktuálnyUhol = novýUholDoma;
+						aplikujGyroskop();
 						if (!povoľZmenuPolohy())
 						{
 							vráťPolohu();
@@ -9937,6 +10018,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneX = novéXDoma;
 						aktuálneY = novéYDoma;
 						aktuálnyUhol = uholDoma;
+						aplikujGyroskop();
 						if (!povoľZmenuPolohy())
 						{
 							vráťPolohu();
@@ -10050,6 +10132,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneX = novéXDoma;
 						aktuálneY = novéYDoma;
 						aktuálnyUhol = novýUholDoma;
+						aplikujGyroskop();
 						if (!povoľZmenuPolohy())
 						{
 							vráťPolohu();
@@ -10165,6 +10248,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneX = novéXDoma;
 						aktuálneY = novéYDoma;
 						aktuálnyUhol = novýUholDoma;
+						aplikujGyroskop();
 						if (!povoľZmenuPolohy())
 						{
 							vráťPolohu();
@@ -10274,6 +10358,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneX = nováPolohaDoma.polohaX();
 						aktuálneY = nováPolohaDoma.polohaY();
 						aktuálnyUhol = uholDoma;
+						aplikujGyroskop();
 						if (!povoľZmenuPolohy())
 						{
 							vráťPolohu();
@@ -10386,6 +10471,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneX = nováPolohaDoma.polohaX();
 						aktuálneY = nováPolohaDoma.polohaY();
 						aktuálnyUhol = novýUholDoma;
+						aplikujGyroskop();
 						if (!povoľZmenuPolohy())
 						{
 							vráťPolohu();
@@ -10500,6 +10586,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneX = nováPolohaDoma.polohaX();
 						aktuálneY = nováPolohaDoma.polohaY();
 						aktuálnyUhol = novýUholDoma;
+						aplikujGyroskop();
 						if (!povoľZmenuPolohy())
 						{
 							vráťPolohu();
@@ -10632,6 +10719,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneX = častica.polohaX();
 						aktuálneY = častica.polohaY();
 						aktuálnyUhol = novýUholDoma;
+						aplikujGyroskop();
 						if (!povoľZmenuPolohy())
 						{
 							vráťPolohu();
@@ -10755,6 +10843,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálneX = iný.domaX;
 						aktuálneY = iný.domaY;
 						aktuálnyUhol = iný.uholDoma;
+						aplikujGyroskop();
 						if (!povoľZmenuPolohy())
 						{
 							vráťPolohu();
@@ -14572,15 +14661,25 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void vpravo(double uhol)
 				{
-					zálohaPoslednéhoUhla = poslednýUhol;
-					poslednýUhol = aktuálnyUhol;
-					aktuálnyUhol -= uhol;
-					aktuálnyUhol %= 360;
-					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-					if (!povoľZmenuUhla())
+					if (!kreslímVlastnýTvar)
 					{
-						vráťUhol();
-						return;
+						zálohaPoslednéhoUhla = poslednýUhol;
+						poslednýUhol = aktuálnyUhol;
+						aktuálnyUhol -= uhol;
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						aplikujGyroskop();
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálnyUhol -= uhol;
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
@@ -14627,15 +14726,25 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void vľavo(double uhol)
 				{
-					zálohaPoslednéhoUhla = poslednýUhol;
-					poslednýUhol = aktuálnyUhol;
-					aktuálnyUhol += uhol;
-					aktuálnyUhol %= 360;
-					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-					if (!povoľZmenuUhla())
+					if (!kreslímVlastnýTvar)
 					{
-						vráťUhol();
-						return;
+						zálohaPoslednéhoUhla = poslednýUhol;
+						poslednýUhol = aktuálnyUhol;
+						aktuálnyUhol += uhol;
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						aplikujGyroskop();
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálnyUhol += uhol;
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
@@ -14916,15 +15025,25 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void otočO(double uhol)
 				{
-					zálohaPoslednéhoUhla = poslednýUhol;
-					poslednýUhol = aktuálnyUhol;
-					aktuálnyUhol += uhol;
-					aktuálnyUhol %= 360;
-					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-					if (!povoľZmenuUhla())
+					if (!kreslímVlastnýTvar)
 					{
-						vráťUhol();
-						return;
+						zálohaPoslednéhoUhla = poslednýUhol;
+						poslednýUhol = aktuálnyUhol;
+						aktuálnyUhol += uhol;
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						aplikujGyroskop();
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálnyUhol += uhol;
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
@@ -14961,16 +15080,25 @@ Toto bolo presunuté na úvodnú stránku:
 					if (uhol > 0 && uhol > najviacO) uhol = najviacO;
 					if (uhol < 0 && uhol < -najviacO) uhol = -najviacO;
 
-					zálohaPoslednéhoUhla = poslednýUhol;
-					poslednýUhol = aktuálnyUhol;
-					aktuálnyUhol += uhol;
-					aktuálnyUhol %= 360;
-					if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-
-					if (!povoľZmenuUhla())
+					if (!kreslímVlastnýTvar)
 					{
-						vráťUhol();
-						return;
+						zálohaPoslednéhoUhla = poslednýUhol;
+						poslednýUhol = aktuálnyUhol;
+						aktuálnyUhol += uhol;
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						aplikujGyroskop();
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálnyUhol += uhol;
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
 
 					if (viditeľný) Svet.automatickéPrekreslenie();
@@ -16089,15 +16217,23 @@ Toto bolo presunuté na úvodnú stránku:
 					if (Δx == 0 && Δy == 0) return;
 					else
 					{
-						zálohaPoslednéhoUhla = poslednýUhol;
-						poslednýUhol = aktuálnyUhol;
-						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
-						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-
-						if (!povoľZmenuUhla())
+						if (!kreslímVlastnýTvar)
 						{
-							vráťUhol();
-							return;
+							zálohaPoslednéhoUhla = poslednýUhol;
+							poslednýUhol = aktuálnyUhol;
+							aktuálnyUhol = toDegrees(atan2(Δy, Δx));
+							if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+							aplikujGyroskop();
+							if (!povoľZmenuUhla())
+							{
+								vráťUhol();
+								return;
+							}
+						}
+						else
+						{
+							aktuálnyUhol = toDegrees(atan2(Δy, Δx));;
+							if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 						}
 					}
 
@@ -16158,14 +16294,17 @@ Toto bolo presunuté na úvodnú stránku:
 				// 	if (Δx == 0 && Δy == 0) return;
 				// 	else
 				// 	{
+				// 		…
 				// 		poslednýUhol = aktuálnyUhol;
 				// 		aktuálnyUhol = toDegrees(atan2(Δy, Δx));
 				// 		if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+				// 		aplikujGyroskop();
 				// 		if (!povoľZmenuUhla())
 				// 		{
 				// 			vráťUhol();
 				// 			return;
 				// 		}
+				// 		…
 				// 	}
 				// 
 				// 	if (viditeľný) Svet.automatickéPrekreslenie();
@@ -16228,14 +16367,23 @@ Toto bolo presunuté na úvodnú stránku:
 					if (Δx == 0 && Δy == 0) return;
 					else
 					{
-						zálohaPoslednéhoUhla = poslednýUhol;
-						poslednýUhol = aktuálnyUhol;
-						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
-						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-						if (!povoľZmenuUhla())
+						if (!kreslímVlastnýTvar)
 						{
-							vráťUhol();
-							return;
+							zálohaPoslednéhoUhla = poslednýUhol;
+							poslednýUhol = aktuálnyUhol;
+							aktuálnyUhol = toDegrees(atan2(Δy, Δx));
+							if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+							aplikujGyroskop();
+							if (!povoľZmenuUhla())
+							{
+								vráťUhol();
+								return;
+							}
+						}
+						else
+						{
+							aktuálnyUhol = toDegrees(atan2(Δy, Δx));;
+							if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 						}
 					}
 
@@ -16307,14 +16455,23 @@ Toto bolo presunuté na úvodnú stránku:
 					if (Δx == 0 && Δy == 0) return;
 					else
 					{
-						zálohaPoslednéhoUhla = poslednýUhol;
-						poslednýUhol = aktuálnyUhol;
-						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
-						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-						if (!povoľZmenuUhla())
+						if (!kreslímVlastnýTvar)
 						{
-							vráťUhol();
-							return;
+							zálohaPoslednéhoUhla = poslednýUhol;
+							poslednýUhol = aktuálnyUhol;
+							aktuálnyUhol = toDegrees(atan2(Δy, Δx));
+							if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+							aplikujGyroskop();
+							if (!povoľZmenuUhla())
+							{
+								vráťUhol();
+								return;
+							}
+						}
+						else
+						{
+							aktuálnyUhol = toDegrees(atan2(Δy, Δx));;
+							if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 						}
 					}
 
@@ -16380,14 +16537,23 @@ Toto bolo presunuté na úvodnú stránku:
 					if (Δx == 0 && Δy == 0) return;
 					else
 					{
-						zálohaPoslednéhoUhla = poslednýUhol;
-						poslednýUhol = aktuálnyUhol;
-						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
-						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-						if (!povoľZmenuUhla())
+						if (!kreslímVlastnýTvar)
 						{
-							vráťUhol();
-							return;
+							zálohaPoslednéhoUhla = poslednýUhol;
+							poslednýUhol = aktuálnyUhol;
+							aktuálnyUhol = toDegrees(atan2(Δy, Δx));
+							if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+							aplikujGyroskop();
+							if (!povoľZmenuUhla())
+							{
+								vráťUhol();
+								return;
+							}
+						}
+						else
+						{
+							aktuálnyUhol = toDegrees(atan2(Δy, Δx));;
+							if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 						}
 					}
 
@@ -16456,14 +16622,23 @@ Toto bolo presunuté na úvodnú stránku:
 					if (Δx == 0 && Δy == 0) return;
 					else
 					{
-						zálohaPoslednéhoUhla = poslednýUhol;
-						poslednýUhol = aktuálnyUhol;
-						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
-						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-						if (!povoľZmenuUhla())
+						if (!kreslímVlastnýTvar)
 						{
-							vráťUhol();
-							return;
+							zálohaPoslednéhoUhla = poslednýUhol;
+							poslednýUhol = aktuálnyUhol;
+							aktuálnyUhol = toDegrees(atan2(Δy, Δx));
+							if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+							aplikujGyroskop();
+							if (!povoľZmenuUhla())
+							{
+								vráťUhol();
+								return;
+							}
+						}
+						else
+						{
+							aktuálnyUhol = toDegrees(atan2(Δy, Δx));;
+							if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 						}
 					}
 
@@ -16517,13 +16692,23 @@ Toto bolo presunuté na úvodnú stránku:
 				 */
 				public void otoč(Smer objekt)
 				{
-					zálohaPoslednéhoUhla = poslednýUhol;
-					poslednýUhol = aktuálnyUhol;
-					aktuálnyUhol = objekt.smer();
-					if (!povoľZmenuUhla())
+					if (!kreslímVlastnýTvar)
 					{
-						vráťUhol();
-						return;
+						zálohaPoslednéhoUhla = poslednýUhol;
+						poslednýUhol = aktuálnyUhol;
+						aktuálnyUhol = objekt.smer();
+						aplikujGyroskop();
+						if (!povoľZmenuUhla())
+						{
+							vráťUhol();
+							return;
+						}
+					}
+					else
+					{
+						aktuálnyUhol = objekt.smer();
+						aktuálnyUhol %= 360;
+						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 					}
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
@@ -18035,6 +18220,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálnyUhol += uhol;
 						aktuálnyUhol %= 360;
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						aplikujGyroskop();
 
 						// posuňVpravo…
 						aktuálneX += cos(toRadians(
@@ -18066,6 +18252,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálnyUhol -= uhol;
 						aktuálnyUhol %= 360;
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						aplikujGyroskop();
 
 						// posuňVľavo…
 						aktuálneX += cos(toRadians(
@@ -18163,6 +18350,7 @@ Toto bolo presunuté na úvodnú stránku:
 					double jemnosť)
 				{
 					if (0 == uhol || 0 == jemnosť) return;
+					…
 					double pôvodnýSmer = aktuálnyUhol;
 					double krok = (PI * polomer * jemnosť) / 180.0;
 					double alfa = uhol >= 0 ? jemnosť : -jemnosť;
@@ -18176,11 +18364,13 @@ Toto bolo presunuté na úvodnú stránku:
 						dopredu(krok);
 					}
 					aktuálnyUhol = pôvodnýSmer + uhol;
+					aplikujGyroskop();
 					if (!povoľZmenuUhla())
 					{
 						vráťUhol();
 						return;
 					}
+					…
 					if (viditeľný) Svet.automatickéPrekreslenie();
 				}
 
@@ -18283,6 +18473,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálnyUhol += uhol;
 						aktuálnyUhol %= 360;
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						aplikujGyroskop();
 
 						// posuňVpravo…
 						aktuálneX += cos(toRadians(
@@ -18314,6 +18505,7 @@ Toto bolo presunuté na úvodnú stránku:
 						aktuálnyUhol -= uhol;
 						aktuálnyUhol %= 360;
 						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+						aplikujGyroskop();
 
 						// posuňVľavo…
 						aktuálneX += cos(toRadians(
@@ -20860,6 +21052,7 @@ Toto bolo presunuté na úvodnú stránku:
 								zálohaPoslednéhoUhla = poslednýUhol;
 								poslednýUhol = aktuálnyUhol;
 								aktuálnyUhol = β;
+								aplikujGyroskop();
 								if (!povoľZmenuUhla()) vráťUhol();
 									// Poznámka: Tu som sa rozhodol nevykonať
 									// return true, lebo ani choďNa nižšie to
@@ -22040,14 +22233,23 @@ Toto bolo presunuté na úvodnú stránku:
 					if (Δx == 0 && Δy == 0) return;
 					else
 					{
-						zálohaPoslednéhoUhla = poslednýUhol;
-						poslednýUhol = aktuálnyUhol;
-						aktuálnyUhol = toDegrees(atan2(Δy, Δx));
-						if (aktuálnyUhol < 0) aktuálnyUhol += 360;
-						if (!povoľZmenuUhla())
+						if (!kreslímVlastnýTvar)
 						{
-							vráťUhol();
-							return;
+							zálohaPoslednéhoUhla = poslednýUhol;
+							poslednýUhol = aktuálnyUhol;
+							aktuálnyUhol = toDegrees(atan2(Δy, Δx));
+							if (aktuálnyUhol < 0) aktuálnyUhol += 360;
+							aplikujGyroskop();
+							if (!povoľZmenuUhla())
+							{
+								vráťUhol();
+								return;
+							}
+						}
+						else
+						{
+							aktuálnyUhol = toDegrees(atan2(Δy, Δx));;
+							if (aktuálnyUhol < 0) aktuálnyUhol += 360;
 						}
 					}
 
@@ -28280,7 +28482,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see #vypĺňaTvary()
 			 * @see #kresliTvary()
 			 * @see #nekresliTvary()
-			 * @see #kreslenieTvarovPovolené()
+			 * @see #kreslímTvary()
 			 * @see #krúžok(double)
 			 * @see #krúžok()
 			 * @see #elipsa(double, double)
@@ -28378,7 +28580,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see #vypĺňajTvary(boolean)
 			 * @see #kresliTvary()
 			 * @see #nekresliTvary()
-			 * @see #kreslenieTvarovPovolené()
+			 * @see #kreslímTvary()
 			 * @see #krúžok(double)
 			 * @see #krúžok()
 			 * @see #elipsa(double, double)
@@ -45825,7 +46027,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * ktoré mohli byť napríklad importované z SVG súboru.</p>
 			 * 
 			 * @see #nekresliTvary()
-			 * @see #kreslenieTvarovPovolené()
+			 * @see #kreslímTvary()
 			 * @see #kružnica() kružnica
 			 * @see #kresliElipsu(double) kresliElipsu
 			 * @see #kresliŠtvorec() kresliŠtvorec
@@ -45865,7 +46067,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * služieb kreslenia a tvorby {@linkplain Oblasť oblasti}.</p>
 			 * 
 			 * @see #kresliTvary()
-			 * @see #kreslenieTvarovPovolené()
+			 * @see #kreslímTvary()
 			 * @see #kružnica() kružnica
 			 * @see #kresliElipsu(double) kresliElipsu
 			 * @see #kresliŠtvorec() kresliŠtvorec
@@ -45907,9 +46109,15 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see #cesta() cesta
 			 * @see #polohaPera() polohaPera
 			 */
+			public boolean kreslímTvary() { return kresliTvary; }
+
+			/** <p><a class="alias"></a> Alias pre {@link #kreslímTvary() kreslímTvary}.</p> */
+			public boolean kreslimTvary() { return kresliTvary; }
+
+			/** <p><a class="alias"></a> Alias pre {@link #kreslímTvary() kreslímTvary}.</p> */
 			public boolean kreslenieTvarovPovolené() { return kresliTvary; }
 
-			/** <p><a class="alias"></a> Alias pre {@link #kreslenieTvarovPovolené() kreslenieTvarovPovolené}.</p> */
+			/** <p><a class="alias"></a> Alias pre {@link #kreslímTvary() kreslímTvary}.</p> */
 			public boolean kreslenieTvarovPovolene() { return kresliTvary; }
 
 			/**
@@ -46570,6 +46778,9 @@ Toto bolo presunuté na úvodnú stránku:
 	 * @see Svet#svgExport
 	 */
 	public SVGPodpora svgExport = null;
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }
 
 // :wrap=none:

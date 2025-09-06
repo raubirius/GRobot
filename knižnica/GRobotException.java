@@ -605,6 +605,9 @@ public class GRobotException extends RuntimeException
 	//     priveľa nepriaznivých efektov do procesu používania rámca. Bolo by
 	//     to kontraproduktívne.
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Regulárny výraz na vyhľadanie pasáží súvisiacich s výnimkami v rámci
 	// celého programovacieho rámca:
 	// (?<!Runtime|IllegalArgument|FileNotFound|IO|catch \(|@|NullPointer)Exception
@@ -1082,4 +1085,7 @@ public class GRobotException extends RuntimeException
 		t.printStackTrace(pw);
 		return sw.toString();
 	}
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); new Throwable().printStackTrace(); }
 }

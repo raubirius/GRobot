@@ -219,6 +219,9 @@ import static knižnica.Konštanty.ZVISLÁ;
  */
 public class Plátno implements Priehľadnosť
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Predvolený typ písma vnútornej konzoly
 	/*packagePrivate*/ final static Písmo predvolenéPísmoKonzoly =
 		new Písmo("Lucida Console", Písmo.PLAIN, 18.0);
@@ -2568,6 +2571,7 @@ public class Plátno implements Priehľadnosť
 		vnútornáKonzola = new VnútornáKonzola();
 
 		if (null != vlnenie) odstráňVlnenie();
+		if (null != osvetlenie) osvetlenie(false);
 		obrázokPlátna = new BufferedImage(
 			šírkaPlátna, výškaPlátna, BufferedImage.TYPE_INT_ARGB);
 		grafikaPlátna = obrázokPlátna.createGraphics();
@@ -2580,6 +2584,7 @@ public class Plátno implements Priehľadnosť
 	/*packagePrivate*/ void vytvorNovéPlátno(int šírkaPlátna, int výškaPlátna)
 	{
 		if (null != vlnenie) odstráňVlnenie();
+		if (null != osvetlenie) osvetlenie(false);
 		obrázokPlátna = new BufferedImage(
 			šírkaPlátna, výškaPlátna, BufferedImage.TYPE_INT_ARGB);
 		grafikaPlátna = obrázokPlátna.createGraphics();
@@ -2600,7 +2605,19 @@ public class Plátno implements Priehľadnosť
 					AlphaComposite.getInstance(
 						AlphaComposite.SRC_OVER, priehľadnosť));
 
-				if (null == vlnenie)
+				if (null != osvetlenie)
+				{
+					BufferedImage rasterNaOsvetlenie;
+
+					if (null == vlnenie)
+						rasterNaOsvetlenie = obrázokPlátna;
+					else
+						rasterNaOsvetlenie = vlnenie.zvlnenýRaster();
+
+					grafika.drawImage(osvetliRaster(
+						rasterNaOsvetlenie), 0, 0, null);
+				}
+				else if (null == vlnenie)
 					grafika.drawImage(obrázokPlátna, 0, 0, null);
 				else
 					grafika.drawImage(
@@ -2610,7 +2627,19 @@ public class Plátno implements Priehľadnosť
 			}
 			else
 			{
-				if (null == vlnenie)
+				if (null != osvetlenie)
+				{
+					BufferedImage rasterNaOsvetlenie;
+
+					if (null == vlnenie)
+						rasterNaOsvetlenie = obrázokPlátna;
+					else
+						rasterNaOsvetlenie = vlnenie.zvlnenýRaster();
+
+					grafika.drawImage(osvetliRaster(
+						rasterNaOsvetlenie), 0, 0, null);
+				}
+				else if (null == vlnenie)
 					grafika.drawImage(obrázokPlátna, 0, 0, null);
 				else
 					grafika.drawImage(
@@ -8882,10 +8911,22 @@ public class Plátno implements Priehľadnosť
 			if (prípona.toLowerCase().equals("png"))
 			{
 				// Súbory png:
-				try { ImageIO.write((null == vlnenie) ?
-				obrázokPlátna : vlnenie.zvlnenýRaster(),
-				prípona, uložiťDo); } catch (IOException e)
-				{ GRobotException.vypíšChybovéHlásenia(e, true); }
+				try
+				{
+					BufferedImage obrázokNaUloženie;
+
+					if (null == vlnenie)
+						obrázokNaUloženie = obrázokPlátna;
+					else
+						obrázokNaUloženie = vlnenie.zvlnenýRaster();
+	
+					if (null != osvetlenie)
+						obrázokNaUloženie = osvetliRaster(obrázokNaUloženie);
+
+					ImageIO.write(obrázokNaUloženie, prípona, uložiťDo);
+				}
+				catch (IOException e) { GRobotException.
+					vypíšChybovéHlásenia(e, true); }
 			}
 			else if (prípona.toLowerCase().equals("jpg") ||
 				prípona.toLowerCase().equals("jpeg"))
@@ -8894,20 +8935,33 @@ public class Plátno implements Priehľadnosť
 				// Pozri: http://archives.java.sun.com/cgi-bin/wa?A2=ind0404&L=
 				// 	java2d-interest&D=0&P=2727
 
-				WritableRaster raster = (null == vlnenie) ?
-					(obrázokPlátna.getRaster()) :
-					(vlnenie.zvlnenýRaster().getRaster());
+				BufferedImage obrázokNaUloženie;
+
+				if (null == vlnenie)
+					obrázokNaUloženie = obrázokPlátna;
+				else
+					obrázokNaUloženie = vlnenie.zvlnenýRaster();
+
+				if (null != osvetlenie)
+					obrázokNaUloženie = osvetliRaster(obrázokNaUloženie);
+
+				WritableRaster raster = obrázokNaUloženie.getRaster();
 				WritableRaster novýRaster = raster.createWritableChild(
 					0, 0, šírkaPlátna, výškaPlátna,
 					0, 0, new int[] {0, 1, 2});
 
 				DirectColorModel farebnýModel;
+
+				/*
 				if (null == vlnenie)
 					farebnýModel = (DirectColorModel)
 						obrázokPlátna.getColorModel();
 				else
 					farebnýModel = (DirectColorModel)
 						vlnenie.zvlnenýRaster().getColorModel();
+				*/
+				farebnýModel = (DirectColorModel)
+					obrázokNaUloženie.getColorModel();
 
 				DirectColorModel novýFarebnýModel =
 					new DirectColorModel(farebnýModel.getPixelSize(),
@@ -11409,6 +11463,139 @@ public class Plátno implements Priehľadnosť
 
 		/** <p><a class="alias"></a> Alias pre {@link #odstráňVlnenie() odstráňVlnenie}.</p> */
 		public void odstranVlnenie() { odstráňVlnenie(); }
+
+
+	// --- Osvetlenie
+
+		// Rastre osvetlenia:
+		private Obrazok osvetlenie = null;
+		private BufferedImage osvetlenýRaster = null;
+
+		// Údaje rastra osvetlenia:
+		private int[] údajeOsvetleného = null, údajeOsvetlenia = null;
+
+		// Metóda aplikujúca osvetlenie
+		private BufferedImage osvetliRaster(BufferedImage naOsvetlenie)
+		{
+			int[] údajeNaOsvetlenie =
+				((DataBufferInt)naOsvetlenie.getRaster().
+					getDataBuffer()).getData();
+
+			for (int i = 0; i < údajeOsvetleného.length; ++i)
+			{
+				int a = údajeNaOsvetlenie[i] & 0xff000000;
+				int r = ((údajeNaOsvetlenie[i] >> 16) & 0xff) *
+					((údajeOsvetlenia[i] >> 16) & 0xff) / 0x80;
+				int g = ((údajeNaOsvetlenie[i] >>  8) & 0xff) *
+					((údajeOsvetlenia[i] >>  8) & 0xff) / 0x80;
+				int b = ( údajeNaOsvetlenie[i]        & 0xff) *
+					( údajeOsvetlenia[i]        & 0xff) / 0x80;
+
+				if (r > 0xff) r = 0xff;
+				if (g > 0xff) g = 0xff;
+				if (b > 0xff) b = 0xff;
+
+				// a je už „prepočítané“/má správnu hodnotu (a << 24):
+				údajeOsvetleného[i] = a | (r << 16) | (g << 8) | b;
+			}
+
+			return osvetlenýRaster;
+		}
+
+		/**
+		 * <p>Overí, či má toto plátno aktívne osvetlenie. Ak je osvetlenie
+		 * aktívne, tak metóda vráti inštanciu obrázka, ktorý je vnútorne
+		 * používaný ako mapa osvetlenia plátna – pozri aj opis metód
+		 * {@link #osvetlenie(boolean) osvetlenie} a {@link 
+		 * Obrázok#svetlo(Obrázok, Obrázok) Obrázok.svetlo(…)}, inak vráti
+		 * {@code valnull}.</p>
+		 * 
+		 * @return inštancia obrázka používaného ako svetelná mapa alebo
+		 *     {@code valnull}
+		 */
+		public Obrazok osvetlenie() { return osvetlenie; }
+
+		/**
+		 * <p>Zapne alebo vypne osvetlenie tohto plátna. Pri zmene stavu: Ak
+		 * je osvetlenie aktivované, tak sú vytvorené potrebné inštancie
+		 * a zároveň táto metóda vráti inštanciu obrázka, ktorý bude vnútorne
+		 * používaný ako mapa osvetlenia – pozri aj opis metódy {@link 
+		 * Obrázok#svetlo(Obrázok, Obrázok) Obrázok.svetlo(…)}. Ak je
+		 * osvetlenie deaktivované alebo jeho aktivácia zlyhá, tak metóda
+		 * vráti {@code valnull}.</p>
+		 * 
+		 * @param osvetli ak je {@code valtrue} tak má byť osvetlenie
+		 *     aktivované, ak je {@code valfalse} tak má byť osvetlenie
+		 *     deaktivované
+		 * @return inštancia obrázka používaného ako svetelná mapa alebo
+		 *     {@code valnull}
+		 */
+		public Obrazok osvetlenie(boolean osvetli)
+		{
+			try
+			{
+				if (osvetli && null == osvetlenie)
+				{
+					osvetli = false;
+	
+					osvetlenie = new Obrazok(Plátno.šírkaPlátna,
+						Plátno.výškaPlátna);
+	
+					údajeOsvetlenia =
+						((DataBufferInt)osvetlenie.getRaster().
+						getDataBuffer()).getData();
+	
+					osvetlenýRaster = new BufferedImage(
+						Plátno.šírkaPlátna, Plátno.výškaPlátna,
+						BufferedImage.TYPE_INT_ARGB);
+	
+					údajeOsvetleného =
+						((DataBufferInt)osvetlenýRaster.getRaster().
+						getDataBuffer()).getData();
+	
+					osvetli = true;
+				}
+			}
+			catch (Exception e)
+			{
+				GRobotException.vypíšChybovéHlásenia(e, true);
+			}
+			catch (Throwable t)
+			{
+				t.printStackTrace();
+			}
+			finally
+			{
+				if (!osvetli)
+				{
+					// if (null != údajeOsvetlenia)
+						údajeOsvetlenia = null;
+
+					// if (null != údajeOsvetleného)
+						údajeOsvetleného = null;
+
+					// if (null != osvetlenýRaster)
+						osvetlenýRaster = null;
+
+					if (null != osvetlenie)
+					{
+						try { Svet.uvoľni(osvetlenie); } catch (Exception e)
+						{ GRobotException.vypíšChybovéHlásenia(e, true); }
+						catch (Throwable t) { t.printStackTrace(); }
+						osvetlenie = null;
+					}
+				}
+
+				try { Svet.automatickéPrekreslenie(); } catch (Exception e)
+				{ GRobotException.vypíšChybovéHlásenia(e, true); }
+				catch (Throwable t) { t.printStackTrace(); }
+			}
+
+			return osvetlenie;
+		}
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }
 
 // :wrap=none:

@@ -344,6 +344,9 @@ import knižnica.podpora.RandomGenerator;
  */
 public class Plazma
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// http://www.smartypantscoding.com/sites/default/files/WPFFireApp.zip
 
 	// Vnútorná inštancia generátora náhodných čísiel – je použitý na
@@ -2175,4 +2178,7 @@ public class Plazma
 
 	/** <p><a class="alias"></a> Alias pre {@link #pretoč(double, double) pretoč}.</p> */
 	public void pretoc(double Δx, double Δy) { pretoč(Δx, Δy); }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

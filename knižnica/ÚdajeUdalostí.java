@@ -63,6 +63,9 @@ import static knižnica.Konštanty.PRAVÉ;
  */
 public class ÚdajeUdalostí
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// ------------------------------------ //
 	//  *** Vlastnosti údajov udalostí ***  //
 	// ------------------------------------ //
@@ -1164,4 +1167,7 @@ public class ÚdajeUdalostí
 	/** <p><a class="alias"></a> Alias pre {@link #poslednýPoznámkovýBlok() poslednýPoznámkovýBlok}.</p> */
 	public static PoznámkovýBlok poslednyPoznamkovyBlok()
 	{ return poslednýPoznámkovýBlok; }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

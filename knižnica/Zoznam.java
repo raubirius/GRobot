@@ -123,6 +123,9 @@ import knižnica.podpora.RandomGenerator;
 @SuppressWarnings("serial")
 public class Zoznam<Typ> extends Vector<Typ>
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Pozri aj: https://docs.oracle.com/javase/8/docs/api/java/util/Vector.html
 
 	// Inštancia náhodného generátora
@@ -1389,4 +1392,7 @@ public class Zoznam<Typ> extends Vector<Typ>
 	 */
 	public static <Typ> ObrátenýIterátor<Typ> naopak(List<Typ> pôvodný)
 	{ return new ObrátenýIterátor<Typ>(pôvodný); }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

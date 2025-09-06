@@ -136,6 +136,9 @@ import javax.swing.KeyStroke;
 @SuppressWarnings("serial")
 public class PoložkaPonuky extends JMenuItem
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Pozri aj: https://docs.oracle.com/javase/8/docs/api/javax/swing/JMenuItem.html
 
 	// Počúvadlo udalostí zvolenia položky ponuky
@@ -1223,4 +1226,7 @@ public class PoložkaPonuky extends JMenuItem
 		this.riadkySkriptu = null;
 		this.skript = skript;
 	}
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

@@ -89,6 +89,9 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class Písmo extends Font
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Pozri aj: https://docs.oracle.com/javase/8/docs/api/java/awt/Font.html
 
 	/**
@@ -1282,4 +1285,7 @@ public class Písmo extends Font
 	public static void ulozDoSuboru(Súbor súbor, Písmo písmo)
 		throws IOException
 	{ uložDoSúboru(súbor, písmo); }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

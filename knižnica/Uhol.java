@@ -89,6 +89,9 @@ import javax.swing.event.ChangeEvent;
 @SuppressWarnings("serial")
 public final class Uhol extends Number implements Comparable<Uhol>, Smer
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// private static final long serialVersionUID = -1L;
 	// public static final double POSITIVE_INFINITY = 1.0 / 0.0;
 	// public static final double NEGATIVE_INFINITY = -1.0 / 0.0;
@@ -1277,4 +1280,7 @@ public final class Uhol extends Number implements Comparable<Uhol>, Smer
 
 	/** <p><a class="alias"></a> Alias pre {@link #zvoľSmer(String, Smer) zvoľSmer}.</p> */
 	public static Uhol dialogVolbaSmeru(String titulok, Smer počiatočnýSmer) { return PanelSmeru.dialóg(titulok, počiatočnýSmer); }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

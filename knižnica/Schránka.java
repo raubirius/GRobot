@@ -100,6 +100,9 @@ import knižnica.podpora.SVGClip;
  */
 public class Schránka
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Toto sa podarilo vyriešiť až na Vianoce roku 2021 a nakoniec to šlo
 	// úplne inak (vďaka tomu, že medzitým to niekto dosť významne posunul
 	// vo fórach, takže som si to už len trochu prispôsobil a „doťukol“ –
@@ -442,4 +445,7 @@ public class Schránka
 
 		return false;
 	}
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

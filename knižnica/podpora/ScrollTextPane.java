@@ -12,7 +12,7 @@ package knižnica.podpora;
 // licensing. — This source code is released under the same terms as the whole
 // package knižnica.)
 
-import java.awt.AWTKeyStroke;
+// import java.awt.AWTKeyStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;

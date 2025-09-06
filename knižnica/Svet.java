@@ -468,6 +468,8 @@ import static knižnica.Konštanty.ĽAVÉ;
 @SuppressWarnings("serial")
 public final class Svet extends JFrame
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
 	// Pozri aj: https://docs.oracle.com/javase/8/docs/api/javax/swing/JFrame.html
 
 
@@ -1873,6 +1875,8 @@ public final class Svet extends JFrame
 					grafikaSveta1 = obrázokSveta1.createGraphics();
 
 					if (null != Svet.vlnenie) Svet.odstráňVlnenie();
+					if (null != osvetlenie) osvetlenie(false);
+
 					obrázokSveta2 = new BufferedImage(
 						Plátno.šírkaPlátna, Plátno.výškaPlátna,
 						BufferedImage.TYPE_INT_ARGB);
@@ -3389,8 +3393,6 @@ public final class Svet extends JFrame
 				return !vykonaťPredvolené && !skonzumuj;
 			}
 
-			// System.out.println("X");
-
 			return true;
 		}
 
@@ -3528,12 +3530,13 @@ public final class Svet extends JFrame
 		 * <p><b>Príklad:</b></p>
 		 * 
 		 * <pre CLASS="example">
-			{@code kwdif} ({@link Svet Svet}.{@code currverzia}({@code num1}, {@code num50}) &lt; {@code num0})
+			{@code kwdif} ({@link Svet Svet}.{@code currverzia}({@code num2}, {@code num25}) &lt; {@code num0})
 			{
 				{@link Svet Svet}.{@link Svet#pípni() pípni}();
-				{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Na fungovanie tejto aplikácie\n"} +
-					{@code srg"je potrebná vyššia verzia triedy GRobot!\n"} +
-					{@code srg"(Najmenej 1.50)"});
+				{@link Svet Svet}.{@link Svet#správa(String) správa}({@code srg"Na fungovanie tejto aplikácie je potrebná\n"} +
+					{@code srg"vyššia verzia programovacieho rámca GRobot!\n"} +
+					{@code srg"(Najmenej 2.25; k dispozícii je: "} + {@link Konštanty#majorVersion majorVersion} + "." +
+					{@link Integer Integer}.{@link Integer#toString() toString}({@link Konštanty#minorVersion minorVersion} + {@code num100}).{@link String#substring(int) substring}({@code num1}) + {@code srg")"});
 				{@link Svet Svet}.{@link Svet#koniec() koniec}();
 			}
 			</pre>
@@ -4198,9 +4201,11 @@ public final class Svet extends JFrame
 		 * {@link GRobot#upravText(String) upravText}), odstránenie
 		 * prípadných definovaných inštancií {@linkplain Vlnenie vlnenia}
 		 * oboch plátien aj sveta (pretože sa menia ich rozmery; prípadné
-		 * definované vlnenia obrázkov zostanú zachované), prepočet niektorých
-		 * ďalších vnútorných parametrov a úpravu súradnicových systémov
-		 * všetkých obrázkov programovacieho rámca.</p>
+		 * definované vlnenia obrázkov zostanú zachované), vypnutie
+		 * {@linkplain #osvetlenie(boolean) osvetlenia} sveta (aj oboch
+		 * plátien), prepočet niektorých ďalších vnútorných parametrov
+		 * a úpravu súradnicových systémov všetkých obrázkov
+		 * programovacieho rámca.</p>
 		 * 
 		 * @param šírka nová šírka plátien
 		 * @param výška nová výška plátien
@@ -8731,7 +8736,19 @@ public final class Svet extends JFrame
 
 				if (!GRobot.strop.prekresli(grafikaSveta2)) chyba = true;
 
-				if (null == vlnenie)
+				if (null != osvetlenie)
+				{
+					BufferedImage rasterNaOsvetlenie;
+
+					if (null == vlnenie)
+						rasterNaOsvetlenie = obrázokSveta2;
+					else
+						rasterNaOsvetlenie = vlnenie.zvlnenýRaster();
+
+					grafikaSveta1.drawImage(osvetliRaster(
+						rasterNaOsvetlenie), 0, 0, null);
+				}
+				else if (null == vlnenie)
 					grafikaSveta1.drawImage(obrázokSveta2, 0, 0, null);
 				else
 					grafikaSveta1.drawImage(vlnenie.zvlnenýRaster(), 0, 0, null);
@@ -32351,6 +32368,139 @@ public final class Svet extends JFrame
 
 		/** <p><a class="alias"></a> Alias pre {@link #odstráňVlnenie() odstráňVlnenie}.</p> */
 		public static void odstranVlnenie() { odstráňVlnenie(); }
+
+
+	// --- Osvetlenie
+
+
+		// Rastre osvetlenia:
+		private static Obrazok osvetlenie = null;
+		private static BufferedImage osvetlenýRaster = null;
+
+		// Údaje rastra osvetlenia:
+		private static int[] údajeOsvetleného = null, údajeOsvetlenia = null;
+
+		// Metóda aplikujúca osvetlenie
+		private static BufferedImage osvetliRaster(BufferedImage naOsvetlenie)
+		{
+			int[] údajeNaOsvetlenie =
+				((DataBufferInt)naOsvetlenie.getRaster().
+					getDataBuffer()).getData();
+
+			for (int i = 0; i < údajeOsvetleného.length; ++i)
+			{
+				int a = údajeNaOsvetlenie[i] & 0xff000000;
+				int r = ((údajeNaOsvetlenie[i] >> 16) & 0xff) *
+					((údajeOsvetlenia[i] >> 16) & 0xff) / 0x80;
+				int g = ((údajeNaOsvetlenie[i] >>  8) & 0xff) *
+					((údajeOsvetlenia[i] >>  8) & 0xff) / 0x80;
+				int b = ( údajeNaOsvetlenie[i]        & 0xff) *
+					( údajeOsvetlenia[i]        & 0xff) / 0x80;
+
+				if (r > 0xff) r = 0xff;
+				if (g > 0xff) g = 0xff;
+				if (b > 0xff) b = 0xff;
+
+				// a je už „prepočítané“/má správnu hodnotu (a << 24):
+				údajeOsvetleného[i] = a | (r << 16) | (g << 8) | b;
+			}
+
+			return osvetlenýRaster;
+		}
+
+		/**
+		 * <p>Overí, či má svet aktívne osvetlenie. Ak je osvetlenie aktívne,
+		 * tak metóda vráti inštanciu obrázka, ktorý je vnútorne používaný ako
+		 * mapa osvetlenia – pozri aj opis metód {@link #osvetlenie(boolean)
+		 * osvetlenie} a {@link Obrázok#svetlo(Obrázok, Obrázok)
+		 * Obrázok.svetlo(…)}, inak vráti {@code valnull}.</p>
+		 * 
+		 * @return inštancia obrázka používaného ako svetelná mapa alebo
+		 *     {@code valnull}
+		 */
+		public static Obrazok osvetlenie() { return osvetlenie; }
+
+		/**
+		 * <p>Zapne alebo vypne osvetlenie sveta. Pri zmene stavu: Ak je
+		 * osvetlenie aktivované, tak sú vytvorené potrebné inštancie a zároveň
+		 * táto metóda vráti inštanciu obrázka, ktorý bude vnútorne používaný
+		 * ako mapa osvetlenia – pozri aj opis metódy {@link 
+		 * Obrázok#svetlo(Obrázok, Obrázok) Obrázok.svetlo(…)}. Ak je
+		 * osvetlenie deaktivované alebo jeho aktivácia zlyhá, tak metóda
+		 * vráti {@code valnull}.</p>
+		 * 
+		 * @param osvetli ak je {@code valtrue} tak má byť osvetlenie
+		 *     aktivované, ak je {@code valfalse} tak má byť osvetlenie
+		 *     deaktivované
+		 * @return inštancia obrázka používaného ako svetelná mapa alebo
+		 *     {@code valnull}
+		 */
+		public static Obrazok osvetlenie(boolean osvetli)
+		{
+			try
+			{
+				if (osvetli && null == osvetlenie)
+				{
+					osvetli = false;
+	
+					osvetlenie = new Obrazok(Plátno.šírkaPlátna,
+						Plátno.výškaPlátna);
+	
+					údajeOsvetlenia =
+						((DataBufferInt)osvetlenie.getRaster().
+						getDataBuffer()).getData();
+	
+					osvetlenýRaster = new BufferedImage(
+						Plátno.šírkaPlátna, Plátno.výškaPlátna,
+						BufferedImage.TYPE_INT_ARGB);
+	
+					údajeOsvetleného =
+						((DataBufferInt)osvetlenýRaster.getRaster().
+						getDataBuffer()).getData();
+	
+					osvetli = true;
+				}
+			}
+			catch (Exception e)
+			{
+				GRobotException.vypíšChybovéHlásenia(e, true);
+			}
+			catch (Throwable t)
+			{
+				t.printStackTrace();
+			}
+			finally
+			{
+				if (!osvetli)
+				{
+					// if (null != údajeOsvetlenia)
+						údajeOsvetlenia = null;
+
+					// if (null != údajeOsvetleného)
+						údajeOsvetleného = null;
+
+					// if (null != osvetlenýRaster)
+						osvetlenýRaster = null;
+
+					if (null != osvetlenie)
+					{
+						try { uvoľni(osvetlenie); } catch (Exception e)
+						{ GRobotException.vypíšChybovéHlásenia(e, true); }
+						catch (Throwable t) { t.printStackTrace(); }
+						osvetlenie = null;
+					}
+				}
+
+				try { automatickéPrekreslenie(); } catch (Exception e)
+				{ GRobotException.vypíšChybovéHlásenia(e, true); }
+				catch (Throwable t) { t.printStackTrace(); }
+			}
+
+			return osvetlenie;
+		}
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }
 
 // :wrap=none:

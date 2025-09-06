@@ -1327,6 +1327,9 @@ import static java.awt.MultipleGradientPaint.CycleMethod.*;
  */
 public class SVGPodpora
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	/**
 	 * <p>Táto trieda slúži na uchovanie pôvodných informácií
 	 * o transformáciách rozpoznávaných z textovej podoby podľa
@@ -10197,4 +10200,7 @@ public class SVGPodpora
 
 	/** <p><a class="alias"></a> Alias pre {@link #čítaj(String) čítaj}.</p> */
 	public int citaj(String meno) { return čítaj(meno); }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

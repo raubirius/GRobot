@@ -127,6 +127,9 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class Tlačidlo extends JButton implements Poloha, Rozmer
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Parametre polohy a veľkosti tlačidla:
 	/*packagePrivate*/ int x, y, šírka, výška, šírkaRodiča, výškaRodiča;
 
@@ -2376,4 +2379,7 @@ public class Tlačidlo extends JButton implements Poloha, Rozmer
 		this.riadkySkriptu = null;
 		this.skript = skript;
 	}
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

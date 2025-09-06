@@ -205,6 +205,9 @@ import static java.util.Calendar.*;
  */
 public class Archív implements Closeable
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Príznak signalizujúci, či môžu inštancie iných tried používajúcich
 	// tento archív ho automaticky otvoriť v prípadoch, keď nebol otvorený.
 	/*packagePrivate*/ boolean umožniťAutomatickéOtvorenie;
@@ -2834,4 +2837,7 @@ public class Archív implements Closeable
 	// SVG) a zvukov do archívu. Rovnako ich čítanie z archívu.
 
 
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

@@ -62,6 +62,9 @@ import javax.swing.JMenuItem;
 @SuppressWarnings("serial")
 public class KontextováPoložka extends JMenuItem
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Počúvadlo udalostí zvolenia kontextovej položky
 	private final static ActionListener
 		voľbaKontextovejPoložky = new ActionListener()
@@ -970,4 +973,7 @@ public class KontextováPoložka extends JMenuItem
 		this.riadkySkriptu = null;
 		this.skript = skript;
 	}
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

@@ -65,6 +65,9 @@ import java.awt.event.KeyEvent;
 @SuppressWarnings("serial")
 public class Kláves extends KeyEvent
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// Pozri aj: https://docs.oracle.com/javase/8/docs/api/java/awt/event/KeyEvent.html
 
 	// Táto trieda má jediný dôvod svojho bytia – definícia konštánt –
@@ -179,4 +182,7 @@ public class Kláves extends KeyEvent
 	 */
 	public final static int SKRATKA_PONUKY = Toolkit.
 		getDefaultToolkit().getMenuShortcutKeyMask();
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

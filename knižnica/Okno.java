@@ -131,6 +131,9 @@ import static javax.swing.JFrame.NORMAL;
  */
 public class Okno
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// TODO: Implementovať možnosť presunu tlačidiel (prípadne iných
 	// komponentov) do okna alebo priamo ich vytvorenia v okne…
 
@@ -450,7 +453,7 @@ public class Okno
 					komponentIkony.getPreferredSize().width,
 					komponentIkony.getPreferredSize().height);
 
-				/* * /
+				/* */
 				if (šírka > obrázok.šírka()) šírka = (int)obrázok.šírka();
 				if (výška > obrázok.výška()) výška = (int)obrázok.výška();
 				/* */
@@ -2467,9 +2470,9 @@ public class Okno
 	 */
 	public PoznámkovýBlok prenes(PoznámkovýBlok poznámkovýBlok, boolean sem)
 	{
-		if (sem && Svet.hlavnýPanel.isAncestorOf(poznámkovýBlok))
+		if (sem && Svet.hlavnýPanel.isAncestorOf(poznámkovýBlok.rolovanie()))
 		{
-			Svet.hlavnýPanel.remove(poznámkovýBlok);
+			Svet.hlavnýPanel.remove(poznámkovýBlok.rolovanie());
 			Svet.hlavnýPanel.doLayout();
 
 			double x = poznámkovýBlok.polohaX();
@@ -2478,7 +2481,7 @@ public class Okno
 			poznámkovýBlok.výškaRodiča = ikonaOkna.getIconHeight();
 			poznámkovýBlok.poloha(x, y);
 
-			hlavnýPanel.add(poznámkovýBlok, 0);
+			hlavnýPanel.add(poznámkovýBlok.rolovanie(), 0);
 			hlavnýPanel.doLayout();
 			poznámkovýBlok.hlavnýPanel = hlavnýPanel;
 
@@ -2487,9 +2490,9 @@ public class Okno
 
 			return poznámkovýBlok;
 		}
-		else if (!sem && hlavnýPanel.isAncestorOf(poznámkovýBlok))
+		else if (!sem && hlavnýPanel.isAncestorOf(poznámkovýBlok.rolovanie()))
 		{
-			hlavnýPanel.remove(poznámkovýBlok);
+			hlavnýPanel.remove(poznámkovýBlok.rolovanie());
 			hlavnýPanel.doLayout();
 
 			double x = poznámkovýBlok.polohaX();
@@ -2498,7 +2501,7 @@ public class Okno
 			poznámkovýBlok.výškaRodiča = Plátno.výškaPlátna;
 			poznámkovýBlok.poloha(x, y);
 
-			Svet.hlavnýPanel.add(poznámkovýBlok, 0);
+			Svet.hlavnýPanel.add(poznámkovýBlok.rolovanie(), 0);
 			Svet.hlavnýPanel.doLayout();
 			poznámkovýBlok.hlavnýPanel = Svet.hlavnýPanel;
 
@@ -2519,7 +2522,7 @@ public class Okno
 	 */
 	public boolean jeTu(PoznámkovýBlok poznámkovýBlok)
 	{
-		return hlavnýPanel.isAncestorOf(poznámkovýBlok);
+		return hlavnýPanel.isAncestorOf(poznámkovýBlok.rolovanie());
 	}
 
 
@@ -3058,8 +3061,12 @@ public class Okno
 				// FIX: 2024-03-26: Musí to byť konzistentné.
 				// Alt+F4 tiež „iba“ skrýva okno. Zavretie okna
 				// v podstate ani nemôže nastať…
-				skry();
-				// zavrieť(); // TODO: Test on macOS.
+				// skry();
+
+				// FIX: 2025-03-27: Tvrdenie vyššie je nezmysel. Keď som
+				// zamedzil zatváraniu cez reakciu zavretie, tak jediné Ctrl+W
+				// stále fungovalo (pretože iba skrývalo okno).
+				zavrieť(); // TODO: Test on macOS.
 				return;
 			}
 
@@ -3294,4 +3301,7 @@ public class Okno
 	/** <p><a class="alias"></a> Alias pre {@link #reťazecSkratkyPríkazu(String) reťazecSkratkyPríkazu}.</p> */
 	public String retazecSkratkyPrikazu(String príkaz)
 	{ return reťazecSkratkyPríkazu(príkaz); }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

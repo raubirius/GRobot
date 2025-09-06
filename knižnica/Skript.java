@@ -893,6 +893,9 @@ Všetky kľúčové slová:
 @SuppressWarnings("serial")
 public abstract class Skript
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	//		✓	Odkázať sa na inú dokumentáciu.
 	//		✓	Dokončiť metódy zmeny plátna. (Opisy.)
 	//		✓	Dopracovať úpravu farebnej schémy.
@@ -2891,19 +2894,23 @@ public abstract class Skript
 				poslednáChyba = ŽIADNA_CHYBA;
 				zásobníkInštancií.clear();
 				aktuálnaInštancia = null;
+				výraz.poslednáInštancia = aktuálnaInštancia;
 				hľadajMenovku = null;
 				skočNa = null;
 
 				if (ladenie)
 				{
-					if (null == ObsluhaUdalostí.počúvadlo ||
-						ObsluhaUdalostí.počúvadlo.ladenie(-1, null,
-							VYPÍSAŤ_PREMENNÉ))
-						vypíšPremenné();
-
-					if (null != ObsluhaUdalostí.počúvadlo &&
-						ObsluhaUdalostí.počúvadlo.ladenie(-1, null,
+					// FIX: 2. 3. 2025: Zrušené automatické vypisovanie
+					// premenných. Je to neočakávané správanie:
+					// 	if (null == ObsluhaUdalostí.počúvadlo || …
+					// (Vďaka tomu sa dali zlúčiť obidva výpisy:
+					if (null != ObsluhaUdalostí.počúvadlo)
+					{
+						if (ObsluhaUdalostí.počúvadlo.ladenie(-1, null,
+							VYPÍSAŤ_PREMENNÉ)) vypíšPremenné();
+						if (ObsluhaUdalostí.počúvadlo.ladenie(-1, null,
 							VYPÍSAŤ_MENOVKY)) hlavný.vypíšMenovky();
+					}
 				}
 
 				try
@@ -3059,10 +3066,16 @@ public abstract class Skript
 						if ('@' == riadok.riadok.charAt(0))
 						{
 							if (riadok.riadok.length() == 1)
-								koreň.aktuálnaInštancia = null;
+							{
+								výraz.poslednáInštancia =
+									koreň.aktuálnaInštancia = null;
+							}
 							else
-								koreň.aktuálnaInštancia =
-									riadok.riadok.substring(1);
+							{
+								výraz.poslednáInštancia =
+									koreň.aktuálnaInštancia =
+										riadok.riadok.substring(1);
+							}
 							continue;
 						}
 						else if (riadok.riadok.regionMatches(
@@ -3200,7 +3213,8 @@ public abstract class Skript
 												zapíšPremennú(premenná,
 													new Double(j));
 												vypíšPremennú(riadok.číslo,
-													premenná, ČÍSELNÁ_PREMENNÁ);
+													premenná,
+													ČÍSELNÁ_PREMENNÁ);
 											}
 
 											int kód = telo.vykonaj();
@@ -3223,7 +3237,8 @@ public abstract class Skript
 												zapíšPremennú(premenná,
 													new Double(j));
 												vypíšPremennú(riadok.číslo,
-													premenná, ČÍSELNÁ_PREMENNÁ);
+													premenná,
+													ČÍSELNÁ_PREMENNÁ);
 											}
 
 											int kód = telo.vykonaj();
@@ -3422,12 +3437,38 @@ public abstract class Skript
 							String[] slová = vykonajPríkazTokenizer.
 								split(riadok.riadok);
 
+							// DEBUG:2025-04-09:
+							// if (debugaž)
+							// {
+							// 	System.out.println("slová 1:" +
+							// 		Arrays.toString(slová));
+							// 	System.out.println("@: " +
+							// 		koreň.aktuálnaInštancia);
+							// }
+
+							// TODO: Tu je nejaká chyba.
+							// Nevyhodnocuje to správne všetky výrazy.
 							if (slová[0].equalsIgnoreCase("ak"))
 							{
 								int mriežka = riadok.riadok.indexOf('#');
 
 								if (-1 != mriežka)
 								{
+									// DEBUG:2025-04-09:
+									// if (debugaž)
+									// {
+									// 	System.out.println("attach meno: " +
+									// 		výraz.attachString("meno"));
+									// 	System.out.println("  parse: " +
+									// 		výraz.parse());
+									// 	System.out.println("  value: " +
+									// 		výraz.getValue());
+									// 
+									// 	System.out.println("attachString:" +
+									// 		riadok.riadok.substring(mriežka +
+									// 			1));
+									// }
+
 									if (výraz.attachString(riadok.riadok.
 										substring(mriežka + 1)))
 									{
@@ -3435,6 +3476,11 @@ public abstract class Skript
 										{
 											ExpressionProcessor.Value
 												výsledok = výraz.getValue();
+
+											// DEBUG:2025-04-09:
+											// if (debugaž)
+											// 	System.out.println(
+											// 		"výsledok: " + výsledok);
 
 											if (výsledok.isError())
 											{
@@ -3448,6 +3494,12 @@ public abstract class Skript
 												split(riadok.riadok.substring(
 													0, mriežka) + " " +
 													výsledok.toString());
+
+											// DEBUG:2025-04-09:
+											// if (debugaž)
+											// 	System.out.println(
+											// 		"slová 2:" +
+											// 		Arrays.toString(slová));
 										}
 										else
 										{
@@ -3464,6 +3516,14 @@ public abstract class Skript
 									}
 								}
 							}
+
+							// DEBUG:2025-04-09:
+							// if (debugaž)
+							// {
+							// 	System.out.println("slová 3:" +
+							// 		Arrays.toString(slová));
+							// 	debugaž = false;
+							// }
 
 							Integer skoč1 = null, skoč2 = null;
 
@@ -3575,7 +3635,7 @@ public abstract class Skript
 
 							if (slová[0].equalsIgnoreCase("ak"))
 							{
-								podmienka =vyhodnoťLogickýVýraz(slová[1]);
+								podmienka = vyhodnoťLogickýVýraz(slová[1]);
 
 								if (podmienka) i = skoč1 - 1;
 								else if (null != skoč2) i = skoč2 - 1;
@@ -3678,7 +3738,9 @@ public abstract class Skript
 			}
 			finally
 			{
-				koreň.aktuálnaInštancia = koreň.zásobníkInštancií.pop();
+				výraz.poslednáInštancia = koreň.aktuálnaInštancia =
+					koreň.zásobníkInštancií.pop();
+				// DEBUG:2025-04-09: debugaž = false;
 			}
 		}
 
@@ -3738,6 +3800,8 @@ public abstract class Skript
 			}
 		}
 	}
+
+	// DEBUG:2025-04-09: public static boolean debugaž = false;
 
 	// Súkromná trieda uchovávajúca riadok skriptu.
 	private static class Riadok extends Skript
@@ -3988,7 +4052,8 @@ public abstract class Skript
 
 		// Pomocná metóda na výpis tých častí farebnej syntaxe, ktorá je
 		// spoločná pre príkazový riadok aj skripty.
-		/*packagePrivate*/ static boolean začniVýpisRiadkuLadenia(String riadok)
+		/*packagePrivate*/ static boolean začniVýpisRiadkuLadenia(
+			String riadok)
 		{
 			if ('@' == riadok.charAt(0))
 			{
@@ -6054,4 +6119,7 @@ public abstract class Skript
 	{
 		if (null != objekt) farbaLadenia(názov, objekt.farba());
 	}
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

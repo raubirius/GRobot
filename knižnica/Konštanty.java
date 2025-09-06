@@ -68,16 +68,16 @@ public interface Konštanty
 		/** <p>Konštanta majoritnej verzie tohto rámca.</p> */
 		public final static int majorVersion = 2;
 		/** <p>Konštanta minoritnej verzie tohto rámca.</p> */
-		public final static int minorVersion = 23;
+		public final static int minorVersion = 26;
 		/** <p>Konštanta poznámky verzie tohto rámca.</p> */
-		public final static String versionNote = " (2025-02-19)";
+		public final static String versionNote = " (2025-05-02)";
 		/** <p>Konštanta rozpätia rokov vývoja tejto verzie rámca
 			(v podstate na účel výpisu copyrightu…)</p> */
 		public final static String years = "2010 – 2025";
 		/** <p>Konštanta rozpätia rokov a mesiacov vývoja tejto verzie rámca
 			(na účely automatického spracovania dokumentácie…)</p> */
 		public final static String yearsMonths =
-			"august 2010 – február 2025";
+			"august 2010 – máj 2025";
 		/** <p>Konštanta s menom hlavného (zatiaľ jediného) vývojára tejto
 			verzie rámca (v podstate na účel výpisu copyrightu… kto vie, či
 			časom pribudnú aj nejakí ďalší…)</p> */
@@ -288,7 +288,7 @@ public interface Konštanty
 		/**
 		 * <p>Spôsob {@linkplain GRbobot#ukončenieÚpravyTextu(String, int)
 		 * ukončenia úprav textu} klávesovou kombináciou {@code Shift + TAB}
-		 * (resp. {@code Shift + tabulátor}).</p>
+		 * (resp. {@code Shift + TABULÁTOR}).</p>
 		 * 
 		 * @see GRobot#upravText(String)
 		 * @see GRobot#upravText(String, double)
@@ -302,7 +302,7 @@ public interface Konštanty
 		/**
 		 * <p>Spôsob {@linkplain GRbobot#ukončenieÚpravyTextu(String, int)
 		 * ukončenia úprav textu} klávesovou kombináciou
-		 * {@code Shift + tabulátor} (resp. {@code Shift + TAB}).</p>
+		 * {@code Shift + TABULÁTOR} (resp. {@code Shift + TAB}).</p>
 		 * 
 		 * @see GRobot#upravText(String)
 		 * @see GRobot#upravText(String, double)

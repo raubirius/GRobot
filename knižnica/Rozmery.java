@@ -86,6 +86,9 @@ import javax.swing.event.ChangeEvent;
  */
 public class Rozmery extends Dimension2D implements Rozmer
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	/*packagePrivate*/ double šírka, výška;
 
 	private final static Pattern dimMatch = Pattern.compile(
@@ -1283,4 +1286,7 @@ public class Rozmery extends Dimension2D implements Rozmer
 	 */
 	public static Rozmery rozdiel(Rozmery rozmery1, Rozmery rozmery2)
 	{ return new Rozmery(rozmery1.šírka - rozmery2.šírka, rozmery1.výška - rozmery2.výška); }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

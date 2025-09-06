@@ -1830,7 +1830,7 @@ public class Roj
 							kresli.farba(farba);
 						kresli.hrúbkaČiary(kresli.hrúbkaČiary() + dho);
 
-						if (kresli.kreslenieTvarovPovolené())
+						if (kresli.kreslímTvary())
 						{
 							kresli.nekresliTvary();
 							svgKreslenie.kresli(kresli);
@@ -1845,7 +1845,7 @@ public class Roj
 					{
 						if (null == svgTvar)
 						{
-							if (kresli.kreslenieTvarovPovolené())
+							if (kresli.kreslímTvary())
 							{
 								kresli.nekresliTvary();
 								svgPodpora.pridaj(kresli.kruh());
@@ -1868,7 +1868,7 @@ public class Roj
 
 							// TODO – overiť, či toto riešenie dostatočne
 							// dobre funguje:
-							if (kresli.kreslenieTvarovPovolené())
+							if (kresli.kreslímTvary())
 							{
 								kresli.nekresliTvary();
 								svgPodpora.pridaj(kresli.

@@ -89,6 +89,9 @@ import javax.swing.event.ChangeEvent;
  */
 public class Bod extends Point2D implements Poloha
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	/*packagePrivate*/ double x, y;
 
 	private final static Pattern xyMatch = Pattern.compile(
@@ -1764,4 +1767,7 @@ public class Bod extends Point2D implements Poloha
 	 */
 	public static Bod rozdiel(Bod bod1, Bod bod2)
 	{ return new Bod(bod1.x - bod2.x, bod1.y - bod2.y); }
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }

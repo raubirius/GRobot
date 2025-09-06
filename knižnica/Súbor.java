@@ -415,6 +415,9 @@ import static knižnica.Konštanty.PRIPÁJANIE_SÚBOROV;
  */
 public class Súbor implements Closeable
 {
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
+
+
 	// /*packagePrivate*/ Súbor() {} // zrušenie tohto komentára by znamenalo
 	//	zákazanie vytvárania vlastných inštancií triedy Súbor; programátor
 	//	by sa musel uspokojiť s tým, že každý robot môže otvoriť jeden súbor…
@@ -9738,4 +9741,7 @@ public class Súbor implements Closeable
 			String... nastavenia)
 		{ return tabuľkaNaReťazec(tabuľka, nastavenia); }
 
+
+
+	// static { System.out.println("Log " + new Throwable().getStackTrace()[0]); }
 }
