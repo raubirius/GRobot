@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2025 by Roman Horváth
+ // Copyright © 2010 – 2026 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -226,7 +226,7 @@ import knižnica.podpora.RandomGenerator;
 						myš.{@link Poloha#polohaX() polohaX}() + x,
 						myš.{@link Poloha#polohaY() polohaY}() + y + j * {@code num3},
 
-						({@code num10} - (j / {@code num2})) * {@code num2}, {@code comm// rozsah}
+						({@code num10} &#45; (j / {@code num2})) * {@code num2}, {@code comm// rozsah}
 						{@code num8}, {@code num24},              {@code comm// hranice}
 						{@code num4}, i * {@code num8} + j);      {@code comm// trvanie a oneskorenie}
 				}

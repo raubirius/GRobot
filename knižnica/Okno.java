@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2025 by Roman Horváth
+ // Copyright © 2010 – 2026 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -1753,6 +1753,212 @@ public class Okno
 
 
 	// Rozmery okna
+
+	private final HraniceRozmerov hraniceRozmerov =
+		new HraniceRozmerov(okno, hlavnýPanel);
+
+	// Poznámka: Mechanizmus obmedzovania minimálnych a maximálnych rozmerov
+	// panelu a okna bol implementovaný s použitím umelej inteligencie.
+
+	/**
+	 * <p>Vráti nastavené minimálne rozmery viditeľného hlavného panela.
+	 * Prvý prvok poľa je šírka a druhý výška v pixeloch. Nula označuje
+	 * rozmer bez vlastného obmedzenia. Zmena vráteného poľa nastavenie
+	 * neovplyvní.</p>
+	 * 
+	 * @return nové dvojprvkové pole so šírkou a výškou
+	 * @see #minimálneRozmeryPanela(int, int)
+	 */
+	public int[] minimálneRozmeryPanela()
+	{ return hraniceRozmerov.čítaj(HraniceRozmerov.MIN_PANEL); }
+
+	/**
+	 * <p>Nastaví minimálne rozmery viditeľného hlavného panela.
+	 * Nulou sa obmedzenie príslušného rozmeru zruší. Ak je niektorý
+	 * argument záporný, ponechajú sa obe doterajšie hodnoty.</p>
+	 * 
+	 * <p>Hranice panela a okna platia súčasne. Ak sa maximum nedá
+	 * dodržať spolu s minimom, prednosť má minimum. Rozmery plátna
+	 * sa nemenia. Hranice sa uplatnia pri najbližšom spracovaní
+	 * udalostí bežného okna; režim celej obrazovky má vlastné rozmery.</p>
+	 * 
+	 * @param šírka požadovaná šírka v pixeloch
+	 * @param výška požadovaná výška v pixeloch
+	 * @see #minimálneRozmeryPanela()
+	 */
+	public void minimálneRozmeryPanela(int šírka, int výška)
+	{ hraniceRozmerov.nastav(HraniceRozmerov.MIN_PANEL, šírka, výška); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryPanela() minimálneRozmeryPanela}.</p> */
+	public int[] minimalneRozmeryPanela() { return minimálneRozmeryPanela(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryPanela(int, int) minimálneRozmeryPanela}.</p> */
+	public void minimalneRozmeryPanela(int šírka, int výška)
+	{ minimálneRozmeryPanela(šírka, výška); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryPanela() minimálneRozmeryPanela}.</p> */
+	public int[] najmenšieRozmeryPanela() { return minimálneRozmeryPanela(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryPanela(int, int) minimálneRozmeryPanela}.</p> */
+	public void najmenšieRozmeryPanela(int šírka, int výška)
+	{ minimálneRozmeryPanela(šírka, výška); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryPanela() minimálneRozmeryPanela}.</p> */
+	public int[] najmensieRozmeryPanela() { return minimálneRozmeryPanela(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryPanela(int, int) minimálneRozmeryPanela}.</p> */
+	public void najmensieRozmeryPanela(int šírka, int výška)
+	{ minimálneRozmeryPanela(šírka, výška); }
+
+	/**
+	 * <p>Vráti nastavené minimálne rozmery celého okna vrátane jeho okrajov a ponuky.
+	 * Prvý prvok poľa je šírka a druhý výška v pixeloch. Nula označuje
+	 * rozmer bez vlastného obmedzenia. Zmena vráteného poľa nastavenie
+	 * neovplyvní.</p>
+	 * 
+	 * @return nové dvojprvkové pole so šírkou a výškou
+	 * @see #minimálneRozmeryOkna(int, int)
+	 */
+	public int[] minimálneRozmeryOkna()
+	{ return hraniceRozmerov.čítaj(HraniceRozmerov.MIN_OKNO); }
+
+	/**
+	 * <p>Nastaví minimálne rozmery celého okna vrátane jeho okrajov a ponuky.
+	 * Nulou sa obmedzenie príslušného rozmeru zruší. Ak je niektorý
+	 * argument záporný, ponechajú sa obe doterajšie hodnoty.</p>
+	 * 
+	 * <p>Hranice panela a okna platia súčasne. Ak sa maximum nedá
+	 * dodržať spolu s minimom, prednosť má minimum. Rozmery plátna
+	 * sa nemenia. Hranice sa uplatnia pri najbližšom spracovaní
+	 * udalostí bežného okna; režim celej obrazovky má vlastné rozmery.</p>
+	 * 
+	 * @param šírka požadovaná šírka v pixeloch
+	 * @param výška požadovaná výška v pixeloch
+	 * @see #minimálneRozmeryOkna()
+	 */
+	public void minimálneRozmeryOkna(int šírka, int výška)
+	{ hraniceRozmerov.nastav(HraniceRozmerov.MIN_OKNO, šírka, výška); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryOkna() minimálneRozmeryOkna}.</p> */
+	public int[] minimalneRozmeryOkna() { return minimálneRozmeryOkna(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryOkna(int, int) minimálneRozmeryOkna}.</p> */
+	public void minimalneRozmeryOkna(int šírka, int výška)
+	{ minimálneRozmeryOkna(šírka, výška); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryOkna() minimálneRozmeryOkna}.</p> */
+	public int[] najmenšieRozmeryOkna() { return minimálneRozmeryOkna(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryOkna(int, int) minimálneRozmeryOkna}.</p> */
+	public void najmenšieRozmeryOkna(int šírka, int výška)
+	{ minimálneRozmeryOkna(šírka, výška); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryOkna() minimálneRozmeryOkna}.</p> */
+	public int[] najmensieRozmeryOkna() { return minimálneRozmeryOkna(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryOkna(int, int) minimálneRozmeryOkna}.</p> */
+	public void najmensieRozmeryOkna(int šírka, int výška)
+	{ minimálneRozmeryOkna(šírka, výška); }
+
+	/**
+	 * <p>Vráti nastavené maximálne rozmery viditeľného hlavného panela.
+	 * Prvý prvok poľa je šírka a druhý výška v pixeloch. Nula označuje
+	 * rozmer bez vlastného obmedzenia. Zmena vráteného poľa nastavenie
+	 * neovplyvní.</p>
+	 * 
+	 * @return nové dvojprvkové pole so šírkou a výškou
+	 * @see #maximálneRozmeryPanela(int, int)
+	 */
+	public int[] maximálneRozmeryPanela()
+	{ return hraniceRozmerov.čítaj(HraniceRozmerov.MAX_PANEL); }
+
+	/**
+	 * <p>Nastaví maximálne rozmery viditeľného hlavného panela.
+	 * Nulou sa obmedzenie príslušného rozmeru zruší. Ak je niektorý
+	 * argument záporný, ponechajú sa obe doterajšie hodnoty.</p>
+	 * 
+	 * <p>Hranice panela a okna platia súčasne. Ak sa maximum nedá
+	 * dodržať spolu s minimom, prednosť má minimum. Rozmery plátna
+	 * sa nemenia. Hranice sa uplatnia pri najbližšom spracovaní
+	 * udalostí bežného okna; režim celej obrazovky má vlastné rozmery.</p>
+	 * 
+	 * @param šírka požadovaná šírka v pixeloch
+	 * @param výška požadovaná výška v pixeloch
+	 * @see #maximálneRozmeryPanela()
+	 */
+	public void maximálneRozmeryPanela(int šírka, int výška)
+	{ hraniceRozmerov.nastav(HraniceRozmerov.MAX_PANEL, šírka, výška); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryPanela() maximálneRozmeryPanela}.</p> */
+	public int[] maximalneRozmeryPanela() { return maximálneRozmeryPanela(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryPanela(int, int) maximálneRozmeryPanela}.</p> */
+	public void maximalneRozmeryPanela(int šírka, int výška)
+	{ maximálneRozmeryPanela(šírka, výška); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryPanela() maximálneRozmeryPanela}.</p> */
+	public int[] najväčšieRozmeryPanela() { return maximálneRozmeryPanela(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryPanela(int, int) maximálneRozmeryPanela}.</p> */
+	public void najväčšieRozmeryPanela(int šírka, int výška)
+	{ maximálneRozmeryPanela(šírka, výška); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryPanela() maximálneRozmeryPanela}.</p> */
+	public int[] najvacsieRozmeryPanela() { return maximálneRozmeryPanela(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryPanela(int, int) maximálneRozmeryPanela}.</p> */
+	public void najvacsieRozmeryPanela(int šírka, int výška)
+	{ maximálneRozmeryPanela(šírka, výška); }
+
+	/**
+	 * <p>Vráti nastavené maximálne rozmery celého okna vrátane jeho okrajov a ponuky.
+	 * Prvý prvok poľa je šírka a druhý výška v pixeloch. Nula označuje
+	 * rozmer bez vlastného obmedzenia. Zmena vráteného poľa nastavenie
+	 * neovplyvní.</p>
+	 * 
+	 * @return nové dvojprvkové pole so šírkou a výškou
+	 * @see #maximálneRozmeryOkna(int, int)
+	 */
+	public int[] maximálneRozmeryOkna()
+	{ return hraniceRozmerov.čítaj(HraniceRozmerov.MAX_OKNO); }
+
+	/**
+	 * <p>Nastaví maximálne rozmery celého okna vrátane jeho okrajov a ponuky.
+	 * Nulou sa obmedzenie príslušného rozmeru zruší. Ak je niektorý
+	 * argument záporný, ponechajú sa obe doterajšie hodnoty.</p>
+	 * 
+	 * <p>Hranice panela a okna platia súčasne. Ak sa maximum nedá
+	 * dodržať spolu s minimom, prednosť má minimum. Rozmery plátna
+	 * sa nemenia. Hranice sa uplatnia pri najbližšom spracovaní
+	 * udalostí bežného okna; režim celej obrazovky má vlastné rozmery.</p>
+	 * 
+	 * @param šírka požadovaná šírka v pixeloch
+	 * @param výška požadovaná výška v pixeloch
+	 * @see #maximálneRozmeryOkna()
+	 */
+	public void maximálneRozmeryOkna(int šírka, int výška)
+	{ hraniceRozmerov.nastav(HraniceRozmerov.MAX_OKNO, šírka, výška); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryOkna() maximálneRozmeryOkna}.</p> */
+	public int[] maximalneRozmeryOkna() { return maximálneRozmeryOkna(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryOkna(int, int) maximálneRozmeryOkna}.</p> */
+	public void maximalneRozmeryOkna(int šírka, int výška)
+	{ maximálneRozmeryOkna(šírka, výška); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryOkna() maximálneRozmeryOkna}.</p> */
+	public int[] najväčšieRozmeryOkna() { return maximálneRozmeryOkna(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryOkna(int, int) maximálneRozmeryOkna}.</p> */
+	public void najväčšieRozmeryOkna(int šírka, int výška)
+	{ maximálneRozmeryOkna(šírka, výška); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryOkna() maximálneRozmeryOkna}.</p> */
+	public int[] najvacsieRozmeryOkna() { return maximálneRozmeryOkna(); }
+
+	/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryOkna(int, int) maximálneRozmeryOkna}.</p> */
+	public void najvacsieRozmeryOkna(int šírka, int výška)
+	{ maximálneRozmeryOkna(šírka, výška); }
 
 	/**
 	 * <p>Zistí šírku tohto okna.</p>

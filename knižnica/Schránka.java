@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2025 by Roman Horváth
+ // Copyright © 2010 – 2026 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -245,7 +245,7 @@ public class Schránka
 	 * uvoľnený}, inak zostane prítomný v pamäti počítača až do ukončenia
 	 * činnosti aplikácie.)</p>
 	 * 
-	 * @return nový objekt s obrázkom, ktorý bol obsiahnutý v schránke,
+	 * @return nový objekt s obrázkom, ktorý bol obsiahnutý v schránke
 	 *     alebo {@code valnull} ak schránka neobsahovala obrazovú
 	 *     informáciu
 	 */

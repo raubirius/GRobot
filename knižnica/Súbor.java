@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2025 by Roman Horváth
+ // Copyright © 2010 – 2026 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -4854,6 +4854,12 @@ public class Súbor implements Closeable
 		 * prvou lomkou bude uvedená jednotka, na ktorej je {@code .jar}
 		 * súbor umiestnený).</p>
 		 * 
+		 * <p>Vďaka tomu, že táto metóda dokáže vyhľadávať prítomnosť súborov
+		 * aj v rámci {@code .jar} súborov je použiteľná na overenie
+		 * prítomnosti takýchto (takto umiestnených) súborov pred ich
+		 * čítaním. (Na rozdiel od metódy {@link #jestvuje(String)
+		 * jestvuje})</p>
+		 * 
 		 * @param názovSúboru názov súboru (určeného na čítanie)
 		 * @return skutočné umiestnenie súboru alebo {@code valnull}, ak
 		 *     súbor nebol nájdený na žiadnej z prehľadávaných lokalít
@@ -4893,7 +4899,7 @@ public class Súbor implements Closeable
 		}
 
 		/** <p><a class="alias"></a> Alias pre {@link #kdeJeSúbor(String) kdeJeSúbor}.</p> */
-		public String kdeJeSubor(String názovSúboru)
+		public static String kdeJeSubor(String názovSúboru)
 		{ return kdeJeSúbor(názovSúboru); }
 
 
@@ -7951,10 +7957,11 @@ public class Súbor implements Closeable
 		 * {@code trimChars}, {@code komentár}, {@code komentar}, {@code 
 		 * qwxcomment}, {@code číselnéÚnikové}, {@code ciselneUnikove},
 		 * {@code qwxnumericalEscapes}, {@code číselnéVOhraničení}, {@code 
-		 * ciselneVOhraniceni}, {@code qwxnumericalInEnclosure} – ignorované
-		 * touto metódou; ich význam je v opise metódy {@link 
+		 * ciselneVOhraniceni}, {@code qwxnumericalInEnclosure} – nie sú
+		 * vyhodnocované touto metódou, ale metódou {@link 
 		 * #reťazecNaTabuľku(String, String...) reťazecNaTabuľku}, do ktorej
-		 * sa, samozrejme, posielajú po prečítaní údajov zo súboru.</span></li>
+		 * sa posielajú po prečítaní údajov zo súboru a ich význam je preto
+		 * uvedený v opise uvedenj metódy.</span></li>
 		 * </ul>
 		 * 
 		 * <p class="remark"><b>Poznámka:</b> Nastavenia uvedené v zozname
@@ -9143,12 +9150,12 @@ public class Súbor implements Closeable
 		 * escapeInEnclosure}, {@code orezaťZnaky}, {@code orezatZnaky},
 		 * {@code trimChars}, {@code novýRiadok}, {@code novyRiadok}, {@code 
 		 * newLine}, {@code BOM}, {@code ohraničKaždúBunku}, {@code 
-		 * ohranicKazduBunku}, {@code encloseEachCell} – ignorované touto
-		 * metódou; ich význam je v opise metódy {@link 
-		 * #tabuľkaNaReťazec(String[][], String...) tabuľkaNaReťazec}, do
-		 * ktorej sa, samozrejme, posielajú tesne pred zapísaním údajov do
-		 * súboru – v rámci ich prevodu prostredníctvom uvedenej
-		 * metódy;</span></li>
+		 * ohranicKazduBunku}, {@code encloseEachCell} – nie je spracované
+		 * touto metódou, ale metódou {@link #tabuľkaNaReťazec(String[][],
+		 * String...) tabuľkaNaReťazec}, do ktorej sa posielajú tesne pred
+		 * zapísaním údajov do súboru – v rámci ich prevodu prostredníctvom
+		 * uvedenej metódy; preto je ich význam vysvetlený v opise uvedenej
+		 * metódy</span></li>
 		 * </ul>
 		 * 
 		 * <p><b>Pravidlá rozpoznávania pre hodnoty nastavení typu {@code 

@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2025 by Roman Horváth
+ // Copyright © 2010 – 2026 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -2804,6 +2804,11 @@ public class PoznámkovýBlok extends JTextPane implements Poloha, Rozmer
 	 * zdedenou metódou {@link #getContentType() getContentType()},
 	 * ktorá vráti typ v reťazcovej podobe. Príklady: {@code 
 	 * srg"text/plain"}, {@code srg"text/html"}.</p>
+	 * 
+	 * <p class="remark"><b>Poznámka:</b> Keď je poznámkový blok v režime
+	 * {@linkplain #neupravuj() iba na čítanie}, tak klikanie na hypertextové
+	 * odkazy v rámci HTML obsahu bude spúšťať reakciu
+	 * {@link ObsluhaUdalostí#aktiváciaOdkazu() aktiváciaOdkazu}.</p>
 	 * 
 	 * @param text nový HTML obsah poznámkového bloku
 	 * 

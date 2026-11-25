@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2025 by Roman Horváth
+ // Copyright © 2010 – 2026 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -95,8 +95,8 @@ import java.util.Vector;
 		{
 			{@code kwdpublic} {@code typevoid} {@link Tlač#kresli(int, PageFormat) kresli}({@code typeint} strana, {@link PageFormat PageFormat} formát)
 			{
-				{@code typedouble} rozsahX = formát.{@link PageFormat#getWidth() getWidth}() / {@code num2} - {@code num1.5} * {@link Tlač#cm cm};
-				{@code typedouble} rozsahY = formát.{@link PageFormat#getHeight() getHeight}() / {@code num2} - {@code num1.5} * {@link Tlač#cm cm};
+				{@code typedouble} rozsahX = formát.{@link PageFormat#getWidth() getWidth}() / {@code num2} &#45; {@code num1.5} * {@link Tlač#cm cm};
+				{@code typedouble} rozsahY = formát.{@link PageFormat#getHeight() getHeight}() / {@code num2} &#45; {@code num1.5} * {@link Tlač#cm cm};
 
 				{@code kwdswitch} (strana)
 				{
@@ -197,7 +197,7 @@ import java.util.Vector;
 			{@code comm//     zamedzené hodotnou true predposledného parametra (nekresliMimo)}
 			{@code comm//   • a začína sa prvým riadkom (index 0 v posledom parametri).}
 			{@code typeint} i = tlač.{@link #kresliTextDo(Graphics, CharSequence, int, int, int, int, BlokSlov, boolean, int) kresliTextDo}({@link GRobot#grafika() grafika}(), {@code valnull},
-				({@code typeint}){@link Svet Svet}.{@link Svet#prepočítajX(double) prepočítajX}({@link GRobot#polohaX() polohaX}() - šírka),
+				({@code typeint}){@link Svet Svet}.{@link Svet#prepočítajX(double) prepočítajX}({@link GRobot#polohaX() polohaX}() &#45; šírka),
 				({@code typeint}){@link Svet Svet}.{@link Svet#prepočítajY(double) prepočítajY}({@link GRobot#polohaY() polohaY}() + výška),
 				{@code num2} * šírka, {@code num2} * výška, blokSlov, {@code valtrue}, {@code num0});
 

@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2025 by Roman Horváth
+ // Copyright © 2010 – 2026 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -10576,8 +10576,8 @@ public class Plátno implements Priehľadnosť
 						{@code comm// […] vypočítame z oboch polôh rozdiel, o ktorý sa plátno}
 						{@code comm// pretočí […]}
 						{@link Plátno podlaha}.{@link Plátno#pretoč(double, double) pretoč}(
-							poloha2.{@link Poloha#polohaX() polohaX}() - poloha1.{@link Poloha#polohaX() polohaX}(),
-							poloha2.{@link Poloha#polohaY() polohaY}() - poloha1.{@link Poloha#polohaY() polohaY}());
+							poloha2.{@link Poloha#polohaX() polohaX}() &#45; poloha1.{@link Poloha#polohaX() polohaX}(),
+							poloha2.{@link Poloha#polohaY() polohaY}() &#45; poloha1.{@link Poloha#polohaY() polohaY}());
 
 						{@code comm// […] a uložíme aktuálnu polohu ako novú počiatočnú polohu.}
 						poloha1 = poloha2;

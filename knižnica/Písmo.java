@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2025 by Roman Horváth
+ // Copyright © 2010 – 2026 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -160,7 +160,7 @@ public class Písmo extends Font
 	 * attributes}. Ak je tento parameter rovný {@code valnull}, písmo
 	 * bude vytvorené s predvolenými hodnotami.</p>
 	 * 
-	 * @param attributes atribúty, ktoré majú byť priradené novému písmu,
+	 * @param attributes atribúty, ktoré majú byť priradené novému písmu
 	 *     alebo {@code valnull}
 	 */
 	public Písmo(Map<? extends AttributedCharacterIterator.Attribute, ?> attributes)
@@ -171,7 +171,7 @@ public class Písmo extends Font
 	 * 
 	 * <p>Názov písma môže byť (z technického pohľadu) buď názov rodiny
 	 * písiem (anlg. font family name; ten je vo svete robota z dôvodu
-	 * zjednodušenia považovaný za {@linkplain #názov() názov písma}),
+	 * zjednodušenia považovaný za {@linkplain #názov() názov písma})
 	 * alebo názov rezu písma (ang. font face name), čo je užšia
 	 * špecifikácia (príklad: Helvetica Bold, Arial Italic). Pri
 	 * vytváraní písma je názov kombinovaný so štýlom, aby bolo nájdené

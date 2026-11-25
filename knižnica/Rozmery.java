@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2025 by Roman Horváth
+ // Copyright © 2010 – 2026 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -1096,6 +1096,8 @@ public class Rozmery extends Dimension2D implements Rozmer
 						predvolenýRozmer, 0);
 
 				Object[] komponenty = new Object[] {panelRozmeru};
+				Svet.obnovVzhľadDialógu(panelRozmeru);
+				Svet.obnovVzhľadDialógu(Svet.mojeOdpovede);
 
 				if ((Svet.odpoveďDialógu = JOptionPane.showOptionDialog(null ==
 					Svet.oknoCelejObrazovky ? GRobot.svet : Svet.

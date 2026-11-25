@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2025 by Roman Horváth
+ // Copyright © 2010 – 2026 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -256,7 +256,7 @@ public class Archív implements Closeable
 	 * 
 	 * <p class="tip"><b>Tip:</b> Názov archívu môže byť od cesty oddelený
 	 * pomocou konštruktora, ktorý prijíma cestu a názov archívu zvlášť
-	 * {@link #Archív(String, String) Archív(cesta, názov)}, alebo s použitím
+	 * {@link #Archív(String, String) Archív(cesta, názov)} alebo s použitím
 	 * metódy {@link #cestaNaDisku(String) cestaNaDisku} na dodatočné
 	 * nastavenie cesty k archívu.</p>
 	 * 

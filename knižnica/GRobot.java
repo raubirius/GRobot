@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2025 by Roman Horváth
+ // Copyright © 2010 – 2026 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -1033,8 +1033,11 @@ Toto bolo presunuté na úvodnú stránku:
 				// Parametre polohy a veľkosti textového poľa.
 				private int x, y, šírka, výška;
 
-				// Pomocný príznak.
-				private int polohaKurzora = 0;
+				// Stav jednej úpravy; komponent možno použiť opakovane.
+				private int polohaKurzora;
+				private Object identifikátor;
+				private boolean podľaTextu, máFokus;
+				private long čísloÚpravy;
 
 				// Previaže textové pole s obsluhou udalostí.
 				private final KeyListener klávesStlačený = new KeyListener()
@@ -1043,16 +1046,19 @@ Toto bolo presunuté na úvodnú stránku:
 					{
 						// Umiestnenie týchto príkazov do reakcie
 						// keyTyped nefungovalo v macOS (predtým OS X a Mac OS)
-						if (e.getKeyChar() == KeyEvent.VK_ENTER)
+						if (e.getKeyCode() == KeyEvent.VK_ENTER)
 						{
+							e.consume();
 							ukončiÚpravu(SPÔSOB_ENTER);
 						}
-						else if (e.getKeyChar() == KeyEvent.VK_ESCAPE)
+						else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
 						{
+							e.consume();
 							ukončiÚpravu(SPÔSOB_ESCAPE);
 						}
-						else if (e.getKeyChar() == KeyEvent.VK_TAB)
+						else if (e.getKeyCode() == KeyEvent.VK_TAB)
 						{
+							e.consume();
 							if (e.isShiftDown())
 								ukončiÚpravu(SPÔSOB_SHIFT_TAB);
 							else
@@ -1068,12 +1074,15 @@ Toto bolo presunuté na úvodnú stránku:
 				{
 					public void focusGained(FocusEvent e)
 					{
-						setCaretPosition(polohaKurzora);
+						máFokus = true;
+						if (aktívnyEditor == UpravText.this)
+							setCaretPosition(polohaKurzora);
 					}
 
 					public void focusLost(FocusEvent e)
 					{
-						if (isVisible()) ukončiÚpravu(SPÔSOB_DEAKTIVÁCIA);
+						máFokus = false;
+						ukončiÚpravu(SPÔSOB_DEAKTIVÁCIA);
 					}
 				};
 
@@ -1088,7 +1097,7 @@ Toto bolo presunuté na úvodnú stránku:
 				}
 
 
-				public UpravText()
+				private UpravText()
 				{
 					super(10);
 
@@ -1109,18 +1118,13 @@ Toto bolo presunuté na úvodnú stránku:
 					addKeyListener(klávesStlačený);
 					addFocusListener(fokusZmenený);
 					setVisible(false);
-
-					Svet.hlavnýPanel.add(this, 0);
 				}
 
-				public boolean začniÚpravu(String text,
-					double šírkaPrvku, boolean žiadajZhodu)
+				private void priprav(String text,
+					double šírkaPrvku, Object kľúč)
 				{
-					// System.out.println("Text: " + text + ", šírka: " + šírkaPrvku + ", žiadaj zhodu: " + žiadajZhodu);
-
-					if (isVisible()) return false;
-					if (žiadajZhodu && !text.equals(getText())) return false;
-
+					podľaTextu = null == kľúč;
+					identifikátor = podľaTextu ? text : kľúč;
 					double prepočítanéX = Svet.prepočítajX(aktuálneX);
 					double prepočítanéY = Svet.prepočítajY(aktuálneY);
 
@@ -1153,35 +1157,68 @@ Toto bolo presunuté na úvodnú stránku:
 						setHorizontalAlignment(JTextField.CENTER);
 					}
 
-					if (!text.equals(getText()))
-					{
-						setText(text);
-						if (0 == (spôsobKreslenia & KRESLI_NA_STRED))
-							polohaKurzora = getText().length();
-						else
-							polohaKurzora = getText().length() / 2;
-					}
+					setText(text);
+					polohaKurzora = (0 == (spôsobKreslenia & KRESLI_NA_STRED))
+						? text.length() : text.length() / 2;
+				}
 
+				private void zobraz()
+				{
+					Integer uložená = polohyKurzorov.get(identifikátor);
+					if (null != uložená)
+						polohaKurzora = Math.min(uložená, getDocument().getLength());
+					setCaretPosition(polohaKurzora);
+					Svet.hlavnýPanel.add(this, 0);
 					setVisible(true);
 					Svet.hlavnýPanel.doLayout();
-
-					SwingUtilities.invokeLater(() -> requestFocus());
-					return true;
+					final long úprava = ++čísloÚpravy;
+					SwingUtilities.invokeLater(() -> {
+						if (aktívnyEditor == this && úprava == čísloÚpravy)
+							requestFocusInWindow();
+					});
 				}
 
 				public boolean ukončiÚpravu(int spôsob)
 				{
-					if (!isVisible()) return false;
-					polohaKurzora = getCaretPosition();
-					ukončenieÚpravyTextu(getText(), spôsob);
-					ukoncenieUpravyTextu(getText(), spôsob);
+					if (aktívnyEditor != this) return false;
+					String text = getText();
+					if (SPÔSOB_ESCAPE == spôsob)
+						polohyKurzorov.put(identifikátor, polohaKurzora);
+					else
+						polohyKurzorov.put(podľaTextu ? text : identifikátor,
+							getCaretPosition());
+					identifikátor = null;
+					// Obsluha udalosti môže ihneď otvoriť ďalšie pole.
+					aktívnyEditor = null;
 					setVisible(false);
+					Svet.hlavnýPanel.remove(this);
+					Svet.hlavnýPanel.repaint();
+					try
+					{
+						ukončenieÚpravyTextu(text, spôsob);
+						ukoncenieUpravyTextu(text, spôsob);
+					}
+					finally { voľnéEditory.add(this); }
 					return true;
 				}
 			}
 
-			private UpravText upravText[] = new UpravText[8];
+			private UpravText aktívnyEditor;
+			private final java.util.ArrayList<UpravText> voľnéEditory =
+				new java.util.ArrayList<>();
+			private final java.util.HashMap<Object, Integer> polohyKurzorov =
+				new java.util.HashMap<>();
 
+			private UpravText prevezmiEditor()
+			{
+				for (int i = 0; i < voľnéEditory.size(); ++i)
+				{
+					UpravText editor = voľnéEditory.get(i);
+					if (!editor.máFokus && !editor.isFocusOwner())
+						return voľnéEditory.remove(i);
+				}
+				return new UpravText();
+			}
 
 		// Spojnice
 
@@ -9258,7 +9295,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * vyvažovanie vypnuté, tak metóda vráti hodnotu
 				 * {@code valnull}.</p>
 				 * 
-				 * @return aktuálna hodnota gyroskopického vyvažovania, alebo
+				 * @return aktuálna hodnota gyroskopického vyvažovania alebo
 				 *     {@code valnull} ak je vyvažovanie vypnuté
 				 * 
 				 * @see #gyroskop(Double)
@@ -9277,7 +9314,7 @@ Toto bolo presunuté na úvodnú stránku:
 				 * prepočítavanie gyroskopického vyvažovania podľa hodnoty
 				 * otáčania tvaru.</p>
 				 * 
-				 * @param hodnota nová hodnota gyroskopického vyvažovania,
+				 * @param hodnota nová hodnota gyroskopického vyvažovania
 				 *     alebo {@code valnull} ak má byť vyvažovanie vypnuté
 				 * 
 				 * @see #gyroskop()
@@ -32013,7 +32050,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * schéma k algoritmu kreslenia vajca.</p>
 			 * 
 			 * <p class="remark"><b>Poznámka:</b> Výška vajca sa dá vypočítať
-			 * ako {@code polomer * (4 - }{@link Math Math}.{@link 
+			 * ako {@code polomer * (4 &#45; }{@link Math Math}.{@link 
 			 * Math#sqrt(double) sqrt}{@code (2))}.</p>
 			 * 
 			 * <p><a href="javascript:;"
@@ -32951,7 +32988,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * <li>{@code srg"typ3"} – principiálne rovnaké ako 
 			 * {@code srg"typ0"}, ale hranica je vypočítaná podľa
 			 * nasledujúceho vzorca:
-			 * √(<em>n</em> - 2√<em>n</em>) × sin(90° / <em>n</em>) / sin(180°
+			 * √(<em>n</em> − 2√<em>n</em>) × sin(90° / <em>n</em>) / sin(180°
 			 * / <em>n</em>); kde <em>n</em> je počet cípov hviezdy.</li></ul>
 			 * 
 			 * <p>Nasledujúce tri nastavenia zrušia efekt nastavení
@@ -39489,7 +39526,7 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see #ukončenieÚpravyTextu(String, int)
 			 */
 			public boolean upravText(String text)
-			{ return upravText(text, -1); }
+			{ return upravText(text, -1, null); }
 
 			/**
 			 * <p>Táto metóda umožní používateľovi upraviť text priamo na plátne.
@@ -39501,6 +39538,13 @@ Toto bolo presunuté na úvodnú stránku:
 			 * {@link #ukončenieÚpravyTextu(String, int)
 			 * ukončenieÚpravyTextu}, ktorú by mal programátor prekryť
 			 * a zariadiť spracovanie zadaného textu.</p>
+			 *
+			 * <p>Ak tento robot už upravuje iný text, ukončí jeho úpravu so
+			 * spôsobom {@link #SPÔSOB_DEAKTIVÁCIA} ešte pred zobrazením
+			 * nového poľa. Vlastnosti nového poľa sa prevezmú pri volaní
+			 * metódy. Obsluha ukončenia môže ihneď otvoriť ďalšie pole.
+			 * Ak ho otvorí počas deaktivácie, toto pole zostane aktívne
+			 * a vonkajšie volanie vráti {@code valfalse}.</p>
 			 * 
 			 * <p><b>Príklady:</b></p>
 			 * 
@@ -39727,7 +39771,7 @@ Toto bolo presunuté na úvodnú stránku:
 						{@code comm// Po nájdení aktuálneho prvku „označíme“ predchádzajúci:}
 						{@code kwdif} (upravujeSa == texty[i])
 						{
-							začniÚpravuNovéhoTextu = texty[i - {@code num1}];
+							začniÚpravuNovéhoTextu = texty[i &#45; {@code num1}];
 							{@code kwdbreak};
 						}
 					}
@@ -39765,23 +39809,51 @@ Toto bolo presunuté na úvodnú stránku:
 			 * @see #ukončenieÚpravyTextu(String, int)
 			 */
 			public boolean upravText(String text, double šírka)
+			{ return upravText(text, šírka, null); }
+
+			/**
+			 * <p>Táto metóda sa správa rovnako ako {@link #upravText(String,
+			 * double) upravText(text, šírka)} s drobným rozdielom. Rozdiel
+			 * spočíva v možnosti zadať identifikátor, podľa ktorého si robot
+			 * zapamätá polohu textového kurzora. Rovnaký identifikátor obnoví
+			 * polohu kurzora aj pri zmene obsahu alebo umiestnenia poľa.
+			 * Identifikátory sa porovnávajú metódou {@link Object#equals(Object)
+			 * equals} a ich hašovací kód sa počas používania nesmie meniť.</p>
+			 *
+			 * <p>Ak je identifikátor {@code valnull}, použije sa zadaný text.
+			 * Po potvrdení sa poloha kurzora zapamätá pre výsledný text.
+			 * Po zrušení úpravy klávesom {@code ESC} si robot ponechá
+			 * polohu kurzora zo začiatku úpravy.</p>
+			 *
+			 * @param text text určený na úpravu
+			 * @param šírka šírka komponentu (záporná hodnota určuje šírku podľa textu)
+			 * @param identifikátor identifikátor poľa alebo {@code valnull}
+			 * @return {@code valtrue} ak sa úpravu podarilo začať, inak {@code valfalse}
+			 * @see #upravText(String, double)
+			 */
+			public boolean upravText(String text, double šírka, Object identifikátor)
 			{
-				for (int b = 0; b < 2; ++b)
-					for (int i = 0; i < upravText.length; ++i)
+				UpravText nový = null;
+				try
+				{
+					if (null != text)
 					{
-						// System.out.print(i + ": ");
-
-						if (null == upravText[i])
-						{
-							upravText[i] = new UpravText();
-							if (upravText[i].začniÚpravu(text, šírka, false))
-								return true;
-						}
-
-						if (upravText[i].začniÚpravu(text, šírka, 0 == b))
-							return true;
+						nový = prevezmiEditor();
+						nový.priprav(text, šírka, identifikátor);
 					}
-				return false;
+					if (null != aktívnyEditor)
+						aktívnyEditor.ukončiÚpravu(SPÔSOB_DEAKTIVÁCIA);
+					if (null == nový || null != aktívnyEditor) return false;
+					aktívnyEditor = nový;
+					nový = null;
+					aktívnyEditor.zobraz();
+					return true;
+				}
+				finally
+				{
+					if (null != nový)
+						voľnéEditory.add(nový);
+				}
 			}
 
 
@@ -41596,7 +41668,7 @@ Toto bolo presunuté na úvodnú stránku:
 								{@code kwdif} ({@link ÚdajeUdalostí ÚdajeUdalostí}.{@link ÚdajeUdalostí#tlačidloMyši(int) tlačidloMyši}({@link Konštanty#ĽAVÉ ĽAVÉ}))
 									{@link GRobot#vrstva(int) vrstva}({@link GRobot#vrstva() vrstva}() + {@code num1});
 								{@code kwdelse}
-									{@link GRobot#vrstva(int) vrstva}({@link GRobot#vrstva() vrstva}() - {@code num1});
+									{@link GRobot#vrstva(int) vrstva}({@link GRobot#vrstva() vrstva}() &#45; {@code num1});
 							}
 						}
 					}

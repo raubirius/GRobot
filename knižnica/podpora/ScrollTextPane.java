@@ -667,8 +667,8 @@ public class ScrollTextPane extends JScrollPane
 	 * návratová hodnota tejto metódy rovná {@code true}, tak je komponent
 	 * určený na úpravy, v opačnom prípade je určený len na čítanie.</p>
 	 * 
-	 * @return {@code true}/{@code false} podľa toho, je komponent určený na
-	 *     úpravy, alebo nie
+	 * @return {@code true}/{@code false} podľa toho, či je komponent určený
+	 *     na úpravy, alebo nie
 	 * 
 	 * @see #setEditable(boolean)
 	 */

@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2025 by Roman Horváth
+ // Copyright © 2010 – 2026 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -1659,6 +1659,8 @@ public class Farba extends Color implements Comparable<Color>
 						predvolenáFarba, 0);
 
 				Object[] komponenty = new Object[] {panelFarieb};
+				Svet.obnovVzhľadDialógu(panelFarieb);
+				Svet.obnovVzhľadDialógu(Svet.mojeOdpovede);
 
 				if ((Svet.odpoveďDialógu = JOptionPane.showOptionDialog(null ==
 					Svet.oknoCelejObrazovky ? GRobot.svet : Svet.
@@ -2035,7 +2037,7 @@ public class Farba extends Color implements Comparable<Color>
 	 *     priestoru RGB
 	 * @param hsb pole, do ktorého metóda vloží hodnoty definujúce farbu
 	 *     vo farebnom priestore HSB alebo hodnota {@code valnull}
-	 * @return pole, ktoré bolo metóde odovzdané cez argument {@code hsb},
+	 * @return pole, ktoré bolo metóde odovzdané cez argument {@code hsb}
 	 *     alebo nové pole, ktoré metóda vytvorila v prípade prijatia hodnoty
 	 *     {@code valnull} v parametri {@code hsb}
 	 * 
@@ -2188,7 +2190,7 @@ public class Farba extends Color implements Comparable<Color>
 	 *     priestoru RGB
 	 * @param hsv pole, do ktorého metóda vloží hodnoty definujúce farbu
 	 *     vo farebnom priestore HSV alebo hodnota {@code valnull}
-	 * @return pole, ktoré bolo metóde odovzdané cez argument {@code hsb},
+	 * @return pole, ktoré bolo metóde odovzdané cez argument {@code hsb}
 	 *     alebo nové pole, ktoré metóda vytvorila v prípade prijatia hodnoty
 	 *     {@code valnull} v parametri {@code hsb}
 	 * 

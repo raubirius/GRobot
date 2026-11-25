@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2025 by Roman Horváth
+ // Copyright © 2010 – 2026 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -3776,7 +3776,7 @@ public final class Svet extends JFrame
 		 * vykonanie hromadnej akcie pomocou tohto vlastného zoznamu. Výzvy
 		 * slúžia predovšedkým na umožnenie hromadného spracovania bez
 		 * nevyhnutnosti vytvárania takého zoznamu (napríklad v prípade, keď
-		 * nepovažujeme vytvorenie vlastného zoznamu za významný prínos,
+		 * nepovažujeme vytvorenie vlastného zoznamu za významný prínos
 		 * alebo predtým, než sa programátor podrobnejšie oboznámi
 		 * s možnosťami zoznamov).</p>
 		 * 
@@ -4004,6 +4004,225 @@ public final class Svet extends JFrame
 		public static int viditelnaVyska() { return hlavnýPanel.getHeight(); }
 
 		// Rozmery a poloha hlavného okna
+
+		private static final HraniceRozmerov hraniceRozmerov =
+			new HraniceRozmerov(svet, hlavnýPanel);
+
+		// Poznámka: Mechanizmus obmedzovania minimálnych a maximálnych
+		// rozmerov panelu a okna bol implementovaný s použitím umelej
+		// inteligencie.
+
+		/**
+		 * <p>Vráti nastavené minimálne rozmery viditeľného hlavného panela.
+		 * Prvý prvok poľa je šírka a druhý výška v pixeloch. Nula označuje
+		 * rozmer bez vlastného obmedzenia. Zmena vráteného poľa nastavenie
+		 * neovplyvní.</p>
+		 * 
+		 * @return nové dvojprvkové pole so šírkou a výškou
+		 * @see #minimálneRozmeryPanela(int, int)
+		 */
+		public static int[] minimálneRozmeryPanela()
+		{ return hraniceRozmerov.čítaj(HraniceRozmerov.MIN_PANEL); }
+
+		/**
+		 * <p>Nastaví minimálne rozmery viditeľného hlavného panela.
+		 * Nulou sa obmedzenie príslušného rozmeru zruší. Ak je niektorý
+		 * argument záporný, ponechajú sa obe doterajšie hodnoty.</p>
+		 * 
+		 * <p>Hranice panela a okna platia súčasne. Ak sa maximum nedá
+		 * dodržať spolu s minimom, prednosť má minimum. Rozmery plátna
+		 * sa nemenia. Hranice sa uplatnia pri najbližšom spracovaní
+		 * udalostí bežného okna; režim celej obrazovky má vlastné rozmery.</p>
+		 * 
+		 * @param šírka požadovaná šírka v pixeloch
+		 * @param výška požadovaná výška v pixeloch
+		 * @see #minimálneRozmeryPanela()
+		 */
+		public static void minimálneRozmeryPanela(int šírka, int výška)
+		{ hraniceRozmerov.nastav(HraniceRozmerov.MIN_PANEL, šírka, výška); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryPanela() minimálneRozmeryPanela}.</p> */
+		public static int[] minimalneRozmeryPanela()
+		{ return minimálneRozmeryPanela(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryPanela(int, int) minimálneRozmeryPanela}.</p> */
+		public static void minimalneRozmeryPanela(int šírka, int výška)
+		{ minimálneRozmeryPanela(šírka, výška); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryPanela() minimálneRozmeryPanela}.</p> */
+		public static int[] najmenšieRozmeryPanela()
+		{ return minimálneRozmeryPanela(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryPanela(int, int) minimálneRozmeryPanela}.</p> */
+		public static void najmenšieRozmeryPanela(int šírka, int výška)
+		{ minimálneRozmeryPanela(šírka, výška); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryPanela() minimálneRozmeryPanela}.</p> */
+		public static int[] najmensieRozmeryPanela()
+		{ return minimálneRozmeryPanela(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryPanela(int, int) minimálneRozmeryPanela}.</p> */
+		public static void najmensieRozmeryPanela(int šírka, int výška)
+		{ minimálneRozmeryPanela(šírka, výška); }
+
+		/**
+		 * <p>Vráti nastavené minimálne rozmery celého okna vrátane jeho okrajov a ponuky.
+		 * Prvý prvok poľa je šírka a druhý výška v pixeloch. Nula označuje
+		 * rozmer bez vlastného obmedzenia. Zmena vráteného poľa nastavenie
+		 * neovplyvní.</p>
+		 * 
+		 * @return nové dvojprvkové pole so šírkou a výškou
+		 * @see #minimálneRozmeryOkna(int, int)
+		 */
+		public static int[] minimálneRozmeryOkna()
+		{ return hraniceRozmerov.čítaj(HraniceRozmerov.MIN_OKNO); }
+
+		/**
+		 * <p>Nastaví minimálne rozmery celého okna vrátane jeho okrajov a ponuky.
+		 * Nulou sa obmedzenie príslušného rozmeru zruší. Ak je niektorý
+		 * argument záporný, ponechajú sa obe doterajšie hodnoty.</p>
+		 * 
+		 * <p>Hranice panela a okna platia súčasne. Ak sa maximum nedá
+		 * dodržať spolu s minimom, prednosť má minimum. Rozmery plátna
+		 * sa nemenia. Hranice sa uplatnia pri najbližšom spracovaní
+		 * udalostí bežného okna; režim celej obrazovky má vlastné rozmery.</p>
+		 * 
+		 * @param šírka požadovaná šírka v pixeloch
+		 * @param výška požadovaná výška v pixeloch
+		 * @see #minimálneRozmeryOkna()
+		 */
+		public static void minimálneRozmeryOkna(int šírka, int výška)
+		{ hraniceRozmerov.nastav(HraniceRozmerov.MIN_OKNO, šírka, výška); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryOkna() minimálneRozmeryOkna}.</p> */
+		public static int[] minimalneRozmeryOkna()
+		{ return minimálneRozmeryOkna(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryOkna(int, int) minimálneRozmeryOkna}.</p> */
+		public static void minimalneRozmeryOkna(int šírka, int výška)
+		{ minimálneRozmeryOkna(šírka, výška); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryOkna() minimálneRozmeryOkna}.</p> */
+		public static int[] najmenšieRozmeryOkna()
+		{ return minimálneRozmeryOkna(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryOkna(int, int) minimálneRozmeryOkna}.</p> */
+		public static void najmenšieRozmeryOkna(int šírka, int výška)
+		{ minimálneRozmeryOkna(šírka, výška); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryOkna() minimálneRozmeryOkna}.</p> */
+		public static int[] najmensieRozmeryOkna()
+		{ return minimálneRozmeryOkna(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #minimálneRozmeryOkna(int, int) minimálneRozmeryOkna}.</p> */
+		public static void najmensieRozmeryOkna(int šírka, int výška)
+		{ minimálneRozmeryOkna(šírka, výška); }
+
+		/**
+		 * <p>Vráti nastavené maximálne rozmery viditeľného hlavného panela.
+		 * Prvý prvok poľa je šírka a druhý výška v pixeloch. Nula označuje
+		 * rozmer bez vlastného obmedzenia. Zmena vráteného poľa nastavenie
+		 * neovplyvní.</p>
+		 * 
+		 * @return nové dvojprvkové pole so šírkou a výškou
+		 * @see #maximálneRozmeryPanela(int, int)
+		 */
+		public static int[] maximálneRozmeryPanela()
+		{ return hraniceRozmerov.čítaj(HraniceRozmerov.MAX_PANEL); }
+
+		/**
+		 * <p>Nastaví maximálne rozmery viditeľného hlavného panela.
+		 * Nulou sa obmedzenie príslušného rozmeru zruší. Ak je niektorý
+		 * argument záporný, ponechajú sa obe doterajšie hodnoty.</p>
+		 * 
+		 * <p>Hranice panela a okna platia súčasne. Ak sa maximum nedá
+		 * dodržať spolu s minimom, prednosť má minimum. Rozmery plátna
+		 * sa nemenia. Hranice sa uplatnia pri najbližšom spracovaní
+		 * udalostí bežného okna; režim celej obrazovky má vlastné rozmery.</p>
+		 * 
+		 * @param šírka požadovaná šírka v pixeloch
+		 * @param výška požadovaná výška v pixeloch
+		 * @see #maximálneRozmeryPanela()
+		 */
+		public static void maximálneRozmeryPanela(int šírka, int výška)
+		{ hraniceRozmerov.nastav(HraniceRozmerov.MAX_PANEL, šírka, výška); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryPanela() maximálneRozmeryPanela}.</p> */
+		public static int[] maximalneRozmeryPanela()
+		{ return maximálneRozmeryPanela(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryPanela(int, int) maximálneRozmeryPanela}.</p> */
+		public static void maximalneRozmeryPanela(int šírka, int výška)
+		{ maximálneRozmeryPanela(šírka, výška); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryPanela() maximálneRozmeryPanela}.</p> */
+		public static int[] najväčšieRozmeryPanela()
+		{ return maximálneRozmeryPanela(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryPanela(int, int) maximálneRozmeryPanela}.</p> */
+		public static void najväčšieRozmeryPanela(int šírka, int výška)
+		{ maximálneRozmeryPanela(šírka, výška); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryPanela() maximálneRozmeryPanela}.</p> */
+		public static int[] najvacsieRozmeryPanela()
+		{ return maximálneRozmeryPanela(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryPanela(int, int) maximálneRozmeryPanela}.</p> */
+		public static void najvacsieRozmeryPanela(int šírka, int výška)
+		{ maximálneRozmeryPanela(šírka, výška); }
+
+		/**
+		 * <p>Vráti nastavené maximálne rozmery celého okna vrátane jeho okrajov a ponuky.
+		 * Prvý prvok poľa je šírka a druhý výška v pixeloch. Nula označuje
+		 * rozmer bez vlastného obmedzenia. Zmena vráteného poľa nastavenie
+		 * neovplyvní.</p>
+		 * 
+		 * @return nové dvojprvkové pole so šírkou a výškou
+		 * @see #maximálneRozmeryOkna(int, int)
+		 */
+		public static int[] maximálneRozmeryOkna()
+		{ return hraniceRozmerov.čítaj(HraniceRozmerov.MAX_OKNO); }
+
+		/**
+		 * <p>Nastaví maximálne rozmery celého okna vrátane jeho okrajov a ponuky.
+		 * Nulou sa obmedzenie príslušného rozmeru zruší. Ak je niektorý
+		 * argument záporný, ponechajú sa obe doterajšie hodnoty.</p>
+		 * 
+		 * <p>Hranice panela a okna platia súčasne. Ak sa maximum nedá
+		 * dodržať spolu s minimom, prednosť má minimum. Rozmery plátna
+		 * sa nemenia. Hranice sa uplatnia pri najbližšom spracovaní
+		 * udalostí bežného okna; režim celej obrazovky má vlastné rozmery.</p>
+		 * 
+		 * @param šírka požadovaná šírka v pixeloch
+		 * @param výška požadovaná výška v pixeloch
+		 * @see #maximálneRozmeryOkna()
+		 */
+		public static void maximálneRozmeryOkna(int šírka, int výška)
+		{ hraniceRozmerov.nastav(HraniceRozmerov.MAX_OKNO, šírka, výška); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryOkna() maximálneRozmeryOkna}.</p> */
+		public static int[] maximalneRozmeryOkna()
+		{ return maximálneRozmeryOkna(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryOkna(int, int) maximálneRozmeryOkna}.</p> */
+		public static void maximalneRozmeryOkna(int šírka, int výška)
+		{ maximálneRozmeryOkna(šírka, výška); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryOkna() maximálneRozmeryOkna}.</p> */
+		public static int[] najväčšieRozmeryOkna()
+		{ return maximálneRozmeryOkna(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryOkna(int, int) maximálneRozmeryOkna}.</p> */
+		public static void najväčšieRozmeryOkna(int šírka, int výška)
+		{ maximálneRozmeryOkna(šírka, výška); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryOkna() maximálneRozmeryOkna}.</p> */
+		public static int[] najvacsieRozmeryOkna()
+		{ return maximálneRozmeryOkna(); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #maximálneRozmeryOkna(int, int) maximálneRozmeryOkna}.</p> */
+		public static void najvacsieRozmeryOkna(int šírka, int výška)
+		{ maximálneRozmeryOkna(šírka, výška); }
 
 		/**
 		 * <p>Zistí šírku hlavného okna aplikácie.</p>
@@ -5160,7 +5379,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Zistí uhol (smer) zvieraný medzi osou x a priamkou vedúcou
-		 * stredom súradncovej sústavy a zadaným bodom.</p>
+		 * stredom súradnicovej sústavy a zadaným bodom.</p>
 		 * 
 		 * @param súradnicaBoduX x-ová súradnica určujúceho bodu
 		 * @param súradnicaBoduY y-ová súradnica určujúceho bodu
@@ -5184,7 +5403,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Zistí uhol (smer) zvieraný medzi osou x a priamkou vedúcou
-		 * stredom súradncovej sústavy a bodom určeným polohou zadaného
+		 * stredom súradnicovej sústavy a bodom určeným polohou zadaného
 		 * objektu.</p>
 		 * 
 		 * @param objekt objekt, ktorého poloha učuje súradnice určujúceho
@@ -5210,7 +5429,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Zistí uhol (smer) zvieraný medzi osou x a priamkou vedúcou
-		 * stredom súradncovej sústavy a bodom určeným polohou stredu
+		 * stredom súradnicovej sústavy a bodom určeným polohou stredu
 		 * hraníc<sup>[1]</sup> zadaného tvaru.</p>
 		 * 
 		 * <p><small>[1] – nejde presne o stred útvaru; je použitý
@@ -5533,7 +5752,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Zistí uhol zvieraný medzi osou x a priamkou vedúcou stredom
-		 * súradncovej sústavy a zadaným bodom.</p>
+		 * súradnicovej sústavy a zadaným bodom.</p>
 		 * 
 		 * @param súradnicaBoduX x-ová súradnica určujúceho bodu
 		 * @param súradnicaBoduY y-ová súradnica určujúceho bodu
@@ -5557,7 +5776,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Zistí uhol zvieraný medzi osou x a priamkou vedúcou stredom
-		 * súradncovej sústavy a bodom určeným polohou zadaného objektu.</p>
+		 * súradnicovej sústavy a bodom určeným polohou zadaného objektu.</p>
 		 * 
 		 * @param objekt objekt, ktorého poloha učuje súradnice určujúceho
 		 *     bodu priamky
@@ -5582,7 +5801,7 @@ public final class Svet extends JFrame
 
 		/**
 		 * <p>Zistí uhol zvieraný medzi osou x a priamkou vedúcou stredom
-		 * súradncovej sústavy a bodom určeným polohou stredu
+		 * súradnicovej sústavy a bodom určeným polohou stredu
 		 * hraníc<sup>[1]</sup> zadaného tvaru.</p>
 		 * 
 		 * <p><small>[1] – nejde presne o stred útvaru; je použitý
@@ -8497,7 +8716,7 @@ public final class Svet extends JFrame
 		 * mohli vidieť výsledok kreslenia, musíme vždy (po akejkoľvek zmene,
 		 * ktorá by sa mohla prejaviť graficky) použiť metódu {@link 
 		 * #prekresli() prekresli} (napríklad pravidelne po určitom počte
-		 * vykonaných príkazov, alebo v pravidelných časových intervaloch,
+		 * vykonaných príkazov alebo v pravidelných časových intervaloch,
 		 * prípadne po overení potreby prekreslenia sveta metódou
 		 * {@link #nebolPrekreslený() nebolPrekreslený}). Túto predvolenú
 		 * implementáciu automatického prekresľovania sveta opätovne
@@ -8558,8 +8777,8 @@ public final class Svet extends JFrame
 		 * #vypíš(Object[]) vypíš}, {@link #vypíšRiadok(Object[])
 		 * vypíšRiadok}<br />
 		 * a súčasne</li>
-		 * <li>sa zmenila veľkosť hlavného okna (buď aktivitou
-		 * používateľa, alebo z iných príčin)<br />
+		 * <li>sa zmenila veľkosť hlavného okna (buď aktivitou používateľa,
+		 * alebo z iných príčin)<br />
 		 * a súčasne</li>
 		 * <li>nie je aktívna obsluha udalostí (pozri {@link 
 		 * ObsluhaUdalostí#zmenaVeľkostiOkna()
@@ -8649,7 +8868,7 @@ public final class Svet extends JFrame
 			// V súvislosti s týmto miestom vzniklo viacero úvah. Postupne
 			// boli zamietnuté. Napríklad, aby tu bol implementovaný
 			// mechanizmus, ktorý by zabraňoval príliš častému automatickéhu
-			// prekresľovaniu, alebo aby bol mechanizmus automatického
+			// prekresľovaniu alebo aby bol mechanizmus automatického
 			// prekresľovania pomocou časovača predvolene implicitne
 			// implementovaný. Žiadny spôsob by nebol ideálny alebo
 			// dostatočne „efektívny.“ Keby sa zabraňovalo „príliš častému
@@ -11298,6 +11517,195 @@ public final class Svet extends JFrame
 		/** <p><a class="alias"></a> Alias pre {@link #chybaSystémovejIkony(String) chybaSystémovejIkony}.</p> */
 		public static boolean chybaSystemovejIkony(String chyba)
 		{ return chybaSystémovejIkony(chyba, null); }
+
+
+		/**
+		 * <p>Zmení vzhľad používateľského rozhrania Swing a obnoví
+		 * jestvujúce okná aplikácie. Parameter určuje inštanciu
+		 * požadovaného vzhľadu. Prislúchajúca implementácia vzhľadu musí
+		 * byť dostupná aplikácii a podporovaná v používanom prostredí.</p>
+		 * 
+		 * <p>Ak je metóda vyvolaná na EDT, vykoná zmenu pred svojím
+		 * návratom. Pri vyvolaní z iného vlákna zaradí zmenu na
+		 * vykonanie na EDT a vráti objekt umožňujúci sledovať jej
+		 * dokončenie. V takom prípade nemusí byť vzhľad pri návrate
+		 * z metódy ešte zmenený.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> EDT (Event Dispatch Thread)
+		 * je vlákno, na ktorom Swing spracúva udalosti používateľského
+		 * rozhrania, napríklad stlačenia tlačidiel, a vykonáva väčšinu
+		 * zmien svojich komponentov. Úlohy na tomto vlákne sa vykonávajú
+		 * postupne. Zdĺhavá úloha preto môže dočasne znemožniť reakcie
+		 * používateľského rozhrania.</p>
+		 * 
+		 * <p>Po úspešnom nastavení vzhľadu metóda nastaví príznak
+		 * {@link #zmenaLAF zmenaLAF} na {@code valfalse}, aby neskoršia
+		 * inicializácia okna rámca neprepísala zvolený vzhľad systémovým
+		 * vzhľadom.</p>
+		 * 
+		 * <p>Výnimka zachytená počas nastavovania vzhľadu alebo obnovy
+		 * komponentov sa uloží do vráteného objektu ako neúspešné
+		 * dokončenie. Obnova komponentov nie je atomická. Pri chybe
+		 * môže byť časť rozhrania už obnovená; metóda automaticky
+		 * nevracia predchádzajúci vzhľad.</p>
+		 * 
+		 * <p class="remark"><b>Poznámka:</b> Zmena sa dotýka komponentov
+		 * Swingu. Vlastná kresba na plátne, farby konzoly a vzhľad
+		 * natívnych systémových dialógov sa riadia svojimi osobitnými
+		 * nastaveniami.</p>
+		 * 
+		 * <p>Podrobnosti o EDT sú uvedené v návode
+		 * <a href="https://docs.oracle.com/javase/tutorial/uiswing/concurrency/dispatch.html"
+		 * target="_blank">The Event Dispatch Thread</a>.</p>
+		 * 
+		 * @param vzhľad nenulová inštancia požadovaného vzhľadu
+		 * @return objekt umožňujúci počkať na dokončenie zmeny vzhľadu
+		 *     alebo spracovať prípadnú chybu; metódy {@code get()}
+		 *     a {@code join()} tohto objektu pri úspechu vrátia
+		 *     {@code valnull}, pretože dokončená zmena neposkytuje žiadnu
+		 *     ďalšiu hodnotu.
+		 * @throws NullPointerException ak je parameter {@code vzhľad}
+		 *     rovný {@code valnull}; táto výnimka vzniká priamo pri
+		 *     volaní metódy
+		 * 
+		 * @see #zmeňVzhľad(String)
+		 * @see #zmenaLAF
+		 * @see javax.swing.LookAndFeel
+		 * @see java.util.concurrent.CompletableFuture
+		 */
+		public static java.util.concurrent.CompletableFuture<Void> zmeňVzhľad(
+			javax.swing.LookAndFeel vzhľad)
+		{
+			java.util.Objects.requireNonNull(vzhľad, "vzhľad");
+			return naplánujZmenuVzhľadu(() -> {
+				javax.swing.UIManager.setLookAndFeel(vzhľad);
+			});
+		}
+
+		/**
+		 * <p>Načíta a nastaví vzhľad používateľského rozhrania podľa
+		 * úplného názvu jeho triedy. Funguje podobne ako metóda
+		 * {@link #zmeňVzhľad(javax.swing.LookAndFeel)
+		 * zmeňVzhľad(vzhľad)}, ale vytvorenie inštancie vzhľadu
+		 * zabezpečí správca používateľského rozhrania Swing.</p>
+		 * 
+		 * <p>Trieda musí byť dostupná aplikácii, musí predstavovať
+		 * podporovaný vzhľad Swingu a musí umožňovať vytvorenie
+		 * inštancie spôsobom používaným metódou
+		 * {@link javax.swing.UIManager#setLookAndFeel(String)
+		 * UIManager.setLookAndFeel(String)}.</p>
+		 * 
+		 * <p>Vykonávanie na EDT, význam návratovej hodnoty, obnova
+		 * komponentov a spracovanie chýb sú opísané pri metóde
+		 * {@link #zmeňVzhľad(javax.swing.LookAndFeel)
+		 * zmeňVzhľad(vzhľad)}. Aj chyby načítania alebo vytvorenia
+		 * inštancie triedy sa oznámia výnimočným dokončením
+		 * vráteného objektu.</p>
+		 * 
+		 * @param triedaVzhľadu nenulový úplný názov triedy požadovaného
+		 *     vzhľadu vrátane názvu balíka
+		 * @return objekt umožňujúci počkať na dokončenie zmeny vzhľadu
+		 *     alebo spracovať prípadnú chybu; metódy {@code get()}
+		 *     a {@code join()} tohto objektu pri úspechu vrátia
+		 *     {@code valnull}, pretože dokončená zmena neposkytuje žiadnu
+		 *     ďalšiu hodnotu.
+		 * @throws NullPointerException ak je parameter
+		 *     {@code triedaVzhľadu} rovný {@code valnull}; táto
+		 *     výnimka vzniká priamo pri volaní metódy
+		 * 
+		 * @see #zmeňVzhľad(javax.swing.LookAndFeel)
+		 * @see javax.swing.UIManager#setLookAndFeel(String)
+		 * @see javax.swing.UIManager#getSystemLookAndFeelClassName()
+		 */
+		public static java.util.concurrent.CompletableFuture<Void> zmeňVzhľad(
+			String triedaVzhľadu)
+		{
+			java.util.Objects.requireNonNull(triedaVzhľadu, "triedaVzhľadu");
+			return naplánujZmenuVzhľadu(() -> {
+				javax.swing.UIManager.setLookAndFeel(triedaVzhľadu);
+			});
+		}
+
+		/** <p><a class="alias"></a> Alias pre {@link #zmeňVzhľad(javax.swing.LookAndFeel) zmeňVzhľad}.</p> */
+		public static java.util.concurrent.CompletableFuture<Void> zmenVzhlad(
+			javax.swing.LookAndFeel vzhľad) { return zmeňVzhľad(vzhľad); }
+
+		/** <p><a class="alias"></a> Alias pre {@link #zmeňVzhľad(String) zmeňVzhľad}.</p> */
+		public static java.util.concurrent.CompletableFuture<Void> zmenVzhlad(
+			String triedaVzhľadu) { return zmeňVzhľad(triedaVzhľadu); }
+
+		// Spoločný predpis operácie nastavujúcej vzhľad. Umožňuje
+		// použiť rovnaký postup obnovy komponentov a spracovania
+		// výnimiek pre obe verejné preťaženia metódy zmeňVzhľad.
+		@FunctionalInterface
+		private interface InštaláciaVzhľadu
+		{
+			void vykonaj() throws Exception;
+		}
+
+		// Vykoná nastavenie vzhľadu a obnovu rozhrania na EDT.
+		// Pri volaní z iného vlákna zaradí operáciu do frontu EDT.
+		// Vrátený objekt oznámi úspešné dokončenie alebo zachytenú
+		// výnimku. Metóda nečaká na EDT z volajúceho vlákna.
+		private static java.util.concurrent.CompletableFuture<Void>
+			naplánujZmenuVzhľadu(InštaláciaVzhľadu inštalácia)
+		{
+			java.util.concurrent.CompletableFuture<Void> výsledok =
+				new java.util.concurrent.CompletableFuture<>();
+
+			Runnable zmena = () -> {
+				try
+				{
+					inštalácia.vykonaj();
+					// Aj nové Okno musí rešpektovať vzhľad vybraný aplikáciou.
+					zmenaLAF = false;
+					// Zachovanie jestvujúcej prípravy výberu súborov v GRobote.
+					new javax.swing.JFileChooser().getUI();
+					// Tieto statické komponenty môžu jestvovať ešte pred prvým
+					// oknom.
+					obnovVzhľadDialógu(new Object[] {hlavnýPanel,
+						panelVstupnéhoRiadka, popisVstupnéhoRiadka,
+						vstupnýRiadok});
+
+					for (java.awt.Window okno : java.awt.Window.getWindows())
+					{
+						// Aj skryté a predtým zrušené okná možno znova použiť.
+						javax.swing.SwingUtilities.updateComponentTreeUI(okno);
+						okno.invalidate();
+						okno.validate();
+						okno.repaint();
+					}
+
+					výsledok.complete(null);
+				}
+				catch (Exception chyba)
+				{
+					// Obnova stromov nemusí byť atomická. Chybu neskrývame.
+					výsledok.completeExceptionally(chyba);
+				}
+			};
+
+			if (javax.swing.SwingUtilities.isEventDispatchThread()) zmena.run();
+			else javax.swing.SwingUtilities.invokeLater(zmena);
+			return výsledok;
+		}
+
+		// Obnoví UI zadaného komponentu a jeho vnorených komponentov.
+		// Pri poli Object[] postupne spracuje jeho prvky vrátane
+		// vnorených polí. Ostatné hodnoty vrátane null ignoruje.
+		//
+		// Volá sa na EDT. Umožňuje obnoviť aj obsah uložený mimo
+		// stromov okien, napríklad panel pripravený na opätovné
+		// vloženie do dialógu. Samotné priradenie vlastných farieb,
+		// písiem či rámčekov aplikáciou tým nemusí byť zrušené.
+		/*packagePrivate*/ static void obnovVzhľadDialógu(Object obsah)
+		{
+			if (obsah instanceof java.awt.Component)
+				javax.swing.SwingUtilities.updateComponentTreeUI(
+					(java.awt.Component)obsah);
+			else if (obsah instanceof Object[])
+				for (Object časť : (Object[])obsah) obnovVzhľadDialógu(časť);
+		}
 
 
 		/**
@@ -14074,9 +14482,9 @@ public final class Svet extends JFrame
 					{@code commelse if (skratka == dole)}
 					{@code comm	strop.rolujTexty(0, -strop.výškaRiadka());}
 					{@code commelse if (skratka == pgUp)}
-					{@code comm	strop.rolujTexty(0, Plátno.viditeľnáVýška() - 10);}
+					{@code comm	strop.rolujTexty(0, Plátno.viditeľnáVýška() &#45; 10);}
 					{@code commelse if (skratka == pgDn)}
-					{@code comm	strop.rolujTexty(0, 10 - Plátno.viditeľnáVýška());&#42;/}
+					{@code comm	strop.rolujTexty(0, 10 &#45; Plátno.viditeľnáVýška());&#42;/}
 
 					{@code comm// Súčasť implementácie ukončenia spusteného procesu klávesovou}
 					{@code comm// skratkou.}
@@ -15469,7 +15877,7 @@ public final class Svet extends JFrame
 		 * 
 		 * @param výzva text výzvy
 		 * @return objekt {@link java.lang.String String} s textom, ktorý
-		 *     zadal používateľ, alebo {@code valnull} ak používateľ dialóg
+		 *     zadal používateľ alebo {@code valnull} ak používateľ dialóg
 		 *     zrušil
 		 * 
 		 * @see #zadajReťazec(String, String)
@@ -15497,7 +15905,7 @@ public final class Svet extends JFrame
 		 * @param výzva text výzvy
 		 * @param titulok text titulku dialógového okna
 		 * @return objekt {@link java.lang.String String} s textom, ktorý
-		 *     zadal používateľ, alebo {@code valnull} ak používateľ dialóg
+		 *     zadal používateľ alebo {@code valnull} ak používateľ dialóg
 		 *     zrušil
 		 * 
 		 * @see #zadajReťazec(String)
@@ -15518,6 +15926,9 @@ public final class Svet extends JFrame
 			String reťazec = null;
 			Object[] výzvaATextovýRiadok = {výzva, textovýRiadok};
 			textovýRiadok.setText("");
+
+			obnovVzhľadDialógu(výzvaATextovýRiadok);
+			obnovVzhľadDialógu(mojeOdpovede);
 
 			if ((odpoveďDialógu = JOptionPane.showOptionDialog(null ==
 				oknoCelejObrazovky ? svet : oknoCelejObrazovky,
@@ -15546,7 +15957,7 @@ public final class Svet extends JFrame
 		 * 
 		 * @param výzva text výzvy
 		 * @return objekt {@link java.lang.String String} s heslom, ktoré
-		 *     zadal používateľ, alebo {@code valnull} ak používateľ dialóg
+		 *     zadal používateľ alebo {@code valnull} ak používateľ dialóg
 		 *     zrušil
 		 * 
 		 * @see #zadajReťazec(String)
@@ -15575,7 +15986,7 @@ public final class Svet extends JFrame
 		 * @param výzva text výzvy
 		 * @param titulok text titulku dialógového okna
 		 * @return objekt {@link java.lang.String String} s heslom, ktoré
-		 *     zadal používateľ, alebo {@code valnull} ak používateľ dialóg
+		 *     zadal používateľ alebo {@code valnull} ak používateľ dialóg
 		 *     zrušil
 		 * 
 		 * @see #zadajReťazec(String)
@@ -15595,6 +16006,9 @@ public final class Svet extends JFrame
 			String heslo = null;
 			Object[] výzvaAHeslo = {výzva, riadokSHeslom};
 			riadokSHeslom.setText("");
+
+			obnovVzhľadDialógu(výzvaAHeslo);
+			obnovVzhľadDialógu(mojeOdpovede);
 
 			if ((odpoveďDialógu = JOptionPane.showOptionDialog(null ==
 				oknoCelejObrazovky ? svet : oknoCelejObrazovky, výzvaAHeslo,
@@ -15620,7 +16034,7 @@ public final class Svet extends JFrame
 		 * 
 		 * @param výzva text výzvy
 		 * @return objekt {@link Long} s celočíselnou hodnotou, ktorú zadal
-		 *     používateľ, alebo {@code valnull} ak používateľ dialóg zrušil
+		 *     používateľ alebo {@code valnull} ak používateľ dialóg zrušil
 		 *     alebo zadal reťazec, ktorý nebolo možné previesť na celé
 		 *     číslo
 		 * 
@@ -15684,7 +16098,7 @@ public final class Svet extends JFrame
 		 * @param výzva text výzvy
 		 * @param titulok text titulku dialógového okna
 		 * @return objekt {@link Long} s celočíselnou hodnotou, ktorú zadal
-		 *     používateľ, alebo {@code valnull} ak používateľ dialóg zrušil
+		 *     používateľ alebo {@code valnull} ak používateľ dialóg zrušil
 		 *     alebo zadal reťazec, ktorý nebolo možné previesť na celé
 		 *     číslo
 		 * 
@@ -15728,7 +16142,7 @@ public final class Svet extends JFrame
 		 * 
 		 * @param výzva text výzvy
 		 * @return objekt {@link java.lang.Double Double} s celočíselnou
-		 *     hodnotou, ktorú zadal používateľ, alebo {@code valnull} ak
+		 *     hodnotou, ktorú zadal používateľ alebo {@code valnull} ak
 		 *     používateľ dialóg zrušil alebo zadal reťazec, ktorý
 		 *     nebolo možné previesť na reálne číslo
 		 * 
@@ -15793,7 +16207,7 @@ public final class Svet extends JFrame
 		 * @param výzva text výzvy
 		 * @param titulok text titulku dialógového okna
 		 * @return objekt {@link java.lang.Double Double} s celočíselnou
-		 *     hodnotou, ktorú zadal používateľ, alebo {@code valnull} ak
+		 *     hodnotou, ktorú zadal používateľ alebo {@code valnull} ak
 		 *     používateľ dialóg zrušil alebo zadal reťazec, ktorý
 		 *     nebolo možné previesť na reálne číslo
 		 * 
@@ -15898,6 +16312,9 @@ public final class Svet extends JFrame
 			Object[] výzvaATextovýRiadok = {výzva, textovýRiadok};
 			textovýRiadok.setText(reťazec);
 
+			obnovVzhľadDialógu(výzvaATextovýRiadok);
+			obnovVzhľadDialógu(mojeOdpovede);
+
 			if ((odpoveďDialógu = JOptionPane.showOptionDialog(null ==
 				oknoCelejObrazovky ? svet : oknoCelejObrazovky,
 				výzvaATextovýRiadok, titulok, JOptionPane.YES_NO_OPTION,
@@ -15929,7 +16346,7 @@ public final class Svet extends JFrame
 		 * @param celéČíslo celé číslo určené na úpravu
 		 * @param výzva text výzvy
 		 * @return objekt {@link Long} s celočíselnou hodnotou, ktorú
-		 *     používateľ upravil, alebo {@code valnull} ak používateľ dialóg
+		 *     používateľ upravil alebo {@code valnull} ak používateľ dialóg
 		 *     zrušil alebo zadal reťazec, ktorý nebolo možné previesť na
 		 *     celé číslo
 		 * 
@@ -15972,7 +16389,7 @@ public final class Svet extends JFrame
 		 * @param výzva text výzvy
 		 * @param titulok text titulku dialógového okna
 		 * @return objekt {@link Long} s celočíselnou hodnotou, ktorú
-		 *     používateľ upravil, alebo {@code valnull} ak používateľ dialóg
+		 *     používateľ upravil alebo {@code valnull} ak používateľ dialóg
 		 *     zrušil alebo zadal reťazec, ktorý nebolo možné previesť na
 		 *     celé číslo
 		 * 
@@ -16017,7 +16434,7 @@ public final class Svet extends JFrame
 		 * @param reálneČíslo reálne číslo určené na úpravu
 		 * @param výzva text výzvy
 		 * @return objekt {@link java.lang.Double Double} s celočíselnou
-		 *     hodnotou, ktorú používateľ upravil, alebo {@code valnull} ak
+		 *     hodnotou, ktorú používateľ upravil alebo {@code valnull} ak
 		 *     používateľ dialóg zrušil alebo zadal reťazec, ktorý
 		 *     nebolo možné previesť na reálne číslo
 		 * 
@@ -16062,7 +16479,7 @@ public final class Svet extends JFrame
 		 * @param výzva text výzvy
 		 * @param titulok text titulku dialógového okna
 		 * @return objekt {@link java.lang.Double Double} s celočíselnou
-		 *     hodnotou, ktorú používateľ upravil, alebo {@code valnull} ak
+		 *     hodnotou, ktorú používateľ upravil alebo {@code valnull} ak
 		 *     používateľ dialóg zrušil alebo zadal reťazec, ktorý
 		 *     nebolo možné previesť na reálne číslo
 		 * 
@@ -16855,6 +17272,9 @@ public final class Svet extends JFrame
 						" – " + komponentyÚdajov[i].getClass());
 				System.out.println();*/
 
+				obnovVzhľadDialógu(panelDialógu);
+				obnovVzhľadDialógu(mojeOdpovede);
+
 				boolean výsledok = (odpoveďDialógu = JOptionPane.
 					showOptionDialog(null == oknoCelejObrazovky ? svet :
 						oknoCelejObrazovky, panelDialógu, titulok,
@@ -17354,6 +17774,7 @@ public final class Svet extends JFrame
 		 */
 		public static int otázka(String otázka, Object[] tlačidlá)
 		{
+			obnovVzhľadDialógu(tlačidlá);
 			return JOptionPane.showOptionDialog(null == oknoCelejObrazovky ?
 				svet : oknoCelejObrazovky, otázka,
 				predvolenýTitulokOtázky, JOptionPane.YES_NO_OPTION,
@@ -17396,6 +17817,7 @@ public final class Svet extends JFrame
 		 */
 		public static int otázka(String otázka, String titulok, Object[] tlačidlá)
 		{
+			obnovVzhľadDialógu(tlačidlá);
 			return JOptionPane.showOptionDialog(null == oknoCelejObrazovky ?
 				svet : oknoCelejObrazovky, otázka, titulok,
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
@@ -17441,6 +17863,7 @@ public final class Svet extends JFrame
 		public static int otázka(String otázka,
 			Object[] tlačidlá, int predvolenéTlačidlo)
 		{
+			obnovVzhľadDialógu(tlačidlá);
 			return JOptionPane.showOptionDialog(null == oknoCelejObrazovky ?
 				svet : oknoCelejObrazovky, otázka,
 				predvolenýTitulokOtázky, JOptionPane.YES_NO_OPTION,
@@ -17495,6 +17918,7 @@ public final class Svet extends JFrame
 		 */
 		public static int otázka(String otázka, String titulok, Object[] tlačidlá, int predvolenéTlačidlo)
 		{
+			obnovVzhľadDialógu(tlačidlá);
 			return JOptionPane.showOptionDialog(null == oknoCelejObrazovky ?
 				svet : oknoCelejObrazovky, otázka, titulok,
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
@@ -18978,7 +19402,7 @@ public final class Svet extends JFrame
 		 * Vstup pomocou vstupného riadka sa zahajuje metódou {@link 
 		 * #začniVstup() začniVstup}.</p>
 		 * 
-		 * @return objekt typu {@link Long} obsahujúci zadané celé číslo,
+		 * @return objekt typu {@link Long} obsahujúci zadané celé číslo
 		 *     alebo {@code valnull} v prípade chyby
 		 * 
 		 * @see #prevezmiReťazec()
@@ -19038,7 +19462,7 @@ public final class Svet extends JFrame
 		 * chyby pri prevode vráti metóda hodnotu {@code valnull}.</p>
 		 * 
 		 * @param reťazec reťazec s údajom na prevedenie
-		 * @return objekt typu {@link Long} obsahujúci prevedené celé číslo,
+		 * @return objekt typu {@link Long} obsahujúci prevedené celé číslo
 		 *     alebo {@code valnull} v prípade chyby
 		 * 
 		 * @see #reťazecNaReálneČíslo(String)
@@ -19187,7 +19611,7 @@ public final class Svet extends JFrame
 		 * rímske}.</p>
 		 * 
 		 * <p>Rimania nulu nepoužívali, ale neskôr sa začali vyskytovať zápisy
-		 * nuly, napríklad slovom <em>nulla</em>, prípadne <em>nihil</em>,
+		 * nuly, napríklad slovom <em>nulla</em>, prípadne <em>nihil</em>
 		 * alebo písmenom N. Pri prevode {@linkplain #rímskeNaCelé(String)
 		 * z rímskych čísel} sú rozpoznávané štyri znaky ako nula: N, n,
 		 * O a o. Je to z dôvodu spätnej kompatibility. Táto vlastnosť
@@ -19231,7 +19655,7 @@ public final class Svet extends JFrame
 		 * rímske}.</p>
 		 * 
 		 * <p>Rimania nulu nepoužívali, ale neskôr sa začali vyskytovať zápisy
-		 * nuly, napríklad slovom <em>nulla</em>, prípadne <em>nihil</em>,
+		 * nuly, napríklad slovom <em>nulla</em>, prípadne <em>nihil</em>
 		 * alebo písmenom N. Pri prevode {@linkplain #rímskeNaCelé(String)
 		 * z rímskych čísel} sú rozpoznávané štyri znaky ako nula: N, n,
 		 * O a o. Je to z dôvodu spätnej kompatibility. Táto vlastnosť
@@ -21516,7 +21940,7 @@ public final class Svet extends JFrame
 		 * <tr><td class="GRtab"> </td><td colspan="3">vľavo 90</td></tr>
 		 * <tr><td class="GRtab"> </td><td colspan="3">skoč #polovica</td></tr>
 		 * <tr><td class="GRtab"> </td><td colspan="3"></td></tr>
-		 * <tr><td class="GRtab"> </td><td colspan="3">nech počet - 1</td></tr>
+		 * <tr><td class="GRtab"> </td><td colspan="3">nech počet &#45; 1</td></tr>
 		 * <tr><td class="GRtab"> </td><td colspan="3">nech dĺžka = #dĺžky[počet]</td></tr>
 		 * <tr><td class="GRtab"> </td><td colspan="3">nech polovica = #polovice[počet]</td></tr>
 		 * <tr><td class="GRtab"> </td><td colspan="3">nech odvesna = #odvesny[počet]</td></tr>
@@ -22196,7 +22620,7 @@ public final class Svet extends JFrame
 		 * 
 		 * <p>    nech v = #veľkosť * 2.5 + 1<br />
 		 *     opakuj i 5<br />
-		 *         nech x = #(i - 3) * veľkosť<br /></p>
+		 *         nech x = #(i &#45; 3) * veľkosť<br /></p>
 		 * 
 		 * <p>Je dovolené pracovať aj s reťazcami a vyhodnocovať výrazy
 		 * v rámci podmieneného spracovania (aj číselné, nielen reťazcové).
@@ -25696,7 +26120,7 @@ public final class Svet extends JFrame
 		 * v opise metódy {@link Svet#čítajZvuk(String)
 		 * čítajZvuk(súbor)}.</p>
 		 * 
-		 * @param súbor názov zvukového súboru, ktorý má byť prehrávaný,
+		 * @param súbor názov zvukového súboru, ktorý má byť prehrávaný
 		 *     alebo {@code valnull} na zastavenie prehrávania
 		 * 
 		 * @throws GRobotException ak súbor so zvukom nebol nájdený

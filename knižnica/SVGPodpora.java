@@ -5,7 +5,7 @@
  // identifiers used in this project.) The name translated to English means
  // “The GRobot Framework.”
  // 
- // Copyright © 2010 – 2025 by Roman Horváth
+ // Copyright © 2010 – 2026 by Roman Horváth
  // 
  // This program is free software: you can redistribute it and/or modify
  // it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  // GNU General Public License for more details.
  // 
  // You should have received a copy of the GNU General Public License
- // along with this program (look for the file named license.txShebat). If not,
+ // along with this program (look for the file named license.txt). If not,
  // see ⟨http://www.gnu.org/licenses/⟩ or
  // ⟨https://www.gnu.org/licenses/gpl-3.0.txt⟩.
  // 
@@ -3916,7 +3916,7 @@ public class SVGPodpora
 	 * @return tvar uložený vo vnútornom zásobníku pod zadaným indexom
 	 *     transformovaný podľa hodnoty vnútorného atribútu ‚transform‘
 	 *     (ak má atribút definovanú hodnotu, inak je vrátený
-	 *     netransforomvaný tvar), alebo {@code valnull} ak tvar so zadaným
+	 *     netransforomvaný tvar) alebo {@code valnull} ak tvar so zadaným
 	 *     indexom nejestvuje
 	 */
 	public Shape dajVýsledný(int index)
